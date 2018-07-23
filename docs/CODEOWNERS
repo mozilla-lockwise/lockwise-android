@@ -1,0 +1,5 @@
+# lockbox-android code owners
+# https://help.github.com/articles/about-codeowners/
+
+# everything is to be reviewed by the mobile team (for now..)
+* @mozilla-lockbox/mobile-engineering
