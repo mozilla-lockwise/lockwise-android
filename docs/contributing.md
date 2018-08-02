@@ -27,3 +27,16 @@ Then, please [create a new issue in the GitHub repository](https://github.com/mo
 Be sure to include as much detail as possible including step-by-step descriptions, specific examples, screenshots or mockups, and reasoning for why the enhancement might be worthwhile.
 
 Please keep in mind, by opening an issue we provide no guarantee the enhancement will be implemented.
+
+## How to Contribute Code
+
+Before you get started writing code, be sure what you plan to work on is something we'll be able to accept. The easiest way is to look through out list of [good first issues][good-first-issues] and find something that sounds interesting.
+
+If there's something else you'd like to work on, just add a comment in the relevant issue and we'll be happy to discuss your plans. If you have an idea that doesn't have an issue at all, be sure to [file an issue](#how-to-request-enhancements) first.
+
+Once you have a patch ready:
+
+- Make sure all tests are passing and try to add tests for the code you've written. 
+- Submit a pull request! From there, we'll guide you through the review process to the eventual landing of your code. We aim to respond to all review requests within two business days.
+
+[good-first-issues]: https://github.com/mozilla-lockbox/lockbox-android/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22
