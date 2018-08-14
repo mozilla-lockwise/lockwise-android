@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Firefox Lockbox</string>
+    <string name="app_label">Lockbox</string>
 </resources>
