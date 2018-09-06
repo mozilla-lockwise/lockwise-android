@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>Using Keys and Biometrics - Firefox Lockbox for Android</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/highlight.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Using Keys and Biometrics";
+    var mkdocs_page_input_path = "architecture/sec-apis.md";
+    var mkdocs_page_url = "/architecture/sec-apis/";
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> Firefox Lockbox for Android</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../..">Introduction</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../../contributing/">Contributing</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Architecture</span>
+    <ul class="subnav">
+                <li class=" current">
+                    
+    <a class="current" href="./">Using Keys and Biometrics</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#on-using-keys-and-biometrics">On Using Keys and Biometrics</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#using-androidkeystore">Using AndroidKeyStore</a></li>
+        
+            <li><a class="toctree-l4" href="#using-keyguardmanager">Using KeyguardManager</a></li>
+        
+            <li><a class="toctree-l4" href="#using-fingerprintmanager">Using FingerprintManager</a></li>
+        
+            <li><a class="toctree-l4" href="#using-biometricprompt">Using BiometricPrompt</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Developer Guides</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../install/">Build and Install</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">Firefox Lockbox for Android</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Architecture &raquo;</li>
+        
+      
+    
+    <li>Using Keys and Biometrics</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/mozilla-lockbox/lockbox-android/edit/master/docs/architecture/sec-apis.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="on-using-keys-and-biometrics">On Using Keys and Biometrics</h1>
+<p>Below are some findings on using a couple of security features in Android:</p>
+<ul>
+<li><code>AndroidKeyStore</code></li>
+<li>Biometrics</li>
+<li>Device locks</li>
+</ul>
+<h2 id="using-androidkeystore">Using <code>AndroidKeyStore</code></h2>
+<p>The <code>AndroidKeyStore</code> is an implementation of the <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/crypto/CryptoSpec.html">Java Cryptography Architecture (JCA)</a>'s <code>KeyStore</code> service to manage application-specific cryptographic keys.  Such keys can be created or imported with an associated label, then an opaque <code>Key</code> class obtained from that label to use for cryptographic operations.  However, they <strong>cannot</strong> be exported.  The remainder here focuses on creating rather than import.</p>
+<p>Obtaining this Keystore is done using the static method <code>Keystore.getIstance()</code> and specifying the "AndroidKeyStore" Service Provider Interface (SPI) provider.</p>
+<p>New keys are created using an instance of <code>KeyGenerator</code> (or <code>KeyPairGenerator</code>), again specifying "AndroidKeyStore" as the SPI provider.  When creating a new key, several properties can be applied via <code>KeyGenParameterSpec</code>, including:</p>
+<ul>
+<li>key size (in bits)</li>
+<li>encryption block modes (e.g., <code>GCM</code>)</li>
+<li>encryption padding (e.g., <code>NONE</code>) </li>
+<li>require authentication</li>
+<li>duration until next authentication (in seconds)</li>
+</ul>
+<p>Once set, these properties <strong>cannot</strong> be changed without first deleting then re-importing/-creating the key.  If the key creation requests some user authentication is required, it can only be done if the device has a security lock set (e.g., Pattern/PIN/Password); if user authentication is required for <em>every</em> use, it can only be done if the user has at least one fingerprint enrolled.</p>
+<p>Keys in the AndroidKeyStore are stored on the device until one of the following happens:</p>
+<ul>
+<li>The app deletes its entry from the KeyStore</li>
+<li>The app's data storage (not data cache) is cleared</li>
+<li>The app is uninstalled</li>
+</ul>
+<p>Keys with user authentication required are invalided and cannot be used if any of the following happen:</p>
+<ul>
+<li>The device is hard reset</li>
+<li>The security lock is disabled (e.g., changed from Pattern/PIN/Password to Swipe or None)</li>
+</ul>
+<p>Further, "authenticate every use" keys are invalided and cannot be used if any of the following happen:</p>
+<ul>
+<li>A new fingerprint is enrolled</li>
+<li>All fingerprints are unenrolled</li>
+</ul>
+<p>Existing Key objects (secret, private, public, and even certificates) are obtained using the Keystore instance's typical methods (e.g., <code>.getSecretKey()</code>).  Note that all of the methods on the Key object that would export the value (e.g., getEncoded()) either throw exception or return <code>null</code>; this is true even for PublicKeys.</p>
+<p>the "Java Standard" Cipher/Mac/Signature classes are used in Android as they are in any other Java/Kotlin environment.  If the key requires authentication, a <code>UserNotAuthenticatedException</code> is thrown; if the key no longer valid (as above), a <code>KeyPermanentlyInvalidatedException</code> is thrown.</p>
+<h2 id="using-keyguardmanager">Using KeyguardManager</h2>
+<p>The KeyguardManager is a system service that originally used to lock/unlock the keyboard, but has since expanded to lock/unlock the user's device.  It can only be obtained from a <code>Context</code> (e.g., <code>Activity</code>).</p>
+<p>The most interesting methods here are those that determine if a "strong" security lock (Pattern/PIN/Password) is configured and if the device is currently locked.  Both are boolean values; it is not possible to determine <em>which</em> method of lock is configured.</p>
+<p>In addition, the KeyguardManager can be used to prompt the user to enter their Pattern/PIN/Password by way of <code>createConfirmDeviceCredentialIntent()</code>; if no "strong" security lock is configured, this method returns <code>null</code>.</p>
+<p>The Intent is created with optional title and description, then dispatched via <code>startActivityForResult()</code> to trigger the device prompts.  Applications receive either <code>RESULT_OK</code> (if successfully unlocked) or <code>RESULT_CANCELED</code> (device prompt is dismissed) via the overridden method <code>onActivityResult()</code>.  It is important to note that dispatching and monitoring is best done from a long-running Activity, such as the MainActivity, or the result is never received.</p>
+<h2 id="using-fingerprintmanager">Using FingerprintManager</h2>
+<p><strong>NOTE:</strong> This API is marked as <strong>deprecated</strong> as of API 28 (Android Pie) and replaced with <code>BiometricPrompt</code>.</p>
+<p>The FingerprintManager is a system service used to interact with a device's fingerprint hardware.  This was added in API 23, and is now deprecated as of API 28.  As with <code>KeyguardManager</code> it can only be obtained from a <code>Context</code> (e.g., <code>Activity</code>).  It also requires the <code>USE_FINGERPRINT</code> or <code>USE_BIOMETRIC</code> (added in API 28) permission in the app's manifest.</p>
+<p>There are methods to determine if fingerprint authentication is possible; detecting if hardware exists and there is at least one fingerprint enrolled.</p>
+<p>Engaging the fingerprint reader is done by calling <code>authenticate()</code>.  Before doing so, the app must provide a <code>FingerprintManager.CryptoObject</code> and a <code>FingerprintManager.AuthenticationCallback</code>.  This method returns immediately; further interaction happens via the passed-in <code>AuthenticationCallback</code>.  An optional <code>CancellationSignal</code> can be provided to disengage the fingerprint hardware out-of-band (e.g., from the user clicking a "Cancel" button).</p>
+<p>This object only engages the hardware; it does not display anything to the user itself.  The app is responsible for managing a view regarding the fingerprint reading operations.</p>
+<p>Once the reader has succeeded or errored, it is no longer valid; a new instance must be obtained.</p>
+<h3 id="about-the-cryptoobject">About the CryptoObject</h3>
+<p>The required <code>CryptoObject</code> wraps a <code>Cipher</code>, <code>Mac</code> or <code>Signature</code> object, ready and initialized with the desired key. the scanner is engaged regardless of the key's authentication requirements, so even keys without any requirements can be used.</p>
+<h3 id="about-the-authenticationcallback">About the AuthenticationCallback</h3>
+<p>The required <code>AuthenticationCallback</code> is where events from fingerprint reader attempts are dispatched.  Subclasses need only override the event methods they are interested in.</p>
+<p>On success <code>onAuthenticationSuccessful()</code> is called with the original <code>CryptoObject</code> wrapped in a <code>AuthenticationResult</code>.  If the key required authentication, it is now useable within this method's bounds (and only now if authentication is required on every use).</p>
+<p>A fingerprint read failure is notified via <code>onAuthenticaitonFailed()</code>, such as a unrecognized print.  If there is some other temporary failure (e.g., dirty reader), <code>onAuthenticationHelp()</code> is called with the relevant status code and a (device locale appropriate) user-directed help message.</p>
+<p>Permanent errors are notified via <code>onAuthenticationError()</code>, with the relevant status code and (device locale appropriate) user-directed error message.</p>
+<h2 id="using-biometricprompt">Using BiometricPrompt</h2>
+<p>The BiometricPrompt is a class used to engage a device's biometrics hardware using a system-provided dialog.  This class is introduced in API 28 to replace FingerprintManager.  The intent is to support not only fingerprint readers, but also facial recognition; it also handles hardware variations, such as in-screen fingerprint readers (e.g., display a user prompt that indicates the on-screen boundaries of the reader).</p>
+<p>To create a <code>BiometricPrmpt</code>, a <code>BiometricPrompt.Builder</code> is created (with an appropriate <code>Context</code>) and configured.  The app can set a title, subtitle, description, and "cancel" button behavior.  Once created, the app calls <code>authenticate()</code> (just like with <code>FingerprintManager</code>).</p>
+<p>The hardware-engagement behavior is nearly identical to <code>FingerprintManager</code>; the app is notified of events via an instance of <code>BiometricPrompt.AuthenticationCallback</code> (which has the exact same methods as <code>FingerprintManager.AuthenticationCallback</code>), can be canceled via a <code>CancellationSignal</code>, and operates on a <code>CryptoObject</code>.  The biggest differences are:</p>
+<ul>
+<li>The <code>CryptoObject</code> is optional</li>
+<li>The app must explicitly provide an <code>Executor</code> where events are dispatched (this can be <code>Context.mainExecutor</code>)</li>
+<li>The app no longer manages any view to interact with the user.</li>
+</ul>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../install/" class="btn btn-neutral float-right" title="Build and Install">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../../contributing/" class="btn btn-neutral" title="Contributing"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+    
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+          <a href="https://github.com/mozilla-lockbox/lockbox-android" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+      
+      
+        <span><a href="../../contributing/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../../install/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script src="../../js/theme.js"></script>
+
+</body>
+</html>
