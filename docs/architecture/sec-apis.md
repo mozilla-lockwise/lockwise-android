@@ -60,7 +60,7 @@ The FingerprintManager is a system service used to interact with a device's fing
 
 There are methods to determine if fingerprint authentication is possible; detecting if hardware exists and there is at least one fingerprint enrolled.
 
-Engaging the fingerprint reader is done by calling `authenticate()`.  Before doing so, the app must provide a `FingerprintManager.CryptoObject` and a `FingerprintManager.AuthenticationCallback`.  This method immediately; further interaction happens via the passed-in AuthenticationCallback.  An optional `CancellationSignal` can be provided to disengage the fingerprint hardware (e.g., from the user clicking a "Cancel" button).
+Engaging the fingerprint reader is done by calling `authenticate()`.  Before doing so, the app must provide a `FingerprintManager.CryptoObject` and a `FingerprintManager.AuthenticationCallback`.  This method returns immediately; further interaction happens via the passed-in `AuthenticationCallback`.  An optional `CancellationSignal` can be provided to disengage the fingerprint hardware out-of-band (e.g., from the user clicking a "Cancel" button).
 
 This object only engages the hardware; it does not display anything to the user itself.  The app is responsible for managing a view regarding the fingerprint reading operations.
 
