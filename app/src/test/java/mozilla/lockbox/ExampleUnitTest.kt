@@ -1,4 +1,4 @@
-package com.firefox.lockbox.firefoxlockbox
+package mozilla.lockbox
 
 import org.junit.Test
 

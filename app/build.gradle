@@ -7,7 +7,7 @@ apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.firefox.lockbox.firefoxlockbox"
+        applicationId "mozilla.lockbox"
         minSdkVersion 23
         targetSdkVersion 28
         versionCode 1

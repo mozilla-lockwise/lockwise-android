@@ -1,4 +1,4 @@
-package com.firefox.lockbox.firefoxlockbox
+package mozilla.lockbox
 
 import android.support.test.InstrumentationRegistry
 import android.support.test.espresso.Espresso.onView
@@ -11,6 +11,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import mozilla.lockbox.R
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -23,7 +24,7 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getTargetContext()
-        assertEquals("com.firefox.lockbox.firefoxlockbox", appContext.packageName)
+        assertEquals("mozilla.lockbox", appContext.packageName)
     }
 
     @Rule

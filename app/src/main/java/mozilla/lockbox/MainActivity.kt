@@ -1,8 +1,9 @@
-package com.firefox.lockbox.firefoxlockbox
+package mozilla.lockbox
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.widget.TextView
+import mozilla.lockbox.R
 
 class MainActivity : AppCompatActivity() {
 
