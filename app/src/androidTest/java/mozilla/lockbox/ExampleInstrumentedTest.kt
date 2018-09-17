@@ -12,6 +12,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import mozilla.lockbox.R
+import mozilla.lockbox.view.MainActivity
 
 /**
  * Instrumented test, which will execute on an Android device.
