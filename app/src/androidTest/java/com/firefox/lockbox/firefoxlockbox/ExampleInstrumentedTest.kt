@@ -1,12 +1,16 @@
 package com.firefox.lockbox.firefoxlockbox
 
 import android.support.test.InstrumentationRegistry
+import android.support.test.espresso.Espresso.onView
+import android.support.test.espresso.assertion.ViewAssertions.matches
+import android.support.test.espresso.matcher.ViewMatchers.withId
+import android.support.test.espresso.matcher.ViewMatchers.withText
 import android.support.test.runner.AndroidJUnit4
-
+import android.support.test.rule.ActivityTestRule
+import org.junit.Assert.assertEquals
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-
-import org.junit.Assert.*
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -20,5 +24,14 @@ class ExampleInstrumentedTest {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getTargetContext()
         assertEquals("com.firefox.lockbox.firefoxlockbox", appContext.packageName)
+    }
+
+    @Rule
+    @JvmField
+    val activity = ActivityTestRule<MainActivity>(MainActivity::class.java)
+
+    @Test
+    fun testHelloWorldText() {
+        onView(withId(R.id.hello_world)).check(matches(withText("Hello World!")))
     }
 }

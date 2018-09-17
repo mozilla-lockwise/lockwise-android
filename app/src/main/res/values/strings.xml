@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Firefox Lockbox</string>
     <string name="app_label">Lockbox</string>
+    <string name="hello_world">Hello World!</string>
 </resources>
