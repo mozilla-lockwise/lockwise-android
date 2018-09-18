@@ -6,15 +6,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <ImageView
         android:id="@+id/nessie"
         android:layout_width="360dp"
         android:layout_height="96dp"
         android:layout_marginTop="89dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_nessie"
-        tools:layout_editor_absoluteX="0dp" />
+        app:srcCompat="@drawable/ic_nessie" />
 
     <TextView
         android:id="@+id/name_text"

@@ -9,7 +9,7 @@
     <string name="hello_world">Hello World!</string>
 
     <string name="welcome_start_btn">Get Started</string>
-    <string name="welcome_instructions">To use Firefox Lockbox, you'll need a Firefox Account with saved logins.</string>
+    <string name="welcome_instructions">To use Firefox Lockbox, you\'ll need a Firefox Account with saved logins.</string>
 
     <string name="learn_more_fxa">Learn More</string>
     <string name="goto_faq">FAQ</string>
