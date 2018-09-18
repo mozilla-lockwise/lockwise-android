@@ -18,6 +18,8 @@ Please open [a new issue in the GitHub repository](https://github.com/mozilla-lo
 
 Be sure to include as much information including screenshots, text output, and both your expected and actual results.
 
+If you believe that you've found a security vulnerability, please report it by sending email to the addresses: security@mozilla.org and lockbox-dev@mozilla.com
+
 ## How to Request Enhancements
 
 First, please refer to the applicable [GitHub repository](https://github.com/orgs/mozilla-lockbox/) and search [the repository's GitHub issues](https://github.com/mozilla-lockbox/lockbox-android/issues) to make sure your idea has not been (or is not still) considered.
