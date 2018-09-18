@@ -1,4 +1,5 @@
 [![Waffle Board][waffle-image]][waffle-link]
+[![Build Status][bitrise-image]][bitrise-link]
 
 # Firefox Lockbox for Android
 
@@ -27,6 +28,8 @@ Note that some test fixtures use source code from third-party services, and are 
 
 [waffle-image]: https://badge.waffle.io/mozilla-lockbox/lockbox-extension.svg?columns=In%20Progress
 [waffle-link]: https://waffle.io/mozilla-lockbox/lockbox-extension
+[bitrise-image]: https://app.bitrise.io/app/20089a88380dd14d/status.svg?token=41PRDjKSm0fQCUiS2EmCkQ&branch=master
+[bitrise-link]: https://app.bitrise.io/app/20089a88380dd14d
 [docs-link]: docs/
 [org-website]: https://lockbox.firefox.com/
 [contributing-link]: docs/contributing.md
