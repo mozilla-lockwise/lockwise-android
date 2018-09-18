@@ -27,13 +27,4 @@ class ExampleInstrumentedTest {
         val appContext = InstrumentationRegistry.getTargetContext()
         assertEquals("mozilla.lockbox", appContext.packageName)
     }
-
-    @Rule
-    @JvmField
-    val activity = ActivityTestRule<MainActivity>(MainActivity::class.java)
-
-    @Test
-    fun testHelloWorldText() {
-        onView(withId(R.id.hello_world)).check(matches(withText("Hello World!")))
-    }
 }
