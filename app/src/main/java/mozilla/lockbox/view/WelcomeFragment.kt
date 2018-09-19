@@ -16,9 +16,9 @@ import mozilla.lockbox.flux.Dispatcher
 
 class WelcomeFragment : Fragment() {
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.welcome_fragment, container, false)
 

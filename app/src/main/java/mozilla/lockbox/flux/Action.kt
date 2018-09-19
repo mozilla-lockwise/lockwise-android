@@ -4,4 +4,4 @@
 
 package mozilla.lockbox.flux
 
-interface Action {}
+interface Action

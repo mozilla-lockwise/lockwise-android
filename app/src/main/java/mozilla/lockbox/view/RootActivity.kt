@@ -9,7 +9,7 @@ import android.support.v7.app.AppCompatActivity
 import mozilla.lockbox.R
 import mozilla.lockbox.presenter.IntentPresenter
 
-class RootActivity: AppCompatActivity() {
+class RootActivity : AppCompatActivity() {
     private var presenter: IntentPresenter = IntentPresenter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {

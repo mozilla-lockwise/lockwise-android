@@ -3,12 +3,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package mozilla.lockbox.presenter
 
-import android.support.annotation.CheckResult
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v7.app.AppCompatActivity
-import io.reactivex.Single
-import io.reactivex.annotations.CheckReturnValue
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.R
@@ -17,7 +14,6 @@ import mozilla.lockbox.action.RouteAction.*
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.view.FxALoginFragment
 import mozilla.lockbox.view.WelcomeFragment
-
 
 class IntentPresenter(private val activity: AppCompatActivity, routeStore: RouteStore = RouteStore.shared) {
 
@@ -49,7 +45,7 @@ class IntentPresenter(private val activity: AppCompatActivity, routeStore: Route
             fm.popBackStackImmediate(base.id, FragmentManager.POP_BACK_STACK_INCLUSIVE)
         }
     }
-    
+
     private fun route(action: RouteAction) {
         when (action) {
             LOGIN -> {
