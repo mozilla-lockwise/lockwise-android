@@ -6,6 +6,7 @@ package mozilla.lockbox.presenter
 
 import android.view.MenuItem
 import io.reactivex.Observable
+
 import mozilla.lockbox.flux.Presenter
 
 interface ListEntriesProtocol {
@@ -14,10 +15,10 @@ interface ListEntriesProtocol {
     // TODO: Item list selection
 }
 
+
 class ListEntriesPresenter(private val protocol: ListEntriesProtocol): Presenter() {
     override fun onViewReady() {
         // TODO: register for drawer item selections
 
         // TODO: register for item list selections
     }
-}
