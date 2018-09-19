@@ -44,7 +44,7 @@
         app:layout_constraintTop_toBottomOf="@+id/name_text" />
 
     <Button
-        android:id="@+id/getstarted_btn"
+        android:id="@+id/buttonGetStared"
         android:layout_width="180dp"
         android:layout_height="36dp"
         android:layout_marginEnd="8dp"
@@ -61,13 +61,13 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="8dp"
         android:text="@string/welcome_instructions"
         android:textAlignment="center"
         android:textSize="13sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/getstarted_btn" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonGetStared" />
 
     <Button
         android:id="@+id/learnmore_btn"
@@ -76,7 +76,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="5dp"
-        android:text="Button"
+        android:text="@string/button_learn_more"
         android:textAppearance="@style/TextAppearance.AppCompat.Caption"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
