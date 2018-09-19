@@ -14,12 +14,14 @@ import android.view.ViewGroup
 import com.jakewharton.rxbinding2.support.design.widget.itemSelections
 import com.jakewharton.rxbinding2.support.v7.widget.navigationClicks
 import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.item_list_fragment.view.*
 import mozilla.lockbox.R
 import mozilla.lockbox.presenter.ListEntriesPresenter
 import mozilla.lockbox.presenter.ListEntriesProtocol
 
 class ItemListFragment : Fragment(), ListEntriesProtocol {
+    private val compositeDisposable = CompositeDisposable()
     private lateinit var presenter: ListEntriesPresenter
 
     override fun onCreateView(
@@ -34,11 +36,13 @@ class ItemListFragment : Fragment(), ListEntriesProtocol {
 
         view.toolbar.navigationIcon = resources.getDrawable(R.drawable.ic_menu, null)
         view.toolbar.title = getString(R.string.app_name)
-        view.toolbar.navigationClicks().subscribe { view.appDrawer.openDrawer(GravityCompat.START) }
-                .dispose()
+        compositeDisposable.add(
+                view.toolbar.navigationClicks().subscribe { view.appDrawer.openDrawer(GravityCompat.START) }
+        )
 
-        view.navView.itemSelections().subscribe { view.appDrawer.closeDrawers() }
-                .dispose()
+        compositeDisposable.add(
+                view.navView.itemSelections().subscribe { view.appDrawer.closeDrawers() }
+        )
 
         return view
     }
@@ -46,6 +50,11 @@ class ItemListFragment : Fragment(), ListEntriesProtocol {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         presenter.onViewReady()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        compositeDisposable.clear()
     }
 
     // Protocol implementations
