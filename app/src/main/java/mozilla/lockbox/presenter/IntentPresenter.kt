@@ -10,7 +10,9 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.R
 import mozilla.lockbox.action.RouteAction
-import mozilla.lockbox.action.RouteAction.*
+import mozilla.lockbox.action.RouteAction.LOGIN
+import mozilla.lockbox.action.RouteAction.ITEMLIST
+import mozilla.lockbox.action.RouteAction.WELCOME
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.view.FxALoginFragment
 import mozilla.lockbox.view.WelcomeFragment
