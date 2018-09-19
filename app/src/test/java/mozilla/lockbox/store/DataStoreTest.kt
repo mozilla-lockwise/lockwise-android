@@ -26,12 +26,25 @@ class DataStoreTest {
     fun testInitialState() {
         val store = DataStore(dispatcher)
         Assert.assertSame(dispatcher, store.dispatcher)
-        store.list.subscribe { items ->
-            Assert.assertTrue(items.isEmpty())
+        store.list.subscribe {
+            Assert.assertTrue(it.isEmpty())
         }.addTo(disposer)
-        store.state.subscribe { state ->
-            Assert.assertEquals(DataStoreState.Status.LOCKED, state.status)
-            Assert.assertNull(state.error)
+        store.state.subscribe {
+            Assert.assertEquals(DataStoreState.Status.LOCKED, it.status)
+            Assert.assertNull(it.error)
+        }
+    }
+
+    @Test
+    fun testLockUnlock() {
+        // TODO: mock backend for testing ...
+        val store = DataStore(dispatcher)
+        store.state.subscribe {
+            Assert.assertEquals(DataStoreState.Status.LOCKED, it.status)
+        }.addTo(disposer)
+        store.unlock()
+        store.list.subscribe {
+            Assert.assertEquals(it.size, 10)
         }
     }
 }

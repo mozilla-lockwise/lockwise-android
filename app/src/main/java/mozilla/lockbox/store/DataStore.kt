@@ -7,11 +7,13 @@ package mozilla.lockbox.store
 import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.ReplaySubject
 import mozilla.lockbox.flux.Dispatcher
 import org.mozilla.sync15.logins.LoginsStorage
 import org.mozilla.sync15.logins.MemoryLoginsStorage
 import org.mozilla.sync15.logins.ServerPassword
+import org.mozilla.sync15.logins.SyncResult
 import java.util.*
 
 
@@ -39,18 +41,74 @@ class DataStore(val dispatcher: Dispatcher = Dispatcher.shared) {
 
     init {
         // TODO: Replace test data with real backend
-        val testdata = List<ServerPassword>(10) { createTestItem(it) }
-        backend = MemoryLoginsStorage(testdata)
+        backend = setupBackend()
 
-        // TODO: Replace with state loaded from SharedPreferences ...
-        stateSubject.onNext(DataStoreState(DataStoreState.Status.LOCKED))
+        // handle state changes
+        state.subscribe { state ->
+            when (state.status) {
+                DataStoreState.Status.LOCKED -> clearList()
+                DataStoreState.Status.UNLOCKED -> updateList()
+            }
+        }.addTo(compositeDisposable)
     }
 
     val state: Observable<DataStoreState> get() = stateSubject
 
     val list: Observable<List<ServerPassword>> get() = listSubject
+
+    fun unlock() {
+        val doUnlock = { stateSubject.onNext(DataStoreState(DataStoreState.Status.UNLOCKED)) }
+
+        backend.isLocked().whenComplete {
+            if (it) {
+                backend.unlock(getEncryptionKey()).whenComplete {
+                    doUnlock()
+                }
+            }
+        }
+    }
+    fun lock() {
+        val doLock = { stateSubject.onNext(DataStoreState(DataStoreState.Status.LOCKED)) }
+
+        backend.isLocked().whenComplete {
+            if (!it) {
+                backend.lock().whenComplete {
+                    doLock()
+                }
+            }
+        }
+    }
+
+    // backend management
+    private fun setupBackend(): LoginsStorage {
+        val testdata = List<ServerPassword>(10) { createTestItem(it) }
+        return MemoryLoginsStorage(testdata)
+    }
+    private fun loadInfo() {
+        // TODO: load info from SharedPreferences ...
+
+        backend.isLocked().whenComplete { result ->
+            val status = if (result) DataStoreState.Status.LOCKED else DataStoreState.Status.UNLOCKED
+            stateSubject.onNext(DataStoreState(status))
+        }
+    }
+    private fun getEncryptionKey(): String {
+        // TODO: read this from SharedPreferences
+        return "keep-this-secret"
+    }
+
+    // item list management
+    private fun clearList() {
+        this.listSubject.accept(emptyList())
+    }
+    private fun updateList() {
+        backend.list().whenComplete { all -> this.listSubject.accept(all) }
+    }
 }
 
+internal fun createTestList(amt: Int = 10) : List<ServerPassword> {
+    return List(amt) { createTestItem(it) }
+}
 /**
  * Creates a test ServerPassword item
  */
