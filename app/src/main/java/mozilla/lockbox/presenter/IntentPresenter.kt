@@ -1,9 +1,16 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package mozilla.lockbox.presenter
 
+import android.support.annotation.CheckResult
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
+import io.reactivex.Single
+import io.reactivex.annotations.CheckReturnValue
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.R
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.RouteAction.*
@@ -14,11 +21,12 @@ import mozilla.lockbox.view.WelcomeFragment
 
 class IntentPresenter(private val activity: AppCompatActivity, routeStore: RouteStore = RouteStore.shared) {
 
-    val welcome: WelcomeFragment by lazy { WelcomeFragment() }
-    val login: FxALoginFragment by lazy { FxALoginFragment() }
+    private val welcome: WelcomeFragment by lazy { WelcomeFragment() }
+    private val login: FxALoginFragment by lazy { FxALoginFragment() }
+    private val compositeDisposabe = CompositeDisposable()
 
     init {
-        routeStore.routes.subscribe { a -> route(a) }
+        routeStore.routes.subscribe { a -> route(a) }.addTo(compositeDisposabe)
     }
 
     fun onViewReady() {
@@ -42,7 +50,7 @@ class IntentPresenter(private val activity: AppCompatActivity, routeStore: Route
         }
     }
     
-    fun route(action: RouteAction) {
+    private fun route(action: RouteAction) {
         when (action) {
             LOGIN -> {
                 replaceFragment(login)
@@ -55,5 +63,9 @@ class IntentPresenter(private val activity: AppCompatActivity, routeStore: Route
                 clearBackStack()
             }
         }
+    }
+
+    fun onDestroy() {
+        compositeDisposabe.clear()
     }
 }

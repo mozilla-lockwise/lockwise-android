@@ -18,4 +18,9 @@ class RootActivity: AppCompatActivity() {
 
         presenter.onViewReady()
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.onDestroy()
+    }
 }
