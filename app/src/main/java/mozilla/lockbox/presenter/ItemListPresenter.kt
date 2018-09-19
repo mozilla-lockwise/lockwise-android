@@ -8,15 +8,15 @@ import android.view.MenuItem
 import io.reactivex.Observable
 
 interface ListEntriesProtocol {
-    // Protocol implementations
     val drawerItemSelections: Observable<MenuItem>
 
+    // TODO: Item list selection
 }
 
 class ListEntriesPresenter(private val protocol: ListEntriesProtocol) {
     fun onViewReady() {
         // TODO: register for drawer item selections
 
-        // TODO: register for list entry selections
+        // TODO: register for item list selections
     }
 }

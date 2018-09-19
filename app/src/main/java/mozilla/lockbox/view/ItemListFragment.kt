@@ -7,8 +7,6 @@ package mozilla.lockbox.view
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.view.GravityCompat
-import android.support.v4.widget.DrawerLayout
-import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -16,12 +14,12 @@ import android.view.ViewGroup
 import com.jakewharton.rxbinding2.support.design.widget.itemSelections
 import com.jakewharton.rxbinding2.support.v7.widget.navigationClicks
 import io.reactivex.Observable
-import kotlinx.android.synthetic.main.list_entries_fragment.view.*
+import kotlinx.android.synthetic.main.item_list_fragment.view.*
 import mozilla.lockbox.R
 import mozilla.lockbox.presenter.ListEntriesPresenter
 import mozilla.lockbox.presenter.ListEntriesProtocol
 
-class ListEntriesFragment : Fragment(), ListEntriesProtocol {
+class ItemListFragment : Fragment(), ListEntriesProtocol {
     private lateinit var presenter: ListEntriesPresenter
 
     override fun onCreateView(
@@ -32,7 +30,7 @@ class ListEntriesFragment : Fragment(), ListEntriesProtocol {
     ): View? {
         presenter = ListEntriesPresenter(this)
 
-        val view = inflater.inflate(R.layout.list_entries_fragment, container, false)
+        val view = inflater.inflate(R.layout.item_list_fragment, container, false)
 
         view.toolbar.navigationIcon = resources.getDrawable(R.drawable.ic_menu, null)
         view.toolbar.title = getString(R.string.app_name)
