@@ -43,7 +43,6 @@ class IntentPresenter(private val activity: AppCompatActivity, routeStore: Route
     }
     
     fun route(action: RouteAction) {
-        Log.i("dfsadfs", "action: ${action.name}")
         when (action) {
             LOGIN -> {
                 replaceFragment(login)
