@@ -10,9 +10,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import io.reactivex.Observable
-import io.reactivex.disposables.CompositeDisposable
 import com.jakewharton.rxbinding2.view.clicks
-import kotlinx.android.synthetic.main.welcome_fragment.view.*
+import kotlinx.android.synthetic.main.fragment_welcome.view.*
 import mozilla.lockbox.R
 import mozilla.lockbox.presenter.WelcomePresenter
 import mozilla.lockbox.presenter.WelcomeViewProtocol
@@ -27,7 +26,7 @@ class WelcomeFragment : Fragment(), WelcomeViewProtocol {
             savedInstanceState: Bundle?
     ): View? {
         presenter = WelcomePresenter(this)
-        return inflater.inflate(R.layout.welcome_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_welcome, container, false)
     }
 
 

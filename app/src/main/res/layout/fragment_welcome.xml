@@ -44,7 +44,7 @@
         app:layout_constraintTop_toBottomOf="@+id/name_text" />
 
     <Button
-        android:id="@+id/buttonGetStared"
+        android:id="@+id/buttonGetStarted"
         android:layout_width="180dp"
         android:layout_height="36dp"
         android:layout_marginEnd="8dp"
@@ -76,7 +76,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="5dp"
-        android:text="@string/button_learn_more"
+        android:text="@string/welcome_learn_more_btn"
         android:textAppearance="@style/TextAppearance.AppCompat.Caption"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
