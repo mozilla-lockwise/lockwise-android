@@ -7,7 +7,6 @@ abstract class Presenter {
     val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     open fun onViewReady() {
-
     }
 
     @CallSuper
