@@ -4,10 +4,10 @@
 
 package mozilla.lockbox.store
 
-import android.util.Base64
 import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.ReplaySubject
 import mozilla.lockbox.flux.Dispatcher
 import org.mozilla.sync15.logins.LoginsStorage
 import org.mozilla.sync15.logins.MemoryLoginsStorage
@@ -15,8 +15,24 @@ import org.mozilla.sync15.logins.ServerPassword
 import java.util.*
 
 
+data class DataStoreState(
+        val status: Status,
+        val error: Throwable? = null
+) {
+    enum class Status {
+        UNPREPARED,
+        LOCKED,
+        UNLOCKED,
+        ERRORED
+    }
+}
+
+/**
+ *
+ */
 class DataStore(val dispatcher: Dispatcher = Dispatcher.shared) {
     internal val compositeDisposable = CompositeDisposable()
+    private val stateSubject: ReplaySubject<DataStoreState> = ReplaySubject.create(1)
     private val listSubject: BehaviorRelay<List<ServerPassword>> = BehaviorRelay.createDefault(emptyList())
 
     private val backend: LoginsStorage
@@ -25,7 +41,12 @@ class DataStore(val dispatcher: Dispatcher = Dispatcher.shared) {
         // TODO: Replace test data with real backend
         val testdata = List<ServerPassword>(10) { createTestItem(it) }
         backend = MemoryLoginsStorage(testdata)
+
+        // TODO: Replace with state loaded from SharedPreferences ...
+        stateSubject.onNext(DataStoreState(DataStoreState.Status.LOCKED))
     }
+
+    val state: Observable<DataStoreState> get() = stateSubject
 
     val list: Observable<List<ServerPassword>> get() = listSubject
 }

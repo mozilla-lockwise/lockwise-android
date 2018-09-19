@@ -29,5 +29,9 @@ class DataStoreTest {
         store.list.subscribe { items ->
             Assert.assertTrue(items.isEmpty())
         }.addTo(disposer)
+        store.state.subscribe { state ->
+            Assert.assertEquals(DataStoreState.Status.LOCKED, state.status)
+            Assert.assertNull(state.error)
+        }
     }
 }
