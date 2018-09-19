@@ -70,7 +70,6 @@ afterEvaluate {
     check.dependsOn ktlint
     lint.dependsOn ktlint
     lintDebug.dependsOn ktlint
-    lintRelease.dependsOn ktlint
 }
 
 task ktlintFormat(type: JavaExec, group: "formatting") {
