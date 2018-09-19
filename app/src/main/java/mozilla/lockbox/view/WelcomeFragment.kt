@@ -11,6 +11,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import mozilla.lockbox.R
+import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.flux.Dispatcher
 
 class WelcomeFragment : Fragment() {
     override fun onCreateView(
@@ -24,7 +26,7 @@ class WelcomeFragment : Fragment() {
 
         val btn: Button = view.findViewById(R.id.getstarted_btn)
         btn.setOnClickListener {
-            // TODO: dispatch "welcome" (or "fxa"?) action
+            Dispatcher.shared.dispatch(RouteAction.LOGIN)
         }
 
         return view
