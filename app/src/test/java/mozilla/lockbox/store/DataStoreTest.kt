@@ -45,6 +45,6 @@ class DataStoreTest {
         store.unlock()
         store.list.subscribe {
             Assert.assertEquals(it.size, 10)
-        }
+        }.addTo(disposer)
     }
 }
