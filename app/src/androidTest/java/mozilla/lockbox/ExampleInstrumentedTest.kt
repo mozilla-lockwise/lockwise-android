@@ -5,7 +5,7 @@ import android.support.test.runner.AndroidJUnit4
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
-import mozilla.lockbox.view.EntriesListFragment
+import mozilla.lockbox.view.ListEntriesFragment
 
 /**
  * Instrumented test, which will execute on an Android device.
