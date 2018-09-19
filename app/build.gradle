@@ -65,8 +65,12 @@ task ktlint(type: JavaExec, group: "verification", description: "Runs ktlint.") 
              "src/**/*.kt" ]
 }
 
-check.dependsOn ktlint
-lint.dependsOn ktlint
+afterEvaluate {
+    check.dependsOn ktlint
+    lint.dependsOn ktlint
+    lintDebug.dependsOn ktlint
+    lintRelease.dependsOn ktlint
+}
 
 task ktlintFormat(type: JavaExec, group: "formatting") {
     inputs.files(
