@@ -14,6 +14,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import com.jakewharton.rxbinding2.support.design.widget.itemSelections
+import com.jakewharton.rxbinding2.support.v7.widget.navigationClicks
 import io.reactivex.Observable
 import kotlinx.android.synthetic.main.list_entries_fragment.view.*
 import mozilla.lockbox.R
@@ -21,7 +22,7 @@ import mozilla.lockbox.presenter.ListEntriesPresenter
 import mozilla.lockbox.presenter.ListEntriesProtocol
 
 class ListEntriesFragment : Fragment(), ListEntriesProtocol {
-    private val presenter = ListEntriesPresenter(this)
+    private lateinit var presenter: ListEntriesPresenter
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -29,30 +30,27 @@ class ListEntriesFragment : Fragment(), ListEntriesProtocol {
             savedInstanceState:
             Bundle?
     ): View? {
+        presenter = ListEntriesPresenter(this)
+
         val view = inflater.inflate(R.layout.list_entries_fragment, container, false)
 
         view.toolbar.navigationIcon = resources.getDrawable(R.drawable.ic_menu, null)
         view.toolbar.title = getString(R.string.app_name)
-        view.toolbar.setNavigationOnClickListener {
-            // TODO: replace with a dispatched action
-            view.appDrawer.openDrawer(GravityCompat.START)
-        }
+        view.toolbar.navigationClicks().subscribe { view.appDrawer.openDrawer(GravityCompat.START) }
+                .dispose()
 
-        view.navView.setNavigationItemSelectedListener { _ /* menuItem */ ->
-            // TODO: replace with a dispatched action
-            view.appDrawer.closeDrawers()
-
-            true
-        }
+        view.navView.itemSelections().subscribe { view.appDrawer.closeDrawers() }
+                .dispose()
 
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        presenter.onViewReady()
     }
 
     // Protocol implementations
-    override val drawerItemClicks: Observable<MenuItem>
+    override val drawerItemSelections: Observable<MenuItem>
             get() = view!!.navView.itemSelections()
 }

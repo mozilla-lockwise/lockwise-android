@@ -6,17 +6,17 @@ package mozilla.lockbox.presenter
 
 import android.view.MenuItem
 import io.reactivex.Observable
-import mozilla.lockbox.flux.Dispatcher
-import mozilla.lockbox.view.ListEntriesFragment
 
 interface ListEntriesProtocol {
     // Protocol implementations
-    val drawerItemClicks: Observable<MenuItem>
+    val drawerItemSelections: Observable<MenuItem>
 
 }
 
 class ListEntriesPresenter(private val protocol: ListEntriesProtocol) {
     fun onViewReady() {
-        // TODO: stuff
+        // TODO: register for drawer item selections
+
+        // TODO: register for list entry selections
     }
 }
