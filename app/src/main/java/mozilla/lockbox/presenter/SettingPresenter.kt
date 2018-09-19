@@ -4,8 +4,10 @@
 
 package mozilla.lockbox.presenter
 
-interface SettingView {}
+interface SettingViewProtocol {}
 
-class SettingPresenter(view: SettingView) {
+class SettingPresenter(view: SettingViewProtocol) {
+    fun onViewReady() {
 
+    }
 }
