@@ -22,3 +22,4 @@ class ListEntriesPresenter(private val protocol: ListEntriesProtocol): Presenter
 
         // TODO: register for item list selections
     }
+}
