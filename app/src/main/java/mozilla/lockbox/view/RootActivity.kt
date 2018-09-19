@@ -7,10 +7,10 @@ package mozilla.lockbox.view
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import mozilla.lockbox.R
-import mozilla.lockbox.presenter.IntentPresenter
+import mozilla.lockbox.presenter.RoutePresenter
 
 class RootActivity: AppCompatActivity() {
-    private var presenter: IntentPresenter = IntentPresenter(this)
+    private var presenter: RoutePresenter = RoutePresenter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

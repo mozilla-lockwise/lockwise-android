@@ -15,9 +15,7 @@ import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.view.FxALoginFragment
 import mozilla.lockbox.view.WelcomeFragment
 
-
-class IntentPresenter(private val activity: AppCompatActivity, routeStore: RouteStore = RouteStore.shared): Presenter() {
-
+class RoutePresenter(private val activity: AppCompatActivity, routeStore: RouteStore = RouteStore.shared): Presenter() {
     private val welcome: WelcomeFragment by lazy { WelcomeFragment() }
     private val login: FxALoginFragment by lazy { FxALoginFragment() }
 
