@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import io.reactivex.disposables.CompositeDisposable
 import mozilla.lockbox.R
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.RouteAction.*
@@ -17,8 +18,10 @@ class IntentPresenter(private val activity: AppCompatActivity, routeStore: Route
     val welcome: WelcomeFragment by lazy { WelcomeFragment() }
     val login: FxALoginFragment by lazy { FxALoginFragment() }
 
+    val compositeDisposabe = CompositeDisposable()
+
     init {
-        routeStore.routes.subscribe { a -> route(a) }
+        compositeDisposabe.add(routeStore.routes.subscribe { a -> route(a) })
     }
 
     fun onViewReady() {
@@ -55,5 +58,9 @@ class IntentPresenter(private val activity: AppCompatActivity, routeStore: Route
                 clearBackStack()
             }
         }
+    }
+
+    fun onDestroy() {
+        compositeDisposabe.clear()
     }
 }
