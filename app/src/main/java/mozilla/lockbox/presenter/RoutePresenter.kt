@@ -13,11 +13,13 @@ import mozilla.lockbox.action.RouteAction.*
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.view.FxALoginFragment
+import mozilla.lockbox.view.ItemListFragment
 import mozilla.lockbox.view.WelcomeFragment
 
 class RoutePresenter(private val activity: AppCompatActivity, routeStore: RouteStore = RouteStore.shared): Presenter() {
     private val welcome: WelcomeFragment by lazy { WelcomeFragment() }
     private val login: FxALoginFragment by lazy { FxALoginFragment() }
+    private val itemList: ItemListFragment by lazy { ItemListFragment() }
 
     init {
         routeStore.routes.subscribe { a -> route(a) }.addTo(compositeDisposable)
@@ -55,6 +57,7 @@ class RoutePresenter(private val activity: AppCompatActivity, routeStore: RouteS
             }
             ITEMLIST -> {
                 clearBackStack()
+                replaceFragment(itemList, false)
             }
         }
     }
