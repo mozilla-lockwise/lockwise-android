@@ -5,18 +5,17 @@
 package mozilla.lockbox.view
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.support.v7.app.AppCompatActivity
 import mozilla.lockbox.R
+import mozilla.lockbox.presenter.IntentPresenter
 
 class RootActivity: AppCompatActivity() {
+    private var presenter: IntentPresenter = IntentPresenter(this)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.root_activity)
 
-        val tx = supportFragmentManager.beginTransaction()
-        val frag = WelcomeFragment()
-        tx.add(R.id.root_content, frag)
-        tx.commit()
+        presenter.onViewReady()
     }
 }

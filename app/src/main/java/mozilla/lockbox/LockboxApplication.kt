@@ -6,7 +6,5 @@ import mozilla.lockbox.presenter.IntentPresenter
 class LockboxApplication: Application() {
     override fun onCreate() {
         super.onCreate()
-
-        IntentPresenter.shared
     }
 }
