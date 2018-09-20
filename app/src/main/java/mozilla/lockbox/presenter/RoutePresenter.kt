@@ -54,12 +54,12 @@ class RoutePresenter(private val activity: AppCompatActivity, routeStore: RouteS
                 replaceFragment(login)
             }
             WELCOME -> {
-                clearBackStack()
                 replaceFragment(welcome, false)
+                clearBackStack()
             }
             ITEMLIST -> {
-                clearBackStack()
                 replaceFragment(itemList, false)
+                clearBackStack()
             }
             SETTING_LIST -> {
                 replaceFragment(settingList)
