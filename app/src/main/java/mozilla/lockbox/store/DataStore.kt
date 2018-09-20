@@ -18,8 +18,8 @@ import org.mozilla.sync15.logins.ServerPassword
 import org.mozilla.sync15.logins.SyncResult
 
 data class DataStoreState(
-  val status: Status,
-  val error: Throwable? = null
+    val status: Status,
+    val error: Throwable? = null
 ) {
     enum class Status {
         UNPREPARED,
@@ -33,8 +33,8 @@ data class DataStoreState(
  *
  */
 class DataStore(
-  val dispatcher: Dispatcher = Dispatcher.shared,
-  val support: DataStoreSupport = FixedDataStoreSupport.shared
+    val dispatcher: Dispatcher = Dispatcher.shared,
+    val support: DataStoreSupport = FixedDataStoreSupport.shared
 ) {
     internal val compositeDisposable = CompositeDisposable()
     private val stateSubject: ReplaySubject<DataStoreState> = ReplaySubject.create(1)
