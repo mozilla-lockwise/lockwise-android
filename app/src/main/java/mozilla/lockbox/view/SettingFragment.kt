@@ -8,11 +8,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import kotlinx.android.synthetic.main.fragment_setting.view.*
 import mozilla.lockbox.R
 import mozilla.lockbox.presenter.SettingPresenter
 import mozilla.lockbox.presenter.SettingViewProtocol
 
-class SettingFragment : CommonFragment(), SettingViewProtocol {
+class SettingFragment : BackableFragment(), SettingViewProtocol {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -21,6 +22,8 @@ class SettingFragment : CommonFragment(), SettingViewProtocol {
         presenter = SettingPresenter(this)
 
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_setting, container, false)
+        val view = inflater.inflate(R.layout.fragment_setting, container, false)
+        setupBackable(view)
+        return view
     }
 }

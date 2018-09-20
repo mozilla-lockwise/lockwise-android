@@ -9,10 +9,7 @@ import android.support.v7.app.AppCompatActivity
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.R
 import mozilla.lockbox.action.RouteAction
-import mozilla.lockbox.action.RouteAction.ITEMLIST
-import mozilla.lockbox.action.RouteAction.LOGIN
-import mozilla.lockbox.action.RouteAction.WELCOME
-import mozilla.lockbox.action.RouteAction.SETTING_LIST
+import mozilla.lockbox.action.RouteAction.*
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.view.FxALoginFragment
@@ -66,6 +63,9 @@ class RoutePresenter(private val activity: AppCompatActivity, routeStore: RouteS
             }
             SETTING_LIST -> {
                 replaceFragment(settingList)
+            }
+            BACK -> {
+                activity.supportFragmentManager.popBackStack()
             }
         }
     }

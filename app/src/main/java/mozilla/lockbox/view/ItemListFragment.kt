@@ -14,7 +14,10 @@ import com.jakewharton.rxbinding2.support.design.widget.itemSelections
 import com.jakewharton.rxbinding2.support.v7.widget.navigationClicks
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
-import kotlinx.android.synthetic.main.fragment_item_list.view.*
+import io.reactivex.rxkotlin.addTo
+import kotlinx.android.synthetic.main.fragment_item_list.view.toolbar
+import kotlinx.android.synthetic.main.fragment_item_list.view.navView
+import kotlinx.android.synthetic.main.fragment_item_list.view.appDrawer
 import mozilla.lockbox.R
 import mozilla.lockbox.presenter.ListEntriesPresenter
 import mozilla.lockbox.presenter.ListEntriesProtocol
@@ -28,20 +31,17 @@ class ItemListFragment : CommonFragment(), ListEntriesProtocol {
         savedInstanceState:
         Bundle?
     ): View? {
-        presenter = ListEntriesPresenter(this)
-
         val view = inflater.inflate(R.layout.fragment_item_list, container, false)
 
         view.toolbar.navigationIcon = resources.getDrawable(R.drawable.ic_menu, null)
         view.toolbar.title = getString(R.string.app_name)
-        compositeDisposable.add(
-                view.toolbar.navigationClicks().subscribe { view.appDrawer.openDrawer(GravityCompat.START) }
-        )
+        view.toolbar.navigationClicks().subscribe { view.appDrawer.openDrawer(GravityCompat.START) }
+                .addTo(compositeDisposable)
 
-        compositeDisposable.add(
-                view.navView.itemSelections().subscribe { view.appDrawer.closeDrawers() }
-        )
+        view.navView.itemSelections().subscribe { view.appDrawer.closeDrawers() }
+                .addTo(compositeDisposable)
 
+        presenter = ListEntriesPresenter(this)
         return view
     }
 
