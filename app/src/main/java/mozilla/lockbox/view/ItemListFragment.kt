@@ -50,12 +50,10 @@ class ItemListFragment : CommonFragment(), ListEntriesProtocol {
                 }
                 .subscribe()
                 .addTo(compositeDisposable)
-        presenter.onViewReady()
     }
 
     override fun onDestroyView() {
         compositeDisposable.clear()
-        presenter.onDestroy()
         super.onDestroyView()
     }
 
