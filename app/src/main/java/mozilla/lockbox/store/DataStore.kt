@@ -19,18 +19,6 @@ import org.mozilla.sync15.logins.LoginsStorage
 import org.mozilla.sync15.logins.ServerPassword
 import org.mozilla.sync15.logins.SyncResult
 
-data class DataStoreState(
-    val status: Status,
-    val error: Throwable? = null
-) {
-    enum class Status {
-        UNPREPARED,
-        LOCKED,
-        UNLOCKED,
-        ERRORED
-    }
-}
-
 /**
  *
  */
@@ -38,8 +26,21 @@ class DataStore(
     val dispatcher: Dispatcher = Dispatcher.shared,
     val support: DataStoreSupport = FixedDataStoreSupport.shared
 ) {
+    data class State(
+            val status: Status,
+            val error: Throwable? = null
+    ) {
+        enum class Status {
+            UNPREPARED,
+            LOCKED,
+            UNLOCKED,
+            ERRORED
+        }
+    }
+
+
     internal val compositeDisposable = CompositeDisposable()
-    private val stateSubject: ReplaySubject<DataStoreState> = ReplaySubject.create(1)
+    private val stateSubject: ReplaySubject<State> = ReplaySubject.create(1)
     private val listSubject: BehaviorRelay<List<ServerPassword>> = BehaviorRelay.createDefault(emptyList())
 
     private val backend: LoginsStorage
@@ -51,8 +52,8 @@ class DataStore(
         // handle state changes
         state.subscribe { state ->
             when (state.status) {
-                DataStoreState.Status.LOCKED -> clearList()
-                DataStoreState.Status.UNLOCKED -> updateList()
+                State.Status.LOCKED -> clearList()
+                State.Status.UNLOCKED -> updateList()
                 else -> Unit
             }
         }.addTo(compositeDisposable)
@@ -69,7 +70,7 @@ class DataStore(
                 .addTo(compositeDisposable)
     }
 
-    val state: Observable<DataStoreState> get() = stateSubject
+    val state: Observable<State> get() = stateSubject
 
     val list: Observable<List<ServerPassword>> get() = listSubject
 
@@ -79,7 +80,7 @@ class DataStore(
         backend.isLocked().then {
             if (it) {
                 backend.unlock(support.encryptionKey).then {
-                    stateSubject.onNext(DataStoreState(DataStoreState.Status.UNLOCKED))
+                    stateSubject.onNext(State(State.Status.UNLOCKED))
                     SyncResult.fromValue(Unit)
                 }
             } else {
@@ -102,7 +103,7 @@ class DataStore(
         backend.isLocked().then {
             if (!it) {
                 backend.lock().then {
-                    stateSubject.onNext(DataStoreState(DataStoreState.Status.LOCKED))
+                    stateSubject.onNext(State(State.Status.LOCKED))
                     SyncResult.fromValue(Unit)
                 }
             } else {

@@ -12,6 +12,7 @@ import mozilla.lockbox.DisposingTest
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.mocks.MockDataStoreSupport
+import mozilla.lockbox.store.DataStore.State
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -38,14 +39,14 @@ class DataStoreTest : DisposingTest() {
             Assert.assertTrue(it.isEmpty())
         }.addTo(disposer)
         subject.state.subscribe {
-            Assert.assertEquals(DataStoreState.Status.LOCKED, it.status)
+            Assert.assertEquals(State.Status.LOCKED, it.status)
             Assert.assertNull(it.error)
         }.addTo(disposer)
     }
 
     @Test
     fun testLockUnlock() {
-        val stateObserver = createTestObserver<DataStoreState>()
+        val stateObserver = createTestObserver<State>()
         val listObserver = createTestObserver<List<ServerPassword>>()
 
         subject.state.subscribe(stateObserver)
@@ -63,8 +64,8 @@ class DataStoreTest : DisposingTest() {
         stateObserver.apply {
             // TODO: figure out why the initialized state isn't here?
             assertValueCount(2)
-            assertValueAt(0, DataStoreState(DataStoreState.Status.UNLOCKED))
-            assertValueAt(1, DataStoreState(DataStoreState.Status.LOCKED))
+            assertValueAt(0, State(State.Status.UNLOCKED))
+            assertValueAt(1, State(State.Status.LOCKED))
         }
         listObserver.apply {
             val results = values()
@@ -77,7 +78,7 @@ class DataStoreTest : DisposingTest() {
 
     @Test
     fun testActionHandling() {
-        val stateObserver = createTestObserver<DataStoreState>()
+        val stateObserver = createTestObserver<State>()
         val listObserver = createTestObserver<List<ServerPassword>>()
 
         subject.state.subscribe(stateObserver)
@@ -87,8 +88,8 @@ class DataStoreTest : DisposingTest() {
         dispatcher.dispatch(DataStoreAction(DataStoreAction.Type.LOCK))
         stateObserver.apply {
             assertValueCount(2)
-            assertValueAt(0, DataStoreState(DataStoreState.Status.UNLOCKED))
-            assertValueAt(1, DataStoreState(DataStoreState.Status.LOCKED))
+            assertValueAt(0, State(State.Status.UNLOCKED))
+            assertValueAt(1, State(State.Status.LOCKED))
         }
     }
 
