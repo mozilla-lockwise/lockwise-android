@@ -27,8 +27,8 @@ class DataStore(
     val support: DataStoreSupport = FixedDataStoreSupport.shared
 ) {
     data class State(
-            val status: Status,
-            val error: Throwable? = null
+        val status: Status,
+        val error: Throwable? = null
     ) {
         enum class Status {
             UNPREPARED,
@@ -37,7 +37,6 @@ class DataStore(
             ERRORED
         }
     }
-
 
     internal val compositeDisposable = CompositeDisposable()
     private val stateSubject: ReplaySubject<State> = ReplaySubject.create(1)
@@ -65,6 +64,7 @@ class DataStore(
                     when (it.type) {
                         DataStoreAction.Type.LOCK -> lock()
                         DataStoreAction.Type.UNLOCK -> unlock()
+                        DataStoreAction.Type.SYNC -> sync()
                     }
                 }
                 .addTo(compositeDisposable)
@@ -120,12 +120,29 @@ class DataStore(
         return lockSubject.toObservable()
     }
 
+    fun sync(): Observable<Unit> {
+        val syncSubject = SingleSubject.create<Unit>()
+
+        backend.sync(support.syncConfig).then {
+            updateList()
+        }.then {
+            syncSubject.onSuccess(Unit)
+            SyncResult.fromValue(Unit)
+        }.thenCatch {
+            stateSubject.onNext(State(State.Status.ERRORED, it))
+            syncSubject.onError(it)
+            SyncResult.fromValue(Unit)
+        }
+
+        return syncSubject.toObservable()
+    }
+
     // item list management
     private fun clearList() {
         this.listSubject.accept(emptyList())
     }
-    private fun updateList() {
-        backend.list().then {
+    private fun updateList(): SyncResult<Unit> {
+        return backend.list().then {
             this.listSubject.accept(it)
             SyncResult.fromValue(Unit)
         }

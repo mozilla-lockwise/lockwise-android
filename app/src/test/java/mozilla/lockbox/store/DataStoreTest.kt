@@ -86,8 +86,10 @@ class DataStoreTest : DisposingTest() {
         subject.list.subscribe(listObserver)
 
         dispatcher.dispatch(DataStoreAction(DataStoreAction.Type.UNLOCK))
+        dispatcher.dispatch(DataStoreAction(DataStoreAction.Type.SYNC))
         dispatcher.dispatch(DataStoreAction(DataStoreAction.Type.LOCK))
         Mockito.verify(support.storage).lock()
+        Mockito.verify(support.storage).sync(support.syncConfig)
         Mockito.verify(support.storage).unlock(support.encryptionKey)
     }
 

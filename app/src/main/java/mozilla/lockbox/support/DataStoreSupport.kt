@@ -9,11 +9,13 @@ package mozilla.lockbox.support
 import org.mozilla.sync15.logins.LoginsStorage
 import org.mozilla.sync15.logins.MemoryLoginsStorage
 import org.mozilla.sync15.logins.ServerPassword
+import org.mozilla.sync15.logins.SyncUnlockInfo
 import java.util.Date
 import java.util.Random
 
 interface DataStoreSupport {
     val encryptionKey: String
+    val syncConfig: SyncUnlockInfo
     fun createLoginsStorage(): LoginsStorage
 }
 
@@ -23,6 +25,13 @@ class FixedDataStoreSupport(values: List<ServerPassword>? = null) : DataStoreSup
 
     override val encryptionKey: String
         get() = "shh-keep-it-secret"
+    override val syncConfig: SyncUnlockInfo
+        get() = SyncUnlockInfo(
+                kid = "fake-kid",
+                fxaAccessToken = "fake-at",
+                syncKey = "fake-key",
+                tokenserverURL = "https://oauth.example.com/token"
+        )
 
     override fun createLoginsStorage(): LoginsStorage = logins
 
