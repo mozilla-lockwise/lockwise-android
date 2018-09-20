@@ -9,26 +9,37 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import io.reactivex.Observable
+import com.jakewharton.rxbinding2.view.clicks
+import kotlinx.android.synthetic.main.fragment_welcome.view.*
 import mozilla.lockbox.R
-import mozilla.lockbox.action.RouteAction
-import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.presenter.WelcomePresenter
+import mozilla.lockbox.presenter.WelcomeViewProtocol
 
-class WelcomeFragment : Fragment() {
+class WelcomeFragment : Fragment(), WelcomeViewProtocol {
+
+    private lateinit var presenter: WelcomePresenter
+
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.welcome_fragment, container, false)
-
-        // TODO: a better parameterized string formatter?
-
-        val btn: Button = view.findViewById(R.id.getstarted_btn)
-        btn.setOnClickListener {
-            Dispatcher.shared.dispatch(RouteAction.LOGIN)
-        }
-
-        return view
+        presenter = WelcomePresenter(this)
+        return inflater.inflate(R.layout.fragment_welcome, container, false)
     }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        presenter.onViewReady()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        presenter.onDestroy()
+    }
+
+    override val getStartedClicks: Observable<Unit>
+            get() = view!!.buttonGetStarted.clicks()
 }
