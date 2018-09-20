@@ -16,6 +16,7 @@ import mozilla.lockbox.store.DataStore.State
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
+import org.mockito.Mockito
 import org.mozilla.sync15.logins.ServerPassword
 
 class DataStoreTest : DisposingTest() {
@@ -86,6 +87,8 @@ class DataStoreTest : DisposingTest() {
 
         dispatcher.dispatch(DataStoreAction(DataStoreAction.Type.UNLOCK))
         dispatcher.dispatch(DataStoreAction(DataStoreAction.Type.LOCK))
+        Mockito.verify(support.storage).lock()
+        Mockito.verify(support.storage).unlock(support.encryptionKey)
     }
 
     private fun <T> createTestObserver(): TestObserver<T> {

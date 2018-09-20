@@ -8,12 +8,13 @@ package mozilla.lockbox.mocks
 
 import mozilla.lockbox.support.DataStoreSupport
 import mozilla.lockbox.support.createDummyItem
+import org.mockito.Mockito
 import org.mozilla.sync15.logins.LoginsStorage
 import org.mozilla.sync15.logins.ServerPassword
 import org.mozilla.sync15.logins.SyncResult
 import org.mozilla.sync15.logins.SyncUnlockInfo
 
-class MockLoginsStorage : LoginsStorage {
+open class MockLoginsStorage : LoginsStorage {
     private val all = MutableList<ServerPassword>(10) { createDummyItem(it) }
 
     private var _locked = true
@@ -86,9 +87,11 @@ class MockLoginsStorage : LoginsStorage {
 }
 
 class MockDataStoreSupport : DataStoreSupport {
-    val storage = MockLoginsStorage()
+    val storage = Mockito.spy<MockLoginsStorage>(MockLoginsStorage())
 
     override val encryptionKey: String
         get() = "testing-key"
 
     override fun createLoginsStorage(): LoginsStorage = storage
+}
+
