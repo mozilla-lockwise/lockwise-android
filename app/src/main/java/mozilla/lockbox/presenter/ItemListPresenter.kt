@@ -16,7 +16,7 @@ import mozilla.lockbox.log
 
 interface ListEntriesProtocol {
     val drawerItemSelections: Observable<MenuItem>
-
+    fun closeDrawers()
     // TODO: Item list selection
 }
 
@@ -26,6 +26,7 @@ class ListEntriesPresenter(private val view: ListEntriesProtocol, private val di
 
         // TODO: register for item list selections
         view.drawerItemSelections.subscribe { menuItem ->
+            view.closeDrawers()
             when (menuItem.itemId) {
                 R.id.goto_settings -> {
                     dispatcher.dispatch(RouteAction.SETTING_LIST)

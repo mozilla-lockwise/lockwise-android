@@ -22,6 +22,10 @@ import mozilla.lockbox.presenter.ListEntriesPresenter
 import mozilla.lockbox.presenter.ListEntriesProtocol
 
 class ItemListFragment : CommonFragment(), ListEntriesProtocol {
+    override fun closeDrawers() {
+        view!!.appDrawer.closeDrawer(GravityCompat.START, false)
+    }
+
     private val compositeDisposable = CompositeDisposable()
 
     override fun onCreateView(
@@ -39,17 +43,6 @@ class ItemListFragment : CommonFragment(), ListEntriesProtocol {
                 .addTo(compositeDisposable)
 
         return view
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        drawerItemSelections
-                .doOnDispose {
-//                    TODO("not working")
-                    view.appDrawer.closeDrawer(view.navView, false)
-                }
-                .subscribe()
-                .addTo(compositeDisposable)
     }
 
     override fun onDestroyView() {
