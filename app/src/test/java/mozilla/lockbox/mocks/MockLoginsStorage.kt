@@ -71,7 +71,9 @@ class MockLoginsStorage : LoginsStorage {
         }
     }
 
-    override fun reset(): SyncResult<Unit> = SyncResult.fromValue(Unit)
+    override fun reset(): SyncResult<Unit> {
+        return SyncResult.fromValue(Unit)
+    }
 
     override fun wipe(): SyncResult<Unit> {
         all.clear()
@@ -84,8 +86,9 @@ class MockLoginsStorage : LoginsStorage {
 }
 
 class MockDataStoreSupport : DataStoreSupport {
+    val storage = MockLoginsStorage()
+
     override val encryptionKey: String
         get() = "testing-key"
 
-    override fun createLoginsStorage(): LoginsStorage = MockLoginsStorage()
-}
+    override fun createLoginsStorage(): LoginsStorage = storage

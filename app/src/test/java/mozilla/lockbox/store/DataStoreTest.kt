@@ -86,11 +86,6 @@ class DataStoreTest : DisposingTest() {
 
         dispatcher.dispatch(DataStoreAction(DataStoreAction.Type.UNLOCK))
         dispatcher.dispatch(DataStoreAction(DataStoreAction.Type.LOCK))
-        stateObserver.apply {
-            assertValueCount(2)
-            assertValueAt(0, State(State.Status.UNLOCKED))
-            assertValueAt(1, State(State.Status.LOCKED))
-        }
     }
 
     private fun <T> createTestObserver(): TestObserver<T> {
