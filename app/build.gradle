@@ -9,6 +9,7 @@ android {
     defaultConfig {
         applicationId "mozilla.lockbox"
         minSdkVersion 23
+        //noinspection OldTargetApi
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
