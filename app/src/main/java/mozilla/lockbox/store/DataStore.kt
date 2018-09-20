@@ -10,18 +10,17 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.ReplaySubject
 import io.reactivex.subjects.SingleSubject
-import io.reactivex.subjects.Subject
+import java.util.Date
+import java.util.Random
 import mozilla.lockbox.flux.Dispatcher
 import org.mozilla.sync15.logins.LoginsStorage
 import org.mozilla.sync15.logins.MemoryLoginsStorage
 import org.mozilla.sync15.logins.ServerPassword
 import org.mozilla.sync15.logins.SyncResult
-import java.util.*
-
 
 data class DataStoreState(
-        val status: Status,
-        val error: Throwable? = null
+  val status: Status,
+  val error: Throwable? = null
 ) {
     enum class Status {
         UNPREPARED,
@@ -50,6 +49,7 @@ class DataStore(val dispatcher: Dispatcher = Dispatcher.shared) {
             when (state.status) {
                 DataStoreState.Status.LOCKED -> clearList()
                 DataStoreState.Status.UNLOCKED -> updateList()
+                else -> Unit
             }
         }.addTo(compositeDisposable)
     }
@@ -84,7 +84,7 @@ class DataStore(val dispatcher: Dispatcher = Dispatcher.shared) {
     fun lock(): Observable<Unit> {
         val lockSubject = SingleSubject.create<Unit>()
 
-        backend.isLocked().then{
+        backend.isLocked().then {
             if (!it) {
                 backend.lock().then {
                     stateSubject.onNext(DataStoreState(DataStoreState.Status.LOCKED))
@@ -131,13 +131,13 @@ class DataStore(val dispatcher: Dispatcher = Dispatcher.shared) {
     }
 }
 
-internal fun createTestList(amt: Int = 10) : List<ServerPassword> {
+internal fun createTestList(amt: Int = 10): List<ServerPassword> {
     return List(amt) { createTestItem(it) }
 }
 /**
  * Creates a test ServerPassword item
  */
-private fun createTestItem(idx: Int) : ServerPassword {
+private fun createTestItem(idx: Int): ServerPassword {
     val rng = Random()
     val pos = idx + 1
     val pwd = "AAbbcc112233!"
@@ -148,7 +148,7 @@ private fun createTestItem(idx: Int) : ServerPassword {
 
     return ServerPassword(
             id = "0000$idx",
-            hostname= host,
+            hostname = host,
             username = "someone #$pos",
             password = pwd,
             formSubmitURL = host,

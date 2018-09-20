@@ -25,10 +25,10 @@ class ItemListFragment : Fragment(), ListEntriesProtocol {
     private lateinit var presenter: ListEntriesPresenter
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState:
-        Bundle?
+      inflater: LayoutInflater,
+      container: ViewGroup?,
+      savedInstanceState:
+      Bundle?
     ): View? {
         presenter = ListEntriesPresenter(this)
 
