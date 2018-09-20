@@ -19,7 +19,7 @@ import mozilla.lockbox.view.FxALoginFragment
 import mozilla.lockbox.view.ItemListFragment
 import mozilla.lockbox.view.WelcomeFragment
 
-class RoutePresenter(private val activity: AppCompatActivity, routeStore: RouteStore = RouteStore.shared): Presenter() {
+class RoutePresenter(private val activity: AppCompatActivity, routeStore: RouteStore = RouteStore.shared) : Presenter() {
     private val welcome: WelcomeFragment by lazy { WelcomeFragment() }
     private val login: FxALoginFragment by lazy { FxALoginFragment() }
     private val itemList: ItemListFragment by lazy { ItemListFragment() }
