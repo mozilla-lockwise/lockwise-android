@@ -10,6 +10,8 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.ReplaySubject
 import io.reactivex.subjects.SingleSubject
+import mozilla.lockbox.action.DataStoreAction
+import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.support.DataStoreSupport
 import mozilla.lockbox.support.FixedDataStoreSupport
@@ -54,6 +56,17 @@ class DataStore(
                 else -> Unit
             }
         }.addTo(compositeDisposable)
+
+        // register for actions
+        dispatcher.register
+                .filterByType(DataStoreAction::class.java)
+                .subscribe {
+                    when (it.type) {
+                        DataStoreAction.Type.LOCK -> lock()
+                        DataStoreAction.Type.UNLOCK -> unlock()
+                    }
+                }
+                .addTo(compositeDisposable)
     }
 
     val state: Observable<DataStoreState> get() = stateSubject

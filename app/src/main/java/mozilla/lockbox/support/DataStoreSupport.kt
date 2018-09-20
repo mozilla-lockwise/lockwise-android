@@ -34,7 +34,7 @@ class FixedDataStoreSupport(values: List<ServerPassword>? = null) : DataStoreSup
 /**
  * Creates a test ServerPassword item
  */
-private fun createDummyItem(idx: Int): ServerPassword {
+internal fun createDummyItem(idx: Int): ServerPassword {
     val rng = Random()
     val pos = idx + 1
     val pwd = "AAbbcc112233!"
