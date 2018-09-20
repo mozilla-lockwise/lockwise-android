@@ -9,20 +9,15 @@ package mozilla.lockbox.store
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.TestObserver
 import io.reactivex.rxkotlin.addTo
+import mozilla.lockbox.DisposingTest
 import mozilla.lockbox.flux.Dispatcher
 import org.junit.After
 import org.junit.Assert
 import org.junit.Test
 import org.mozilla.sync15.logins.ServerPassword
 
-class DataStoreTest {
+class DataStoreTest : DisposingTest() {
     private val dispatcher = Dispatcher()
-    private val disposer = CompositeDisposable()
-
-    @After
-    fun tearDown() {
-        disposer.clear()
-    }
 
     @Test
     fun testInitialState() {
