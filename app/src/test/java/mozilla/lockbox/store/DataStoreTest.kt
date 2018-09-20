@@ -86,11 +86,18 @@ class DataStoreTest : DisposingTest() {
         subject.list.subscribe(listObserver)
 
         dispatcher.dispatch(DataStoreAction(DataStoreAction.Type.UNLOCK))
+        Mockito.verify(support.storage).unlock(support.encryptionKey)
+        Mockito.verify(support.storage).list()
+        Mockito.clearInvocations(support.storage)
+
         dispatcher.dispatch(DataStoreAction(DataStoreAction.Type.SYNC))
+        Mockito.verify(support.storage).sync(support.syncConfig)
+        Mockito.verify(support.storage).list()
+        Mockito.clearInvocations(support.storage)
+
         dispatcher.dispatch(DataStoreAction(DataStoreAction.Type.LOCK))
         Mockito.verify(support.storage).lock()
-        Mockito.verify(support.storage).sync(support.syncConfig)
-        Mockito.verify(support.storage).unlock(support.encryptionKey)
+        Mockito.clearInvocations(support.storage)
     }
 
     private fun <T> createTestObserver(): TestObserver<T> {
