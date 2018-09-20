@@ -14,7 +14,6 @@ import android.support.test.espresso.contrib.NavigationViewActions.navigateTo
 import android.support.test.espresso.matcher.ViewMatchers.isDisplayed
 import android.support.test.espresso.matcher.ViewMatchers.withId
 
-
 class Navigator {
     fun gotoFxALogin() {
         onView(withId(R.id.buttonGetStarted)).perform(click())
