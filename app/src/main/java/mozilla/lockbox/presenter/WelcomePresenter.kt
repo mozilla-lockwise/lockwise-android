@@ -1,3 +1,7 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
 package mozilla.lockbox.presenter
 
 import io.reactivex.Observable
@@ -10,10 +14,10 @@ interface WelcomeViewProtocol {
     val getStartedClicks: Observable<Unit>
 }
 
-class WelcomePresenter(private val protocol: WelcomeViewProtocol, private val dispatcher: Dispatcher = Dispatcher.shared) : Presenter() {
+class WelcomePresenter(private val view: WelcomeViewProtocol, private val dispatcher: Dispatcher = Dispatcher.shared) : Presenter() {
     override fun onViewReady() {
-        protocol.getStartedClicks.subscribe { _ ->
-            dispatcher.dispatch(RouteAction.LOGIN)
-        }.addTo(compositeDisposable)
+        view.getStartedClicks
+                .subscribe { dispatcher.dispatch(RouteAction.LOGIN) }
+                .addTo(compositeDisposable)
     }
 }

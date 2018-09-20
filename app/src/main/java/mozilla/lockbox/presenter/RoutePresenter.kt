@@ -12,16 +12,14 @@ import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.RouteAction.*
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.store.RouteStore
-import mozilla.lockbox.view.FxALoginFragment
-import mozilla.lockbox.view.ItemListFragment
-import mozilla.lockbox.view.SettingFragment
-import mozilla.lockbox.view.WelcomeFragment
+import mozilla.lockbox.view.*
 
 class RoutePresenter(private val activity: AppCompatActivity, routeStore: RouteStore = RouteStore.shared) : Presenter() {
     private val welcome: WelcomeFragment by lazy { WelcomeFragment() }
     private val login: FxALoginFragment by lazy { FxALoginFragment() }
     private val itemList: ItemListFragment by lazy { ItemListFragment() }
     private val settingList: SettingFragment by lazy { SettingFragment() }
+    private val lock: LockedFragment by lazy { LockedFragment() }
 
     init {
         routeStore.routes.subscribe { a -> route(a) }.addTo(compositeDisposable)
@@ -36,6 +34,8 @@ class RoutePresenter(private val activity: AppCompatActivity, routeStore: RouteS
         tx.replace(R.id.root_content, frag)
         if (backable) {
             tx.addToBackStack(null)
+        } else {
+            clearBackStack()
         }
         tx.commit()
     }
@@ -55,14 +55,15 @@ class RoutePresenter(private val activity: AppCompatActivity, routeStore: RouteS
             }
             WELCOME -> {
                 replaceFragment(welcome, false)
-                clearBackStack()
             }
             ITEMLIST -> {
                 replaceFragment(itemList, false)
-                clearBackStack()
             }
             SETTING_LIST -> {
                 replaceFragment(settingList)
+            }
+            LOCK -> {
+                replaceFragment(lock, false)
             }
             BACK -> {
                 activity.supportFragmentManager.popBackStack()

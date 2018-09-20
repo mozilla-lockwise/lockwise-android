@@ -15,5 +15,9 @@
             android:id="@+id/goto_settings"
             android:icon="@android:drawable/ic_menu_preferences"
             android:title="@string/nav_menu_settings" />
+        <item
+            android:id="@+id/lock_now"
+            android:icon="@android:drawable/ic_lock_lock"
+            android:title="@string/lock_now" />
     </group>
 </menu>

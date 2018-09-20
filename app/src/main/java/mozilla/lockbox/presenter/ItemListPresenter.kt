@@ -30,6 +30,9 @@ class ListEntriesPresenter(private val view: ListEntriesProtocol, private val di
                 R.id.goto_settings -> {
                     dispatcher.dispatch(RouteAction.SETTING_LIST)
                 }
+                R.id.lock_now -> {
+                    dispatcher.dispatch(RouteAction.LOCK)
+                }
                 else -> {
                     log.info("Menu ${menuItem.title} unimplemented")
                 }

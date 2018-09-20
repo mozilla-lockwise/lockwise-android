@@ -45,7 +45,7 @@ class ItemListFragment : CommonFragment(), ListEntriesProtocol {
         super.onViewCreated(view, savedInstanceState)
         drawerItemSelections
                 .doOnDispose {
-                    TODO("not working")
+//                    TODO("not working")
                     view.appDrawer.closeDrawer(view.navView, false)
                 }
                 .subscribe()
@@ -53,8 +53,8 @@ class ItemListFragment : CommonFragment(), ListEntriesProtocol {
     }
 
     override fun onDestroyView() {
-        compositeDisposable.clear()
         super.onDestroyView()
+        compositeDisposable.clear()
     }
 
     // Protocol implementations
