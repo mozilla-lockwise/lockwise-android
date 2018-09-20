@@ -11,5 +11,9 @@
             android:id="@+id/goto_faq"
             android:icon="@drawable/ic_help_faq"
             android:title="@string/nav_menu_faq" />
+        <item
+            android:id="@+id/goto_settings"
+            android:icon="@android:drawable/ic_menu_preferences"
+            android:title="@string/nav_menu_settings" />
     </group>
 </menu>

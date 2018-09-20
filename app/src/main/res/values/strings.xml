@@ -12,6 +12,7 @@
 
     <string name="welcome_learn_more_btn">Learn More</string>
     <string name="nav_menu_faq">FAQ</string>
+    <string name="nav_menu_settings">Settings</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">This is a placeholder for an OAuth login to FxA</string>
