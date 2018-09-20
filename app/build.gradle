@@ -42,6 +42,7 @@ dependencies {
     implementation "com.jakewharton.rxbinding2:rxbinding:${rxbinding_version}"
     implementation "com.jakewharton.rxbinding2:rxbinding-design-kotlin:${rxbinding_version}"
     implementation "com.jakewharton.rxbinding2:rxbinding-appcompat-v7-kotlin:${rxbinding_version}"
+    implementation 'com.jakewharton.rxrelay2:rxrelay:2.0.0'
     implementation 'io.reactivex.rxjava2:rxkotlin:2.3.0'
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
     implementation "org.mozilla.components:sync-logins:${rootProject.ext.android_components_version}"
@@ -49,6 +50,7 @@ dependencies {
     implementation "org.mozilla.components:telemetry:${rootProject.ext.android_components_version}"
     implementation 'com.android.support:support-v4:27.1.1'
     testImplementation 'junit:junit:4.12'
+    testImplementation 'org.mockito:mockito-core:2.22.0'
     testImplementation 'org.robolectric:robolectric:3.8'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test:rules:1.0.2'
