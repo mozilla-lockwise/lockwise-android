@@ -9,6 +9,8 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.ReplaySubject
+import io.reactivex.subjects.SingleSubject
+import io.reactivex.subjects.Subject
 import mozilla.lockbox.flux.Dispatcher
 import org.mozilla.sync15.logins.LoginsStorage
 import org.mozilla.sync15.logins.MemoryLoginsStorage
@@ -56,27 +58,50 @@ class DataStore(val dispatcher: Dispatcher = Dispatcher.shared) {
 
     val list: Observable<List<ServerPassword>> get() = listSubject
 
-    fun unlock() {
-        val doUnlock = { stateSubject.onNext(DataStoreState(DataStoreState.Status.UNLOCKED)) }
+    fun unlock(): Observable<Unit> {
+        val unlockSubject = SingleSubject.create<Unit>()
 
-        backend.isLocked().whenComplete {
+        backend.isLocked().then {
             if (it) {
-                backend.unlock(getEncryptionKey()).whenComplete {
-                    doUnlock()
+                backend.unlock(getEncryptionKey()).then {
+                    stateSubject.onNext(DataStoreState(DataStoreState.Status.UNLOCKED))
+                    SyncResult.fromValue(Unit)
                 }
+            } else {
+                unlockSubject.onSuccess(Unit)
+                SyncResult.fromValue(Unit)
             }
+        }.then {
+            unlockSubject.onSuccess(Unit)
+            SyncResult.fromValue(Unit)
+        }.thenCatch {
+            unlockSubject.onError(it)
+            SyncResult.fromValue(Unit)
         }
-    }
-    fun lock() {
-        val doLock = { stateSubject.onNext(DataStoreState(DataStoreState.Status.LOCKED)) }
 
-        backend.isLocked().whenComplete {
+        return unlockSubject.toObservable()
+    }
+    fun lock(): Observable<Unit> {
+        val lockSubject = SingleSubject.create<Unit>()
+
+        backend.isLocked().then{
             if (!it) {
-                backend.lock().whenComplete {
-                    doLock()
+                backend.lock().then {
+                    stateSubject.onNext(DataStoreState(DataStoreState.Status.LOCKED))
+                    SyncResult.fromValue(Unit)
                 }
+            } else {
+                SyncResult.fromValue(Unit)
             }
+        }.then {
+            lockSubject.onSuccess(Unit)
+            SyncResult.fromValue(Unit)
+        }.thenCatch {
+            lockSubject.onError(it)
+            SyncResult.fromValue(Unit)
         }
+
+        return lockSubject.toObservable()
     }
 
     // backend management
