@@ -10,6 +10,6 @@
         <item
             android:id="@+id/goto_faq"
             android:icon="@drawable/ic_help_faq"
-            android:title="@string/goto_faq" />
+            android:title="@string/nav_menu_faq" />
     </group>
 </menu>

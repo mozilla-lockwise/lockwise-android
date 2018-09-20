@@ -6,6 +6,7 @@ package mozilla.lockbox.presenter
 
 import android.view.MenuItem
 import io.reactivex.Observable
+
 import mozilla.lockbox.flux.Presenter
 
 interface ListEntriesProtocol {
