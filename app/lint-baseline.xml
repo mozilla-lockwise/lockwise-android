@@ -883,25 +883,9 @@
 
     <issue
         id="VectorPath"
-        message="Very long vector path (2176 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
-        <location
-            file="src/main/res/drawable/ic_nessie.xml"
-            line="12"/>
-    </issue>
-
-    <issue
-        id="VectorPath"
         message="Very long vector path (2064 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
         <location
             file="src/main/res/drawable-v24/ic_nessie.xml"
-            line="16"/>
-    </issue>
-
-    <issue
-        id="VectorPath"
-        message="Very long vector path (2064 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
-        <location
-            file="src/main/res/drawable/ic_nessie.xml"
             line="16"/>
     </issue>
 
@@ -915,25 +899,9 @@
 
     <issue
         id="VectorPath"
-        message="Very long vector path (1174 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
-        <location
-            file="src/main/res/drawable/ic_nessie.xml"
-            line="24"/>
-    </issue>
-
-    <issue
-        id="VectorPath"
         message="Very long vector path (1371 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
         <location
             file="src/main/res/drawable-v24/ic_nessie.xml"
-            line="28"/>
-    </issue>
-
-    <issue
-        id="VectorPath"
-        message="Very long vector path (1371 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
-        <location
-            file="src/main/res/drawable/ic_nessie.xml"
             line="28"/>
     </issue>
 
@@ -947,25 +915,9 @@
 
     <issue
         id="VectorPath"
-        message="Very long vector path (1320 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
-        <location
-            file="src/main/res/drawable/ic_nessie.xml"
-            line="32"/>
-    </issue>
-
-    <issue
-        id="VectorPath"
         message="Very long vector path (2424 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
         <location
             file="src/main/res/drawable-v24/ic_nessie.xml"
-            line="96"/>
-    </issue>
-
-    <issue
-        id="VectorPath"
-        message="Very long vector path (2424 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
-        <location
-            file="src/main/res/drawable/ic_nessie.xml"
             line="96"/>
     </issue>
 
@@ -979,25 +931,9 @@
 
     <issue
         id="VectorPath"
-        message="Very long vector path (1115 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
-        <location
-            file="src/main/res/drawable/ic_nessie.xml"
-            line="111"/>
-    </issue>
-
-    <issue
-        id="VectorPath"
         message="Very long vector path (1670 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
         <location
             file="src/main/res/drawable-v24/ic_nessie.xml"
-            line="216"/>
-    </issue>
-
-    <issue
-        id="VectorPath"
-        message="Very long vector path (1670 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
-        <location
-            file="src/main/res/drawable/ic_nessie.xml"
             line="216"/>
     </issue>
 
@@ -1011,25 +947,9 @@
 
     <issue
         id="VectorPath"
-        message="Very long vector path (1846 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
-        <location
-            file="src/main/res/drawable/ic_nessie.xml"
-            line="231"/>
-    </issue>
-
-    <issue
-        id="VectorPath"
         message="Very long vector path (2518 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
         <location
             file="src/main/res/drawable-v24/ic_nessie.xml"
-            line="246"/>
-    </issue>
-
-    <issue
-        id="VectorPath"
-        message="Very long vector path (2518 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
-        <location
-            file="src/main/res/drawable/ic_nessie.xml"
             line="246"/>
     </issue>
 
@@ -1043,14 +963,6 @@
 
     <issue
         id="VectorPath"
-        message="Very long vector path (1271 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
-        <location
-            file="src/main/res/drawable/ic_nessie.xml"
-            line="254"/>
-    </issue>
-
-    <issue
-        id="VectorPath"
         message="Very long vector path (6357 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
         <location
             file="src/main/res/drawable-v24/ic_nessie.xml"
@@ -1059,25 +971,9 @@
 
     <issue
         id="VectorPath"
-        message="Very long vector path (6357 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
-        <location
-            file="src/main/res/drawable/ic_nessie.xml"
-            line="330"/>
-    </issue>
-
-    <issue
-        id="VectorPath"
         message="Very long vector path (7290 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
         <location
             file="src/main/res/drawable-v24/ic_nessie.xml"
-            line="334"/>
-    </issue>
-
-    <issue
-        id="VectorPath"
-        message="Very long vector path (7290 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
-        <location
-            file="src/main/res/drawable/ic_nessie.xml"
             line="334"/>
     </issue>
 
@@ -1142,34 +1038,6 @@
         message="Launcher icons should not fill every pixel of their square region; see the design guide for details">
         <location
             file="src/main/res/mipmap-hdpi/ic_launcher_background.png"/>
-    </issue>
-
-    <issue
-        id="IconLauncherShape"
-        message="Launcher icons should not fill every pixel of their square region; see the design guide for details">
-        <location
-            file="src/main/res/mipmap-mdpi/ic_launcher_background.png"/>
-    </issue>
-
-    <issue
-        id="IconLauncherShape"
-        message="Launcher icons should not fill every pixel of their square region; see the design guide for details">
-        <location
-            file="src/main/res/mipmap-xhdpi/ic_launcher_background.png"/>
-    </issue>
-
-    <issue
-        id="IconLauncherShape"
-        message="Launcher icons should not fill every pixel of their square region; see the design guide for details">
-        <location
-            file="src/main/res/mipmap-xxhdpi/ic_launcher_background.png"/>
-    </issue>
-
-    <issue
-        id="IconLauncherShape"
-        message="Launcher icons should not fill every pixel of their square region; see the design guide for details">
-        <location
-            file="src/main/res/mipmap-xxxhdpi/ic_launcher_background.png"/>
     </issue>
 
     <issue
