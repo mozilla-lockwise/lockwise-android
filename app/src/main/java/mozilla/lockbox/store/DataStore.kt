@@ -111,6 +111,9 @@ class DataStore(
         this.listSubject.accept(emptyList())
     }
     private fun updateList() {
-        backend.list().whenComplete { all -> this.listSubject.accept(all) }
+        backend.list().then {
+            this.listSubject.accept(it)
+            SyncResult.fromValue(Unit)
+        }
     }
 }
