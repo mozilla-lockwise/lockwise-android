@@ -10,7 +10,7 @@
     android:id="@+id/appDrawer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="mozilla.lockbox.MainActivity"
+    tools:context="mozilla.lockbox.view.RootActivity"
     android:fitsSystemWindows="true">
 
     <LinearLayout
