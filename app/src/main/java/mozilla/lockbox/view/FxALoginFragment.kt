@@ -16,8 +16,11 @@ class FxALoginFragment : Fragment(), FxALoginViewProtocol {
 
     lateinit var presenter: FxALoginPresenter
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         presenter = FxALoginPresenter(this)
         return inflater.inflate(R.layout.fragment_fxa_login, container, false)
     }

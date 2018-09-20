@@ -20,6 +20,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    lintOptions {
+        warningsAsErrors true
+        baseline file("lint-baseline.xml")
+    }
+}
+
+configurations {
+    ktlint
 }
 
 dependencies {
@@ -44,4 +52,36 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test:rules:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    ktlint "com.github.shyiko:ktlint:0.28.0"
+}
+
+def outputDir = "${project.buildDir}/reports/ktlint/"
+
+task ktlint(type: JavaExec, group: "verification", description: "Runs ktlint.") {
+    inputs.files(fileTree(dir: "src", include: "**/*.kt"),
+            fileTree(dir: ".", include: "**/.editorconfig"))
+    outputs.dir(outputDir)
+    main = "com.github.shyiko.ktlint.Main"
+    classpath = configurations.ktlint
+    args = [ "--reporter=plain",
+             "--reporter=checkstyle,output=${outputDir}ktlint-checkstyle-report.xml",
+             "src/**/*.kt" ]
+}
+
+afterEvaluate {
+    check.dependsOn ktlint
+    lint.dependsOn ktlint
+    lintDebug.dependsOn ktlint
+}
+
+task ktlintFormat(type: JavaExec, group: "formatting") {
+    inputs.files(
+            fileTree(dir: "src", include: "**/*.kt"),
+            fileTree(dir: ".", include: "**/.editorconfig")
+    )
+    outputs.upToDateWhen { true }
+    description = "Runs ktlint and autoformats your code."
+    main = "com.github.shyiko.ktlint.Main"
+    classpath = configurations.ktlint
+    args = [ "-F", "src/**/*.kt" ]
 }

@@ -15,7 +15,7 @@ interface ListEntriesProtocol {
     // TODO: Item list selection
 }
 
-class ListEntriesPresenter(private val protocol: ListEntriesProtocol): Presenter() {
+class ListEntriesPresenter(private val protocol: ListEntriesProtocol) : Presenter() {
     override fun onViewReady() {
         // TODO: register for drawer item selections
 

@@ -36,7 +36,7 @@ class DispatcherTest {
         val num = 10
 
         val executedFlags = Array(num, { _ -> AtomicBoolean(false) })
-        val subscriptions = executedFlags.map { f -> dispatcher.register.subscribe { _ -> f.set(true) }}
+        val subscriptions = executedFlags.map { f -> dispatcher.register.subscribe { _ -> f.set(true) } }
 
         executedFlags.forEach { b -> assertFalse(b.get()) }
         dispatcher.dispatch(TestAction.UNIT)

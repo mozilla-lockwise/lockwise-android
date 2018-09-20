@@ -21,14 +21,13 @@ class WelcomeFragment : Fragment(), WelcomeViewProtocol {
     private lateinit var presenter: WelcomePresenter
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         presenter = WelcomePresenter(this)
         return inflater.inflate(R.layout.fragment_welcome, container, false)
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

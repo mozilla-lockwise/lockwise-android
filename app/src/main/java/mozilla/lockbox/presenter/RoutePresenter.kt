@@ -9,14 +9,17 @@ import android.support.v7.app.AppCompatActivity
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.R
 import mozilla.lockbox.action.RouteAction
-import mozilla.lockbox.action.RouteAction.*
+import mozilla.lockbox.action.RouteAction.LOGIN
+import mozilla.lockbox.action.RouteAction.ITEMLIST
+import mozilla.lockbox.action.RouteAction.WELCOME
 import mozilla.lockbox.flux.Presenter
+
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.view.FxALoginFragment
 import mozilla.lockbox.view.ItemListFragment
 import mozilla.lockbox.view.WelcomeFragment
 
-class RoutePresenter(private val activity: AppCompatActivity, routeStore: RouteStore = RouteStore.shared): Presenter() {
+class RoutePresenter(private val activity: AppCompatActivity, routeStore: RouteStore = RouteStore.shared) : Presenter() {
     private val welcome: WelcomeFragment by lazy { WelcomeFragment() }
     private val login: FxALoginFragment by lazy { FxALoginFragment() }
     private val itemList: ItemListFragment by lazy { ItemListFragment() }
@@ -45,7 +48,7 @@ class RoutePresenter(private val activity: AppCompatActivity, routeStore: RouteS
             fm.popBackStackImmediate(base.id, FragmentManager.POP_BACK_STACK_INCLUSIVE)
         }
     }
-    
+
     private fun route(action: RouteAction) {
         when (action) {
             LOGIN -> {
