@@ -18,7 +18,7 @@ interface DataStoreSupport {
 }
 
 // Fixed-Data Implementation
-class FixedDataStoreSupport(values: List<ServerPassword>? = null): DataStoreSupport {
+class FixedDataStoreSupport(values: List<ServerPassword>? = null) : DataStoreSupport {
     private val logins = MemoryLoginsStorage(values ?: List(10) { createDummyItem(it) })
 
     override val encryptionKey: String

@@ -33,8 +33,8 @@ data class DataStoreState(
  *
  */
 class DataStore(
-        val dispatcher: Dispatcher = Dispatcher.shared,
-        val support: DataStoreSupport = FixedDataStoreSupport.shared
+  val dispatcher: Dispatcher = Dispatcher.shared,
+  val support: DataStoreSupport = FixedDataStoreSupport.shared
 ) {
     internal val compositeDisposable = CompositeDisposable()
     private val stateSubject: ReplaySubject<DataStoreState> = ReplaySubject.create(1)
