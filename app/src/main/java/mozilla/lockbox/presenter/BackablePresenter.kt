@@ -10,8 +10,10 @@ interface BackableViewProtocol {
     val backButtonTaps: Observable<Unit>
 }
 
-class BackablePresenter(val view: BackableViewProtocol,
-                        val dispatcher: Dispatcher = Dispatcher.shared) : Presenter() {
+class BackablePresenter(
+    val view: BackableViewProtocol,
+    val dispatcher: Dispatcher = Dispatcher.shared
+) : Presenter() {
     override fun onViewReady() {
         view.backButtonTaps
                 .subscribe { dispatcher.dispatch(RouteAction.BACK) }

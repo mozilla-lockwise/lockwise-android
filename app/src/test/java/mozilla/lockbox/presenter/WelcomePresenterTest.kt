@@ -14,7 +14,7 @@ import org.junit.Test
 
 class WelcomePresenterTest {
     class FakeView : WelcomeViewProtocol {
-        val tapStub : PublishSubject<Unit> = PublishSubject.create<Unit>()
+        val tapStub: PublishSubject<Unit> = PublishSubject.create<Unit>()
 
         override val getStartedClicks: Observable<Unit>
             get() = tapStub
@@ -33,7 +33,7 @@ class WelcomePresenterTest {
         subject.onViewReady()
         view.tapStub.onNext(Unit)
 
-        testObserver.assertValue(RouteAction.BACK)
+        testObserver.assertValue(RouteAction.LOGIN)
 
         subscription.dispose()
     }

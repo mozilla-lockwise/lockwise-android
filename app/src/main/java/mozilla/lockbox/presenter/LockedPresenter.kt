@@ -13,15 +13,16 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 
 interface LockedViewProtocol {
-    val unlockButtonTaps : Observable<Unit>
+    val unlockButtonTaps: Observable<Unit>
 }
 
-class LockedPresenter(private val view: LockedViewProtocol,
-                      private val dispatcher: Dispatcher = Dispatcher.shared) : Presenter() {
+class LockedPresenter(
+    private val view: LockedViewProtocol,
+    private val dispatcher: Dispatcher = Dispatcher.shared
+) : Presenter() {
     override fun onViewReady() {
         view.unlockButtonTaps
                 .subscribe { dispatcher.dispatch(RouteAction.ITEMLIST) }
                 .addTo(compositeDisposable)
     }
-
 }

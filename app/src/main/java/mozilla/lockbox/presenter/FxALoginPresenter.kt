@@ -16,7 +16,7 @@ interface FxALoginViewProtocol {
     val logMeInClicks: Observable<Unit>
 }
 
-class FxALoginPresenter(private val view: FxALoginViewProtocol, private val dispatcher: Dispatcher = Dispatcher.shared): Presenter() {
+class FxALoginPresenter(private val view: FxALoginViewProtocol, private val dispatcher: Dispatcher = Dispatcher.shared) : Presenter() {
     override fun onViewReady() {
         this.view.logMeInClicks.subscribe {
             dispatcher.dispatch(RouteAction.ITEMLIST)

@@ -13,7 +13,7 @@ import org.junit.Test
 
 class BackablePresenterTest {
     class FakeView : BackableViewProtocol {
-        val tapStub : PublishSubject<Unit> = PublishSubject.create<Unit>()
+        val tapStub: PublishSubject<Unit> = PublishSubject.create<Unit>()
 
         override val backButtonTaps: Observable<Unit>
             get() = tapStub

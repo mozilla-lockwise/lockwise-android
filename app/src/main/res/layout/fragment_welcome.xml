@@ -6,7 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include layout="@layout/include_nessie" />
+    <include
+        android:id="@+id/include"
+        layout="@layout/include_nessie" />
 
     <Button
         android:id="@+id/buttonGetStarted"
@@ -14,11 +16,11 @@
         android:layout_height="36dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="312dp"
         android:text="@string/welcome_start_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tagline_text" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/instructions_text"

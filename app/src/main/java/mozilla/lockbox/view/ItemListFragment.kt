@@ -6,18 +6,19 @@ package mozilla.lockbox.view
 
 import android.os.Bundle
 import android.support.v4.view.GravityCompat
-import android.view.*
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import com.jakewharton.rxbinding2.support.design.widget.itemSelections
 import com.jakewharton.rxbinding2.support.v7.widget.navigationClicks
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
-import kotlinx.android.synthetic.main.fragment_item_list.*
-import kotlinx.android.synthetic.main.fragment_item_list.view.toolbar
-import kotlinx.android.synthetic.main.fragment_item_list.view.navView
 import kotlinx.android.synthetic.main.fragment_item_list.view.appDrawer
+import kotlinx.android.synthetic.main.fragment_item_list.view.navView
+import kotlinx.android.synthetic.main.fragment_item_list.view.toolbar
 import mozilla.lockbox.R
-import mozilla.lockbox.log
 import mozilla.lockbox.presenter.ListEntriesPresenter
 import mozilla.lockbox.presenter.ListEntriesProtocol
 
@@ -31,8 +32,7 @@ class ItemListFragment : CommonFragment(), ListEntriesProtocol {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState:
-        Bundle?
+        savedInstanceState: Bundle?
     ): View? {
         presenter = ListEntriesPresenter(this)
         val view = inflater.inflate(R.layout.fragment_item_list, container, false)
@@ -52,5 +52,5 @@ class ItemListFragment : CommonFragment(), ListEntriesProtocol {
 
     // Protocol implementations
     override val drawerItemSelections: Observable<MenuItem>
-            get() = view!!.navView.itemSelections()
+        get() = view!!.navView.itemSelections()
 }
