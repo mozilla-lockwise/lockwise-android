@@ -11,14 +11,16 @@ import mozilla.lockbox.R
 import mozilla.lockbox.presenter.FxALoginPresenter
 import mozilla.lockbox.presenter.FxALoginViewProtocol
 
-class FxALoginFragment : CommonFragment(), FxALoginViewProtocol {
+class FxALoginFragment : BackableFragment(), FxALoginViewProtocol {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         presenter = FxALoginPresenter(this)
-        return inflater.inflate(R.layout.fragment_fxa_login, container, false)
+        val view = inflater.inflate(R.layout.fragment_fxa_login, container, false)
+        setupBackable(view, android.R.drawable.ic_menu_close_clear_cancel)
+        return view
     }
 
     override val logMeInClicks: Observable<Unit>

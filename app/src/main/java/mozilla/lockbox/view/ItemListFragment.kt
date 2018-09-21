@@ -14,33 +14,33 @@ import com.jakewharton.rxbinding2.support.design.widget.itemSelections
 import com.jakewharton.rxbinding2.support.v7.widget.navigationClicks
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
-import kotlinx.android.synthetic.main.fragment_item_list.view.*
+import io.reactivex.rxkotlin.addTo
+import kotlinx.android.synthetic.main.fragment_item_list.view.appDrawer
+import kotlinx.android.synthetic.main.fragment_item_list.view.navView
+import kotlinx.android.synthetic.main.fragment_item_list.view.toolbar
 import mozilla.lockbox.R
 import mozilla.lockbox.presenter.ListEntriesPresenter
 import mozilla.lockbox.presenter.ListEntriesProtocol
 
 class ItemListFragment : CommonFragment(), ListEntriesProtocol {
+    override fun closeDrawers() {
+        view!!.appDrawer.closeDrawer(GravityCompat.START, false)
+    }
+
     private val compositeDisposable = CompositeDisposable()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState:
-        Bundle?
+        savedInstanceState: Bundle?
     ): View? {
         presenter = ListEntriesPresenter(this)
-
         val view = inflater.inflate(R.layout.fragment_item_list, container, false)
 
         view.toolbar.navigationIcon = resources.getDrawable(R.drawable.ic_menu, null)
         view.toolbar.title = getString(R.string.app_name)
-        compositeDisposable.add(
-                view.toolbar.navigationClicks().subscribe { view.appDrawer.openDrawer(GravityCompat.START) }
-        )
-
-        compositeDisposable.add(
-                view.navView.itemSelections().subscribe { view.appDrawer.closeDrawers() }
-        )
+        view.toolbar.navigationClicks().subscribe { view.appDrawer.openDrawer(GravityCompat.START) }
+                .addTo(compositeDisposable)
 
         return view
     }
@@ -52,5 +52,5 @@ class ItemListFragment : CommonFragment(), ListEntriesProtocol {
 
     // Protocol implementations
     override val drawerItemSelections: Observable<MenuItem>
-            get() = view!!.navView.itemSelections()
+        get() = view!!.navView.itemSelections()
 }

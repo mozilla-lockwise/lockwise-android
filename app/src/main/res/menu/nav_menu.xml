@@ -6,7 +6,7 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
+    <group android:checkableBehavior="none">
         <item
             android:id="@+id/goto_faq"
             android:icon="@drawable/ic_help_faq"
@@ -15,5 +15,9 @@
             android:id="@+id/goto_settings"
             android:icon="@android:drawable/ic_menu_preferences"
             android:title="@string/nav_menu_settings" />
+        <item
+            android:id="@+id/lock_now"
+            android:icon="@android:drawable/ic_lock_lock"
+            android:title="@string/lock_now" />
     </group>
 </menu>
