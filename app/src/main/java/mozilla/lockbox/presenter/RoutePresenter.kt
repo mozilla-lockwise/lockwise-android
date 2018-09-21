@@ -34,10 +34,12 @@ class RoutePresenter(private val activity: AppCompatActivity, routeStore: RouteS
         tx.replace(R.id.root_content, frag)
         if (backable) {
             tx.addToBackStack(null)
-        } else {
-            clearBackStack()
         }
         tx.commit()
+
+        if (!backable) {
+            clearBackStack()
+        }
     }
 
     private fun clearBackStack() {

@@ -12,8 +12,9 @@ open class BackableFragment : CommonFragment(), BackableViewProtocol {
     private lateinit var backablePresenter: BackablePresenter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        backablePresenter = BackablePresenter(this)
         super.onViewCreated(view, savedInstanceState)
+        backablePresenter = BackablePresenter(this)
+        backablePresenter.onViewReady()
     }
 
     fun setupBackable(view: View, backIcon: Int = android.R.drawable.arrow_up_float) {
