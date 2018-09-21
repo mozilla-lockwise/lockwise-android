@@ -13,6 +13,8 @@
     android:layout_height="match_parent"
     tools:context=".view.FxALoginFragment">
 
+    <include layout="@layout/include_backable" />
+
     <TextView
         android:id="@+id/placeholder_text"
         android:layout_width="wrap_content"

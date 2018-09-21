@@ -12,14 +12,11 @@ import android.support.v7.app.AppCompatActivity
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.R
 import mozilla.lockbox.action.RouteAction
-import mozilla.lockbox.action.RouteAction.ITEMLIST
-import mozilla.lockbox.action.RouteAction.LOGIN
-import mozilla.lockbox.action.RouteAction.WELCOME
-import mozilla.lockbox.action.RouteAction.SETTING_LIST
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.view.FxALoginFragment
 import mozilla.lockbox.view.ItemListFragment
+import mozilla.lockbox.view.LockedFragment
 import mozilla.lockbox.view.SettingFragment
 import mozilla.lockbox.view.WelcomeFragment
 
@@ -28,6 +25,7 @@ class RoutePresenter(private val activity: AppCompatActivity, routeStore: RouteS
     private val login: FxALoginFragment by lazy { FxALoginFragment() }
     private val itemList: ItemListFragment by lazy { ItemListFragment() }
     private val settingList: SettingFragment by lazy { SettingFragment() }
+    private val lock: LockedFragment by lazy { LockedFragment() }
 
     init {
         routeStore.routes.subscribe { a -> route(a) }.addTo(compositeDisposable)
@@ -44,6 +42,10 @@ class RoutePresenter(private val activity: AppCompatActivity, routeStore: RouteS
             tx.addToBackStack(null)
         }
         tx.commit()
+
+        if (!backable) {
+            clearBackStack()
+        }
     }
 
     private fun clearBackStack() {
@@ -56,19 +58,23 @@ class RoutePresenter(private val activity: AppCompatActivity, routeStore: RouteS
 
     private fun route(action: RouteAction) {
         when (action) {
-            LOGIN -> {
+            RouteAction.LOGIN -> {
                 replaceFragment(login)
             }
-            WELCOME -> {
-                clearBackStack()
+            RouteAction.WELCOME -> {
                 replaceFragment(welcome, false)
             }
-            ITEMLIST -> {
-                clearBackStack()
+            RouteAction.ITEMLIST -> {
                 replaceFragment(itemList, false)
             }
-            SETTING_LIST -> {
+            RouteAction.SETTING_LIST -> {
                 replaceFragment(settingList)
+            }
+            RouteAction.LOCK -> {
+                replaceFragment(lock, false)
+            }
+            RouteAction.BACK -> {
+                activity.supportFragmentManager.popBackStack()
             }
         }
     }

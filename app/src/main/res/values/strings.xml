@@ -24,4 +24,6 @@
     <string name="hello_blank_fragment">This is a placeholder for an OAuth login to FxA</string>
     <string name="fxa_login_logmein_btn">Log Me In</string>
     <string name="settings_go_here">settings go here!</string>
+    <string name="placeholder_unlock_button">Unlock Firefox Lockbox</string>
+    <string name="lock_now">Lock Now</string>
 </resources>
