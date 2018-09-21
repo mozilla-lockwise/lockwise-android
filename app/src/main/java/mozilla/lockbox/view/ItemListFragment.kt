@@ -5,7 +5,6 @@
 package mozilla.lockbox.view
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v4.view.GravityCompat
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -20,9 +19,8 @@ import mozilla.lockbox.R
 import mozilla.lockbox.presenter.ListEntriesPresenter
 import mozilla.lockbox.presenter.ListEntriesProtocol
 
-class ItemListFragment : Fragment(), ListEntriesProtocol {
+class ItemListFragment : CommonFragment(), ListEntriesProtocol {
     private val compositeDisposable = CompositeDisposable()
-    private lateinit var presenter: ListEntriesPresenter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,11 +43,6 @@ class ItemListFragment : Fragment(), ListEntriesProtocol {
         )
 
         return view
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        presenter.onViewReady()
     }
 
     override fun onDestroyView() {

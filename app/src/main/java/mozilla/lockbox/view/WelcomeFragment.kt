@@ -5,7 +5,6 @@
 package mozilla.lockbox.view
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,10 +15,7 @@ import mozilla.lockbox.R
 import mozilla.lockbox.presenter.WelcomePresenter
 import mozilla.lockbox.presenter.WelcomeViewProtocol
 
-class WelcomeFragment : Fragment(), WelcomeViewProtocol {
-
-    private lateinit var presenter: WelcomePresenter
-
+class WelcomeFragment : CommonFragment(), WelcomeViewProtocol {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -27,16 +23,6 @@ class WelcomeFragment : Fragment(), WelcomeViewProtocol {
     ): View? {
         presenter = WelcomePresenter(this)
         return inflater.inflate(R.layout.fragment_welcome, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        presenter.onViewReady()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        presenter.onDestroy()
     }
 
     override val getStartedClicks: Observable<Unit>
