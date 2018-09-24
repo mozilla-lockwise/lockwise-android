@@ -58,7 +58,7 @@ class DataStoreTest : DisposingTest() {
         subject.unlock().subscribe(waiter)
         waiter.assertComplete()
 
-        waiter = createTestObserver<Unit>()
+        waiter = createTestObserver()
         subject.lock().subscribe(waiter)
         waiter.assertComplete()
 

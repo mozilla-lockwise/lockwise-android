@@ -10,7 +10,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.fragment_setting.view.*
 import mozilla.lockbox.MyClass
 import mozilla.lockbox.R
 import mozilla.lockbox.presenter.SettingPresenter
@@ -27,6 +26,7 @@ class SettingFragment : BackableFragment(), SettingViewProtocol {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_setting, container, false)
         setupBackable(view)
+        MyClass().logWithStaticAPI()
         MyClass().unsafeMethod()
         return view
     }

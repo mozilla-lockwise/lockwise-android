@@ -6,20 +6,19 @@
 
 package mozilla.lockbox
 
+import android.annotation.SuppressLint
 import android.app.Application
+import io.sentry.Sentry
+import io.sentry.android.AndroidSentryClientFactory
+import io.sentry.event.BreadcrumbBuilder
+import io.sentry.event.UserBuilder
 import mozilla.components.support.base.log.Log
 import mozilla.components.support.base.log.logger.Logger
 import mozilla.components.support.base.log.sink.AndroidLogSink
-import io.sentry.android.AndroidSentryClientFactory
-import io.sentry.Sentry
-import io.sentry.context.Context
-import io.sentry.event.BreadcrumbBuilder
-import io.sentry.event.UserBuilder
-
-
 
 val log: Logger = Logger("Lockbox")
 class LockboxApplication : Application() {
+    @SuppressLint("AuthLeak")
     override fun onCreate() {
         super.onCreate()
         Log.addSink(AndroidLogSink())
