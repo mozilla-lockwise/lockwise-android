@@ -8,8 +8,8 @@ package mozilla.lockbox.action
 
 import mozilla.lockbox.flux.Action
 
-data class DataStoreAction(val type: Type) : Action {
-    enum class Type {
+data class DataStoreAction(val type: Type) {
+    enum class Type: Action {
         LOCK,
         UNLOCK,
         RESET,

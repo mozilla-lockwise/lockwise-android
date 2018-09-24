@@ -8,6 +8,7 @@ package mozilla.lockbox.view
 
 import android.os.Bundle
 import android.support.v4.view.GravityCompat
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -17,19 +18,16 @@ import com.jakewharton.rxbinding2.support.v7.widget.navigationClicks
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
-import kotlinx.android.synthetic.main.fragment_item_list.view.appDrawer
-import kotlinx.android.synthetic.main.fragment_item_list.view.navView
-import kotlinx.android.synthetic.main.fragment_item_list.view.toolbar
+import kotlinx.android.synthetic.main.fragment_item_list.view.*
 import mozilla.lockbox.R
+import mozilla.lockbox.adapter.ItemListAdapter
+import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.presenter.ListEntriesPresenter
 import mozilla.lockbox.presenter.ListEntriesProtocol
 
 class ItemListFragment : CommonFragment(), ListEntriesProtocol {
-    override fun closeDrawers() {
-        view!!.appDrawer.closeDrawer(GravityCompat.START, false)
-    }
-
     private val compositeDisposable = CompositeDisposable()
+    private val adapter = ItemListAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,6 +42,9 @@ class ItemListFragment : CommonFragment(), ListEntriesProtocol {
         view.toolbar.navigationClicks().subscribe { view.appDrawer.openDrawer(GravityCompat.START) }
                 .addTo(compositeDisposable)
 
+        view.entriesView.layoutManager = LinearLayoutManager(context)
+        view.entriesView.adapter = adapter
+
         return view
     }
 
@@ -55,4 +56,12 @@ class ItemListFragment : CommonFragment(), ListEntriesProtocol {
     // Protocol implementations
     override val drawerItemSelections: Observable<MenuItem>
         get() = view!!.navView.itemSelections()
+
+    override fun closeDrawers() {
+        view!!.appDrawer.closeDrawer(GravityCompat.START, false)
+    }
+
+    override fun updateItems(itemList: List<ItemViewModel>) {
+        adapter.updateItems(itemList)
+    }
 }

@@ -26,6 +26,10 @@ class DataStore(
     val dispatcher: Dispatcher = Dispatcher.shared,
     val support: DataStoreSupport = FixedDataStoreSupport.shared
 ) {
+    companion object {
+        val shared = DataStore()
+    }
+
     data class State(
         val status: Status,
         val error: Throwable? = null
@@ -59,9 +63,9 @@ class DataStore(
 
         // register for actions
         dispatcher.register
-                .filterByType(DataStoreAction::class.java)
+                .filterByType(DataStoreAction.Type::class.java)
                 .subscribe {
-                    when (it.type) {
+                    when (it) {
                         DataStoreAction.Type.LOCK -> lock()
                         DataStoreAction.Type.UNLOCK -> unlock()
                         DataStoreAction.Type.SYNC -> sync()
