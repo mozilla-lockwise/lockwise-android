@@ -10,8 +10,6 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
-apply plugin: "com.vanniktech.android.junit.jacoco"
-
 android {
     compileSdkVersion 27
     defaultConfig {
