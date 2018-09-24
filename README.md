@@ -1,5 +1,6 @@
-[![Waffle Board][waffle-image]][waffle-link]
 [![Build Status][bitrise-image]][bitrise-link]
+[![codecov][codecov-image]][codecov-link]
+[![Waffle Board][waffle-image]][waffle-link]
 
 # Firefox Lockbox for Android
 
@@ -29,10 +30,12 @@ version 2.0][license-link].
 
 Note that some test fixtures use source code from third-party services, and are not subject to this license.
 
-[waffle-image]: https://badge.waffle.io/mozilla-lockbox/lockbox-extension.svg?columns=In%20Progress
-[waffle-link]: https://waffle.io/mozilla-lockbox/lockbox-extension
 [bitrise-image]: https://app.bitrise.io/app/20089a88380dd14d/status.svg?token=41PRDjKSm0fQCUiS2EmCkQ&branch=master
 [bitrise-link]: https://app.bitrise.io/app/20089a88380dd14d
+[codecov-image]: https://codecov.io/gh/mozilla-lockbox/lockbox-android/branch/master/graph/badge.svg
+[codecov-link]: https://codecov.io/gh/mozilla-lockbox/lockbox-android
+[waffle-image]: https://badge.waffle.io/mozilla-lockbox/lockbox-extension.svg?columns=In%20Progress
+[waffle-link]: https://waffle.io/mozilla-lockbox/lockbox-extension
 [docs-link]: docs/
 [org-website]: https://lockbox.firefox.com/
 [contributing-link]: docs/contributing.md
