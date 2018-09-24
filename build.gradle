@@ -24,6 +24,10 @@ buildscript {
     }
 }
 
+plugins {
+    id "com.vanniktech.android.junit.jacoco" version "0.12.0"
+}
+
 allprojects {
     repositories {
         google()
