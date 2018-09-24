@@ -10,6 +10,8 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'io.sentry.android.gradle'
+
 android {
     compileSdkVersion 27
     defaultConfig {
@@ -55,6 +57,7 @@ dependencies {
     implementation "org.mozilla.components:fxa:${rootProject.ext.android_components_version}"
     implementation "org.mozilla.components:telemetry:${rootProject.ext.android_components_version}"
     implementation 'com.android.support:support-v4:27.1.1'
+    implementation 'io.sentry:sentry-android:1.7.10'
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:2.22.0'
     testImplementation 'org.robolectric:robolectric:3.8'
