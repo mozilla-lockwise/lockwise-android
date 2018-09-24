@@ -7,8 +7,8 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.kotlin_version = '1.2.30'
-    ext.android_components_version = '0.23'
+    ext.kotlin_version = '1.2.51'
+    ext.android_components_version = '0.24'
 
     repositories {
         google()
