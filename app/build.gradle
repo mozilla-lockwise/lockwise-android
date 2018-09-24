@@ -33,6 +33,7 @@ android {
         }
     }
     lintOptions {
+        lintConfig file("lint-config.xml")
         warningsAsErrors true
         baseline file("lint-baseline.xml")
     }
