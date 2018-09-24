@@ -8,6 +8,7 @@ package mozilla.lockbox.view
 
 import android.os.Bundle
 import android.support.v4.view.GravityCompat
+import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -22,10 +23,10 @@ import kotlinx.android.synthetic.main.fragment_item_list.view.*
 import mozilla.lockbox.R
 import mozilla.lockbox.adapter.ItemListAdapter
 import mozilla.lockbox.model.ItemViewModel
-import mozilla.lockbox.presenter.ListEntriesPresenter
-import mozilla.lockbox.presenter.ListEntriesProtocol
+import mozilla.lockbox.presenter.ItemListPresenter
+import mozilla.lockbox.presenter.ItemListView
 
-class ItemListFragment : CommonFragment(), ListEntriesProtocol {
+class ItemListFragment : CommonFragment(), ItemListView {
     private val compositeDisposable = CompositeDisposable()
     private val adapter = ItemListAdapter()
 
@@ -34,16 +35,20 @@ class ItemListFragment : CommonFragment(), ListEntriesProtocol {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        presenter = ListEntriesPresenter(this)
+        presenter = ItemListPresenter(this)
         val view = inflater.inflate(R.layout.fragment_item_list, container, false)
 
         view.toolbar.navigationIcon = resources.getDrawable(R.drawable.ic_menu, null)
-        view.toolbar.title = getString(R.string.app_name)
         view.toolbar.navigationClicks().subscribe { view.appDrawer.openDrawer(GravityCompat.START) }
                 .addTo(compositeDisposable)
 
-        view.entriesView.layoutManager = LinearLayoutManager(context)
+        val layoutManager = LinearLayoutManager(context)
+        view.entriesView.layoutManager = layoutManager
         view.entriesView.adapter = adapter
+        val decoration = DividerItemDecoration(context, layoutManager.orientation)
+        val decorationDrawable = context?.getDrawable(R.drawable.inset_divider)
+        decorationDrawable?.let { decoration.setDrawable(it) }
+        view.entriesView.addItemDecoration(decoration)
 
         return view
     }

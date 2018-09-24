@@ -20,8 +20,8 @@ class ItemViewHolder(override val containerView: View)
         set(value) {
             field = value
             value?.let {
+                itemTitle.text = it.title
                 itemSubtitle.text = it.subtitle
-                itemTitle.text = it.subtitle
             }
         }
 }

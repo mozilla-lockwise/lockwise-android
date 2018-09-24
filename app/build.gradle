@@ -34,6 +34,11 @@ android {
         warningsAsErrors true
         baseline file("lint-baseline.xml")
     }
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
 }
 
 configurations {

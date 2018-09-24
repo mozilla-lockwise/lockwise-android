@@ -26,4 +26,5 @@
     <string name="settings_go_here">settings go here!</string>
     <string name="placeholder_unlock_button">Unlock Firefox Lockbox</string>
     <string name="lock_now">Lock Now</string>
+    <string name="all_entries_a_z">All entries (A-Z)</string>
 </resources>

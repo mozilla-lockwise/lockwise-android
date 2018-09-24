@@ -12,6 +12,7 @@ import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.R
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.extensions.titleFromHostname
 import mozilla.lockbox.flux.Dispatcher
 
 import mozilla.lockbox.flux.Presenter
@@ -19,16 +20,16 @@ import mozilla.lockbox.log
 import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.store.DataStore
 
-interface ListEntriesProtocol {
+interface ItemListView {
     val drawerItemSelections: Observable<MenuItem>
     fun updateItems(itemList: List<ItemViewModel>)
     fun closeDrawers()
     // TODO: Item list selection
 }
 
-class ListEntriesPresenter(private val view: ListEntriesProtocol,
-                           private val dispatcher: Dispatcher = Dispatcher.shared,
-                           private val dataStore: DataStore = DataStore.shared) : Presenter() {
+class ItemListPresenter(private val view: ItemListView,
+                        private val dispatcher: Dispatcher = Dispatcher.shared,
+                        private val dataStore: DataStore = DataStore.shared) : Presenter() {
     override fun onViewReady() {
         view.drawerItemSelections
             .subscribe { menuItem ->
@@ -51,7 +52,11 @@ class ListEntriesPresenter(private val view: ListEntriesProtocol,
             .map {
                 it.map {
                     val username = it.username ?: ""
-                    ItemViewModel(it.hostname, username, it.id)
+                    val hostname = it.hostname.titleFromHostname()
+                    ItemViewModel(
+                            hostname,
+                            username,
+                            it.id)
                 }
             }
             .subscribe(view::updateItems)
