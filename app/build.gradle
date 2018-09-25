@@ -109,3 +109,29 @@ task ktlintFormat(type: JavaExec, group: "formatting") {
     classpath = configurations.ktlint
     args = [ "-F", "src/**/*.kt" ]
 }
+
+task projectsEvaluated {
+    android.applicationVariants.each { variant ->
+        def variantName = variant.name.capitalize();
+        def proguardTask = project.tasks.findByName(
+                "transformClassesAndResourcesWithProguardFor${variantName}")
+        def dexTask = project.tasks.findByName(
+                "transformClassesWithDexFor${variantName}")
+        def task = project.tasks.create(
+                name: "processSentryProguardFor${variantName}",
+                type: Exec) {
+            workingDir project.rootDir
+            commandLine = [
+                    "sentry-cli",
+                    "upload-proguard",
+                    "--write-properties",
+                    "${project.rootDir.toPath()}/app/build/intermediates/assets" +
+                            "/${variant.dirName}/sentry-debug-meta.properties",
+                    variant.getMappingFile(),
+                    "--no-upload"
+            ]
+        }
+        dexTask.dependsOn task
+        task.dependsOn proguardTask
+    }
+}
