@@ -25,7 +25,7 @@ class LockboxApplication : Application() {
 
         // Set up using Sentry DSN (client key) from the Project Settings page on Sentry
         val ctx = this.applicationContext
-        val sentryDsn = "https://19558af5301f43e1a95ab4b8ceae663b:d3f7f6dfa9114ef0ba58accb8d8cc1ad@sentry.prod.mozaws.net/401"
+        val sentryDsn = "https://19558af5301f43e1a95ab4b8ceae663b:d3f7f6dfa9114ef0ba58accb8d8cc1ad@sentry.prod.mozaws.net/401?options"
         Sentry.init(sentryDsn, AndroidSentryClientFactory(ctx))
     }
 }
