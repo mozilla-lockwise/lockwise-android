@@ -16,7 +16,6 @@ import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.store.DataStore
-import org.apache.maven.settings.Server
 import org.junit.Before
 import org.junit.Test
 import org.mozilla.sync15.logins.ServerPassword
@@ -25,7 +24,7 @@ class ItemListPresenterTest {
     class FakeView : ItemListView {
         val drawerItemStub = PublishSubject.create<MenuItem>()
         var closeDrawersCalled = false
-        var updateItemsArgument : List<ItemViewModel>? = null
+        var updateItemsArgument: List<ItemViewModel>? = null
 
         override val drawerItemSelections: Observable<MenuItem>
             get() = drawerItemStub
@@ -122,5 +121,4 @@ class ItemListPresenterTest {
 
         Assert.assertNull(view.updateItemsArgument)
     }
-
 }

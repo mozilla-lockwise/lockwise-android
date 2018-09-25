@@ -14,7 +14,7 @@ import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.view.ItemViewHolder
 
 class ItemListAdapter : RecyclerView.Adapter<ItemViewHolder>() {
-    private var itemList : List<ItemViewModel>? = null
+    private var itemList: List<ItemViewModel>? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.view_holder_item, parent, false)

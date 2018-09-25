@@ -27,9 +27,11 @@ interface ItemListView {
     // TODO: Item list selection
 }
 
-class ItemListPresenter(private val view: ItemListView,
-                        private val dispatcher: Dispatcher = Dispatcher.shared,
-                        private val dataStore: DataStore = DataStore.shared) : Presenter() {
+class ItemListPresenter(
+    private val view: ItemListView,
+    private val dispatcher: Dispatcher = Dispatcher.shared,
+    private val dataStore: DataStore = DataStore.shared
+) : Presenter() {
     override fun onViewReady() {
         view.drawerItemSelections
                 .subscribe { menuItem ->

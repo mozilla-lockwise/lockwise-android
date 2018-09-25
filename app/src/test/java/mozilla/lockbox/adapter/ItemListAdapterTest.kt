@@ -23,8 +23,8 @@ import org.robolectric.annotation.Config
 class ItemListAdapterTest {
 
     val subject = ItemListAdapter()
-    private lateinit var context : Context
-    private lateinit var parent : RecyclerView
+    private lateinit var context: Context
+    private lateinit var parent: RecyclerView
 
     private val list = listOf<ItemViewModel>(
             ItemViewModel("mozilla.org", "example@example.com", ""),

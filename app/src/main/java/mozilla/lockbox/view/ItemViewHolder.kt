@@ -16,7 +16,7 @@ import mozilla.lockbox.model.ItemViewModel
 class ItemViewHolder(override val containerView: View)
     : RecyclerView.ViewHolder(containerView), LayoutContainer {
 
-    var itemViewModel : ItemViewModel? = null
+    var itemViewModel: ItemViewModel? = null
         set(value) {
             field = value
             value?.let {

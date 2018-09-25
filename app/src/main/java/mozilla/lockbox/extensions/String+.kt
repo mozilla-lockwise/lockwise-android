@@ -6,7 +6,7 @@
 
 package mozilla.lockbox.extensions
 
-fun String.titleFromHostname() : String {
+fun String.titleFromHostname(): String {
     return this
             .replace(Regex("^http://"), "")
     .replace(Regex("^https://"), "")
