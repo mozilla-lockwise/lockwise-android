@@ -22,7 +22,7 @@ class LockboxApplication : Application() {
         // Set up Sentry using DSN (client key) from the Project Settings page on Sentry
         val ctx = this.applicationContext
         // Retrieved from environment's local (or bitrise's "Secrets") environment variable
-        val sentryDsn : String? = System.getenv("SENTRY_DSN")
+        val sentryDsn: String? = System.getenv("SENTRY_DSN")
         Sentry.init(sentryDsn, AndroidSentryClientFactory(ctx))
     }
 }
