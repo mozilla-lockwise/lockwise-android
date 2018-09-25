@@ -1,55 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  ~ This Source Code Form is subject to the terms of the Mozilla Public
-  ~ License, v. 2.0. If a copy of the MPL was not distributed with this
-  ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
-  -->
-
-<issues format="4" by="lint 3.1.4">
+<issues format="4" by="lint 3.2">
 
     <issue
         id="UnusedAttribute"
         message="Attribute `startY` is only used in API level 24 and higher (current min is 23)">
-        <location
-            file="src/main/res/drawable/ic_nessie.xml"
-            line="40"/>
-    </issue>
-
-    <issue
-        id="UnusedAttribute"
-        message="Attribute `startX` is only used in API level 24 and higher (current min is 23)">
-        <location
-            file="src/main/res/drawable/ic_nessie.xml"
-            line="41"/>
-    </issue>
-
-    <issue
-        id="UnusedAttribute"
-        message="Attribute `endY` is only used in API level 24 and higher (current min is 23)">
-        <location
-            file="src/main/res/drawable/ic_nessie.xml"
-            line="42"/>
-    </issue>
-
-    <issue
-        id="UnusedAttribute"
-        message="Attribute `endX` is only used in API level 24 and higher (current min is 23)">
-        <location
-            file="src/main/res/drawable/ic_nessie.xml"
-            line="43"/>
-    </issue>
-
-    <issue
-        id="UnusedAttribute"
-        message="Attribute `offset` is only used in API level 24 and higher (current min is 23)">
-        <location
-            file="src/main/res/drawable/ic_nessie.xml"
-            line="45"/>
-    </issue>
-
-    <issue
-        id="UnusedAttribute"
-        message="Attribute `offset` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
             line="46"/>
@@ -57,18 +11,10 @@
 
     <issue
         id="UnusedAttribute"
-        message="Attribute `startY` is only used in API level 24 and higher (current min is 23)">
-        <location
-            file="src/main/res/drawable/ic_nessie.xml"
-            line="55"/>
-    </issue>
-
-    <issue
-        id="UnusedAttribute"
         message="Attribute `startX` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="56"/>
+            line="47"/>
     </issue>
 
     <issue
@@ -76,7 +22,7 @@
         message="Attribute `endY` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="57"/>
+            line="48"/>
     </issue>
 
     <issue
@@ -84,7 +30,7 @@
         message="Attribute `endX` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="58"/>
+            line="49"/>
     </issue>
 
     <issue
@@ -92,12 +38,20 @@
         message="Attribute `offset` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="60"/>
+            line="51"/>
     </issue>
 
     <issue
         id="UnusedAttribute"
         message="Attribute `offset` is only used in API level 24 and higher (current min is 23)">
+        <location
+            file="src/main/res/drawable/ic_nessie.xml"
+            line="52"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `startY` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
             line="61"/>
@@ -105,18 +59,10 @@
 
     <issue
         id="UnusedAttribute"
-        message="Attribute `startY` is only used in API level 24 and higher (current min is 23)">
-        <location
-            file="src/main/res/drawable/ic_nessie.xml"
-            line="70"/>
-    </issue>
-
-    <issue
-        id="UnusedAttribute"
         message="Attribute `startX` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="71"/>
+            line="62"/>
     </issue>
 
     <issue
@@ -124,7 +70,7 @@
         message="Attribute `endY` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="72"/>
+            line="63"/>
     </issue>
 
     <issue
@@ -132,7 +78,7 @@
         message="Attribute `endX` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="73"/>
+            line="64"/>
     </issue>
 
     <issue
@@ -140,12 +86,20 @@
         message="Attribute `offset` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="75"/>
+            line="66"/>
     </issue>
 
     <issue
         id="UnusedAttribute"
         message="Attribute `offset` is only used in API level 24 and higher (current min is 23)">
+        <location
+            file="src/main/res/drawable/ic_nessie.xml"
+            line="67"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `startY` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
             line="76"/>
@@ -153,18 +107,10 @@
 
     <issue
         id="UnusedAttribute"
-        message="Attribute `startY` is only used in API level 24 and higher (current min is 23)">
-        <location
-            file="src/main/res/drawable/ic_nessie.xml"
-            line="85"/>
-    </issue>
-
-    <issue
-        id="UnusedAttribute"
         message="Attribute `startX` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="86"/>
+            line="77"/>
     </issue>
 
     <issue
@@ -172,7 +118,7 @@
         message="Attribute `endY` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="87"/>
+            line="78"/>
     </issue>
 
     <issue
@@ -180,7 +126,7 @@
         message="Attribute `endX` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="88"/>
+            line="79"/>
     </issue>
 
     <issue
@@ -188,12 +134,20 @@
         message="Attribute `offset` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="90"/>
+            line="81"/>
     </issue>
 
     <issue
         id="UnusedAttribute"
         message="Attribute `offset` is only used in API level 24 and higher (current min is 23)">
+        <location
+            file="src/main/res/drawable/ic_nessie.xml"
+            line="82"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `startY` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
             line="91"/>
@@ -201,18 +155,10 @@
 
     <issue
         id="UnusedAttribute"
-        message="Attribute `startY` is only used in API level 24 and higher (current min is 23)">
-        <location
-            file="src/main/res/drawable/ic_nessie.xml"
-            line="100"/>
-    </issue>
-
-    <issue
-        id="UnusedAttribute"
         message="Attribute `startX` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="101"/>
+            line="92"/>
     </issue>
 
     <issue
@@ -220,7 +166,7 @@
         message="Attribute `endY` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="102"/>
+            line="93"/>
     </issue>
 
     <issue
@@ -228,7 +174,7 @@
         message="Attribute `endX` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="103"/>
+            line="94"/>
     </issue>
 
     <issue
@@ -236,12 +182,20 @@
         message="Attribute `offset` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="105"/>
+            line="96"/>
     </issue>
 
     <issue
         id="UnusedAttribute"
         message="Attribute `offset` is only used in API level 24 and higher (current min is 23)">
+        <location
+            file="src/main/res/drawable/ic_nessie.xml"
+            line="97"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `startY` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
             line="106"/>
@@ -249,18 +203,10 @@
 
     <issue
         id="UnusedAttribute"
-        message="Attribute `startY` is only used in API level 24 and higher (current min is 23)">
-        <location
-            file="src/main/res/drawable/ic_nessie.xml"
-            line="115"/>
-    </issue>
-
-    <issue
-        id="UnusedAttribute"
         message="Attribute `startX` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="116"/>
+            line="107"/>
     </issue>
 
     <issue
@@ -268,7 +214,7 @@
         message="Attribute `endY` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="117"/>
+            line="108"/>
     </issue>
 
     <issue
@@ -276,7 +222,7 @@
         message="Attribute `endX` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="118"/>
+            line="109"/>
     </issue>
 
     <issue
@@ -284,12 +230,20 @@
         message="Attribute `offset` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="120"/>
+            line="111"/>
     </issue>
 
     <issue
         id="UnusedAttribute"
         message="Attribute `offset` is only used in API level 24 and higher (current min is 23)">
+        <location
+            file="src/main/res/drawable/ic_nessie.xml"
+            line="112"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `startY` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
             line="121"/>
@@ -297,18 +251,10 @@
 
     <issue
         id="UnusedAttribute"
-        message="Attribute `startY` is only used in API level 24 and higher (current min is 23)">
-        <location
-            file="src/main/res/drawable/ic_nessie.xml"
-            line="130"/>
-    </issue>
-
-    <issue
-        id="UnusedAttribute"
         message="Attribute `startX` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="131"/>
+            line="122"/>
     </issue>
 
     <issue
@@ -316,7 +262,7 @@
         message="Attribute `endY` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="132"/>
+            line="123"/>
     </issue>
 
     <issue
@@ -324,7 +270,7 @@
         message="Attribute `endX` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="133"/>
+            line="124"/>
     </issue>
 
     <issue
@@ -332,12 +278,20 @@
         message="Attribute `offset` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="135"/>
+            line="126"/>
     </issue>
 
     <issue
         id="UnusedAttribute"
         message="Attribute `offset` is only used in API level 24 and higher (current min is 23)">
+        <location
+            file="src/main/res/drawable/ic_nessie.xml"
+            line="127"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `startY` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
             line="136"/>
@@ -345,18 +299,10 @@
 
     <issue
         id="UnusedAttribute"
-        message="Attribute `startY` is only used in API level 24 and higher (current min is 23)">
-        <location
-            file="src/main/res/drawable/ic_nessie.xml"
-            line="145"/>
-    </issue>
-
-    <issue
-        id="UnusedAttribute"
         message="Attribute `startX` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="146"/>
+            line="137"/>
     </issue>
 
     <issue
@@ -364,7 +310,7 @@
         message="Attribute `endY` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="147"/>
+            line="138"/>
     </issue>
 
     <issue
@@ -372,7 +318,7 @@
         message="Attribute `endX` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="148"/>
+            line="139"/>
     </issue>
 
     <issue
@@ -380,12 +326,20 @@
         message="Attribute `offset` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="150"/>
+            line="141"/>
     </issue>
 
     <issue
         id="UnusedAttribute"
         message="Attribute `offset` is only used in API level 24 and higher (current min is 23)">
+        <location
+            file="src/main/res/drawable/ic_nessie.xml"
+            line="142"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `startY` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
             line="151"/>
@@ -393,18 +347,10 @@
 
     <issue
         id="UnusedAttribute"
-        message="Attribute `startY` is only used in API level 24 and higher (current min is 23)">
-        <location
-            file="src/main/res/drawable/ic_nessie.xml"
-            line="160"/>
-    </issue>
-
-    <issue
-        id="UnusedAttribute"
         message="Attribute `startX` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="161"/>
+            line="152"/>
     </issue>
 
     <issue
@@ -412,7 +358,7 @@
         message="Attribute `endY` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="162"/>
+            line="153"/>
     </issue>
 
     <issue
@@ -420,7 +366,7 @@
         message="Attribute `endX` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="163"/>
+            line="154"/>
     </issue>
 
     <issue
@@ -428,12 +374,20 @@
         message="Attribute `offset` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="165"/>
+            line="156"/>
     </issue>
 
     <issue
         id="UnusedAttribute"
         message="Attribute `offset` is only used in API level 24 and higher (current min is 23)">
+        <location
+            file="src/main/res/drawable/ic_nessie.xml"
+            line="157"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `startY` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
             line="166"/>
@@ -441,18 +395,10 @@
 
     <issue
         id="UnusedAttribute"
-        message="Attribute `startY` is only used in API level 24 and higher (current min is 23)">
-        <location
-            file="src/main/res/drawable/ic_nessie.xml"
-            line="175"/>
-    </issue>
-
-    <issue
-        id="UnusedAttribute"
         message="Attribute `startX` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="176"/>
+            line="167"/>
     </issue>
 
     <issue
@@ -460,7 +406,7 @@
         message="Attribute `endY` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="177"/>
+            line="168"/>
     </issue>
 
     <issue
@@ -468,7 +414,7 @@
         message="Attribute `endX` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="178"/>
+            line="169"/>
     </issue>
 
     <issue
@@ -476,12 +422,20 @@
         message="Attribute `offset` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="180"/>
+            line="171"/>
     </issue>
 
     <issue
         id="UnusedAttribute"
         message="Attribute `offset` is only used in API level 24 and higher (current min is 23)">
+        <location
+            file="src/main/res/drawable/ic_nessie.xml"
+            line="172"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `startY` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
             line="181"/>
@@ -489,18 +443,10 @@
 
     <issue
         id="UnusedAttribute"
-        message="Attribute `startY` is only used in API level 24 and higher (current min is 23)">
-        <location
-            file="src/main/res/drawable/ic_nessie.xml"
-            line="190"/>
-    </issue>
-
-    <issue
-        id="UnusedAttribute"
         message="Attribute `startX` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="191"/>
+            line="182"/>
     </issue>
 
     <issue
@@ -508,7 +454,7 @@
         message="Attribute `endY` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="192"/>
+            line="183"/>
     </issue>
 
     <issue
@@ -516,7 +462,7 @@
         message="Attribute `endX` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="193"/>
+            line="184"/>
     </issue>
 
     <issue
@@ -524,12 +470,20 @@
         message="Attribute `offset` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="195"/>
+            line="186"/>
     </issue>
 
     <issue
         id="UnusedAttribute"
         message="Attribute `offset` is only used in API level 24 and higher (current min is 23)">
+        <location
+            file="src/main/res/drawable/ic_nessie.xml"
+            line="187"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `startY` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
             line="196"/>
@@ -537,18 +491,10 @@
 
     <issue
         id="UnusedAttribute"
-        message="Attribute `startY` is only used in API level 24 and higher (current min is 23)">
-        <location
-            file="src/main/res/drawable/ic_nessie.xml"
-            line="205"/>
-    </issue>
-
-    <issue
-        id="UnusedAttribute"
         message="Attribute `startX` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="206"/>
+            line="197"/>
     </issue>
 
     <issue
@@ -556,7 +502,7 @@
         message="Attribute `endY` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="207"/>
+            line="198"/>
     </issue>
 
     <issue
@@ -564,7 +510,7 @@
         message="Attribute `endX` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="208"/>
+            line="199"/>
     </issue>
 
     <issue
@@ -572,12 +518,20 @@
         message="Attribute `offset` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="210"/>
+            line="201"/>
     </issue>
 
     <issue
         id="UnusedAttribute"
         message="Attribute `offset` is only used in API level 24 and higher (current min is 23)">
+        <location
+            file="src/main/res/drawable/ic_nessie.xml"
+            line="202"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `startY` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
             line="211"/>
@@ -585,18 +539,10 @@
 
     <issue
         id="UnusedAttribute"
-        message="Attribute `startY` is only used in API level 24 and higher (current min is 23)">
-        <location
-            file="src/main/res/drawable/ic_nessie.xml"
-            line="220"/>
-    </issue>
-
-    <issue
-        id="UnusedAttribute"
         message="Attribute `startX` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="221"/>
+            line="212"/>
     </issue>
 
     <issue
@@ -604,7 +550,7 @@
         message="Attribute `endY` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="222"/>
+            line="213"/>
     </issue>
 
     <issue
@@ -612,7 +558,7 @@
         message="Attribute `endX` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="223"/>
+            line="214"/>
     </issue>
 
     <issue
@@ -620,12 +566,20 @@
         message="Attribute `offset` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="225"/>
+            line="216"/>
     </issue>
 
     <issue
         id="UnusedAttribute"
         message="Attribute `offset` is only used in API level 24 and higher (current min is 23)">
+        <location
+            file="src/main/res/drawable/ic_nessie.xml"
+            line="217"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `startY` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
             line="226"/>
@@ -633,18 +587,10 @@
 
     <issue
         id="UnusedAttribute"
-        message="Attribute `startY` is only used in API level 24 and higher (current min is 23)">
-        <location
-            file="src/main/res/drawable/ic_nessie.xml"
-            line="235"/>
-    </issue>
-
-    <issue
-        id="UnusedAttribute"
         message="Attribute `startX` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="236"/>
+            line="227"/>
     </issue>
 
     <issue
@@ -652,7 +598,7 @@
         message="Attribute `endY` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="237"/>
+            line="228"/>
     </issue>
 
     <issue
@@ -660,7 +606,7 @@
         message="Attribute `endX` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="238"/>
+            line="229"/>
     </issue>
 
     <issue
@@ -668,12 +614,20 @@
         message="Attribute `offset` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="240"/>
+            line="231"/>
     </issue>
 
     <issue
         id="UnusedAttribute"
         message="Attribute `offset` is only used in API level 24 and higher (current min is 23)">
+        <location
+            file="src/main/res/drawable/ic_nessie.xml"
+            line="232"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `startY` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
             line="241"/>
@@ -681,18 +635,10 @@
 
     <issue
         id="UnusedAttribute"
-        message="Attribute `startY` is only used in API level 24 and higher (current min is 23)">
-        <location
-            file="src/main/res/drawable/ic_nessie.xml"
-            line="266"/>
-    </issue>
-
-    <issue
-        id="UnusedAttribute"
         message="Attribute `startX` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="267"/>
+            line="242"/>
     </issue>
 
     <issue
@@ -700,7 +646,7 @@
         message="Attribute `endY` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="268"/>
+            line="243"/>
     </issue>
 
     <issue
@@ -708,7 +654,7 @@
         message="Attribute `endX` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="269"/>
+            line="244"/>
     </issue>
 
     <issue
@@ -716,12 +662,20 @@
         message="Attribute `offset` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="271"/>
+            line="246"/>
     </issue>
 
     <issue
         id="UnusedAttribute"
         message="Attribute `offset` is only used in API level 24 and higher (current min is 23)">
+        <location
+            file="src/main/res/drawable/ic_nessie.xml"
+            line="247"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `startY` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
             line="272"/>
@@ -729,18 +683,10 @@
 
     <issue
         id="UnusedAttribute"
-        message="Attribute `startY` is only used in API level 24 and higher (current min is 23)">
-        <location
-            file="src/main/res/drawable/ic_nessie.xml"
-            line="285"/>
-    </issue>
-
-    <issue
-        id="UnusedAttribute"
         message="Attribute `startX` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="286"/>
+            line="273"/>
     </issue>
 
     <issue
@@ -748,7 +694,7 @@
         message="Attribute `endY` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="287"/>
+            line="274"/>
     </issue>
 
     <issue
@@ -756,7 +702,7 @@
         message="Attribute `endX` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="288"/>
+            line="275"/>
     </issue>
 
     <issue
@@ -764,12 +710,20 @@
         message="Attribute `offset` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="290"/>
+            line="277"/>
     </issue>
 
     <issue
         id="UnusedAttribute"
         message="Attribute `offset` is only used in API level 24 and higher (current min is 23)">
+        <location
+            file="src/main/res/drawable/ic_nessie.xml"
+            line="278"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `startY` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
             line="291"/>
@@ -777,18 +731,10 @@
 
     <issue
         id="UnusedAttribute"
-        message="Attribute `startY` is only used in API level 24 and higher (current min is 23)">
-        <location
-            file="src/main/res/drawable/ic_nessie.xml"
-            line="300"/>
-    </issue>
-
-    <issue
-        id="UnusedAttribute"
         message="Attribute `startX` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="301"/>
+            line="292"/>
     </issue>
 
     <issue
@@ -796,7 +742,7 @@
         message="Attribute `endY` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="302"/>
+            line="293"/>
     </issue>
 
     <issue
@@ -804,7 +750,7 @@
         message="Attribute `endX` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="303"/>
+            line="294"/>
     </issue>
 
     <issue
@@ -812,12 +758,20 @@
         message="Attribute `offset` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="305"/>
+            line="296"/>
     </issue>
 
     <issue
         id="UnusedAttribute"
         message="Attribute `offset` is only used in API level 24 and higher (current min is 23)">
+        <location
+            file="src/main/res/drawable/ic_nessie.xml"
+            line="297"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `startY` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
             line="306"/>
@@ -825,18 +779,10 @@
 
     <issue
         id="UnusedAttribute"
-        message="Attribute `startY` is only used in API level 24 and higher (current min is 23)">
-        <location
-            file="src/main/res/drawable/ic_nessie.xml"
-            line="319"/>
-    </issue>
-
-    <issue
-        id="UnusedAttribute"
         message="Attribute `startX` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="320"/>
+            line="307"/>
     </issue>
 
     <issue
@@ -844,7 +790,7 @@
         message="Attribute `endY` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="321"/>
+            line="308"/>
     </issue>
 
     <issue
@@ -852,7 +798,7 @@
         message="Attribute `endX` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="322"/>
+            line="309"/>
     </issue>
 
     <issue
@@ -860,15 +806,91 @@
         message="Attribute `offset` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="324"/>
+            line="311"/>
     </issue>
 
     <issue
         id="UnusedAttribute"
         message="Attribute `offset` is only used in API level 24 and higher (current min is 23)">
+        <location
+            file="src/main/res/drawable/ic_nessie.xml"
+            line="312"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `startY` is only used in API level 24 and higher (current min is 23)">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
             line="325"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `startX` is only used in API level 24 and higher (current min is 23)">
+        <location
+            file="src/main/res/drawable/ic_nessie.xml"
+            line="326"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `endY` is only used in API level 24 and higher (current min is 23)">
+        <location
+            file="src/main/res/drawable/ic_nessie.xml"
+            line="327"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `endX` is only used in API level 24 and higher (current min is 23)">
+        <location
+            file="src/main/res/drawable/ic_nessie.xml"
+            line="328"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `offset` is only used in API level 24 and higher (current min is 23)">
+        <location
+            file="src/main/res/drawable/ic_nessie.xml"
+            line="330"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `offset` is only used in API level 24 and higher (current min is 23)">
+        <location
+            file="src/main/res/drawable/ic_nessie.xml"
+            line="331"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of com.android.tools.build:gradle than 3.1.4 is available: 3.2.0">
+        <location
+            file="build.gradle"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of org.mozilla.components:fxa than 0.23 is available: 0.24">
+        <location
+            file="build.gradle"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of org.mozilla.components:sync-logins than 0.23 is available: 0.24">
+        <location
+            file="build.gradle"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of org.mozilla.components:telemetry than 0.23 is available: 0.24">
+        <location
+            file="build.gradle"/>
     </issue>
 
     <issue
@@ -876,14 +898,6 @@
         message="On SDK version 23 and up, your app data will be automatically backed up and restored on app install. Consider adding the attribute `android:fullBackupContent` to specify an `@xml` resource which configures which files to backup. More info: https://developer.android.com/training/backup/autosyncapi.html">
         <location
             file="src/main/AndroidManifest.xml"
-            line="5"/>
-    </issue>
-
-    <issue
-        id="VectorPath"
-        message="Very long vector path (2176 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
-        <location
-            file="src/main/res/drawable-v24/ic_nessie.xml"
             line="12"/>
     </issue>
 
@@ -891,8 +905,16 @@
         id="VectorPath"
         message="Very long vector path (2176 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
         <location
+            file="src/main/res/drawable-v24/ic_nessie.xml"
+            line="18"/>
+    </issue>
+
+    <issue
+        id="VectorPath"
+        message="Very long vector path (2176 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
+        <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="12"/>
+            line="18"/>
     </issue>
 
     <issue
@@ -900,7 +922,7 @@
         message="Very long vector path (2064 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
         <location
             file="src/main/res/drawable-v24/ic_nessie.xml"
-            line="16"/>
+            line="22"/>
     </issue>
 
     <issue
@@ -908,7 +930,7 @@
         message="Very long vector path (2064 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="16"/>
+            line="22"/>
     </issue>
 
     <issue
@@ -916,7 +938,7 @@
         message="Very long vector path (1174 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
         <location
             file="src/main/res/drawable-v24/ic_nessie.xml"
-            line="24"/>
+            line="30"/>
     </issue>
 
     <issue
@@ -924,7 +946,7 @@
         message="Very long vector path (1174 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="24"/>
+            line="30"/>
     </issue>
 
     <issue
@@ -932,7 +954,7 @@
         message="Very long vector path (1371 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
         <location
             file="src/main/res/drawable-v24/ic_nessie.xml"
-            line="28"/>
+            line="34"/>
     </issue>
 
     <issue
@@ -940,7 +962,7 @@
         message="Very long vector path (1371 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="28"/>
+            line="34"/>
     </issue>
 
     <issue
@@ -948,7 +970,7 @@
         message="Very long vector path (1320 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
         <location
             file="src/main/res/drawable-v24/ic_nessie.xml"
-            line="32"/>
+            line="38"/>
     </issue>
 
     <issue
@@ -956,7 +978,7 @@
         message="Very long vector path (1320 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="32"/>
+            line="38"/>
     </issue>
 
     <issue
@@ -964,7 +986,7 @@
         message="Very long vector path (2424 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
         <location
             file="src/main/res/drawable-v24/ic_nessie.xml"
-            line="96"/>
+            line="102"/>
     </issue>
 
     <issue
@@ -972,7 +994,7 @@
         message="Very long vector path (2424 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="96"/>
+            line="102"/>
     </issue>
 
     <issue
@@ -980,7 +1002,7 @@
         message="Very long vector path (1115 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
         <location
             file="src/main/res/drawable-v24/ic_nessie.xml"
-            line="111"/>
+            line="117"/>
     </issue>
 
     <issue
@@ -988,7 +1010,7 @@
         message="Very long vector path (1115 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="111"/>
+            line="117"/>
     </issue>
 
     <issue
@@ -996,7 +1018,7 @@
         message="Very long vector path (1670 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
         <location
             file="src/main/res/drawable-v24/ic_nessie.xml"
-            line="216"/>
+            line="222"/>
     </issue>
 
     <issue
@@ -1004,7 +1026,7 @@
         message="Very long vector path (1670 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="216"/>
+            line="222"/>
     </issue>
 
     <issue
@@ -1012,7 +1034,7 @@
         message="Very long vector path (1846 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
         <location
             file="src/main/res/drawable-v24/ic_nessie.xml"
-            line="231"/>
+            line="237"/>
     </issue>
 
     <issue
@@ -1020,7 +1042,7 @@
         message="Very long vector path (1846 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="231"/>
+            line="237"/>
     </issue>
 
     <issue
@@ -1028,7 +1050,7 @@
         message="Very long vector path (2518 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
         <location
             file="src/main/res/drawable-v24/ic_nessie.xml"
-            line="246"/>
+            line="252"/>
     </issue>
 
     <issue
@@ -1036,7 +1058,7 @@
         message="Very long vector path (2518 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="246"/>
+            line="252"/>
     </issue>
 
     <issue
@@ -1044,7 +1066,7 @@
         message="Very long vector path (1271 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
         <location
             file="src/main/res/drawable-v24/ic_nessie.xml"
-            line="254"/>
+            line="260"/>
     </issue>
 
     <issue
@@ -1052,7 +1074,7 @@
         message="Very long vector path (1271 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="254"/>
+            line="260"/>
     </issue>
 
     <issue
@@ -1060,7 +1082,7 @@
         message="Very long vector path (6357 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
         <location
             file="src/main/res/drawable-v24/ic_nessie.xml"
-            line="330"/>
+            line="336"/>
     </issue>
 
     <issue
@@ -1068,7 +1090,7 @@
         message="Very long vector path (6357 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="330"/>
+            line="336"/>
     </issue>
 
     <issue
@@ -1076,7 +1098,7 @@
         message="Very long vector path (7290 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
         <location
             file="src/main/res/drawable-v24/ic_nessie.xml"
-            line="334"/>
+            line="340"/>
     </issue>
 
     <issue
@@ -1084,7 +1106,7 @@
         message="Very long vector path (7290 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
         <location
             file="src/main/res/drawable/ic_nessie.xml"
-            line="334"/>
+            line="340"/>
     </issue>
 
     <issue
@@ -1100,7 +1122,7 @@
         message="Possible overdraw: Root element paints background `?attr/colorPrimaryDark` with a theme that also paints a background (inferred theme is `@style/Theme.AppCompat.Light.NoActionBar`)">
         <location
             file="src/main/res/layout/nav_header.xml"
-            line="10"/>
+            line="16"/>
     </issue>
 
     <issue
@@ -1108,7 +1130,7 @@
         message="The resource `R.color.colorPrimaryDark` appears to be unused">
         <location
             file="src/main/res/values/colors.xml"
-            line="4"/>
+            line="10"/>
     </issue>
 
     <issue
@@ -1116,7 +1138,7 @@
         message="The resource `R.color.colorAccent` appears to be unused">
         <location
             file="src/main/res/values/colors.xml"
-            line="5"/>
+            line="11"/>
     </issue>
 
     <issue
@@ -1124,7 +1146,7 @@
         message="The resource `R.drawable.ic_launcher_background` appears to be unused">
         <location
             file="src/main/res/drawable/ic_launcher_background.xml"
-            line="2"/>
+            line="8"/>
     </issue>
 
     <issue
@@ -1132,7 +1154,7 @@
         message="The resource `R.drawable.ic_launcher_foreground` appears to be unused">
         <location
             file="src/main/res/drawable-v24/ic_launcher_foreground.xml"
-            line="1"/>
+            line="7"/>
     </issue>
 
     <issue
@@ -1140,7 +1162,7 @@
         message="The resource `R.style.AppTheme` appears to be unused">
         <location
             file="src/main/res/values/styles.xml"
-            line="4"/>
+            line="10"/>
     </issue>
 
     <issue
@@ -1183,7 +1205,7 @@
         message="App is not indexable by Google Search; consider adding at least one Activity with an ACTION-VIEW intent filter. See issue explanation for more details.">
         <location
             file="src/main/AndroidManifest.xml"
-            line="5"/>
+            line="12"/>
     </issue>
 
 </issues>
