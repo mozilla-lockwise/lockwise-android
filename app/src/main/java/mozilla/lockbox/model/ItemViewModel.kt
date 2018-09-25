@@ -11,4 +11,4 @@ data class ItemViewModel(
         val title : String,
         val subtitle : String,
         val guid : String
-) { }
+)

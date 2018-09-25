@@ -19,10 +19,7 @@ import org.mozilla.sync15.logins.LoginsStorage
 import org.mozilla.sync15.logins.ServerPassword
 import org.mozilla.sync15.logins.SyncResult
 
-/**
- *
- */
-class DataStore(
+open class DataStore(
     val dispatcher: Dispatcher = Dispatcher.shared,
     val support: DataStoreSupport = FixedDataStoreSupport.shared
 ) {
@@ -76,7 +73,7 @@ class DataStore(
 
     val state: Observable<State> get() = stateSubject
 
-    val list: Observable<List<ServerPassword>> get() = listSubject
+    open val list: Observable<List<ServerPassword>> get() = listSubject
 
     fun unlock(): Observable<Unit> {
         val unlockSubject = SingleSubject.create<Unit>()

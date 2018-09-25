@@ -32,35 +32,36 @@ class ItemListPresenter(private val view: ItemListView,
                         private val dataStore: DataStore = DataStore.shared) : Presenter() {
     override fun onViewReady() {
         view.drawerItemSelections
-            .subscribe { menuItem ->
-                view.closeDrawers()
-                when (menuItem.itemId) {
-                    R.id.goto_settings -> {
-                        dispatcher.dispatch(RouteAction.SETTING_LIST)
-                    }
-                    R.id.lock_now -> {
-                        dispatcher.dispatch(RouteAction.LOCK)
-                    }
-                    else -> {
-                        log.info("Menu ${menuItem.title} unimplemented")
+                .subscribe { menuItem ->
+                    view.closeDrawers()
+                    when (menuItem.itemId) {
+                        R.id.goto_settings -> {
+                            dispatcher.dispatch(RouteAction.SETTING_LIST)
+                        }
+                        R.id.lock_now -> {
+                            dispatcher.dispatch(RouteAction.LOCK)
+                        }
+                        else -> {
+                            log.info("Menu ${menuItem.title} unimplemented")
+                        }
                     }
                 }
-            }
-            .addTo(compositeDisposable)
+                .addTo(compositeDisposable)
 
         dataStore.list
-            .map {
-                it.map {
-                    val username = it.username ?: ""
-                    val hostname = it.hostname.titleFromHostname()
-                    ItemViewModel(
-                            hostname,
-                            username,
-                            it.id)
+                .filter { it.isNotEmpty() }
+                .map {
+                    it.map {
+                        val username = it.username ?: ""
+                        val hostname = it.hostname.titleFromHostname()
+                        ItemViewModel(
+                                hostname,
+                                username,
+                                it.id)
+                    }
                 }
-            }
-            .subscribe(view::updateItems)
-            .addTo(compositeDisposable)
+                .subscribe(view::updateItems)
+                .addTo(compositeDisposable)
 
         dispatcher.dispatch(DataStoreAction.Type.UNLOCK)
     }
