@@ -6,7 +6,7 @@
   -->
 
 <inset xmlns:android="http://schemas.android.com/apk/res/android"
-    android:insetLeft="8dp"
+    android:insetLeft="16dp"
     android:insetRight="0dp">
 
     <shape>
