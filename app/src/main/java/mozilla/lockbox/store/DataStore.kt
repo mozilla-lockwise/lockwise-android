@@ -60,9 +60,9 @@ open class DataStore(
 
         // register for actions
         dispatcher.register
-                .filterByType(DataStoreAction.Type::class.java)
+                .filterByType(DataStoreAction::class.java)
                 .subscribe {
-                    when (it) {
+                    when (it.type) {
                         DataStoreAction.Type.LOCK -> lock()
                         DataStoreAction.Type.UNLOCK -> unlock()
                         DataStoreAction.Type.SYNC -> sync()

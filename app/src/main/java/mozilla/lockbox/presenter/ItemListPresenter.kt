@@ -65,6 +65,7 @@ class ItemListPresenter(
                 .subscribe(view::updateItems)
                 .addTo(compositeDisposable)
 
-        dispatcher.dispatch(DataStoreAction.Type.UNLOCK)
+        // TODO: remove this when we have proper locking / unlocking
+        dispatcher.dispatch(DataStoreAction(DataStoreAction.Type.UNLOCK))
     }
 }
