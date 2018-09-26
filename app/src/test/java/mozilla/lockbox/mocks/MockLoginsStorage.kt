@@ -15,7 +15,7 @@ import org.mozilla.sync15.logins.SyncResult
 import org.mozilla.sync15.logins.SyncUnlockInfo
 
 open class MockLoginsStorage : LoginsStorage {
-    private val all = MutableList<ServerPassword>(10) { createDummyItem(it) }
+    private val all = MutableList(10) { createDummyItem(it) }
 
     private var _locked = true
 
