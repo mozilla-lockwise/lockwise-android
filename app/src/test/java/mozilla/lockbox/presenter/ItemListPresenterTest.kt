@@ -11,7 +11,6 @@ import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import junit.framework.Assert
-import mozilla.lockbox.extensions.titleFromHostname
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.model.ItemViewModel
@@ -101,13 +100,13 @@ class ItemListPresenterTest {
         dataStore.listStub.onNext(list)
 
         val expectedList = listOf<ItemViewModel>(
-                ItemViewModel(password1.hostname.titleFromHostname(),
+                ItemViewModel("mozilla.org",
                         username,
                         password1.id),
-                ItemViewModel(password2.hostname.titleFromHostname(),
+                ItemViewModel("cats.org",
                         username,
                         password2.id),
-                ItemViewModel(password3.hostname.titleFromHostname(),
+                ItemViewModel("dogs.org",
                         "",
                         password3.id)
         )

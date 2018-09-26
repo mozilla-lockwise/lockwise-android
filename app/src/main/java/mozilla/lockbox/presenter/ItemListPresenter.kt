@@ -12,7 +12,6 @@ import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.R
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.RouteAction
-import mozilla.lockbox.extensions.titleFromHostname
 import mozilla.lockbox.flux.Dispatcher
 
 import mozilla.lockbox.flux.Presenter
@@ -55,7 +54,7 @@ class ItemListPresenter(
                 .map {
                     it.map {
                         val username = it.username ?: ""
-                        val hostname = it.hostname.titleFromHostname()
+                        val hostname = titleFromHostname(it.hostname)
                         ItemViewModel(
                                 hostname,
                                 username,
@@ -67,5 +66,12 @@ class ItemListPresenter(
 
         // TODO: remove this when we have proper locking / unlocking
         dispatcher.dispatch(DataStoreAction(DataStoreAction.Type.UNLOCK))
+    }
+
+    private fun titleFromHostname(hostname: String): String {
+        return hostname
+                .replace(Regex("^http://"), "")
+                .replace(Regex("^https://"), "")
+                .replace(Regex("^www\\d*\\."), "")
     }
 }
