@@ -37,6 +37,11 @@ android {
         warningsAsErrors true
         baseline file("lint-baseline.xml")
     }
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
 }
 
 configurations {
@@ -108,4 +113,8 @@ task ktlintFormat(type: JavaExec, group: "formatting") {
     main = "com.github.shyiko.ktlint.Main"
     classpath = configurations.ktlint
     args = [ "-F", "src/**/*.kt" ]
+}
+
+androidExtensions {
+    experimental = true
 }
