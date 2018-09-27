@@ -27,6 +27,7 @@
     <string name="placeholder_unlock_button">Unlock Firefox Lockbox</string>
     <string name="lock_now">Lock Now</string>
     <string name="all_entries_a_z">All entries (A-Z)</string>
+    <string name="search_your_entries">search your entries</string>
     <string name="hint_hostname">Web address</string>
     <string name="hint_username">Username</string>
     <string name="hint_password">Password</string>

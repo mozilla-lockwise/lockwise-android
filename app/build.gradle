@@ -93,9 +93,9 @@ task ktlint(type: JavaExec, group: "verification", description: "Runs ktlint.") 
     outputs.dir(outputDir)
     main = "com.github.shyiko.ktlint.Main"
     classpath = configurations.ktlint
-    args = [ "--reporter=plain",
-             "--reporter=checkstyle,output=${outputDir}ktlint-checkstyle-report.xml",
-             "src/**/*.kt" ]
+    args = ["--reporter=plain",
+            "--reporter=checkstyle,output=${outputDir}ktlint-checkstyle-report.xml",
+            "src/**/*.kt"]
 }
 
 afterEvaluate {
@@ -113,7 +113,7 @@ task ktlintFormat(type: JavaExec, group: "formatting") {
     description = "Runs ktlint and autoformats your code."
     main = "com.github.shyiko.ktlint.Main"
     classpath = configurations.ktlint
-    args = [ "-F", "src/**/*.kt" ]
+    args = ["-F", "src/**/*.kt"]
 }
 
 androidExtensions {
