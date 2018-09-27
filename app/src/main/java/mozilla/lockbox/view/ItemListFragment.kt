@@ -6,6 +6,7 @@
 
 package mozilla.lockbox.view
 
+import android.content.ClipData
 import android.os.Bundle
 import android.support.v4.view.GravityCompat
 import android.support.v7.widget.DividerItemDecoration
@@ -19,6 +20,7 @@ import com.jakewharton.rxbinding2.support.v7.widget.navigationClicks
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
+import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_item_list.view.*
 import mozilla.lockbox.R
 import mozilla.lockbox.adapter.ItemListAdapter
@@ -29,6 +31,7 @@ import mozilla.lockbox.presenter.ItemListView
 class ItemListFragment : CommonFragment(), ItemListView {
     private val compositeDisposable = CompositeDisposable()
     private val adapter = ItemListAdapter()
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -62,6 +65,9 @@ class ItemListFragment : CommonFragment(), ItemListView {
     override val drawerItemSelections: Observable<MenuItem>
         get() = view!!.navView.itemSelections()
 
+    override val itemSelection: Observable<ItemViewModel>
+        get() = adapter.clicks()
+
     override fun closeDrawers() {
         view!!.appDrawer.closeDrawer(GravityCompat.START, false)
     }
@@ -69,4 +75,6 @@ class ItemListFragment : CommonFragment(), ItemListView {
     override fun updateItems(itemList: List<ItemViewModel>) {
         adapter.updateItems(itemList)
     }
+
+
 }

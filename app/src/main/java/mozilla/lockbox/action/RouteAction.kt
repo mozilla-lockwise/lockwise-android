@@ -8,5 +8,5 @@ package mozilla.lockbox.action
 import mozilla.lockbox.flux.Action
 
 enum class RouteAction : Action {
-    WELCOME, ITEMLIST, LOGIN, SETTING_LIST, LOCK, BACK
+    WELCOME, ITEM_LIST, ITEM_DETAIL, LOGIN, SETTING_LIST, LOCK, BACK
 }
