@@ -14,22 +14,26 @@ import android.view.ViewGroup
 import com.jakewharton.rxbinding2.view.clicks
 import com.jakewharton.rxbinding2.view.visibility
 import com.jakewharton.rxbinding2.widget.text
+import com.jakewharton.rxbinding2.widget.textChanges
 import io.reactivex.Observable
 import io.reactivex.functions.Consumer
-import kotlinx.android.synthetic.main.fragment_filter.view.*
+import kotlinx.android.synthetic.main.fragment_filter.view.entriesView
+import kotlinx.android.synthetic.main.include_backable_filter.view.filterField
+import kotlinx.android.synthetic.main.include_backable_filter.view.cancelButton
 import mozilla.lockbox.R
 import mozilla.lockbox.adapter.ItemListAdapter
 import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.presenter.FilterPresenter
 import mozilla.lockbox.presenter.FilterView
 
-class FilterFragment : CommonFragment(), FilterView {
+class FilterFragment : BackableFragment(), FilterView {
     val adapter = ItemListAdapter()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         presenter = FilterPresenter(this)
         val view = inflater.inflate(R.layout.fragment_filter, container, false)
+        setupBackable(view, R.drawable.ic_arrow_back)
 
         val layoutManager = LinearLayoutManager(context)
         view.entriesView.layoutManager = layoutManager
@@ -38,8 +42,8 @@ class FilterFragment : CommonFragment(), FilterView {
         return view
     }
 
-    override val filterTextEntered: Observable<String>
-        get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+    override val filterTextEntered: Observable<CharSequence>
+        get() = view!!.filterField.textChanges()
 
     override val filterText: Consumer<in CharSequence>
         get() = view!!.filterField.text()

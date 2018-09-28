@@ -28,6 +28,7 @@ class RoutePresenter(private val activity: AppCompatActivity, routeStore: RouteS
     private val settingList: SettingFragment by lazy { SettingFragment() }
     private val lock: LockedFragment by lazy { LockedFragment() }
     private val itemDetail: ItemDetailFragment by lazy { ItemDetailFragment() }
+    private val filter: FilterFragment by lazy { FilterFragment() }
 
     init {
         routeStore.routes.subscribe { a -> route(a) }.addTo(compositeDisposable)

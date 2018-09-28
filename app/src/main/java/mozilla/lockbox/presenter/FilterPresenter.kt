@@ -7,16 +7,18 @@
 package mozilla.lockbox.presenter
 
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.extensions.mapToItemViewModelList
 import mozilla.lockbox.flux.Presenter
+import mozilla.lockbox.log
 import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.store.DataStore
 
 interface FilterView {
-    val filterTextEntered: Observable<String>
+    val filterTextEntered: Observable<CharSequence>
     val filterText: Consumer<in CharSequence>
     val cancelButtonClicks: Observable<Unit>
     val cancelButtonVisibility: Consumer<in Boolean>
@@ -29,10 +31,23 @@ class FilterPresenter(
         ) : Presenter() {
 
     override fun onViewReady() {
-        Observables.combineLatest(view.filterTextEntered, dataStore.list)
-                .map { it.second }
-                .mapToItemViewModelList()
+        val itemViewModelList = dataStore.list.mapToItemViewModelList()
+
+        Observables.combineLatest(view.filterTextEntered, itemViewModelList)
+                .filterItemsForText()
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(view::updateItems)
                 .addTo(compositeDisposable)
+    }
+
+    private fun Observable<Pair<CharSequence, List<ItemViewModel>>>.filterItemsForText(): Observable<List<ItemViewModel>> {
+        return this.map { pair ->
+            log.debug("mapping")
+            pair.second.filter {
+                it.title.contains(pair.first, true) ||
+                        it.subtitle.contains(pair.first, true)
+            }
+        }
+
     }
 }

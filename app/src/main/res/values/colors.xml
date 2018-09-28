@@ -6,7 +6,8 @@
   -->
 
 <resources>
-    <color name="colorPrimary">#0e89c9</color>
+    <color name="colorPrimary">#137db5</color>
     <color name="colorPrimaryDark">#055894</color>
     <color name="recyclerview_divider">#26000000</color>
+    <color name="white_60_percent">#99FFFFFF</color>
 </resources>
