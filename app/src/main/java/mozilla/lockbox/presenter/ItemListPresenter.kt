@@ -8,6 +8,7 @@ package mozilla.lockbox.presenter
 
 import android.view.MenuItem
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.R
 import mozilla.lockbox.action.DataStoreAction
@@ -62,6 +63,7 @@ class ItemListPresenter(
         dataStore.list
                 .filter { it.isNotEmpty() }
                 .mapToItemViewModelList()
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(view::updateItems)
                 .addTo(compositeDisposable)
 

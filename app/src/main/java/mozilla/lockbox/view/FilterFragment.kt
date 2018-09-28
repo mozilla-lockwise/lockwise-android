@@ -6,25 +6,27 @@
 
 package mozilla.lockbox.view
 
+import android.content.Context
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import com.jakewharton.rxbinding2.view.clicks
 import com.jakewharton.rxbinding2.view.visibility
 import com.jakewharton.rxbinding2.widget.text
 import com.jakewharton.rxbinding2.widget.textChanges
 import io.reactivex.Observable
 import io.reactivex.functions.Consumer
-import kotlinx.android.synthetic.main.fragment_filter.view.entriesView
-import kotlinx.android.synthetic.main.include_backable_filter.view.filterField
-import kotlinx.android.synthetic.main.include_backable_filter.view.cancelButton
+import kotlinx.android.synthetic.main.fragment_filter.view.*
+import kotlinx.android.synthetic.main.include_backable_filter.view.*
 import mozilla.lockbox.R
 import mozilla.lockbox.adapter.ItemListAdapter
 import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.presenter.FilterPresenter
 import mozilla.lockbox.presenter.FilterView
+
 
 class FilterFragment : BackableFragment(), FilterView {
     val adapter = ItemListAdapter()
@@ -40,6 +42,14 @@ class FilterFragment : BackableFragment(), FilterView {
         view.entriesView.adapter = adapter
 
         return view
+    }
+
+    override fun onResume() {
+        super.onResume()
+        view!!.filterField.requestFocus()
+
+        val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(view!!.filterField, InputMethodManager.SHOW_IMPLICIT)
     }
 
     override val filterTextEntered: Observable<CharSequence>

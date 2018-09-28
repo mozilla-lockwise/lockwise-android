@@ -4,22 +4,18 @@
   ~ License, v. 2.0. If a copy of the MPL was not distributed with this
   ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
   -->
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/toolbar"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal">
-
-    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/toolbar"
+    android:layout_height="?attr/actionBarSize"
+    android:theme="@style/ToolBar">
+    <LinearLayout android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:theme="@style/ToolBar">
+        android:layout_height="match_parent">
 
         <EditText
             android:id="@+id/filterField"
-            android:layout_width="fill_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:hint="@string/search_your_entries"
@@ -27,17 +23,19 @@
             android:textColor="@android:color/white"
             android:textColorHint="@color/white_60_percent"
             android:textCursorDrawable="@null"
-            android:inputType="textAutoComplete"
-            tools:ignore="Autofill" />
+            android:inputType="textAutoComplete" />
 
         <ImageButton
             android:id="@+id/cancelButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_gravity="center_vertical"
             android:background="@null"
             android:src="@drawable/ic_close"
             android:contentDescription="TODO" />
+    </LinearLayout>
 
-    </android.support.v7.widget.Toolbar>
-</LinearLayout>
+</android.support.v7.widget.Toolbar>
