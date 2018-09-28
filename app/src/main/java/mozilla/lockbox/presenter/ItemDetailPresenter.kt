@@ -22,7 +22,7 @@ class ItemDetailPresenter(
         private val dispatcher: Dispatcher = Dispatcher.shared,
         private val dataStore: DataStore = DataStore.shared
 ) : Presenter() {
-    override fun onViewReady() {
+    override fun onResume() {
         val itemId = view?.itemId ?: return
         dataStore.get(itemId).map { ItemViewModel(it.hostname, it.username?: "", it.id) }
                 .subscribe(view::updateItem)

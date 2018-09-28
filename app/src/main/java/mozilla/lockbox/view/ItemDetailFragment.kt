@@ -30,8 +30,6 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         val view = inflater.inflate(R.layout.fragment_item_detail, container, false)
         setupBackable(view)
 
-        // TODO pass this in from the RouteAction.
-        itemId = "00001"
         return view
     }
 

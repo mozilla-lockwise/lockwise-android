@@ -19,4 +19,9 @@ abstract class Presenter {
     open fun onDestroy() {
         compositeDisposable.clear()
     }
+
+    @CallSuper
+    open fun onResume() {
+        // NOOP
+    }
 }

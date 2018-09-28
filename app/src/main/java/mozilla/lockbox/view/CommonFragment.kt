@@ -23,4 +23,9 @@ open class CommonFragment : Fragment() {
         super.onDestroyView()
         presenter.onDestroy()
     }
+
+    override fun onResume() {
+        super.onResume()
+        presenter.onResume()
+    }
 }
