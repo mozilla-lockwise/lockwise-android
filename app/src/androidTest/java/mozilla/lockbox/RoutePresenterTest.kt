@@ -48,4 +48,9 @@ open class RoutePresenterTest {
     fun testSettings() {
         navigator.gotoSettings()
     }
+
+    @Test
+    fun testItemDetail() {
+        navigator.gotoItemDetail()
+    }
 }
