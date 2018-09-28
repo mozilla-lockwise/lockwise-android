@@ -38,6 +38,18 @@ class FilterPresenter(
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(view::updateItems)
                 .addTo(compositeDisposable)
+
+        view.filterTextEntered
+                .map { it.isNotEmpty() }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(view.cancelButtonVisibility)
+                .addTo(compositeDisposable)
+
+        view.cancelButtonClicks
+                .map { "" }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(view.filterText)
+                .addTo(compositeDisposable)
     }
 
     private fun Observable<Pair<CharSequence, List<ItemViewModel>>>.filterItemsForText(): Observable<List<ItemViewModel>> {
