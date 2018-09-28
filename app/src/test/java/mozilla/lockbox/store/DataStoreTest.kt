@@ -40,8 +40,7 @@ class DataStoreTest : DisposingTest() {
             Assert.assertTrue(it.isEmpty())
         }.addTo(disposer)
         subject.state.subscribe {
-            Assert.assertEquals(State.Status.LOCKED, it.status)
-            Assert.assertNull(it.error)
+            Assert.assertEquals(State.LOCKED, it)
         }.addTo(disposer)
     }
 
@@ -65,8 +64,8 @@ class DataStoreTest : DisposingTest() {
         stateObserver.apply {
             // TODO: figure out why the initialized state isn't here?
             assertValueCount(2)
-            assertValueAt(0, State(State.Status.UNLOCKED))
-            assertValueAt(1, State(State.Status.LOCKED))
+            assertValueAt(0, State.UNLOCKED)
+            assertValueAt(1, State.LOCKED)
         }
         listObserver.apply {
             val results = values()

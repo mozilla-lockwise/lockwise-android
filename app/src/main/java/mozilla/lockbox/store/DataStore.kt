@@ -27,16 +27,11 @@ open class DataStore(
         val shared = DataStore()
     }
 
-    data class State(
-        val status: Status,
-        val error: Throwable? = null
-    ) {
-        enum class Status {
-            UNPREPARED,
-            LOCKED,
-            UNLOCKED,
-            ERRORED
-        }
+    sealed class State {
+        object UNPREPARED : State()
+        object LOCKED : State()
+        object UNLOCKED : State()
+        data class ERRORED(val error: Throwable) : State()
     }
 
     internal val compositeDisposable = CompositeDisposable()
@@ -51,9 +46,9 @@ open class DataStore(
 
         // handle state changes
         state.subscribe { state ->
-            when (state.status) {
-                State.Status.LOCKED -> clearList()
-                State.Status.UNLOCKED -> updateList()
+            when (state) {
+                is State.LOCKED -> clearList()
+                is State.UNLOCKED -> updateList()
                 else -> Unit
             }
         }.addTo(compositeDisposable)
@@ -87,7 +82,7 @@ open class DataStore(
         backend.isLocked().then {
             if (it) {
                 backend.unlock(support.encryptionKey).then {
-                    stateSubject.onNext(State(State.Status.UNLOCKED))
+                    stateSubject.onNext(State.UNLOCKED)
                     SyncResult.fromValue(Unit)
                 }
             } else {
@@ -110,7 +105,7 @@ open class DataStore(
         backend.isLocked().then {
             if (!it) {
                 backend.lock().then {
-                    stateSubject.onNext(State(State.Status.LOCKED))
+                    stateSubject.onNext(State.LOCKED)
                     SyncResult.fromValue(Unit)
                 }
             } else {
@@ -136,7 +131,7 @@ open class DataStore(
             syncSubject.onSuccess(Unit)
             SyncResult.fromValue(Unit)
         }.thenCatch {
-            stateSubject.onNext(State(State.Status.ERRORED, it))
+            stateSubject.onNext(State.ERRORED(it))
             syncSubject.onError(it)
             SyncResult.fromValue(Unit)
         }
