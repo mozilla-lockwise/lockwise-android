@@ -62,10 +62,10 @@ open class DataStore(
         dispatcher.register
                 .filterByType(DataStoreAction::class.java)
                 .subscribe {
-                    when (it.type) {
-                        DataStoreAction.Type.LOCK -> lock()
-                        DataStoreAction.Type.UNLOCK -> unlock()
-                        DataStoreAction.Type.SYNC -> sync()
+                    when (it) {
+                        is DataStoreAction.LOCK -> lock()
+                        is DataStoreAction.UNLOCK -> unlock()
+                        is DataStoreAction.SYNC -> sync()
                     }
                 }
                 .addTo(compositeDisposable)
