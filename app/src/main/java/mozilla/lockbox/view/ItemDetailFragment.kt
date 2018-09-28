@@ -10,14 +10,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.jakewharton.rxbinding2.view.clicks
-import io.reactivex.Observable
-import kotlinx.android.synthetic.main.fragment_item_detail.view.*
+import android.widget.EditText
+import android.widget.TextView
+import kotlinx.android.synthetic.main.fragment_item_detail.*
 import mozilla.lockbox.R
+import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.presenter.ItemDetailPresenter
 import mozilla.lockbox.presenter.ItemDetailView
 
 class ItemDetailFragment : BackableFragment(), ItemDetailView {
+    override var itemId: String? = null
+
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -26,6 +29,33 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         presenter = ItemDetailPresenter(this)
         val view = inflater.inflate(R.layout.fragment_item_detail, container, false)
         setupBackable(view)
+
+        // TODO pass this in from the RouteAction.
+        itemId = "00001"
         return view
     }
+
+    override fun updateItem(item: ItemViewModel) {
+        inputLayoutHostname.isHintAnimationEnabled = false
+        inputLayoutUsername.isHintAnimationEnabled = false
+        inputLayoutPassword.isHintAnimationEnabled = false
+
+        inputUsername.readOnly = true
+        inputPassword.readOnly = true
+        inputHostname.readOnly = true
+
+        inputHostname.setText(item.title, TextView.BufferType.NORMAL)
+        inputUsername.setText(item.subtitle, TextView.BufferType.NORMAL)
+        inputPassword.setText(item.guid, TextView.BufferType.NORMAL)
+    }
 }
+
+var EditText.readOnly: Boolean
+    get() = this.isFocusable
+    set(readOnly) {
+            this.isFocusable = !readOnly
+            this.isFocusableInTouchMode = !readOnly
+            this.isClickable = !readOnly
+            this.isLongClickable = !readOnly
+            this.isCursorVisible = !readOnly
+        }
