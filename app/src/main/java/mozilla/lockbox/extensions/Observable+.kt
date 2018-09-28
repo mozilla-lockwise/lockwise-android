@@ -15,21 +15,5 @@ fun <T : Any, U : T> Observable<T>.filterByType(clazz: Class<out U>): Observable
 }
 
 fun Observable<List<ServerPassword>>.mapToItemViewModelList(): Observable<List<ItemViewModel>> {
-    return this.map {
-        it.map {
-            val username = it.username ?: ""
-            val hostname = titleFromHostname(it.hostname)
-            ItemViewModel(
-                    hostname,
-                    username,
-                    it.id)
-        }
-    }
-}
-
-private fun titleFromHostname(hostname: String): String {
-    return hostname
-            .replace(Regex("^http://"), "")
-            .replace(Regex("^https://"), "")
-            .replace(Regex("^www\\d*\\."), "")
+    return this.map { it.map { it.toViewModel() } }
 }

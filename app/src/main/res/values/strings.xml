@@ -28,6 +28,9 @@
     <string name="lock_now">Lock Now</string>
     <string name="all_entries_a_z">All entries (A-Z)</string>
     <string name="search_your_entries" tools:ignore="ExtraTranslation">search your entries</string>
+    <string name="no_matching_entries">No matching entries.</string>
+    <string name="save_firefox_disclaimer">To see more entries here, you\'ll need to save them to Firefox.</string>
+    <string name="learn_more">Learn more</string>
     <string name="hint_hostname">Web address</string>
     <string name="hint_username">Username</string>
     <string name="hint_password">Password</string>
