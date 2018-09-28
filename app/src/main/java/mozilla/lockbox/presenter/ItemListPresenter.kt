@@ -53,7 +53,7 @@ class ItemListPresenter(
         view.itemSelection
                 .subscribe { it->
                     log.info("Clicked on ${it.title}")
-                    dispatcher.dispatch(RouteAction.ITEM_DETAIL)
+                    dispatcher.dispatch(RouteAction.ITEM_DETAIL(it.guid))
                 }
                 .addTo(compositeDisposable)
 
