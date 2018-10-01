@@ -1208,4 +1208,27 @@
             line="12"/>
     </issue>
 
+    <issue
+        id="Autofill"
+        message="Missing `autofillHints` attribute">
+        <location
+            file="src/main/res/layout/fragment_item_detail.xml"
+            line="22"/>
+    </issue>
+
+    <issue
+        id="Autofill"
+        message="Missing `autofillHints` attribute">
+        <location
+            file="src/main/res/layout/fragment_item_detail.xml"
+            line="37"/>
+    </issue>
+
+    <issue
+        id="Autofill"
+        message="Missing `autofillHints` attribute">
+        <location
+            file="src/main/res/layout/fragment_item_detail.xml"
+            line="51"/>
+    </issue>
 </issues>
