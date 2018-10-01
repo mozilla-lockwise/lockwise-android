@@ -55,7 +55,7 @@ class ItemListAdapter : RecyclerView.Adapter<ItemViewHolder>() {
         notifyDataSetChanged()
     }
 
-    fun clicks() : Observable<ItemViewModel> {
+    fun clicks(): Observable<ItemViewModel> {
         return this._clicks
     }
 }

@@ -10,7 +10,6 @@ import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.model.ItemDetailViewModel
-import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.model.titleFromHostname
 import mozilla.lockbox.store.DataStore
 
@@ -20,9 +19,9 @@ interface ItemDetailView {
 }
 
 class ItemDetailPresenter(
-        private val view: ItemDetailView,
-        private val dispatcher: Dispatcher = Dispatcher.shared,
-        private val dataStore: DataStore = DataStore.shared
+    private val view: ItemDetailView,
+    private val dispatcher: Dispatcher = Dispatcher.shared,
+    private val dataStore: DataStore = DataStore.shared
 ) : Presenter() {
     override fun onResume() {
         val itemId = view?.itemId ?: return

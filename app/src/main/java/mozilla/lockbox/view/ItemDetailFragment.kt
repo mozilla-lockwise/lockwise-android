@@ -24,9 +24,9 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
     override var itemId: String? = null
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         presenter = ItemDetailPresenter(this)
         val view = inflater.inflate(R.layout.fragment_item_detail, container, false)

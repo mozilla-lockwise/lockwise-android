@@ -6,10 +6,10 @@
 
 package mozilla.lockbox.model
 
-data class ItemDetailViewModel (
-        val id: String,
-        val title: String,
-        val hostname: String,
-        val username: String?,
-        val password: String
+data class ItemDetailViewModel(
+    val id: String,
+    val title: String,
+    val hostname: String,
+    val username: String?,
+    val password: String
 )
