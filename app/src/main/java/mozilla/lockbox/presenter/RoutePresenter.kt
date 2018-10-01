@@ -60,16 +60,16 @@ class RoutePresenter(private val activity: AppCompatActivity, routeStore: RouteS
 
     private fun route(action: RouteAction) {
         when (action) {
-            is RouteAction.WELCOME -> replaceFragment(welcome, false)
-            is RouteAction.LOGIN -> replaceFragment(login)
-            is RouteAction.ITEM_LIST -> replaceFragment(itemList, false)
-            is RouteAction.SETTING_LIST -> replaceFragment(settingList)
-            is RouteAction.LOCK -> replaceFragment(lock, false)
-            is RouteAction.ITEM_DETAIL -> {
+            is RouteAction.Welcome -> replaceFragment(welcome, false)
+            is RouteAction.Login -> replaceFragment(login)
+            is RouteAction.ItemList -> replaceFragment(itemList, false)
+            is RouteAction.SettingList -> replaceFragment(settingList)
+            is RouteAction.LockScreen -> replaceFragment(lock, false)
+            is RouteAction.ItemDetail -> {
                 itemDetail.itemId = action.id
                 replaceFragment(itemDetail)
             }
-            is RouteAction.BACK -> activity.supportFragmentManager.popBackStack()
+            is RouteAction.Back -> activity.supportFragmentManager.popBackStack()
         }
     }
 }

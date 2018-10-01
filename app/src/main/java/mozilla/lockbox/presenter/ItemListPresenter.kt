@@ -39,10 +39,10 @@ class ItemListPresenter(
                     view.closeDrawers()
                     when (menuItem.itemId) {
                         R.id.goto_settings -> {
-                            dispatcher.dispatch(RouteAction.SETTING_LIST)
+                            dispatcher.dispatch(RouteAction.SettingList)
                         }
                         R.id.lock_now -> {
-                            dispatcher.dispatch(RouteAction.LOCK)
+                            dispatcher.dispatch(RouteAction.LockScreen)
                         }
                         else -> {
                             log.info("Menu ${menuItem.title} unimplemented")
@@ -52,8 +52,8 @@ class ItemListPresenter(
                 .addTo(compositeDisposable)
 
         view.itemSelection
-                .subscribe { it->
-                    dispatcher.dispatch(RouteAction.ITEM_DETAIL(it.guid))
+                .subscribe { it ->
+                    dispatcher.dispatch(RouteAction.ItemDetail(it.guid))
                 }
                 .addTo(compositeDisposable)
 

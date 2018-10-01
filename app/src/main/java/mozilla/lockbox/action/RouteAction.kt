@@ -9,11 +9,11 @@ package mozilla.lockbox.action
 import mozilla.lockbox.flux.Action
 
 sealed class RouteAction : Action {
-    object WELCOME : RouteAction()
-    object ITEM_LIST : RouteAction()
-    object LOGIN : RouteAction()
-    object SETTING_LIST : RouteAction()
-    object BACK : RouteAction()
-    object LOCK : RouteAction()
-    data class ITEM_DETAIL(val id: String) : RouteAction()
+    object Welcome : RouteAction()
+    object ItemList : RouteAction()
+    object Login : RouteAction()
+    object SettingList : RouteAction()
+    object Back : RouteAction()
+    object LockScreen : RouteAction()
+    data class ItemDetail(val id: String) : RouteAction()
 }

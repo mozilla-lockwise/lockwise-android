@@ -22,7 +22,7 @@ class LockedPresenter(
 ) : Presenter() {
     override fun onViewReady() {
         view.unlockButtonTaps
-                .subscribe { dispatcher.dispatch(RouteAction.ITEM_LIST) }
+                .subscribe { dispatcher.dispatch(RouteAction.ItemList) }
                 .addTo(compositeDisposable)
     }
 }
