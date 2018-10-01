@@ -8,7 +8,7 @@
 
 buildscript {
     ext.kotlin_version = '1.2.51'
-    ext.android_components_version = '0.23'
+    ext.android_components_version = '0.25.1'
 
     repositories {
         google()
