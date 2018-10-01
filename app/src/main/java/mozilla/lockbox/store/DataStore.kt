@@ -76,7 +76,7 @@ open class DataStore(
     open val list: Observable<List<ServerPassword>> get() = listSubject
 
     open fun get(id: String): Observable<ServerPassword?> {
-        return listSubject.map { items ->
+        return list.map { items ->
             items.findLast { item -> item.id == id }
         }
     }
