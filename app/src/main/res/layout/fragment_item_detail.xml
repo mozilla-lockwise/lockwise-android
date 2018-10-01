@@ -12,9 +12,7 @@
     android:layout_height="match_parent"
     tools:layout_editor_absoluteY="25dp">
 
-    <include
-        layout="@layout/include_backable" />
-
+    <include layout="@layout/include_backable" />
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/inputLayoutHostname"
@@ -22,7 +20,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="?attr/actionBarSize"
         app:layout_constraintTop_toTopOf="parent">
-
         <EditText
             android:id="@+id/inputHostname"
             android:layout_width="match_parent"
@@ -38,7 +35,6 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/inputLayoutHostname"
         >
-
         <EditText
             android:id="@+id/inputUsername"
             android:layout_width="match_parent"
@@ -48,13 +44,11 @@
             android:singleLine="true" />
     </android.support.design.widget.TextInputLayout>
 
-
     <android.support.design.widget.TextInputLayout
         android:id="@+id/inputLayoutPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/inputLayoutUsername">
-
         <EditText
             android:id="@+id/inputPassword"
             android:layout_width="match_parent"
@@ -63,6 +57,4 @@
             android:inputType="none|textPassword"
             android:singleLine="true" />
     </android.support.design.widget.TextInputLayout>
-
-
 </android.support.constraint.ConstraintLayout>

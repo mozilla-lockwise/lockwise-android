@@ -13,8 +13,10 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import kotlinx.android.synthetic.main.fragment_item_detail.*
+import kotlinx.android.synthetic.main.include_backable.*
+import kotlinx.android.synthetic.main.include_backable.view.*
 import mozilla.lockbox.R
-import mozilla.lockbox.model.ItemViewModel
+import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.presenter.ItemDetailPresenter
 import mozilla.lockbox.presenter.ItemDetailView
 
@@ -33,7 +35,9 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         return view
     }
 
-    override fun updateItem(item: ItemViewModel) {
+    override fun updateItem(item: ItemDetailViewModel) {
+        toolbar.title = item.title
+
         inputLayoutHostname.isHintAnimationEnabled = false
         inputLayoutUsername.isHintAnimationEnabled = false
         inputLayoutPassword.isHintAnimationEnabled = false
@@ -42,9 +46,9 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         inputPassword.readOnly = true
         inputHostname.readOnly = true
 
-        inputHostname.setText(item.title, TextView.BufferType.NORMAL)
-        inputUsername.setText(item.subtitle, TextView.BufferType.NORMAL)
-        inputPassword.setText(item.guid, TextView.BufferType.NORMAL)
+        inputHostname.setText(item.hostname, TextView.BufferType.NORMAL)
+        inputUsername.setText(item.username, TextView.BufferType.NORMAL)
+        inputPassword.setText(item.password, TextView.BufferType.NORMAL)
     }
 }
 

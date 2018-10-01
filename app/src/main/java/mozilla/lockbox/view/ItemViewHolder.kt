@@ -24,5 +24,4 @@ class ItemViewHolder(override val containerView: View)
                 itemSubtitle.text = it.subtitle
             }
         }
-
 }

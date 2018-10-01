@@ -17,6 +17,7 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
 import mozilla.lockbox.model.ItemViewModel
+import mozilla.lockbox.model.titleFromHostname
 import mozilla.lockbox.store.DataStore
 
 interface ItemListView {
@@ -52,7 +53,6 @@ class ItemListPresenter(
 
         view.itemSelection
                 .subscribe { it->
-                    log.info("Clicked on ${it.title}")
                     dispatcher.dispatch(RouteAction.ITEM_DETAIL(it.guid))
                 }
                 .addTo(compositeDisposable)
@@ -74,12 +74,5 @@ class ItemListPresenter(
 
         // TODO: remove this when we have proper locking / unlocking
         dispatcher.dispatch(DataStoreAction(DataStoreAction.Type.UNLOCK))
-    }
-
-    private fun titleFromHostname(hostname: String): String {
-        return hostname
-                .replace(Regex("^http://"), "")
-                .replace(Regex("^https://"), "")
-                .replace(Regex("^www\\d*\\."), "")
     }
 }

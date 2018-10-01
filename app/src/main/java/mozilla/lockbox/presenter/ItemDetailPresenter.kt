@@ -9,12 +9,14 @@ package mozilla.lockbox.presenter
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
+import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.model.ItemViewModel
+import mozilla.lockbox.model.titleFromHostname
 import mozilla.lockbox.store.DataStore
 
 interface ItemDetailView {
     var itemId: String?
-    fun updateItem(item: ItemViewModel)
+    fun updateItem(item: ItemDetailViewModel)
 }
 
 class ItemDetailPresenter(
@@ -24,7 +26,9 @@ class ItemDetailPresenter(
 ) : Presenter() {
     override fun onResume() {
         val itemId = view?.itemId ?: return
-        dataStore.get(itemId).map { ItemViewModel(it.hostname, it.username?: "", it.id) }
+        dataStore.get(itemId).map {
+                    ItemDetailViewModel(it.id, titleFromHostname(it.hostname), it.hostname, it.username, it.password)
+                }
                 .subscribe(view::updateItem)
                 .addTo(compositeDisposable)
     }
