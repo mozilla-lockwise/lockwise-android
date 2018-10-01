@@ -11,6 +11,7 @@ import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import junit.framework.Assert
+import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.model.ItemViewModel
@@ -22,11 +23,15 @@ import org.mozilla.sync15.logins.ServerPassword
 class ItemListPresenterTest {
     class FakeView : ItemListView {
         val drawerItemStub = PublishSubject.create<MenuItem>()
+        val itemSelectedStub = PublishSubject.create<ItemViewModel>()
         var closeDrawersCalled = false
         var updateItemsArgument: List<ItemViewModel>? = null
 
         override val drawerItemSelections: Observable<MenuItem>
             get() = drawerItemStub
+
+        override val itemSelection: Observable<ItemViewModel>
+            get() = itemSelectedStub
 
         override fun closeDrawers() {
             this.closeDrawersCalled = true
@@ -55,6 +60,15 @@ class ItemListPresenterTest {
         Dispatcher.shared.register.subscribe(dispatcherObserver)
 
         subject.onViewReady()
+    }
+
+    @Test
+    fun receivingItemSelected() {
+        val id = "the_guid"
+        view.itemSelectedStub.onNext(ItemViewModel("title", "subtitle", id))
+
+        val count = dispatcherObserver.valueCount()
+        dispatcherObserver.assertValueAt(count - 1, RouteAction.ItemDetail(id))
     }
 
     @Test
