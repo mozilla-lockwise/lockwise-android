@@ -62,6 +62,9 @@ class ItemListFragment : CommonFragment(), ItemListView {
     override val drawerItemSelections: Observable<MenuItem>
         get() = view!!.navView.itemSelections()
 
+    override val itemSelection: Observable<ItemViewModel>
+        get() = adapter.clicks()
+
     override fun closeDrawers() {
         view!!.appDrawer.closeDrawer(GravityCompat.START, false)
     }

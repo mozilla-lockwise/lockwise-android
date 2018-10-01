@@ -15,6 +15,7 @@ import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.view.FxALoginFragment
+import mozilla.lockbox.view.ItemDetailFragment
 import mozilla.lockbox.view.ItemListFragment
 import mozilla.lockbox.view.LockedFragment
 import mozilla.lockbox.view.SettingFragment
@@ -26,6 +27,7 @@ class RoutePresenter(private val activity: AppCompatActivity, routeStore: RouteS
     private val itemList: ItemListFragment by lazy { ItemListFragment() }
     private val settingList: SettingFragment by lazy { SettingFragment() }
     private val lock: LockedFragment by lazy { LockedFragment() }
+    private val itemDetail: ItemDetailFragment by lazy { ItemDetailFragment() }
 
     init {
         routeStore.routes.subscribe { a -> route(a) }.addTo(compositeDisposable)
@@ -58,24 +60,16 @@ class RoutePresenter(private val activity: AppCompatActivity, routeStore: RouteS
 
     private fun route(action: RouteAction) {
         when (action) {
-            RouteAction.LOGIN -> {
-                replaceFragment(login)
+            is RouteAction.Welcome -> replaceFragment(welcome, false)
+            is RouteAction.Login -> replaceFragment(login)
+            is RouteAction.ItemList -> replaceFragment(itemList, false)
+            is RouteAction.SettingList -> replaceFragment(settingList)
+            is RouteAction.LockScreen -> replaceFragment(lock, false)
+            is RouteAction.ItemDetail -> {
+                itemDetail.itemId = action.id
+                replaceFragment(itemDetail)
             }
-            RouteAction.WELCOME -> {
-                replaceFragment(welcome, false)
-            }
-            RouteAction.ITEMLIST -> {
-                replaceFragment(itemList, false)
-            }
-            RouteAction.SETTING_LIST -> {
-                replaceFragment(settingList)
-            }
-            RouteAction.LOCK -> {
-                replaceFragment(lock, false)
-            }
-            RouteAction.BACK -> {
-                activity.supportFragmentManager.popBackStack()
-            }
+            is RouteAction.Back -> activity.supportFragmentManager.popBackStack()
         }
     }
 }

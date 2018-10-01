@@ -16,7 +16,7 @@ class BackablePresenter(
 ) : Presenter() {
     override fun onViewReady() {
         view.backButtonTaps
-                .subscribe { dispatcher.dispatch(RouteAction.BACK) }
+                .subscribe { dispatcher.dispatch(RouteAction.Back) }
                 .addTo(compositeDisposable)
     }
 }

@@ -59,6 +59,7 @@ dependencies {
     implementation "com.jakewharton.rxbinding2:rxbinding:${rxbinding_version}"
     implementation "com.jakewharton.rxbinding2:rxbinding-design-kotlin:${rxbinding_version}"
     implementation "com.jakewharton.rxbinding2:rxbinding-appcompat-v7-kotlin:${rxbinding_version}"
+    implementation "com.jakewharton.rxbinding2:rxbinding-recyclerview-v7-kotlin:${rxbinding_version}"
     implementation 'com.jakewharton.rxrelay2:rxrelay:2.0.0'
     implementation 'io.reactivex.rxjava2:rxkotlin:2.3.0'
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'

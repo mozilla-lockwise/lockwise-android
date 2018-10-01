@@ -17,10 +17,12 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
 import mozilla.lockbox.model.ItemViewModel
+import mozilla.lockbox.model.titleFromHostname
 import mozilla.lockbox.store.DataStore
 
 interface ItemListView {
     val drawerItemSelections: Observable<MenuItem>
+    val itemSelection: Observable<ItemViewModel>
     fun updateItems(itemList: List<ItemViewModel>)
     fun closeDrawers()
     // TODO: Item list selection
@@ -37,15 +39,21 @@ class ItemListPresenter(
                     view.closeDrawers()
                     when (menuItem.itemId) {
                         R.id.goto_settings -> {
-                            dispatcher.dispatch(RouteAction.SETTING_LIST)
+                            dispatcher.dispatch(RouteAction.SettingList)
                         }
                         R.id.lock_now -> {
-                            dispatcher.dispatch(RouteAction.LOCK)
+                            dispatcher.dispatch(RouteAction.LockScreen)
                         }
                         else -> {
                             log.info("Menu ${menuItem.title} unimplemented")
                         }
                     }
+                }
+                .addTo(compositeDisposable)
+
+        view.itemSelection
+                .subscribe { it ->
+                    dispatcher.dispatch(RouteAction.ItemDetail(it.guid))
                 }
                 .addTo(compositeDisposable)
 
@@ -66,12 +74,5 @@ class ItemListPresenter(
 
         // TODO: remove this when we have proper locking / unlocking
         dispatcher.dispatch(DataStoreAction(DataStoreAction.Type.UNLOCK))
-    }
-
-    private fun titleFromHostname(hostname: String): String {
-        return hostname
-                .replace(Regex("^http://"), "")
-                .replace(Regex("^https://"), "")
-                .replace(Regex("^www\\d*\\."), "")
     }
 }

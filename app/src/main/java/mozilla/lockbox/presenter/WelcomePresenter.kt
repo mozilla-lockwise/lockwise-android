@@ -19,7 +19,7 @@ interface WelcomeViewProtocol {
 class WelcomePresenter(private val view: WelcomeViewProtocol, private val dispatcher: Dispatcher = Dispatcher.shared) : Presenter() {
     override fun onViewReady() {
         view.getStartedClicks
-                .subscribe { dispatcher.dispatch(RouteAction.LOGIN) }
+                .subscribe { dispatcher.dispatch(RouteAction.Login) }
                 .addTo(compositeDisposable)
     }
 }

@@ -32,7 +32,7 @@ class BackablePresenterTest {
         subject.onViewReady()
         view.tapStub.onNext(Unit)
 
-        testObserver.assertValue(RouteAction.BACK)
+        testObserver.assertValue(RouteAction.Back)
 
         subscription.dispose()
     }
