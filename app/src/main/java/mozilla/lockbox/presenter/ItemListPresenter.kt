@@ -73,6 +73,6 @@ class ItemListPresenter(
                 .addTo(compositeDisposable)
 
         // TODO: remove this when we have proper locking / unlocking
-        dispatcher.dispatch(DataStoreAction.UNLOCK)
+        dispatcher.dispatch(DataStoreAction.Unlock)
     }
 }

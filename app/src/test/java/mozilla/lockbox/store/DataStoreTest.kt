@@ -40,7 +40,7 @@ class DataStoreTest : DisposingTest() {
             Assert.assertTrue(it.isEmpty())
         }.addTo(disposer)
         subject.state.subscribe {
-            Assert.assertEquals(State.LOCKED, it)
+            Assert.assertEquals(State.Locked, it)
         }.addTo(disposer)
     }
 
@@ -64,8 +64,8 @@ class DataStoreTest : DisposingTest() {
         stateObserver.apply {
             // TODO: figure out why the initialized state isn't here?
             assertValueCount(2)
-            assertValueAt(0, State.UNLOCKED)
-            assertValueAt(1, State.LOCKED)
+            assertValueAt(0, State.Unlocked)
+            assertValueAt(1, State.Locked)
         }
         listObserver.apply {
             val results = values()
@@ -84,17 +84,17 @@ class DataStoreTest : DisposingTest() {
         subject.state.subscribe(stateObserver)
         subject.list.subscribe(listObserver)
 
-        dispatcher.dispatch(DataStoreAction.UNLOCK)
+        dispatcher.dispatch(DataStoreAction.Unlock)
         Mockito.verify(support.storage).unlock(support.encryptionKey)
         Mockito.verify(support.storage).list()
         Mockito.clearInvocations(support.storage)
 
-        dispatcher.dispatch(DataStoreAction.SYNC)
+        dispatcher.dispatch(DataStoreAction.Sync)
         Mockito.verify(support.storage).sync(support.syncConfig)
         Mockito.verify(support.storage).list()
         Mockito.clearInvocations(support.storage)
 
-        dispatcher.dispatch(DataStoreAction.LOCK)
+        dispatcher.dispatch(DataStoreAction.Lock)
         Mockito.verify(support.storage).lock()
         Mockito.clearInvocations(support.storage)
     }

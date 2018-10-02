@@ -9,8 +9,8 @@ package mozilla.lockbox.action
 import mozilla.lockbox.flux.Action
 
 sealed class DataStoreAction : Action {
-    object LOCK : DataStoreAction()
-    object UNLOCK : DataStoreAction()
-    object RESET : DataStoreAction()
-    object SYNC : DataStoreAction()
+    object Lock : DataStoreAction()
+    object Unlock : DataStoreAction()
+    object Reset : DataStoreAction()
+    object Sync : DataStoreAction()
 }

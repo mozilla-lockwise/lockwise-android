@@ -28,10 +28,10 @@ open class DataStore(
     }
 
     sealed class State {
-        object UNPREPARED : State()
-        object LOCKED : State()
-        object UNLOCKED : State()
-        data class ERRORED(val error: Throwable) : State()
+        object Unprepared : State()
+        object Locked : State()
+        object Unlocked : State()
+        data class Errored(val error: Throwable) : State()
     }
 
     internal val compositeDisposable = CompositeDisposable()
@@ -47,8 +47,8 @@ open class DataStore(
         // handle state changes
         state.subscribe { state ->
             when (state) {
-                is State.LOCKED -> clearList()
-                is State.UNLOCKED -> updateList()
+                is State.Locked -> clearList()
+                is State.Unlocked -> updateList()
                 else -> Unit
             }
         }.addTo(compositeDisposable)
@@ -58,9 +58,9 @@ open class DataStore(
                 .filterByType(DataStoreAction::class.java)
                 .subscribe {
                     when (it) {
-                        is DataStoreAction.LOCK -> lock()
-                        is DataStoreAction.UNLOCK -> unlock()
-                        is DataStoreAction.SYNC -> sync()
+                        is DataStoreAction.Lock -> lock()
+                        is DataStoreAction.Unlock -> unlock()
+                        is DataStoreAction.Sync -> sync()
                     }
                 }
                 .addTo(compositeDisposable)
@@ -82,7 +82,7 @@ open class DataStore(
         backend.isLocked().then {
             if (it) {
                 backend.unlock(support.encryptionKey).then {
-                    stateSubject.onNext(State.UNLOCKED)
+                    stateSubject.onNext(State.Unlocked)
                     SyncResult.fromValue(Unit)
                 }
             } else {
@@ -105,7 +105,7 @@ open class DataStore(
         backend.isLocked().then {
             if (!it) {
                 backend.lock().then {
-                    stateSubject.onNext(State.LOCKED)
+                    stateSubject.onNext(State.Locked)
                     SyncResult.fromValue(Unit)
                 }
             } else {
@@ -131,7 +131,7 @@ open class DataStore(
             syncSubject.onSuccess(Unit)
             SyncResult.fromValue(Unit)
         }.thenCatch {
-            stateSubject.onNext(State.ERRORED(it))
+            stateSubject.onNext(State.Errored(it))
             syncSubject.onError(it)
             SyncResult.fromValue(Unit)
         }
