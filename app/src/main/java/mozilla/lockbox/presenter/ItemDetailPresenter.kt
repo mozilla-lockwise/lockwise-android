@@ -29,6 +29,9 @@ interface ItemDetailView {
 
     val btnUsernameCopyClicks: Observable<Unit>
     val editUsername: EditText
+
+    val btnPasswordCopyClicks: Observable<Unit>
+    val editPassword: EditText
 }
 
 class ItemDetailPresenter(
@@ -47,7 +50,12 @@ class ItemDetailPresenter(
                 }
                 .addTo(compositeDisposable)
 
-
+        this.view.btnPasswordCopyClicks
+                .subscribe{
+                    clipboardCopy("password", view.editPassword.text.toString())
+                    view.copyNotification(R.string.toast_password_copied)
+                }
+                .addTo(compositeDisposable)
     }
 
     override fun onResume() {

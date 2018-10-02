@@ -53,6 +53,12 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
     override val editUsername: EditText
         get() = view!!.inputUsername
 
+    override val btnPasswordCopyClicks: Observable<Unit>
+        get() = view!!.btnPasswordCopy.clicks()
+
+    override val editPassword: EditText
+        get() = view!!.inputPassword
+
     override fun updateItem(item: ItemDetailViewModel) {
         toolbar.title = item.title
 

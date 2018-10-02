@@ -31,4 +31,5 @@
     <string name="hint_username">Username</string>
     <string name="hint_password">Password</string>
     <string name="toast_username_copied">Username copied</string>
+    <string name="toast_password_copied">Password copied</string>
 </resources>
