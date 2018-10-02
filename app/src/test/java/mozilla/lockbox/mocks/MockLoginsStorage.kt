@@ -47,10 +47,14 @@ open class MockLoginsStorage : LoginsStorage {
         }
     }
     override fun add(login: ServerPassword): SyncResult<String> {
-        return list().then {
-            if (login.id == "") {
-                SyncResult.fromException<String>(InvalidRecordException("record id missing"))
-            } else if (null != it.find { it.id == login.id }) {
+        if (login.id == "") {
+            SyncResult.fromException<String>(InvalidRecordException("record id missing"))
+        }
+
+        return checkLockState().then {
+            get(login.id)
+        }.then {
+            if (it != null) {
                 SyncResult.fromException<String>(IdCollisionException("record already exists"))
             }
 
@@ -60,14 +64,14 @@ open class MockLoginsStorage : LoginsStorage {
     }
 
     override fun update(login: ServerPassword): SyncResult<Unit> {
-        return list().then {
-            val position = it.indexOfFirst { it.id == login.id }
-            if (position == -1) {
-                SyncResult.fromException(NoSuchRecordException("record not found"))
-            } else {
-                all[position] = login
-                SyncResult.fromValue(Unit)
+        return checkLockState().then {
+            get(login.id)
+        }.then {
+            if (it == null) {
+                SyncResult.fromException<Unit>(NoSuchRecordException("record not found"))
             }
+            all[all.indexOf(it)] = login
+            SyncResult.fromValue(Unit)
         }
     }
 
