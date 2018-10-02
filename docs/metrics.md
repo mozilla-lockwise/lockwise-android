@@ -52,6 +52,8 @@ In addition to answering the above questions that directly concern actions in th
 
 ## Collection
 
+*Note: There is currently a new mozilla mobile telemetry sdk under development. Lockbox for android may end up using that sdk if it ships before the app is ready. If not, Lockbox will use the*
+
 Data will be collected using this library:
 
 https://github.com/mozilla-mobile/android-components/blob/master/components/service/telemetry/README.md
@@ -75,7 +77,7 @@ Every event must contain `category`, `method` and `object` fields, and may optio
 Events related to specific credentials should have an opaque `item_id` in the extra field where possible.
 
 
-Finally, the `appName` metadata sent with each ping should always be 'Lockbox'.
+Finally, the `appName` metadata sent with each ping should always be `Lockbox`.
 
 See here for more information on event schemas:
 
@@ -92,7 +94,7 @@ https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/c
 
 2. When locking/unlocking the app:
 	* `category`: action
-	* `method`: lock, unlock
+	* `method`: lock, unlock, autolock
 	* `object`: app
 	* `value`: pin, biometrics
 	* `extras`: null
@@ -107,21 +109,21 @@ https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/c
 4. When the main item list is shown to the user:
 	* `category`: action
 	* `method`: show
-	* `object`: entryList
+	* `object`: entry_list
 	* `value`: null
 	* `extras`: null
 
 5. When a user shows the details of an item in the entry list:
 	* `category`: action
 	* `method`: show
-	* `object`: entryDetail
+	* `object`: entry_detail
 	* `value`: null
 	* `extras`: ["itemid" : itemid]
 
 6. When a user taps one of the copy buttons available after being shown entry details:
 	* `category`: action
 	* `method`: tap
-	* `object`: entryCopyUsernameButton, entryCopyPasswordButton
+	* `object`: entry_copy_username_button, entry_copy_password_button
 	* `value`: null
 	* `extras`: ["itemid" : itemid]
 
@@ -135,14 +137,14 @@ https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/c
 8. When one of the settings pages is shown to the user:
 	* `category`: action
 	* `method`: show
-	* `object`: settings_list, settings_autolock, settings_preferred_browser, settings_account, settings_faq, settings_provide_feedback, settings_autofill
+	* `object`: settings_list, settings_autolock, settings_account, settings_faq, settings_provide_feedback
 	* `value`: null
 	* `extras`: null
 
 9. When a user changes something on the settings page:
 	* `category`: action
-	* `method`: settingsChanged
-	* `object`: settings_biometric_login, settings_autolock_time, settings_reset, settings_visual_lock, settings_preferred_browser, settings_record_usage_data
+	* `method`: settingsChanged (*note this was camelCase in iOS by mistake so leaving it to match that until/if we change it there*)
+	* `object`: settings_biometric_login, settings_autolock_time, settings_reset
 	* `value`: whatever the value of each of the above was changed to, or null for settings_reset
 	* `extras`: null
 
@@ -157,6 +159,13 @@ https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/c
 	* `category`: action
 	* `method`: autofill_locked, autofill_unlocked, login_selected, autofill_clear
 	* `object`: autofill
+	* `value`: null
+	* `extras`: null
+
+12. When the user opens the app drawer:
+	* `category`: action
+	* `method`: show
+	* `object`: app_drawer
 	* `value`: null
 	* `extras`: null
 
