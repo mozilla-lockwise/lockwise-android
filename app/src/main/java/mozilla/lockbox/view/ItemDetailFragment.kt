@@ -6,15 +6,24 @@
 
 package mozilla.lockbox.view
 
+import android.content.ClipboardManager
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
+import com.jakewharton.rxbinding2.view.clicks
+import com.jakewharton.rxbinding2.view.touches
+import com.jakewharton.rxbinding2.widget.textChanges
+import io.reactivex.Observable
 import kotlinx.android.synthetic.main.fragment_item_detail.*
+import kotlinx.android.synthetic.main.fragment_item_detail.view.*
 import kotlinx.android.synthetic.main.include_backable.*
-import kotlinx.android.synthetic.main.include_backable.view.*
 import mozilla.lockbox.R
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.presenter.ItemDetailPresenter
@@ -35,6 +44,15 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         return view
     }
 
+    override val clipboardManager: ClipboardManager
+        get() = activity!!.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+
+    override val btnUsernameCopyClicks: Observable<Unit>
+        get() = view!!.btnUsernameCopy.clicks()
+
+    override val editUsername: EditText
+        get() = view!!.inputUsername
+
     override fun updateItem(item: ItemDetailViewModel) {
         toolbar.title = item.title
 
@@ -49,6 +67,11 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         inputHostname.setText(item.hostname, TextView.BufferType.NORMAL)
         inputUsername.setText(item.username, TextView.BufferType.NORMAL)
         inputPassword.setText(item.password, TextView.BufferType.NORMAL)
+
+    }
+
+    override fun copyNotification(strId: Int){
+        Toast.makeText(activity, getString(strId), Toast.LENGTH_SHORT).show()
     }
 }
 
