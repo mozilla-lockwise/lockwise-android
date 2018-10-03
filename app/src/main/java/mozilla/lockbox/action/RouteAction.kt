@@ -15,5 +15,6 @@ sealed class RouteAction : Action {
     object SettingList : RouteAction()
     object Back : RouteAction()
     object LockScreen : RouteAction()
+    object Filter : RouteAction()
     data class ItemDetail(val id: String) : RouteAction()
 }

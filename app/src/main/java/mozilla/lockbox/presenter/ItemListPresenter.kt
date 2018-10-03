@@ -54,12 +54,6 @@ class ItemListPresenter(
                 }
                 .addTo(compositeDisposable)
 
-        view.itemSelection
-                .subscribe { it ->
-                    dispatcher.dispatch(RouteAction.ItemDetail(it.guid))
-                }
-                .addTo(compositeDisposable)
-
         dataStore.list
                 .filter { it.isNotEmpty() }
                 .mapToItemViewModelList()
@@ -67,13 +61,19 @@ class ItemListPresenter(
                 .subscribe(view::updateItems)
                 .addTo(compositeDisposable)
 
+        view.itemSelection
+                .subscribe { it ->
+                    dispatcher.dispatch(RouteAction.ItemDetail(it.guid))
+                }
+                .addTo(compositeDisposable)
+
         view.filterClick
                 .subscribe {
-                    dispatcher.dispatch(RouteAction.FILTER)
+                    dispatcher.dispatch(RouteAction.Filter)
                 }
                 .addTo(compositeDisposable)
 
         // TODO: remove this when we have proper locking / unlocking
-        dispatcher.dispatch(DataStoreAction(DataStoreAction.Type.UNLOCK))
+        dispatcher.dispatch(DataStoreAction.Unlock)
     }
 }
