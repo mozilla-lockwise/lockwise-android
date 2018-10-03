@@ -24,7 +24,7 @@ import org.robolectric.annotation.Config
 @RunWith(RobolectricTestRunner::class)
 @Config(packageName = "mozilla.lockbox")
 class TelemetryStoreTest : DisposingTest() {
-    class FakeTelemetryWrapper: TelemetryWrapper() {
+    class FakeTelemetryWrapper : TelemetryWrapper() {
         val applySubject: ReplaySubject<Context> = ReplaySubject.create(1)
         val eventsSubject: ReplaySubject<TelemetryEvent> = ReplaySubject.create(1)
 
@@ -40,7 +40,6 @@ class TelemetryStoreTest : DisposingTest() {
     private lateinit var dispatcher: Dispatcher
     private lateinit var wrapper: FakeTelemetryWrapper
     private lateinit var subject: TelemetryStore
-
 
     @Before
     fun setUp() {

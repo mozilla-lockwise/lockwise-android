@@ -15,17 +15,17 @@ open class TelemetryAction(
     val value: String?,
     val extras: Map<String, Any>?
 ) : Action {
-  open fun createEvent(category: String = "action"): TelemetryEvent {
-      val evt = TelemetryEvent.create(
-              category,
-              eventMethod.name,
-              eventObject.name,
-              value
-      )
-      extras?.forEach { ex -> evt.extra(ex.key, ex.value.toString()) }
+    open fun createEvent(category: String = "action"): TelemetryEvent {
+        val evt = TelemetryEvent.create(
+                category,
+                eventMethod.name,
+                eventObject.name,
+                value
+        )
+        extras?.forEach { ex -> evt.extra(ex.key, ex.value.toString()) }
 
-      return evt
-  }
+        return evt
+    }
 }
 
 enum class TelemetryEventMethod {
