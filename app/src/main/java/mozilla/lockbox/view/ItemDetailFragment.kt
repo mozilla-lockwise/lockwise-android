@@ -9,19 +9,14 @@ package mozilla.lockbox.view
 import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
-import android.text.InputType
 import android.text.method.PasswordTransformationMethod
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import com.jakewharton.rxbinding2.view.clicks
-import com.jakewharton.rxbinding2.view.touches
-import com.jakewharton.rxbinding2.widget.textChanges
 import io.reactivex.Observable
 import kotlinx.android.synthetic.main.fragment_item_detail.*
 import kotlinx.android.synthetic.main.fragment_item_detail.view.*
@@ -75,16 +70,15 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         inputHostname.setText(item.hostname, TextView.BufferType.NORMAL)
         inputUsername.setText(item.username, TextView.BufferType.NORMAL)
         inputPassword.setText(item.password, TextView.BufferType.NORMAL)
-
     }
 
-    override fun copyNotification(strId: Int){
+    override fun copyNotification(strId: Int) {
         Toast.makeText(activity, getString(strId), Toast.LENGTH_SHORT).show()
     }
 
-    override fun updatePasswordField(visible: Boolean){
+    override fun updatePasswordField(visible: Boolean) {
 
-        if(visible){
+        if (visible) {
             inputPassword.transformationMethod = null
             btnPasswordToggle.setImageResource(R.drawable.ic_hide)
         } else {

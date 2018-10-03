@@ -22,8 +22,6 @@ import org.junit.Test
 import org.mozilla.sync15.logins.ServerPassword
 import org.mockito.Mockito
 
-
-
 class ItemDetailPresenterTest {
     class FakeView : ItemDetailView {
 
@@ -41,20 +39,18 @@ class ItemDetailPresenterTest {
             get() = tapStub
 
         override val editUsername: EditText
-            get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+            get() = TODO("not implemented") // To change initializer of created properties use File | Settings | File Templates.
         override val editPassword: EditText
-            get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+            get() = TODO("not implemented") // To change initializer of created properties use File | Settings | File Templates.
 
         override fun updateItem(item: ItemDetailViewModel) {
             this.item = item
         }
 
         override fun copyNotification(strId: Int) {
-
         }
 
-        override fun updatePasswordField(visible: Boolean){
-
+        override fun updatePasswordField(visible: Boolean) {
         }
     }
 

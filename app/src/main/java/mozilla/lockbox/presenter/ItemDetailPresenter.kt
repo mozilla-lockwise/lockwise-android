@@ -6,7 +6,6 @@
 
 package mozilla.lockbox.presenter
 
-import android.util.Log
 import android.widget.EditText
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
@@ -18,7 +17,6 @@ import mozilla.lockbox.model.titleFromHostname
 import mozilla.lockbox.store.DataStore
 import android.content.ClipData
 import android.content.ClipboardManager
-
 
 interface ItemDetailView {
     var itemId: String?
@@ -48,21 +46,21 @@ class ItemDetailPresenter(
     override fun onViewReady() {
 
         this.view.btnUsernameCopyClicks
-                .subscribe{
+                .subscribe {
                     clipboardCopy("username", view.editUsername.text.toString())
                     view.copyNotification(R.string.toast_username_copied)
                 }
                 .addTo(compositeDisposable)
 
         this.view.btnPasswordCopyClicks
-                .subscribe{
+                .subscribe {
                     clipboardCopy("password", view.editPassword.text.toString())
                     view.copyNotification(R.string.toast_password_copied)
                 }
                 .addTo(compositeDisposable)
 
         this.view.btnTogglePasswordClicks
-                .subscribe{
+                .subscribe {
                     isPasswordVisible = isPasswordVisible.not()
                     view.updatePasswordField(isPasswordVisible)
                 }
@@ -79,10 +77,10 @@ class ItemDetailPresenter(
                 .subscribe(view::updateItem)
                 .addTo(compositeDisposable)
 
-        isPasswordVisible = false;
+        isPasswordVisible = false
     }
 
-    private fun clipboardCopy(label: String, str: String){
+    private fun clipboardCopy(label: String, str: String) {
 
         val clip = ClipData.newPlainText(label, str)
         this.clipboardManager.primaryClip = clip
