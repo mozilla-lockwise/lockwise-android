@@ -25,68 +25,60 @@ import org.mozilla.telemetry.schedule.jobscheduler.JobSchedulerTelemetrySchedule
 import org.mozilla.telemetry.serialize.JSONPingSerializer
 import org.mozilla.telemetry.storage.FileTelemetryStorage
 
-open class TelemetryFactory {
-    open fun createTelemetry(ctx: Context): Telemetry {
-        val config = createConfiguration(ctx)
-        val storage = createStorage(config)
-        val client = createClient()
-        val scheduler = createScheduler()
+open class TelemetryWrapper() {
+    private var subject: Telemetry? = null
 
-        return Telemetry(config, storage, client, scheduler)
-                .addPingBuilder(TelemetryCorePingBuilder(config))
-                .addPingBuilder(TelemetryMobileEventPingBuilder(config))
-    }
+    open val ready: Boolean get() = (subject != null)
 
-    open fun createConfiguration(ctx: Context): TelemetryConfiguration {
+    open fun apply(ctx: Context) {
         val res = ctx.resources
         val prefs = PreferenceManager.getDefaultSharedPreferences(ctx)
         val enabled = prefs.getBoolean(
                 res.getString(R.string.setting_key_telemetry),
                 res.getBoolean(R.bool.setting_telemetry_default))
 
-        return TelemetryConfiguration(ctx)
+        val config = TelemetryConfiguration(ctx)
                 .setAppName(res.getString(R.string.app_label))
                 .setServerEndpoint(res.getString(R.string.telemetry_server_endpoint))
                 .setUpdateChannel(BuildConfig.BUILD_TYPE)
                 .setBuildId(BuildConfig.VERSION_CODE.toString())
                 .setCollectionEnabled(enabled)
                 .setUploadEnabled(enabled)
+        val storage = FileTelemetryStorage(config, JSONPingSerializer())
+        val client = HttpURLConnectionTelemetryClient()
+        val scheduler = JobSchedulerTelemetryScheduler()
+
+        subject = Telemetry(config, storage, client, scheduler)
+                .addPingBuilder(TelemetryCorePingBuilder(config))
+                .addPingBuilder(TelemetryMobileEventPingBuilder(config))
     }
-    open fun createStorage(config: TelemetryConfiguration) =
-            FileTelemetryStorage(config, JSONPingSerializer())
-    open fun createClient() = HttpURLConnectionTelemetryClient()
-    open fun createScheduler() = JobSchedulerTelemetryScheduler()
+
+    open fun recordEvent(event: TelemetryEvent) {
+        subject?.queueEvent(event)
+    }
 }
 
 open class TelemetryStore(
     val dispatcher: Dispatcher = Dispatcher.shared,
-    private val telemetryFactory: TelemetryFactory = TelemetryFactory()
+    val wrapper: TelemetryWrapper = TelemetryWrapper()
 ) {
     companion object {
         val shared = TelemetryStore()
     }
 
     internal val compositeDisposable = CompositeDisposable()
-    internal var telemetry: Telemetry? = null
 
     init {
         dispatcher.register
                 .filterByType(TelemetryAction::class.java)
                 .subscribe {
-                    val t = telemetry ?: return@subscribe
-                    val evt = TelemetryEvent.create(
-                            "action",
-                            it.eventMethod.name,
-                            it.eventObject.name,
-                            it.value
-                    )
-                    it.extras?.forEach { ex -> evt.extra(ex.key, ex.value.toString()) }
-                    t.queueEvent(evt)
+                    if (!wrapper.ready) {
+                        return@subscribe
+                    }
+                    wrapper.recordEvent(it.createEvent())
                 }
                 .addTo(compositeDisposable)
     }
 
-    fun applyContext(ctx: Context) {
-        telemetry = telemetryFactory.createTelemetry(ctx)
-    }
+    fun applyContext(ctx: Context) = wrapper.apply(ctx)
 }

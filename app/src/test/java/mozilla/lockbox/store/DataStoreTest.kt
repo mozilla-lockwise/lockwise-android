@@ -99,9 +99,4 @@ class DataStoreTest : DisposingTest() {
         Mockito.clearInvocations(support.storage)
     }
 
-    private fun <T> createTestObserver(): TestObserver<T> {
-        val result = TestObserver.create<T>()
-        result.addTo(disposer)
-        return result
-    }
 }

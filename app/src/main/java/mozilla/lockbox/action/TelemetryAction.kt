@@ -7,13 +7,26 @@
 package mozilla.lockbox.action
 
 import mozilla.lockbox.flux.Action
+import org.mozilla.telemetry.event.TelemetryEvent
 
 open class TelemetryAction(
     val eventMethod: TelemetryEventMethod,
     val eventObject: TelemetryEventObject,
     val value: String?,
     val extras: Map<String, Any>?
-) : Action
+) : Action {
+  open fun createEvent(category: String = "action"): TelemetryEvent {
+      val evt = TelemetryEvent.create(
+              category,
+              eventMethod.name,
+              eventObject.name,
+              value
+      )
+      extras?.forEach { ex -> evt.extra(ex.key, ex.value.toString()) }
+
+      return evt
+  }
+}
 
 enum class TelemetryEventMethod {
     tap,
