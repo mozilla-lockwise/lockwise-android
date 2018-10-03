@@ -6,6 +6,8 @@
 
 package mozilla.lockbox.presenter
 
+import android.content.ClipboardManager
+import android.widget.EditText
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
@@ -18,14 +20,41 @@ import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 import org.mozilla.sync15.logins.ServerPassword
+import org.mockito.Mockito
+
+
 
 class ItemDetailPresenterTest {
     class FakeView : ItemDetailView {
+
         override var itemId: String? = null
         var item: ItemDetailViewModel? = null
+        val tapStub: PublishSubject<Unit> = PublishSubject.create<Unit>()
+
+        override val btnUsernameCopyClicks: Observable<Unit>
+            get() = tapStub
+
+        override val btnPasswordCopyClicks: Observable<Unit>
+            get() = tapStub
+
+        override val btnTogglePasswordClicks: Observable<Unit>
+            get() = tapStub
+
+        override val editUsername: EditText
+            get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+        override val editPassword: EditText
+            get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
 
         override fun updateItem(item: ItemDetailViewModel) {
             this.item = item
+        }
+
+        override fun copyNotification(strId: Int) {
+
+        }
+
+        override fun updatePasswordField(visible: Boolean){
+
         }
     }
 
@@ -38,7 +67,9 @@ class ItemDetailPresenterTest {
 
     val view = FakeView()
     val dataStore = FakeDataStore()
-    val subject = ItemDetailPresenter(view, dataStore = dataStore)
+    val clipboardManager = Mockito.mock(ClipboardManager::class.java)
+
+    val subject = ItemDetailPresenter(view, clipboardManager, dataStore = dataStore)
 
     val dispatcherObserver = TestObserver.create<Action>()
 

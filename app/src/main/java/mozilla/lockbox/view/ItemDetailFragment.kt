@@ -9,6 +9,8 @@ package mozilla.lockbox.view
 import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
+import android.text.InputType
+import android.text.method.PasswordTransformationMethod
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -37,15 +39,12 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        presenter = ItemDetailPresenter(this)
+        presenter = ItemDetailPresenter(this, activity!!.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
         val view = inflater.inflate(R.layout.fragment_item_detail, container, false)
         setupBackable(view)
 
         return view
     }
-
-    override val clipboardManager: ClipboardManager
-        get() = activity!!.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
     override val btnUsernameCopyClicks: Observable<Unit>
         get() = view!!.btnUsernameCopy.clicks()
@@ -58,6 +57,9 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
 
     override val editPassword: EditText
         get() = view!!.inputPassword
+
+    override val btnTogglePasswordClicks: Observable<Unit>
+        get() = view!!.btnPasswordToggle.clicks()
 
     override fun updateItem(item: ItemDetailViewModel) {
         toolbar.title = item.title
@@ -78,6 +80,17 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
 
     override fun copyNotification(strId: Int){
         Toast.makeText(activity, getString(strId), Toast.LENGTH_SHORT).show()
+    }
+
+    override fun updatePasswordField(visible: Boolean){
+
+        if(visible){
+            inputPassword.transformationMethod = null
+            btnPasswordToggle.setImageResource(R.drawable.ic_hide)
+        } else {
+            inputPassword.transformationMethod = PasswordTransformationMethod()
+            btnPasswordToggle.setImageResource(R.drawable.ic_show)
+        }
     }
 }
 
