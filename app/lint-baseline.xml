@@ -866,34 +866,6 @@
     </issue>
 
     <issue
-        id="GradleDependency"
-        message="A newer version of com.android.tools.build:gradle than 3.1.4 is available: 3.2.0">
-        <location
-            file="build.gradle"/>
-    </issue>
-
-    <issue
-        id="GradleDependency"
-        message="A newer version of org.mozilla.components:fxa than 0.23 is available: 0.24">
-        <location
-            file="build.gradle"/>
-    </issue>
-
-    <issue
-        id="GradleDependency"
-        message="A newer version of org.mozilla.components:sync-logins than 0.23 is available: 0.24">
-        <location
-            file="build.gradle"/>
-    </issue>
-
-    <issue
-        id="GradleDependency"
-        message="A newer version of org.mozilla.components:telemetry than 0.23 is available: 0.24">
-        <location
-            file="build.gradle"/>
-    </issue>
-
-    <issue
         id="AllowBackup"
         message="On SDK version 23 and up, your app data will be automatically backed up and restored on app install. Consider adding the attribute `android:fullBackupContent` to specify an `@xml` resource which configures which files to backup. More info: https://developer.android.com/training/backup/autosyncapi.html">
         <location
@@ -1110,38 +1082,6 @@
     </issue>
 
     <issue
-        id="Overdraw"
-        message="Possible overdraw: Root element paints background `@color/colorPrimary` with a theme that also paints a background (inferred theme is `@style/Theme.AppCompat.Light.NoActionBar`)">
-        <location
-            file="src/main/res/layout/include_backable.xml"
-            line="8"/>
-    </issue>
-
-    <issue
-        id="Overdraw"
-        message="Possible overdraw: Root element paints background `?attr/colorPrimaryDark` with a theme that also paints a background (inferred theme is `@style/Theme.AppCompat.Light.NoActionBar`)">
-        <location
-            file="src/main/res/layout/nav_header.xml"
-            line="16"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.color.colorPrimaryDark` appears to be unused">
-        <location
-            file="src/main/res/values/colors.xml"
-            line="10"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.color.colorAccent` appears to be unused">
-        <location
-            file="src/main/res/values/colors.xml"
-            line="11"/>
-    </issue>
-
-    <issue
         id="UnusedResources"
         message="The resource `R.drawable.ic_launcher_background` appears to be unused">
         <location
@@ -1155,14 +1095,6 @@
         <location
             file="src/main/res/drawable-v24/ic_launcher_foreground.xml"
             line="7"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.style.AppTheme` appears to be unused">
-        <location
-            file="src/main/res/values/styles.xml"
-            line="10"/>
     </issue>
 
     <issue
@@ -1231,4 +1163,5 @@
             file="src/main/res/layout/fragment_item_detail.xml"
             line="51"/>
     </issue>
+
 </issues>
