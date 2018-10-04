@@ -28,7 +28,11 @@
         tools:layout="@layout/fragment_fxa_login">
         <action
             android:id="@+id/action_fxaLoginFragment_to_itemListFragment"
-            app:destination="@id/itemListFragment" />
+            app:destination="@id/itemListFragment"
+            app:launchSingleTop="true"
+            app:clearTask="true"
+            app:popUpTo="@+id/itemListFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -45,6 +49,9 @@
         <action
             android:id="@+id/action_itemListFragment_to_lockedFragment"
             app:destination="@+id/lockedFragment" />
+        <action
+            android:id="@+id/action_itemListFragment_to_filterFragment"
+            app:destination="@id/filterFragment" />
     </fragment>
 
     <fragment
@@ -52,9 +59,6 @@
         android:name="mozilla.lockbox.view.ItemDetailFragment"
         android:label="ItemDetailFragment"
         tools:layout="@layout/fragment_item_detail">
-        <argument
-            android:name="viewId"
-            app:type="string" />
     </fragment>
 
     <fragment
@@ -68,4 +72,14 @@
         android:name="mozilla.lockbox.view.LockedFragment"
         android:label="LockedFragment"
         tools:layout="@layout/fragment_locked" />
+
+    <fragment
+        android:id="@+id/filterFragment"
+        android:name="mozilla.lockbox.view.FilterFragment"
+        android:label="FilterFragment"
+        tools:layout="@layout/fragment_filter" >
+        <action
+            android:id="@+id/action_filterFragment_to_itemDetailFragment"
+            app:destination="@id/itemDetailFragment" />
+    </fragment>
 </navigation>

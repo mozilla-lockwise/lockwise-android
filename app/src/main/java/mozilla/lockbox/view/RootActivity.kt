@@ -8,6 +8,8 @@ package mozilla.lockbox.view
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import androidx.navigation.Navigation
+import androidx.navigation.Navigation.findNavController
 import mozilla.lockbox.R
 import mozilla.lockbox.presenter.RoutePresenter
 

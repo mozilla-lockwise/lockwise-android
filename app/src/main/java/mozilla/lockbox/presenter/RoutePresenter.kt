@@ -6,75 +6,77 @@
 
 package mozilla.lockbox.presenter
 
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
+import android.support.annotation.IdRes
 import android.support.v7.app.AppCompatActivity
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.R
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Presenter
+import mozilla.lockbox.log
 import mozilla.lockbox.store.RouteStore
-import mozilla.lockbox.view.FxALoginFragment
-import mozilla.lockbox.view.ItemListFragment
-import mozilla.lockbox.view.SettingFragment
-import mozilla.lockbox.view.WelcomeFragment
-import mozilla.lockbox.view.LockedFragment
-import mozilla.lockbox.view.ItemDetailFragment
-import mozilla.lockbox.view.FilterFragment
 
-class RoutePresenter(private val activity: AppCompatActivity, routeStore: RouteStore = RouteStore.shared) : Presenter() {
-    private val welcome: WelcomeFragment by lazy { WelcomeFragment() }
-    private val login: FxALoginFragment by lazy { FxALoginFragment() }
-    private val itemList: ItemListFragment by lazy { ItemListFragment() }
-    private val settingList: SettingFragment by lazy { SettingFragment() }
-    private val lock: LockedFragment by lazy { LockedFragment() }
-    private val itemDetail: ItemDetailFragment by lazy { ItemDetailFragment() }
-    private val filter: FilterFragment by lazy { FilterFragment() }
-
-    init {
-        routeStore.routes
-                .subscribe(this::route)
-                .addTo(compositeDisposable)
-    }
+class RoutePresenter(
+        private val activity: AppCompatActivity,
+        private val routeStore: RouteStore = RouteStore.shared
+) : Presenter() {
+    private lateinit var navController: NavController
 
     override fun onViewReady() {
-        replaceFragment(this.welcome, false)
+        navController = Navigation.findNavController(activity, R.id.fragment_nav_host)
+        routeStore.routes.subscribe(this::route).addTo(compositeDisposable)
     }
 
-    private fun replaceFragment(frag: Fragment, backable: Boolean = true) {
-        val tx = activity.supportFragmentManager.beginTransaction()
-        tx.replace(R.id.root_content, frag)
-        if (backable) {
-            tx.addToBackStack(null)
+    private fun replaceFragment(@IdRes destinationId: Int) {
+        val from = navController.currentDestination?.id ?: return
+        if (from == destinationId) {
+            return
         }
-        tx.commit()
-
-        if (!backable) {
-            clearBackStack()
-        }
-    }
-
-    private fun clearBackStack() {
-        val fm = activity.supportFragmentManager
-        if (fm.backStackEntryCount > 0) {
-            val base = fm.getBackStackEntryAt(0)
-            fm.popBackStackImmediate(base.id, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-        }
+        val transition = findTransitionId(from, destinationId) ?: destinationId
+        navController.navigate(transition)
     }
 
     private fun route(action: RouteAction) {
         when (action) {
-            is RouteAction.Welcome -> replaceFragment(welcome, false)
-            is RouteAction.Login -> replaceFragment(login)
-            is RouteAction.ItemList -> replaceFragment(itemList, false)
-            is RouteAction.SettingList -> replaceFragment(settingList)
-            is RouteAction.LockScreen -> replaceFragment(lock, false)
-            is RouteAction.Filter -> replaceFragment(filter)
+            is RouteAction.Welcome -> replaceFragment(R.id.welcomeFragment)
+            is RouteAction.Login -> replaceFragment(R.id.fxaLoginFragment)
+            is RouteAction.ItemList -> replaceFragment(R.id.itemListFragment)
+            is RouteAction.SettingList -> replaceFragment(R.id.settingFragment)
+            is RouteAction.LockScreen -> replaceFragment(R.id.lockedFragment)
+            is RouteAction.Filter -> replaceFragment(R.id.filterFragment)
             is RouteAction.ItemDetail -> {
-                itemDetail.itemId = action.id
-                replaceFragment(itemDetail)
+//                itemDetail.itemId = action.id
+                replaceFragment(R.id.itemDetailFragment)
             }
-            is RouteAction.Back -> activity.supportFragmentManager.popBackStack()
+            is RouteAction.Back -> navController.popBackStack()
         }
+    }
+
+    private fun findTransitionId(@IdRes from: Int, @IdRes to: Int) : Int? {
+        when (from) {
+            R.id.welcomeFragment ->
+                when (to) {
+                    R.id.fxaLoginFragment -> return R.id.action_welcomeFragment_to_fxaLoginFragment
+                }
+            R.id.fxaLoginFragment ->
+                when (to) {
+                    R.id.itemListFragment -> return R.id.action_fxaLoginFragment_to_itemListFragment
+                }
+            R.id.itemListFragment ->
+                when (to) {
+                    R.id.itemDetailFragment -> return R.id.action_itemListFragment_to_itemDetailFragment
+                    R.id.settingFragment -> return R.id.action_itemListFragment_to_settingFragment
+                    R.id.lockedFragment -> return R.id.action_itemListFragment_to_lockedFragment
+                    R.id.filterFragment -> return R.id.action_itemListFragment_to_filterFragment
+                }
+            R.id.filterFragment ->
+                when (to) {
+                    R.id.itemDetailFragment -> return R.id.action_filterFragment_to_itemDetailFragment
+                }
+        }
+
+        log.warn("Cannot find a transition between ${from} and ${to}")
+        return null
     }
 }
