@@ -34,4 +34,5 @@
     <string name="hint_hostname">Web address</string>
     <string name="hint_username">Username</string>
     <string name="hint_password">Password</string>
+    <string name="search_clear_content_description">button that clears search bar text</string>
 </resources>

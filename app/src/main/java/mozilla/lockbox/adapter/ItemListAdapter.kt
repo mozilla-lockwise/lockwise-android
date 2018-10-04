@@ -7,7 +7,6 @@
 package mozilla.lockbox.adapter
 
 import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.ScrollingTabContainerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -57,7 +56,8 @@ class ItemListAdapter : RecyclerView.Adapter<ItemListCell>() {
     }
 
     override fun getItemCount(): Int {
-        val count = itemList?.count() ?: 0
+        val list = itemList ?: return 0
+        val count = list.count()
         return if (count == 0) 1 else count
     }
 

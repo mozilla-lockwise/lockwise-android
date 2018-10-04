@@ -16,6 +16,7 @@ import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
 import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.store.DataStore
+import java.util.concurrent.TimeUnit
 
 interface FilterView {
     val filterTextEntered: Observable<CharSequence>

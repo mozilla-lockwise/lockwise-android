@@ -35,7 +35,8 @@
             android:layout_gravity="center_vertical"
             android:background="@null"
             android:src="@drawable/ic_close"
-            android:contentDescription="TODO" />
+            android:visibility="invisible"
+            android:contentDescription="@string/search_clear_content_description" />
     </LinearLayout>
 
 </android.support.v7.widget.Toolbar>
