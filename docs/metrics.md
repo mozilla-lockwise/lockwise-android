@@ -52,7 +52,7 @@ In addition to answering the above questions that directly concern actions in th
 
 ## Collection
 
-*Note: There is currently a new mozilla mobile telemetry sdk under development. Lockbox for android may end up using that sdk if it ships before the app is ready. If not, Lockbox will use the*
+*Note: There is currently a new mozilla mobile telemetry sdk under development, however it will not ship prior to the lockbox for android app. Once the new sdk ships we will evaluate whether or not to tear out the old implementation and replace it with the new sdk.*
 
 Data will be collected using this library:
 
