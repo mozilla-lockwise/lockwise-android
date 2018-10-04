@@ -8,4 +8,4 @@ package mozilla.lockbox.extensions
 
 import org.junit.Assert.*
 
-class ServerPasswordExtensionText
+class ServerPasswordExtensionTest

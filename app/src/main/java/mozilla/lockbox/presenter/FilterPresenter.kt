@@ -26,9 +26,9 @@ interface FilterView {
 }
 
 class FilterPresenter(
-        val view: FilterView,
-        val dataStore: DataStore = DataStore.shared
-        ) : Presenter() {
+    val view: FilterView,
+    private val dataStore: DataStore = DataStore.shared
+) : Presenter() {
 
     override fun onViewReady() {
         val itemViewModelList = dataStore.list.mapToItemViewModelList()
@@ -60,6 +60,5 @@ class FilterPresenter(
                         it.subtitle.contains(pair.first, true)
             }
         }
-
     }
 }

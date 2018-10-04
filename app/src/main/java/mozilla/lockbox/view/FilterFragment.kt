@@ -28,12 +28,14 @@ import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.presenter.FilterPresenter
 import mozilla.lockbox.presenter.FilterView
 
-
 class FilterFragment : BackableFragment(), FilterView {
     val adapter = ItemListAdapter()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
+    ): View? {
         presenter = FilterPresenter(this)
         val view = inflater.inflate(R.layout.fragment_filter, container, false)
         setupBackable(view, R.drawable.ic_arrow_back)

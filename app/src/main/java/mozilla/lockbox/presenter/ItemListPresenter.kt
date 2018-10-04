@@ -19,7 +19,6 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
 import mozilla.lockbox.model.ItemViewModel
-import mozilla.lockbox.model.titleFromHostname
 import mozilla.lockbox.store.DataStore
 
 interface ItemListView {
