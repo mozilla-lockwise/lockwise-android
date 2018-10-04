@@ -7,7 +7,7 @@
 package mozilla.lockbox.presenter
 
 import android.content.ClipboardManager
-import android.widget.EditText
+import android.support.annotation.StringRes
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
@@ -38,19 +38,16 @@ class ItemDetailPresenterTest {
         override val btnTogglePasswordClicks: Observable<Unit>
             get() = tapStub
 
-        override val editUsername: EditText
-            get() = TODO("not implemented") // To change initializer of created properties use File | Settings | File Templates.
-        override val editPassword: EditText
-            get() = TODO("not implemented") // To change initializer of created properties use File | Settings | File Templates.
-
         override fun updateItem(item: ItemDetailViewModel) {
             this.item = item
         }
 
-        override fun copyNotification(strId: Int) {
+        override fun copyNotification(@StringRes strId: Int) {
+            // notification Test
         }
 
         override fun updatePasswordField(visible: Boolean) {
+            // show hide password test
         }
     }
 

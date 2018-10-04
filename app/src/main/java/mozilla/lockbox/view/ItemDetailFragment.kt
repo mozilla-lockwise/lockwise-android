@@ -9,6 +9,7 @@ package mozilla.lockbox.view
 import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
+import android.support.annotation.StringRes
 import android.text.method.PasswordTransformationMethod
 import android.view.LayoutInflater
 import android.view.View
@@ -44,14 +45,8 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
     override val btnUsernameCopyClicks: Observable<Unit>
         get() = view!!.btnUsernameCopy.clicks()
 
-    override val editUsername: EditText
-        get() = view!!.inputUsername
-
     override val btnPasswordCopyClicks: Observable<Unit>
         get() = view!!.btnPasswordCopy.clicks()
-
-    override val editPassword: EditText
-        get() = view!!.inputPassword
 
     override val btnTogglePasswordClicks: Observable<Unit>
         get() = view!!.btnPasswordToggle.clicks()
@@ -72,7 +67,7 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         inputPassword.setText(item.password, TextView.BufferType.NORMAL)
     }
 
-    override fun copyNotification(strId: Int) {
+    override fun copyNotification(@StringRes strId: Int) {
         Toast.makeText(activity, getString(strId), Toast.LENGTH_SHORT).show()
     }
 
@@ -82,7 +77,7 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
             inputPassword.transformationMethod = null
             btnPasswordToggle.setImageResource(R.drawable.ic_hide)
         } else {
-            inputPassword.transformationMethod = PasswordTransformationMethod()
+            inputPassword.transformationMethod = PasswordTransformationMethod.getInstance()
             btnPasswordToggle.setImageResource(R.drawable.ic_show)
         }
     }

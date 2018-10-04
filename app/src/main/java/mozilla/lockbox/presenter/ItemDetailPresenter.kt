@@ -6,7 +6,6 @@
 
 package mozilla.lockbox.presenter
 
-import android.widget.EditText
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.R
@@ -25,11 +24,7 @@ interface ItemDetailView {
     fun updatePasswordField(visible: Boolean)
 
     val btnUsernameCopyClicks: Observable<Unit>
-    val editUsername: EditText
-
     val btnPasswordCopyClicks: Observable<Unit>
-    val editPassword: EditText
-
     val btnTogglePasswordClicks: Observable<Unit>
 }
 
@@ -47,15 +42,27 @@ class ItemDetailPresenter(
 
         this.view.btnUsernameCopyClicks
                 .subscribe {
-                    clipboardCopy("username", view.editUsername.text.toString())
-                    view.copyNotification(R.string.toast_username_copied)
+                    view.itemId?.let {
+                        dataStore.get(it)
+                                .subscribe {
+                                    clipboardCopy("username", it!!.username!!)
+                                    view.copyNotification(R.string.toast_username_copied)
+                                }
+                                .addTo(compositeDisposable)
+                    }
                 }
                 .addTo(compositeDisposable)
 
         this.view.btnPasswordCopyClicks
                 .subscribe {
-                    clipboardCopy("password", view.editPassword.text.toString())
-                    view.copyNotification(R.string.toast_password_copied)
+                    view.itemId?.let {
+                        dataStore.get(it)
+                                .subscribe {
+                                    clipboardCopy("password", it!!.password)
+                                    view.copyNotification(R.string.toast_password_copied)
+                                }
+                                .addTo(compositeDisposable)
+                    }
                 }
                 .addTo(compositeDisposable)
 
