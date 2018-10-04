@@ -30,7 +30,6 @@ import mozilla.lockbox.presenter.FilterView
 
 class FilterFragment : BackableFragment(), FilterView {
     val adapter = ItemListAdapter()
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -59,17 +58,11 @@ class FilterFragment : BackableFragment(), FilterView {
         imm.showSoftInput(view!!.filterField, InputMethodManager.SHOW_IMPLICIT)
     }
 
-    override val filterTextEntered: Observable<CharSequence>
-        get() = view!!.filterField.textChanges()
-
-    override val filterText: Consumer<in CharSequence>
-        get() = view!!.filterField.text()
-
-    override val cancelButtonClicks: Observable<Unit>
-        get() = view!!.cancelButton.clicks()
-
-    override val cancelButtonVisibility: Consumer<in Boolean>
-        get() = view!!.cancelButton.visibility()
+    override val filterTextEntered: Observable<CharSequence> = view!!.filterField.textChanges()
+    override val filterText: Consumer<in CharSequence> = view!!.filterField.text()
+    override val cancelButtonClicks: Observable<Unit> = view!!.cancelButton.clicks()
+    override val cancelButtonVisibility: Consumer<in Boolean> = view!!.cancelButton.visibility()
+    override val itemSelection: Observable<ItemViewModel> = adapter.clicks()
 
     override fun updateItems(items: List<ItemViewModel>) {
         adapter.updateItems(items)

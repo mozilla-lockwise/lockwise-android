@@ -11,9 +11,10 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
+import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.mapToItemViewModelList
+import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
-import mozilla.lockbox.log
 import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.store.DataStore
 
@@ -22,11 +23,13 @@ interface FilterView {
     val filterText: Consumer<in CharSequence>
     val cancelButtonClicks: Observable<Unit>
     val cancelButtonVisibility: Consumer<in Boolean>
+    val itemSelection: Observable<ItemViewModel>
     fun updateItems(items: List<ItemViewModel>)
 }
 
 class FilterPresenter(
     val view: FilterView,
+    private val dispatcher: Dispatcher = Dispatcher.shared,
     private val dataStore: DataStore = DataStore.shared
 ) : Presenter() {
 
@@ -50,11 +53,16 @@ class FilterPresenter(
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(view.filterText)
                 .addTo(compositeDisposable)
+
+        view.itemSelection
+                .subscribe { it ->
+                    dispatcher.dispatch(RouteAction.ItemDetail(it.guid))
+                }
+                .addTo(compositeDisposable)
     }
 
     private fun Observable<Pair<CharSequence, List<ItemViewModel>>>.filterItemsForText(): Observable<List<ItemViewModel>> {
         return this.map { pair ->
-            log.debug("mapping")
             pair.second.filter {
                 it.title.contains(pair.first, true) ||
                         it.subtitle.contains(pair.first, true)
