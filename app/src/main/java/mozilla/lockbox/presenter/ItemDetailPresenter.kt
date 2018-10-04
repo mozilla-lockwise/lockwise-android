@@ -21,11 +21,12 @@ interface ItemDetailView {
     var itemId: String?
     fun updateItem(item: ItemDetailViewModel)
     fun copyNotification(strId: Int)
-    fun updatePasswordField(visible: Boolean)
 
     val btnUsernameCopyClicks: Observable<Unit>
     val btnPasswordCopyClicks: Observable<Unit>
     val btnTogglePasswordClicks: Observable<Unit>
+
+    var isPasswordVisible: Boolean
 }
 
 class ItemDetailPresenter(
@@ -35,8 +36,6 @@ class ItemDetailPresenter(
     private val dataStore: DataStore = DataStore.shared
 
 ) : Presenter() {
-
-    var isPasswordVisible: Boolean = false
 
     override fun onViewReady() {
 
@@ -68,8 +67,7 @@ class ItemDetailPresenter(
 
         this.view.btnTogglePasswordClicks
                 .subscribe {
-                    isPasswordVisible = isPasswordVisible.not()
-                    view.updatePasswordField(isPasswordVisible)
+                    view.isPasswordVisible = view.isPasswordVisible.not()
                 }
                 .addTo(compositeDisposable)
     }
@@ -84,7 +82,7 @@ class ItemDetailPresenter(
                 .subscribe(view::updateItem)
                 .addTo(compositeDisposable)
 
-        isPasswordVisible = false
+        view.isPasswordVisible = false
     }
 
     private fun clipboardCopy(label: String, str: String) {

@@ -46,9 +46,7 @@ class ItemDetailPresenterTest {
             // notification Test
         }
 
-        override fun updatePasswordField(visible: Boolean) {
-            // show hide password test
-        }
+        override var isPasswordVisible: Boolean = false
     }
 
     class FakeDataStore : DataStore() {

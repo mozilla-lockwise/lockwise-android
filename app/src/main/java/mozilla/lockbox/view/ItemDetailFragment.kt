@@ -51,6 +51,18 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
     override val btnTogglePasswordClicks: Observable<Unit>
         get() = view!!.btnPasswordToggle.clicks()
 
+    override var isPasswordVisible: Boolean = false
+        set(value) {
+            field = value
+            if (value) {
+                inputPassword.transformationMethod = null
+                btnPasswordToggle.setImageResource(R.drawable.ic_hide)
+            } else {
+                inputPassword.transformationMethod = PasswordTransformationMethod.getInstance()
+                btnPasswordToggle.setImageResource(R.drawable.ic_show)
+            }
+        }
+
     override fun updateItem(item: ItemDetailViewModel) {
         toolbar.title = item.title
 
@@ -69,17 +81,6 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
 
     override fun copyNotification(@StringRes strId: Int) {
         Toast.makeText(activity, getString(strId), Toast.LENGTH_SHORT).show()
-    }
-
-    override fun updatePasswordField(visible: Boolean) {
-
-        if (visible) {
-            inputPassword.transformationMethod = null
-            btnPasswordToggle.setImageResource(R.drawable.ic_hide)
-        } else {
-            inputPassword.transformationMethod = PasswordTransformationMethod.getInstance()
-            btnPasswordToggle.setImageResource(R.drawable.ic_show)
-        }
     }
 }
 
