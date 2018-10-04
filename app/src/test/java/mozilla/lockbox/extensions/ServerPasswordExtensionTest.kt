@@ -6,6 +6,24 @@
 
 package mozilla.lockbox.extensions
 
-import org.junit.Assert.*
+import mozilla.lockbox.model.ItemViewModel
+import org.junit.Assert
+import org.junit.Test
+import org.mozilla.sync15.logins.ServerPassword
 
-class ServerPasswordExtensionTest
+class ServerPasswordExtensionTest {
+    @Test
+    fun toViewModel() {
+        val guid = "afdsfdsa"
+        val username = "cats@cats.com"
+        val serverPassword = ServerPassword(
+                guid,
+                hostname = "www.mozilla.org",
+                username = username,
+                password = "woof")
+
+        val expectedItemViewModel = ItemViewModel("mozilla.org", username, guid)
+
+        Assert.assertEquals(serverPassword.toViewModel(), expectedItemViewModel)
+    }
+}
