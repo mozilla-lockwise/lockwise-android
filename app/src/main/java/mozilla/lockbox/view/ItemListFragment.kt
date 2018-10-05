@@ -16,6 +16,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.jakewharton.rxbinding2.support.design.widget.itemSelections
 import com.jakewharton.rxbinding2.support.v7.widget.navigationClicks
+import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -29,7 +30,6 @@ import mozilla.lockbox.presenter.ItemListView
 class ItemListFragment : CommonFragment(), ItemListView {
     private val compositeDisposable = CompositeDisposable()
     private val adapter = ItemListAdapter()
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -61,6 +61,9 @@ class ItemListFragment : CommonFragment(), ItemListView {
     // Protocol implementations
     override val drawerItemSelections: Observable<MenuItem>
         get() = view!!.navView.itemSelections()
+
+    override val filterClicks: Observable<Unit>
+        get() = view!!.filterButton.clicks()
 
     override val itemSelection: Observable<ItemViewModel>
         get() = adapter.clicks()
