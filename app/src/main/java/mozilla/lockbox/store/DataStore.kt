@@ -13,6 +13,7 @@ import io.reactivex.subjects.SingleSubject
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.log
 import mozilla.lockbox.support.DataStoreSupport
 import mozilla.lockbox.support.FixedDataStoreSupport
 import org.mozilla.sync15.logins.LoginsStorage
@@ -78,6 +79,7 @@ open class DataStore(
 
     fun unlock(): Observable<Unit> {
         val unlockSubject = SingleSubject.create<Unit>()
+        log.info("unlocking")
 
         backend.isLocked().then {
             if (it) {

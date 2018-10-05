@@ -6,15 +6,13 @@
 
 package mozilla.lockbox.view
 
-import android.support.v7.widget.RecyclerView
 import android.view.View
-import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.list_cell_item.itemSubtitle
 import kotlinx.android.synthetic.main.list_cell_item.itemTitle
+import kotlinx.android.synthetic.main.list_cell_item.itemSubtitle
+import mozilla.lockbox.adapter.ItemListCell
 import mozilla.lockbox.model.ItemViewModel
 
-class ItemViewHolder(override val containerView: View)
-    : RecyclerView.ViewHolder(containerView), LayoutContainer {
+class ItemViewHolder(override val containerView: View) : ItemListCell(containerView) {
 
     var itemViewModel: ItemViewModel? = null
         set(value) {

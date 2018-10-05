@@ -10,6 +10,7 @@ import android.content.Context
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import mozilla.lockbox.model.ItemViewModel
+import mozilla.lockbox.view.ItemViewHolder
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -41,8 +42,8 @@ class ItemListAdapterTest {
     }
 
     @Test
-    fun onBindViewHolder() {
-        val viewHolder = subject.onCreateViewHolder(parent, 0)
+    fun onBindViewHolder_populatedList() {
+        val viewHolder = subject.onCreateViewHolder(parent, 0) as ItemViewHolder
 
         subject.onBindViewHolder(viewHolder, 1)
 
@@ -50,7 +51,29 @@ class ItemListAdapterTest {
     }
 
     @Test
+    fun onBindViewHolder_emptyList() {
+        subject.updateItems(emptyList())
+        val viewHolder = subject.onCreateViewHolder(parent, 1)
+
+        subject.onBindViewHolder(viewHolder, 0)
+
+        // todo: how to check the viewholder type?
+    }
+
+    @Test
     fun getItemCount() {
         Assert.assertEquals(3, subject.itemCount)
+    }
+
+    @Test
+    fun getItemViewType_populatedList() {
+        Assert.assertEquals(subject.getItemViewType(0), 0)
+    }
+
+    @Test
+    fun getItemViewType_emptyList() {
+        subject.updateItems(emptyList())
+
+        Assert.assertEquals(subject.getItemViewType(0), 1)
     }
 }
