@@ -21,9 +21,6 @@ import mozilla.lockbox.R
 import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.view.ItemViewHolder
 
-val ITEM_DISPLAY_CELL_TYPE = 0
-val NO_MATCHING_ENTRIES_CELL_TYPE = 1
-
 open class ItemListCell(override val containerView: View)
     : RecyclerView.ViewHolder(containerView), LayoutContainer
 
@@ -32,6 +29,9 @@ class ItemListAdapter : RecyclerView.Adapter<ItemListCell>() {
     private var itemList: List<ItemViewModel>? = null
     private val _clicks = PublishSubject.create<ItemViewModel>()
     private val compositeDisposable = CompositeDisposable()
+
+    private val ITEM_DISPLAY_CELL_TYPE = 0
+    private val NO_MATCHING_ENTRIES_CELL_TYPE = 1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemListCell {
         val inflater = LayoutInflater.from(parent.context)
