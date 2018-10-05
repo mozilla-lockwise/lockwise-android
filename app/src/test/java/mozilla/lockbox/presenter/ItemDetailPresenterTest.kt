@@ -6,7 +6,6 @@
 
 package mozilla.lockbox.presenter
 
-import android.content.ClipboardManager
 import android.support.annotation.StringRes
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
@@ -20,7 +19,6 @@ import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 import org.mozilla.sync15.logins.ServerPassword
-import org.mockito.Mockito
 
 class ItemDetailPresenterTest {
     class FakeView : ItemDetailView {
@@ -58,9 +56,8 @@ class ItemDetailPresenterTest {
 
     val view = FakeView()
     val dataStore = FakeDataStore()
-    val clipboardManager = Mockito.mock(ClipboardManager::class.java)
 
-    val subject = ItemDetailPresenter(view, clipboardManager, dataStore = dataStore)
+    val subject = ItemDetailPresenter(view, dataStore = dataStore)
 
     val dispatcherObserver = TestObserver.create<Action>()
 
