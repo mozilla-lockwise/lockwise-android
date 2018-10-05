@@ -36,7 +36,7 @@ class ItemListPresenterTest {
         override val itemSelection: Observable<ItemViewModel>
             get() = itemSelectedStub
 
-        override val filterClick: Observable<Unit>
+        override val filterClicks: Observable<Unit>
             get() = filterClickStub
 
         override fun closeDrawers() {

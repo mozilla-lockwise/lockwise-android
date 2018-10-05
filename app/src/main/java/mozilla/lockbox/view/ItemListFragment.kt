@@ -62,7 +62,7 @@ class ItemListFragment : CommonFragment(), ItemListView {
     override val drawerItemSelections: Observable<MenuItem>
         get() = view!!.navView.itemSelections()
 
-    override val filterClick: Observable<Unit>
+    override val filterClicks: Observable<Unit>
         get() = view!!.filterButton.clicks()
 
     override val itemSelection: Observable<ItemViewModel>

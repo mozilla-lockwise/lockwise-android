@@ -21,6 +21,9 @@ import mozilla.lockbox.R
 import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.view.ItemViewHolder
 
+val ITEM_DISPLAY_CELL_TYPE = 0
+val NO_MATCHING_ENTRIES_CELL_TYPE = 1
+
 open class ItemListCell(override val containerView: View)
     : RecyclerView.ViewHolder(containerView), LayoutContainer
 
@@ -33,7 +36,7 @@ class ItemListAdapter : RecyclerView.Adapter<ItemListCell>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemListCell {
         val inflater = LayoutInflater.from(parent.context)
         when (viewType) {
-            1 -> {
+            NO_MATCHING_ENTRIES_CELL_TYPE -> {
                 val view = inflater.inflate(R.layout.list_cell_no_matching, parent, false)
 
                 return ItemListCell(view)
@@ -72,11 +75,7 @@ class ItemListAdapter : RecyclerView.Adapter<ItemListCell>() {
 
     override fun getItemViewType(position: Int): Int {
         val count = itemList?.count() ?: 0
-        if (count > 0) {
-            return 0
-        } else {
-            return 1
-        }
+        return if (count > 0) ITEM_DISPLAY_CELL_TYPE else NO_MATCHING_ENTRIES_CELL_TYPE
     }
 
     fun updateItems(newItems: List<ItemViewModel>) {

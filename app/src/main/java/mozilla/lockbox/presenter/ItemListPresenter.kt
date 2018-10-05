@@ -24,7 +24,7 @@ import mozilla.lockbox.store.DataStore
 interface ItemListView {
     val drawerItemSelections: Observable<MenuItem>
     val itemSelection: Observable<ItemViewModel>
-    val filterClick: Observable<Unit>
+    val filterClicks: Observable<Unit>
     fun updateItems(itemList: List<ItemViewModel>)
     fun closeDrawers()
     // TODO: Item list selection
@@ -66,7 +66,7 @@ class ItemListPresenter(
                 }
                 .addTo(compositeDisposable)
 
-        view.filterClick
+        view.filterClicks
                 .subscribe {
                     dispatcher.dispatch(RouteAction.Filter)
                 }
