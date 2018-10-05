@@ -11,11 +11,13 @@ import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.R
 import mozilla.lockbox.action.ClipboardAction
+import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.extensions.toDetailViewModel
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.model.ItemDetailViewModel
-import mozilla.lockbox.model.titleFromHostname
 import mozilla.lockbox.store.DataStore
+import org.mozilla.sync15.logins.ServerPassword
 
 interface ItemDetailView {
     var itemId: String?
@@ -25,6 +27,7 @@ interface ItemDetailView {
     val usernameCopyClicks: Observable<Unit>
     val passwordCopyClicks: Observable<Unit>
     val togglePasswordClicks: Observable<Unit>
+    val hostnameClicks: Observable<Unit>
 
     var isPasswordVisible: Boolean
 }
@@ -33,55 +36,57 @@ class ItemDetailPresenter(
     private val view: ItemDetailView,
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val dataStore: DataStore = DataStore.shared
-
 ) : Presenter() {
 
     override fun onViewReady() {
-        this.view.usernameCopyClicks
-                .subscribe {
-                    view.itemId?.let {
-                        dataStore.get(it)
-                                .subscribe {
-                                    if (it!!.username!!.isNotEmpty()) {
-                                        dispatcher.dispatch(ClipboardAction.CopyUsername(it.username!!))
-                                        view.showToastNotification(R.string.toast_username_copied)
-                                    }
-                                }
-                                .addTo(compositeDisposable)
-                    }
-                }
-                .addTo(compositeDisposable)
+        handleClicks(view.usernameCopyClicks) {
+            val username = it.username ?: ""
+            if (username.isNotEmpty()) {
+                dispatcher.dispatch(ClipboardAction.CopyUsername(username))
+                view.showToastNotification(R.string.toast_username_copied)
+            }
+        }
 
-        this.view.passwordCopyClicks
-                .subscribe {
-                    view.itemId?.let {
-                        dataStore.get(it)
-                                .subscribe {
-                                    if (it!!.password.isNotEmpty()) {
-                                        dispatcher.dispatch(ClipboardAction.CopyPassword(it.password))
-                                        view.showToastNotification(R.string.toast_password_copied)
-                                    }
-                                }
-                                .addTo(compositeDisposable)
-                    }
-                }
-                .addTo(compositeDisposable)
+        handleClicks(view.passwordCopyClicks) {
+            if (it.password.isNotEmpty()) {
+                dispatcher.dispatch(ClipboardAction.CopyPassword(it.password))
+                view.showToastNotification(R.string.toast_password_copied)
+            }
+        }
+
+        handleClicks(view.hostnameClicks) {
+            if (it.hostname.isNotEmpty()) {
+                dispatcher.dispatch(RouteAction.OpenWebsite(it.hostname))
+            }
+        }
 
         this.view.togglePasswordClicks
-                .subscribe {
-                    view.isPasswordVisible = view.isPasswordVisible.not()
-                }
-                .addTo(compositeDisposable)
+            .subscribe {
+                view.isPasswordVisible = view.isPasswordVisible.not()
+            }
+            .addTo(compositeDisposable)
 
         // now set up the data.
         val itemId = view.itemId ?: return
         dataStore.get(itemId)
-                .map {
-                    ItemDetailViewModel(it.id, titleFromHostname(it.hostname), it.hostname, it.username, it.password)
-                }
-                .subscribe(view::updateItem)
-                .addTo(compositeDisposable)
+            .map {
+                it.toDetailViewModel()
+            }
+            .subscribe(view::updateItem)
+            .addTo(compositeDisposable)
 
         view.isPasswordVisible = false
+    }
+
+    private fun handleClicks(clicks: Observable<Unit>, withServerPassword: (ServerPassword) -> Unit) {
+        clicks.subscribe {
+            view.itemId?.let {
+                dataStore.get(it)
+                    .subscribe {
+                        it?.let { withServerPassword(it) }
+                    }
+                    .addTo(compositeDisposable)
+            }
+        }.addTo(compositeDisposable)
     }
 }

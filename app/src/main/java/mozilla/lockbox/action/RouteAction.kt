@@ -17,4 +17,5 @@ sealed class RouteAction : Action {
     object LockScreen : RouteAction()
     object Filter : RouteAction()
     data class ItemDetail(val id: String) : RouteAction()
+    data class OpenWebsite(val host: String) : RouteAction()
 }

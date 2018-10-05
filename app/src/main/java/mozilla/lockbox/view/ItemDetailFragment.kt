@@ -51,6 +51,9 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
     override val togglePasswordClicks: Observable<Unit>
         get() = view!!.btnPasswordToggle.clicks()
 
+    override val hostnameClicks: Observable<Unit>
+        get() = view!!.inputHostname.clicks()
+    
     override var isPasswordVisible: Boolean = false
         set(value) {
             field = value
@@ -73,6 +76,7 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         inputUsername.readOnly = true
         inputPassword.readOnly = true
         inputHostname.readOnly = true
+        inputHostname.isClickable = true
 
         inputHostname.setText(item.hostname, TextView.BufferType.NORMAL)
         inputUsername.setText(item.username, TextView.BufferType.NORMAL)

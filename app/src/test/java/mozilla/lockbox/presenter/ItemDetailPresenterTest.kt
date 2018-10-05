@@ -25,6 +25,7 @@ class ItemDetailPresenterTest {
 
         override var itemId: String? = null
         var item: ItemDetailViewModel? = null
+
         val tapStub: PublishSubject<Unit> = PublishSubject.create<Unit>()
 
         override val usernameCopyClicks: Observable<Unit>
@@ -40,11 +41,14 @@ class ItemDetailPresenterTest {
             this.item = item
         }
 
+        override val hostnameClicks: Observable<Unit>
+            get() = tapStub
+
+        override var isPasswordVisible: Boolean = false
+
         override fun showToastNotification(@StringRes strId: Int) {
             // notification Test
         }
-
-        override var isPasswordVisible: Boolean = false
     }
 
     class FakeDataStore : DataStore() {

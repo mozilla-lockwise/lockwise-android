@@ -6,6 +6,7 @@
 
 package mozilla.lockbox.extensions
 
+import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.model.ItemViewModel
 import org.mozilla.sync15.logins.ServerPassword
 
@@ -13,6 +14,10 @@ fun ServerPassword.toViewModel(): ItemViewModel {
     val username = this.username ?: ""
     val hostname = titleFromHostname(this.hostname)
     return ItemViewModel(hostname, username, this.id)
+}
+
+fun ServerPassword.toDetailViewModel(): ItemDetailViewModel {
+    return ItemDetailViewModel(id, titleFromHostname(hostname), hostname, username, password)
 }
 
 private fun titleFromHostname(hostname: String): String {
