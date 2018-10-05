@@ -6,8 +6,6 @@
 
 package mozilla.lockbox.view
 
-import android.content.ClipboardManager
-import android.content.Context
 import android.os.Bundle
 import android.support.annotation.StringRes
 import android.text.method.PasswordTransformationMethod
@@ -35,7 +33,7 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        presenter = ItemDetailPresenter(this, activity!!.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
+        presenter = ItemDetailPresenter(this)
         val view = inflater.inflate(R.layout.fragment_item_detail, container, false)
         setupBackable(view)
 
@@ -56,10 +54,10 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
             field = value
             if (value) {
                 inputPassword.transformationMethod = null
-                btnPasswordToggle.setImageResource(R.drawable.ic_hide)
+                btnPasswordToggle.setImageResource(R.drawable.ic_icon_hide)
             } else {
                 inputPassword.transformationMethod = PasswordTransformationMethod.getInstance()
-                btnPasswordToggle.setImageResource(R.drawable.ic_show)
+                btnPasswordToggle.setImageResource(R.drawable.ic_icon_show)
             }
         }
 

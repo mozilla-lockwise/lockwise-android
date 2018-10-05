@@ -12,12 +12,16 @@ import io.sentry.android.AndroidSentryClientFactory
 import mozilla.components.support.base.log.Log
 import mozilla.components.support.base.log.logger.Logger
 import mozilla.components.support.base.log.sink.AndroidLogSink
+import mozilla.lockbox.store.ClipboardStore
 
 val log: Logger = Logger("Lockbox")
 class LockboxApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         Log.addSink(AndroidLogSink())
+
+        // use context for system service
+        ClipboardStore.shared.apply(this)
 
         // Set up Sentry using DSN (client key) from the Project Settings page on Sentry
         val ctx = this.applicationContext

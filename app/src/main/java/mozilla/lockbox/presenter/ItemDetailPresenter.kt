@@ -14,8 +14,7 @@ import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.model.titleFromHostname
 import mozilla.lockbox.store.DataStore
-import android.content.ClipData
-import android.content.ClipboardManager
+import mozilla.lockbox.store.ClipboardStore
 
 interface ItemDetailView {
     var itemId: String?
@@ -31,9 +30,9 @@ interface ItemDetailView {
 
 class ItemDetailPresenter(
     private val view: ItemDetailView,
-    private val clipboardManager: ClipboardManager,
     private val dispatcher: Dispatcher = Dispatcher.shared,
-    private val dataStore: DataStore = DataStore.shared
+    private val dataStore: DataStore = DataStore.shared,
+    private val clipboardStore: ClipboardStore = ClipboardStore.shared
 
 ) : Presenter() {
 
@@ -44,7 +43,7 @@ class ItemDetailPresenter(
                     view.itemId?.let {
                         dataStore.get(it)
                                 .subscribe {
-                                    clipboardCopy("username", it!!.username!!)
+                                    clipboardStore.clipboardCopy("username", it!!.username!!)
                                     view.copyNotification(R.string.toast_username_copied)
                                 }
                                 .addTo(compositeDisposable)
@@ -57,7 +56,7 @@ class ItemDetailPresenter(
                     view.itemId?.let {
                         dataStore.get(it)
                                 .subscribe {
-                                    clipboardCopy("password", it!!.password)
+                                    clipboardStore.clipboardCopy("password", it!!.password)
                                     view.copyNotification(R.string.toast_password_copied)
                                 }
                                 .addTo(compositeDisposable)
@@ -83,11 +82,5 @@ class ItemDetailPresenter(
                 .addTo(compositeDisposable)
 
         view.isPasswordVisible = false
-    }
-
-    private fun clipboardCopy(label: String, str: String) {
-
-        val clip = ClipData.newPlainText(label, str)
-        this.clipboardManager.primaryClip = clip
     }
 }
