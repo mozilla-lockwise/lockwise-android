@@ -10,10 +10,10 @@ import mozilla.lockbox.flux.Action
 import org.mozilla.telemetry.event.TelemetryEvent
 
 open class TelemetryAction(
-    val eventMethod: TelemetryEventMethod,
-    val eventObject: TelemetryEventObject,
-    val value: String?,
-    val extras: Map<String, Any>?
+    open val eventMethod: TelemetryEventMethod,
+    open val eventObject: TelemetryEventObject,
+    open val value: String?,
+    open val extras: Map<String, Any>?
 ) : Action {
     open fun createEvent(category: String = "action"): TelemetryEvent {
         val evt = TelemetryEvent.create(

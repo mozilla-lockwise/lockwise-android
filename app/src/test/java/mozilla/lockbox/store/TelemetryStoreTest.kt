@@ -13,7 +13,6 @@ import mozilla.lockbox.action.TelemetryAction
 import mozilla.lockbox.action.TelemetryEventMethod
 import mozilla.lockbox.action.TelemetryEventObject
 import mozilla.lockbox.flux.Dispatcher
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mozilla.telemetry.event.TelemetryEvent
@@ -37,19 +36,12 @@ class TelemetryStoreTest : DisposingTest() {
         }
     }
 
-    private lateinit var dispatcher: Dispatcher
-    private lateinit var wrapper: FakeTelemetryWrapper
-    private lateinit var subject: TelemetryStore
-
-    @Before
-    fun setUp() {
-        dispatcher = Dispatcher()
-        wrapper = FakeTelemetryWrapper()
-        subject = TelemetryStore(dispatcher, wrapper)
-    }
-
     @Test
     fun testApplyConfig() {
+        val dispatcher = Dispatcher()
+        val wrapper = FakeTelemetryWrapper()
+        val subject = TelemetryStore(dispatcher, wrapper)
+
         val applyObserver = createTestObserver<Context>()
         wrapper.applySubject.subscribe(applyObserver)
         subject.applyContext(RuntimeEnvironment.application)
@@ -58,6 +50,10 @@ class TelemetryStoreTest : DisposingTest() {
 
     @Test
     fun testActionHandling() {
+        val dispatcher = Dispatcher()
+        val wrapper = FakeTelemetryWrapper()
+        val subject = TelemetryStore(dispatcher, wrapper)
+
         val eventsObserver = createTestObserver<TelemetryEvent>()
         wrapper.eventsSubject.subscribe(eventsObserver)
 
