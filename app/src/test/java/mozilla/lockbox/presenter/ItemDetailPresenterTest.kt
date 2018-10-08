@@ -27,20 +27,20 @@ class ItemDetailPresenterTest {
         var item: ItemDetailViewModel? = null
         val tapStub: PublishSubject<Unit> = PublishSubject.create<Unit>()
 
-        override val btnUsernameCopyClicks: Observable<Unit>
+        override val usernameCopyClicks: Observable<Unit>
             get() = tapStub
 
-        override val btnPasswordCopyClicks: Observable<Unit>
+        override val passwordCopyClicks: Observable<Unit>
             get() = tapStub
 
-        override val btnTogglePasswordClicks: Observable<Unit>
+        override val togglePasswordClicks: Observable<Unit>
             get() = tapStub
 
         override fun updateItem(item: ItemDetailViewModel) {
             this.item = item
         }
 
-        override fun copyNotification(@StringRes strId: Int) {
+        override fun showToastNotification(@StringRes strId: Int) {
             // notification Test
         }
 

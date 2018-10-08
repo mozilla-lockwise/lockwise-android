@@ -29,12 +29,12 @@ class ClipboardStoreTest : DisposingTest() {
 
     @Test
     fun testInit() {
-        subject.apply(RuntimeEnvironment.application)
+        subject.apply(RuntimeEnvironment.application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
     }
 
     @Test
     fun testClipboard() {
-        subject.apply(RuntimeEnvironment.application)
+        subject.apply(RuntimeEnvironment.application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
         subject.clipboardCopy("label", "my_test_string")
 
         val clipboardManager:ClipboardManager = RuntimeEnvironment.application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager

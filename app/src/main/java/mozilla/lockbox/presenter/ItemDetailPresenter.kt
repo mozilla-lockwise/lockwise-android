@@ -6,6 +6,7 @@
 
 package mozilla.lockbox.presenter
 
+import android.support.annotation.StringRes
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.R
@@ -19,11 +20,11 @@ import mozilla.lockbox.store.ClipboardStore
 interface ItemDetailView {
     var itemId: String?
     fun updateItem(item: ItemDetailViewModel)
-    fun copyNotification(strId: Int)
+    fun showToastNotification(@StringRes strId: Int)
 
-    val btnUsernameCopyClicks: Observable<Unit>
-    val btnPasswordCopyClicks: Observable<Unit>
-    val btnTogglePasswordClicks: Observable<Unit>
+    val usernameCopyClicks: Observable<Unit>
+    val passwordCopyClicks: Observable<Unit>
+    val togglePasswordClicks: Observable<Unit>
 
     var isPasswordVisible: Boolean
 }
@@ -38,33 +39,33 @@ class ItemDetailPresenter(
 
     override fun onViewReady() {
 
-        this.view.btnUsernameCopyClicks
+        this.view.usernameCopyClicks
                 .subscribe {
                     view.itemId?.let {
                         dataStore.get(it)
                                 .subscribe {
                                     clipboardStore.clipboardCopy("username", it!!.username!!)
-                                    view.copyNotification(R.string.toast_username_copied)
+                                    view.showToastNotification(R.string.toast_username_copied)
                                 }
                                 .addTo(compositeDisposable)
                     }
                 }
                 .addTo(compositeDisposable)
 
-        this.view.btnPasswordCopyClicks
+        this.view.passwordCopyClicks
                 .subscribe {
                     view.itemId?.let {
                         dataStore.get(it)
                                 .subscribe {
                                     clipboardStore.clipboardCopy("password", it!!.password)
-                                    view.copyNotification(R.string.toast_password_copied)
+                                    view.showToastNotification(R.string.toast_password_copied)
                                 }
                                 .addTo(compositeDisposable)
                     }
                 }
                 .addTo(compositeDisposable)
 
-        this.view.btnTogglePasswordClicks
+        this.view.togglePasswordClicks
                 .subscribe {
                     view.isPasswordVisible = view.isPasswordVisible.not()
                 }

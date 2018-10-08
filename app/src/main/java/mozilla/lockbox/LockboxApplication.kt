@@ -7,6 +7,8 @@
 package mozilla.lockbox
 
 import android.app.Application
+import android.content.ClipboardManager
+import android.content.Context
 import io.sentry.Sentry
 import io.sentry.android.AndroidSentryClientFactory
 import mozilla.components.support.base.log.Log
@@ -21,7 +23,7 @@ class LockboxApplication : Application() {
         Log.addSink(AndroidLogSink())
 
         // use context for system service
-        ClipboardStore.shared.apply(this)
+        ClipboardStore.shared.apply(getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
 
         // Set up Sentry using DSN (client key) from the Project Settings page on Sentry
         val ctx = this.applicationContext

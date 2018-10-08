@@ -14,8 +14,8 @@ open class ClipboardStore(
 
     private lateinit var clipboardManager: ClipboardManager
 
-    fun apply(ctx: Context) {
-        clipboardManager = ctx.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    fun apply(manager: ClipboardManager) {
+        clipboardManager = manager
     }
 
     fun clipboardCopy(label: String, str: String) {

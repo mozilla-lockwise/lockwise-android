@@ -40,13 +40,13 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         return view
     }
 
-    override val btnUsernameCopyClicks: Observable<Unit>
+    override val usernameCopyClicks: Observable<Unit>
         get() = view!!.btnUsernameCopy.clicks()
 
-    override val btnPasswordCopyClicks: Observable<Unit>
+    override val passwordCopyClicks: Observable<Unit>
         get() = view!!.btnPasswordCopy.clicks()
 
-    override val btnTogglePasswordClicks: Observable<Unit>
+    override val togglePasswordClicks: Observable<Unit>
         get() = view!!.btnPasswordToggle.clicks()
 
     override var isPasswordVisible: Boolean = false
@@ -77,7 +77,7 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         inputPassword.setText(item.password, TextView.BufferType.NORMAL)
     }
 
-    override fun copyNotification(@StringRes strId: Int) {
+    override fun showToastNotification(@StringRes strId: Int) {
         Toast.makeText(activity, getString(strId), Toast.LENGTH_SHORT).show()
     }
 }
