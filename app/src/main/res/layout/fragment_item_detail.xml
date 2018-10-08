@@ -7,7 +7,6 @@
 
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -19,6 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="?attr/actionBarSize"
         app:layout_constraintTop_toTopOf="parent">
+
         <EditText
             android:id="@+id/inputHostname"
             android:layout_width="match_parent"
@@ -32,22 +32,35 @@
         android:id="@+id/inputLayoutUsername"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/inputLayoutHostname"
-        >
+        app:layout_constraintTop_toBottomOf="@id/inputLayoutHostname">
+
         <EditText
             android:id="@+id/inputUsername"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/hint_username"
             android:inputType="none"
-            android:singleLine="true" />
+            android:singleLine="true"
+            app:layout_constraintRight_toRightOf="@+id/inputLayoutUsername"
+            app:layout_constraintTop_toTopOf="@+id/inputLayoutUsername" />
     </android.support.design.widget.TextInputLayout>
+
+    <ImageView
+        android:id="@+id/btnUsernameCopy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/inputLayoutUsername"
+        app:layout_constraintRight_toRightOf="@+id/inputLayoutUsername"
+        app:layout_constraintTop_toTopOf="@+id/inputLayoutUsername"
+        app:srcCompat="@drawable/ic_icon_copy" />
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/inputLayoutPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/inputLayoutUsername">
+
         <EditText
             android:id="@+id/inputPassword"
             android:layout_width="match_parent"
@@ -56,4 +69,24 @@
             android:inputType="none|textPassword"
             android:singleLine="true" />
     </android.support.design.widget.TextInputLayout>
+
+    <ImageView
+        android:id="@+id/btnPasswordCopy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/inputLayoutPassword"
+        app:layout_constraintRight_toRightOf="@+id/inputLayoutPassword"
+        app:layout_constraintTop_toTopOf="@+id/inputLayoutPassword"
+        app:srcCompat="@drawable/ic_icon_copy" />
+
+    <ImageView
+        android:id="@+id/btnPasswordToggle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/inputLayoutPassword"
+        app:layout_constraintRight_toLeftOf="@+id/btnPasswordCopy"
+        app:layout_constraintTop_toTopOf="@+id/inputLayoutPassword"
+        app:srcCompat="@drawable/ic_icon_show" />
 </android.support.constraint.ConstraintLayout>
