@@ -7,7 +7,7 @@ repo_url: https://github.com/mozilla-lockbox/lockbox-android
 pages:
 - 'Introduction': 'index.md'
 - 'Contributing': 'contributing.md'
-- 'Architecture':
-  - 'Using Keys and Biometrics': 'architecture/sec-apis.md'
+- 'Telemetry and Metrics': 'metrics.md'
 - 'Developer Guides':
   - 'Build and Install': 'install.md'
+  - 'Using Keys and Biometrics': 'architecture/sec-apis.md'
