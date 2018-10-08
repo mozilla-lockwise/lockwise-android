@@ -40,8 +40,7 @@ class DataStoreTest : DisposingTest() {
             Assert.assertTrue(it.isEmpty())
         }.addTo(disposer)
         subject.state.subscribe {
-            Assert.assertEquals(State.Status.LOCKED, it.status)
-            Assert.assertNull(it.error)
+            Assert.assertEquals(State.Locked, it)
         }.addTo(disposer)
     }
 
@@ -65,8 +64,8 @@ class DataStoreTest : DisposingTest() {
         stateObserver.apply {
             // TODO: figure out why the initialized state isn't here?
             assertValueCount(2)
-            assertValueAt(0, State(State.Status.UNLOCKED))
-            assertValueAt(1, State(State.Status.LOCKED))
+            assertValueAt(0, State.Unlocked)
+            assertValueAt(1, State.Locked)
         }
         listObserver.apply {
             val results = values()
@@ -85,17 +84,17 @@ class DataStoreTest : DisposingTest() {
         subject.state.subscribe(stateObserver)
         subject.list.subscribe(listObserver)
 
-        dispatcher.dispatch(DataStoreAction(DataStoreAction.Type.UNLOCK))
+        dispatcher.dispatch(DataStoreAction.Unlock)
         Mockito.verify(support.storage).unlock(support.encryptionKey)
         Mockito.verify(support.storage).list()
         Mockito.clearInvocations(support.storage)
 
-        dispatcher.dispatch(DataStoreAction(DataStoreAction.Type.SYNC))
+        dispatcher.dispatch(DataStoreAction.Sync)
         Mockito.verify(support.storage).sync(support.syncConfig)
         Mockito.verify(support.storage).list()
         Mockito.clearInvocations(support.storage)
 
-        dispatcher.dispatch(DataStoreAction(DataStoreAction.Type.LOCK))
+        dispatcher.dispatch(DataStoreAction.Lock)
         Mockito.verify(support.storage).lock()
         Mockito.clearInvocations(support.storage)
     }

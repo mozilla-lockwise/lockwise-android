@@ -9,7 +9,10 @@ package mozilla.lockbox.mocks
 import mozilla.lockbox.support.DataStoreSupport
 import mozilla.lockbox.support.createDummyItem
 import org.mockito.Mockito
+import org.mozilla.sync15.logins.IdCollisionException
+import org.mozilla.sync15.logins.InvalidRecordException
 import org.mozilla.sync15.logins.LoginsStorage
+import org.mozilla.sync15.logins.NoSuchRecordException
 import org.mozilla.sync15.logins.ServerPassword
 import org.mozilla.sync15.logins.SyncResult
 import org.mozilla.sync15.logins.SyncUnlockInfo
@@ -41,6 +44,34 @@ open class MockLoginsStorage : LoginsStorage {
             }
             all.removeAt(all.indexOf(it))
             SyncResult.fromValue(true)
+        }
+    }
+    override fun add(login: ServerPassword): SyncResult<String> {
+        if (login.id == "") {
+            SyncResult.fromException<String>(InvalidRecordException("record id missing"))
+        }
+
+        return checkLockState().then {
+            get(login.id)
+        }.then {
+            if (it != null) {
+                SyncResult.fromException<String>(IdCollisionException("record already exists"))
+            }
+
+            all.add(login)
+            SyncResult.fromValue(login.id)
+        }
+    }
+
+    override fun update(login: ServerPassword): SyncResult<Unit> {
+        return checkLockState().then {
+            get(login.id)
+        }.then {
+            if (it == null) {
+                SyncResult.fromException<Unit>(NoSuchRecordException("record not found"))
+            }
+            all[all.indexOf(it)] = login
+            SyncResult.fromValue(Unit)
         }
     }
 

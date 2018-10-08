@@ -15,11 +15,12 @@ import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.view.FxALoginFragment
-import mozilla.lockbox.view.ItemDetailFragment
 import mozilla.lockbox.view.ItemListFragment
-import mozilla.lockbox.view.LockedFragment
 import mozilla.lockbox.view.SettingFragment
 import mozilla.lockbox.view.WelcomeFragment
+import mozilla.lockbox.view.LockedFragment
+import mozilla.lockbox.view.ItemDetailFragment
+import mozilla.lockbox.view.FilterFragment
 
 class RoutePresenter(private val activity: AppCompatActivity, routeStore: RouteStore = RouteStore.shared) : Presenter() {
     private val welcome: WelcomeFragment by lazy { WelcomeFragment() }
@@ -28,9 +29,12 @@ class RoutePresenter(private val activity: AppCompatActivity, routeStore: RouteS
     private val settingList: SettingFragment by lazy { SettingFragment() }
     private val lock: LockedFragment by lazy { LockedFragment() }
     private val itemDetail: ItemDetailFragment by lazy { ItemDetailFragment() }
+    private val filter: FilterFragment by lazy { FilterFragment() }
 
     init {
-        routeStore.routes.subscribe { a -> route(a) }.addTo(compositeDisposable)
+        routeStore.routes
+                .subscribe(this::route)
+                .addTo(compositeDisposable)
     }
 
     override fun onViewReady() {
@@ -65,6 +69,7 @@ class RoutePresenter(private val activity: AppCompatActivity, routeStore: RouteS
             is RouteAction.ItemList -> replaceFragment(itemList, false)
             is RouteAction.SettingList -> replaceFragment(settingList)
             is RouteAction.LockScreen -> replaceFragment(lock, false)
+            is RouteAction.Filter -> replaceFragment(filter)
             is RouteAction.ItemDetail -> {
                 itemDetail.itemId = action.id
                 replaceFragment(itemDetail)

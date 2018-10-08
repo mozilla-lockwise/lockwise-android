@@ -18,20 +18,26 @@ import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.store.DataStore
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.mozilla.sync15.logins.ServerPassword
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 class ItemListPresenterTest {
     class FakeView : ItemListView {
         val drawerItemStub = PublishSubject.create<MenuItem>()
         val itemSelectedStub = PublishSubject.create<ItemViewModel>()
+        val filterClickStub = PublishSubject.create<Unit>()
         var closeDrawersCalled = false
         var updateItemsArgument: List<ItemViewModel>? = null
-
         override val drawerItemSelections: Observable<MenuItem>
             get() = drawerItemStub
 
         override val itemSelection: Observable<ItemViewModel>
             get() = itemSelectedStub
+
+        override val filterClicks: Observable<Unit>
+            get() = filterClickStub
 
         override fun closeDrawers() {
             this.closeDrawersCalled = true

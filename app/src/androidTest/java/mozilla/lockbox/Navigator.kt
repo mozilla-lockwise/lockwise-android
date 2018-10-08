@@ -26,6 +26,12 @@ class Navigator {
         onView(withId(R.id.appDrawer)).check(matches(isDisplayed()))
     }
 
+    fun gotoItemList_filter() {
+        gotoItemList()
+        onView(withId(R.id.filterButton)).perform(click())
+        onView(withId(R.id.filterField)).check(matches(isDisplayed()))
+    }
+
     fun gotoItemList_openMenu() {
         gotoItemList()
         val drawer = onView(withId(R.id.appDrawer))
