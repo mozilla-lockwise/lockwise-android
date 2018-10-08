@@ -57,7 +57,12 @@ class TelemetryStoreTest : DisposingTest() {
         val eventsObserver = createTestObserver<TelemetryEvent>()
         wrapper.eventsSubject.subscribe(eventsObserver)
 
-        var action = TelemetryAction(TelemetryEventMethod.foreground, TelemetryEventObject.app, null, null)
+        var action = object : TelemetryAction() {
+            override val eventMethod: TelemetryEventMethod
+                get() = TelemetryEventMethod.foreground
+            override val eventObject: TelemetryEventObject
+                get() = TelemetryEventObject.app
+        }
         dispatcher.dispatch(action)
         eventsObserver.assertValue {
             it.toJSON() == action.createEvent().toJSON()
