@@ -4,6 +4,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import junit.framework.Assert.assertTrue
 import mozilla.lockbox.DisposingTest
+import mozilla.lockbox.action.ClipboardAction
 import mozilla.lockbox.flux.Dispatcher
 import org.junit.Before
 import org.junit.Test
@@ -34,11 +35,12 @@ class ClipboardStoreTest : DisposingTest() {
 
     @Test
     fun testClipboard() {
+        val testString = "my_test_string"
+
         subject.apply(RuntimeEnvironment.application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
-        subject.clipboardCopy("label", "my_test_string")
+        dispatcher.dispatch(ClipboardAction.Clip("label", testString))
 
-        val clipboardManager:ClipboardManager = RuntimeEnvironment.application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-
-        assertTrue(clipboardManager.primaryClip.getItemAt(0).text.equals("my_test_string"))
+        val clipboardManager: ClipboardManager = RuntimeEnvironment.application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        assertTrue(clipboardManager.primaryClip.getItemAt(0).text.equals(testString))
     }
 }

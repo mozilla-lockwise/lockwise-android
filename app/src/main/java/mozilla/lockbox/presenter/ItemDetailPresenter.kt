@@ -10,12 +10,12 @@ import android.support.annotation.StringRes
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.R
+import mozilla.lockbox.action.ClipboardAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.model.titleFromHostname
 import mozilla.lockbox.store.DataStore
-import mozilla.lockbox.store.ClipboardStore
 
 interface ItemDetailView {
     var itemId: String?
@@ -32,19 +32,17 @@ interface ItemDetailView {
 class ItemDetailPresenter(
     private val view: ItemDetailView,
     private val dispatcher: Dispatcher = Dispatcher.shared,
-    private val dataStore: DataStore = DataStore.shared,
-    private val clipboardStore: ClipboardStore = ClipboardStore.shared
+    private val dataStore: DataStore = DataStore.shared
 
 ) : Presenter() {
 
     override fun onViewReady() {
-
         this.view.usernameCopyClicks
                 .subscribe {
                     view.itemId?.let {
                         dataStore.get(it)
                                 .subscribe {
-                                    clipboardStore.clipboardCopy("username", it!!.username!!)
+                                    dispatcher.dispatch(ClipboardAction.Clip("username", it!!.username!!))
                                     view.showToastNotification(R.string.toast_username_copied)
                                 }
                                 .addTo(compositeDisposable)
@@ -57,7 +55,7 @@ class ItemDetailPresenter(
                     view.itemId?.let {
                         dataStore.get(it)
                                 .subscribe {
-                                    clipboardStore.clipboardCopy("password", it!!.password)
+                                    dispatcher.dispatch(ClipboardAction.Clip("password", it!!.password!!))
                                     view.showToastNotification(R.string.toast_password_copied)
                                 }
                                 .addTo(compositeDisposable)
