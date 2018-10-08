@@ -1,6 +1,6 @@
 # Firefox Lockbox for Android Metrics Plan
 
-_Last Updated: Sept 26, 2018_
+_Last Updated: October 8, 2018_
 
 <!-- TOC depthFrom:2 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
