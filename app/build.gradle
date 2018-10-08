@@ -26,6 +26,7 @@ android {
     }
     buildTypes {
         debug {
+            debuggable true
             testCoverageEnabled true
         }
         release {
@@ -64,9 +65,9 @@ dependencies {
     implementation 'com.jakewharton.rxrelay2:rxrelay:2.0.0'
     implementation 'io.reactivex.rxjava2:rxkotlin:2.3.0'
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
-    implementation "org.mozilla.components:sync-logins:${rootProject.ext.android_components_version}"
-    implementation "org.mozilla.components:fxa:${rootProject.ext.android_components_version}"
-    implementation "org.mozilla.components:telemetry:${rootProject.ext.android_components_version}"
+    implementation "org.mozilla.components:service-sync-logins:${rootProject.ext.android_components_version}"
+    implementation "org.mozilla.components:service-firefox-accounts:${rootProject.ext.android_components_version}"
+    implementation "org.mozilla.components:service-telemetry:${rootProject.ext.android_components_version}"
     implementation 'com.android.support:support-v4:27.1.1'
     implementation 'io.sentry:sentry-android:1.7.10'
     testImplementation 'junit:junit:4.12'
@@ -94,9 +95,9 @@ task ktlint(type: JavaExec, group: "verification", description: "Runs ktlint.") 
     outputs.dir(outputDir)
     main = "com.github.shyiko.ktlint.Main"
     classpath = configurations.ktlint
-    args = [ "--reporter=plain",
-             "--reporter=checkstyle,output=${outputDir}ktlint-checkstyle-report.xml",
-             "src/**/*.kt" ]
+    args = ["--reporter=plain",
+            "--reporter=checkstyle,output=${outputDir}ktlint-checkstyle-report.xml",
+            "src/**/*.kt"]
 }
 
 afterEvaluate {
@@ -114,7 +115,7 @@ task ktlintFormat(type: JavaExec, group: "formatting") {
     description = "Runs ktlint and autoformats your code."
     main = "com.github.shyiko.ktlint.Main"
     classpath = configurations.ktlint
-    args = [ "-F", "src/**/*.kt" ]
+    args = ["-F", "src/**/*.kt"]
 }
 
 androidExtensions {

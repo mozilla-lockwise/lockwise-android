@@ -8,7 +8,7 @@
    - License, v. 2.0. If a copy of the MPL was not distributed with this
    - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Firefox Lockbox</string>
     <string name="app_label">Lockbox</string>
     <string name="app_tagline">Take your passwords everywhere.</string>
@@ -27,7 +27,18 @@
     <string name="placeholder_unlock_button">Unlock Firefox Lockbox</string>
     <string name="lock_now">Lock Now</string>
     <string name="all_entries_a_z">All entries (A-Z)</string>
+    <string name="search_your_entries" tools:ignore="ExtraTranslation">search your entries</string>
+    <string name="no_matching_entries">No matching entries.</string>
+    <string name="save_firefox_disclaimer">To see more entries here, you\'ll need to save them to Firefox.</string>
+    <string name="learn_more">Learn more</string>
     <string name="hint_hostname">Web address</string>
     <string name="hint_username">Username</string>
     <string name="hint_password">Password</string>
+    <string name="toast_username_copied">Username copied</string>
+    <string name="toast_password_copied">Password copied</string>
+    <string name="search_clear_content_description">button that clears search bar text</string>
+
+    <string name="setting_key_telemetry" translatable="false">setting_telemetry</string>
+
+    <string name="telemetry_server_endpoint" translatable="false">https://incoming.telemetry.mozilla.org</string>
 </resources>

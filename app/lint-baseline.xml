@@ -11,6 +11,30 @@
 
     <issue
         id="VectorPath"
+        message="Very long vector path (1019 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
+        <location
+            file="src/main/res/drawable/ic_icon_copy.xml"
+            line="8"/>
+    </issue>
+
+    <issue
+        id="VectorPath"
+        message="Very long vector path (1727 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
+        <location
+            file="src/main/res/drawable/ic_icon_hide.xml"
+            line="7"/>
+    </issue>
+
+    <issue
+        id="VectorPath"
+        message="Very long vector path (1154 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
+        <location
+            file="src/main/res/drawable/ic_icon_show.xml"
+            line="7"/>
+    </issue>
+
+    <issue
+        id="VectorPath"
         message="Very long vector path (2176 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
         <location
             file="src/main/res/drawable-v24/ic_nessie.xml"
@@ -177,7 +201,31 @@
         message="Missing `autofillHints` attribute">
         <location
             file="src/main/res/layout/fragment_item_detail.xml"
-            line="51"/>
+            line="64"/>
+    </issue>
+
+    <issue
+        id="ContentDescription"
+        message="Missing `contentDescription` attribute on image">
+        <location
+            file="src/main/res/layout/fragment_item_detail.xml"
+            line="48"/>
+    </issue>
+
+    <issue
+        id="ContentDescription"
+        message="Missing `contentDescription` attribute on image">
+        <location
+            file="src/main/res/layout/fragment_item_detail.xml"
+            line="73"/>
+    </issue>
+
+    <issue
+        id="ContentDescription"
+        message="Missing `contentDescription` attribute on image">
+        <location
+            file="src/main/res/layout/fragment_item_detail.xml"
+            line="83"/>
     </issue>
 
 </issues>
