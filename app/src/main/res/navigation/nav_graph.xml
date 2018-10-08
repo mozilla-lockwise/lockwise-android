@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ This Source Code Form is subject to the terms of the Mozilla Public
+  ~  License, v. 2.0. If a copy of the MPL was not distributed with this
+  ~  file, You can obtain one at http://mozilla.org/MPL/2.0/.
+  -->
+
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/welcomeFragment">
+
+    <fragment
+        android:id="@+id/welcomeFragment"
+        android:name="mozilla.lockbox.view.WelcomeFragment"
+        android:label="WelcomeFragment"
+        tools:layout="@layout/fragment_welcome">
+        <action
+            android:id="@+id/action_welcomeFragment_to_fxaLoginFragment"
+            app:destination="@id/fxaLoginFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/fxaLoginFragment"
+        android:name="mozilla.lockbox.view.FxALoginFragment"
+        android:label="FxALoginFragment"
+        tools:layout="@layout/fragment_fxa_login">
+        <action
+            android:id="@+id/action_fxaLoginFragment_to_itemListFragment"
+            app:destination="@id/itemListFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/itemListFragment"
+        android:name="mozilla.lockbox.view.ItemListFragment"
+        android:label="ItemListFragment"
+        tools:layout="@layout/fragment_item_list">
+        <action
+            android:id="@+id/action_itemListFragment_to_itemDetailFragment"
+            app:destination="@id/itemDetailFragment" />
+        <action
+            android:id="@+id/action_itemListFragment_to_settingFragment"
+            app:destination="@id/settingFragment" />
+        <action
+            android:id="@+id/action_itemListFragment_to_lockedFragment"
+            app:destination="@+id/lockedFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/itemDetailFragment"
+        android:name="mozilla.lockbox.view.ItemDetailFragment"
+        android:label="ItemDetailFragment"
+        tools:layout="@layout/fragment_item_detail">
+        <argument
+            android:name="viewId"
+            app:type="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/settingFragment"
+        android:name="mozilla.lockbox.view.SettingFragment"
+        android:label="SettingFragment"
+        tools:layout="@layout/fragment_setting"/>
+
+    <fragment
+        android:id="@+id/lockedFragment"
+        android:name="mozilla.lockbox.view.LockedFragment"
+        android:label="LockedFragment"
+        tools:layout="@layout/fragment_locked" />
+</navigation>

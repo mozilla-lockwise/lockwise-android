@@ -84,6 +84,7 @@ dependencies {
         exclude module: 'recyclerview-v7'
     }
     ktlint "com.github.shyiko:ktlint:0.28.0"
+    implementation 'android.arch.navigation:navigation-fragment:1.0.0-alpha06'
 }
 
 def outputDir = "${project.buildDir}/reports/ktlint/"
