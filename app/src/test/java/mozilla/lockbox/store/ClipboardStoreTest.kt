@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ *  License, v. 2.0. If a copy of the MPL was not distributed with this
+ *  file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
 package mozilla.lockbox.store
 
 import android.content.ClipboardManager
@@ -23,8 +29,6 @@ class ClipboardStoreTest : DisposingTest() {
     @Before
     fun setUp() {
         dispatcher = Dispatcher()
-
-        this.dispatcher = dispatcher
         subject = ClipboardStore(dispatcher)
     }
 
@@ -34,11 +38,22 @@ class ClipboardStoreTest : DisposingTest() {
     }
 
     @Test
-    fun testClipboard() {
+    fun testCopyUsername() {
         val testString = "my_test_string"
 
         subject.apply(RuntimeEnvironment.application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
-        dispatcher.dispatch(ClipboardAction.Clip("label", testString))
+        dispatcher.dispatch(ClipboardAction.CopyUsername(testString))
+
+        val clipboardManager: ClipboardManager = RuntimeEnvironment.application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        assertTrue(clipboardManager.primaryClip.getItemAt(0).text.equals(testString))
+    }
+
+    @Test
+    fun testCopyPassword() {
+        val testString = "my_test_password"
+
+        subject.apply(RuntimeEnvironment.application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
+        dispatcher.dispatch(ClipboardAction.CopyPassword(testString))
 
         val clipboardManager: ClipboardManager = RuntimeEnvironment.application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         assertTrue(clipboardManager.primaryClip.getItemAt(0).text.equals(testString))
