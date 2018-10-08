@@ -12,7 +12,7 @@ _Last Updated: Sept 26, 2018_
 
 <!-- /TOC -->
 
-This is the metrics collection plan for the Lockbox android app. It documents all events that are planned to be collected through telemetry. It will be updated periodically to reflect all new and planned data collection. A similar document for the lockbox for iOS app can be found [here](https://github.com/mozilla-lockbox/lockbox-ios/blob/master/docs/metrics.md).
+This is the metrics collection plan for the Lockbox Android app. It documents all events that are planned to be collected through telemetry. It will be updated periodically to reflect all new and planned data collection. A similar document for the Lockbox for iOS app can be found [here](https://github.com/mozilla-lockbox/lockbox-ios/blob/master/docs/metrics.md).
 
 ## Analysis
 
@@ -52,7 +52,7 @@ In addition to answering the above questions that directly concern actions in th
 
 ## Collection
 
-*Note: There is currently a new mozilla mobile telemetry sdk under development, however it will not ship prior to the lockbox for android app. Once the new sdk ships we will evaluate whether or not to tear out the old implementation and replace it with the new sdk.*
+*Note: There is currently a new Mozilla mobile telemetry SDK under development, however it will not ship prior to the Lockbox for Android app. Once the new SDK ships we will evaluate whether or not to tear out the old implementation and replace it with the new SDK.*
 
 Data will be collected using this library:
 
@@ -60,7 +60,7 @@ https://github.com/mozilla-mobile/android-components/blob/master/components/serv
 
 We plan to submit two ping types, both of which are implemented by the component above.
 
-First is the [core ping](https://github.com/mozilla-mobile/android-components/blob/master/components/service/telemetry/src/main/java/org/mozilla/telemetry/ping/TelemetryCorePingBuilder.java), which contains information about the android version, architecture, etc of the device lockbox has been installed on:
+First is the [core ping](https://github.com/mozilla-mobile/android-components/blob/master/components/service/telemetry/src/main/java/org/mozilla/telemetry/ping/TelemetryCorePingBuilder.java), which contains information about the Android version, architecture, etc of the device Lockbox has been installed on:
 
 https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/data/core-ping.html
 
@@ -68,7 +68,7 @@ The second is the [event ping](https://github.com/mozilla-mobile/android-compone
 
 https://github.com/mozilla-mobile/focus-android/wiki/Event-Tracking-with-Mozilla%27s-Telemetry-Service
 
-TODO: link to the lockbox for android source code at the point where the pings and event values are defined (when that code exists).
+TODO: link to the Lockbox for Android source code at the point where the pings and event values are defined (when that code exists).
 
 See [this](https://github.com/mozilla-mobile/focus-android/blob/master/app/src/main/java/org/mozilla/focus/telemetry/TelemetryWrapper.kt) for the kotlin source code that Firefox Focus uses to define its telemetry events.
 
@@ -171,11 +171,11 @@ https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/c
 
 ## Adjust SDK
 
-The app also includes a version of the [adjust sdk](https://github.com/adjust/android_sdk). Mozilla uses this software to keep track of the number of installations of the lockbox app, as well the number of new Firefox Accounts registered through the app.
+The app also includes a version of the [adjust SDK](https://github.com/adjust/android_sdk). Mozilla uses this software to keep track of the number of installations of the Lockbox app, as well the number of new Firefox Accounts registered through the app.
 
 ## References
 
-[Library used to collect and send telemetry on android](https://github.com/mozilla-mobile/android-components/blob/master/components/service/telemetry/README.md)
+[Library used to collect and send telemetry on Android](https://github.com/mozilla-mobile/android-components/blob/master/components/service/telemetry/README.md)
 
 [Description of the "Core" ping](https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/data/core-ping.html)
 
