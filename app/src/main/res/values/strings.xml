@@ -37,4 +37,8 @@
     <string name="toast_username_copied">Username copied</string>
     <string name="toast_password_copied">Password copied</string>
     <string name="search_clear_content_description">button that clears search bar text</string>
+
+    <string name="setting_key_telemetry" translatable="false">setting_telemetry</string>
+
+    <string name="telemetry_server_endpoint" translatable="false">https://incoming.telemetry.mozilla.org</string>
 </resources>

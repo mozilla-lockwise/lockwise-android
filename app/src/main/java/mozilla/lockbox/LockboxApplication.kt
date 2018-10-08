@@ -15,6 +15,7 @@ import mozilla.components.support.base.log.Log
 import mozilla.components.support.base.log.logger.Logger
 import mozilla.components.support.base.log.sink.AndroidLogSink
 import mozilla.lockbox.store.ClipboardStore
+import mozilla.lockbox.store.TelemetryStore
 
 val log: Logger = Logger("Lockbox")
 class LockboxApplication : Application() {
@@ -24,6 +25,9 @@ class LockboxApplication : Application() {
 
         // use context for system service
         ClipboardStore.shared.apply(getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
+
+        // hook this context into Telemetry
+        TelemetryStore.shared.applyContext(this)
 
         // Set up Sentry using DSN (client key) from the Project Settings page on Sentry
         val ctx = this.applicationContext
