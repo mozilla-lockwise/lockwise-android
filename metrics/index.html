@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Telemetry and Metrics - Firefox Lockbox for Android</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Telemetry and Metrics";
+    var mkdocs_page_input_path = "metrics.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Firefox Lockbox for Android</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Introduction</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../contributing/">Contributing</a>
+	    </li>
+          
+            <li class="toctree-l1 current">
+		
+    <a class="current" href="./">Telemetry and Metrics</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l2"><a href="#firefox-lockbox-for-android-metrics-plan">Firefox Lockbox for Android Metrics Plan</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#analysis">Analysis</a></li>
+        
+            <li><a class="toctree-l3" href="#collection">Collection</a></li>
+        
+            <li><a class="toctree-l3" href="#list-of-proposed-events">List of Proposed Events</a></li>
+        
+            <li><a class="toctree-l3" href="#adjust-sdk">Adjust SDK</a></li>
+        
+            <li><a class="toctree-l3" href="#references">References</a></li>
+        
+        </ul>
+    
+
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Developer Guides</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../install/">Build and Install</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../architecture/sec-apis/">Using Keys and Biometrics</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Firefox Lockbox for Android</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Telemetry and Metrics</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/mozilla-lockbox/lockbox-android/edit/master/docs/metrics.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="firefox-lockbox-for-android-metrics-plan">Firefox Lockbox for Android Metrics Plan</h1>
+<p><em>Last Updated: October 8, 2018</em></p>
+<!-- TOC depthFrom:2 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
+
+<ul>
+<li><a href="#analysis">Analysis</a></li>
+<li><a href="#collection">Collection</a></li>
+<li><a href="#list-of-proposed-events">List of Proposed Events</a></li>
+<li><a href="#adjust-sdk">Adjust SDK</a></li>
+<li><a href="#references">References</a></li>
+</ul>
+<!-- /TOC -->
+
+<p>This is the metrics collection plan for the Lockbox Android app. It documents all events that are planned to be collected through telemetry. It will be updated periodically to reflect all new and planned data collection. A similar document for the Lockbox for iOS app can be found <a href="https://github.com/mozilla-lockbox/lockbox-ios/blob/master/docs/metrics.md">here</a>.</p>
+<h2 id="analysis">Analysis</h2>
+<p>Data collection is done solely for the purpose of product development, improvement and maintenance.</p>
+<p>We will analyze the data described in this doc <em>primarily</em> with the purpose of (dis)confirming the following hypothesis:</p>
+<p><code>If Firefox users have access to their browser-saved passwords on their mobile device but outside of the mobile browser, then they will use those passwords to log into both websites (via a browser; Firefox or otherwise) and stand-alone apps. We will know this to be true when the most frequent actions taken in the app are revealing, copying, or autofilling of credentials.</code></p>
+<p>In service to validating the above hypothesis, we plan on answering these specific questions, given the data we plan to collect (see <a href="#list-of-proposed-events">List of Proposed Events</a>):</p>
+<p><em>Note that when we refer to retrieval of "credentials", we mean access to usernames, passwords, or both</em></p>
+<ul>
+<li>Are users using Lockbox to retrieve credentials?<ul>
+<li>For different intervals of time (e.g. day, week, month), what is:<ul>
+<li>The average rate with which a user retrieves a credential or reveals a password</li>
+<li>The distribution of above rates across all users</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>How often do users access Lockbox credentials via autofill, versus directly through the credential list provided by the app?</li>
+<li>Once downloaded, do users continue to use the app? (i.e., how well are they retained?)<ul>
+<li>We will count a user as retained in a given time interval if they perform one of the following actions:<ul>
+<li>Display the credential list</li>
+<li>Tap a credential in the credential list</li>
+<li>Copy a credential to the clipboard</li>
+<li>Reveal a password</li>
+<li>Autofill a credential stored in Lockbox into another app</li>
+<li>Tap the URI associated with a credential (to open it in an app or browser)</li>
+</ul>
+</li>
+<li>Since they can be performed automatically, we will <strong>not</strong> count a user as retained if they <em>only</em> perform the following actions (in absence of any in the list above):<ul>
+<li>Unlock their credentials</li>
+<li>Sync their credentials from the Firefox desktop browser</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Does requiring a Firefox Account constitute a roadblock to adoption?<ul>
+<li>What proportion of new Lockbox users are pre-existing Firefox Account users?</li>
+<li>What proportion of users start the Account sign-in process but never complete it?</li>
+</ul>
+</li>
+<li>Does adoption of Lockbox lead to adoption of Firefox Mobile browsers (e.g. Focus)?<ul>
+<li>Do users set the default browser in Lockbox to be a Firefox browser?</li>
+</ul>
+</li>
+</ul>
+<p>In addition to answering the above questions that directly concern actions in the app, we will also be analyzing telemetry emitted from the password manager that exists in the the Firefox desktop browser. These analyses will primarily examine whether users of Lockbox start active curation of their credentials in the desktop browser (Lockbox users will not be able to edit credentials directly from the app).</p>
+<h2 id="collection">Collection</h2>
+<p><em>Note: There is currently a new Mozilla mobile telemetry SDK under development, however it will not ship prior to the Lockbox for Android app. Once the new SDK ships we will evaluate whether or not to tear out the old implementation and replace it with the new SDK.</em></p>
+<p>Data will be collected using this library:</p>
+<p>https://github.com/mozilla-mobile/android-components/blob/master/components/service/telemetry/README.md</p>
+<p>We plan to submit two ping types, both of which are implemented by the component above.</p>
+<p>First is the <a href="https://github.com/mozilla-mobile/android-components/blob/master/components/service/telemetry/src/main/java/org/mozilla/telemetry/ping/TelemetryCorePingBuilder.java">core ping</a>, which contains information about the Android version, architecture, etc of the device Lockbox has been installed on:</p>
+<p>https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/data/core-ping.html</p>
+<p>The second is the <a href="https://github.com/mozilla-mobile/android-components/blob/master/components/service/telemetry/src/main/java/org/mozilla/telemetry/ping/TelemetryEventPingBuilder.java">event ping</a> which allows us to record event telemetry:</p>
+<p>https://github.com/mozilla-mobile/focus-android/wiki/Event-Tracking-with-Mozilla%27s-Telemetry-Service</p>
+<p>TODO: link to the Lockbox for Android source code at the point where the pings and event values are defined (when that code exists).</p>
+<p>See <a href="https://github.com/mozilla-mobile/focus-android/blob/master/app/src/main/java/org/mozilla/focus/telemetry/TelemetryWrapper.kt">this</a> for the kotlin source code that Firefox Focus uses to define its telemetry events.</p>
+<p>Every event must contain <code>category</code>, <code>method</code> and <code>object</code> fields, and may optionally contain <code>value</code> and <code>extra</code> fields as well.</p>
+<p>Events related to specific credentials should have an opaque <code>item_id</code> in the extra field where possible.</p>
+<p>Finally, the <code>appName</code> metadata sent with each ping should always be <code>Lockbox</code>.</p>
+<p>See here for more information on event schemas:</p>
+<p>https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/collection/events.html#public-js-api</p>
+<h2 id="list-of-proposed-events">List of Proposed Events</h2>
+<ol>
+<li>
+<p>When the app starts up:</p>
+<ul>
+<li><code>category</code>: action</li>
+<li><code>method</code>: startup</li>
+<li><code>object</code>: app</li>
+<li><code>value</code>: null</li>
+<li><code>extras</code>: null</li>
+</ul>
+</li>
+<li>
+<p>When locking/unlocking the app:</p>
+<ul>
+<li><code>category</code>: action</li>
+<li><code>method</code>: lock, unlock, autolock</li>
+<li><code>object</code>: app</li>
+<li><code>value</code>: pin, biometrics</li>
+<li><code>extras</code>: null</li>
+</ul>
+</li>
+<li>
+<p>Events that fire during the setup process:</p>
+<ul>
+<li><code>category</code>: action</li>
+<li><code>method</code>: show</li>
+<li><code>object</code>: login_welcome, login_fxa, login_learn_more, biometrics_setup, autofill_setup</li>
+<li><code>value</code>: null</li>
+<li><code>extras</code>: null</li>
+</ul>
+</li>
+<li>
+<p>When the main item list is shown to the user:</p>
+<ul>
+<li><code>category</code>: action</li>
+<li><code>method</code>: show</li>
+<li><code>object</code>: entry_list</li>
+<li><code>value</code>: null</li>
+<li><code>extras</code>: null</li>
+</ul>
+</li>
+<li>
+<p>When a user shows the details of an item in the entry list:</p>
+<ul>
+<li><code>category</code>: action</li>
+<li><code>method</code>: show</li>
+<li><code>object</code>: entry_detail</li>
+<li><code>value</code>: null</li>
+<li><code>extras</code>: ["itemid" : itemid]</li>
+</ul>
+</li>
+<li>
+<p>When a user taps one of the copy buttons available after being shown entry details:</p>
+<ul>
+<li><code>category</code>: action</li>
+<li><code>method</code>: tap</li>
+<li><code>object</code>: entry_copy_username_button, entry_copy_password_button</li>
+<li><code>value</code>: null</li>
+<li><code>extras</code>: ["itemid" : itemid]</li>
+</ul>
+</li>
+<li>
+<p>When a user shows details from an item, is the password shown?:</p>
+<ul>
+<li><code>category</code>: action</li>
+<li><code>method</code>: tap</li>
+<li><code>object</code>: reveal_password</li>
+<li><code>value</code>: true or false, whether the pw is displayed</li>
+<li><code>extras</code>: null</li>
+</ul>
+</li>
+<li>
+<p>When one of the settings pages is shown to the user:</p>
+<ul>
+<li><code>category</code>: action</li>
+<li><code>method</code>: show</li>
+<li><code>object</code>: settings_list, settings_autolock, settings_account, settings_faq, settings_provide_feedback</li>
+<li><code>value</code>: null</li>
+<li><code>extras</code>: null</li>
+</ul>
+</li>
+<li>
+<p>When a user changes something on the settings page:</p>
+<ul>
+<li><code>category</code>: action</li>
+<li><code>method</code>: settingsChanged (<em>note this was camelCase in iOS by mistake so leaving it to match that until/if we change it there</em>)</li>
+<li><code>object</code>: settings_biometric_login, settings_autolock_time, settings_reset</li>
+<li><code>value</code>: whatever the value of each of the above was changed to, or null for settings_reset</li>
+<li><code>extras</code>: null</li>
+</ul>
+</li>
+<li>
+<p>When the app enters the background or foreground:</p>
+<ul>
+<li><code>category</code>: action</li>
+<li><code>method</code>: background, foreground</li>
+<li><code>object</code>: app</li>
+<li><code>value</code>: null</li>
+<li><code>extras</code>: null</li>
+</ul>
+</li>
+<li>
+<p>Events related to autofill:</p>
+<ul>
+<li><code>category</code>: action</li>
+<li><code>method</code>: autofill_locked, autofill_unlocked, login_selected, autofill_clear</li>
+<li><code>object</code>: autofill</li>
+<li><code>value</code>: null</li>
+<li><code>extras</code>: null</li>
+</ul>
+</li>
+<li>
+<p>When the user opens the app drawer:</p>
+<ul>
+<li><code>category</code>: action</li>
+<li><code>method</code>: show</li>
+<li><code>object</code>: app_drawer</li>
+<li><code>value</code>: null</li>
+<li><code>extras</code>: null</li>
+</ul>
+</li>
+</ol>
+<h2 id="adjust-sdk">Adjust SDK</h2>
+<p>The app also includes a version of the <a href="https://github.com/adjust/android_sdk">adjust SDK</a>. Mozilla uses this software to keep track of the number of installations of the Lockbox app, as well the number of new Firefox Accounts registered through the app.</p>
+<h2 id="references">References</h2>
+<p><a href="https://github.com/mozilla-mobile/android-components/blob/master/components/service/telemetry/README.md">Library used to collect and send telemetry on Android</a></p>
+<p><a href="https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/data/core-ping.html">Description of the "Core" ping</a></p>
+<p><a href="https://github.com/mozilla-mobile/focus-android/wiki/Event-Tracking-with-Mozilla%27s-Telemetry-Service">Description of the "Focus Event" Ping</a></p>
+<p><a href="https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/collection/events.html#public-js-api">Description of Event Schemas in General</a></p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../install/" class="btn btn-neutral float-right" title="Build and Install">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../contributing/" class="btn btn-neutral" title="Contributing"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+          <a href="https://github.com/mozilla-lockbox/lockbox-android/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+      
+      
+        <span><a href="../contributing/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../install/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+
+</body>
+</html>
