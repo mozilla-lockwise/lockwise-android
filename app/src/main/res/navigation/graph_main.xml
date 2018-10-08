@@ -73,7 +73,7 @@
         android:id="@+id/fragment_setting"
         android:name="mozilla.lockbox.view.SettingFragment"
         android:label="@string/nav_menu_settings"
-        tools:layout="@layout/fragment_setting"/>
+        tools:layout="@layout/setting"/>
 
     <fragment
         android:id="@+id/fragment_filter"

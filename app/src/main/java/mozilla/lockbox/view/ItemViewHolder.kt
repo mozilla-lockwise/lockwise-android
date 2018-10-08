@@ -13,7 +13,6 @@ import mozilla.lockbox.adapter.ItemListCell
 import mozilla.lockbox.model.ItemViewModel
 
 class ItemViewHolder(override val containerView: View) : ItemListCell(containerView) {
-
     var itemViewModel: ItemViewModel? = null
         set(value) {
             field = value
