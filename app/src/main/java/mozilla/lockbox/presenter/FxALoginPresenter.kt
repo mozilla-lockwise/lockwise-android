@@ -19,7 +19,7 @@ interface FxALoginViewProtocol {
 class FxALoginPresenter(private val view: FxALoginViewProtocol, private val dispatcher: Dispatcher = Dispatcher.shared) : Presenter() {
     override fun onViewReady() {
         this.view.logMeInClicks.subscribe {
-            dispatcher.dispatch(RouteAction.ITEMLIST)
+            dispatcher.dispatch(RouteAction.ItemList)
         }.addTo(compositeDisposable)
     }
 }

@@ -45,7 +45,17 @@ open class RoutePresenterTest {
     }
 
     @Test
+    fun testFilter() {
+        navigator.gotoItemList_filter()
+    }
+
+    @Test
     fun testSettings() {
         navigator.gotoSettings()
+    }
+
+    @Test
+    fun testItemDetail() {
+        navigator.gotoItemDetail()
     }
 }

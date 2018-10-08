@@ -26,6 +26,12 @@ class Navigator {
         onView(withId(R.id.appDrawer)).check(matches(isDisplayed()))
     }
 
+    fun gotoItemList_filter() {
+        gotoItemList()
+        onView(withId(R.id.filterButton)).perform(click())
+        onView(withId(R.id.filterField)).check(matches(isDisplayed()))
+    }
+
     fun gotoItemList_openMenu() {
         gotoItemList()
         val drawer = onView(withId(R.id.appDrawer))
@@ -37,5 +43,11 @@ class Navigator {
         gotoItemList_openMenu()
         onView(withId(R.id.navView)).perform(navigateTo(R.id.goto_settings))
         onView(withId(R.id.settings_placeholder)).check(matches(isDisplayed()))
+    }
+
+    fun gotoItemDetail() {
+        gotoItemList()
+        onView(withId(R.id.entriesView)).perform(click())
+        onView(withId(R.id.inputHostname)).check(matches(isDisplayed()))
     }
 }

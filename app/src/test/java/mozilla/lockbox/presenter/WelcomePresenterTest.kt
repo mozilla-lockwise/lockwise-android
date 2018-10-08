@@ -33,7 +33,7 @@ class WelcomePresenterTest {
         subject.onViewReady()
         view.tapStub.onNext(Unit)
 
-        testObserver.assertValue(RouteAction.LOGIN)
+        testObserver.assertValue(RouteAction.Login)
 
         subscription.dispose()
     }

@@ -16,20 +16,45 @@
     android:id="@+id/appDrawer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.ItemListFragment"
-    android:fitsSystemWindows="true">
+    tools:context=".view.ItemListFragment">
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="false">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimary"
-            android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
+            android:theme="@style/ToolBar">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:textAllCaps="false"
+                    android:drawableEnd="@drawable/ic_down_caret"
+                    android:text="@string/all_entries_a_z"
+                    android:textSize="20sp"
+                    style="@style/ToolbarButton"/>
+
+                <Button
+                    android:id="@+id/filterButton"
+                    android:layout_width="fill_parent"
+                    android:layout_height="match_parent"
+                    android:drawableEnd="@drawable/ic_search"
+                    android:layout_marginEnd="16dp"
+                    style="@style/ToolbarButton"/>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.Toolbar>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/entriesView"

@@ -13,29 +13,26 @@ import io.reactivex.subjects.SingleSubject
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.log
 import mozilla.lockbox.support.DataStoreSupport
 import mozilla.lockbox.support.FixedDataStoreSupport
 import org.mozilla.sync15.logins.LoginsStorage
 import org.mozilla.sync15.logins.ServerPassword
 import org.mozilla.sync15.logins.SyncResult
 
-/**
- *
- */
-class DataStore(
+open class DataStore(
     val dispatcher: Dispatcher = Dispatcher.shared,
     val support: DataStoreSupport = FixedDataStoreSupport.shared
 ) {
-    data class State(
-        val status: Status,
-        val error: Throwable? = null
-    ) {
-        enum class Status {
-            UNPREPARED,
-            LOCKED,
-            UNLOCKED,
-            ERRORED
-        }
+    companion object {
+        val shared = DataStore()
+    }
+
+    sealed class State {
+        object Unprepared : State()
+        object Locked : State()
+        object Unlocked : State()
+        data class Errored(val error: Throwable) : State()
     }
 
     internal val compositeDisposable = CompositeDisposable()
@@ -50,9 +47,9 @@ class DataStore(
 
         // handle state changes
         state.subscribe { state ->
-            when (state.status) {
-                State.Status.LOCKED -> clearList()
-                State.Status.UNLOCKED -> updateList()
+            when (state) {
+                is State.Locked -> clearList()
+                is State.Unlocked -> updateList()
                 else -> Unit
             }
         }.addTo(compositeDisposable)
@@ -61,10 +58,10 @@ class DataStore(
         dispatcher.register
                 .filterByType(DataStoreAction::class.java)
                 .subscribe {
-                    when (it.type) {
-                        DataStoreAction.Type.LOCK -> lock()
-                        DataStoreAction.Type.UNLOCK -> unlock()
-                        DataStoreAction.Type.SYNC -> sync()
+                    when (it) {
+                        is DataStoreAction.Lock -> lock()
+                        is DataStoreAction.Unlock -> unlock()
+                        is DataStoreAction.Sync -> sync()
                     }
                 }
                 .addTo(compositeDisposable)
@@ -72,15 +69,22 @@ class DataStore(
 
     val state: Observable<State> get() = stateSubject
 
-    val list: Observable<List<ServerPassword>> get() = listSubject
+    open val list: Observable<List<ServerPassword>> get() = listSubject
+
+    open fun get(id: String): Observable<ServerPassword?> {
+        return list.map { items ->
+            items.findLast { item -> item.id == id }
+        }
+    }
 
     fun unlock(): Observable<Unit> {
         val unlockSubject = SingleSubject.create<Unit>()
+        log.info("unlocking")
 
         backend.isLocked().then {
             if (it) {
                 backend.unlock(support.encryptionKey).then {
-                    stateSubject.onNext(State(State.Status.UNLOCKED))
+                    stateSubject.onNext(State.Unlocked)
                     SyncResult.fromValue(Unit)
                 }
             } else {
@@ -103,7 +107,7 @@ class DataStore(
         backend.isLocked().then {
             if (!it) {
                 backend.lock().then {
-                    stateSubject.onNext(State(State.Status.LOCKED))
+                    stateSubject.onNext(State.Locked)
                     SyncResult.fromValue(Unit)
                 }
             } else {
@@ -129,7 +133,7 @@ class DataStore(
             syncSubject.onSuccess(Unit)
             SyncResult.fromValue(Unit)
         }.thenCatch {
-            stateSubject.onNext(State(State.Status.ERRORED, it))
+            stateSubject.onNext(State.Errored(it))
             syncSubject.onError(it)
             SyncResult.fromValue(Unit)
         }
