@@ -56,8 +56,6 @@ class ItemListAdapterTest {
         val viewHolder = subject.onCreateViewHolder(parent, 1)
 
         subject.onBindViewHolder(viewHolder, 0)
-
-        // todo: how to check the viewholder type?
     }
 
     @Test

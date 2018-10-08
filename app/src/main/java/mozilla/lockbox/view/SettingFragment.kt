@@ -7,22 +7,17 @@
 package mozilla.lockbox.view
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.support.v7.preference.PreferenceFragmentCompat
 import mozilla.lockbox.R
-import mozilla.lockbox.presenter.SettingPresenter
-import mozilla.lockbox.presenter.SettingViewProtocol
+import mozilla.lockbox.BuildConfig
 
-class SettingFragment : BackableFragment(), SettingViewProtocol {
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        presenter = SettingPresenter(this)
+class SettingFragment : PreferenceFragmentCompat() {
+    private val versionNumber = BuildConfig.VERSION_NAME
 
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_setting, container, false)
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        addPreferencesFromResource(R.xml.settings)
+
+        val appVersion = findPreference("app_version")
+        appVersion.setTitle("App Version: $versionNumber")
     }
 }
