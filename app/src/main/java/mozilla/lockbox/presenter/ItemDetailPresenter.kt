@@ -42,8 +42,10 @@ class ItemDetailPresenter(
                     view.itemId?.let {
                         dataStore.get(it)
                                 .subscribe {
-                                    dispatcher.dispatch(ClipboardAction.Clip("username", it!!.username!!))
-                                    view.showToastNotification(R.string.toast_username_copied)
+                                    if (it!!.username!!.isNotEmpty()) {
+                                        dispatcher.dispatch(ClipboardAction.CopyUsername(it.username!!))
+                                        view.showToastNotification(R.string.toast_username_copied)
+                                    }
                                 }
                                 .addTo(compositeDisposable)
                     }
@@ -55,8 +57,10 @@ class ItemDetailPresenter(
                     view.itemId?.let {
                         dataStore.get(it)
                                 .subscribe {
-                                    dispatcher.dispatch(ClipboardAction.Clip("password", it!!.password!!))
-                                    view.showToastNotification(R.string.toast_password_copied)
+                                    if (it!!.password.isNotEmpty()) {
+                                        dispatcher.dispatch(ClipboardAction.CopyPassword(it.password))
+                                        view.showToastNotification(R.string.toast_password_copied)
+                                    }
                                 }
                                 .addTo(compositeDisposable)
                     }

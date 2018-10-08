@@ -24,8 +24,11 @@ open class ClipboardStore(
                 .subscribe {
                     // unpack the action, including adding new Clips to the Clipboard.
                     when (it) {
-                        is ClipboardAction.Clip -> {
-                            addToClipboard(it.label, it.str)
+                        is ClipboardAction.CopyUsername -> {
+                            addToClipboard("username", it.username)
+                        }
+                        is ClipboardAction.CopyPassword -> {
+                            addToClipboard("password", it.password)
                         }
                     }
                 }
@@ -36,8 +39,7 @@ open class ClipboardStore(
         clipboardManager = manager
     }
 
-    fun addToClipboard(label: String, str: String) {
-
+    private fun addToClipboard(label: String, str: String) {
         val clip = ClipData.newPlainText(label, str)
         clipboardManager.primaryClip = clip
     }
