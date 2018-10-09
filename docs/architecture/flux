@@ -2,7 +2,7 @@
 
 ## RxKotlin
 
-Firefox Lockbox for iOS makes extensive use of RxSwift, an implementation of the Observable pattern from ReactiveX. More information and many marble diagrams can be found in the [ReactiveX documentation](http://reactivex.io/). The rest of this document relies on a basic understanding of the reader of the ReactiveX-style Observer implementation. Their intro document is a [good starting point](http://reactivex.io/intro.html).
+Firefox Lockbox for Android makes extensive use of RxKotlin, an implementation of the Observable pattern from ReactiveX. More information and many marble diagrams can be found in the [ReactiveX documentation](http://reactivex.io/). The rest of this document relies on a basic understanding of the reader of the ReactiveX-style Observer implementation. Their intro document is a [good starting point](http://reactivex.io/intro.html).
 
 ## Flux
 
@@ -10,7 +10,7 @@ Firefox Lockbox for iOS makes extensive use of RxSwift, an implementation of the
 
 In short, Flux architecture design maintains a unidirectional data flow, in which a global Dispatcher receives Actions & dispatches them to appropriate Stores. The Stores, in turn, process data & provide the source of truth for the Views. As users interact with the Views, any updates are made via a dispatched Action and the cycle begins again. See this [flux architecture](https://facebook.github.io/flux/docs/overview.html) writeup for more details on the original Flux architecture scheme.
 
-Lockbox implements a modified version of the described architecture (LockFlux), keeping in mind that the original implementation ignores asynchronous work. The key difference is in the implementation of an `ActionHandler` class. The `ActionHandler`s in some cases are a simple pass-through class for the dispatcher, but in others do some background work before dispatching the `Action`.
+Lockbox implements a modified version of the described architecture (LockFlux), keeping in mind that the original implementation ignores asynchronous work.
 
 ### Memory Management
 
