@@ -6,6 +6,7 @@
 
 package mozilla.lockbox.presenter
 
+import android.support.annotation.StringRes
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
@@ -21,12 +22,29 @@ import org.mozilla.sync15.logins.ServerPassword
 
 class ItemDetailPresenterTest {
     class FakeView : ItemDetailView {
+
         override var itemId: String? = null
         var item: ItemDetailViewModel? = null
+        val tapStub: PublishSubject<Unit> = PublishSubject.create<Unit>()
+
+        override val usernameCopyClicks: Observable<Unit>
+            get() = tapStub
+
+        override val passwordCopyClicks: Observable<Unit>
+            get() = tapStub
+
+        override val togglePasswordClicks: Observable<Unit>
+            get() = tapStub
 
         override fun updateItem(item: ItemDetailViewModel) {
             this.item = item
         }
+
+        override fun showToastNotification(@StringRes strId: Int) {
+            // notification Test
+        }
+
+        override var isPasswordVisible: Boolean = false
     }
 
     class FakeDataStore : DataStore() {
@@ -38,6 +56,7 @@ class ItemDetailPresenterTest {
 
     val view = FakeView()
     val dataStore = FakeDataStore()
+
     val subject = ItemDetailPresenter(view, dataStore = dataStore)
 
     val dispatcherObserver = TestObserver.create<Action>()

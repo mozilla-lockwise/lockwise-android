@@ -6,7 +6,6 @@
 
 package mozilla.lockbox.store
 
-import io.reactivex.observers.TestObserver
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.DisposingTest
 import mozilla.lockbox.action.DataStoreAction
@@ -97,11 +96,5 @@ class DataStoreTest : DisposingTest() {
         dispatcher.dispatch(DataStoreAction.Lock)
         Mockito.verify(support.storage).lock()
         Mockito.clearInvocations(support.storage)
-    }
-
-    private fun <T> createTestObserver(): TestObserver<T> {
-        val result = TestObserver.create<T>()
-        result.addTo(disposer)
-        return result
     }
 }
