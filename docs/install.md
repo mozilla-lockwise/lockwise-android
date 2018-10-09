@@ -1,9 +1,14 @@
+### Required Libraries
+
+Our linting configuration requires you to have an up-to-date installation of
+[`ktlint`](https://github.com/shyiko/ktlint#installation)
+
+### Steps to Run / Build
+
 1. Install the latest Android Studio
 
 2. Clone the repository
 
-3. Run `./bootstrap.sh` script to install lint formatter
+3. Open the project in Android Studio
 
-4. Open the project in Android Studio
-
-5. Gradle Sync & build/run the project
+4. Gradle Sync & build/run the project
