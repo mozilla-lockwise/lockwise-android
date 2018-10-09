@@ -6,7 +6,6 @@
 
 package mozilla.lockbox.presenter
 
-import android.view.MenuItem
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject

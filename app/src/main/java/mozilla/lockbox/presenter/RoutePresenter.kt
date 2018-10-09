@@ -18,11 +18,10 @@ import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.view.ItemDetailFragmentArgs
-import mozilla.lockbox.view.ItemListFragmentDirections
 
 class RoutePresenter(
-        private val activity: AppCompatActivity,
-        private val routeStore: RouteStore = RouteStore.shared
+    private val activity: AppCompatActivity,
+    private val routeStore: RouteStore = RouteStore.shared
 ) : Presenter() {
     private lateinit var navController: NavController
 
@@ -52,7 +51,7 @@ class RoutePresenter(
             is RouteAction.ItemDetail -> {
                 // Possibly overkill for passing a single id string,
                 // but it's typesafe™.
-                val bundle= ItemDetailFragmentArgs.Builder()
+                val bundle = ItemDetailFragmentArgs.Builder()
                         .setItemId(action.id)
                         .build()
                         .toBundle()
@@ -62,7 +61,7 @@ class RoutePresenter(
         }
     }
 
-    private fun findTransitionId(@IdRes from: Int, @IdRes to: Int) : Int? {
+    private fun findTransitionId(@IdRes from: Int, @IdRes to: Int): Int? {
         when (from) {
             R.id.welcomeFragment ->
                 when (to) {
@@ -85,7 +84,7 @@ class RoutePresenter(
                 }
         }
 
-        log.warn("Cannot find a transition between ${from} and ${to}")
+        log.warn("Cannot find a transition between $from and $to")
         return null
     }
 }
