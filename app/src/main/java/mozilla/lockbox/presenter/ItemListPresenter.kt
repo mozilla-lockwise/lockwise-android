@@ -22,12 +22,9 @@ import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.store.DataStore
 
 interface ItemListView {
-    val drawerItemSelections: Observable<MenuItem>
     val itemSelection: Observable<ItemViewModel>
     val filterClicks: Observable<Unit>
     fun updateItems(itemList: List<ItemViewModel>)
-    fun closeDrawers()
-    // TODO: Item list selection
 }
 
 class ItemListPresenter(
@@ -36,23 +33,6 @@ class ItemListPresenter(
     private val dataStore: DataStore = DataStore.shared
 ) : Presenter() {
     override fun onViewReady() {
-        view.drawerItemSelections
-                .subscribe { menuItem ->
-                    view.closeDrawers()
-                    when (menuItem.itemId) {
-                        R.id.goto_settings -> {
-                            dispatcher.dispatch(RouteAction.SettingList)
-                        }
-                        R.id.lock_now -> {
-                            dispatcher.dispatch(RouteAction.LockScreen)
-                        }
-                        else -> {
-                            log.info("Menu ${menuItem.title} unimplemented")
-                        }
-                    }
-                }
-                .addTo(compositeDisposable)
-
         dataStore.list
                 .filter { it.isNotEmpty() }
                 .mapToItemViewModelList()
