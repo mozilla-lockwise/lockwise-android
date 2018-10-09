@@ -7,6 +7,8 @@
 package mozilla.lockbox
 
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.observers.TestObserver
+import io.reactivex.rxkotlin.addTo
 import org.junit.After
 
 open class DisposingTest {
@@ -15,5 +17,11 @@ open class DisposingTest {
     @After
     open fun tearDown() {
         disposer.clear()
+    }
+
+    fun <T> createTestObserver(): TestObserver<T> {
+        val result = TestObserver.create<T>()
+        result.addTo(disposer)
+        return result
     }
 }
