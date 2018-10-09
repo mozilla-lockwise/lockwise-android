@@ -8,6 +8,8 @@ package mozilla.lockbox.store
 
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.os.Handler
+import android.util.Log
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.action.ClipboardAction
@@ -22,6 +24,7 @@ open class ClipboardStore(
         val shared = ClipboardStore()
     }
 
+    private val clipDataClearDelay = 60000L
     private lateinit var clipboardManager: ClipboardManager
 
     init {
@@ -48,5 +51,16 @@ open class ClipboardStore(
     private fun addToClipboard(label: String, str: String) {
         val clip = ClipData.newPlainText(label, str)
         clipboardManager.primaryClip = clip
+        clearClipboard(clipDataClearDelay, str)
+    }
+
+    private fun clearClipboard(delay: Long, clearStr: String) {
+        Handler().postDelayed({
+            val clipData = clipboardManager.primaryClip.getItemAt(0)
+            if (clipData.text == clearStr) {
+
+                clipboardManager.primaryClip = ClipData.newPlainText("", "")
+            }
+        }, delay)
     }
 }
