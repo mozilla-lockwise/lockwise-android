@@ -6,6 +6,7 @@
 
 package mozilla.lockbox.presenter
 
+import android.os.Bundle
 import android.support.annotation.IdRes
 import android.support.v7.app.AppCompatActivity
 import androidx.navigation.NavController
@@ -16,6 +17,8 @@ import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
 import mozilla.lockbox.store.RouteStore
+import mozilla.lockbox.view.ItemDetailFragmentArgs
+import mozilla.lockbox.view.ItemListFragmentDirections
 
 class RoutePresenter(
         private val activity: AppCompatActivity,
@@ -28,13 +31,14 @@ class RoutePresenter(
         routeStore.routes.subscribe(this::route).addTo(compositeDisposable)
     }
 
-    private fun replaceFragment(@IdRes destinationId: Int) {
+    private fun replaceFragment(@IdRes destinationId: Int, args: Bundle? = null) {
         val from = navController.currentDestination?.id ?: return
-        if (from == destinationId) {
+        if (from == destinationId && args == null) {
+            // No point in navigating if nothing has changed.
             return
         }
         val transition = findTransitionId(from, destinationId) ?: destinationId
-        navController.navigate(transition)
+        navController.navigate(transition, args)
     }
 
     private fun route(action: RouteAction) {
@@ -46,8 +50,13 @@ class RoutePresenter(
             is RouteAction.LockScreen -> replaceFragment(R.id.lockedFragment)
             is RouteAction.Filter -> replaceFragment(R.id.filterFragment)
             is RouteAction.ItemDetail -> {
-//                itemDetail.itemId = action.id
-                replaceFragment(R.id.itemDetailFragment)
+                // Possibly overkill for passing a single id string,
+                // but it's typesafe™.
+                val bundle= ItemDetailFragmentArgs.Builder()
+                        .setItemId(action.id)
+                        .build()
+                        .toBundle()
+                replaceFragment(R.id.itemDetailFragment, bundle)
             }
             is RouteAction.Back -> navController.popBackStack()
         }

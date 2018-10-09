@@ -6,6 +6,8 @@
 
 apply plugin: 'com.android.application'
 
+apply plugin: 'androidx.navigation.safeargs'
+
 apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
@@ -69,6 +71,7 @@ dependencies {
     implementation "org.mozilla.components:service-telemetry:${rootProject.ext.android_components_version}"
     implementation 'com.android.support:support-v4:27.1.1'
     implementation 'io.sentry:sentry-android:1.7.10'
+    implementation "android.arch.navigation:navigation-fragment:$navigation_version"
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:2.22.0'
     testImplementation 'org.robolectric:robolectric:3.8'
@@ -84,7 +87,6 @@ dependencies {
         exclude module: 'recyclerview-v7'
     }
     ktlint "com.github.shyiko:ktlint:0.28.0"
-    implementation 'android.arch.navigation:navigation-fragment:1.0.0-alpha06'
 }
 
 def outputDir = "${project.buildDir}/reports/ktlint/"

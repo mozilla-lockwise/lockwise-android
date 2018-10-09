@@ -103,7 +103,7 @@ class ItemDetailPresenterTest {
         for (exp in list) {
             // put the presenter/view on screen.
             view.itemId = exp.id
-            subject.onResume()
+            subject.onViewReady()
 
             // drive the fake datastore.
             dataStore.listStub.onNext(list)

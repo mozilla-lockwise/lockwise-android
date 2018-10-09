@@ -33,6 +33,11 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        arguments?.let {
+            val args = ItemDetailFragmentArgs.fromBundle(it)
+            itemId = args.itemId
+        }
+
         presenter = ItemDetailPresenter(this)
         val view = inflater.inflate(R.layout.fragment_item_detail, container, false)
         setupBackable(view)

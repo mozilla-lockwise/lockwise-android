@@ -59,6 +59,10 @@
         android:name="mozilla.lockbox.view.ItemDetailFragment"
         android:label="ItemDetailFragment"
         tools:layout="@layout/fragment_item_detail">
+        <argument
+            android:name="itemId"
+            android:defaultValue='"MISSING_ID"'
+            app:argType="string" />
     </fragment>
 
     <fragment
