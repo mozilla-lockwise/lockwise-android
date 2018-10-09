@@ -51,16 +51,19 @@ open class ClipboardStore(
     private fun addToClipboard(label: String, str: String) {
         val clip = ClipData.newPlainText(label, str)
         clipboardManager.primaryClip = clip
-        clearClipboard(clipDataClearDelay, str)
+        timedReplaceDirty("", str)
     }
 
-    private fun clearClipboard(delay: Long, clearStr: String) {
+    private fun timedReplaceDirty(dirty: String, clean: String, delay: Long = clipDataClearDelay){
         Handler().postDelayed({
-            val clipData = clipboardManager.primaryClip.getItemAt(0)
-            if (clipData.text == clearStr) {
-
-                clipboardManager.primaryClip = ClipData.newPlainText("", "")
-            }
+            replaceDirty(dirty, clean)
         }, delay)
+    }
+
+    fun replaceDirty(dirty: String, clean: String) {
+        val clipData = clipboardManager.primaryClip.getItemAt(0)
+        if (clipData.text == clean) {
+            clipboardManager.primaryClip = ClipData.newPlainText("", dirty)
+        }
     }
 }

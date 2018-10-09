@@ -58,4 +58,19 @@ class ClipboardStoreTest : DisposingTest() {
         val clipboardManager: ClipboardManager = RuntimeEnvironment.application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         assertTrue(clipboardManager.primaryClip.getItemAt(0).text.equals(testString))
     }
+
+    @Test
+    fun testReplaceDirty() {
+        val testString = "my_test_password"
+        val dirtyString = ""
+
+        subject.apply(RuntimeEnvironment.application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
+        dispatcher.dispatch(ClipboardAction.CopyPassword(testString))
+
+        val clipboardManager: ClipboardManager = RuntimeEnvironment.application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        assertTrue(clipboardManager.primaryClip.getItemAt(0).text.equals(testString))
+
+        ClipboardStore.shared.replaceDirty(dirtyString, testString)
+        assertTrue(clipboardManager.primaryClip.getItemAt(0).text.equals(dirtyString))
+    }
 }
