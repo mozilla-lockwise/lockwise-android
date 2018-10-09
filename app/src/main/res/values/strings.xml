@@ -41,4 +41,5 @@
     <string name="setting_key_telemetry" translatable="false">setting_telemetry</string>
 
     <string name="telemetry_server_endpoint" translatable="false">https://incoming.telemetry.mozilla.org</string>
+    <string name="placeholder_detail_view_learn">Learn how to edit this entry</string>
 </resources>

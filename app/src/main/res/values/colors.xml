@@ -12,4 +12,5 @@
     <color name="white_60_percent">#99FFFFFF</color>
     <color name="backgroundGrey">#ededf0</color>
     <color name="textGrey">#0c0c0d</color>
+    <color name="blue60">#0060df</color>
 </resources>
