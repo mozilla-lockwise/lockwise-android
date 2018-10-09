@@ -37,7 +37,6 @@ class FilterFragment : BackableFragment(), FilterView {
     ): View? {
         presenter = FilterPresenter(this)
         val view = inflater.inflate(R.layout.fragment_filter, container, false)
-        setupBackable(view, R.drawable.ic_arrow_back)
 
         val layoutManager = LinearLayoutManager(context)
         view.entriesView.layoutManager = layoutManager

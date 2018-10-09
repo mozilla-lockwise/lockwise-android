@@ -24,7 +24,6 @@
     <fragment
         android:id="@+id/fxaLoginFragment"
         android:name="mozilla.lockbox.view.FxALoginFragment"
-        android:label="FxALoginFragment"
         tools:layout="@layout/fragment_fxa_login">
         <action
             android:id="@+id/action_fxaLoginFragment_to_itemListFragment"
@@ -38,7 +37,6 @@
     <fragment
         android:id="@+id/itemListFragment"
         android:name="mozilla.lockbox.view.ItemListFragment"
-        android:label="ItemListFragment"
         tools:layout="@layout/fragment_item_list">
         <action
             android:id="@+id/action_itemListFragment_to_itemDetailFragment"
@@ -57,7 +55,6 @@
     <fragment
         android:id="@+id/itemDetailFragment"
         android:name="mozilla.lockbox.view.ItemDetailFragment"
-        android:label="ItemDetailFragment"
         tools:layout="@layout/fragment_item_detail">
         <argument
             android:name="itemId"
@@ -68,19 +65,17 @@
     <fragment
         android:id="@+id/settingFragment"
         android:name="mozilla.lockbox.view.SettingFragment"
-        android:label="SettingFragment"
+        android:label="@string/nav_menu_settings"
         tools:layout="@layout/fragment_setting"/>
 
     <fragment
         android:id="@+id/lockedFragment"
         android:name="mozilla.lockbox.view.LockedFragment"
-        android:label="LockedFragment"
         tools:layout="@layout/fragment_locked" />
 
     <fragment
         android:id="@+id/filterFragment"
         android:name="mozilla.lockbox.view.FilterFragment"
-        android:label="FilterFragment"
         tools:layout="@layout/fragment_filter" >
         <action
             android:id="@+id/action_filterFragment_to_itemDetailFragment"

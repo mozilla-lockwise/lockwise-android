@@ -2,25 +2,23 @@ package mozilla.lockbox.view
 
 import android.os.Bundle
 import android.view.View
-import com.jakewharton.rxbinding2.support.v7.widget.navigationClicks
-import io.reactivex.Observable
+import androidx.navigation.findNavController
+import androidx.navigation.ui.setupWithNavController
 import kotlinx.android.synthetic.main.include_backable.view.*
+import mozilla.lockbox.R
 import mozilla.lockbox.presenter.BackablePresenter
-import mozilla.lockbox.presenter.BackableViewProtocol
+import mozilla.lockbox.presenter.BackableView
 
-open class BackableFragment : CommonFragment(), BackableViewProtocol {
+open class BackableFragment : CommonFragment(), BackableView {
     private lateinit var backablePresenter: BackablePresenter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+        val navController = requireActivity().findNavController(R.id.fragment_nav_host)
+        view.toolbar.setupWithNavController(navController)
+
         backablePresenter = BackablePresenter(this)
         backablePresenter.onViewReady()
-    }
 
-    fun setupBackable(view: View, backIcon: Int = android.R.drawable.arrow_up_float) {
-        view.toolbar.setNavigationIcon(backIcon)
+        super.onViewCreated(view, savedInstanceState)
     }
-
-    override val backButtonTaps: Observable<Unit>
-        get() = view!!.toolbar.navigationClicks()
 }

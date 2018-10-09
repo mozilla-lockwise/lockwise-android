@@ -39,10 +39,7 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         }
 
         presenter = ItemDetailPresenter(this)
-        val view = inflater.inflate(R.layout.fragment_item_detail, container, false)
-        setupBackable(view)
-
-        return view
+        return inflater.inflate(R.layout.fragment_item_detail, container, false)
     }
 
     override val usernameCopyClicks: Observable<Unit>
