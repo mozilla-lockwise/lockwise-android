@@ -42,12 +42,12 @@ class RoutePresenter(
 
     private fun route(action: RouteAction) {
         when (action) {
-            is RouteAction.Welcome -> replaceFragment(R.id.welcomeFragment)
-            is RouteAction.Login -> replaceFragment(R.id.fxaLoginFragment)
-            is RouteAction.ItemList -> replaceFragment(R.id.itemListFragment)
-            is RouteAction.SettingList -> replaceFragment(R.id.settingFragment)
-            is RouteAction.LockScreen -> replaceFragment(R.id.lockedFragment)
-            is RouteAction.Filter -> replaceFragment(R.id.filterFragment)
+            is RouteAction.Welcome -> replaceFragment(R.id.fragment_welcome)
+            is RouteAction.Login -> replaceFragment(R.id.fragment_fxa_login)
+            is RouteAction.ItemList -> replaceFragment(R.id.fragment_item_list)
+            is RouteAction.SettingList -> replaceFragment(R.id.fragment_setting)
+            is RouteAction.LockScreen -> replaceFragment(R.id.fragment_locked)
+            is RouteAction.Filter -> replaceFragment(R.id.fragment_filter)
             is RouteAction.ItemDetail -> {
                 // Possibly overkill for passing a single id string,
                 // but it's typesafe™.
@@ -55,7 +55,7 @@ class RoutePresenter(
                         .setItemId(action.id)
                         .build()
                         .toBundle()
-                replaceFragment(R.id.itemDetailFragment, bundle)
+                replaceFragment(R.id.fragment_item_detail, bundle)
             }
             is RouteAction.Back -> navController.popBackStack()
         }
@@ -63,24 +63,24 @@ class RoutePresenter(
 
     private fun findTransitionId(@IdRes from: Int, @IdRes to: Int): Int? {
         when (from) {
-            R.id.welcomeFragment ->
+            R.id.fragment_welcome ->
                 when (to) {
-                    R.id.fxaLoginFragment -> return R.id.action_welcomeFragment_to_fxaLoginFragment
+                    R.id.fragment_fxa_login -> return R.id.action_welcome_to_fxaLogin
                 }
-            R.id.fxaLoginFragment ->
+            R.id.fragment_fxa_login ->
                 when (to) {
-                    R.id.itemListFragment -> return R.id.action_fxaLoginFragment_to_itemListFragment
+                    R.id.fragment_item_list -> return R.id.action_fxaLogin_to_itemList
                 }
-            R.id.itemListFragment ->
+            R.id.fragment_item_list ->
                 when (to) {
-                    R.id.itemDetailFragment -> return R.id.action_itemListFragment_to_itemDetailFragment
-                    R.id.settingFragment -> return R.id.action_itemListFragment_to_settingFragment
-                    R.id.lockedFragment -> return R.id.action_itemListFragment_to_lockedFragment
-                    R.id.filterFragment -> return R.id.action_itemListFragment_to_filterFragment
+                    R.id.fragment_item_detail -> return R.id.action_itemList_to_itemDetail
+                    R.id.fragment_setting -> return R.id.action_itemList_to_setting
+                    R.id.fragment_locked -> return R.id.action_itemList_to_locked
+                    R.id.fragment_filter -> return R.id.action_itemList_to_filter
                 }
-            R.id.filterFragment ->
+            R.id.fragment_filter ->
                 when (to) {
-                    R.id.itemDetailFragment -> return R.id.action_filterFragment_to_itemDetailFragment
+                    R.id.fragment_item_detail -> return R.id.action_filter_to_itemDetail
                 }
         }
 
