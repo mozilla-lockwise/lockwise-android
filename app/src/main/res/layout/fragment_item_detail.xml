@@ -56,7 +56,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 app:layout_constraintTop_toBottomOf="@id/inputLayoutHostname"
-                tools:layout_editor_absoluteX="16dp">
+                card_view:layout_constraintLeft_toLeftOf="parent"
+                card_view:layout_constraintRight_toRightOf="parent">
 
                 <EditText
                     android:id="@+id/inputUsername"
@@ -78,7 +79,9 @@
                 app:layout_constraintBottom_toBottomOf="@+id/inputLayoutUsername"
                 app:layout_constraintRight_toRightOf="@+id/inputLayoutUsername"
                 app:layout_constraintTop_toTopOf="@+id/inputLayoutUsername"
-                app:srcCompat="@drawable/ic_icon_copy" />
+                app:srcCompat="@drawable/ic_icon_copy"
+                tools:layout_editor_absoluteX="334dp"
+                tools:layout_editor_absoluteY="89dp" />
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/inputLayoutPassword"
@@ -86,7 +89,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 app:layout_constraintTop_toBottomOf="@id/inputLayoutUsername"
-                tools:layout_editor_absoluteX="16dp">
+                card_view:layout_constraintLeft_toLeftOf="parent"
+                card_view:layout_constraintRight_toRightOf="parent">
 
                 <EditText
                     android:id="@+id/inputPassword"
