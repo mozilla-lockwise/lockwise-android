@@ -11,7 +11,5 @@ class BackablePresenter(
     val view: BackableView,
     val dispatcher: Dispatcher = Dispatcher.shared
 ) : Presenter() {
-    override fun onViewReady() {
-        // NOOP
-    }
+    // No methods yet.
 }

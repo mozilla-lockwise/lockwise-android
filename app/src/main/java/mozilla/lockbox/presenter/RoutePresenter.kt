@@ -30,61 +30,65 @@ class RoutePresenter(
         routeStore.routes.subscribe(this::route).addTo(compositeDisposable)
     }
 
-    private fun replaceFragment(@IdRes destinationId: Int, args: Bundle? = null) {
-        val from = navController.currentDestination?.id ?: return
-        if (from == destinationId && args == null) {
+    private fun navigateToFragment(action: RouteAction, @IdRes destinationId: Int, args: Bundle? = null) {
+        var src = navController.currentDestination ?: return
+        val srcId = src.id
+        if (srcId == destinationId && args == null) {
             // No point in navigating if nothing has changed.
             return
         }
-        val transition = findTransitionId(from, destinationId) ?: destinationId
+
+        val transition = findTransitionId(srcId, destinationId) ?: destinationId
+
+        if (transition == destinationId) {
+            // Without being able to detect if we're in developer mode,
+            // it is too dangerous to RuntimeException.
+            log.error(
+                "Cannot route from ${src.label} to $action. " +
+                    "This is a developer bug, fixable by adding an action to nav_graph.xml"
+            )
+        }
         navController.navigate(transition, args)
     }
 
-    private fun route(action: RouteAction) {
-        when (action) {
-            is RouteAction.Welcome -> replaceFragment(R.id.fragment_welcome)
-            is RouteAction.Login -> replaceFragment(R.id.fragment_fxa_login)
-            is RouteAction.ItemList -> replaceFragment(R.id.fragment_item_list)
-            is RouteAction.SettingList -> replaceFragment(R.id.fragment_setting)
-            is RouteAction.LockScreen -> replaceFragment(R.id.fragment_locked)
-            is RouteAction.Filter -> replaceFragment(R.id.fragment_filter)
+    private fun route(destination: RouteAction) {
+        when (destination) {
+            is RouteAction.Welcome -> navigateToFragment(destination, R.id.fragment_welcome)
+            is RouteAction.Login -> navigateToFragment(destination, R.id.fragment_fxa_login)
+            is RouteAction.ItemList -> navigateToFragment(destination, R.id.fragment_item_list)
+            is RouteAction.SettingList -> navigateToFragment(destination, R.id.fragment_setting)
+            is RouteAction.LockScreen -> navigateToFragment(destination, R.id.fragment_locked)
+            is RouteAction.Filter -> navigateToFragment(destination, R.id.fragment_filter)
             is RouteAction.ItemDetail -> {
                 // Possibly overkill for passing a single id string,
                 // but it's typesafe™.
                 val bundle = ItemDetailFragmentArgs.Builder()
-                        .setItemId(action.id)
+                        .setItemId(destination.id)
                         .build()
                         .toBundle()
-                replaceFragment(R.id.fragment_item_detail, bundle)
+                navigateToFragment(destination, R.id.fragment_item_detail, bundle)
             }
             is RouteAction.Back -> navController.popBackStack()
         }
     }
 
     private fun findTransitionId(@IdRes from: Int, @IdRes to: Int): Int? {
-        when (from) {
-            R.id.fragment_welcome ->
-                when (to) {
-                    R.id.fragment_fxa_login -> return R.id.action_welcome_to_fxaLogin
-                }
-            R.id.fragment_fxa_login ->
-                when (to) {
-                    R.id.fragment_item_list -> return R.id.action_fxaLogin_to_itemList
-                }
-            R.id.fragment_item_list ->
-                when (to) {
-                    R.id.fragment_item_detail -> return R.id.action_itemList_to_itemDetail
-                    R.id.fragment_setting -> return R.id.action_itemList_to_setting
-                    R.id.fragment_locked -> return R.id.action_itemList_to_locked
-                    R.id.fragment_filter -> return R.id.action_itemList_to_filter
-                }
-            R.id.fragment_filter ->
-                when (to) {
-                    R.id.fragment_item_detail -> return R.id.action_filter_to_itemDetail
-                }
+        // This maps two nodes in the nav_graph.xml to the edge between them.
+        // If a RouteAction is called from a place the graph doesn't know about then
+        // the app will log.error.
+        when (Pair(from, to)) {
+            Pair(R.id.fragment_welcome, R.id.fragment_fxa_login) -> return R.id.action_welcome_to_fxaLogin
+
+            Pair(R.id.fragment_fxa_login, R.id.fragment_item_list) -> return R.id.action_fxaLogin_to_itemList
+
+            Pair(R.id.fragment_item_list, R.id.fragment_item_detail) -> return R.id.action_itemList_to_itemDetail
+            Pair(R.id.fragment_item_list, R.id.fragment_setting) -> return R.id.action_itemList_to_setting
+            Pair(R.id.fragment_item_list, R.id.fragment_locked) -> return R.id.action_itemList_to_locked
+            Pair(R.id.fragment_item_list, R.id.fragment_filter) -> return R.id.action_itemList_to_filter
+
+            Pair(R.id.fragment_filter, R.id.fragment_item_detail) -> return R.id.action_filter_to_itemDetail
         }
 
-        log.warn("Cannot find a transition between $from and $to")
         return null
     }
 }
