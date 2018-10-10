@@ -24,7 +24,9 @@ The five major components of this architecture (`View`, `Presenter`, `Store`, `D
 
 ### View/Presenter
 
-All views are bound to a presenter[[1](#note-1)]. In this separation, the presenter is responsible for all business logic, and the view is abstracted to a simple interface. The view is responsible for UI-specific configuration and passing user input to its presenter for handling. This allows any complex view-related configuration to be abstracted when dealing with business logic changes, and vice versa.
+All views are bound to a presenter. In this separation, the presenter is responsible for all business logic, and the view is abstracted to a simple interface. The view is responsible for UI-specific configuration and passing user input to its presenter for handling. This allows any complex view-related configuration to be abstracted when dealing with business logic changes, and vice versa.
+
+In the current implementation of LockFlux on Android, all `View`s are composed of Fragments, not Activities. Situations requiring an `Activity` to be added to the application will be reviewed on a case-to-case basis.
 
 ### Action
 
@@ -64,14 +66,8 @@ The special case in this scenario is view routing. To handle the view-changing c
 
 ### Benefits of Flux
 
-Close readers will note that this document borrows heavily from a similar one in our iOS application.
+Close readers will note that this document borrows heavily from a similar one in our [iOS application](https://mozilla-lockbox.github.io/lockbox-ios/architecture/).
 
-This pattern allows us to "borrow" view-presentation logic from iOS as we move forward on Android.
+The shared Flux pattern and reactive libraries allow us to "borrow" view-presentation logic from iOS as we move forward on Android.
 
-Additionally, the separation of high-level view manipulation from view
-
----
-
-<a name="note-1"/>[1] the name here is pure semantics -- can be thought of as a ViewModel
-
-<a name="note-2"/>[2] an `Observable` stream coming from the `RxCocoa` bindings for `UITextField`
+Additionally, the separation of high-level view manipulation from view allows us to iterate quickly on implementation details and design feedback without implications for unrelated parts of the app.
