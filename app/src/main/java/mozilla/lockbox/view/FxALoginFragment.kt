@@ -25,9 +25,12 @@ class FxALoginFragment : BackableFragment(), FxALoginViewProtocol {
         savedInstanceState: Bundle?
     ): View? {
         presenter = FxALoginPresenter(this)
-        val view = inflater.inflate(R.layout.fragment_fxa_login, container, false)
+        return inflater.inflate(R.layout.fragment_fxa_login, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         view.toolbar.setNavigationIcon(android.R.drawable.ic_menu_close_clear_cancel)
-        return view
     }
 
     override val logMeInClicks: Observable<Unit>
