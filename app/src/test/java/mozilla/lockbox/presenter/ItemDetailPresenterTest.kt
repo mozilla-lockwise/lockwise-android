@@ -23,7 +23,6 @@ import org.mozilla.sync15.logins.ServerPassword
 class ItemDetailPresenterTest {
     class FakeView : ItemDetailView {
 
-        override var itemId: String? = null
         var item: ItemDetailViewModel? = null
 
         val tapStub: PublishSubject<Unit> = PublishSubject.create<Unit>()
@@ -57,19 +56,15 @@ class ItemDetailPresenterTest {
         override val list: Observable<List<ServerPassword>>
             get() = listStub
     }
-
+    lateinit var subject: ItemDetailPresenter
     val view = FakeView()
     val dataStore = FakeDataStore()
-
-    val subject = ItemDetailPresenter(view, dataStore = dataStore)
-
+    val dispatcher = Dispatcher.shared
     val dispatcherObserver = TestObserver.create<Action>()
 
     @Before
     fun setUp() {
-        Dispatcher.shared.register.subscribe(dispatcherObserver)
-
-        subject.onViewReady()
+        dispatcher.register.subscribe(dispatcherObserver)
     }
 
     @Test
@@ -106,7 +101,7 @@ class ItemDetailPresenterTest {
 
         for (exp in list) {
             // put the presenter/view on screen.
-            view.itemId = exp.id
+            val subject = ItemDetailPresenter(view, exp.id, dispatcher, dataStore)
             subject.onViewReady()
 
             // drive the fake datastore.

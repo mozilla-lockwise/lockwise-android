@@ -26,19 +26,17 @@ import mozilla.lockbox.presenter.ItemDetailPresenter
 import mozilla.lockbox.presenter.ItemDetailView
 
 class ItemDetailFragment : BackableFragment(), ItemDetailView {
-    override var itemId: String? = null
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        arguments?.let {
-            val args = ItemDetailFragmentArgs.fromBundle(it)
-            itemId = args.itemId
+        val itemId = arguments?.let {
+            ItemDetailFragmentArgs.fromBundle(it)
+                .itemId
         }
 
-        presenter = ItemDetailPresenter(this)
+        presenter = ItemDetailPresenter(this, itemId)
         return inflater.inflate(R.layout.fragment_item_detail, container, false)
     }
 
@@ -53,7 +51,7 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
 
     override val hostnameClicks: Observable<Unit>
         get() = view!!.inputHostname.clicks()
-    
+
     override var isPasswordVisible: Boolean = false
         set(value) {
             field = value

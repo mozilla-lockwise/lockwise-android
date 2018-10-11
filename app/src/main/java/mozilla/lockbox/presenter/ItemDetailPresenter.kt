@@ -20,7 +20,6 @@ import mozilla.lockbox.store.DataStore
 import org.mozilla.sync15.logins.ServerPassword
 
 interface ItemDetailView {
-    var itemId: String?
     fun updateItem(item: ItemDetailViewModel)
     fun showToastNotification(@StringRes strId: Int)
 
@@ -34,9 +33,12 @@ interface ItemDetailView {
 
 class ItemDetailPresenter(
     private val view: ItemDetailView,
+    val itemId: String?,
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val dataStore: DataStore = DataStore.shared
 ) : Presenter() {
+
+    private var credentials: ServerPassword? = null
 
     override fun onViewReady() {
         handleClicks(view.usernameCopyClicks) {
@@ -66,27 +68,22 @@ class ItemDetailPresenter(
             }
             .addTo(compositeDisposable)
 
+        view.isPasswordVisible = false
+
         // now set up the data.
-        val itemId = view.itemId ?: return
+        val itemId = this.itemId ?: return
         dataStore.get(itemId)
             .map {
+                credentials = it
                 it.toDetailViewModel()
             }
             .subscribe(view::updateItem)
             .addTo(compositeDisposable)
-
-        view.isPasswordVisible = false
     }
 
     private fun handleClicks(clicks: Observable<Unit>, withServerPassword: (ServerPassword) -> Unit) {
         clicks.subscribe {
-            view.itemId?.let {
-                dataStore.get(it)
-                    .subscribe {
-                        it?.let { withServerPassword(it) }
-                    }
-                    .addTo(compositeDisposable)
-            }
+            this.credentials?.let { withServerPassword(it) }
         }.addTo(compositeDisposable)
     }
 }
