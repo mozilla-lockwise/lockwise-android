@@ -9,7 +9,6 @@ package mozilla.lockbox.store
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.os.Handler
-import android.util.Log
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.action.ClipboardAction
@@ -24,7 +23,7 @@ open class ClipboardStore(
         val shared = ClipboardStore()
     }
 
-    private val clipDataClearDelay = 60000L
+    private val defaultClipboardTimeout = 60000L
     private lateinit var clipboardManager: ClipboardManager
 
     init {
@@ -48,22 +47,22 @@ open class ClipboardStore(
         clipboardManager = manager
     }
 
-    private fun addToClipboard(label: String, str: String) {
-        val clip = ClipData.newPlainText(label, str)
+    private fun addToClipboard(label: String, string: String) {
+        val clip = ClipData.newPlainText(label, string)
         clipboardManager.primaryClip = clip
-        timedReplaceDirty(str)
+        timedReplaceDirty(string)
     }
 
-    private fun timedReplaceDirty(dirty: String, delay: Long = clipDataClearDelay){
+    private fun timedReplaceDirty(dirty: String, clean: String = "", delay: Long = defaultClipboardTimeout) {
         Handler().postDelayed({
-            replaceDirty(dirty)
+            replaceDirty(dirty, clean)
         }, delay)
     }
 
-    fun replaceDirty(dirty: String) {
+    fun replaceDirty(dirty: String, clean: String = "") {
         val clipData = clipboardManager.primaryClip.getItemAt(0)
         if (clipData.text == dirty) {
-            clipboardManager.primaryClip = ClipData.newPlainText("", "")
+            clipboardManager.primaryClip = ClipData.newPlainText("", clean)
         }
     }
 }

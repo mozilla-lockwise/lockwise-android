@@ -6,9 +6,10 @@
 
 package mozilla.lockbox.store
 
+import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import junit.framework.Assert.assertTrue
+import junit.framework.Assert.assertEquals
 import mozilla.lockbox.DisposingTest
 import mozilla.lockbox.action.ClipboardAction
 import mozilla.lockbox.flux.Dispatcher
@@ -30,46 +31,56 @@ class ClipboardStoreTest : DisposingTest() {
     fun setUp() {
         dispatcher = Dispatcher()
         subject = ClipboardStore(dispatcher)
+        subject.apply(clipboardManager)
     }
 
-    @Test
-    fun testInit() {
-        subject.apply(RuntimeEnvironment.application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
-    }
+    private val clipboardManager =
+        RuntimeEnvironment.application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
     @Test
     fun testCopyUsername() {
         val testString = "my_test_string"
-
-        subject.apply(RuntimeEnvironment.application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
         dispatcher.dispatch(ClipboardAction.CopyUsername(testString))
-
-        val clipboardManager: ClipboardManager = RuntimeEnvironment.application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        assertTrue(clipboardManager.primaryClip.getItemAt(0).text.equals(testString))
+        val clip = clipboardManager.primaryClip.getItemAt(0)
+        assertEquals(testString, clip.text)
     }
 
     @Test
     fun testCopyPassword() {
         val testString = "my_test_password"
-
-        subject.apply(RuntimeEnvironment.application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
         dispatcher.dispatch(ClipboardAction.CopyPassword(testString))
-
-        val clipboardManager: ClipboardManager = RuntimeEnvironment.application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        assertTrue(clipboardManager.primaryClip.getItemAt(0).text.equals(testString))
+        val clip = clipboardManager.primaryClip.getItemAt(0)
+        assertEquals(testString, clip.text)
     }
 
     @Test
     fun testReplaceDirty() {
         val testString = "my_test_password"
 
-        subject.apply(RuntimeEnvironment.application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
         dispatcher.dispatch(ClipboardAction.CopyPassword(testString))
 
-        val clipboardManager: ClipboardManager = RuntimeEnvironment.application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        assertTrue(clipboardManager.primaryClip.getItemAt(0).text.equals(testString))
+        val dirty = clipboardManager.primaryClip.getItemAt(0)
+        assertEquals(testString, dirty.text)
 
-        ClipboardStore.shared.replaceDirty(testString)
-        assertTrue(clipboardManager.primaryClip.getItemAt(0).text.equals(""))
+        subject.replaceDirty(testString)
+        val clean = clipboardManager.primaryClip.getItemAt(0)
+        assertEquals("", clean.text)
+    }
+
+    @Test
+    fun testReplaceDirty_negativeTest() {
+        val testString = "my_test_password"
+
+        dispatcher.dispatch(ClipboardAction.CopyPassword(testString))
+
+        val dirty = clipboardManager.primaryClip.getItemAt(0)
+        assertEquals(testString, dirty.text)
+
+        val url = "https://www.mozilla.org"
+        clipboardManager.primaryClip = ClipData.newPlainText("url", url)
+
+        subject.replaceDirty(testString)
+        val clean = clipboardManager.primaryClip.getItemAt(0)
+        assertEquals(url, clean.text)
     }
 }
