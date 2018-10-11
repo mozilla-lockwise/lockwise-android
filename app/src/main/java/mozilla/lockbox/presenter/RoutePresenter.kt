@@ -95,10 +95,12 @@ class RoutePresenter(
     }
 
     override fun onPause() {
+        super.onPause()
         Dispatcher.shared.dispatch(LifecycleAction.Background)
     }
 
     override fun onResume() {
+        super.onResume()
         Dispatcher.shared.dispatch(LifecycleAction.Foreground)
     }
 }
