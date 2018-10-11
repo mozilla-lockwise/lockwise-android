@@ -13,7 +13,9 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.R
+import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
 import mozilla.lockbox.store.RouteStore
@@ -90,5 +92,13 @@ class RoutePresenter(
         }
 
         return null
+    }
+
+    override fun onPause() {
+        Dispatcher.shared.dispatch(LifecycleAction.Background)
+    }
+
+    override fun onResume() {
+        Dispatcher.shared.dispatch(LifecycleAction.Foreground)
     }
 }

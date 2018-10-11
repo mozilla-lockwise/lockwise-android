@@ -15,6 +15,8 @@ import io.sentry.android.AndroidSentryClientFactory
 import mozilla.components.support.base.log.Log
 import mozilla.components.support.base.log.logger.Logger
 import mozilla.components.support.base.log.sink.AndroidLogSink
+import mozilla.lockbox.action.LifecycleAction
+import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.ClipboardStore
 import mozilla.lockbox.store.TelemetryStore
 
@@ -42,5 +44,7 @@ class LockboxApplication : Application() {
         // Retrieved from environment's local (or bitrise's "Secrets") environment variable
         val sentryDsn: String? = System.getenv("SENTRY_DSN")
         Sentry.init(sentryDsn, AndroidSentryClientFactory(ctx))
+
+        Dispatcher.shared.dispatch(LifecycleAction.Startup)
     }
 }
