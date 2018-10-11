@@ -37,5 +37,6 @@
         <item name="android:textColor">#de000000</item>
         <item name="android:letterSpacing">0.01</item>
         <item name="android:lineSpacingExtra">8sp</item>
+        <item name="android:backgroundTint">#E4E4E4</item>
     </style>
 </resources>
