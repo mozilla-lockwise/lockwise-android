@@ -15,6 +15,7 @@ class RouteStore(dispatcher: Dispatcher = Dispatcher.shared) {
         val shared = RouteStore()
     }
 
-    val routes: Observable<RouteAction> = dispatcher.register
+    val routes: Observable<RouteAction> =
+            dispatcher.register
             .filterByType(RouteAction::class.java)
 }

@@ -7,14 +7,19 @@
 package mozilla.lockbox.view
 
 import android.os.Bundle
+import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
+import android.support.v4.widget.DrawerLayout
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import com.jakewharton.rxbinding2.support.design.widget.itemSelections
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
+import androidx.navigation.ui.setupWithNavController
 import com.jakewharton.rxbinding2.support.v7.widget.navigationClicks
 import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
@@ -30,6 +35,7 @@ import mozilla.lockbox.presenter.ItemListView
 class ItemListFragment : CommonFragment(), ItemListView {
     private val compositeDisposable = CompositeDisposable()
     private val adapter = ItemListAdapter()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -37,20 +43,35 @@ class ItemListFragment : CommonFragment(), ItemListView {
     ): View? {
         presenter = ItemListPresenter(this)
         val view = inflater.inflate(R.layout.fragment_item_list, container, false)
+        val navController = requireActivity().findNavController(R.id.fragment_nav_host)
 
-        view.toolbar.navigationIcon = resources.getDrawable(R.drawable.ic_menu, null)
-        view.toolbar.navigationClicks().subscribe { view.appDrawer.openDrawer(GravityCompat.START) }
-                .addTo(compositeDisposable)
-
-        val layoutManager = LinearLayoutManager(context)
-        view.entriesView.layoutManager = layoutManager
-        view.entriesView.adapter = adapter
-        val decoration = DividerItemDecoration(context, layoutManager.orientation)
-        val decorationDrawable = context?.getDrawable(R.drawable.inset_divider)
-        decorationDrawable?.let { decoration.setDrawable(it) }
-        view.entriesView.addItemDecoration(decoration)
+        setupToolbar(view.toolbar, view.appDrawer)
+        setupNavigationView(navController, view.navView)
+        setupListView(view.entriesView)
 
         return view
+    }
+
+    private fun setupNavigationView(navController: NavController, navView: NavigationView) {
+        navView.setupWithNavController(navController)
+    }
+
+    private fun setupListView(listView: RecyclerView) {
+        val context = requireContext()
+        val layoutManager = LinearLayoutManager(context)
+        val decoration = DividerItemDecoration(context, layoutManager.orientation)
+        context.getDrawable(R.drawable.inset_divider)?.let {
+            decoration.setDrawable(it)
+            listView.addItemDecoration(decoration)
+        }
+        listView.layoutManager = layoutManager
+        listView.adapter = adapter
+    }
+
+    private fun setupToolbar(toolbar: Toolbar, drawerLayout: DrawerLayout) {
+        toolbar.navigationIcon = resources.getDrawable(R.drawable.ic_menu, null)
+        toolbar.navigationClicks().subscribe { drawerLayout.openDrawer(GravityCompat.START) }
+                .addTo(compositeDisposable)
     }
 
     override fun onDestroyView() {
@@ -59,18 +80,11 @@ class ItemListFragment : CommonFragment(), ItemListView {
     }
 
     // Protocol implementations
-    override val drawerItemSelections: Observable<MenuItem>
-        get() = view!!.navView.itemSelections()
-
     override val filterClicks: Observable<Unit>
         get() = view!!.filterButton.clicks()
 
     override val itemSelection: Observable<ItemViewModel>
         get() = adapter.clicks()
-
-    override fun closeDrawers() {
-        view!!.appDrawer.closeDrawer(GravityCompat.START, false)
-    }
 
     override fun updateItems(itemList: List<ItemViewModel>) {
         adapter.updateItems(itemList)

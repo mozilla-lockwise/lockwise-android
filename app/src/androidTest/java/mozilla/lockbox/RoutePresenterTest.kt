@@ -37,25 +37,42 @@ open class RoutePresenterTest {
     @Test
     fun testFxALogin() {
         navigator.gotoFxALogin()
+        navigator.back()
+        navigator.checkOnWelcome()
     }
 
     @Test
     fun testItemList() {
         navigator.gotoItemList()
+        navigator.back(false)
     }
 
     @Test
-    fun testFilter() {
+    fun testFilterList() {
         navigator.gotoItemList_filter()
+        navigator.back()
+        navigator.checkAtItemList()
+    }
+
+    @Test
+    fun testFilterToItemDetail() {
+        navigator.gotoItemList_filter()
+        navigator.gotoItemDetail_from_itemList()
+        navigator.back()
+        navigator.checkAtFilterList()
     }
 
     @Test
     fun testSettings() {
         navigator.gotoSettings()
+        navigator.back()
+        navigator.checkAtItemList()
     }
 
     @Test
     fun testItemDetail() {
         navigator.gotoItemDetail()
+        navigator.back()
+        navigator.checkAtItemList()
     }
 }
