@@ -10,6 +10,8 @@
     <color name="colorPrimaryDark">#055894</color>
     <color name="recyclerview_divider">#26000000</color>
     <color name="white_60_percent">#99FFFFFF</color>
+    <color name="black_60_percent">#99000000</color>
     <color name="backgroundGrey">#ededf0</color>
     <color name="textGrey">#0c0c0d</color>
+    <color name="blue60">#0060df</color>
 </resources>
