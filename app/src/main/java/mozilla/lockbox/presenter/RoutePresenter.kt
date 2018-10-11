@@ -43,7 +43,6 @@ class RoutePresenter(
 
         val transition = findTransitionId(srcId, destinationId) ?: destinationId
 
-
         if (transition == destinationId) {
             // Without being able to detect if we're in developer mode,
             // it is too dangerous to RuntimeException.
@@ -55,9 +54,9 @@ class RoutePresenter(
         navController.navigate(transition, args)
     }
 
-    fun openWebsite(hostname: String) {
-        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(hostname))
-        startActivity(activity, browserIntent, null)
+    private fun openWebsite(url: String) {
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        activity.startActivity(browserIntent, null)
     }
 
     private fun route(destination: RouteAction) {
@@ -78,7 +77,7 @@ class RoutePresenter(
                 navigateToFragment(destination, R.id.fragment_item_detail, bundle)
             }
             is RouteAction.OpenWebsite -> {
-                openWebsite(destination.host)
+                openWebsite(destination.url)
             }
 
             is RouteAction.Back -> navController.popBackStack()
