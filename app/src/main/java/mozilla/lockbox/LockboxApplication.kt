@@ -52,7 +52,5 @@ class LockboxApplication : Application() {
         // Retrieved from environment's local (or bitrise's "Secrets") environment variable
         val sentryDsn: String? = System.getenv("SENTRY_DSN")
         Sentry.init(sentryDsn, AndroidSentryClientFactory(ctx))
-
-        Dispatcher.shared.dispatch(LifecycleAction.Startup)
     }
 }
