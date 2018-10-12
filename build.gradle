@@ -9,6 +9,7 @@
 buildscript {
     ext.kotlin_version = '1.2.51'
     ext.android_components_version = '0.26.0'
+    ext.lifecycle_version = '1.1.1'
     ext.navigation_version = '1.0.0-alpha06'
 
     repositories {
@@ -16,7 +17,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.0'
+        classpath 'com.android.tools.build:gradle:3.2.1'
         //noinspection DifferentKotlinGradleVersion
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'io.sentry:sentry-android-gradle-plugin:1.7.10'

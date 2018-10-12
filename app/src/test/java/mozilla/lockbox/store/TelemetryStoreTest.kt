@@ -57,7 +57,7 @@ class TelemetryStoreTest : DisposingTest() {
         val eventsObserver = createTestObserver<TelemetryEvent>()
         wrapper.eventsSubject.subscribe(eventsObserver)
 
-        var action = object : TelemetryAction() {
+        var action = object : TelemetryAction {
             override val eventMethod: TelemetryEventMethod
                 get() = TelemetryEventMethod.foreground
             override val eventObject: TelemetryEventObject
