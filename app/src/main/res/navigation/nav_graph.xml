@@ -44,11 +44,12 @@
             android:id="@+id/action_itemList_to_setting"
             app:destination="@id/fragment_setting" />
         <action
-            android:id="@+id/action_itemList_to_locked"
-            app:destination="@+id/fragment_locked" />
-        <action
             android:id="@+id/action_itemList_to_filter"
             app:destination="@id/fragment_filter" />
+        <action
+            android:id="@+id/action_itemList_to_locked"
+            app:destination="@id/graph_locked"
+            app:launchSingleTop="true"/>
     </fragment>
 
     <fragment
@@ -57,7 +58,7 @@
         tools:layout="@layout/fragment_item_detail">
         <argument
             android:name="itemId"
-            android:defaultValue='"MISSING_ID"'
+            android:defaultValue="MISSING_ID"
             app:argType="string" />
     </fragment>
 
@@ -68,11 +69,6 @@
         tools:layout="@layout/fragment_setting"/>
 
     <fragment
-        android:id="@+id/fragment_locked"
-        android:name="mozilla.lockbox.view.LockedFragment"
-        tools:layout="@layout/fragment_locked" />
-
-    <fragment
         android:id="@+id/fragment_filter"
         android:name="mozilla.lockbox.view.FilterFragment"
         tools:layout="@layout/fragment_filter" >
@@ -80,4 +76,6 @@
             android:id="@+id/action_filter_to_itemDetail"
             app:destination="@id/fragment_item_detail" />
     </fragment>
+
+    <include app:graph="@navigation/graph_locked" />
 </navigation>
