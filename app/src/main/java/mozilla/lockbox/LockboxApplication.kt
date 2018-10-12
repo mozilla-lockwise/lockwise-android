@@ -16,19 +16,13 @@ import io.sentry.android.AndroidSentryClientFactory
 import mozilla.components.support.base.log.Log
 import mozilla.components.support.base.log.logger.Logger
 import mozilla.components.support.base.log.sink.AndroidLogSink
-import mozilla.lockbox.action.LifecycleAction
-import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.presenter.ApplicationPresenter
 import mozilla.lockbox.store.ClipboardStore
 import mozilla.lockbox.store.TelemetryStore
 
 val log: Logger = Logger("Lockbox")
 class LockboxApplication : Application() {
-    private val presenter: ApplicationPresenter = ApplicationPresenter()
-
-    init {
-        ProcessLifecycleOwner.get().lifecycle.addObserver(presenter)
-    }
+    private lateinit var presenter: ApplicationPresenter
 
     override fun onCreate() {
         super.onCreate()
@@ -40,6 +34,10 @@ class LockboxApplication : Application() {
         LeakCanary.install(this)
 
         Log.addSink(AndroidLogSink())
+
+        // Watch for application lifecycle and take appropriate actions
+        presenter = ApplicationPresenter()
+        ProcessLifecycleOwner.get().lifecycle.addObserver(presenter)
 
         // use context for system service
         ClipboardStore.shared.apply(getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)

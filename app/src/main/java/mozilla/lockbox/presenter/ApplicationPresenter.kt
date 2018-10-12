@@ -15,14 +15,14 @@ class ApplicationPresenter(
     val dispatcher: Dispatcher = Dispatcher.shared
 ) : DefaultLifecycleObserver {
     override fun onCreate(owner: LifecycleOwner) {
-        Dispatcher.shared.dispatch(LifecycleAction.Startup)
+        dispatcher.dispatch(LifecycleAction.Startup)
     }
 
     override fun onPause(owner: LifecycleOwner) {
-        Dispatcher.shared.dispatch(LifecycleAction.Background)
+        dispatcher.dispatch(LifecycleAction.Background)
     }
 
     override fun onResume(owner: LifecycleOwner) {
-        Dispatcher.shared.dispatch(LifecycleAction.Foreground)
+        dispatcher.dispatch(LifecycleAction.Foreground)
     }
 }

@@ -22,8 +22,6 @@ class LifecycleStore(
     }
 
     internal val compositeDisposable = CompositeDisposable()
-    private val _filter: PublishSubject<LifecycleAction> = PublishSubject.create()
-
     val lifecycleFilter: Observable<LifecycleAction> = PublishSubject.create()
 
     init {

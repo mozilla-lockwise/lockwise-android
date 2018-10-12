@@ -28,33 +28,29 @@ class MockLifecycle(
 }
 
 class ApplicationPresenterTest : DisposingTest() {
+    private val dispatcher = Dispatcher()
     private val dispatcherObserver = createTestObserver<Action>()
+    private val subject = ApplicationPresenter(dispatcher)
 
     @Before
     fun setUp() {
-        Dispatcher.shared.register.subscribe(dispatcherObserver)
+        dispatcher.register.subscribe(dispatcherObserver)
     }
 
     @Test
     fun testOnCreate() {
-        val subject = ApplicationPresenter()
-
         subject.onCreate(createLifecycleOwner(Lifecycle.State.CREATED))
         dispatcherObserver.assertValue(LifecycleAction.Startup)
     }
 
     @Test
     fun testBackgrouding() {
-        val subject = ApplicationPresenter()
-
-        subject.onPause(createLifecycleOwner(Lifecycle.State.CREATED))
+        subject.onPause(createLifecycleOwner(Lifecycle.State.STARTED))
         dispatcherObserver.assertValue(LifecycleAction.Background)
     }
 
     @Test
     fun testForegrounding() {
-        val subject = ApplicationPresenter()
-
         subject.onResume(createLifecycleOwner(Lifecycle.State.RESUMED))
         dispatcherObserver.assertValue(LifecycleAction.Foreground)
     }
