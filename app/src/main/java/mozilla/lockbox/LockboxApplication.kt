@@ -9,6 +9,7 @@ package mozilla.lockbox
 import android.app.Application
 import android.content.ClipboardManager
 import android.content.Context
+import com.squareup.leakcanary.LeakCanary
 import io.sentry.Sentry
 import io.sentry.android.AndroidSentryClientFactory
 import mozilla.components.support.base.log.Log
@@ -21,6 +22,13 @@ val log: Logger = Logger("Lockbox")
 class LockboxApplication : Application() {
     override fun onCreate() {
         super.onCreate()
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return
+        }
+        LeakCanary.install(this)
+
         Log.addSink(AndroidLogSink())
 
         // use context for system service
