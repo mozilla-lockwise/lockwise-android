@@ -33,11 +33,13 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        presenter = ItemDetailPresenter(this)
-        val view = inflater.inflate(R.layout.fragment_item_detail, container, false)
-        setupBackable(view)
+        arguments?.let {
+            val args = ItemDetailFragmentArgs.fromBundle(it)
+            itemId = args.itemId
+        }
 
-        return view
+        presenter = ItemDetailPresenter(this)
+        return inflater.inflate(R.layout.fragment_item_detail, container, false)
     }
 
     override val usernameCopyClicks: Observable<Unit>

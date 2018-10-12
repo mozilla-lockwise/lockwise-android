@@ -23,8 +23,6 @@ class SettingFragment : BackableFragment(), SettingViewProtocol {
         presenter = SettingPresenter(this)
 
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_setting, container, false)
-        setupBackable(view)
-        return view
+        return inflater.inflate(R.layout.fragment_setting, container, false)
     }
 }

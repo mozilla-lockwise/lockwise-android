@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
 import kotlinx.android.synthetic.main.fragment_fxa_login.view.*
+import kotlinx.android.synthetic.main.include_backable.view.*
 import mozilla.lockbox.R
 import mozilla.lockbox.presenter.FxALoginPresenter
 import mozilla.lockbox.presenter.FxALoginViewProtocol
@@ -24,9 +25,12 @@ class FxALoginFragment : BackableFragment(), FxALoginViewProtocol {
         savedInstanceState: Bundle?
     ): View? {
         presenter = FxALoginPresenter(this)
-        val view = inflater.inflate(R.layout.fragment_fxa_login, container, false)
-        setupBackable(view, android.R.drawable.ic_menu_close_clear_cancel)
-        return view
+        return inflater.inflate(R.layout.fragment_fxa_login, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        view.toolbar.setNavigationIcon(android.R.drawable.ic_menu_close_clear_cancel)
     }
 
     override val logMeInClicks: Observable<Unit>

@@ -6,75 +6,89 @@
 
 package mozilla.lockbox.presenter
 
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
+import android.os.Bundle
+import android.support.annotation.IdRes
 import android.support.v7.app.AppCompatActivity
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.R
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Presenter
+import mozilla.lockbox.log
 import mozilla.lockbox.store.RouteStore
-import mozilla.lockbox.view.FxALoginFragment
-import mozilla.lockbox.view.ItemListFragment
-import mozilla.lockbox.view.SettingFragment
-import mozilla.lockbox.view.WelcomeFragment
-import mozilla.lockbox.view.LockedFragment
-import mozilla.lockbox.view.ItemDetailFragment
-import mozilla.lockbox.view.FilterFragment
+import mozilla.lockbox.view.ItemDetailFragmentArgs
 
-class RoutePresenter(private val activity: AppCompatActivity, routeStore: RouteStore = RouteStore.shared) : Presenter() {
-    private val welcome: WelcomeFragment by lazy { WelcomeFragment() }
-    private val login: FxALoginFragment by lazy { FxALoginFragment() }
-    private val itemList: ItemListFragment by lazy { ItemListFragment() }
-    private val settingList: SettingFragment by lazy { SettingFragment() }
-    private val lock: LockedFragment by lazy { LockedFragment() }
-    private val itemDetail: ItemDetailFragment by lazy { ItemDetailFragment() }
-    private val filter: FilterFragment by lazy { FilterFragment() }
-
-    init {
-        routeStore.routes
-                .subscribe(this::route)
-                .addTo(compositeDisposable)
-    }
+class RoutePresenter(
+    private val activity: AppCompatActivity,
+    private val routeStore: RouteStore = RouteStore.shared
+) : Presenter() {
+    private lateinit var navController: NavController
 
     override fun onViewReady() {
-        replaceFragment(this.welcome, false)
+        navController = Navigation.findNavController(activity, R.id.fragment_nav_host)
+        routeStore.routes.subscribe(this::route).addTo(compositeDisposable)
     }
 
-    private fun replaceFragment(frag: Fragment, backable: Boolean = true) {
-        val tx = activity.supportFragmentManager.beginTransaction()
-        tx.replace(R.id.root_content, frag)
-        if (backable) {
-            tx.addToBackStack(null)
+    private fun navigateToFragment(action: RouteAction, @IdRes destinationId: Int, args: Bundle? = null) {
+        var src = navController.currentDestination ?: return
+        val srcId = src.id
+        if (srcId == destinationId && args == null) {
+            // No point in navigating if nothing has changed.
+            return
         }
-        tx.commit()
 
-        if (!backable) {
-            clearBackStack()
+        val transition = findTransitionId(srcId, destinationId) ?: destinationId
+
+        if (transition == destinationId) {
+            // Without being able to detect if we're in developer mode,
+            // it is too dangerous to RuntimeException.
+            log.error(
+                "Cannot route from ${src.label} to $action. " +
+                    "This is a developer bug, fixable by adding an action to nav_graph.xml"
+            )
         }
+        navController.navigate(transition, args)
     }
 
-    private fun clearBackStack() {
-        val fm = activity.supportFragmentManager
-        if (fm.backStackEntryCount > 0) {
-            val base = fm.getBackStackEntryAt(0)
-            fm.popBackStackImmediate(base.id, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-        }
-    }
-
-    private fun route(action: RouteAction) {
-        when (action) {
-            is RouteAction.Welcome -> replaceFragment(welcome, false)
-            is RouteAction.Login -> replaceFragment(login)
-            is RouteAction.ItemList -> replaceFragment(itemList, false)
-            is RouteAction.SettingList -> replaceFragment(settingList)
-            is RouteAction.LockScreen -> replaceFragment(lock, false)
-            is RouteAction.Filter -> replaceFragment(filter)
+    private fun route(destination: RouteAction) {
+        when (destination) {
+            is RouteAction.Welcome -> navigateToFragment(destination, R.id.fragment_welcome)
+            is RouteAction.Login -> navigateToFragment(destination, R.id.fragment_fxa_login)
+            is RouteAction.ItemList -> navigateToFragment(destination, R.id.fragment_item_list)
+            is RouteAction.SettingList -> navigateToFragment(destination, R.id.fragment_setting)
+            is RouteAction.LockScreen -> navigateToFragment(destination, R.id.fragment_locked)
+            is RouteAction.Filter -> navigateToFragment(destination, R.id.fragment_filter)
             is RouteAction.ItemDetail -> {
-                itemDetail.itemId = action.id
-                replaceFragment(itemDetail)
+                // Possibly overkill for passing a single id string,
+                // but it's typesafe™.
+                val bundle = ItemDetailFragmentArgs.Builder()
+                        .setItemId(destination.id)
+                        .build()
+                        .toBundle()
+                navigateToFragment(destination, R.id.fragment_item_detail, bundle)
             }
-            is RouteAction.Back -> activity.supportFragmentManager.popBackStack()
+            is RouteAction.Back -> navController.popBackStack()
         }
+    }
+
+    private fun findTransitionId(@IdRes from: Int, @IdRes to: Int): Int? {
+        // This maps two nodes in the nav_graph.xml to the edge between them.
+        // If a RouteAction is called from a place the graph doesn't know about then
+        // the app will log.error.
+        when (Pair(from, to)) {
+            Pair(R.id.fragment_welcome, R.id.fragment_fxa_login) -> return R.id.action_welcome_to_fxaLogin
+
+            Pair(R.id.fragment_fxa_login, R.id.fragment_item_list) -> return R.id.action_fxaLogin_to_itemList
+
+            Pair(R.id.fragment_item_list, R.id.fragment_item_detail) -> return R.id.action_itemList_to_itemDetail
+            Pair(R.id.fragment_item_list, R.id.fragment_setting) -> return R.id.action_itemList_to_setting
+            Pair(R.id.fragment_item_list, R.id.fragment_locked) -> return R.id.action_itemList_to_locked
+            Pair(R.id.fragment_item_list, R.id.fragment_filter) -> return R.id.action_itemList_to_filter
+
+            Pair(R.id.fragment_filter, R.id.fragment_item_detail) -> return R.id.action_filter_to_itemDetail
+        }
+
+        return null
     }
 }

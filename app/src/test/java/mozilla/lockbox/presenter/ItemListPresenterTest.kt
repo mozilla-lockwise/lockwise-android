@@ -6,7 +6,6 @@
 
 package mozilla.lockbox.presenter
 
-import android.view.MenuItem
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
@@ -25,23 +24,16 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class ItemListPresenterTest {
     class FakeView : ItemListView {
-        val drawerItemStub = PublishSubject.create<MenuItem>()
         val itemSelectedStub = PublishSubject.create<ItemViewModel>()
         val filterClickStub = PublishSubject.create<Unit>()
-        var closeDrawersCalled = false
+
         var updateItemsArgument: List<ItemViewModel>? = null
-        override val drawerItemSelections: Observable<MenuItem>
-            get() = drawerItemStub
 
         override val itemSelection: Observable<ItemViewModel>
             get() = itemSelectedStub
 
         override val filterClicks: Observable<Unit>
             get() = filterClickStub
-
-        override fun closeDrawers() {
-            this.closeDrawersCalled = true
-        }
 
         override fun updateItems(itemList: List<ItemViewModel>) {
             updateItemsArgument = itemList
@@ -75,16 +67,6 @@ class ItemListPresenterTest {
 
         val count = dispatcherObserver.valueCount()
         dispatcherObserver.assertValueAt(count - 1, RouteAction.ItemDetail(id))
-    }
-
-    @Test
-    fun receivingDrawerItemSelections_settings() {
-        // tbd: constructing menu items
-    }
-
-    @Test
-    fun receivingDrawerItemSelections_lock_now() {
-        // tbd: constructing menu items
     }
 
     @Test

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ This Source Code Form is subject to the terms of the Mozilla Public
+  ~  License, v. 2.0. If a copy of the MPL was not distributed with this
+  ~  file, You can obtain one at http://mozilla.org/MPL/2.0/.
+  -->
+
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/fragment_welcome">
+
+    <fragment
+        android:id="@+id/fragment_welcome"
+        android:name="mozilla.lockbox.view.WelcomeFragment"
+        tools:layout="@layout/fragment_welcome">
+        <action
+            android:id="@+id/action_welcome_to_fxaLogin"
+            app:destination="@id/fragment_fxa_login" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragment_fxa_login"
+        android:name="mozilla.lockbox.view.FxALoginFragment"
+        tools:layout="@layout/fragment_fxa_login">
+        <action
+            android:id="@+id/action_fxaLogin_to_itemList"
+            app:destination="@id/fragment_item_list"
+            app:launchSingleTop="true"
+            app:clearTask="true"
+            app:popUpTo="@+id/fragment_item_list"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragment_item_list"
+        android:name="mozilla.lockbox.view.ItemListFragment"
+        tools:layout="@layout/fragment_item_list">
+        <action
+            android:id="@+id/action_itemList_to_itemDetail"
+            app:destination="@id/fragment_item_detail" />
+        <action
+            android:id="@+id/action_itemList_to_setting"
+            app:destination="@id/fragment_setting" />
+        <action
+            android:id="@+id/action_itemList_to_locked"
+            app:destination="@+id/fragment_locked" />
+        <action
+            android:id="@+id/action_itemList_to_filter"
+            app:destination="@id/fragment_filter" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragment_item_detail"
+        android:name="mozilla.lockbox.view.ItemDetailFragment"
+        tools:layout="@layout/fragment_item_detail">
+        <argument
+            android:name="itemId"
+            android:defaultValue='"MISSING_ID"'
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragment_setting"
+        android:name="mozilla.lockbox.view.SettingFragment"
+        android:label="@string/nav_menu_settings"
+        tools:layout="@layout/fragment_setting"/>
+
+    <fragment
+        android:id="@+id/fragment_locked"
+        android:name="mozilla.lockbox.view.LockedFragment"
+        tools:layout="@layout/fragment_locked" />
+
+    <fragment
+        android:id="@+id/fragment_filter"
+        android:name="mozilla.lockbox.view.FilterFragment"
+        tools:layout="@layout/fragment_filter" >
+        <action
+            android:id="@+id/action_filter_to_itemDetail"
+            app:destination="@id/fragment_item_detail" />
+    </fragment>
+</navigation>

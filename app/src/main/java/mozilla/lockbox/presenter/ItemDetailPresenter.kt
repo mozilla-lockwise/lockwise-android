@@ -72,10 +72,8 @@ class ItemDetailPresenter(
                     view.isPasswordVisible = view.isPasswordVisible.not()
                 }
                 .addTo(compositeDisposable)
-    }
 
-    override fun onResume() {
-        super.onResume()
+        // now set up the data.
         val itemId = view.itemId ?: return
         dataStore.get(itemId)
                 .map {
