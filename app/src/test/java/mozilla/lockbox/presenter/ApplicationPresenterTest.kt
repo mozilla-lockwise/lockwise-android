@@ -1,0 +1,65 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+package mozilla.lockbox.presenter
+
+import android.arch.lifecycle.Lifecycle
+import android.arch.lifecycle.LifecycleObserver
+import android.arch.lifecycle.LifecycleOwner
+import mozilla.lockbox.DisposingTest
+import mozilla.lockbox.action.LifecycleAction
+import mozilla.lockbox.flux.Action
+import mozilla.lockbox.flux.Dispatcher
+import org.junit.Before
+import org.junit.Test
+
+class MockLifecycle(
+    var state: Lifecycle.State
+) : Lifecycle() {
+    override fun getCurrentState() = state
+
+    override fun addObserver(observer: LifecycleObserver) {
+    }
+    override fun removeObserver(observer: LifecycleObserver) {
+    }
+}
+
+class ApplicationPresenterTest : DisposingTest() {
+    private val dispatcherObserver = createTestObserver<Action>()
+
+    @Before
+    fun setUp() {
+        Dispatcher.shared.register.subscribe(dispatcherObserver)
+    }
+
+    @Test
+    fun testOnCreate() {
+        val subject = ApplicationPresenter()
+
+        subject.onCreate(createLifecycleOwner(Lifecycle.State.CREATED))
+        dispatcherObserver.assertValue(LifecycleAction.Startup)
+    }
+
+    @Test
+    fun testBackgrouding() {
+        val subject = ApplicationPresenter()
+
+        subject.onPause(createLifecycleOwner(Lifecycle.State.CREATED))
+        dispatcherObserver.assertValue(LifecycleAction.Background)
+    }
+
+    @Test
+    fun testForegrounding() {
+        val subject = ApplicationPresenter()
+
+        subject.onResume(createLifecycleOwner(Lifecycle.State.RESUMED))
+        dispatcherObserver.assertValue(LifecycleAction.Foreground)
+    }
+
+    private fun createLifecycleOwner(state: Lifecycle.State) = object : LifecycleOwner {
+        override fun getLifecycle() = MockLifecycle(state)
+    }
+}

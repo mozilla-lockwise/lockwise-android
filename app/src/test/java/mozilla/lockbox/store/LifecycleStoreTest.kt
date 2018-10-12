@@ -13,12 +13,12 @@ import org.junit.Test
 
 class LifecycleStoreTest : DisposingTest() {
     @Test
-    fun testLifecycelFilter() {
+    fun testLifecycleFilter() {
         val dispatcher = Dispatcher()
         val subject = LifecycleStore(dispatcher)
 
         val lifecycleObserver = createTestObserver<LifecycleAction>()
-        subject.lifecycelFilter.subscribe(lifecycleObserver)
+        subject.lifecycleFilter.subscribe(lifecycleObserver)
 
         dispatcher.dispatch(LifecycleAction.Startup)
         dispatcher.dispatch(LifecycleAction.Upgrade)

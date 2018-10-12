@@ -7,6 +7,7 @@
 package mozilla.lockbox
 
 import android.app.Application
+import android.arch.lifecycle.ProcessLifecycleOwner
 import android.content.ClipboardManager
 import android.content.Context
 import com.squareup.leakcanary.LeakCanary
@@ -17,11 +18,18 @@ import mozilla.components.support.base.log.logger.Logger
 import mozilla.components.support.base.log.sink.AndroidLogSink
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.presenter.ApplicationPresenter
 import mozilla.lockbox.store.ClipboardStore
 import mozilla.lockbox.store.TelemetryStore
 
 val log: Logger = Logger("Lockbox")
 class LockboxApplication : Application() {
+    private val presenter: ApplicationPresenter = ApplicationPresenter()
+
+    init {
+        ProcessLifecycleOwner.get().lifecycle.addObserver(presenter)
+    }
+
     override fun onCreate() {
         super.onCreate()
         if (LeakCanary.isInAnalyzerProcess(this)) {

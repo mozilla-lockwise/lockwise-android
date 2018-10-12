@@ -24,12 +24,13 @@ class LifecycleStore(
     internal val compositeDisposable = CompositeDisposable()
     private val _filter: PublishSubject<LifecycleAction> = PublishSubject.create()
 
-    val lifecycelFilter: Observable<LifecycleAction> = _filter
+    val lifecycleFilter: Observable<LifecycleAction> = PublishSubject.create()
 
     init {
+        val subject = lifecycleFilter as PublishSubject
         dispatcher.register
             .filterByType(LifecycleAction::class.java)
-            .subscribe { _filter.onNext(it) }
+            .subscribe(subject::onNext)
             .addTo(compositeDisposable)
     }
 }

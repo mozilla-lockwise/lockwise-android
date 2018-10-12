@@ -30,9 +30,4 @@ class RootActivity : AppCompatActivity() {
         super.onResume()
         presenter.onResume()
     }
-
-    override fun onPause() {
-        super.onPause()
-        presenter.onPause()
-    }
 }

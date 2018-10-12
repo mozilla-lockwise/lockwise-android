@@ -22,11 +22,6 @@ abstract class Presenter {
     }
 
     @CallSuper
-    open fun onPause() {
-        // NOOP
-    }
-
-    @CallSuper
     open fun onResume() {
         // NOOP
     }
