@@ -24,6 +24,7 @@ import mozilla.lockbox.R
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.presenter.ItemDetailPresenter
 import mozilla.lockbox.presenter.ItemDetailView
+import mozilla.lockbox.support.assertOnUiThread
 
 class ItemDetailFragment : BackableFragment(), ItemDetailView {
     override fun onCreateView(
@@ -54,6 +55,7 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
 
     override var isPasswordVisible: Boolean = false
         set(value) {
+            assertOnUiThread()
             field = value
             if (value) {
                 inputPassword.transformationMethod = null
@@ -65,6 +67,7 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         }
 
     override fun updateItem(item: ItemDetailViewModel) {
+        assertOnUiThread()
         toolbar.title = item.title
 
         inputLayoutHostname.isHintAnimationEnabled = false
@@ -82,6 +85,7 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
     }
 
     override fun showToastNotification(@StringRes strId: Int) {
+        assertOnUiThread()
         Toast.makeText(activity, getString(strId), Toast.LENGTH_SHORT).show()
     }
 }

@@ -8,6 +8,7 @@ package mozilla.lockbox.presenter
 
 import android.support.annotation.StringRes
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.R
 import mozilla.lockbox.action.ClipboardAction
@@ -72,18 +73,19 @@ class ItemDetailPresenter(
 
         // now set up the data.
         val itemId = this.itemId ?: return
+
         dataStore.get(itemId)
-            .map {
-                credentials = it
-                it.toDetailViewModel()
-            }
+            .observeOn(mainThread())
+            .doOnNext { credentials = it }
+            .map { it.toDetailViewModel() }
             .subscribe(view::updateItem)
             .addTo(compositeDisposable)
     }
 
     private fun handleClicks(clicks: Observable<Unit>, withServerPassword: (ServerPassword) -> Unit) {
         clicks.subscribe {
-            this.credentials?.let { withServerPassword(it) }
-        }.addTo(compositeDisposable)
+                this.credentials?.let { withServerPassword(it) }
+            }
+            .addTo(compositeDisposable)
     }
 }

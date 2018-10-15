@@ -49,6 +49,8 @@
                         android:inputType="none"
                         android:singleLine="true"
                         android:textColor="@color/blue60"
+                        android:clickable="true"
+                        android:focusable="true"
                         tools:ignore="Autofill"/>
             </android.support.design.widget.TextInputLayout>
 

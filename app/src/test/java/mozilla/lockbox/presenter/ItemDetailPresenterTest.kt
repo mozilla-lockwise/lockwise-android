@@ -18,8 +18,11 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.mozilla.sync15.logins.ServerPassword
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 class ItemDetailPresenterTest {
     class FakeView : ItemDetailView {
 
