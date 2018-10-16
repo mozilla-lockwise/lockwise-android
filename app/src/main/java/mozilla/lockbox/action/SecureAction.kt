@@ -6,9 +6,9 @@
 
 package mozilla.lockbox.action
 
+import mozilla.components.service.fxa.FirefoxAccount
 import mozilla.lockbox.flux.Action
 
 sealed class SecureAction : Action {
-    data class OAuthInfo(val info: OAuthInfo) : SecureAction()
-    data class Profile(val profile: Profile) : SecureAction()
+    data class FxAAccount(val account: FirefoxAccount) : SecureAction()
 }

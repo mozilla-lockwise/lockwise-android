@@ -13,16 +13,19 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.PublishSubject
 import mozilla.components.lib.dataprotect.Keystore
+import mozilla.components.service.fxa.FirefoxAccount
 import mozilla.components.service.fxa.OAuthInfo
 import mozilla.components.service.fxa.Profile
 import mozilla.lockbox.action.SecureAction
+import mozilla.lockbox.extensions.Optional
+import mozilla.lockbox.extensions.asOptional
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 import java.nio.charset.StandardCharsets
 
 private const val KEYSTORE_LABEL = "lockbox-keystore"
-private const val OAUTH_KEY = "firefox-account-oauth-info"
-private const val PROFILE_KEY = "firefox-account-profile"
+private const val FIREFOX_ACCOUNT_KEY = "firefox-account"
+private val FXA_SCOPES = arrayOf("profile", "https://identity.mozilla.com/apps/lockbox")
 
 private const val BASE_64_FLAGS = Base64.URL_SAFE or Base64.NO_PADDING or Base64.NO_PADDING
 
@@ -37,19 +40,16 @@ class SecureStore(
     private lateinit var prefs: SharedPreferences
     internal val compositeDisposable = CompositeDisposable()
 
-    val oauthInfo: Observable<OAuthInfo?> = PublishSubject.create()
-    val profile: Observable<Profile?> = PublishSubject.create()
+    val oauthInfo: Observable<Optional<OAuthInfo>> = PublishSubject.create()
+    val profile: Observable<Optional<Profile>> = PublishSubject.create()
 
     init {
         this.dispatcher.register
             .filterByType(SecureAction::class.java)
             .subscribe {
                 when (it) {
-                    is SecureAction.OAuthInfo -> {
-                        // tbd: how to convert to & from String values for OAuthInfo...
-                    }
-                    is SecureAction.Profile -> {
-                        // tbd: how to convert to & from String values for Profile...
+                    is SecureAction.FxAAccount -> {
+                        persistFxA(it.account)
                     }
                 }
             }
@@ -59,18 +59,38 @@ class SecureStore(
     fun apply(sharedPreferences: SharedPreferences) {
         prefs = sharedPreferences
 
-        loadAll()
+        loadFxA()
     }
 
-    private fun loadAll() {
-        load(OAUTH_KEY)?.let {
-            // tbd: how to convert to & from String values for OAuthInfo...
-        }
-
-        load(PROFILE_KEY)?.let {
-            // tbd: how to convert to & from String values for Profile...
+    private fun loadFxA() {
+        load(FIREFOX_ACCOUNT_KEY)?.let { accountJSON ->
+            FirefoxAccount.fromJSONString(accountJSON).whenComplete {
+                persistFxA(it)
+            }
+        } ?: run {
+            val profileSubject = profile as PublishSubject
+            val oauthSubject = oauthInfo as PublishSubject
+            profileSubject.onNext(Optional(null))
+            oauthSubject.onNext(Optional(null))
         }
     }
+
+    private fun persistFxA(account: FirefoxAccount) {
+        account.toJSONString()?.let {
+            this.persist(FIREFOX_ACCOUNT_KEY, it)
+        }
+
+        val profileSubject = profile as PublishSubject
+        account.getProfile().whenComplete {
+            profileSubject.onNext(it.asOptional())
+        }
+
+        val oauthSubject = oauthInfo as PublishSubject
+        account.getOAuthToken(FXA_SCOPES).whenComplete {
+            oauthSubject.onNext(it.asOptional())
+        }
+    }
+
 
     private fun load(key: String): String? {
         return if (prefs.contains(key)) {
@@ -84,7 +104,7 @@ class SecureStore(
         }
     }
 
-    private fun save(key: String, value: String) {
+    private fun persist(key: String, value: String) {
         val editor = prefs.edit()
 
         val encrypted = keystore.encryptBytes(value.toByteArray(StandardCharsets.UTF_8))
