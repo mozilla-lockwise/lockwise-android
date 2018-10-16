@@ -7,9 +7,9 @@
 package mozilla.lockbox.presenter
 
 import android.support.annotation.StringRes
-import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
+import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.model.ItemDetailViewModel
@@ -18,23 +18,22 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.mozilla.sync15.logins.ServerPassword
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 class ItemDetailPresenterTest {
     class FakeView : ItemDetailView {
 
-        override var itemId: String? = null
         var item: ItemDetailViewModel? = null
-        val tapStub: PublishSubject<Unit> = PublishSubject.create<Unit>()
 
-        override val usernameCopyClicks: Observable<Unit>
-            get() = tapStub
+        override val usernameCopyClicks = PublishSubject.create<Unit>()
+        override val passwordCopyClicks = PublishSubject.create<Unit>()
+        override val togglePasswordClicks = PublishSubject.create<Unit>()
+        override val hostnameClicks = PublishSubject.create<Unit>()
 
-        override val passwordCopyClicks: Observable<Unit>
-            get() = tapStub
-
-        override val togglePasswordClicks: Observable<Unit>
-            get() = tapStub
+        override var isPasswordVisible: Boolean = false
 
         override fun updateItem(item: ItemDetailViewModel) {
             this.item = item
@@ -43,70 +42,64 @@ class ItemDetailPresenterTest {
         override fun showToastNotification(@StringRes strId: Int) {
             // notification Test
         }
-
-        override var isPasswordVisible: Boolean = false
     }
 
     class FakeDataStore : DataStore() {
-        val listStub = PublishSubject.create<List<ServerPassword>>()
-
-        override val list: Observable<List<ServerPassword>>
-            get() = listStub
+        override val list = PublishSubject.create<List<ServerPassword>>()
     }
 
     val view = FakeView()
     val dataStore = FakeDataStore()
-
-    val subject = ItemDetailPresenter(view, dataStore = dataStore)
-
+    val dispatcher = Dispatcher()
     val dispatcherObserver = TestObserver.create<Action>()
 
     @Before
     fun setUp() {
-        Dispatcher.shared.register.subscribe(dispatcherObserver)
-
-        subject.onViewReady()
+        dispatcher.register.subscribe(dispatcherObserver)
     }
 
-    @Test
-    fun testServerPasswordDeliveredToView() {
-        val username = "dogs@dogs.com"
-        val id1 = "id1"
-        val password1 = ServerPassword(
+    private val fakeCredentials: List<ServerPassword> by lazy {
+        listOf(
+            ServerPassword(
                 "id0",
                 "https://www.mozilla.org",
-                username,
+                "dogs@dogs.com",
                 "woof",
                 timesUsed = 0,
                 timeCreated = 0L,
                 timeLastUsed = 0L,
-                timePasswordChanged = 0L)
-        val password2 = ServerPassword(id1,
+                timePasswordChanged = 0L
+            ), ServerPassword(
+                "id1",
                 "https://www.cats.org",
-                username,
+                "dogs@dogs.com",
                 "meow",
                 timesUsed = 0,
                 timeCreated = 0L,
                 timeLastUsed = 0L,
-                timePasswordChanged = 0L)
-        val password3 = ServerPassword("id2",
+                timePasswordChanged = 0L
+            ), ServerPassword(
+                "id2",
                 "www.dogs.org",
                 password = "baaaaa",
                 username = null,
                 timesUsed = 0,
                 timeCreated = 0L,
                 timeLastUsed = 0L,
-                timePasswordChanged = 0L)
+                timePasswordChanged = 0L
+            )
+        )
+    }
 
-        val list = listOf(password1, password2, password3)
-
-        for (exp in list) {
+    @Test
+    fun `sends a detail view model to view on onViewReady`() {
+        for (exp in fakeCredentials) {
             // put the presenter/view on screen.
-            view.itemId = exp.id
+            val subject = ItemDetailPresenter(view, exp.id, dispatcher, dataStore)
             subject.onViewReady()
 
             // drive the fake datastore.
-            dataStore.listStub.onNext(list)
+            dataStore.list.onNext(fakeCredentials)
 
             // test the results that the view gets.
             val obs = view.item ?: return fail("Expected an item")
@@ -114,6 +107,24 @@ class ItemDetailPresenterTest {
             assertEquals(exp.username, obs.username)
             assertEquals(exp.password, obs.password)
             assertEquals(exp.id, obs.id)
+        }
+    }
+
+    @Test
+    fun `opens a browser when tapping on the hostname`() {
+        for (exp in fakeCredentials) {
+            // put the presenter/view on screen.
+            val subject = ItemDetailPresenter(view, exp.id, dispatcher, dataStore)
+            subject.onViewReady()
+
+            // drive the fake datastore.
+            dataStore.list.onNext(fakeCredentials)
+
+            val clicks = view.hostnameClicks
+            clicks.onNext(Unit)
+
+            val last = dispatcherObserver.valueCount() - 1
+            dispatcherObserver.assertValueAt(last, RouteAction.OpenWebsite(exp.hostname))
         }
     }
 }

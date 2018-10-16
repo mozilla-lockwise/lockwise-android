@@ -24,21 +24,20 @@ import mozilla.lockbox.R
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.presenter.ItemDetailPresenter
 import mozilla.lockbox.presenter.ItemDetailView
+import mozilla.lockbox.support.assertOnUiThread
 
 class ItemDetailFragment : BackableFragment(), ItemDetailView {
-    override var itemId: String? = null
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        arguments?.let {
-            val args = ItemDetailFragmentArgs.fromBundle(it)
-            itemId = args.itemId
+        val itemId = arguments?.let {
+            ItemDetailFragmentArgs.fromBundle(it)
+                .itemId
         }
 
-        presenter = ItemDetailPresenter(this)
+        presenter = ItemDetailPresenter(this, itemId)
         return inflater.inflate(R.layout.fragment_item_detail, container, false)
     }
 
@@ -51,8 +50,12 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
     override val togglePasswordClicks: Observable<Unit>
         get() = view!!.btnPasswordToggle.clicks()
 
+    override val hostnameClicks: Observable<Unit>
+        get() = view!!.inputHostname.clicks()
+
     override var isPasswordVisible: Boolean = false
         set(value) {
+            assertOnUiThread()
             field = value
             if (value) {
                 inputPassword.transformationMethod = null
@@ -64,6 +67,7 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         }
 
     override fun updateItem(item: ItemDetailViewModel) {
+        assertOnUiThread()
         toolbar.title = item.title
 
         inputLayoutHostname.isHintAnimationEnabled = false
@@ -73,6 +77,7 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         inputUsername.readOnly = true
         inputPassword.readOnly = true
         inputHostname.readOnly = true
+        inputHostname.isClickable = true
 
         inputHostname.setText(item.hostname, TextView.BufferType.NORMAL)
         inputUsername.setText(item.username, TextView.BufferType.NORMAL)
@@ -80,6 +85,7 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
     }
 
     override fun showToastNotification(@StringRes strId: Int) {
+        assertOnUiThread()
         Toast.makeText(activity, getString(strId), Toast.LENGTH_SHORT).show()
     }
 }

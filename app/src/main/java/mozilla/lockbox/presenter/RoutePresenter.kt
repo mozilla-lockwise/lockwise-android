@@ -6,8 +6,11 @@
 
 package mozilla.lockbox.presenter
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.annotation.IdRes
+import android.support.v4.content.ContextCompat.startActivity
 import android.support.v7.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -51,6 +54,11 @@ class RoutePresenter(
         navController.navigate(transition, args)
     }
 
+    private fun openWebsite(url: String) {
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        activity.startActivity(browserIntent, null)
+    }
+
     private fun route(destination: RouteAction) {
         when (destination) {
             is RouteAction.Welcome -> navigateToFragment(destination, R.id.fragment_welcome)
@@ -68,6 +76,10 @@ class RoutePresenter(
                         .toBundle()
                 navigateToFragment(destination, R.id.fragment_item_detail, bundle)
             }
+            is RouteAction.OpenWebsite -> {
+                openWebsite(destination.url)
+            }
+
             is RouteAction.Back -> navController.popBackStack()
         }
     }
