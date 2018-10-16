@@ -10,6 +10,7 @@ import mozilla.lockbox.model.ItemViewModel
 import org.junit.Assert
 import org.junit.Test
 import org.mozilla.sync15.logins.ServerPassword
+import java.util.Date
 
 class ServerPasswordExtensionTest {
     @Test
@@ -22,7 +23,7 @@ class ServerPasswordExtensionTest {
                 username = username,
                 password = "woof")
 
-        val expectedItemViewModel = ItemViewModel("mozilla.org", username, guid)
+        val expectedItemViewModel = ItemViewModel("mozilla.org", username, guid, Date().time)
 
         Assert.assertEquals(serverPassword.toViewModel(), expectedItemViewModel)
     }

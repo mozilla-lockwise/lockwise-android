@@ -23,4 +23,6 @@
     <color name="white_E4">#E4E4E4</color>
     <color name="red">#d70022</color>
     <color name="green">#12bc00</color>
+    <color name="blue60">#0060df</color>
+    <color name="menuItemSelected">#14000000</color>
 </resources>

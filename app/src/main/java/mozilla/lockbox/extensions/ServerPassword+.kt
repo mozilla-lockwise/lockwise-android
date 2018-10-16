@@ -13,7 +13,7 @@ import org.mozilla.sync15.logins.ServerPassword
 fun ServerPassword.toViewModel(): ItemViewModel {
     val username = this.username ?: ""
     val hostname = titleFromHostname(this.hostname)
-    return ItemViewModel(hostname, username, this.id)
+    return ItemViewModel(hostname, username, this.id, this.timeLastUsed)
 }
 
 fun ServerPassword.toDetailViewModel(): ItemDetailViewModel {
