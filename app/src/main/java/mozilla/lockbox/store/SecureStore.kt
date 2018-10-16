@@ -27,7 +27,7 @@ private const val KEYSTORE_LABEL = "lockbox-keystore"
 private const val FIREFOX_ACCOUNT_KEY = "firefox-account"
 private val FXA_SCOPES = arrayOf("profile", "https://identity.mozilla.com/apps/lockbox")
 
-private const val BASE_64_FLAGS = Base64.URL_SAFE or Base64.NO_PADDING or Base64.NO_PADDING
+private const val BASE_64_FLAGS = Base64.URL_SAFE or Base64.NO_PADDING
 
 class SecureStore(
     private val dispatcher: Dispatcher = Dispatcher.shared,
@@ -91,7 +91,6 @@ class SecureStore(
         }
     }
 
-
     private fun load(key: String): String? {
         return if (prefs.contains(key)) {
             val value = prefs.getString(key, "")
@@ -110,8 +109,6 @@ class SecureStore(
         val encrypted = keystore.encryptBytes(value.toByteArray(StandardCharsets.UTF_8))
         val data = Base64.encodeToString(encrypted, BASE_64_FLAGS)
 
-        editor.putString(key, data)
-
-        editor.apply()
+        editor.putString(key, data).apply()
     }
 }
