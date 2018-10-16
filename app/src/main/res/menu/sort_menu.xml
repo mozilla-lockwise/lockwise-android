@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ This Source Code Form is subject to the terms of the Mozilla Public
+  ~ License, v. 2.0. If a copy of the MPL was not distributed with this
+  ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
+  -->
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+     <item
+         android:id="@+id/sort_a_z"
+         android:title="@string/sort_menu_az"
+         android:checked="true"/>
+     <item
+         android:id="@+id/sort_recent"
+         android:title="@string/sort_menu_recent" />
+    </group>
+</menu>

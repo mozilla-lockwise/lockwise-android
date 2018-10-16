@@ -16,12 +16,16 @@
     <string name="nav_menu_faq">FAQ</string>
     <string name="nav_menu_settings">Settings</string>
 
+    <string name="sort_menu_az">Alphabetically</string>
+    <string name="sort_menu_recent">Recently Used</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">This is a placeholder for an OAuth login to FxA</string>
     <string name="fxa_login_logmein_btn">Log Me In</string>
     <string name="placeholder_unlock_button">Unlock Firefox Lockbox</string>
     <string name="lock_now">Lock Now</string>
     <string name="all_entries_a_z">All entries (A-Z)</string>
+    <string name="all_entries_recent">All entries (Recent)</string>
     <string name="search_your_entries" tools:ignore="ExtraTranslation">search your entries</string>
     <string name="no_matching_entries">No matching entries.</string>
     <string name="save_firefox_disclaimer">To see more entries here, you\'ll need to save them to Firefox.</string>

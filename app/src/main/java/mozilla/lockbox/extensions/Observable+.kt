@@ -7,6 +7,7 @@
 package mozilla.lockbox.extensions
 
 import io.reactivex.Observable
+import mozilla.lockbox.action.SortAction
 import mozilla.lockbox.model.ItemViewModel
 import org.mozilla.sync15.logins.ServerPassword
 
@@ -15,5 +16,14 @@ fun <T : Any, U : T> Observable<T>.filterByType(clazz: Class<out U>): Observable
 }
 
 fun Observable<List<ServerPassword>>.mapToItemViewModelList(): Observable<List<ItemViewModel>> {
-    return this.map { it.map { it.toViewModel() } }
+    return this.map { list -> list.map { it.toViewModel() } }
+}
+
+fun Observable<Pair<List<ItemViewModel>, SortAction>>.sort(): Observable<List<ItemViewModel>> {
+    return this.map { pair ->
+        when (pair.second) {
+            SortAction.Alphabetically -> { pair.first.sortedBy { it.title } }
+            SortAction.RecentlyUsed -> { pair.first.sortedBy { it.timeLastUsed }}
+        }
+    }
 }

@@ -7,13 +7,18 @@
 package mozilla.lockbox.presenter
 
 import android.support.annotation.IdRes
+import android.view.MenuItem
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.R
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.action.SortAction
+import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.extensions.mapToItemViewModelList
+import mozilla.lockbox.extensions.sort
 import mozilla.lockbox.flux.Dispatcher
 
 import mozilla.lockbox.flux.Presenter
@@ -25,7 +30,10 @@ interface ItemListView {
     val itemSelection: Observable<ItemViewModel>
     val filterClicks: Observable<Unit>
     val menuItemSelections: Observable<Int>
+    val sortItemSelection: Observable<MenuItem>
     fun updateItems(itemList: List<ItemViewModel>)
+    fun selectSortOption(selectedItem: MenuItem)
+    // TODO: Item list selection
 }
 
 class ItemListPresenter(
@@ -33,10 +41,16 @@ class ItemListPresenter(
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val dataStore: DataStore = DataStore.shared
 ) : Presenter() {
+    private val itemSorted: Observable<SortAction> = dispatcher.register.filterByType(SortAction::class.java)
+
     override fun onViewReady() {
-        dataStore.list
+        val itemViewModelList = dataStore.list
                 .filter { it.isNotEmpty() }
                 .mapToItemViewModelList()
+
+        Observables.combineLatest(itemViewModelList, itemSorted)
+                .distinctUntilChanged()
+                .sort()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(view::updateItems)
                 .addTo(compositeDisposable)
@@ -57,7 +71,24 @@ class ItemListPresenter(
             .subscribe(this::onMenuItem)
             .addTo(compositeDisposable)
 
+        view.sortItemSelection
+                .subscribe { menuItem ->
+                    view.selectSortOption(menuItem)
+                    when (menuItem.itemId) {
+                        R.id.sort_a_z -> {
+                            dispatcher.dispatch(SortAction.Alphabetically)
+                        }
+                        R.id.sort_recent -> {
+                            dispatcher.dispatch(SortAction.RecentlyUsed)
+                        }
+                        else -> {
+                            log.info("Menu ${menuItem.title} unimplemented")
+                        }
+                    }
+                }.addTo(compositeDisposable)
+
         // TODO: remove this when we have proper locking / unlocking
+        dispatcher.dispatch(SortAction.Alphabetically)
         dispatcher.dispatch(DataStoreAction.Unlock)
     }
 

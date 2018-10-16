@@ -21,6 +21,11 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.jakewharton.rxbinding2.support.design.widget.itemSelections
+import android.support.v7.widget.PopupMenu
+import android.view.ContextThemeWrapper
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.widget.Button
 import com.jakewharton.rxbinding2.support.v7.widget.navigationClicks
 import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
@@ -32,10 +37,15 @@ import mozilla.lockbox.adapter.ItemListAdapter
 import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.presenter.ItemListPresenter
 import mozilla.lockbox.presenter.ItemListView
+import com.jakewharton.rxbinding2.support.v7.widget.itemClicks
+import mozilla.lockbox.log
+
 
 class ItemListFragment : CommonFragment(), ItemListView {
     private val compositeDisposable = CompositeDisposable()
     private val adapter = ItemListAdapter()
+
+    private lateinit var popupMenu: PopupMenu
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,6 +59,7 @@ class ItemListFragment : CommonFragment(), ItemListView {
         setupToolbar(view.toolbar, view.appDrawer)
         setupNavigationView(navController, view.navView)
         setupListView(view.entriesView)
+        setupItemListSortMenu(view.sortButton)
 
         return view
     }
@@ -75,6 +86,21 @@ class ItemListFragment : CommonFragment(), ItemListView {
                 .addTo(compositeDisposable)
     }
 
+    private fun setupItemListSortMenu(sortButton: Button) {
+        context?.let {
+            val theme = ContextThemeWrapper(it, R.style.PopupMenu)
+            popupMenu = PopupMenu(theme, sortButton)
+            val menuInflater: MenuInflater = popupMenu.menuInflater
+            menuInflater.inflate(R.menu.sort_menu, popupMenu.menu)
+        }
+
+        sortButton.clicks()
+            .subscribe {
+                popupMenu.show()
+            }
+            .addTo(compositeDisposable)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         compositeDisposable.clear()
@@ -98,7 +124,27 @@ class ItemListFragment : CommonFragment(), ItemListView {
                 .map { it.itemId }
         }
 
+    override val sortItemSelection: Observable<MenuItem>
+        get() = popupMenu.itemClicks()
+
     override fun updateItems(itemList: List<ItemViewModel>) {
         adapter.updateItems(itemList)
+    }
+
+    override fun selectSortOption(selectedItem: MenuItem) {
+        if (!selectedItem.isChecked) {
+            selectedItem.isChecked = true
+            when (selectedItem.itemId) {
+                R.id.sort_a_z -> {
+                    view!!.sortButton.setText(R.string.all_entries_a_z)
+                }
+                R.id.sort_recent -> {
+                    view!!.sortButton.setText(R.string.all_entries_recent)
+                }
+                else -> {
+                    log.info("Menu ${selectedItem.title} unimplemented")
+                }
+            }
+        }
     }
 }
