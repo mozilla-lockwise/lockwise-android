@@ -17,8 +17,8 @@ import mozilla.components.service.fxa.FirefoxAccount
 import mozilla.components.service.fxa.OAuthInfo
 import mozilla.components.service.fxa.Profile
 import mozilla.lockbox.action.SecureAction
-import mozilla.lockbox.extensions.Optional
-import mozilla.lockbox.extensions.asOptional
+import mozilla.lockbox.support.Optional
+import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 import java.nio.charset.StandardCharsets

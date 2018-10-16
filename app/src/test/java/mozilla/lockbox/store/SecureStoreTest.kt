@@ -13,7 +13,7 @@ import mozilla.components.service.fxa.FirefoxAccount
 import mozilla.components.service.fxa.OAuthInfo
 import mozilla.components.service.fxa.Profile
 import mozilla.lockbox.action.SecureAction
-import mozilla.lockbox.extensions.Optional
+import mozilla.lockbox.support.Optional
 import mozilla.lockbox.flux.Dispatcher
 import org.junit.Before
 import org.junit.Test

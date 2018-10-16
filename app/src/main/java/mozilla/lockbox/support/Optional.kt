@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-package mozilla.lockbox.extensions
+package mozilla.lockbox.support
 
 data class Optional<T>(val value: T?)
 fun <T> T?.asOptional() = Optional(this)
