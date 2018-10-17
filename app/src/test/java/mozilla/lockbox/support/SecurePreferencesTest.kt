@@ -4,17 +4,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-package mozilla.lockbox.store
+package mozilla.lockbox.support
 
 import android.content.SharedPreferences
-import io.reactivex.observers.TestObserver
-import mozilla.components.service.fxa.OAuthInfo
-import mozilla.components.service.fxa.Profile
-import mozilla.lockbox.support.Optional
-import org.junit.Before
-import org.junit.Test
+import org.junit.Assert.*
 
-class SecureStoreTest {
+class SecurePreferencesTest {
     class FakePreferences(val editor: FakeEditor) : SharedPreferences {
 
         var stringsForKeys = HashMap<String, String>()
@@ -104,47 +99,4 @@ class SecureStoreTest {
 //    class FakeKeystore(override val label: String) : Keystore(label) {
 //
 //    }
-
-    private val editor = FakeEditor()
-    private val preferences = FakePreferences(editor)
-    private val oauthObserver = TestObserver<Optional<OAuthInfo>>()
-    private val profileObserver = TestObserver<Optional<Profile>>()
-
-    val subject = SecureStore()
-
-    @Before
-    fun setUp() {
-        subject.oauthInfo.subscribe(oauthObserver)
-        subject.profile.subscribe(profileObserver)
-    }
-
-    @Test
-    fun `when sharedPreferences is applied without saved fxa information`() {
-        subject.apply(preferences)
-
-        oauthObserver.assertValue(Optional<OAuthInfo>(null))
-        profileObserver.assertValue(Optional<Profile>(null))
-    }
-
-    @Test
-    fun `when sharedPreferences is applied with saved fxa information`() {
-        // note: need sample FxA JSON for this test
-//        subject.apply(preferences)
-//
-//        oauthObserver.assertValue(Optional<OAuthInfo>(null))
-//        profileObserver.assertValue(Optional<Profile>(null))
-    }
-
-    @Test
-    fun `receiving FxAAccount SecureAction`() {
-        // note: this will continue to crash until https://github.com/mozilla/application-services/issues/262
-        // is addressed.
-//        Config.release().whenComplete {
-//            val account = FirefoxAccount(it, "", "")
-//
-//            Dispatcher.shared.dispatch(SecureAction.FxAAccount(account))
-//
-//            // note: need to be able to mock Keystore for this test
-//        }
-    }
 }

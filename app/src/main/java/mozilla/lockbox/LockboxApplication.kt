@@ -19,7 +19,7 @@ import mozilla.components.support.base.log.logger.Logger
 import mozilla.components.support.base.log.sink.AndroidLogSink
 import mozilla.lockbox.presenter.ApplicationPresenter
 import mozilla.lockbox.store.ClipboardStore
-import mozilla.lockbox.store.SecureStore
+import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.TelemetryStore
 
 val log: Logger = Logger("Lockbox")
@@ -45,7 +45,7 @@ class LockboxApplication : Application() {
         ClipboardStore.shared.apply(getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
 
         // use context for PreferenceManager
-        SecureStore.shared.apply(PreferenceManager.getDefaultSharedPreferences(this))
+        AccountStore.shared.apply(PreferenceManager.getDefaultSharedPreferences(this))
 
         // hook this context into Telemetry
         TelemetryStore.shared.applyContext(this)
