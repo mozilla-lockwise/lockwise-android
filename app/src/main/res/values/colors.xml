@@ -17,6 +17,8 @@
     <color name="opaque_black">#de000000</color>
     <color name="translucent_black">#99000000</color>
     <color name="color_switch">#1771eb</color>
+    <color name="opaque_black">#de000000</color>
+    <color name="translucent_black">#99000000</color>
     <color name="blue60">#0060df</color>
     <color name="gray_73">#737373</color>
     <color name="switch_activated">#1771eb</color>
