@@ -14,8 +14,9 @@ import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.R
 import mozilla.lockbox.action.DataStoreAction
+import mozilla.lockbox.action.ItemListSort
 import mozilla.lockbox.action.RouteAction
-import mozilla.lockbox.action.SortAction
+import mozilla.lockbox.action.SettingsAction
 import mozilla.lockbox.extensions.mapToItemViewModelList
 import mozilla.lockbox.extensions.sort
 import mozilla.lockbox.flux.Dispatcher
@@ -79,16 +80,11 @@ class ItemListPresenter(
 
         view.sortItemSelection
                 .subscribe { menuItem ->
-                    when (menuItem.itemId) {
-                        R.id.sort_a_z -> {
-                            dispatcher.dispatch(SortAction.Alphabetically)
-                        }
-                        R.id.sort_recent -> {
-                            dispatcher.dispatch(SortAction.RecentlyUsed)
-                        }
-                        else -> {
-                            log.info("Menu ${menuItem.title} unimplemented")
-                        }
+                    val validSort = ItemListSort.fromInt(menuItem.itemId)
+                    if (validSort != null) {
+                        dispatcher.dispatch(SettingsAction.SortAction(validSort))
+                    } else {
+                        log.error("Unrecognised sort option ${menuItem.itemId}. Ignoring.")
                     }
                 }.addTo(compositeDisposable)
 

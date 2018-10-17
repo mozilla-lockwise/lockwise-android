@@ -14,7 +14,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.R
 import mozilla.lockbox.action.ItemListSort
-import mozilla.lockbox.action.SortAction
+import mozilla.lockbox.action.SettingsAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 
@@ -51,14 +51,10 @@ open class PublicPreferencesStore(
         itemListSortKey = context.resources.getString(R.string.shared_prefs_sort_option_key)
 
         dispatcher.register
-                .filterByType(SortAction::class.java)
+                .filterByType(SettingsAction.SortAction::class.java)
                 .subscribe {
-                    val sortSetting = when (it) {
-                        is SortAction.Alphabetically -> { ItemListSort.ALPHABETICALLY.ordinal }
-                        is SortAction.RecentlyUsed -> { ItemListSort.RECENTLY_USED.ordinal }
-                    }
-                    with (sharedPrefs.edit()) {
-                        putInt(itemListSortKey, sortSetting)
+                   with (sharedPrefs.edit()) {
+                        putInt(itemListSortKey, it.id.ordinal)
                         apply()
                     }
                 }

@@ -124,7 +124,7 @@ class ItemListFragment : CommonFragment(), ItemListView {
     }
 
     private fun scrollToTop() {
-        entriesView.layoutManager.scrollToPosition(0)
+        entriesView.layoutManager?.scrollToPosition(0)
     }
 
     override fun onDestroyView() {
