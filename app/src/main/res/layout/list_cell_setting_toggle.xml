@@ -34,9 +34,10 @@
         android:textSize="14sp"
         android:textStyle="normal"
         android:layout_marginStart="16dp"
+        android:paddingTop="2dp"
         app:layout_constraintTop_toBottomOf="@id/title"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintWidth_max="292dp"
+        app:layout_constraintWidth_max="300dp"
         tools:text="Mozilla strives to only collect what we need to provide and improve Firefox for everyone." />
 
     <Switch
@@ -58,9 +59,9 @@
         android:fontFamily="sans-serif"
         android:minWidth="0dp"
         android:minHeight="0dp"
-        android:paddingTop="3dp"
+        android:paddingTop="4dp"
         android:textStyle="bold"
-        android:textColor="@color/blue60"
+        android:textColor="@color/blue_60_percent"
         android:letterSpacing="0.03"
         android:lineSpacingExtra="7.5sp"
         android:background="@null"

@@ -24,6 +24,7 @@ interface SettingView {
 class SettingPresenter(val view: SettingView) : Presenter() {
     private val versionNumber = BuildConfig.VERSION_NAME
     override fun onViewReady() {
+
         val settings = listOf(
             ToggleSettingConfiguration(
                 title = "Unlock with fingerprint",

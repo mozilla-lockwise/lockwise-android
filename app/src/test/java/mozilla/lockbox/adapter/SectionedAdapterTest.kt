@@ -74,11 +74,7 @@ class SectionedAdapterTest {
         settingAdapter.setItems(settings)
         val subject = SectionedAdapter(
             baseAdapter = settingAdapter as RecyclerView.Adapter<RecyclerView.ViewHolder>,
-<<<<<<< HEAD
             sectionTitleId = 0, sectionLayoutId = 0
-=======
-            defaultSectionTitleId = 0, sectionResourceId = 0
->>>>>>> 436d801... fixing linter errors
         )
 
         subject.setSections(sections)
@@ -100,11 +96,7 @@ class SectionedAdapterTest {
         settingAdapter.setItems(settings)
         val subject = SectionedAdapter(
             baseAdapter = settingAdapter as RecyclerView.Adapter<RecyclerView.ViewHolder>,
-<<<<<<< HEAD
             sectionTitleId = 0, sectionLayoutId = 0
-=======
-            defaultSectionTitleId = 0, sectionResourceId = 0
->>>>>>> 436d801... fixing linter errors
         )
 
         subject.setSections(sections)
@@ -116,17 +108,12 @@ class SectionedAdapterTest {
     }
 
     @Test
-<<<<<<< HEAD
     fun onCreateViewHolderTest_HeaderSection() {
-=======
-    fun setSectionsTest() {
->>>>>>> 436d801... fixing linter errors
         val sections = listOf(
             SectionedAdapter.Section(0, "Security"),
             SectionedAdapter.Section(3, "Support")
         )
 
-<<<<<<< HEAD
         val subject = SectionedAdapter(
             R.layout.list_cell_setting_header,
             R.id.headerTitle,
@@ -222,13 +209,4 @@ class SectionedAdapterTest {
 
         Assert.assertEquals(settingsTitle, viewHolder.title)
     }
-=======
-        val sectionedAdapter = SectionedAdapter(
-            baseAdapter = settingAdapter as RecyclerView.Adapter<RecyclerView.ViewHolder>,
-            defaultSectionTitleId = 0, sectionResourceId = 0
-        )
-
-        sectionedAdapter.setSections(sections)
-    }
->>>>>>> 436d801... fixing linter errors
 }
