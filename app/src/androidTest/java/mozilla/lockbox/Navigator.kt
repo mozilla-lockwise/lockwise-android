@@ -66,6 +66,16 @@ class Navigator {
         onView(withId(R.id.settings_placeholder)).check(matches(isDisplayed()))
     }
 
+    fun gotoLockScreen() {
+        gotoItemList_openMenu()
+        onView(withId(R.id.navView)).perform(navigateTo(R.id.action_itemList_to_locked))
+        checkAtLockScreen()
+    }
+
+    private fun checkAtLockScreen() {
+        onView(withId(R.id.unlockButton)).check(matches(isDisplayed()))
+    }
+
     fun gotoItemDetail() {
         gotoItemList()
         gotoItemDetail_from_itemList()

@@ -20,6 +20,7 @@ import android.view.ViewGroup
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
+import com.jakewharton.rxbinding2.support.design.widget.itemSelections
 import com.jakewharton.rxbinding2.support.v7.widget.navigationClicks
 import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
@@ -85,6 +86,17 @@ class ItemListFragment : CommonFragment(), ItemListView {
 
     override val itemSelection: Observable<ItemViewModel>
         get() = adapter.clicks()
+
+    override val menuItemSelections: Observable<Int>
+        get() {
+            val navView = view!!.navView
+            val drawerLayout = view!!.appDrawer
+            return navView.itemSelections()
+                .doOnNext {
+                    drawerLayout.closeDrawer(navView)
+                }
+                .map { it.itemId }
+        }
 
     override fun updateItems(itemList: List<ItemViewModel>) {
         adapter.updateItems(itemList)

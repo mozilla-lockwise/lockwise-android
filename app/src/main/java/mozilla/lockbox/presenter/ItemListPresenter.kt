@@ -6,21 +6,25 @@
 
 package mozilla.lockbox.presenter
 
+import android.support.annotation.IdRes
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
+import mozilla.lockbox.R
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.mapToItemViewModelList
 import mozilla.lockbox.flux.Dispatcher
 
 import mozilla.lockbox.flux.Presenter
+import mozilla.lockbox.log
 import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.store.DataStore
 
 interface ItemListView {
     val itemSelection: Observable<ItemViewModel>
     val filterClicks: Observable<Unit>
+    val menuItemSelections: Observable<Int>
     fun updateItems(itemList: List<ItemViewModel>)
 }
 
@@ -49,7 +53,21 @@ class ItemListPresenter(
                 }
                 .addTo(compositeDisposable)
 
+        view.menuItemSelections
+            .subscribe(this::onMenuItem)
+            .addTo(compositeDisposable)
+
         // TODO: remove this when we have proper locking / unlocking
         dispatcher.dispatch(DataStoreAction.Unlock)
+    }
+
+    fun onMenuItem(@IdRes item: Int) {
+        val action = when (item) {
+            R.id.action_itemList_to_locked, R.id.fragment_locked -> RouteAction.LockScreen
+            R.id.action_itemList_to_setting, R.id.fragment_setting -> RouteAction.SettingList
+            else -> return log.error("Cannot route from item list menu")
+        }
+
+        dispatcher.dispatch(action)
     }
 }

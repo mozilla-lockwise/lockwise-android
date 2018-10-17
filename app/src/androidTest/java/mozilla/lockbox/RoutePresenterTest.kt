@@ -75,4 +75,10 @@ open class RoutePresenterTest {
         navigator.back()
         navigator.checkAtItemList()
     }
+
+    @Test
+    fun testLockScreen() {
+        navigator.gotoLockScreen()
+        navigator.back(false)
+    }
 }

@@ -10,7 +10,9 @@ import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import junit.framework.Assert
+import mozilla.lockbox.R
 import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.model.ItemViewModel
@@ -26,6 +28,7 @@ class ItemListPresenterTest {
     class FakeView : ItemListView {
         val itemSelectedStub = PublishSubject.create<ItemViewModel>()
         val filterClickStub = PublishSubject.create<Unit>()
+        val menuItemSelectionStub = PublishSubject.create<Int>()
 
         var updateItemsArgument: List<ItemViewModel>? = null
 
@@ -34,6 +37,9 @@ class ItemListPresenterTest {
 
         override val filterClicks: Observable<Unit>
             get() = filterClickStub
+
+        override val menuItemSelections: Observable<Int>
+            get() = menuItemSelectionStub
 
         override fun updateItems(itemList: List<ItemViewModel>) {
             updateItemsArgument = itemList
@@ -65,8 +71,7 @@ class ItemListPresenterTest {
         val id = "the_guid"
         view.itemSelectedStub.onNext(ItemViewModel("title", "subtitle", id))
 
-        val count = dispatcherObserver.valueCount()
-        dispatcherObserver.assertValueAt(count - 1, RouteAction.ItemDetail(id))
+        dispatcherObserver.assertLastValue(RouteAction.ItemDetail(id))
     }
 
     @Test
@@ -121,5 +126,20 @@ class ItemListPresenterTest {
         dataStore.listStub.onNext(emptyList())
 
         Assert.assertNull(view.updateItemsArgument)
+    }
+
+    @Test
+    fun `menuItem clicks cause RouteActions`() {
+        view.menuItemSelectionStub.onNext(R.id.fragment_setting)
+        dispatcherObserver.assertLastValue(RouteAction.SettingList)
+
+        view.menuItemSelectionStub.onNext(R.id.action_itemList_to_setting)
+        dispatcherObserver.assertLastValue(RouteAction.SettingList)
+
+        view.menuItemSelectionStub.onNext(R.id.fragment_locked)
+        dispatcherObserver.assertLastValue(RouteAction.LockScreen)
+
+        view.menuItemSelectionStub.onNext(R.id.action_itemList_to_locked)
+        dispatcherObserver.assertLastValue(RouteAction.LockScreen)
     }
 }
