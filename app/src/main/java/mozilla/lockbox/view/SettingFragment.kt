@@ -7,17 +7,59 @@
 package mozilla.lockbox.view
 
 import android.os.Bundle
-import android.support.v7.preference.PreferenceFragmentCompat
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import com.github.magiepooh.recycleritemdecoration.ItemDecorations
+import kotlinx.android.synthetic.main.fragment_setting.view.*
 import mozilla.lockbox.R
-import mozilla.lockbox.BuildConfig
+import mozilla.lockbox.adapter.SectionedAdapter
+import mozilla.lockbox.adapter.SettingCellConfiguration
+import mozilla.lockbox.adapter.SettingListAdapter
+import mozilla.lockbox.presenter.SettingPresenter
+import mozilla.lockbox.presenter.SettingView
 
-class SettingFragment : PreferenceFragmentCompat() {
-    private val versionNumber = BuildConfig.VERSION_NAME
+class SettingFragment : BackableFragment(), SettingView {
+    private val adapter = SettingListAdapter()
+    @Suppress("UNCHECKED_CAST")
+    private val sectionedAdapter = SectionedAdapter(
+        R.layout.list_cell_setting_header,
+        R.id.headerTitle,
+        adapter as RecyclerView.Adapter<RecyclerView.ViewHolder>
+    )
 
-    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        addPreferencesFromResource(R.xml.settings)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        presenter = SettingPresenter(this)
 
-        val appVersion = findPreference("app_version")
-        appVersion.setTitle("App Version: $versionNumber")
+        // Inflate the layout for this fragment
+        val view = inflater.inflate(R.layout.fragment_setting, container, false)
+
+        view.settingList.adapter = sectionedAdapter
+        val layoutManager = LinearLayoutManager(context)
+        view.settingList.layoutManager = layoutManager
+
+        // Add one to account for viewType configuration in the SectionedAdapter
+        val decoration = ItemDecorations.vertical(context)
+            .type(SettingListAdapter.SETTING_TEXT_TYPE + 1, R.drawable.divider)
+            .type(SettingListAdapter.SETTING_TOGGLE_TYPE + 1, R.drawable.divider)
+            .create()
+
+        view.settingList.addItemDecoration(decoration)
+
+        return view
+    }
+
+    override fun updateSettingList(
+        settings: List<SettingCellConfiguration>,
+        sections: List<SectionedAdapter.Section>
+    ) {
+        adapter.setItems(settings)
+        sectionedAdapter.setSections(sections)
     }
 }

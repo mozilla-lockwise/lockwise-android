@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:orientation="horizontal"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <TextView
+        android:id="@+id/description"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:textSize="16sp"
+        android:fontFamily="sans-serif"
+        android:textStyle="normal"
+        android:textColor="@color/opaque_black"
+        android:letterSpacing="0.03"
+        android:lineSpacingExtra="12sp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        tools:text="Auto lock"/>
+
+    <TextView
+            android:id="@+id/settingSelection"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textSize="12sp"
+            android:fontFamily="sans-serif"
+            android:textStyle="normal"
+            android:textColor="@color/translucent_black"
+            android:letterSpacing="0.03"
+            android:lineSpacingExtra="4sp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="16dp"
+            android:gravity="center_vertical"
+            tools:text="5 minutes"
+            tools:ignore="RelativeOverlap"/>
+
+</RelativeLayout>

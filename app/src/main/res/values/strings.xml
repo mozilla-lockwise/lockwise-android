@@ -37,20 +37,5 @@
     <string name="copy_username_content_description">Copy your username</string>
     <string name="copy_password_content_description">Copy your password</string>
     <string name="display_password_content_description">Display your password in plain text</string>
-
-    <!-- Settings preferences -->
-    <string name="security_section">Security</string>
-    <string name="support_section">Support</string>
-    <string name="app_version_section">App Version: BuildConfig.VERSION_NAME</string>
-
-    <string name="unlock_title">Unlock with fingerprint</string>
-    <string name="autolock_title">Auto lock</string>
-    <string name="five_minutes">5 minutes</string>
-    <string name="autofill_title">Autofill</string>
-    <string name="autofill_summary">Let Firefox Lockbox fill in logins for you</string>
-    <string name="send_usage_data_title">Send usage data</string>
-    <string name="send_usage_data_summary">Mozilla strives to only collect what we need to provide and improve Firefox for everyone.</string>
     <string name="learn_more">Learn more</string>
-    <string name="url_learn_more">www.mozilla.org</string>
-
 </resources>

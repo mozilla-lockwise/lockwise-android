@@ -9,6 +9,7 @@ package mozilla.lockbox.presenter
 import junit.framework.Assert
 import mozilla.lockbox.BuildConfig
 import mozilla.lockbox.adapter.AppVersionSettingConfiguration
+import mozilla.lockbox.adapter.SectionedAdapter
 import mozilla.lockbox.adapter.SettingCellConfiguration
 import mozilla.lockbox.adapter.TextSettingConfiguration
 import mozilla.lockbox.adapter.ToggleSettingConfiguration
