@@ -7,7 +7,6 @@
 package mozilla.lockbox.support
 
 import android.content.SharedPreferences
-import org.junit.Assert.*
 
 class SecurePreferencesTest {
     class FakePreferences(val editor: FakeEditor) : SharedPreferences {
@@ -99,4 +98,6 @@ class SecurePreferencesTest {
 //    class FakeKeystore(override val label: String) : Keystore(label) {
 //
 //    }
+
+    // note: testing will be tricky until we can mock the Keystore (see https://github.com/mozilla-mobile/android-components/issues/1072)
 }
