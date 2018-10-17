@@ -38,6 +38,7 @@ import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.presenter.ItemListPresenter
 import mozilla.lockbox.presenter.ItemListView
 import com.jakewharton.rxbinding2.support.v7.widget.itemClicks
+import kotlinx.android.synthetic.main.fragment_item_list.*
 import mozilla.lockbox.log
 
 
@@ -101,6 +102,31 @@ class ItemListFragment : CommonFragment(), ItemListView {
             .addTo(compositeDisposable)
     }
 
+    private fun selectSortMenuItem(itemId: Int) {
+        val selectedItem = popupMenu.menu.findItem(itemId)
+        if (!selectedItem.isChecked) {
+            selectedItem.isChecked = true
+        }
+    }
+
+    private fun setSortButtonTitleForSortOption(itemId: Int) {
+        when (itemId) {
+            R.id.sort_a_z -> {
+                view!!.sortButton.setText(R.string.all_entries_a_z)
+            }
+            R.id.sort_recent -> {
+                view!!.sortButton.setText(R.string.all_entries_recent)
+            }
+            else -> {
+                log.error("Unrecognised sort option ${getString(itemId)}")
+            }
+        }
+    }
+
+    private fun scrollToTop() {
+        entriesView.layoutManager.scrollToPosition(0)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         compositeDisposable.clear()
@@ -132,20 +158,13 @@ class ItemListFragment : CommonFragment(), ItemListView {
     }
 
     override fun updateItemListSort(itemId: Int) {
-        val selectedItem = popupMenu.menu.findItem(itemId)
-        if (!selectedItem.isChecked) {
-            selectedItem.isChecked = true
-        }
-        when (itemId) {
-            R.id.sort_a_z -> {
-                view!!.sortButton.setText(R.string.all_entries_a_z)
-            }
-            R.id.sort_recent -> {
-                view!!.sortButton.setText(R.string.all_entries_recent)
-            }
-            else -> {
-                log.error("Unrecognised sort option ${getString(itemId)}")
-            }
-        }
+        // set menu item to be checked
+        selectSortMenuItem(itemId)
+
+        // set sort button text
+        setSortButtonTitleForSortOption(itemId)
+
+        // scroll list view to top
+        scrollToTop()
     }
 }
