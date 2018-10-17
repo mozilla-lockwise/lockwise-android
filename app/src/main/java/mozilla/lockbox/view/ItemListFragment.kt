@@ -131,19 +131,20 @@ class ItemListFragment : CommonFragment(), ItemListView {
         adapter.updateItems(itemList)
     }
 
-    override fun selectSortOption(selectedItem: MenuItem) {
+    override fun updateItemListSort(itemId: Int) {
+        val selectedItem = popupMenu.menu.findItem(itemId)
         if (!selectedItem.isChecked) {
             selectedItem.isChecked = true
-            when (selectedItem.itemId) {
-                R.id.sort_a_z -> {
-                    view!!.sortButton.setText(R.string.all_entries_a_z)
-                }
-                R.id.sort_recent -> {
-                    view!!.sortButton.setText(R.string.all_entries_recent)
-                }
-                else -> {
-                    log.info("Menu ${selectedItem.title} unimplemented")
-                }
+        }
+        when (itemId) {
+            R.id.sort_a_z -> {
+                view!!.sortButton.setText(R.string.all_entries_a_z)
+            }
+            R.id.sort_recent -> {
+                view!!.sortButton.setText(R.string.all_entries_recent)
+            }
+            else -> {
+                log.error("Unrecognised sort option ${getString(itemId)}")
             }
         }
     }

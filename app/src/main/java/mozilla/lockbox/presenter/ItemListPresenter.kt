@@ -16,7 +16,6 @@ import mozilla.lockbox.R
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.SortAction
-import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.extensions.mapToItemViewModelList
 import mozilla.lockbox.extensions.sort
 import mozilla.lockbox.flux.Dispatcher
@@ -25,6 +24,7 @@ import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
 import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.store.DataStore
+import mozilla.lockbox.store.PublicPreferencesStore
 
 interface ItemListView {
     val itemSelection: Observable<ItemViewModel>
@@ -32,27 +32,33 @@ interface ItemListView {
     val menuItemSelections: Observable<Int>
     val sortItemSelection: Observable<MenuItem>
     fun updateItems(itemList: List<ItemViewModel>)
-    fun selectSortOption(selectedItem: MenuItem)
+    fun updateItemListSort(itemId: Int)
     // TODO: Item list selection
 }
 
 class ItemListPresenter(
     private val view: ItemListView,
     private val dispatcher: Dispatcher = Dispatcher.shared,
-    private val dataStore: DataStore = DataStore.shared
+    private val dataStore: DataStore = DataStore.shared,
+    private val prefsStore: PublicPreferencesStore = PublicPreferencesStore.shared
 ) : Presenter() {
-    private val itemSorted: Observable<SortAction> = dispatcher.register.filterByType(SortAction::class.java)
 
     override fun onViewReady() {
         val itemViewModelList = dataStore.list
                 .filter { it.isNotEmpty() }
                 .mapToItemViewModelList()
 
-        Observables.combineLatest(itemViewModelList, itemSorted)
+        Observables.combineLatest(itemViewModelList, prefsStore.itemListSortObservable)
                 .distinctUntilChanged()
                 .sort()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(view::updateItems)
+                .addTo(compositeDisposable)
+
+        prefsStore.itemListSortObservable
+                .distinctUntilChanged()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(view::updateItemListSort)
                 .addTo(compositeDisposable)
 
         view.itemSelection
@@ -73,7 +79,6 @@ class ItemListPresenter(
 
         view.sortItemSelection
                 .subscribe { menuItem ->
-                    view.selectSortOption(menuItem)
                     when (menuItem.itemId) {
                         R.id.sort_a_z -> {
                             dispatcher.dispatch(SortAction.Alphabetically)
@@ -88,7 +93,6 @@ class ItemListPresenter(
                 }.addTo(compositeDisposable)
 
         // TODO: remove this when we have proper locking / unlocking
-        dispatcher.dispatch(SortAction.Alphabetically)
         dispatcher.dispatch(DataStoreAction.Unlock)
     }
 

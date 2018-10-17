@@ -36,7 +36,6 @@
                     android:layout_height="match_parent"
                     android:textAllCaps="false"
                     android:drawableEnd="@drawable/ic_down_caret"
-                    android:text="@string/all_entries_a_z"
                     android:textSize="20sp"
                     style="@style/ToolbarButton"/>
 
