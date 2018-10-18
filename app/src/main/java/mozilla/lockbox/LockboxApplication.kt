@@ -10,6 +10,9 @@ import android.app.Application
 import android.arch.lifecycle.ProcessLifecycleOwner
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.SharedPreferences
+import android.preference.PreferenceManager
+import com.f2prateek.rx.preferences2.RxSharedPreferences
 import com.squareup.leakcanary.LeakCanary
 import io.sentry.Sentry
 import io.sentry.android.AndroidSentryClientFactory
@@ -18,12 +21,13 @@ import mozilla.components.support.base.log.logger.Logger
 import mozilla.components.support.base.log.sink.AndroidLogSink
 import mozilla.lockbox.presenter.ApplicationPresenter
 import mozilla.lockbox.store.ClipboardStore
+import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.store.TelemetryStore
 
 val log: Logger = Logger("Lockbox")
 class LockboxApplication : Application() {
     private lateinit var presenter: ApplicationPresenter
-
+    private lateinit var sharedPreferences: SharedPreferences
     override fun onCreate() {
         super.onCreate()
         if (LeakCanary.isInAnalyzerProcess(this)) {
@@ -41,6 +45,9 @@ class LockboxApplication : Application() {
 
         // use context for system service
         ClipboardStore.shared.apply(getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        SettingStore.shared.apply(RxSharedPreferences.create(sharedPreferences))
 
         // hook this context into Telemetry
         TelemetryStore.shared.applyContext(this)

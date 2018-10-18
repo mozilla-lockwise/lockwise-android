@@ -7,10 +7,10 @@
 package mozilla.lockbox.presenter
 
 import io.reactivex.Observable
-import io.reactivex.Observer
 import io.reactivex.functions.Consumer
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
+import mozilla.lockbox.TestConsumer
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.toViewModel
 import mozilla.lockbox.flux.Action
@@ -23,12 +23,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mozilla.sync15.logins.ServerPassword
 import org.robolectric.RobolectricTestRunner
-
-class TestConsumer<T>(private val observer: Observer<T>) : Consumer<T> {
-    override fun accept(t: T) {
-        observer.onNext(t)
-    }
-}
 
 @RunWith(RobolectricTestRunner::class)
 class FilterPresenterTest {
@@ -44,7 +38,8 @@ class FilterPresenterTest {
         override val filterTextEntered: Observable<CharSequence> = filterTextEnteredStub
         override val filterText: Consumer<in CharSequence> = TestConsumer(filterTextSetStub)
         override val cancelButtonClicks: Observable<Unit> = cancelButtonStub
-        override val cancelButtonVisibility: Consumer<in Boolean> = TestConsumer(cancelButtonVisibilityStub)
+        override val cancelButtonVisibility: Consumer<in Boolean> =
+            TestConsumer(cancelButtonVisibilityStub)
         override val itemSelection: Observable<ItemViewModel> = itemSelectionStub
 
         override fun updateItems(items: List<ItemViewModel>) {

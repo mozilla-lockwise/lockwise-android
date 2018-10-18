@@ -9,6 +9,9 @@ package mozilla.lockbox.adapter
 import android.content.Context
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import io.reactivex.Observable
+import io.reactivex.observers.TestObserver
+import mozilla.lockbox.TestConsumer
 import mozilla.lockbox.adapter.SettingListAdapter.Companion.SETTING_APP_VERSION_TYPE
 import mozilla.lockbox.adapter.SettingListAdapter.Companion.SETTING_TEXT_TYPE
 import mozilla.lockbox.adapter.SettingListAdapter.Companion.SETTING_TOGGLE_TYPE
@@ -44,7 +47,7 @@ class SettingListAdapterTest {
     fun getItemCount() {
         val sectionConfig = listOf(
                 TextSettingConfiguration(title = "Auto Lock", detailText = "one hour"),
-                ToggleSettingConfiguration(title = "Unlock with finger", toggle = true),
+                ToggleSettingConfiguration(title = "Unlock with finger", toggle = Observable.just(false)),
                 AppVersionSettingConfiguration(text = "App Version: 1.0")
         )
 
@@ -57,7 +60,7 @@ class SettingListAdapterTest {
     fun getItemViewType() {
         val sectionConfig = listOf(
                 TextSettingConfiguration(title = "Auto Lock", detailText = "one hour"),
-                ToggleSettingConfiguration(title = "Unlock with finger", toggle = true),
+                ToggleSettingConfiguration(title = "Unlock with finger", toggle = Observable.just(false)),
                 AppVersionSettingConfiguration(text = "App Version: 1.0")
         )
 
@@ -92,7 +95,7 @@ class SettingListAdapterTest {
         val detailText = "one hour"
         val sectionConfig = listOf(
             TextSettingConfiguration(title = title, detailText = detailText),
-            ToggleSettingConfiguration(title = "Unlock with finger", toggle = true),
+            ToggleSettingConfiguration(title = "Unlock with finger", toggle = Observable.just(false)),
             AppVersionSettingConfiguration(text = "App Version: 1.0")
         )
 
@@ -113,7 +116,7 @@ class SettingListAdapterTest {
         val buttonTitle = "Learn more"
         val sectionConfig = listOf(
             TextSettingConfiguration(title = "Auto Lock", detailText = "one hour"),
-            ToggleSettingConfiguration(title = title, toggle = toggleValue, buttonTitle = buttonTitle),
+            ToggleSettingConfiguration(title = title, toggle = Observable.just(toggleValue), buttonTitle = buttonTitle),
             AppVersionSettingConfiguration(text = "App Version: 1.0")
         )
 
@@ -122,10 +125,13 @@ class SettingListAdapterTest {
         val toggleViewHolder = subject.onCreateViewHolder(parent, 1)
             as ToggleSettingViewHolder
 
+        val toggleObserver = TestObserver<Boolean>()
+        toggleViewHolder.toggle = TestConsumer(toggleObserver)
+
         subject.onBindViewHolder(toggleViewHolder, 1)
 
         Assert.assertEquals(title, toggleViewHolder.title)
-        Assert.assertEquals(toggleValue, toggleViewHolder.toggle)
+        toggleObserver.assertValue(toggleValue)
         Assert.assertEquals(buttonTitle, toggleViewHolder.buttonTitle)
     }
 

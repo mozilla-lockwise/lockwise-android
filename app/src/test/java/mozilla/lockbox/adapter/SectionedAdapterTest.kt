@@ -9,6 +9,7 @@ package mozilla.lockbox.adapter
 import android.content.Context
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import io.reactivex.Observable
 import mozilla.lockbox.R
 import mozilla.lockbox.view.ToggleSettingViewHolder
 import org.hamcrest.Matchers.instanceOf
@@ -44,7 +45,7 @@ class SectionedAdapterTest {
         )
 
         val settings = listOf(
-            ToggleSettingConfiguration("Unlock with fingerprint", toggle = false),
+            ToggleSettingConfiguration("Unlock with fingerprint", toggle = Observable.just(false)),
             TextSettingConfiguration("Auto lock", detailText = "5 minutes")
         )
         settingAdapter.setItems(settings)
@@ -68,7 +69,7 @@ class SectionedAdapterTest {
         )
 
         val settings = listOf(
-            ToggleSettingConfiguration("Unlock with fingerprint", toggle = false),
+            ToggleSettingConfiguration("Unlock with fingerprint", toggle = Observable.just(false)),
             TextSettingConfiguration("Auto lock", detailText = "5 minutes")
         )
         settingAdapter.setItems(settings)
@@ -90,7 +91,7 @@ class SectionedAdapterTest {
         )
 
         val settings = listOf(
-            ToggleSettingConfiguration("Unlock with fingerprint", toggle = false),
+            ToggleSettingConfiguration("Unlock with fingerprint", toggle = Observable.just(false)),
             TextSettingConfiguration("Auto lock", detailText = "5 minutes")
         )
         settingAdapter.setItems(settings)
@@ -137,7 +138,7 @@ class SectionedAdapterTest {
         )
 
         val settings = listOf(
-            ToggleSettingConfiguration("Unlock with fingerprint", toggle = false),
+            ToggleSettingConfiguration("Unlock with fingerprint", toggle = Observable.just(false)),
             TextSettingConfiguration("Auto lock", detailText = "5 minutes")
         )
         settingAdapter.setItems(settings)
@@ -188,7 +189,7 @@ class SectionedAdapterTest {
         )
         val settingsTitle = "Unlock with fingerprint"
         val settings = listOf(
-            ToggleSettingConfiguration(title = settingsTitle, toggle = false)
+            ToggleSettingConfiguration(title = settingsTitle, toggle = Observable.just(false))
         )
         settingAdapter.setItems(settings)
 

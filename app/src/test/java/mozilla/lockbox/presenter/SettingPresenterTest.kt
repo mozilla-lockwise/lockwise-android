@@ -6,6 +6,7 @@
 
 package mozilla.lockbox.presenter
 
+import io.reactivex.Observable
 import junit.framework.Assert
 import mozilla.lockbox.BuildConfig
 import mozilla.lockbox.adapter.AppVersionSettingConfiguration
@@ -38,7 +39,7 @@ class SettingPresenterTest {
     val expectedSettings = listOf(
         ToggleSettingConfiguration(
             title = "Unlock with fingerprint",
-            toggle = false
+            toggle = Observable.just(false)
         ),
         TextSettingConfiguration(
             title = "Auto lock",
@@ -47,13 +48,13 @@ class SettingPresenterTest {
         ToggleSettingConfiguration(
             title = "Autofill",
             subtitle = "Let Firefox Lockbox fill in logins for you",
-            toggle = false
+            toggle = Observable.just(false)
         ),
         ToggleSettingConfiguration(
             title = "Send usage data",
             subtitle = "Mozilla strives to only collect what we need to provide and improve Firefox for everyone. ",
             buttonTitle = "Learn more",
-            toggle = true
+            toggle = Observable.just(false)
         ),
         AppVersionSettingConfiguration(
             text = "App Version: $expectedVersionNumber"

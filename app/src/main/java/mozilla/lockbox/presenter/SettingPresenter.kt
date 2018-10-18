@@ -6,6 +6,7 @@
 
 package mozilla.lockbox.presenter
 
+import io.reactivex.Observable
 import mozilla.lockbox.adapter.AppVersionSettingConfiguration
 import mozilla.lockbox.adapter.SectionedAdapter
 import mozilla.lockbox.adapter.SettingCellConfiguration
@@ -13,6 +14,7 @@ import mozilla.lockbox.adapter.TextSettingConfiguration
 import mozilla.lockbox.adapter.ToggleSettingConfiguration
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.BuildConfig
+import mozilla.lockbox.store.SettingStore
 
 interface SettingView {
     fun updateSettingList(
@@ -21,14 +23,15 @@ interface SettingView {
     )
 }
 
-class SettingPresenter(val view: SettingView) : Presenter() {
+class SettingPresenter(val view: SettingView, val settingStore: SettingStore = SettingStore.shared) : Presenter() {
     private val versionNumber = BuildConfig.VERSION_NAME
-    override fun onViewReady() {
 
+    override fun onViewReady() {
         val settings = listOf(
             ToggleSettingConfiguration(
                 title = "Unlock with fingerprint",
-                toggle = false
+                toggle = Observable.just(true)
+
             ),
             TextSettingConfiguration(
                 title = "Auto lock",
@@ -37,13 +40,13 @@ class SettingPresenter(val view: SettingView) : Presenter() {
             ToggleSettingConfiguration(
                 title = "Autofill",
                 subtitle = "Let Firefox Lockbox fill in logins for you",
-                toggle = false
+                toggle = Observable.just(true)
             ),
             ToggleSettingConfiguration(
                 title = "Send usage data",
                 subtitle = "Mozilla strives to only collect what we need to provide and improve Firefox for everyone. ",
                 buttonTitle = "Learn more",
-                toggle = true
+                toggle = settingStore.sendUsageData
             ),
             AppVersionSettingConfiguration(
                 text = "App Version: $versionNumber"
