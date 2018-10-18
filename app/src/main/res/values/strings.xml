@@ -38,5 +38,4 @@
     <string name="copy_password_content_description">Copy your password</string>
     <string name="display_password_content_description">Display your password in plain text</string>
     <string name="learn_more">Learn more</string>
-    <string name="auto_lock">Auto lock</string>
 </resources>

@@ -62,5 +62,4 @@ class SettingFragment : BackableFragment(), SettingView {
         adapter.setItems(settings)
         sectionedAdapter.setSections(sections)
     }
-
 }
