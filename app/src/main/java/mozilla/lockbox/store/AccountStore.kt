@@ -24,7 +24,7 @@ private val FXA_SCOPES = arrayOf("profile", "https://identity.mozilla.com/apps/l
 
 class AccountStore(
     private val dispatcher: Dispatcher = Dispatcher.shared,
-    private val securePreferences: SecurePreferences = SecurePreferences()
+    private val securePreferences: SecurePreferences = SecurePreferences.shared
 ) {
     companion object {
         val shared = AccountStore()
