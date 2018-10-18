@@ -19,7 +19,7 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.support.SecurePreferences
 
 private const val FIREFOX_ACCOUNT_KEY = "firefox-account"
-private val FXA_SCOPES = arrayOf("profile", "https://identity.mozilla.com/apps/lockbox")
+private val FXA_SCOPES = arrayOf("profile", "https://identity.mozilla.com/apps/lockbox", "https://identity.mozilla.com/apps/oldsync")
 
 class AccountStore(
     private val dispatcher: Dispatcher = Dispatcher.shared,

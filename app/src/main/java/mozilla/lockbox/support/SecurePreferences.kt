@@ -24,6 +24,8 @@ open class SecurePreferences(
     }
 
     open fun getString(key: String): String? {
+        verifyKey()
+
         return if (prefs.contains(key)) {
             val value = prefs.getString(key, "")
             val encrypted = Base64.decode(value, BASE_64_FLAGS)
@@ -36,11 +38,18 @@ open class SecurePreferences(
     }
 
     open fun putString(key: String, value: String) {
+        verifyKey()
         val editor = prefs.edit()
 
         val encrypted = keystore.encryptBytes(value.toByteArray(StandardCharsets.UTF_8))
         val data = Base64.encodeToString(encrypted, BASE_64_FLAGS)
 
         editor.putString(key, data).apply()
+    }
+
+    private fun verifyKey() {
+        if (!keystore.available()) {
+            keystore.generateKey()
+        }
     }
 }
