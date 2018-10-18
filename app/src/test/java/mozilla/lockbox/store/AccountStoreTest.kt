@@ -12,10 +12,11 @@ import mozilla.components.service.fxa.OAuthInfo
 import mozilla.components.service.fxa.Profile
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.SecurePreferences
-import mozilla.lockbox.support.SecurePreferencesTest
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
+import org.mockito.Mock
+import org.mockito.Mockito
 
 class AccountStoreTest {
     class FakeSecurePreferences : SecurePreferences() {
@@ -42,6 +43,9 @@ class AccountStoreTest {
         }
     }
 
+    @Mock
+    private val preferences = Mockito.mock(SharedPreferences::class.java)
+
     private val securePreferences = FakeSecurePreferences()
     private val oauthObserver = TestObserver<Optional<OAuthInfo>>()
     private val profileObserver = TestObserver<Optional<Profile>>()
@@ -56,8 +60,6 @@ class AccountStoreTest {
 
     @Test
     fun `it passes along the when sharedPreferences is applied`() {
-        val preferences = SecurePreferencesTest.FakePreferences(SecurePreferencesTest.FakeEditor())
-
         subject.apply(preferences)
 
         Assert.assertEquals(preferences, securePreferences.sharedPrefArgument)
@@ -65,8 +67,6 @@ class AccountStoreTest {
 
     @Test
     fun `it pushes null after applying, when there is no saved fxa information`() {
-        val preferences = SecurePreferencesTest.FakePreferences(SecurePreferencesTest.FakeEditor())
-
         subject.apply(preferences)
 
         Assert.assertEquals("firefox-account", securePreferences.getStringArgument)
