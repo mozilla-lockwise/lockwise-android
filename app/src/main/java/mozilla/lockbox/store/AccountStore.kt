@@ -13,10 +13,12 @@ import io.reactivex.subjects.PublishSubject
 import mozilla.components.service.fxa.FirefoxAccount
 import mozilla.components.service.fxa.OAuthInfo
 import mozilla.components.service.fxa.Profile
+import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.support.SecurePreferences
+import java.lang.IllegalArgumentException
 
 private const val FIREFOX_ACCOUNT_KEY = "firefox-account"
 private val FXA_SCOPES = arrayOf("profile", "https://identity.mozilla.com/apps/lockbox", "https://identity.mozilla.com/apps/oldsync")
@@ -35,25 +37,20 @@ class AccountStore(
     val profile: Observable<Optional<Profile>> = PublishSubject.create()
 
     init {
-        // registration for further actions happens here
-    }
-
-    fun apply(sharedPreferences: SharedPreferences) {
-        securePreferences.apply(sharedPreferences)
-
         loadFxA()
     }
 
     private fun loadFxA() {
-        securePreferences.getString(FIREFOX_ACCOUNT_KEY)?.let { accountJSON ->
-            FirefoxAccount.fromJSONString(accountJSON).whenComplete {
-                persistFxA(it)
+        try {
+            securePreferences.getString(FIREFOX_ACCOUNT_KEY)?.let { accountJSON ->
+                FirefoxAccount.fromJSONString(accountJSON).whenComplete {
+                    persistFxA(it)
+                }
+            } ?: run {
+                pushNullAndReset()
             }
-        } ?: run {
-            val profileSubject = profile as PublishSubject
-            val oauthSubject = oauthInfo as PublishSubject
-            profileSubject.onNext(Optional(null))
-            oauthSubject.onNext(Optional(null))
+        } catch (error: IllegalArgumentException) {
+            pushNullAndReset()
         }
     }
 
@@ -71,5 +68,14 @@ class AccountStore(
         account.getOAuthToken(FXA_SCOPES).whenComplete {
             oauthSubject.onNext(it.asOptional())
         }
+    }
+
+    private fun pushNullAndReset() {
+        val profileSubject = profile as PublishSubject
+        val oauthSubject = oauthInfo as PublishSubject
+        profileSubject.onNext(Optional(null))
+        oauthSubject.onNext(Optional(null))
+
+        dispatcher.dispatch(DataStoreAction.Reset)
     }
 }

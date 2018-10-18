@@ -10,6 +10,7 @@ import android.content.SharedPreferences
 import android.util.Base64
 import mozilla.components.lib.dataprotect.Keystore
 import java.nio.charset.StandardCharsets
+import javax.crypto.Cipher
 
 private const val KEYSTORE_LABEL = "lockbox-keystore"
 private const val BASE_64_FLAGS = Base64.URL_SAFE or Base64.NO_PADDING
@@ -17,21 +18,29 @@ private const val BASE_64_FLAGS = Base64.URL_SAFE or Base64.NO_PADDING
 open class SecurePreferences(
     private val keystore: Keystore = Keystore(KEYSTORE_LABEL)
 ) {
+    companion object {
+        val shared = SecurePreferences()
+    }
+
     private lateinit var prefs: SharedPreferences
 
     open fun apply(sharedPreferences: SharedPreferences) {
         prefs = sharedPreferences
     }
 
+    @Throws
     open fun getString(key: String): String? {
         verifyKey()
 
         return if (prefs.contains(key)) {
             val value = prefs.getString(key, "")
             val encrypted = Base64.decode(value, BASE_64_FLAGS)
-            val plain = keystore.decryptBytes(encrypted)
-
-            String(plain, StandardCharsets.UTF_8)
+            try {
+                val plain = keystore.decryptBytes(encrypted)
+                String(plain, StandardCharsets.UTF_8)
+            } catch (error: IllegalArgumentException) {
+                throw error
+            }
         } else {
             null
         }
@@ -45,6 +54,18 @@ open class SecurePreferences(
         val data = Base64.encodeToString(encrypted, BASE_64_FLAGS)
 
         editor.putString(key, data).apply()
+    }
+
+    open fun createEncryptCipher(): Cipher {
+        verifyKey()
+
+        return keystore.createEncryptCipher()
+    }
+
+    open fun createDecryptCipher(byteArray: ByteArray): Cipher {
+        verifyKey()
+
+        return keystore.createDecryptCipher(byteArray)
     }
 
     private fun verifyKey() {
