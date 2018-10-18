@@ -10,6 +10,7 @@ import android.content.Context
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import mozilla.lockbox.R
+import mozilla.lockbox.adapter.SectionedAdapter.Section
 import mozilla.lockbox.view.ToggleSettingViewHolder
 import org.hamcrest.Matchers.instanceOf
 import org.junit.Assert
@@ -28,30 +29,27 @@ class SectionedAdapterTest {
     private val settingAdapter = SettingListAdapter()
     private lateinit var context: Context
     private lateinit var parent: RecyclerView
+    private lateinit var testHelper: ListAdapterTestHelper
 
     @Before
     fun setUp() {
         context = RuntimeEnvironment.application
         parent = RecyclerView(context)
         parent.layoutManager = LinearLayoutManager(context)
+        testHelper = ListAdapterTestHelper(context)
     }
 
     @Test
     fun getItemViewTypeTest() {
         val sections = listOf(
-            SectionedAdapter.Section(0, "Security"),
-            SectionedAdapter.Section(1, "Support")
+            Section(0, context.getString(R.string.security_title)),
+            Section(1, context.getString(R.string.support_title))
         )
 
-        val settings = listOf(
-            ToggleSettingConfiguration("Unlock with fingerprint", toggle = false),
-            TextSettingConfiguration("Auto lock", detailText = "5 minutes")
-        )
+        val settings = testHelper.createListOfSettings()
         settingAdapter.setItems(settings)
-        val subject = SectionedAdapter(
-            baseAdapter = settingAdapter as RecyclerView.Adapter<RecyclerView.ViewHolder>,
-            sectionTitleId = 0, sectionLayoutId = 0
-        )
+
+        val subject = testHelper.createSectionedAdapter(settingAdapter)
         subject.setSections(sections)
 
         Assert.assertEquals(SectionedAdapter.SECTION_TYPE, subject.getItemViewType(0))
@@ -63,21 +61,16 @@ class SectionedAdapterTest {
     @Test
     fun getItemCountTest() {
         val sections = listOf(
-            SectionedAdapter.Section(0, "Security"),
-            SectionedAdapter.Section(3, "Support")
+            Section(0, context.getString(R.string.security_title)),
+            Section(3, context.getString(R.string.support_title))
         )
 
-        val settings = listOf(
-            ToggleSettingConfiguration("Unlock with fingerprint", toggle = false),
-            TextSettingConfiguration("Auto lock", detailText = "5 minutes")
-        )
+        val settings = testHelper.createListOfSettings()
         settingAdapter.setItems(settings)
-        val subject = SectionedAdapter(
-            baseAdapter = settingAdapter as RecyclerView.Adapter<RecyclerView.ViewHolder>,
-            sectionTitleId = 0, sectionLayoutId = 0
-        )
 
+        val subject = testHelper.createSectionedAdapter(settingAdapter)
         subject.setSections(sections)
+
         val count = subject.getItemCount()
         Assert.assertEquals(4, count)
     }
@@ -85,40 +78,35 @@ class SectionedAdapterTest {
     @Test
     fun isSectionHeaderPositionTest() {
         val sections = listOf(
-            SectionedAdapter.Section(0, "Security"),
-            SectionedAdapter.Section(3, "Support")
+            Section(0, context.getString(R.string.security_title)),
+            Section(3, context.getString(R.string.support_title))
         )
+        val settings = testHelper.createListOfSettings()
 
-        val settings = listOf(
-            ToggleSettingConfiguration("Unlock with fingerprint", toggle = false),
-            TextSettingConfiguration("Auto lock", detailText = "5 minutes")
-        )
         settingAdapter.setItems(settings)
-        val subject = SectionedAdapter(
-            baseAdapter = settingAdapter as RecyclerView.Adapter<RecyclerView.ViewHolder>,
-            sectionTitleId = 0, sectionLayoutId = 0
-        )
-
+        val subject = testHelper.createSectionedAdapter(settingAdapter)
         subject.setSections(sections)
-        val item1 = subject.isSectionHeaderPosition(0)
-        val item2 = subject.isSectionHeaderPosition(1)
 
-        Assert.assertEquals(true, item1)
-        Assert.assertEquals(false, item2)
+        val headerPosition = subject.isSectionHeaderPosition(0)
+        val nonHeaderPosition = subject.isSectionHeaderPosition(1)
+
+        Assert.assertEquals(true, headerPosition)
+        Assert.assertEquals(false, nonHeaderPosition)
     }
 
     @Test
     fun onCreateViewHolderTest_HeaderSection() {
         val sections = listOf(
-            SectionedAdapter.Section(0, "Security"),
-            SectionedAdapter.Section(3, "Support")
+            Section(0, context.getString(R.string.security_title)),
+            Section(3, context.getString(R.string.support_title))
         )
 
-        val subject = SectionedAdapter(
+        val subject = testHelper.createSectionedAdapter(
+            settingAdapter,
             R.layout.list_cell_setting_header,
-            R.id.headerTitle,
-            baseAdapter = settingAdapter as RecyclerView.Adapter<RecyclerView.ViewHolder>
+            R.id.headerTitle
         )
+
         subject.setSections(sections)
 
         val viewHolder = subject.onCreateViewHolder(
@@ -132,20 +120,17 @@ class SectionedAdapterTest {
     @Test
     fun onCreateViewHolderTest_ChildViewHolderElement() {
         val sections = listOf(
-            SectionedAdapter.Section(0, "Security"),
-            SectionedAdapter.Section(3, "Support")
+            Section(0, context.getString(R.string.security_title)),
+            Section(3, context.getString(R.string.support_title))
         )
 
-        val settings = listOf(
-            ToggleSettingConfiguration("Unlock with fingerprint", toggle = false),
-            TextSettingConfiguration("Auto lock", detailText = "5 minutes")
-        )
+        val settings = testHelper.createListOfSettings()
         settingAdapter.setItems(settings)
 
-        val subject = SectionedAdapter(
+        val subject = testHelper.createSectionedAdapter(
+            settingAdapter,
             R.layout.list_cell_setting_header,
-            R.id.headerTitle,
-            baseAdapter = settingAdapter as RecyclerView.Adapter<RecyclerView.ViewHolder>
+            R.id.headerTitle
         )
 
         subject.setSections(sections)
@@ -160,15 +145,16 @@ class SectionedAdapterTest {
 
     @Test
     fun onBindViewHolderTest_HeaderSection() {
-        val title1 = "Security"
+        val securityTitle = context.getString(R.string.security_title)
+
         val sections = listOf(
-            SectionedAdapter.Section(0, title1)
+            Section(0, securityTitle)
         )
 
-        val subject = SectionedAdapter(
+        val subject = testHelper.createSectionedAdapter(
+            settingAdapter,
             R.layout.list_cell_setting_header,
-            R.id.headerTitle,
-            baseAdapter = settingAdapter as RecyclerView.Adapter<RecyclerView.ViewHolder>
+            R.id.headerTitle
         )
         subject.setSections(sections)
 
@@ -178,24 +164,23 @@ class SectionedAdapterTest {
         ) as SectionedAdapter.SectionViewHolder
         subject.onBindViewHolder(sectionViewHolder = viewHolder, position = 0)
 
-        Assert.assertEquals(title1, viewHolder.title.text)
+        Assert.assertEquals(securityTitle, viewHolder.title.text)
     }
 
     @Test
     fun onBindViewHolderTest_ChildViewHolderElement() {
+        val settingsTitle = context.getString(R.string.unlock)
+
         val sections = listOf(
-            SectionedAdapter.Section(0, "Security")
+            SectionedAdapter.Section(0, context.getString(R.string.security_title))
         )
-        val settingsTitle = "Unlock with fingerprint"
-        val settings = listOf(
-            ToggleSettingConfiguration(title = settingsTitle, toggle = false)
-        )
+        val settings = testHelper.createListOfSettings()
         settingAdapter.setItems(settings)
 
-        val subject = SectionedAdapter(
+        val subject = testHelper.createSectionedAdapter(
+            settingAdapter,
             R.layout.list_cell_setting_header,
-            R.id.headerTitle,
-            baseAdapter = settingAdapter as RecyclerView.Adapter<RecyclerView.ViewHolder>
+            R.id.headerTitle
         )
 
         subject.setSections(sections)

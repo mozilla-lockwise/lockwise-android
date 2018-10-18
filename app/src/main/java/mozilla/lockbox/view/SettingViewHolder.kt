@@ -8,14 +8,19 @@ package mozilla.lockbox.view
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import com.jakewharton.rxbinding2.widget.checked
+import android.widget.Switch
+import com.jakewharton.rxbinding2.widget.checkedChanges
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.list_cell_setting_appversion.view.*
 import kotlinx.android.synthetic.main.list_cell_setting_text.view.*
 import kotlinx.android.synthetic.main.list_cell_setting_toggle.view.*
 
 abstract class SettingViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView),
-    LayoutContainer
+    LayoutContainer {
+    val compositeDisposable = CompositeDisposable()
+}
 
 class TextSettingViewHolder(val view: View) : SettingViewHolder(view) {
     var title: String? = null
@@ -58,11 +63,8 @@ class ToggleSettingViewHolder(val view: View) : SettingViewHolder(view) {
             }
         }
 
-    var toggle: Boolean = false
-        set(value) {
-            field = value
-            view.toggle.checked().accept(value)
-        }
+    var toggle: Switch = view.toggle
+    val toggleValueChanges: Observable<Boolean> = view.toggle.checkedChanges()
 }
 
 class AppVersionSettingViewHolder(val view: View) : SettingViewHolder(view) {

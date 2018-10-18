@@ -6,6 +6,9 @@
 
 package mozilla.lockbox.adapter
 
+import io.reactivex.Observable
+import io.reactivex.Observer
+
 abstract class SettingCellConfiguration(
     open val title: String,
     open val subtitle: String? = null
@@ -21,7 +24,8 @@ class ToggleSettingConfiguration(
     override val title: String,
     override val subtitle: String? = null,
     val buttonTitle: String? = null,
-    val toggle: Boolean
+    val toggleDriver: Observable<Boolean>,
+    val toggleObserver: Observer<Boolean>
 ) : SettingCellConfiguration(title)
 
 class AppVersionSettingConfiguration(

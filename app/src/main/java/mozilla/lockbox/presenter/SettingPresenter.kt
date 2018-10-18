@@ -7,6 +7,10 @@
 package mozilla.lockbox.presenter
 
 import android.content.Context
+import io.reactivex.Observable
+import io.reactivex.Observer
+import io.reactivex.disposables.Disposable
+import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.adapter.AppVersionSettingConfiguration
 import mozilla.lockbox.adapter.SectionedAdapter
 import mozilla.lockbox.adapter.SettingCellConfiguration
@@ -15,6 +19,9 @@ import mozilla.lockbox.adapter.ToggleSettingConfiguration
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.BuildConfig
 import mozilla.lockbox.R
+import mozilla.lockbox.action.SettingAction
+import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.store.SettingStore
 
 interface SettingView {
     fun updateSettingList(
@@ -23,15 +30,67 @@ interface SettingView {
     )
 }
 
-class SettingPresenter(val view: SettingView, val appContext: Context) : Presenter() {
+class SettingPresenter(
+    val view: SettingView,
+    private val context: Context,
+    private val dispatcher: Dispatcher = Dispatcher.shared,
+    private val settingStore: SettingStore = SettingStore.shared
+) : Presenter() {
+
     private val versionNumber = BuildConfig.VERSION_NAME
-    private var context = appContext
+
+    private val autoLockObserver: Observer<Boolean>
+        get() = object : Observer<Boolean> {
+            override fun onComplete() {
+            }
+
+            override fun onError(e: Throwable) {
+            }
+
+            override fun onSubscribe(d: Disposable) {
+            }
+
+            override fun onNext(newValue: Boolean) {
+            }
+        }
+
+    private val autoFillObserver: Observer<Boolean>
+        get() = object : Observer<Boolean> {
+            override fun onComplete() {
+            }
+
+            override fun onError(e: Throwable) {
+            }
+
+            override fun onSubscribe(d: Disposable) {
+            }
+
+            override fun onNext(newValue: Boolean) {
+            }
+        }
+
+    private val sendUsageDataObserver: Observer<Boolean>
+        get() = object : Observer<Boolean> {
+
+            override fun onComplete() {}
+
+            override fun onError(e: Throwable) {}
+
+            override fun onSubscribe(d: Disposable) {
+                d.addTo(compositeDisposable)
+            }
+
+            override fun onNext(newValue: Boolean) {
+                dispatcher.dispatch(SettingAction.SendUsageData(newValue))
+            }
+        }
 
     override fun onViewReady() {
         val settings = listOf(
             ToggleSettingConfiguration(
                 title = context.getString(R.string.unlock),
-                toggle = false
+                toggleDriver = Observable.just(true),
+                toggleObserver = autoLockObserver
             ),
             TextSettingConfiguration(
                 title = context.getString(R.string.auto_lock),
@@ -40,13 +99,15 @@ class SettingPresenter(val view: SettingView, val appContext: Context) : Present
             ToggleSettingConfiguration(
                 title = context.getString(R.string.autofill),
                 subtitle = context.getString(R.string.autofill_summary),
-                toggle = false
+                toggleDriver = Observable.just(true),
+                toggleObserver = autoFillObserver
             ),
             ToggleSettingConfiguration(
                 title = context.getString(R.string.send_usage_data),
                 subtitle = context.getString(R.string.send_usage_data_summary),
                 buttonTitle = context.getString(R.string.learn_more),
-                toggle = true
+                toggleDriver = settingStore.sendUsageData,
+                toggleObserver = sendUsageDataObserver
             ),
             AppVersionSettingConfiguration(
                 text = "App Version: $versionNumber"
