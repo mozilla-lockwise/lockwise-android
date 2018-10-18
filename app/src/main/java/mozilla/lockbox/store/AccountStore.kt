@@ -6,7 +6,6 @@
 
 package mozilla.lockbox.store
 
-import android.content.SharedPreferences
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
@@ -37,14 +36,14 @@ class AccountStore(
     val profile: Observable<Optional<Profile>> = PublishSubject.create()
 
     init {
-        loadFxA()
+        loadStoredFirefoxAccount()
     }
 
-    private fun loadFxA() {
+    private fun loadStoredFirefoxAccount() {
         try {
             securePreferences.getString(FIREFOX_ACCOUNT_KEY)?.let { accountJSON ->
                 FirefoxAccount.fromJSONString(accountJSON).whenComplete {
-                    persistFxA(it)
+                    persist(it)
                 }
             } ?: run {
                 pushNullAndReset()
@@ -54,7 +53,7 @@ class AccountStore(
         }
     }
 
-    private fun persistFxA(account: FirefoxAccount) {
+    private fun persist(account: FirefoxAccount) {
         account.toJSONString()?.let {
             securePreferences.putString(FIREFOX_ACCOUNT_KEY, it)
         }
