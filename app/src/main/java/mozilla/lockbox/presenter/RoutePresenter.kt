@@ -48,7 +48,7 @@ class RoutePresenter(
             // it is too dangerous to RuntimeException.
             log.error(
                 "Cannot route from ${src.label} to $action. " +
-                    "This is a developer bug, fixable by adding an action to nav_graph.xml"
+                    "This is a developer bug, fixable by adding an action to graph_main.xml"
             )
         }
         navController.navigate(transition, args)
@@ -85,7 +85,7 @@ class RoutePresenter(
     }
 
     private fun findTransitionId(@IdRes from: Int, @IdRes to: Int): Int? {
-        // This maps two nodes in the nav_graph.xml to the edge between them.
+        // This maps two nodes in the graph_main.xml to the edge between them.
         // If a RouteAction is called from a place the graph doesn't know about then
         // the app will log.error.
         when (Pair(from, to)) {
