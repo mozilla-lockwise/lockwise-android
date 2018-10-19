@@ -11,18 +11,27 @@ import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
+import mozilla.lockbox.store.FingerprintStore
 
 interface LockedViewProtocol {
     val unlockButtonTaps: Observable<Unit>
+    fun showFingerprintDialog()
 }
 
 class LockedPresenter(
     private val view: LockedViewProtocol,
-    private val dispatcher: Dispatcher = Dispatcher.shared
+    private val dispatcher: Dispatcher = Dispatcher.shared,
+    private val fingerprintStore: FingerprintStore = FingerprintStore.shared
 ) : Presenter() {
     override fun onViewReady() {
         view.unlockButtonTaps
-                .subscribe { dispatcher.dispatch(RouteAction.ItemList) }
-                .addTo(compositeDisposable)
+            .subscribe {
+                if (fingerprintStore.isFingerprintAuthAvailable()) {
+                    view.showFingerprintDialog()
+                } else {
+                    dispatcher.dispatch(RouteAction.ItemList)
+                }
+            }
+            .addTo(compositeDisposable)
     }
 }

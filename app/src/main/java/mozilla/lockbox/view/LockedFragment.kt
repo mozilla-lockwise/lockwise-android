@@ -33,4 +33,9 @@ class LockedFragment : Fragment(), LockedViewProtocol {
 
     override val unlockButtonTaps: Observable<Unit>
         get() = view!!.unlockButton.clicks()
+
+    override fun showFingerprintDialog() {
+        val dialogFragment = FingerprintAuthDialogFragment()
+        dialogFragment.show(fragmentManager, this.javaClass.simpleName)
+    }
 }
