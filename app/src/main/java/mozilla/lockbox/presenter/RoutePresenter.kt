@@ -10,7 +10,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.support.annotation.IdRes
-import android.support.v4.content.ContextCompat.startActivity
 import android.support.v7.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -31,6 +30,31 @@ class RoutePresenter(
     override fun onViewReady() {
         navController = Navigation.findNavController(activity, R.id.fragment_nav_host)
         routeStore.routes.subscribe(this::route).addTo(compositeDisposable)
+    }
+
+    private fun route(destination: RouteAction) {
+        when (destination) {
+            is RouteAction.Welcome -> navigateToFragment(destination, R.id.fragment_welcome)
+            is RouteAction.Login -> navigateToFragment(destination, R.id.fragment_fxa_login)
+            is RouteAction.ItemList -> navigateToFragment(destination, R.id.fragment_item_list)
+            is RouteAction.SettingList -> navigateToFragment(destination, R.id.fragment_setting)
+            is RouteAction.LockScreen -> navigateToFragment(destination, R.id.fragment_locked)
+            is RouteAction.Filter -> navigateToFragment(destination, R.id.fragment_filter)
+            is RouteAction.ItemDetail -> {
+                // Possibly overkill for passing a single id string,
+                // but it's typesafe™.
+                val bundle = ItemDetailFragmentArgs.Builder()
+                    .setItemId(destination.id)
+                    .build()
+                    .toBundle()
+                navigateToFragment(destination, R.id.fragment_item_detail, bundle)
+            }
+            is RouteAction.OpenWebsite -> {
+                openWebsite(destination.url)
+            }
+
+            is RouteAction.Back -> navController.popBackStack()
+        }
     }
 
     private fun navigateToFragment(action: RouteAction, @IdRes destinationId: Int, args: Bundle? = null) {
@@ -54,36 +78,6 @@ class RoutePresenter(
         navController.navigate(transition, args)
     }
 
-    private fun openWebsite(url: String) {
-        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-        activity.startActivity(browserIntent, null)
-    }
-
-    private fun route(destination: RouteAction) {
-        when (destination) {
-            is RouteAction.Welcome -> navigateToFragment(destination, R.id.fragment_welcome)
-            is RouteAction.Login -> navigateToFragment(destination, R.id.fragment_fxa_login)
-            is RouteAction.ItemList -> navigateToFragment(destination, R.id.fragment_item_list)
-            is RouteAction.SettingList -> navigateToFragment(destination, R.id.fragment_setting)
-            is RouteAction.LockScreen -> navigateToFragment(destination, R.id.fragment_locked)
-            is RouteAction.Filter -> navigateToFragment(destination, R.id.fragment_filter)
-            is RouteAction.ItemDetail -> {
-                // Possibly overkill for passing a single id string,
-                // but it's typesafe™.
-                val bundle = ItemDetailFragmentArgs.Builder()
-                        .setItemId(destination.id)
-                        .build()
-                        .toBundle()
-                navigateToFragment(destination, R.id.fragment_item_detail, bundle)
-            }
-            is RouteAction.OpenWebsite -> {
-                openWebsite(destination.url)
-            }
-
-            is RouteAction.Back -> navController.popBackStack()
-        }
-    }
-
     private fun findTransitionId(@IdRes from: Int, @IdRes to: Int): Int? {
         // This maps two nodes in the graph_main.xml to the edge between them.
         // If a RouteAction is called from a place the graph doesn't know about then
@@ -102,5 +96,10 @@ class RoutePresenter(
         }
 
         return null
+    }
+
+    private fun openWebsite(url: String) {
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        activity.startActivity(browserIntent, null)
     }
 }
