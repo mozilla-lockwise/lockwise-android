@@ -58,12 +58,22 @@ class Navigator {
 
     fun gotoSettings() {
         gotoItemList_openMenu()
-        onView(withId(R.id.navView)).perform(navigateTo(R.id.action_itemList_to_setting))
+        onView(withId(R.id.navView)).perform(navigateTo(R.id.fragment_setting))
         checkAtSettings()
     }
 
     fun checkAtSettings() {
         onView(withId(R.id.settings_placeholder)).check(matches(isDisplayed()))
+    }
+
+    fun gotoLockScreen() {
+        gotoItemList_openMenu()
+        onView(withId(R.id.navView)).perform(navigateTo(R.id.fragment_locked))
+        checkAtLockScreen()
+    }
+
+    private fun checkAtLockScreen() {
+        onView(withId(R.id.unlockButton)).check(matches(isDisplayed()))
     }
 
     fun gotoItemDetail() {

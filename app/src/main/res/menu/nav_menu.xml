@@ -13,11 +13,11 @@
             android:icon="@drawable/ic_help_faq"
             android:title="@string/nav_menu_faq" />
         <item
-            android:id="@+id/action_itemList_to_setting"
+            android:id="@+id/fragment_setting"
             android:icon="@android:drawable/ic_menu_preferences"
             android:title="@string/nav_menu_settings" />
         <item
-            android:id="@+id/action_itemList_to_locked"
+            android:id="@+id/fragment_locked"
             android:icon="@android:drawable/ic_lock_lock"
             android:title="@string/lock_now" />
     </group>

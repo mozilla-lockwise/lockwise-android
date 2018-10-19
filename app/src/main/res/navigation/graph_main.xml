@@ -8,7 +8,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/nav_graph"
+    android:id="@+id/graph_main"
     app:startDestination="@id/fragment_welcome">
 
     <fragment
@@ -42,10 +42,18 @@
             app:destination="@id/fragment_item_detail" />
         <action
             android:id="@+id/action_itemList_to_setting"
-            app:destination="@id/fragment_setting" />
+            app:destination="@id/fragment_setting"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action
             android:id="@+id/action_itemList_to_locked"
-            app:destination="@+id/fragment_locked" />
+            app:destination="@+id/graph_locked"
+            app:launchSingleTop="true"
+            app:clearTask="true"
+            app:popUpTo="@+id/graph_locked"
+            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_itemList_to_filter"
             app:destination="@id/fragment_filter" />
@@ -57,7 +65,7 @@
         tools:layout="@layout/fragment_item_detail">
         <argument
             android:name="itemId"
-            android:defaultValue='"MISSING_ID"'
+            android:defaultValue="MISSING_ID"
             app:argType="string" />
     </fragment>
 
@@ -68,11 +76,6 @@
         tools:layout="@layout/fragment_setting"/>
 
     <fragment
-        android:id="@+id/fragment_locked"
-        android:name="mozilla.lockbox.view.LockedFragment"
-        tools:layout="@layout/fragment_locked" />
-
-    <fragment
         android:id="@+id/fragment_filter"
         android:name="mozilla.lockbox.view.FilterFragment"
         tools:layout="@layout/fragment_filter" >
@@ -80,4 +83,6 @@
             android:id="@+id/action_filter_to_itemDetail"
             app:destination="@id/fragment_item_detail" />
     </fragment>
+
+    <include app:graph="@navigation/graph_locked" />
 </navigation>
