@@ -36,6 +36,8 @@ class RoutePresenter(
 
     override fun onViewReady() {
         navController = Navigation.findNavController(activity, R.id.fragment_nav_host)
+        navController.setGraph(R.navigation.graph_main)
+
         routeStore.routes.subscribe(this::route).addTo(compositeDisposable)
     }
 
