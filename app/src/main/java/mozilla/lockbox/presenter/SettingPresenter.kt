@@ -6,6 +6,7 @@
 
 package mozilla.lockbox.presenter
 
+import android.content.Context
 import mozilla.lockbox.adapter.AppVersionSettingConfiguration
 import mozilla.lockbox.adapter.SectionedAdapter
 import mozilla.lockbox.adapter.SettingCellConfiguration
@@ -13,6 +14,7 @@ import mozilla.lockbox.adapter.TextSettingConfiguration
 import mozilla.lockbox.adapter.ToggleSettingConfiguration
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.BuildConfig
+import mozilla.lockbox.R
 
 interface SettingView {
     fun updateSettingList(
@@ -21,28 +23,28 @@ interface SettingView {
     )
 }
 
-class SettingPresenter(val view: SettingView) : Presenter() {
+class SettingPresenter(val view: SettingView, val context: Context) : Presenter() {
     private val versionNumber = BuildConfig.VERSION_NAME
     override fun onViewReady() {
 
         val settings = listOf(
             ToggleSettingConfiguration(
-                title = "Unlock with fingerprint",
+                title = context.getString(R.string.unlock),
                 toggle = false
             ),
             TextSettingConfiguration(
-                title = "Auto lock",
-                detailText = "5 minutes"
+                title = context.getString(R.string.auto_lock),
+                detailText = context.getString(R.string.auto_lock_option)
             ),
             ToggleSettingConfiguration(
-                title = "Autofill",
-                subtitle = "Let Firefox Lockbox fill in logins for you",
+                title = context.getString(R.string.autofill),
+                subtitle = context.getString(R.string.autofill_summary),
                 toggle = false
             ),
             ToggleSettingConfiguration(
-                title = "Send usage data",
-                subtitle = "Mozilla strives to only collect what we need to provide and improve Firefox for everyone. ",
-                buttonTitle = "Learn more",
+                title = context.getString(R.string.send_usage_data),
+                subtitle = context.getString(R.string.send_usage_data_summary),
+                buttonTitle = context.getString(R.string.learn_more),
                 toggle = true
             ),
             AppVersionSettingConfiguration(
@@ -51,8 +53,8 @@ class SettingPresenter(val view: SettingView) : Presenter() {
         )
 
         val sections = listOf(
-            SectionedAdapter.Section(0, "Security"),
-            SectionedAdapter.Section(3, "Support")
+            SectionedAdapter.Section(0, context.getString(R.string.security_title)),
+            SectionedAdapter.Section(3, context.getString(R.string.support_title))
         )
 
         view.updateSettingList(settings, sections)
