@@ -1,27 +1,16 @@
-///*
-// * This Source Code Form is subject to the terms of the Mozilla Public
-// * License, v. 2.0. If a copy of the MPL was not distributed with this
-// * file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// */
-//
-//package mozilla.lockbox.support
-//
-//import android.content.SharedPreferences
-//import android.support.test.runner.AndroidJUnit4
-//import android.util.Base64
-//import mozilla.components.lib.dataprotect.Keystore
-//import org.junit.Assert
-//import org.junit.Before
-//import org.junit.Test
-//import org.junit.runner.RunWith
-//import org.mockito.Mock
-//import org.mockito.Mockito
-//import org.mockito.Mockito.`when`
-//import org.mockito.Mockito.verify
-//import java.nio.charset.StandardCharsets
-//
-//@RunWith(AndroidJUnit4::class)
-//class SecurePreferencesTest {
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+package mozilla.lockbox.support
+
+import android.support.test.runner.AndroidJUnit4
+import org.junit.runner.RunWith
+
+@RunWith(AndroidJUnit4::class)
+class SecurePreferencesTest {
 //    @Mock
 //    val editor = Mockito.mock(SharedPreferences.Editor::class.java)
 //
@@ -73,4 +62,4 @@
 //        verify(editor.putString(key, encodedValue))
 //        verify(editor.apply())
 //    }
-//}
+}

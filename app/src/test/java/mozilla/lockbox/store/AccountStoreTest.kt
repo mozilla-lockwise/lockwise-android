@@ -15,8 +15,6 @@ import mozilla.lockbox.support.SecurePreferences
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mock
-import org.mockito.Mockito
 
 class AccountStoreTest {
     class FakeSecurePreferences : SecurePreferences() {
@@ -43,9 +41,6 @@ class AccountStoreTest {
         }
     }
 
-    @Mock
-    private val preferences = Mockito.mock(SharedPreferences::class.java)
-
     private val securePreferences = FakeSecurePreferences()
     private val oauthObserver = TestObserver<Optional<OAuthInfo>>()
     private val profileObserver = TestObserver<Optional<Profile>>()
@@ -59,16 +54,7 @@ class AccountStoreTest {
     }
 
     @Test
-    fun `it passes along the when sharedPreferences is applied`() {
-        subject.apply(preferences)
-
-        Assert.assertEquals(preferences, securePreferences.sharedPrefArgument)
-    }
-
-    @Test
-    fun `it pushes null after applying, when there is no saved fxa information`() {
-        subject.apply(preferences)
-
+    fun `it pushes null when there is no saved fxa information`() {
         Assert.assertEquals("firefox-account", securePreferences.getStringArgument)
 
         oauthObserver.assertValue(Optional<OAuthInfo>(null))
