@@ -61,10 +61,10 @@ class ItemListPresenter(
         dispatcher.dispatch(DataStoreAction.Unlock)
     }
 
-    fun onMenuItem(@IdRes item: Int) {
+    private fun onMenuItem(@IdRes item: Int) {
         val action = when (item) {
-            R.id.action_itemList_to_locked, R.id.fragment_locked -> RouteAction.LockScreen
-            R.id.action_itemList_to_setting, R.id.fragment_setting -> RouteAction.SettingList
+            R.id.fragment_locked -> RouteAction.LockScreen
+            R.id.fragment_setting -> RouteAction.SettingList
             else -> return log.error("Cannot route from item list menu")
         }
 

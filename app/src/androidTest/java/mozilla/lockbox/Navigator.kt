@@ -58,7 +58,7 @@ class Navigator {
 
     fun gotoSettings() {
         gotoItemList_openMenu()
-        onView(withId(R.id.navView)).perform(navigateTo(R.id.action_itemList_to_setting))
+        onView(withId(R.id.navView)).perform(navigateTo(R.id.fragment_setting))
         checkAtSettings()
     }
 
@@ -68,7 +68,7 @@ class Navigator {
 
     fun gotoLockScreen() {
         gotoItemList_openMenu()
-        onView(withId(R.id.navView)).perform(navigateTo(R.id.action_itemList_to_locked))
+        onView(withId(R.id.navView)).perform(navigateTo(R.id.fragment_locked))
         checkAtLockScreen()
     }
 

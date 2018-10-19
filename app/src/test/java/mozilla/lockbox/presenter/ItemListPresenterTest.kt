@@ -133,13 +133,7 @@ class ItemListPresenterTest {
         view.menuItemSelectionStub.onNext(R.id.fragment_setting)
         dispatcherObserver.assertLastValue(RouteAction.SettingList)
 
-        view.menuItemSelectionStub.onNext(R.id.action_itemList_to_setting)
-        dispatcherObserver.assertLastValue(RouteAction.SettingList)
-
         view.menuItemSelectionStub.onNext(R.id.fragment_locked)
-        dispatcherObserver.assertLastValue(RouteAction.LockScreen)
-
-        view.menuItemSelectionStub.onNext(R.id.action_itemList_to_locked)
         dispatcherObserver.assertLastValue(RouteAction.LockScreen)
     }
 }
