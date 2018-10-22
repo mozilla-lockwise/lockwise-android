@@ -35,11 +35,15 @@ class SettingListAdapter : RecyclerView.Adapter<SettingViewHolder>() {
                 val view = inflater.inflate(R.layout.list_cell_setting_toggle, parent, false)
                 return ToggleSettingViewHolder(view)
             }
-            else -> {
+            SETTING_APP_VERSION_TYPE -> {
                 val view = inflater.inflate(R.layout.list_cell_setting_appversion, parent, false)
                 return AppVersionSettingViewHolder(view)
             }
+            else -> {
+                throw IllegalStateException("Please use a valid setting type.")
+            }
         }
+
     }
 
     override fun getItemCount(): Int {

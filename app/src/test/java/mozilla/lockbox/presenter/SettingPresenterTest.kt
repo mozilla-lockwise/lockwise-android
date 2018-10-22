@@ -6,7 +6,7 @@
 
 package mozilla.lockbox.presenter
 
-import junit.framework.Assert
+import junit.framework.Assert.assertEquals
 import mozilla.lockbox.BuildConfig
 import mozilla.lockbox.adapter.AppVersionSettingConfiguration
 import mozilla.lockbox.adapter.SectionedAdapter
@@ -14,7 +14,11 @@ import mozilla.lockbox.adapter.SettingCellConfiguration
 import mozilla.lockbox.adapter.TextSettingConfiguration
 import mozilla.lockbox.adapter.ToggleSettingConfiguration
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.RuntimeEnvironment
 
+@RunWith(RobolectricTestRunner::class)
 class SettingPresenterTest {
 
     class SettingViewFake : SettingView {
@@ -32,7 +36,7 @@ class SettingPresenterTest {
     }
 
     private val settingView = SettingViewFake()
-    private val subject = SettingPresenter(settingView)
+    private val subject = SettingPresenter(settingView, RuntimeEnvironment.application.applicationContext)
     private val expectedVersionNumber = BuildConfig.VERSION_NAME
 
     val expectedSettings = listOf(
@@ -69,13 +73,13 @@ class SettingPresenterTest {
     fun onViewReadyTest() {
         subject.onViewReady()
 
-        Assert.assertEquals(settingView.settingItem!![0].title, expectedSettings[0].title)
-        Assert.assertEquals(settingView.settingItem!![1].title, expectedSettings[1].title)
-        Assert.assertEquals(settingView.settingItem!![2].title, expectedSettings[2].title)
-        Assert.assertEquals(settingView.settingItem!![3].title, expectedSettings[3].title)
-        Assert.assertEquals(settingView.settingItem!![4].title, expectedSettings[4].title)
+        assertEquals(settingView.settingItem!![0].title, expectedSettings[0].title)
+        assertEquals(settingView.settingItem!![1].title, expectedSettings[1].title)
+        assertEquals(settingView.settingItem!![2].title, expectedSettings[2].title)
+        assertEquals(settingView.settingItem!![3].title, expectedSettings[3].title)
+        assertEquals(settingView.settingItem!![4].title, expectedSettings[4].title)
 
-        Assert.assertEquals(settingView.sectionsItem!![0].title, expectedSections[0].title)
-        Assert.assertEquals(settingView.sectionsItem!![1].title, expectedSections[1].title)
+        assertEquals(settingView.sectionsItem!![0].title, expectedSections[0].title)
+        assertEquals(settingView.sectionsItem!![1].title, expectedSections[1].title)
     }
 }

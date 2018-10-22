@@ -48,8 +48,7 @@
         android:theme="@style/ColorSwitchStyle"
         app:layout_constraintTop_toTopOf="@id/title"
         app:layout_constraintBottom_toBottomOf="@id/title"
-        app:layout_constraintEnd_toEndOf="parent"
-        />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <Button
         android:id="@+id/button"
@@ -67,7 +66,5 @@
         android:background="@null"
         app:layout_constraintTop_toBottomOf="@id/subtitle"
         app:layout_constraintStart_toStartOf="@id/title"
-        tools:text="@string/learn_more"
-    />
-
+        tools:text="@string/learn_more"/>
 </android.support.constraint.ConstraintLayout>
