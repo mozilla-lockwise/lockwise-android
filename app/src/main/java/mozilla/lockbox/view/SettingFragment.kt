@@ -18,6 +18,8 @@ import mozilla.lockbox.R
 import mozilla.lockbox.adapter.SectionedAdapter
 import mozilla.lockbox.adapter.SettingCellConfiguration
 import mozilla.lockbox.adapter.SettingListAdapter
+import mozilla.lockbox.adapter.SettingListAdapter.Companion.SETTING_TEXT_TYPE
+import mozilla.lockbox.adapter.SettingListAdapter.Companion.SETTING_TOGGLE_TYPE
 import mozilla.lockbox.presenter.SettingPresenter
 import mozilla.lockbox.presenter.SettingView
 
@@ -46,8 +48,8 @@ class SettingFragment : BackableFragment(), SettingView {
 
         // Add one to account for viewType configuration in the SectionedAdapter
         val decoration = ItemDecorations.vertical(context)
-            .type(SettingListAdapter.SETTING_TEXT_TYPE + 1, R.drawable.divider)
-            .type(SettingListAdapter.SETTING_TOGGLE_TYPE + 1, R.drawable.divider)
+            .type(SETTING_TEXT_TYPE + 1, R.drawable.divider)
+            .type(SETTING_TOGGLE_TYPE + 1, R.drawable.divider)
             .create()
 
         view.settingList.addItemDecoration(decoration)

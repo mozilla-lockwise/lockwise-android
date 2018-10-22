@@ -23,10 +23,11 @@ interface SettingView {
     )
 }
 
-class SettingPresenter(val view: SettingView, val context: Context) : Presenter() {
+class SettingPresenter(val view: SettingView, val appContext: Context) : Presenter() {
     private val versionNumber = BuildConfig.VERSION_NAME
-    override fun onViewReady() {
+    private var context = appContext
 
+    override fun onViewReady() {
         val settings = listOf(
             ToggleSettingConfiguration(
                 title = context.getString(R.string.unlock),

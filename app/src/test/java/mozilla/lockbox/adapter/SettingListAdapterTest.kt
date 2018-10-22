@@ -20,6 +20,7 @@ import org.junit.Assert
 import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Test
+import org.junit.jupiter.api.Assertions
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
@@ -33,6 +34,10 @@ class SettingListAdapterTest {
     private lateinit var context: Context
     private lateinit var parent: RecyclerView
 
+    class SettingCellConfigFake : SettingCellConfiguration(
+        title = "Fake title",
+        subtitle = "I will fail")
+
     @Before
     fun setUp() {
         context = RuntimeEnvironment.application
@@ -41,7 +46,7 @@ class SettingListAdapterTest {
     }
 
     @Test
-    fun getItemCount() {
+    fun getItemCountTest() {
         val sectionConfig = listOf(
                 TextSettingConfiguration(title = "Auto Lock", detailText = "one hour"),
                 ToggleSettingConfiguration(title = "Unlock with finger", toggle = true),
@@ -54,7 +59,7 @@ class SettingListAdapterTest {
     }
 
     @Test
-    fun getItemViewType() {
+    fun getItemViewTypeTest_WithValidViewTypes() {
         val sectionConfig = listOf(
                 TextSettingConfiguration(title = "Auto Lock", detailText = "one hour"),
                 ToggleSettingConfiguration(title = "Unlock with finger", toggle = true),
@@ -69,25 +74,50 @@ class SettingListAdapterTest {
     }
 
     @Test
-    fun onCreateViewHolder_textSettingCell() {
+    fun getItemViewTypeTest_WithInvalidViewType() {
+        val sectionConfig = listOf(
+            SettingCellConfigFake()
+        )
+        subject.setItems(sectionConfig)
+
+        val exception = Assertions.assertThrows(IllegalStateException::class.java) {
+            subject.getItemViewType(0)
+        }
+
+        val expected = "Please use a valid defined setting type."
+        Assertions.assertEquals(expected, exception.message)
+    }
+
+    @Test
+    fun onCreateViewHolderTest_textSettingCell() {
         val textViewHolder = subject.onCreateViewHolder(parent, 0)
         assertThat(textViewHolder, instanceOf(TextSettingViewHolder::class.java))
     }
 
     @Test
-    fun onCreateViewHolder_toggleSettingCell() {
+    fun onCreateViewHolderTest_toggleSettingCell() {
         val toggleViewHolder = subject.onCreateViewHolder(parent, 1)
         assertThat(toggleViewHolder, instanceOf(ToggleSettingViewHolder::class.java))
     }
 
     @Test
-    fun onCreateViewHolder_appVersionSettingCell() {
+    fun onCreateViewHolderTest_appVersionSettingCell() {
         val toggleViewHolder = subject.onCreateViewHolder(parent, 2)
         assertThat(toggleViewHolder, instanceOf(AppVersionSettingViewHolder::class.java))
     }
 
     @Test
-    fun onBindViewHolder_textSettingCell() {
+    fun onCreateViewHolderTest_WithInvalidViewType() {
+        val exception = Assertions.assertThrows(IllegalStateException::class.java) {
+            subject.onCreateViewHolder(parent, 5)
+        }
+
+        val expected = "Please use a valid defined setting type."
+        Assertions.assertEquals(expected, exception.message)
+    }
+
+    @Test
+    fun onBindViewHolderTest_textSettingCell() {
         val title = "Auto Lock"
         val detailText = "one hour"
         val sectionConfig = listOf(
@@ -107,7 +137,7 @@ class SettingListAdapterTest {
     }
 
     @Test
-    fun onBindViewHolder_toggleSettingCell() {
+    fun onBindViewHolderTest_toggleSettingCell() {
         val title = "Unlock with finger"
         val toggleValue = true
         val buttonTitle = "Learn more"
@@ -130,7 +160,7 @@ class SettingListAdapterTest {
     }
 
     @Test
-    fun onBindViewHolder_appVersionSettingCell() {
+    fun onBindViewHolderTest_appVersionSettingCell() {
         val appVersion = "App Version: 1.0"
         val sectionConfig = listOf(
             AppVersionSettingConfiguration(text = appVersion)

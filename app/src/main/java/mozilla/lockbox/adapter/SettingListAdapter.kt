@@ -40,10 +40,9 @@ class SettingListAdapter : RecyclerView.Adapter<SettingViewHolder>() {
                 return AppVersionSettingViewHolder(view)
             }
             else -> {
-                throw IllegalStateException("Please use a valid setting type.")
+                throw IllegalStateException("Please use a valid defined setting type.")
             }
         }
-
     }
 
     override fun getItemCount(): Int {
@@ -78,8 +77,11 @@ class SettingListAdapter : RecyclerView.Adapter<SettingViewHolder>() {
             is ToggleSettingConfiguration -> {
                 return SETTING_TOGGLE_TYPE
             }
-            else -> {
+            is AppVersionSettingConfiguration -> {
                 return SETTING_APP_VERSION_TYPE
+            }
+            else -> {
+                throw IllegalStateException("Please use a valid defined setting type.")
             }
         }
     }

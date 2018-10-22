@@ -39,7 +39,7 @@ class SettingPresenterTest {
     private val subject = SettingPresenter(settingView, RuntimeEnvironment.application.applicationContext)
     private val expectedVersionNumber = BuildConfig.VERSION_NAME
 
-    val expectedSettings = listOf(
+    private val expectedSettings = listOf(
         ToggleSettingConfiguration(
             title = "Unlock with fingerprint",
             toggle = false
@@ -64,7 +64,7 @@ class SettingPresenterTest {
         )
     )
 
-    val expectedSections = listOf(
+    private val expectedSections = listOf(
         SectionedAdapter.Section(0, "Security"),
         SectionedAdapter.Section(3, "Support")
     )
