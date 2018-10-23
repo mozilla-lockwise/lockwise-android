@@ -11,6 +11,7 @@ import android.support.v4.app.DialogFragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_fingerprint_dialog.view.*
@@ -20,8 +21,8 @@ import mozilla.lockbox.presenter.FingerprintDialogView
 
 class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
     private lateinit var presenter: FingerprintDialogPresenter
-    private val onAuth = PublishSubject.create<Unit>()
-    private val onError = PublishSubject.create<Unit>()
+    private val _authCallback = PublishSubject.create<AuthCallback>()
+    override val authCallback: Observable<AuthCallback> get() = _authCallback
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         presenter = FingerprintDialogPresenter(this)
@@ -35,7 +36,6 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
 
     override fun onResume() {
         super.onResume()
-        view!!.imageView.setImageResource(R.drawable.ic_fingerprint)
         presenter.onResume()
     }
 
@@ -53,7 +53,7 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
         view!!.imageView.run {
             setImageResource(R.drawable.ic_fingerprint_success)
             postDelayed({
-                onAuth::onNext
+                _authCallback.onNext(AuthCallback.OnAuth)
                 dismiss()
             }, SUCCESS_DELAY_MILLIS)
         }
@@ -62,13 +62,20 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
     override fun onError(error: String?) {
         showError(error ?: getString(R.string.error))
         view!!.imageView.postDelayed({
-            onError::onNext
+            _authCallback.onNext(AuthCallback.OnError)
             dismiss()
         }, ERROR_TIMEOUT_MILLIS)
     }
 
     override fun onFailed() {
         showError(getString(R.string.fingerprint_not_recognized))
+    }
+
+    override val cancelTapped: Observable<Unit>
+        get() = view!!.cancel.clicks()
+
+    override fun onCancel() {
+        dismiss()
     }
 
     private fun showError(error: CharSequence) {
@@ -94,6 +101,8 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
         private const val SUCCESS_DELAY_MILLIS: Long = 1300
     }
 
-    override val onAuthenticated: Observable<Unit> get() = onAuth
-    override val fallbackToPin: Observable<Unit> get() = onError
+    sealed class AuthCallback {
+        object OnAuth : AuthCallback()
+        object OnError : AuthCallback()
+    }
 }

@@ -5,10 +5,11 @@ import android.os.CancellationSignal
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyPermanentlyInvalidatedException
 import android.security.keystore.KeyProperties
+import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
-import io.reactivex.subjects.ReplaySubject
-import mozilla.lockbox.action.AuthenticationAction
+import io.reactivex.subjects.PublishSubject
+import mozilla.lockbox.action.FingerprintSensorAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 import java.io.IOException
@@ -36,7 +37,8 @@ open class FingerprintStore(
     private var cancellationSignal: CancellationSignal? = null
     private var selfCancelled = false
 
-    val authState: ReplaySubject<AuthenticationState> = ReplaySubject.create()
+    private val _state = PublishSubject.create<AuthenticationState>()
+    val authState: Observable<AuthenticationState> = _state
 
     companion object {
         val shared = FingerprintStore()
@@ -51,11 +53,12 @@ open class FingerprintStore(
     }
 
     init {
-        dispatcher.register.filterByType(AuthenticationAction::class.java)
+        dispatcher.register.filterByType(FingerprintSensorAction::class.java)
+            .doOnDispose { stopListening() }
             .subscribe {
                 when (it) {
-                    is AuthenticationAction.StartListening -> initFingerprint()
-                    is AuthenticationAction.StopListening -> stopListening()
+                    is FingerprintSensorAction.Start -> initFingerprint()
+                    is FingerprintSensorAction.Stop -> stopListening()
                 }
             }
             .addTo(compositeDisposable)
@@ -79,7 +82,9 @@ open class FingerprintStore(
     }
 
     private fun startListening(cryptoObject: FingerprintManager.CryptoObject) {
-        if (!isFingerprintAuthAvailable()) return
+        if (!isFingerprintAuthAvailable()) {
+            return
+        }
         cancellationSignal = CancellationSignal()
         selfCancelled = false
         fingerprintManager.authenticate(cryptoObject, cancellationSignal, 0, AuthenticationCallback(), null)
@@ -179,23 +184,23 @@ open class FingerprintStore(
         override fun onAuthenticationError(errorCode: Int, errString: CharSequence?) {
             super.onAuthenticationError(errorCode, errString)
             if (!selfCancelled) {
-                authState.onNext(AuthenticationState.Error(errString.toString()))
+                _state.onNext(AuthenticationState.Error(errString.toString()))
             }
         }
 
         override fun onAuthenticationSucceeded(result: FingerprintManager.AuthenticationResult?) {
             super.onAuthenticationSucceeded(result)
-            authState.onNext(AuthenticationState.Succeeded)
+            _state.onNext(AuthenticationState.Succeeded)
         }
 
         override fun onAuthenticationHelp(helpCode: Int, helpString: CharSequence?) {
             super.onAuthenticationHelp(helpCode, helpString)
-            authState.onNext(AuthenticationState.Error(helpString.toString()))
+            _state.onNext(AuthenticationState.Error(helpString.toString()))
         }
 
         override fun onAuthenticationFailed() {
             super.onAuthenticationFailed()
-            authState.onNext(AuthenticationState.Failed)
+            _state.onNext(AuthenticationState.Failed)
         }
     }
 }

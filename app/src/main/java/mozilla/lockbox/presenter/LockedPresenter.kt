@@ -13,13 +13,13 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.store.FingerprintStore
 
-interface LockedViewProtocol {
+interface LockedView {
     val unlockButtonTaps: Observable<Unit>
     fun showFingerprintDialog()
 }
 
 class LockedPresenter(
-    private val view: LockedViewProtocol,
+    private val view: LockedView,
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val fingerprintStore: FingerprintStore = FingerprintStore.shared
 ) : Presenter() {

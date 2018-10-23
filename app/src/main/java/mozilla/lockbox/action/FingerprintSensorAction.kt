@@ -8,7 +8,7 @@ package mozilla.lockbox.action
 
 import mozilla.lockbox.flux.Action
 
-sealed class AuthenticationAction : Action {
-    object StartListening : AuthenticationAction()
-    object StopListening : AuthenticationAction()
+sealed class FingerprintSensorAction : Action {
+    object Start : FingerprintSensorAction()
+    object Stop : FingerprintSensorAction()
 }

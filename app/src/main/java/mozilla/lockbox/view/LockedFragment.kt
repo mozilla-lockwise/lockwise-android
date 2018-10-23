@@ -16,9 +16,9 @@ import io.reactivex.Observable
 import kotlinx.android.synthetic.main.fragment_locked.view.*
 import mozilla.lockbox.R
 import mozilla.lockbox.presenter.LockedPresenter
-import mozilla.lockbox.presenter.LockedViewProtocol
+import mozilla.lockbox.presenter.LockedView
 
-class LockedFragment : Fragment(), LockedViewProtocol {
+class LockedFragment : Fragment(), LockedView {
     private lateinit var presenter: LockedPresenter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
