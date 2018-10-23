@@ -23,8 +23,8 @@ abstract class DefaultPreferencesStore(
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context)
     }
 
-    fun <T> createObservableForKey(prefsKey: String, default: T, onNext: (String, T) -> T): Observable<T> {
-        return Observable.create<T> { emitter ->
+    fun <T, R> createObservableForKey(prefsKey: String, default: T, onNext: (String, T) -> R): Observable<R> {
+        return Observable.create<R> { emitter ->
             val sharedPreferencesListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
                 if (key == prefsKey) {
                     emitter.onNext(onNext(prefsKey, default))

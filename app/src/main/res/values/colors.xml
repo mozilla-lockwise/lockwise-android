@@ -21,4 +21,6 @@
     <color name="gray_73_percent">#737373</color>
     <color name="switch_activated">#1771eb</color>
     <color name="white_E4">#E4E4E4</color>
+    <color name="blue60">#0060df</color>
+    <color name="menuItemSelected">#14000000</color>
 </resources>

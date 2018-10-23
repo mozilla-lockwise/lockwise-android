@@ -7,8 +7,6 @@
 package mozilla.lockbox.extensions
 
 import io.reactivex.Observable
-import mozilla.lockbox.R
-import mozilla.lockbox.log
 import mozilla.lockbox.model.ItemViewModel
 import org.mozilla.sync15.logins.ServerPassword
 
@@ -18,17 +16,4 @@ fun <T : Any, U : T> Observable<T>.filterByType(clazz: Class<out U>): Observable
 
 fun Observable<List<ServerPassword>>.mapToItemViewModelList(): Observable<List<ItemViewModel>> {
     return this.map { list -> list.map { it.toViewModel() } }
-}
-
-fun Observable<Pair<List<ItemViewModel>, Int>>.sort(): Observable<List<ItemViewModel>> {
-    return this.map { pair ->
-        when (pair.second) {
-            R.id.sort_a_z -> { pair.first.sortedBy { it.title } }
-            R.id.sort_recent -> { pair.first.sortedBy { it.timeLastUsed }}
-            else -> {
-                log.error("Unrecognized sort option ${pair.second}")
-                pair.first.sortedBy { it.title }
-            }
-        }
-    }
 }

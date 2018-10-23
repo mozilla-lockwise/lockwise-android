@@ -22,11 +22,11 @@ open class PublicPreferencesStore: DefaultPreferencesStore(Dispatcher.shared) {
     }
 
     private lateinit var itemListSortKey: String
-    val itemListSortObservable: Observable<Int> by lazy {
-        val onNext: (String, Int) -> Int = { key, default ->
-            ItemListSort.idFromOrdinal(sharedPrefs.getInt(key,default))
+    val itemListSortObservable: Observable<ItemListSort> by lazy {
+        val onNext: (String, Int) -> ItemListSort = { key, default ->
+            ItemListSort.fromSortId(sharedPrefs.getInt(key,default))!!
         }
-        createObservableForKey(itemListSortKey, ItemListSort.ALPHABETICALLY.ordinal, onNext)
+        createObservableForKey(itemListSortKey, ItemListSort.ALPHABETICALLY.sortId, onNext)
     }
 
     override fun applyContext(context: Context) {
@@ -38,7 +38,7 @@ open class PublicPreferencesStore: DefaultPreferencesStore(Dispatcher.shared) {
                 .filterByType(SettingsAction.SortAction::class.java)
                 .subscribe {
                    with (sharedPrefs.edit()) {
-                        putInt(itemListSortKey, it.id.ordinal)
+                        putInt(itemListSortKey, it.id.sortId)
                         apply()
                     }
                 }

@@ -7,7 +7,6 @@
 package mozilla.lockbox.presenter
 
 import android.support.annotation.IdRes
-import android.view.MenuItem
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.Observables
@@ -18,12 +17,12 @@ import mozilla.lockbox.action.ItemListSort
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.SettingsAction
 import mozilla.lockbox.extensions.mapToItemViewModelList
-import mozilla.lockbox.extensions.sort
 import mozilla.lockbox.flux.Dispatcher
 
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
 import mozilla.lockbox.model.ItemViewModel
+import mozilla.lockbox.rx.ListItem
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.PublicPreferencesStore
 
@@ -31,9 +30,10 @@ interface ItemListView {
     val itemSelection: Observable<ItemViewModel>
     val filterClicks: Observable<Unit>
     val menuItemSelections: Observable<Int>
-    val sortItemSelection: Observable<MenuItem>
+    val sortItemSelection: Observable<ListItem>
+    val sortMenuOptions: Array<ItemListSort>
     fun updateItems(itemList: List<ItemViewModel>)
-    fun updateItemListSort(itemId: Int)
+    fun updateItemListSort(sort: ItemListSort)
     // TODO: Item list selection
 }
 
@@ -80,12 +80,7 @@ class ItemListPresenter(
 
         view.sortItemSelection
                 .subscribe { menuItem ->
-                    val validSort = ItemListSort.fromInt(menuItem.itemId)
-                    if (validSort != null) {
-                        dispatcher.dispatch(SettingsAction.SortAction(validSort))
-                    } else {
-                        log.error("Unrecognised sort option ${menuItem.itemId}. Ignoring.")
-                    }
+                    dispatcher.dispatch(SettingsAction.SortAction(view.sortMenuOptions.get(menuItem.position)))
                 }.addTo(compositeDisposable)
 
         // TODO: remove this when we have proper locking / unlocking
@@ -100,5 +95,14 @@ class ItemListPresenter(
         }
 
         dispatcher.dispatch(action)
+    }
+}
+
+fun Observable<Pair<List<ItemViewModel>, ItemListSort>>.sort(): Observable<List<ItemViewModel>> {
+    return this.map { pair ->
+        when (pair.second) {
+            ItemListSort.ALPHABETICALLY -> { pair.first.sortedBy { it.title } }
+            ItemListSort.RECENTLY_USED -> { pair.first.sortedBy { it.timeLastUsed }}
+        }
     }
 }

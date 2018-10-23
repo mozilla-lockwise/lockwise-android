@@ -42,7 +42,6 @@
     <string name="copy_password_content_description">Copy your password</string>
     <string name="display_password_content_description">Display your password in plain text</string>
 
-<<<<<<< HEAD
     <string name="security_title">Security</string>
     <string name="support_title">Support</string>
     <string name="learn_more">Learn more</string>
@@ -53,7 +52,5 @@
     <string name="autofill_summary">Let Firefox Lockbox fill in logins for you</string>
     <string name="send_usage_data">Send usage data</string>
     <string name="send_usage_data_summary">Mozilla strives to only collect what we need to provide and improve Firefox for everyone. </string>
-=======
     <string name="shared_prefs_sort_option_key">SortOption</string>
->>>>>>> Part 2: Create Store for saving public preferences and use it to save the selected sort option. Add observable to sort option value in preferences to notify subscribers whenever the value changes. Update ItemListPresenter to consume this observer rather than a `SortAction` and update the sort button text and selected sort menu option when received.
 </resources>
