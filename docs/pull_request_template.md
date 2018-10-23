@@ -1,14 +1,18 @@
 Fixes #???
+
 _(**Required**: this reference (one or many) will be closed upon merge. Ideally it has the acceptance criteria and designs for features or fixes related to the work in this Pull Request.)_
 
 Connected to #???
+
 _(Optional: other issues or pull requests related to this, but merging should not close it)_
 
 ## Testing and Review Notes
+
 _(**Required**: steps to take to confirm this works as expected or other guidance for code, UX, and any other reviewers)_
 
 
 ## Screenshots or Videos
+
 _(Optional: to clearly demonstrate the feature or fix to help with testing and reviews)_
 
 
