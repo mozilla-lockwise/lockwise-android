@@ -7,7 +7,10 @@
 package mozilla.lockbox.store
 
 import android.content.Context
+import android.content.SharedPreferences
+import android.preference.PreferenceManager
 import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.R
 import mozilla.lockbox.action.ItemListSort
@@ -15,7 +18,10 @@ import mozilla.lockbox.action.SettingsAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 
-open class PublicPreferencesStore: DefaultPreferencesStore(Dispatcher.shared) {
+open class PublicPreferencesStore(val dispatcher: Dispatcher = Dispatcher.shared) {
+
+    internal val compositeDisposable = CompositeDisposable()
+    internal lateinit var sharedPrefs: SharedPreferences
 
     companion object {
         val shared = PublicPreferencesStore()
@@ -29,8 +35,8 @@ open class PublicPreferencesStore: DefaultPreferencesStore(Dispatcher.shared) {
         createObservableForKey(itemListSortKey, ItemListSort.ALPHABETICALLY.sortId, onNext)
     }
 
-    override fun applyContext(context: Context) {
-        super.applyContext(context)
+    fun applyContext(context: Context) {
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context)
 
         itemListSortKey = context.resources.getString(R.string.shared_prefs_sort_option_key)
 
@@ -43,5 +49,22 @@ open class PublicPreferencesStore: DefaultPreferencesStore(Dispatcher.shared) {
                     }
                 }
                 .addTo(compositeDisposable)
+    }
+
+    private fun <T, R> createObservableForKey(prefsKey: String, default: T, onNext: (String, T) -> R): Observable<R> {
+        return Observable.create<R> { emitter ->
+            val sharedPreferencesListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+                if (key == prefsKey) {
+                    emitter.onNext(onNext(prefsKey, default))
+                }
+            }
+
+            emitter.setCancellable {
+                sharedPrefs.unregisterOnSharedPreferenceChangeListener(sharedPreferencesListener)
+            }
+
+            emitter.onNext(onNext(prefsKey, default))
+            sharedPrefs.registerOnSharedPreferenceChangeListener(sharedPreferencesListener)
+        }
     }
 }
