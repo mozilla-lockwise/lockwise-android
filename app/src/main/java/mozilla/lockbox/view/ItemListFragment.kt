@@ -96,9 +96,10 @@ class ItemListFragment : CommonFragment(), ItemListView {
         sortItemsMenu.setAdapter(sortItemsAdapter)
         sortItemsMenu.anchorView = sortButton
         sortItemsMenu.isModal = true
-        sortItemsMenu.width = dpToPixels(context, 128f)
+        sortItemsMenu.width = dpToPixels(context, 170f)
         sortItemsMenu.horizontalOffset = dpToPixels(context, 42f)
         context.getDrawable(R.drawable.sort_menu_bg)?.let { sortItemsMenu.setBackgroundDrawable(it) }
+        sortItemsMenu.animationStyle = R.style.SortItemsPopupAnimation
 
         sortButton.clicks()
             .subscribe {

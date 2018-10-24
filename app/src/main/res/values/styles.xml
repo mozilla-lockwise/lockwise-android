@@ -47,4 +47,7 @@
         <item name="android:colorPressedHighlight">@color/switch_activated</item>
         <item name="android:colorControlActivated">@color/switch_activated</item>
     </style>
+    <style name="SortItemsPopupAnimation">
+        <item name="android:windowEnterAnimation">@anim/sort_items_menu_enter</item>
+    </style>
 </resources>
