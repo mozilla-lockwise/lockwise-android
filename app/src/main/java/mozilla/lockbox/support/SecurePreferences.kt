@@ -56,17 +56,19 @@ open class SecurePreferences(
         editor.putString(key, data).apply()
     }
 
-    open fun createEncryptCipher(): Cipher {
-        verifyKey()
-
-        return keystore.createEncryptCipher()
-    }
-
-    open fun createDecryptCipher(byteArray: ByteArray): Cipher {
-        verifyKey()
-
-        return keystore.createDecryptCipher(byteArray)
-    }
+    // these methods won't be used until https://github.com/mozilla-lockbox/lockbox-android/issues/165
+    // is addressed.
+//    open fun createEncryptCipher(): Cipher {
+//        verifyKey()
+//
+//        return keystore.createEncryptCipher()
+//    }
+//
+//    open fun createDecryptCipher(byteArray: ByteArray): Cipher {
+//        verifyKey()
+//
+//        return keystore.createDecryptCipher(byteArray)
+//    }
 
     private fun verifyKey() {
         if (!keystore.available()) {
