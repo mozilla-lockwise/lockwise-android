@@ -7,7 +7,6 @@
 package mozilla.lockbox.view
 
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,28 +19,12 @@ import mozilla.lockbox.presenter.FingerprintDialogPresenter
 import mozilla.lockbox.presenter.FingerprintDialogView
 
 class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
-    private lateinit var presenter: FingerprintDialogPresenter
     private val _authCallback = PublishSubject.create<AuthCallback>()
     override val authCallback: Observable<AuthCallback> get() = _authCallback
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         presenter = FingerprintDialogPresenter(this)
         return inflater.inflate(R.layout.fragment_fingerprint_dialog, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        presenter.onViewReady()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        presenter.onResume()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        presenter.onPause()
     }
 
     override fun onSucceeded() {
@@ -91,7 +74,7 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
     private val resetErrorTextRunnable = Runnable {
         view!!.imageView.setImageResource(R.drawable.ic_fingerprint)
         view!!.fingerprintStatus.run {
-            setTextColor(resources.getColor(R.color.darkGrey, null))
+            setTextColor(resources.getColor(R.color.gray_73_percent, null))
             text = getString(R.string.touch_fingerprint_sensor)
         }
     }

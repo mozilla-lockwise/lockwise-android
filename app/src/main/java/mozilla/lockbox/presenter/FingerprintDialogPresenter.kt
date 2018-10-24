@@ -7,10 +7,9 @@
 package mozilla.lockbox.presenter
 
 import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
+import mozilla.lockbox.action.FingerprintAuthAction.OnAuthentication
 import mozilla.lockbox.action.FingerprintSensorAction
-import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.store.FingerprintStore
@@ -35,17 +34,11 @@ class FingerprintDialogPresenter(
 
     override fun onViewReady() {
         fingerprintStore.authState
-            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(this::updateState)
             .addTo(compositeDisposable)
 
         view.authCallback
-            .subscribe {
-                when (it) {
-                    is AuthCallback.OnAuth -> dispatcher.dispatch(RouteAction.ItemList)
-                    is AuthCallback.OnError -> dispatcher.dispatch(RouteAction.LockScreen)
-                }
-            }
+            .subscribe { dispatcher.dispatch(OnAuthentication(it)) }
             .addTo(compositeDisposable)
 
         view.cancelTapped

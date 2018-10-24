@@ -37,8 +37,8 @@ open class FingerprintStore(
     private var cancellationSignal: CancellationSignal? = null
     private var selfCancelled = false
 
-    private val _state = PublishSubject.create<AuthenticationState>()
-    val authState: Observable<AuthenticationState> = _state
+    private val _state: PublishSubject<AuthenticationState> = PublishSubject.create()
+    val authState: Observable<AuthenticationState> get() = _state
 
     companion object {
         val shared = FingerprintStore()
