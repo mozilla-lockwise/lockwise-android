@@ -52,5 +52,4 @@
     <string name="autofill_summary">Let Firefox Lockbox fill in logins for you</string>
     <string name="send_usage_data">Send usage data</string>
     <string name="send_usage_data_summary">Mozilla strives to only collect what we need to provide and improve Firefox for everyone. </string>
-    <string name="shared_prefs_sort_option_key">SortOption</string>
 </resources>

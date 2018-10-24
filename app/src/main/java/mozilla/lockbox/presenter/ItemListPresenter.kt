@@ -51,7 +51,12 @@ class ItemListPresenter(
 
         Observables.combineLatest(itemViewModelList, prefsStore.itemListSortObservable)
                 .distinctUntilChanged()
-                .sort()
+                .map { pair ->
+                    when (pair.second) {
+                        ItemListSort.ALPHABETICALLY -> { pair.first.sortedBy { it.title } }
+                        ItemListSort.RECENTLY_USED -> { pair.first.sortedBy { it.timeLastUsed }}
+                    }
+                }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(view::updateItems)
                 .addTo(compositeDisposable)
@@ -95,14 +100,5 @@ class ItemListPresenter(
         }
 
         dispatcher.dispatch(action)
-    }
-}
-
-fun Observable<Pair<List<ItemViewModel>, ItemListSort>>.sort(): Observable<List<ItemViewModel>> {
-    return this.map { pair ->
-        when (pair.second) {
-            ItemListSort.ALPHABETICALLY -> { pair.first.sortedBy { it.title } }
-            ItemListSort.RECENTLY_USED -> { pair.first.sortedBy { it.timeLastUsed }}
-        }
     }
 }

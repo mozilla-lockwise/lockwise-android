@@ -24,9 +24,7 @@ fun ListPopupWindow.itemClicks(): Observable<ListItem> {
     return ListPopupWindowItemClickObservable(this)
 }
 
-class ListItem(val parent: AdapterView<*>?, val view: View?, val position: Int, val id: Long) {
-
-}
+class ListItem(val parent: AdapterView<*>?, val view: View?, val position: Int, val id: Long) { }
 
 private class ListPopupWindowItemClickObservable(
     private val view: ListPopupWindow

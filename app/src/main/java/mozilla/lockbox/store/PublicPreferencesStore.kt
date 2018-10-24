@@ -21,13 +21,13 @@ import mozilla.lockbox.flux.Dispatcher
 open class PublicPreferencesStore(val dispatcher: Dispatcher = Dispatcher.shared) {
 
     internal val compositeDisposable = CompositeDisposable()
-    internal lateinit var sharedPrefs: SharedPreferences
+    private lateinit var sharedPrefs: SharedPreferences
+    private val itemListSortKey = "SortOption"
 
     companion object {
         val shared = PublicPreferencesStore()
     }
 
-    private lateinit var itemListSortKey: String
     val itemListSortObservable: Observable<ItemListSort> by lazy {
         val onNext: (String, Int) -> ItemListSort = { key, default ->
             ItemListSort.fromSortId(sharedPrefs.getInt(key,default))!!
@@ -37,8 +37,6 @@ open class PublicPreferencesStore(val dispatcher: Dispatcher = Dispatcher.shared
 
     fun applyContext(context: Context) {
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context)
-
-        itemListSortKey = context.resources.getString(R.string.shared_prefs_sort_option_key)
 
         dispatcher.register
                 .filterByType(SettingsAction.SortAction::class.java)

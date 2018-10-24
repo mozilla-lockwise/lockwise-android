@@ -151,6 +151,7 @@ class ItemListFragment : CommonFragment(), ItemListView {
                 }
                 .map { it.itemId }
         }
+
     override val sortItemSelection: Observable<ListItem>
         get() = sortItemsMenu.itemClicks()
 

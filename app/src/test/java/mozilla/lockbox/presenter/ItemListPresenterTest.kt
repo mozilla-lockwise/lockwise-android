@@ -11,17 +11,20 @@ import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import junit.framework.Assert
 import mozilla.lockbox.R
+import mozilla.lockbox.action.ItemListSort
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.model.ItemViewModel
+import mozilla.lockbox.rx.ListItem
 import mozilla.lockbox.store.DataStore
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mozilla.sync15.logins.ServerPassword
 import org.robolectric.RobolectricTestRunner
+import java.util.Date
 
 @RunWith(RobolectricTestRunner::class)
 class ItemListPresenterTest {
@@ -29,11 +32,18 @@ class ItemListPresenterTest {
         val itemSelectedStub = PublishSubject.create<ItemViewModel>()
         val filterClickStub = PublishSubject.create<Unit>()
         val menuItemSelectionStub = PublishSubject.create<Int>()
+        val sortItemSelectionStub = PublishSubject.create<ListItem>()
 
         var updateItemsArgument: List<ItemViewModel>? = null
 
+        override val sortMenuOptions: Array<ItemListSort>
+            get() = ItemListSort.values()
+
         override val itemSelection: Observable<ItemViewModel>
             get() = itemSelectedStub
+
+        override val sortItemSelection: Observable<ListItem>
+            get() = sortItemSelectionStub
 
         override val filterClicks: Observable<Unit>
             get() = filterClickStub
@@ -43,6 +53,10 @@ class ItemListPresenterTest {
 
         override fun updateItems(itemList: List<ItemViewModel>) {
             updateItemsArgument = itemList
+        }
+
+        override fun updateItemListSort(sort: ItemListSort) {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         }
     }
 
@@ -69,7 +83,7 @@ class ItemListPresenterTest {
     @Test
     fun receivingItemSelected() {
         val id = "the_guid"
-        view.itemSelectedStub.onNext(ItemViewModel("title", "subtitle", id))
+        view.itemSelectedStub.onNext(ItemViewModel("title", "subtitle", id, Date().time))
 
         dispatcherObserver.assertLastValue(RouteAction.ItemDetail(id))
     }
@@ -109,13 +123,16 @@ class ItemListPresenterTest {
         val expectedList = listOf<ItemViewModel>(
                 ItemViewModel("mozilla.org",
                         username,
-                        password1.id),
+                        password1.id,
+                        Date().time),
                 ItemViewModel("cats.org",
                         username,
-                        password2.id),
+                        password2.id,
+                        Date().time),
                 ItemViewModel("dogs.org",
                         "",
-                        password3.id)
+                        password3.id,
+                        Date().time)
         )
 
         Assert.assertEquals(expectedList, view.updateItemsArgument)
