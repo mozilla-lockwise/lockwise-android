@@ -13,17 +13,18 @@ import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.R
 import mozilla.lockbox.action.DataStoreAction
-import mozilla.lockbox.model.ItemListSort
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.SettingAction
+import mozilla.lockbox.action.SettingIntent
 import mozilla.lockbox.extensions.mapToItemViewModelList
 import mozilla.lockbox.flux.Dispatcher
-
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
+import mozilla.lockbox.model.ItemListSort
 import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.model.titleFromHostname
 import mozilla.lockbox.store.DataStore
+import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.SettingStore
 
 interface ItemListView {
@@ -39,7 +40,8 @@ class ItemListPresenter(
     private val view: ItemListView,
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val dataStore: DataStore = DataStore.shared,
-    private val settingStore: SettingStore = SettingStore.shared
+    private val settingStore: SettingStore = SettingStore.shared,
+    private val fingerprintStore: FingerprintStore = FingerprintStore.shared
 ) : Presenter() {
 
     override fun onViewReady() {
@@ -90,7 +92,12 @@ class ItemListPresenter(
 
     private fun onMenuItem(@IdRes item: Int) {
         val action = when (item) {
-            R.id.fragment_locked -> RouteAction.LockScreen
+            R.id.fragment_locked -> {
+                if (fingerprintStore.isDeviceSecure) RouteAction.LockScreen
+                else RouteAction.DialogAction.SecurityDisclaimerDialog(
+                    RouteAction.SystemSetting(SettingIntent.Security)
+                )
+            }
             R.id.fragment_setting -> RouteAction.SettingList
             else -> return log.error("Cannot route from item list menu")
         }

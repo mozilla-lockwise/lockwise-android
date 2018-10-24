@@ -50,6 +50,10 @@ android {
             returnDefaultValues = true
         }
     }
+    packagingOptions {
+        exclude 'META-INF/LICENSE.md'
+        exclude 'META-INF/LICENSE-notice.md'
+    }
 }
 
 configurations {
@@ -79,8 +83,8 @@ dependencies {
     implementation "org.mozilla.components:lib-dataprotect:${rootProject.ext.android_components_version}"
     implementation 'io.sentry:sentry-android:1.7.10'
     implementation 'com.github.magiepooh:recycler-itemdecoration:1.1.1@aar'
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.1'
-    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.1'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.2'
+    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.2'
     implementation "android.arch.lifecycle:extensions:$lifecycle_version"
     implementation "android.arch.lifecycle:common-java8:$lifecycle_version"
     implementation "android.arch.navigation:navigation-fragment:$navigation_version"
@@ -90,8 +94,11 @@ dependencies {
     testImplementation 'org.robolectric:robolectric:4.0'
     testImplementation "org.powermock:powermock-module-junit4:2.0.0-beta.5"
     testImplementation "org.powermock:powermock-api-mockito2:2.0.0-beta.5"
-    androidTestImplementation 'org.mockito:mockito-android:2.22.0'
     testImplementation "org.junit.jupiter:junit-jupiter-api:5.3.1"
+    androidTestImplementation "org.junit.jupiter:junit-jupiter-api:5.3.1"
+    androidTestImplementation "androidx.test:core:1.0.0"
+    androidTestImplementation "androidx.test.ext:junit:1.0.0"
+    androidTestImplementation 'org.mockito:mockito-android:2.22.0'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test:rules:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'

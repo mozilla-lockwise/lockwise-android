@@ -15,8 +15,7 @@
     <color name="text_white">#ffffff</color>
     <color name="backgroundWhite">#ffffff</color>
     <color name="textGrey">#0c0c0d</color>
-    <color name="opaque_black">#de000000</color>
-    <color name="translucent_black">#99000000</color>
+    <color name="black_87_percent">#de000000</color>
     <color name="blue_60_percent">#0060df</color>
     <color name="gray_73_percent">#737373</color>
     <color name="switch_activated">#1771eb</color>

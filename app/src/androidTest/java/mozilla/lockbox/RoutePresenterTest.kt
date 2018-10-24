@@ -71,8 +71,14 @@ open class RoutePresenterTest {
     }
 
     @Test
-    fun testLockScreen() {
-        navigator.gotoLockScreen()
-        navigator.back(false)
+    fun testNoSecurityDialog() {
+        navigator.gotoNoSecurityDialog()
+        navigator.back(true)
+        navigator.checkAtItemList()
+    }
+
+    @Test
+    fun testNoSecurityDialogSetupSecurity() {
+        navigator.goToSecuritySettings()
     }
 }

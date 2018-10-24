@@ -14,9 +14,13 @@ import android.support.v4.app.DialogFragment
 import android.support.v7.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.R
 import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.extensions.AlertDialogHelper
+import mozilla.lockbox.extensions.AlertState
+import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
 import mozilla.lockbox.store.RouteStore
@@ -25,6 +29,7 @@ import mozilla.lockbox.view.ItemDetailFragmentArgs
 
 class RoutePresenter(
     private val activity: AppCompatActivity,
+    private val dispatcher: Dispatcher = Dispatcher.shared,
     private val routeStore: RouteStore = RouteStore.shared
 ) : Presenter() {
     private lateinit var navController: NavController
@@ -54,10 +59,37 @@ class RoutePresenter(
             is RouteAction.OpenWebsite -> {
                 openWebsite(destination.url)
             }
+            is RouteAction.SystemSetting -> {
+                openSetting(destination.setting.settingIntent)
+            }
             is RouteAction.FingerprintDialog -> showDialogFragment(FingerprintAuthDialogFragment())
+            is RouteAction.DialogAction -> showDialog(destination)
 
             is RouteAction.Back -> navController.popBackStack()
         }
+    }
+
+    private fun showDialog(destination: RouteAction.DialogAction) {
+        val dialogStateObservable = when (destination) {
+            is RouteAction.DialogAction.SecurityDisclaimerDialog -> showSecurityDisclaimerDialog()
+        }
+
+        dialogStateObservable
+            .subscribe { alertState ->
+                val action = when (alertState) {
+                    AlertState.BUTTON_POSITIVE -> {
+                        destination.positiveButtonAction
+                    }
+                    AlertState.BUTTON_NEGATIVE -> {
+                        destination.negativeButtonAction
+                    }
+                }
+
+                action?.let {
+                    dispatcher.dispatch(action)
+                }
+            }
+            .addTo(compositeDisposable)
     }
 
     private fun showDialogFragment(dialogFragment: DialogFragment?) {
@@ -69,6 +101,16 @@ class RoutePresenter(
                 log.error("Could not show dialog", e)
             }
         }
+    }
+
+    private fun showSecurityDisclaimerDialog(): Observable<AlertState> {
+        return AlertDialogHelper.showAlertDialog(
+            activity,
+            R.string.no_device_security_title,
+            R.string.no_device_security_message,
+            R.string.set_up_security_button,
+            R.string.cancel
+        )
     }
 
     private fun navigateToFragment(action: RouteAction, @IdRes destinationId: Int, args: Bundle? = null) {
@@ -116,5 +158,10 @@ class RoutePresenter(
     private fun openWebsite(url: String) {
         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         activity.startActivity(browserIntent, null)
+    }
+
+    private fun openSetting(setting: String) {
+        val settingIntent = Intent(setting)
+        activity.startActivity(settingIntent, null)
     }
 }
