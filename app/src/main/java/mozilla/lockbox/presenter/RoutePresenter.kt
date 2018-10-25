@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.R
 import mozilla.lockbox.action.RouteAction
@@ -23,6 +24,8 @@ import mozilla.lockbox.extensions.AlertState
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
+import mozilla.lockbox.store.DataStore
+import mozilla.lockbox.store.DataStore.State
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.view.FingerprintAuthDialogFragment
 import mozilla.lockbox.view.ItemDetailFragmentArgs
@@ -30,7 +33,8 @@ import mozilla.lockbox.view.ItemDetailFragmentArgs
 class RoutePresenter(
     private val activity: AppCompatActivity,
     private val dispatcher: Dispatcher = Dispatcher.shared,
-    private val routeStore: RouteStore = RouteStore.shared
+    private val routeStore: RouteStore = RouteStore.shared,
+    private val dataStore: DataStore = DataStore.shared
 ) : Presenter() {
     private lateinit var navController: NavController
 
@@ -38,7 +42,25 @@ class RoutePresenter(
         navController = Navigation.findNavController(activity, R.id.fragment_nav_host)
         navController.setGraph(R.navigation.graph_main)
 
-        routeStore.routes.subscribe(this::route).addTo(compositeDisposable)
+        dataStore.state
+            .observeOn(mainThread())
+            .map(this::dataStoreRoutes)
+            .subscribe(this::route)
+            .addTo(compositeDisposable)
+
+        routeStore.routes
+            .observeOn(mainThread())
+            .subscribe(this::route)
+            .addTo(compositeDisposable)
+    }
+
+    private fun dataStoreRoutes(storageState: State): RouteAction {
+        return when (storageState) {
+            is State.Unlocked -> RouteAction.ItemList
+            is State.Locked -> RouteAction.LockScreen
+            is State.Unprepared -> RouteAction.Welcome
+            else -> RouteAction.LockScreen
+        }
     }
 
     private fun route(action: RouteAction) {
@@ -141,22 +163,22 @@ class RoutePresenter(
         // This maps two nodes in the graph_main.xml to the edge between them.
         // If a RouteAction is called from a place the graph doesn't know about then
         // the app will log.error.
-        when (Pair(from, to)) {
-            Pair(R.id.fragment_welcome, R.id.fragment_fxa_login) -> return R.id.action_welcome_to_fxaLogin
+        return when (Pair(from, to)) {
+            Pair(R.id.fragment_welcome, R.id.fragment_fxa_login) -> R.id.action_welcome_to_fxaLogin
 
-            Pair(R.id.fragment_fxa_login, R.id.fragment_item_list) -> return R.id.action_fxaLogin_to_itemList
-            Pair(R.id.fragment_locked, R.id.fragment_item_list) -> return R.id.action_locked_to_itemList
+            Pair(R.id.fragment_fxa_login, R.id.fragment_item_list) -> R.id.action_fxaLogin_to_itemList
+            Pair(R.id.fragment_locked, R.id.fragment_item_list) -> R.id.action_locked_to_itemList
 
-            Pair(R.id.fragment_item_list, R.id.fragment_item_detail) -> return R.id.action_itemList_to_itemDetail
-            Pair(R.id.fragment_item_list, R.id.fragment_setting) -> return R.id.action_itemList_to_setting
-            Pair(R.id.fragment_item_list, R.id.fragment_account_setting) -> return R.id.action_itemList_to_accountSetting
-            Pair(R.id.fragment_item_list, R.id.fragment_locked) -> return R.id.action_itemList_to_locked
-            Pair(R.id.fragment_item_list, R.id.fragment_filter) -> return R.id.action_itemList_to_filter
+            Pair(R.id.fragment_item_list, R.id.fragment_item_detail) -> R.id.action_itemList_to_itemDetail
+            Pair(R.id.fragment_item_list, R.id.fragment_setting) -> R.id.action_itemList_to_setting
+            Pair(R.id.fragment_item_list, R.id.fragment_account_setting) -> R.id.action_itemList_to_accountSetting
+            Pair(R.id.fragment_item_list, R.id.fragment_locked) -> R.id.action_itemList_to_locked
+            Pair(R.id.fragment_item_list, R.id.fragment_filter) -> R.id.action_itemList_to_filter
 
-            Pair(R.id.fragment_filter, R.id.fragment_item_detail) -> return R.id.action_filter_to_itemDetail
+            Pair(R.id.fragment_filter, R.id.fragment_item_detail) -> R.id.action_filter_to_itemDetail
+
+            else -> null
         }
-
-        return null
     }
 
     private fun openWebsite(url: String) {
