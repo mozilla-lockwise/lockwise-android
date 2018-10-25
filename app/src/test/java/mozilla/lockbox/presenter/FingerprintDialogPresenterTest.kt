@@ -28,7 +28,7 @@ class FingerprintDialogPresenterTest {
         override fun onSucceeded() {
         }
 
-        override fun onFailed() {
+        override fun onFailed(error: String?) {
         }
 
         override fun onError(error: String?) {
@@ -73,8 +73,8 @@ class FingerprintDialogPresenterTest {
 
     @Test
     fun `update on failed state`() {
-        fingerprintStore.authStateStub.onNext(FingerprintStore.AuthenticationState.Failed)
-        verify(view).onFailed()
+        fingerprintStore.authStateStub.onNext(FingerprintStore.AuthenticationState.Failed("error"))
+        verify(view).onFailed("error")
     }
 
     @Test

@@ -55,8 +55,8 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
         }, ERROR_TIMEOUT_MILLIS)
     }
 
-    override fun onFailed() {
-        showError(getString(R.string.fingerprint_not_recognized))
+    override fun onFailed(error: String?) {
+        showError(error ?: getString(R.string.fingerprint_not_recognized))
     }
 
     override val cancelTapped: Observable<Unit>

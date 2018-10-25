@@ -48,7 +48,7 @@ open class FingerprintStore(
 
     sealed class AuthenticationState {
         object Succeeded : AuthenticationState()
-        object Failed : AuthenticationState()
+        data class Failed(val error: String? = null) : AuthenticationState()
         data class Error(val error: String?) : AuthenticationState()
     }
 
@@ -195,12 +195,12 @@ open class FingerprintStore(
 
         override fun onAuthenticationHelp(helpCode: Int, helpString: CharSequence?) {
             super.onAuthenticationHelp(helpCode, helpString)
-            _state.onNext(AuthenticationState.Error(helpString.toString()))
+            _state.onNext(AuthenticationState.Failed(helpString.toString()))
         }
 
         override fun onAuthenticationFailed() {
             super.onAuthenticationFailed()
-            _state.onNext(AuthenticationState.Failed)
+            _state.onNext(AuthenticationState.Failed())
         }
     }
 }

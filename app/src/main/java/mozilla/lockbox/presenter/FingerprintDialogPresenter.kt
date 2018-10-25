@@ -18,7 +18,7 @@ import mozilla.lockbox.view.FingerprintAuthDialogFragment.AuthCallback
 
 interface FingerprintDialogView {
     fun onSucceeded()
-    fun onFailed()
+    fun onFailed(error: String?)
     fun onError(error: String?)
     val authCallback: Observable<AuthCallback>
     val cancelTapped: Observable<Unit>
@@ -59,7 +59,7 @@ class FingerprintDialogPresenter(
     private fun updateState(state: AuthenticationState) {
         when (state) {
             is AuthenticationState.Succeeded -> view.onSucceeded()
-            is AuthenticationState.Failed -> view.onFailed()
+            is AuthenticationState.Failed -> view.onFailed(state.error)
             is AuthenticationState.Error -> view.onError(state.error)
         }
     }
