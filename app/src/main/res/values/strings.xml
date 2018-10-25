@@ -37,7 +37,6 @@
     <string name="copy_username_content_description">Copy your username</string>
     <string name="copy_password_content_description">Copy your password</string>
     <string name="display_password_content_description">Display your password in plain text</string>
-
     <string name="security_title">Security</string>
     <string name="support_title">Support</string>
     <string name="learn_more">Learn more</string>
@@ -48,4 +47,10 @@
     <string name="autofill_summary">Let Firefox Lockbox fill in logins for you</string>
     <string name="send_usage_data">Send usage data</string>
     <string name="send_usage_data_summary">Mozilla strives to only collect what we need to provide and improve Firefox for everyone. </string>
+    <string name="fingerprint_dialog_title">Unlock Firefox Lockbox</string>
+    <string name="touch_fingerprint_sensor">Touch the fingerprint sensor.</string>
+    <string name="cancel">Cancel</string>
+    <string name="fingerprint_not_recognized">Not recognized</string>
+    <string name="fingerprint_success">Success!</string>
+    <string name="error">Fingerprint sensor error</string>
 </resources>

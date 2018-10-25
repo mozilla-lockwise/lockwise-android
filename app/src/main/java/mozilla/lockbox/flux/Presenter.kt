@@ -25,4 +25,9 @@ abstract class Presenter {
     open fun onResume() {
         // NOOP
     }
+
+    @CallSuper
+    open fun onPause() {
+        // NOOP
+    }
 }

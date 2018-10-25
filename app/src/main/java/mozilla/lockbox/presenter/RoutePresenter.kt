@@ -10,6 +10,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.support.annotation.IdRes
+import android.support.v4.app.DialogFragment
 import android.support.v7.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -19,6 +20,7 @@ import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
 import mozilla.lockbox.store.RouteStore
+import mozilla.lockbox.view.FingerprintAuthDialogFragment
 import mozilla.lockbox.view.ItemDetailFragmentArgs
 
 class RoutePresenter(
@@ -52,8 +54,20 @@ class RoutePresenter(
             is RouteAction.OpenWebsite -> {
                 openWebsite(destination.url)
             }
+            is RouteAction.FingerprintDialog -> showDialogFragment(FingerprintAuthDialogFragment())
 
             is RouteAction.Back -> navController.popBackStack()
+        }
+    }
+
+    private fun showDialogFragment(dialogFragment: DialogFragment?) {
+        if (dialogFragment != null) {
+            val fragmentManager = activity.supportFragmentManager
+            try {
+                dialogFragment.show(fragmentManager, dialogFragment.javaClass.name)
+            } catch (e: IllegalStateException) {
+                log.error("Could not show dialog", e)
+            }
         }
     }
 
@@ -86,6 +100,7 @@ class RoutePresenter(
             Pair(R.id.fragment_welcome, R.id.fragment_fxa_login) -> return R.id.action_welcome_to_fxaLogin
 
             Pair(R.id.fragment_fxa_login, R.id.fragment_item_list) -> return R.id.action_fxaLogin_to_itemList
+            Pair(R.id.fragment_locked, R.id.fragment_item_list) -> return R.id.action_locked_to_itemList
 
             Pair(R.id.fragment_item_list, R.id.fragment_item_detail) -> return R.id.action_itemList_to_itemDetail
             Pair(R.id.fragment_item_list, R.id.fragment_setting) -> return R.id.action_itemList_to_setting
