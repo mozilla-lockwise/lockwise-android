@@ -22,6 +22,11 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
     private val _authCallback = PublishSubject.create<AuthCallback>()
     override val authCallback: Observable<AuthCallback> get() = _authCallback
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(android.support.v4.app.DialogFragment.STYLE_NORMAL, R.style.NoTitleDialog)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         presenter = FingerprintDialogPresenter(this)
         return inflater.inflate(R.layout.fragment_fingerprint_dialog, container, false)
