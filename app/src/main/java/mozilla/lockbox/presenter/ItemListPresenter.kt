@@ -85,15 +85,12 @@ class ItemListPresenter(
                 .subscribe { sortBy ->
                     dispatcher.dispatch(SettingAction.ItemListSortOrder(sortBy))
                 }.addTo(compositeDisposable)
-
-        // TODO: remove this when we have proper locking / unlocking
-        dispatcher.dispatch(DataStoreAction.Unlock)
     }
 
     private fun onMenuItem(@IdRes item: Int) {
         val action = when (item) {
             R.id.lock_now_menu_item -> {
-                if (fingerprintStore.isDeviceSecure) RouteAction.LockScreen
+                if (fingerprintStore.isDeviceSecure) DataStoreAction.Lock
                 else RouteAction.DialogAction.SecurityDisclaimerDialog(
                     RouteAction.SystemSetting(SettingIntent.Security)
                 )
