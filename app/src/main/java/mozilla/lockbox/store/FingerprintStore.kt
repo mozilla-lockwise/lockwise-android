@@ -38,7 +38,7 @@ open class FingerprintStore(
     private var selfCancelled = false
 
     private val _state: PublishSubject<AuthenticationState> = PublishSubject.create()
-    val authState: Observable<AuthenticationState> get() = _state
+    open val authState: Observable<AuthenticationState> get() = _state
 
     companion object {
         val shared = FingerprintStore()
@@ -68,7 +68,7 @@ open class FingerprintStore(
         fingerprintManager = manager
     }
 
-    fun isFingerprintAuthAvailable(): Boolean {
+    open fun isFingerprintAuthAvailable(): Boolean {
         return fingerprintManager.isHardwareDetected && fingerprintManager.hasEnrolledFingerprints()
     }
 

@@ -11,14 +11,14 @@ import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 
-class LockedStore(
+open class LockedStore(
     val dispatcher: Dispatcher = Dispatcher.shared
 ) {
     companion object {
         val shared = LockedStore()
     }
 
-    val onAuthentication: Observable<FingerprintAuthAction> =
+    open val onAuthentication: Observable<FingerprintAuthAction> =
         dispatcher.register
             .filterByType(FingerprintAuthAction::class.java)
 }
