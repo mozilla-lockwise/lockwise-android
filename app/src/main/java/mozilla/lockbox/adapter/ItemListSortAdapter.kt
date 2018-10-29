@@ -13,8 +13,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 
-class ItemListSortAdapter(@NonNull context: Context, @LayoutRes resource: Int,
-    items: Array<String>): ArrayAdapter<String>(context, resource, items) {
+class ItemListSortAdapter(
+    @NonNull context: Context,
+    @LayoutRes resource: Int,
+    items: Array<String>
+) : ArrayAdapter<String>(context, resource, items) {
 
     var selectedItemPosition: Int? = null
     var selectedBackgroundColor: Int? = null
@@ -23,9 +26,9 @@ class ItemListSortAdapter(@NonNull context: Context, @LayoutRes resource: Int,
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val view = super.getView(position, convertView, parent)
         val selectedColor = selectedBackgroundColor
-        if (selectedItemPosition != null
-            && selectedColor != null
-            && selectedItemPosition == position) {
+        if (selectedItemPosition != null &&
+            selectedColor != null &&
+            selectedItemPosition == position) {
             view.setBackgroundColor(context.resources.getColor(selectedColor, theme))
         } else {
             view.setBackgroundColor(context.resources.getColor(android.R.color.background_light, theme))

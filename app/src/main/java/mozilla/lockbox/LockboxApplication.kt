@@ -73,4 +73,3 @@ class LockboxApplication : Application() {
         Sentry.init(sentryDsn, AndroidSentryClientFactory(ctx))
     }
 }
-

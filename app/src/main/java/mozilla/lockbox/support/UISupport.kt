@@ -8,7 +8,6 @@ package mozilla.lockbox.support
 
 import android.content.Context
 import android.os.Looper
-import mozilla.lockbox.BuildConfig
 
 fun isOnUiThread(): Boolean {
     return Looper.getMainLooper() == Looper.myLooper()

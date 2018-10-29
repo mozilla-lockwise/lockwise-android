@@ -6,7 +6,6 @@
 
 package mozilla.lockbox.action
 
-import mozilla.lockbox.LockboxApplication
 import mozilla.lockbox.R
 import mozilla.lockbox.flux.Action
 

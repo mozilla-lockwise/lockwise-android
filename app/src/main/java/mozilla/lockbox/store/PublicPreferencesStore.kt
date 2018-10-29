@@ -30,7 +30,7 @@ open class PublicPreferencesStore(val dispatcher: Dispatcher = Dispatcher.shared
 
     val itemListSortObservable: Observable<ItemListSort> by lazy {
         val onNext: (String, Int) -> ItemListSort = { key, default ->
-            ItemListSort.fromSortId(sharedPrefs.getInt(key,default))!!
+            ItemListSort.fromSortId(sharedPrefs.getInt(key, default))!!
         }
         createObservableForKey(itemListSortKey, ItemListSort.ALPHABETICALLY.sortId, onNext)
     }
@@ -41,7 +41,7 @@ open class PublicPreferencesStore(val dispatcher: Dispatcher = Dispatcher.shared
         dispatcher.register
                 .filterByType(SettingsAction.SortAction::class.java)
                 .subscribe {
-                   with (sharedPrefs.edit()) {
+                    with(sharedPrefs.edit()) {
                         putInt(itemListSortKey, it.id.sortId)
                         apply()
                     }

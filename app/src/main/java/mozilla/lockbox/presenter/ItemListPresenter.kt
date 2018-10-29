@@ -54,7 +54,7 @@ class ItemListPresenter(
                 .map { pair ->
                     when (pair.second) {
                         ItemListSort.ALPHABETICALLY -> { pair.first.sortedBy { it.title } }
-                        ItemListSort.RECENTLY_USED -> { pair.first.sortedBy { it.timeLastUsed }}
+                        ItemListSort.RECENTLY_USED -> { pair.first.sortedBy { it.timeLastUsed } }
                     }
                 }
                 .observeOn(AndroidSchedulers.mainThread())
