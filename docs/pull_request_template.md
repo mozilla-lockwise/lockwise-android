@@ -24,4 +24,4 @@ _(Optional: to clearly demonstrate the feature or fix to help with testing and r
 - [ ] add unit tests
   - optional: consider adding instrumentation (integration/UI) tests
 - [ ] request the "UX" team perform a design review (if/when applicable)
-- [ ] make sure tests are passing (e.g.: fix lint and other errors)
+- [ ] make sure CI builds are passing (e.g.: fix lint and other errors)
