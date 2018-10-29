@@ -50,6 +50,7 @@ class FixedDataStoreSupport(values: List<ServerPassword>? = null) : DataStoreSup
  */
 internal fun createDummyItem(idx: Int): ServerPassword {
     val random = Random()
+    val id = UUID.randomUUID().toString()
     val pwd = createRandomPassword()
     val host = createHostname()
     val user = createUserId()
@@ -58,7 +59,7 @@ internal fun createDummyItem(idx: Int): ServerPassword {
     val changed = Date(used - 86400000).time
 
     return ServerPassword(
-        id = "0000$idx",
+        id = id,
         hostname = host,
         username = user,
         password = pwd,
@@ -93,11 +94,11 @@ internal fun createHostname(): String {
     var hostnameLength = getRandomInRange(8, 20)
     val hostname =
         buildSequence {
-            val r = Random(); while (true) yield(r.nextInt(24))
+            val r = Random(); while (true) yield(r.nextInt(26))
         }
             .take(hostnameLength)
             .map {
-                (it + 67).toChar().toLowerCase()
+                (it + 97).toChar()
             }
             .joinToString("")
 
