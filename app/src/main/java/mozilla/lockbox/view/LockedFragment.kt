@@ -6,31 +6,59 @@
 
 package mozilla.lockbox.view
 
+import android.app.Activity.RESULT_OK
+import android.app.KeyguardManager
+import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_locked.view.*
 import mozilla.lockbox.R
 import mozilla.lockbox.presenter.LockedPresenter
 import mozilla.lockbox.presenter.LockedView
+import java.lang.Exception
 
-class LockedFragment : Fragment(), LockedView {
-    private lateinit var presenter: LockedPresenter
+class LockedFragment : CommonFragment(), LockedView {
+    private val _unlockConfirmed = PublishSubject.create<Boolean>()
+
+    companion object {
+        private const val LOCK_REQUEST_CODE = 221
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         presenter = LockedPresenter(this)
         return inflater.inflate(R.layout.fragment_locked, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        presenter.onViewReady()
-    }
-
     override val unlockButtonTaps: Observable<Unit>
         get() = view!!.unlockButton.clicks()
+
+    override fun unlockFallback(manager: KeyguardManager) {
+        val intent = manager.createConfirmDeviceCredentialIntent(
+            getString(R.string.unlock_fallback_title),
+            getString(R.string.confirm_pattern)
+        )
+        try {
+            startActivityForResult(intent, LOCK_REQUEST_CODE)
+        } catch (exception: Exception) {
+            _unlockConfirmed.onNext(false)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == RESULT_OK) {
+            when (requestCode) {
+                LOCK_REQUEST_CODE -> _unlockConfirmed.onNext(true)
+            }
+        } else {
+            _unlockConfirmed.onNext(false)
+        }
+    }
+
+    override val unlockConfirmed: Observable<Boolean> get() = _unlockConfirmed
 }

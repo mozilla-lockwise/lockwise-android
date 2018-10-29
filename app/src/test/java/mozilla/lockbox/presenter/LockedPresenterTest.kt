@@ -1,5 +1,6 @@
 package mozilla.lockbox.presenter
 
+import android.app.KeyguardManager
 import android.content.Context
 import android.hardware.fingerprint.FingerprintManager
 import io.reactivex.Observable
@@ -27,6 +28,11 @@ import org.robolectric.annotation.Config
 class LockedPresenterTest {
 
     class FakeView : LockedView {
+        override fun unlockFallback(manager: KeyguardManager) {
+        }
+
+        val unlockConfirmedStub = PublishSubject.create<Boolean>()
+        override val unlockConfirmed: Observable<Boolean> get() = unlockConfirmedStub
         override val unlockButtonTaps = PublishSubject.create<Unit>()
     }
 
@@ -48,6 +54,7 @@ class LockedPresenterTest {
     fun setUp() {
         Dispatcher.shared.register.subscribe(dispatcherObserver)
         fingerprintStore.apply(fingerprintManager)
+        lockedStore.apply(keyguradManager)
         subject.onViewReady()
     }
 
@@ -73,10 +80,26 @@ class LockedPresenterTest {
 
     @Test
     fun `handle error authentication callback`() {
+        `when`(lockedStore.isKeyguradSecure).thenReturn(false)
         lockedStore.onAuth.onNext(FingerprintAuthAction.OnAuthentication(AuthCallback.OnError))
+        dispatcherObserver.assertLastValue(RouteAction.LockScreen)
+    }
+
+    @Test
+    fun `handle unlock confirmed true`() {
+        view.unlockConfirmedStub.onNext(true)
+        dispatcherObserver.assertLastValue(RouteAction.ItemList)
+    }
+
+    @Test
+    fun `handle unlock confirmed false`() {
+        view.unlockConfirmedStub.onNext(false)
         dispatcherObserver.assertLastValue(RouteAction.LockScreen)
     }
 
     private val fingerprintManager =
         RuntimeEnvironment.application.getSystemService(Context.FINGERPRINT_SERVICE) as FingerprintManager
+
+    private val keyguradManager =
+        RuntimeEnvironment.application.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
 }
