@@ -12,11 +12,12 @@ import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 
-interface WelcomeViewProtocol {
+interface WelcomeView {
     val getStartedClicks: Observable<Unit>
 }
 
-class WelcomePresenter(private val view: WelcomeViewProtocol, private val dispatcher: Dispatcher = Dispatcher.shared) : Presenter() {
+class WelcomePresenter(private val view: WelcomeView,
+    private val dispatcher: Dispatcher = Dispatcher.shared) : Presenter() {
     override fun onViewReady() {
         view.getStartedClicks
                 .subscribe { dispatcher.dispatch(RouteAction.Login) }

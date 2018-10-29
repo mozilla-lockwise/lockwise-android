@@ -13,7 +13,7 @@ import mozilla.lockbox.flux.Dispatcher
 import org.junit.Test
 
 class WelcomePresenterTest {
-    class FakeView : WelcomeViewProtocol {
+    class FakeView : WelcomeView {
         val tapStub: PublishSubject<Unit> = PublishSubject.create<Unit>()
 
         override val getStartedClicks: Observable<Unit>
