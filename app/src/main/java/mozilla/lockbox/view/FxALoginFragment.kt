@@ -10,15 +10,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.jakewharton.rxbinding2.view.clicks
-import io.reactivex.Observable
-import kotlinx.android.synthetic.main.fragment_fxa_login.view.*
 import kotlinx.android.synthetic.main.include_backable.view.*
 import mozilla.lockbox.R
 import mozilla.lockbox.presenter.FxALoginPresenter
-import mozilla.lockbox.presenter.FxALoginViewProtocol
+import mozilla.lockbox.presenter.FxALoginView
+import java.net.URL
 
-class FxALoginFragment : BackableFragment(), FxALoginViewProtocol {
+class FxALoginFragment : BackableFragment(), FxALoginView {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -33,6 +31,7 @@ class FxALoginFragment : BackableFragment(), FxALoginViewProtocol {
         view.toolbar.setNavigationIcon(android.R.drawable.ic_menu_close_clear_cancel)
     }
 
-    override val logMeInClicks: Observable<Unit>
-        get() = view!!.logMeInButton.clicks()
+    override fun loadURL(url: URL) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 }

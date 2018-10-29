@@ -6,20 +6,19 @@
 
 package mozilla.lockbox.presenter
 
-import io.reactivex.Observable
-import io.reactivex.rxkotlin.addTo
-import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
+import java.net.URL
 
-interface FxALoginViewProtocol {
-    val logMeInClicks: Observable<Unit>
+interface FxALoginView {
+    fun loadURL(url: URL)
 }
 
-class FxALoginPresenter(private val view: FxALoginViewProtocol, private val dispatcher: Dispatcher = Dispatcher.shared) : Presenter() {
+class FxALoginPresenter(
+    private val view: FxALoginView,
+    private val dispatcher: Dispatcher = Dispatcher.shared
+) : Presenter() {
     override fun onViewReady() {
-        this.view.logMeInClicks.subscribe {
-            dispatcher.dispatch(RouteAction.ItemList)
-        }.addTo(compositeDisposable)
+
     }
 }
