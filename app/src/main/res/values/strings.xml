@@ -54,5 +54,5 @@
     <string name="fingerprint_success">Success!</string>
     <string name="error">Fingerprint sensor error</string>
     <string name="unlock_fallback_title">Unlock Firefox Lockbox</string>
-    <string name="confirm_pattern">Confirm your screen lock PIN, Pattern or Password</string>
+    <string name="confirm_pattern">Enter your device Pattern, PIN, or Password.</string>
 </resources>

@@ -75,6 +75,14 @@ class LockedPresenterTest {
     }
 
     @Test
+    fun `unlock button tap fallback on fingerprint error`() {
+        `when`(fingerprintStore.isFingerprintAuthAvailable()).thenReturn(true)
+        `when`(keyguradManager.isKeyguardSecure).thenReturn(true)
+        lockedStore.onAuth.onNext(FingerprintAuthAction.OnAuthentication(AuthCallback.OnError))
+        verify(view).unlockFallback(keyguradManager)
+    }
+
+    @Test
     fun `handle success authentication callback`() {
         lockedStore.onAuth.onNext(FingerprintAuthAction.OnAuthentication(AuthCallback.OnAuth))
         dispatcherObserver.assertLastValue(RouteAction.ItemList)
