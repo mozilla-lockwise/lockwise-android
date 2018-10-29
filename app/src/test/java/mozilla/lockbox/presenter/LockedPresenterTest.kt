@@ -19,6 +19,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.spy
+import org.mockito.Mockito.verify
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
@@ -27,7 +28,7 @@ import org.robolectric.annotation.Config
 @Config(packageName = "mozilla.lockbox")
 class LockedPresenterTest {
 
-    class FakeView : LockedView {
+    open class FakeView : LockedView {
         override fun unlockFallback(manager: KeyguardManager) {
         }
 
@@ -44,7 +45,7 @@ class LockedPresenterTest {
             get() = onAuth
     }
 
-    val view = FakeView()
+    val view = spy(FakeView())
     val fingerprintStore = spy(FakeFingerprintStore())
     val lockedStore = FakeLockedStore()
     val dispatcherObserver = TestObserver.create<Action>()
@@ -66,10 +67,11 @@ class LockedPresenterTest {
     }
 
     @Test
-    fun `unlock button tap shows item list`() {
+    fun `unlock button tap fallback if no fingerprint`() {
         `when`(fingerprintStore.isFingerprintAuthAvailable()).thenReturn(false)
+        `when`(keyguradManager.isKeyguardSecure).thenReturn(true)
         view.unlockButtonTaps.onNext(Unit)
-        dispatcherObserver.assertLastValue(RouteAction.ItemList)
+        verify(view).unlockFallback(keyguradManager)
     }
 
     @Test
@@ -80,7 +82,7 @@ class LockedPresenterTest {
 
     @Test
     fun `handle error authentication callback`() {
-        `when`(lockedStore.isKeyguradSecure).thenReturn(false)
+        `when`(lockedStore.isKeyguardSecure).thenReturn(false)
         lockedStore.onAuth.onNext(FingerprintAuthAction.OnAuthentication(AuthCallback.OnError))
         dispatcherObserver.assertLastValue(RouteAction.LockScreen)
     }
@@ -101,5 +103,5 @@ class LockedPresenterTest {
         RuntimeEnvironment.application.getSystemService(Context.FINGERPRINT_SERVICE) as FingerprintManager
 
     private val keyguradManager =
-        RuntimeEnvironment.application.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+        spy(RuntimeEnvironment.application.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager)
 }

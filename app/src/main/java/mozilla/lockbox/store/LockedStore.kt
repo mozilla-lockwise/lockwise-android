@@ -29,5 +29,5 @@ open class LockedStore(
         keyguardManager = manager
     }
 
-    val isKeyguradSecure get() = keyguardManager.isKeyguardSecure
+    val isKeyguardSecure get() = keyguardManager.isKeyguardSecure
 }

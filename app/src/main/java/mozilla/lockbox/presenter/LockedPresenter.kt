@@ -35,7 +35,7 @@ class LockedPresenter(
                 if (fingerprintStore.isFingerprintAuthAvailable()) {
                     dispatcher.dispatch(RouteAction.FingerprintDialog)
                 } else {
-                    dispatcher.dispatch(RouteAction.ItemList)
+                    unlockFallback()
                 }
             }
             .addTo(compositeDisposable)
@@ -55,15 +55,18 @@ class LockedPresenter(
                 if (it is FingerprintAuthAction.OnAuthentication) {
                     when (it.authCallback) {
                         is AuthCallback.OnAuth -> dispatcher.dispatch(RouteAction.ItemList)
-                        is AuthCallback.OnError ->
-                            if (lockedStore.isKeyguradSecure) {
-                                view.unlockFallback(lockedStore.keyguardManager)
-                            } else {
-                                dispatcher.dispatch(RouteAction.LockScreen)
-                            }
+                        is AuthCallback.OnError -> unlockFallback()
                     }
                 }
             }
             .addTo(compositeDisposable)
+    }
+
+    private fun unlockFallback() {
+        if (lockedStore.isKeyguardSecure) {
+            view.unlockFallback(lockedStore.keyguardManager)
+        } else {
+            dispatcher.dispatch(RouteAction.LockScreen)
+        }
     }
 }
