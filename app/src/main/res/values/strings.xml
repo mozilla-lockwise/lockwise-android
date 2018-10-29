@@ -4,10 +4,6 @@
   ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
   -->
 
-<!-- This Source Code Form is subject to the terms of the Mozilla Public
-   - License, v. 2.0. If a copy of the MPL was not distributed with this
-   - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
-
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Firefox Lockbox</string>
     <string name="app_label">Lockbox</string>
@@ -23,14 +19,12 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">This is a placeholder for an OAuth login to FxA</string>
     <string name="fxa_login_logmein_btn">Log Me In</string>
-    <string name="settings_go_here">settings go here!</string>
     <string name="placeholder_unlock_button">Unlock Firefox Lockbox</string>
     <string name="lock_now">Lock Now</string>
     <string name="all_entries_a_z">All entries (A-Z)</string>
     <string name="search_your_entries" tools:ignore="ExtraTranslation">search your entries</string>
     <string name="no_matching_entries">No matching entries.</string>
     <string name="save_firefox_disclaimer">To see more entries here, you\'ll need to save them to Firefox.</string>
-    <string name="learn_more">Learn more</string>
     <string name="hint_hostname">Web address</string>
     <string name="hint_username">Username</string>
     <string name="hint_password">Password</string>
@@ -43,4 +37,20 @@
     <string name="copy_username_content_description">Copy your username</string>
     <string name="copy_password_content_description">Copy your password</string>
     <string name="display_password_content_description">Display your password in plain text</string>
+    <string name="security_title">Security</string>
+    <string name="support_title">Support</string>
+    <string name="learn_more">Learn more</string>
+    <string name="auto_lock">Auto lock</string>
+    <string name="unlock">Unlock with fingerprint</string>
+    <string name="auto_lock_option">5 minutes</string>
+    <string name="autofill">Autofill</string>
+    <string name="autofill_summary">Let Firefox Lockbox fill in logins for you</string>
+    <string name="send_usage_data">Send usage data</string>
+    <string name="send_usage_data_summary">Mozilla strives to only collect what we need to provide and improve Firefox for everyone. </string>
+    <string name="fingerprint_dialog_title">Unlock Firefox Lockbox</string>
+    <string name="touch_fingerprint_sensor">Touch the fingerprint sensor.</string>
+    <string name="cancel">Cancel</string>
+    <string name="fingerprint_not_recognized">Not recognized</string>
+    <string name="fingerprint_success">Success!</string>
+    <string name="error">Fingerprint sensor error</string>
 </resources>

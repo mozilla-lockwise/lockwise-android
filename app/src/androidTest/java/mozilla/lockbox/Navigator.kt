@@ -63,7 +63,7 @@ class Navigator {
     }
 
     fun checkAtSettings() {
-        onView(withId(R.id.settings_placeholder)).check(matches(isDisplayed()))
+        onView(withId(R.id.settingList)).check(matches(isDisplayed()))
     }
 
     fun gotoLockScreen() {

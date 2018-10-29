@@ -49,10 +49,10 @@
             app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action
             android:id="@+id/action_itemList_to_locked"
-            app:destination="@+id/graph_locked"
+            app:destination="@+id/fragment_locked"
             app:launchSingleTop="true"
             app:clearTask="true"
-            app:popUpTo="@+id/graph_locked"
+            app:popUpTo="@+id/fragment_locked"
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_itemList_to_filter"
@@ -84,5 +84,16 @@
             app:destination="@id/fragment_item_detail" />
     </fragment>
 
-    <include app:graph="@navigation/graph_locked" />
+    <fragment
+            android:id="@+id/fragment_locked"
+            android:name="mozilla.lockbox.view.LockedFragment"
+            tools:layout="@layout/fragment_locked">
+        <action
+                android:id="@+id/action_locked_to_itemList"
+                app:clearTask="true"
+                app:destination="@id/fragment_item_list"
+                app:launchSingleTop="true"
+                app:popUpTo="@+id/fragment_item_list"
+                app:popUpToInclusive="true"/>
+    </fragment>
 </navigation>
