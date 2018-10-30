@@ -6,6 +6,7 @@
 
 package mozilla.lockbox.presenter
 
+import io.reactivex.functions.Consumer
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import mozilla.lockbox.action.AccountAction
@@ -13,61 +14,75 @@ import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.support.Constant
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.Mockito
-import org.mockito.Mockito.verify
-import org.powermock.core.classloader.annotations.PowerMockIgnore
-import org.robolectric.RobolectricTestRunner
+import org.powermock.api.mockito.PowerMockito
+import org.powermock.core.classloader.annotations.PrepareForTest
+import org.powermock.modules.junit4.PowerMockRunner
 import org.mockito.Mockito.`when` as whenCalled
 
-@RunWith(RobolectricTestRunner::class)
+@RunWith(PowerMockRunner::class)
+@PrepareForTest(AccountStore::class)
 class FxALoginPresenterTest {
-    @Mock
-    val view = Mockito.mock(FxALoginView::class.java)
+    class FakeFxALoginView : FxALoginView {
+        val webViewRedirects = PublishSubject.create<String>()
+        var loadedURL: String? = null
+
+        override var webViewObserver: Consumer<String?>?
+            get() = TODO("not implemented")
+            set(value) {
+                this.webViewRedirects.subscribe(value)
+            }
+
+        override fun loadURL(url: String) {
+            loadedURL = url
+        }
+    }
+
+    val view = FakeFxALoginView()
 
     @Mock
-    val accountStore = Mockito.mock(AccountStore::class.java)
+    val accountStore = PowerMockito.mock(AccountStore::class.java)
 
-    val dispatcherObserver = TestObserver.create<Action>()
-    val urlObservable = PublishSubject.create<String>()
+    private val loginURLSubject = PublishSubject.create<String>()
+    private val dispatcherObserver = TestObserver.create<Action>()
 
     lateinit var subject: FxALoginPresenter
 
     @Before
     fun setUp() {
+        whenCalled(accountStore.loginURL).thenReturn(loginURLSubject)
+
+        PowerMockito.whenNew(AccountStore::class.java).withAnyArguments().thenReturn(accountStore)
         Dispatcher.shared.register.subscribe(dispatcherObserver)
 
-        whenCalled(accountStore.loginURL).thenReturn(urlObservable)
-
         subject = FxALoginPresenter(view, accountStore = accountStore)
+        subject.onViewReady()
     }
 
     @Test
     fun onViewReady_loginURL() {
-        subject.onViewReady()
         val url = "www.mozilla.org"
-        urlObservable.onNext(url)
+        (accountStore.loginURL as PublishSubject).onNext(url)
 
-        verify(view).loadURL(url)
+        Assert.assertEquals(url, view.loadedURL)
     }
 
     @Test
     fun onViewReady_gettingURL_matchingRedirect() {
-        subject.onViewReady()
         val url = Constant.FxA.redirectUri + "/moz_fake"
-        view.webViewObserver?.accept(url)
+        view.webViewRedirects.onNext(url)
 
         dispatcherObserver.assertValue(AccountAction.OauthRedirect(url))
     }
 
     @Test
     fun onViewReady_gettingURL_notMatchingRedirect() {
-        subject.onViewReady()
         val url = "www.mozilla.org"
-        view.webViewObserver?.accept(url)
+        view.webViewRedirects.onNext(url)
 
         dispatcherObserver.assertEmpty()
     }

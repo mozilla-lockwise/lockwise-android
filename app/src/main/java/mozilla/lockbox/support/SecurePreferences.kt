@@ -11,11 +11,10 @@ import android.util.Base64
 import mozilla.components.lib.dataprotect.Keystore
 import java.nio.charset.StandardCharsets
 
-private const val KEYSTORE_LABEL = "lockbox-keystore"
 private const val BASE_64_FLAGS = Base64.URL_SAFE or Base64.NO_PADDING
 
 open class SecurePreferences(
-    private val keystore: Keystore = Keystore(KEYSTORE_LABEL)
+    private val keystore: Keystore = Keystore(Constant.App.KEYSTORE_LABEL)
 ) {
     companion object {
         val shared = SecurePreferences()

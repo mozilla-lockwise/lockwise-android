@@ -7,15 +7,21 @@
 package mozilla.lockbox.support
 
 class Constant {
+    class App {
+        companion object {
+            const val KEYSTORE_LABEL = "lockbox-keystore"
+        }
+    }
+
     class FxA {
-         companion object {
-             val clientID = "e7ce535d93522896"
-             val redirectUri = "https://lockbox.firefox.com/fxa/android-redirect.html"
-             val scopes = arrayOf(
-                 "profile",
-                 "https://identity.mozilla.com/apps/lockbox",
-                 "https://identity.mozilla.com/apps/oldsync"
-             )
-         }
+        companion object {
+            const val clientID = "e7ce535d93522896"
+            const val redirectUri = "https://lockbox.firefox.com/fxa/android-redirect.html"
+            val scopes = arrayOf(
+                "profile",
+                "https://identity.mozilla.com/apps/lockbox",
+                "https://identity.mozilla.com/apps/oldsync"
+            )
+        }
     }
 }

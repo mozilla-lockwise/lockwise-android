@@ -19,7 +19,6 @@ import kotlinx.android.synthetic.main.include_backable.view.*
 import mozilla.lockbox.R
 import mozilla.lockbox.presenter.FxALoginPresenter
 import mozilla.lockbox.presenter.FxALoginView
-import java.net.URL
 
 class FxALoginFragment : BackableFragment(), FxALoginView {
     override var webViewObserver: Consumer<String?>? = null

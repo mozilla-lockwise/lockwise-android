@@ -31,7 +31,7 @@ open class AccountStore(
     private val securePreferences: SecurePreferences = SecurePreferences.shared
 ) {
     companion object {
-        val shared = AccountStore()
+        val shared by lazy { AccountStore() }
     }
 
     internal val compositeDisposable = CompositeDisposable()
@@ -57,9 +57,6 @@ open class AccountStore(
                 when (it) {
                     is AccountAction.OauthRedirect -> {
                         this.oauthLogin(it.url)
-                    }
-                    else -> {
-                        // other AccountActions handled by later tickets
                     }
                 }
             }
