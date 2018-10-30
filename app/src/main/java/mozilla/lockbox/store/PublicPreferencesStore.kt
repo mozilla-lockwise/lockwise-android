@@ -31,7 +31,7 @@ open class PublicPreferencesStore(
 ) : PreferencesStore {
 
     internal val compositeDisposable = CompositeDisposable()
-    private lateinit var sharedPrefs: SharedPreferences
+    internal lateinit var sharedPrefs: SharedPreferences
     private val itemListSortKey = "SortOption"
 
     companion object {
