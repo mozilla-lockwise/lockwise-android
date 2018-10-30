@@ -17,13 +17,15 @@ class ServerPasswordExtensionTest {
     fun toViewModel() {
         val guid = "afdsfdsa"
         val username = "cats@cats.com"
+        val time = Date().time
         val serverPassword = ServerPassword(
                 guid,
                 hostname = "www.mozilla.org",
                 username = username,
-                password = "woof")
+                password = "woof",
+                timeLastUsed = time)
 
-        val expectedItemViewModel = ItemViewModel("mozilla.org", username, guid, Date().time)
+        val expectedItemViewModel = ItemViewModel("mozilla.org", username, guid, time)
 
         Assert.assertEquals(serverPassword.toViewModel(), expectedItemViewModel)
     }
