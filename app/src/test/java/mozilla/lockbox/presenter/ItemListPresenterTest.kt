@@ -10,6 +10,7 @@ import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import junit.framework.Assert
+import junit.framework.Assert.assertEquals
 import mozilla.lockbox.R
 import mozilla.lockbox.action.ItemListSort
 import mozilla.lockbox.action.RouteAction
@@ -26,23 +27,48 @@ import org.mozilla.sync15.logins.ServerPassword
 import org.robolectric.RobolectricTestRunner
 import java.util.Date
 
+private val username = "dogs@dogs.com"
+private val password1 = ServerPassword(
+    "fdsfda",
+    "https://www.mozilla.org",
+    username,
+    "woof",
+    timesUsed = 0,
+    timeCreated = 0L,
+    timeLastUsed = 1L,
+    timePasswordChanged = 0L)
+private val password2 = ServerPassword("ghfdhg",
+    "https://www.cats.org",
+    username,
+    "meow",
+    timesUsed = 0,
+    timeCreated = 0L,
+    timeLastUsed = 2L,
+    timePasswordChanged = 0L)
+private val password3 = ServerPassword("ioupiouiuy",
+    "www.dogs.org",
+    password = "baaaaa",
+    username = null,
+    timesUsed = 0,
+    timeCreated = 0L,
+    timeLastUsed = 3L,
+    timePasswordChanged = 0L)
+
 @RunWith(RobolectricTestRunner::class)
 class ItemListPresenterTest {
     class FakeView : ItemListView {
         val itemSelectedStub = PublishSubject.create<ItemViewModel>()
         val filterClickStub = PublishSubject.create<Unit>()
         val menuItemSelectionStub = PublishSubject.create<Int>()
-        val sortItemSelectionStub = PublishSubject.create<ListItem>()
+        val sortItemSelectionStub = PublishSubject.create<ItemListSort>()
 
         var updateItemsArgument: List<ItemViewModel>? = null
-
-        override val sortMenuOptions: Array<ItemListSort>
-            get() = ItemListSort.values()
+        var itemListSort: ItemListSort? = null
 
         override val itemSelection: Observable<ItemViewModel>
             get() = itemSelectedStub
 
-        override val sortItemSelection: Observable<ListItem>
+        override val sortItemSelection: Observable<ItemListSort>
             get() = sortItemSelectionStub
 
         override val filterClicks: Observable<Unit>
@@ -56,7 +82,7 @@ class ItemListPresenterTest {
         }
 
         override fun updateItemListSort(sort: ItemListSort) {
-            TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
+            itemListSort = sort
         }
     }
 
@@ -75,7 +101,7 @@ class ItemListPresenterTest {
 
     @Before
     fun setUp() {
-        Dispatcher.shared.register.subscribe(dispatcherObserver)
+        dispatcher.register.subscribe(dispatcherObserver)
 
         subject.onViewReady()
     }
@@ -90,34 +116,12 @@ class ItemListPresenterTest {
 
     @Test
     fun receivingPasswordList_somePasswords() {
-        val username = "dogs@dogs.com"
-        val password1 = ServerPassword(
-                "fdsfda",
-                "https://www.mozilla.org",
-                username,
-                "woof",
-                timesUsed = 0,
-                timeCreated = 0L,
-                timeLastUsed = 0L,
-                timePasswordChanged = 0L)
-        val password2 = ServerPassword("ghfdhg",
-                "https://www.cats.org",
-                username,
-                "meow",
-                timesUsed = 0,
-                timeCreated = 0L,
-                timeLastUsed = 0L,
-                timePasswordChanged = 0L)
-        val password3 = ServerPassword("ioupiouiuy",
-                "www.dogs.org",
-                password = "baaaaa",
-                username = null,
-                timesUsed = 0,
-                timeCreated = 0L,
-                timeLastUsed = 0L,
-                timePasswordChanged = 0L)
         val list = listOf(password1, password2, password3)
+        dataStore.listStub.onNext(list)
+        val expectedList = listOf(password2, password3, password1).map { it.toViewModel() }
 
+        assertEquals(expectedList, view.updateItemsArgument)
+        assertEquals(ItemListSort.ALPHABETICALLY, view.itemListSort)
         dataStore.listStub.onNext(list)
 
         val expectedList = listOf<ItemViewModel>(

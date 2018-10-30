@@ -22,19 +22,17 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
 import mozilla.lockbox.model.ItemViewModel
-import mozilla.lockbox.rx.ListItem
 import mozilla.lockbox.store.DataStore
+import mozilla.lockbox.store.PreferencesStore
 import mozilla.lockbox.store.PublicPreferencesStore
 
 interface ItemListView {
     val itemSelection: Observable<ItemViewModel>
     val filterClicks: Observable<Unit>
     val menuItemSelections: Observable<Int>
-    val sortItemSelection: Observable<ListItem>
-    val sortMenuOptions: Array<ItemListSort>
+    val sortItemSelection: Observable<ItemListSort>
     fun updateItems(itemList: List<ItemViewModel>)
     fun updateItemListSort(sort: ItemListSort)
-    // TODO: Item list selection
 }
 
 class ItemListPresenter(
@@ -84,8 +82,8 @@ class ItemListPresenter(
             .addTo(compositeDisposable)
 
         view.sortItemSelection
-                .subscribe { menuItem ->
-                    dispatcher.dispatch(SettingsAction.SortAction(view.sortMenuOptions.get(menuItem.position)))
+                .subscribe { sortBy ->
+                    dispatcher.dispatch(SettingsAction.SortAction(sortBy))
                 }.addTo(compositeDisposable)
 
         // TODO: remove this when we have proper locking / unlocking
