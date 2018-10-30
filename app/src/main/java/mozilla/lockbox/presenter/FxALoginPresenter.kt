@@ -6,19 +6,37 @@
 
 package mozilla.lockbox.presenter
 
+import io.reactivex.functions.Consumer
+import io.reactivex.rxkotlin.addTo
+import mozilla.lockbox.action.AccountAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
-import java.net.URL
+import mozilla.lockbox.store.AccountStore
+import mozilla.lockbox.support.Constant
 
 interface FxALoginView {
-    fun loadURL(url: URL)
+    var webViewObserver: Consumer<String?>?
+    fun loadURL(url: String)
 }
 
 class FxALoginPresenter(
     private val view: FxALoginView,
-    private val dispatcher: Dispatcher = Dispatcher.shared
+    private val dispatcher: Dispatcher = Dispatcher.shared,
+    private val accountStore: AccountStore = AccountStore.shared
 ) : Presenter() {
     override fun onViewReady() {
+        view.webViewObserver = Consumer { url ->
+            url?.let {
+                if (url.startsWith(Constant.FxA.redirectUri)) {
+                    dispatcher.dispatch(AccountAction.OauthRedirect(url))
+                }
+            }
+        }
 
+        accountStore.loginURL
+            .subscribe {
+                view.loadURL(it)
+            }
+            .addTo(compositeDisposable)
     }
 }

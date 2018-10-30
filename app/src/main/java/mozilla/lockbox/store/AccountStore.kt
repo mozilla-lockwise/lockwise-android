@@ -6,6 +6,7 @@
 
 package mozilla.lockbox.store
 
+import android.net.Uri
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -21,7 +22,6 @@ import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.SecurePreferences
 import mozilla.lockbox.support.asOptional
-import java.net.URL
 
 private const val FIREFOX_ACCOUNT_KEY = "firefox-account"
 private val FXA_SCOPES = arrayOf("profile", "https://identity.mozilla.com/apps/lockbox", "https://identity.mozilla.com/apps/oldsync")
@@ -104,7 +104,17 @@ class AccountStore(
         }
     }
 
-    private fun oauthLogin(url: URL) {
+    private fun oauthLogin(url: String) {
+        val uri = Uri.parse(url)
+        val code = uri.getQueryParameter("code")
+        val state = uri.getQueryParameter("state")
 
+        code?.let { it ->
+            state?.let { state ->
+                fxa?.completeOAuthFlow(it, state)?.whenComplete {
+                    this.populateAccountInformation()
+                }
+            }
+        }
     }
 }

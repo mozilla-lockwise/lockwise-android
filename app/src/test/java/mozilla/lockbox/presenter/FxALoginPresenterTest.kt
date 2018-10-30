@@ -4,10 +4,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-package mozilla.lockbox.action
+package mozilla.lockbox.presenter
 
-import mozilla.lockbox.flux.Action
+import org.junit.Assert.*
 
-sealed class AccountAction : Action {
-    data class OauthRedirect(val url: String) : AccountAction()
+class FxALoginPresenterTest {
+
 }

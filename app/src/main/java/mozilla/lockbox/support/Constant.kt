@@ -9,9 +9,9 @@ package mozilla.lockbox.support
 class Constant {
     class FxA {
          companion object {
-             final val clientID = "e7ce535d93522896"
-             final val redirectUri = "https://lockbox.firefox.com/fxa/android-redirect.html"
-             final val scopes = arrayOf(
+             val clientID = "e7ce535d93522896"
+             val redirectUri = "https://lockbox.firefox.com/fxa/android-redirect.html"
+             val scopes = arrayOf(
                  "profile",
                  "https://identity.mozilla.com/apps/lockbox",
                  "https://identity.mozilla.com/apps/oldsync"

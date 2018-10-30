@@ -6,10 +6,15 @@
 
 package mozilla.lockbox.view
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import io.reactivex.functions.Consumer
+import kotlinx.android.synthetic.main.fragment_fxa_login.*
 import kotlinx.android.synthetic.main.include_backable.view.*
 import mozilla.lockbox.R
 import mozilla.lockbox.presenter.FxALoginPresenter
@@ -17,6 +22,8 @@ import mozilla.lockbox.presenter.FxALoginView
 import java.net.URL
 
 class FxALoginFragment : BackableFragment(), FxALoginView {
+    override var webViewObserver: Consumer<String?>? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -31,7 +38,15 @@ class FxALoginFragment : BackableFragment(), FxALoginView {
         view.toolbar.setNavigationIcon(android.R.drawable.ic_menu_close_clear_cancel)
     }
 
-    override fun loadURL(url: URL) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun loadURL(url: String) {
+        webView.loadUrl(url)
+
+        webView.webViewClient = object : WebViewClient() {
+            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                webViewObserver?.accept(url)
+
+                super.onPageStarted(view, url, favicon)
+            }
+        }
     }
 }

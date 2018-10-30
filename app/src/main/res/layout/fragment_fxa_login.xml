@@ -16,6 +16,7 @@
     <include layout="@layout/include_backable" />
 
     <WebView
+            android:id="@+id/webView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_constraintBottom_toBottomOf="parent"
