@@ -18,7 +18,17 @@ import mozilla.lockbox.action.SettingsAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 
-open class PublicPreferencesStore(val dispatcher: Dispatcher = Dispatcher.shared) {
+interface PreferencesStore {
+    companion object {
+        val shared = PublicPreferencesStore()
+    }
+
+    val itemListSortObservable: Observable<ItemListSort>
+}
+
+open class PublicPreferencesStore(
+    val dispatcher: Dispatcher = Dispatcher.shared
+) : PreferencesStore {
 
     internal val compositeDisposable = CompositeDisposable()
     private lateinit var sharedPrefs: SharedPreferences
@@ -28,7 +38,7 @@ open class PublicPreferencesStore(val dispatcher: Dispatcher = Dispatcher.shared
         val shared = PublicPreferencesStore()
     }
 
-    val itemListSortObservable: Observable<ItemListSort> by lazy {
+    override val itemListSortObservable: Observable<ItemListSort> by lazy {
         val onNext: (String, Int) -> ItemListSort = { key, default ->
             ItemListSort.fromSortId(sharedPrefs.getInt(key, default))!!
         }

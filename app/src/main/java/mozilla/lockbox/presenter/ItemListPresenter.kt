@@ -39,7 +39,7 @@ class ItemListPresenter(
     private val view: ItemListView,
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val dataStore: DataStore = DataStore.shared,
-    private val prefsStore: PublicPreferencesStore = PublicPreferencesStore.shared
+    private val prefsStore: PreferencesStore = PreferencesStore.shared
 ) : Presenter() {
 
     override fun onViewReady() {
@@ -52,7 +52,7 @@ class ItemListPresenter(
                 .map { pair ->
                     when (pair.second) {
                         ItemListSort.ALPHABETICALLY -> { pair.first.sortedBy { it.title } }
-                        ItemListSort.RECENTLY_USED -> { pair.first.sortedBy { it.timeLastUsed } }
+                        ItemListSort.RECENTLY_USED -> { pair.first.sortedBy { -it.timeLastUsed } }
                     }
                 }
                 .observeOn(AndroidSchedulers.mainThread())
