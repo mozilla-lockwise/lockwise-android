@@ -22,7 +22,7 @@ import mozilla.lockbox.presenter.ApplicationPresenter
 import mozilla.lockbox.store.ClipboardStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.store.FingerprintStore
-import mozilla.lockbox.store.PublicPreferencesStore
+import mozilla.lockbox.store.PreferencesStore
 import mozilla.lockbox.store.TelemetryStore
 import mozilla.lockbox.support.SecurePreferences
 
@@ -63,7 +63,7 @@ class LockboxApplication : Application() {
         FingerprintStore.shared.applyContext(this)
 
         // hook this context into SharedPreferences
-        PublicPreferencesStore.shared.applyContext(this)
+        PreferencesStore.shared.applyContext(this)
 
 
         // Set up Sentry using DSN (client key) from the Project Settings page on Sentry
