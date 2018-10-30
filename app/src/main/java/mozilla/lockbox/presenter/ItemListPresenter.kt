@@ -24,7 +24,6 @@ import mozilla.lockbox.log
 import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.PreferencesStore
-import mozilla.lockbox.store.PublicPreferencesStore
 
 interface ItemListView {
     val itemSelection: Observable<ItemViewModel>

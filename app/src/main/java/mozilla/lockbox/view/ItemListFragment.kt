@@ -38,7 +38,6 @@ import mozilla.lockbox.presenter.ItemListView
 import kotlinx.android.synthetic.main.fragment_item_list.*
 import mozilla.lockbox.action.ItemListSort
 import mozilla.lockbox.adapter.ItemListSortAdapter
-import mozilla.lockbox.rx.ListItem
 import mozilla.lockbox.rx.itemClicks
 import mozilla.lockbox.support.dpToPixels
 

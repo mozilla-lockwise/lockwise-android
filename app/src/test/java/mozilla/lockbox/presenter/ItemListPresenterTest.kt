@@ -21,10 +21,8 @@ import mozilla.lockbox.extensions.toViewModel
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.model.ItemViewModel
-import mozilla.lockbox.rx.ListItem
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.PreferencesStore
-import mozilla.lockbox.store.PublicPreferencesStore
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -98,7 +96,7 @@ class ItemListPresenterTest {
             get() = listStub
     }
 
-    class FakePreferencesStore: PreferencesStore {
+    class FakePreferencesStore : PreferencesStore {
         val itemListSortStub = BehaviorSubject.createDefault(ItemListSort.ALPHABETICALLY)
         override val itemListSortObservable: Observable<ItemListSort> = itemListSortStub
     }
@@ -164,7 +162,6 @@ class ItemListPresenterTest {
         prefsStore.itemListSortStub.onNext(sortOrder)
         assertEquals(sortOrder, view.itemListSort)
         assertEquals(alphabetically, view.updateItemsArgument)
-
     }
 
     @Test
