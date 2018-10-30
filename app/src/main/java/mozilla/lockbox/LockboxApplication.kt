@@ -56,6 +56,8 @@ class LockboxApplication : Application() {
         // hook this context into Telemetry
         TelemetryStore.shared.applyContext(this)
 
+        FingerprintStore.shared.applyContext(this)
+
         // Set up Sentry using DSN (client key) from the Project Settings page on Sentry
         val ctx = this.applicationContext
         // Retrieved from environment's local (or bitrise's "Secrets") environment variable

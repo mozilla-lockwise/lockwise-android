@@ -48,7 +48,7 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
     }
 
     override fun onError(error: String?) {
-        showError(error ?: getString(R.string.error))
+        showError(error ?: getString(R.string.fingerprint_sensor_error))
         view!!.imageView.postDelayed({
             _authCallback.onNext(AuthCallback.OnError)
             dismiss()
