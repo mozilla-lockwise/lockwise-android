@@ -26,7 +26,7 @@ import mozilla.lockbox.support.asOptional
 private const val FIREFOX_ACCOUNT_KEY = "firefox-account"
 private val FXA_SCOPES = arrayOf("profile", "https://identity.mozilla.com/apps/lockbox", "https://identity.mozilla.com/apps/oldsync")
 
-class AccountStore(
+open class AccountStore(
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val securePreferences: SecurePreferences = SecurePreferences.shared
 ) {
@@ -46,7 +46,7 @@ class AccountStore(
 
     private var fxa: FirefoxAccount? = null
 
-    val loginURL: Observable<String> = PublishSubject.create()
+    open val loginURL: Observable<String> = PublishSubject.create()
     val oauthInfo: Observable<Optional<OAuthInfo>> = PublishSubject.create()
     val profile: Observable<Optional<Profile>> = PublishSubject.create()
 
