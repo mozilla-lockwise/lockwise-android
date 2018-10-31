@@ -9,6 +9,7 @@ package mozilla.lockbox
 import android.support.test.InstrumentationRegistry
 import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
+import mozilla.lockbox.robots.filteredItemList
 import mozilla.lockbox.view.RootActivity
 import org.junit.Assert.assertEquals
 import org.junit.Rule
@@ -57,8 +58,10 @@ open class RoutePresenterTest {
     @Test
     fun testFilterToItemDetail() {
         navigator.gotoItemList_filter()
-        navigator.gotoItemDetail_from_itemList()
-        navigator.back()
+        filteredItemList {
+            selectItem(0)
+            back()
+        }
         navigator.checkAtFilterList()
     }
 
@@ -74,6 +77,15 @@ open class RoutePresenterTest {
         navigator.gotoItemDetail()
         navigator.back()
         navigator.checkAtItemList()
+    }
+
+    @Test
+    fun testItemDetail_fromFilter() {
+        navigator.gotoItemList_filter()
+        navigator.gotoItemDetail_from_itemList()
+        navigator.checkAtItemDetail()
+        navigator.back()
+        navigator.checkAtFilterList()
     }
 
     @Test
