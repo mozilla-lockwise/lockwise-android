@@ -9,6 +9,10 @@
 
     <group android:checkableBehavior="none">
         <item
+            android:id="@+id/goto_account"
+            android:icon="@drawable/ic_icon_account"
+            android:title="@string/nav_menu_account" />
+        <item
             android:id="@+id/goto_faq"
             android:icon="@drawable/ic_help_faq"
             android:title="@string/nav_menu_faq" />

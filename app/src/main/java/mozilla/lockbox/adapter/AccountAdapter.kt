@@ -7,19 +7,36 @@
 package mozilla.lockbox.adapter
 
 import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
 import android.view.ViewGroup
+import kotlinx.android.synthetic.main.fragment_account.*
+import mozilla.lockbox.R
 import mozilla.lockbox.view.AccountViewHolder
 
 class AccountAdapter: RecyclerView.Adapter<AccountViewHolder>(){
-    override fun onCreateViewHolder(p0: ViewGroup, p1: Int): AccountViewHolder {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+    private lateinit var accountList: AccountConfiguration
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AccountViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
+        val view = inflater.inflate(R.layout.fragment_account, parent, false)
+        return AccountViewHolder(view)
     }
 
     override fun getItemCount(): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return 0
     }
 
-    override fun onBindViewHolder(p0: AccountViewHolder, p1: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onBindViewHolder(holder: AccountViewHolder, position: Int) {
+        val configuration = accountList
+        holder.email = configuration.email
+        holder.disconnectSummary = configuration.summary
+        holder.buttonTitle = configuration.buttonTitle
+        holder.buttonSummary = configuration.buttonSummary
+    }
+
+    fun setAccountItems(fxaAccount: AccountConfiguration){
+        accountList = fxaAccount
+        notifyDataSetChanged()
     }
 }

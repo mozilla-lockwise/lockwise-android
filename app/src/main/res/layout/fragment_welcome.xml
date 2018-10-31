@@ -5,7 +5,8 @@
   ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
   -->
 
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/welcome_fragment"
     android:layout_width="match_parent"

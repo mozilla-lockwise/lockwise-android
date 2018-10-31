@@ -48,6 +48,13 @@
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action
+            android:id="@+id/action_itemList_to_account"
+            app:destination="@id/fragment_account"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+        <action
             android:id="@+id/action_itemList_to_locked"
             app:destination="@+id/fragment_locked"
             app:launchSingleTop="true"
@@ -74,6 +81,12 @@
         android:name="mozilla.lockbox.view.SettingFragment"
         android:label="@string/nav_menu_settings"
         tools:layout="@layout/fragment_setting"/>
+
+    <fragment
+        android:id="@+id/fragment_account"
+        android:name="mozilla.lockbox.view.AccountFragment"
+        android:label="@string/nav_menu_account"
+        tools:layout="@layout/fragment_account"/>
 
     <fragment
         android:id="@+id/fragment_filter"

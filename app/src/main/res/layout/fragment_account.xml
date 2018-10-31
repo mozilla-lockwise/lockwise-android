@@ -5,19 +5,19 @@
   ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
   -->
 
-<tools:android.support.constraint.ConstraintLayout
+<android.support.constraint.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
         xmlns:tools="http://schemas.android.com/tools"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical"
         tools:context=".view.AccountFragment">
 
 
     <include layout="@layout/include_backable"/>
 
     <android.support.v7.widget.RecyclerView
-            android:id="@+id/settingList"
+            android:id="@+id/fxaAccount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:overScrollMode="ifContentScrolls"
@@ -26,5 +26,68 @@
             android:layout_marginTop="?attr/actionBarSize"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
-</tools:android.support.constraint.ConstraintLayout>
+            app:layout_constraintStart_toStartOf="parent">
+            <shape
+                    android:shape="oval"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:background="@color/gray_73_percent"
+                    android:gravity="center_horizontal">
+                    <solid
+                        android:color="@color/gray_73_percent"/>
+                    <size
+                        android:width="80dp"
+                        android:height="80dp"/>
+            </shape>
+            <TextView
+                    android:id="@+id/email"
+                    android:textColor="@color/gray_73_percent"
+                    android:gravity="center_horizontal"
+                    android:letterSpacing="0.03"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="12dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:fontFamily="sans-serif"
+                    android:textStyle="normal"
+                    android:lineSpacingExtra="7.5sp"
+                    tools:text="@string/email_example"/>
+            <TextView
+                    android:id="@+id/disconnectSummary"
+                    android:letterSpacing="0.03"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="12dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:fontFamily="sans-serif"
+                    android:textStyle="normal"
+                    android:textColor="@color/textGrey"
+                    android:lineSpacingExtra="7.5sp"
+                    android:gravity="center_horizontal"
+                    tools:text="@string/disconnect_account_summary"/>
+            <Button
+                    android:id="@+id/button"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    tools:text="@string/button_title"/>
+            <TextView
+                    android:id="@+id/buttonSummary"
+                    android:letterSpacing="0.03"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="12dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:fontFamily="sans-serif"
+                    android:textStyle="normal"
+                    android:textColor="@color/textGrey"
+                    android:lineSpacingExtra="7.5sp"
+                    android:gravity="center_horizontal"
+                    tools:text="@string/button_summary"/>
+    </android.support.v7.widget.RecyclerView>
+</android.support.constraint.ConstraintLayout>

@@ -6,11 +6,35 @@
 
 package mozilla.lockbox.view
 
+import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.shapes.Shape
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.main.fragment_account.view.*
 
-class AccountViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView),
+class AccountViewHolder(override val containerView: View) :
+    RecyclerView.ViewHolder(containerView),
     LayoutContainer {
 
+    var email: String? = null
+        set(value) {
+            field = value
+            containerView.email.text = value
+        }
+    var disconnectSummary: String? = null
+        set(value) {
+            field = value
+            containerView.disconnectSummary.text = value
+        }
+    var buttonTitle: String? = null
+        set(value) {
+            field = value
+            containerView.button.text = value
+        }
+    var buttonSummary: String? = null
+        set(value) {
+            field = value
+            containerView.buttonSummary.text = value
+        }
 }
