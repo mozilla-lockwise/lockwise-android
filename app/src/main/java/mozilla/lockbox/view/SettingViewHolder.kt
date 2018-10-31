@@ -17,7 +17,8 @@ import kotlinx.android.synthetic.main.list_cell_setting_appversion.view.*
 import kotlinx.android.synthetic.main.list_cell_setting_text.view.*
 import kotlinx.android.synthetic.main.list_cell_setting_toggle.view.*
 
-abstract class SettingViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView),
+abstract class SettingViewHolder(override val containerView: View) :
+    RecyclerView.ViewHolder(containerView),
     LayoutContainer {
     val compositeDisposable = CompositeDisposable()
 }

@@ -88,8 +88,7 @@ open class TelemetryStore(
     fun applyContext(ctx: Context) {
         wrapper.apply(ctx)
         SettingStore.shared.sendUsageData
-            .subscribe {
-                wrapper.update(it)
-            }.addTo(compositeDisposable)
+            .subscribe(wrapper::update)
+            .addTo(compositeDisposable)
     }
 }

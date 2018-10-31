@@ -8,9 +8,7 @@ package mozilla.lockbox.presenter
 
 import android.content.Context
 import io.reactivex.Observable
-import io.reactivex.Observer
-import io.reactivex.disposables.Disposable
-import io.reactivex.rxkotlin.addTo
+import io.reactivex.functions.Consumer
 import mozilla.lockbox.adapter.AppVersionSettingConfiguration
 import mozilla.lockbox.adapter.SectionedAdapter
 import mozilla.lockbox.adapter.SettingCellConfiguration
@@ -39,50 +37,15 @@ class SettingPresenter(
 
     private val versionNumber = BuildConfig.VERSION_NAME
 
-    private val autoLockObserver: Observer<Boolean>
-        get() = object : Observer<Boolean> {
-            override fun onComplete() {
-            }
+    private val autoLockObserver: Consumer<Boolean>
+        get() = Consumer { }
 
-            override fun onError(e: Throwable) {
-            }
+    private val autoFillObserver: Consumer<Boolean>
+        get() = Consumer { }
 
-            override fun onSubscribe(d: Disposable) {
-            }
-
-            override fun onNext(newValue: Boolean) {
-            }
-        }
-
-    private val autoFillObserver: Observer<Boolean>
-        get() = object : Observer<Boolean> {
-            override fun onComplete() {
-            }
-
-            override fun onError(e: Throwable) {
-            }
-
-            override fun onSubscribe(d: Disposable) {
-            }
-
-            override fun onNext(newValue: Boolean) {
-            }
-        }
-
-    private val sendUsageDataObserver: Observer<Boolean>
-        get() = object : Observer<Boolean> {
-
-            override fun onComplete() {}
-
-            override fun onError(e: Throwable) {}
-
-            override fun onSubscribe(d: Disposable) {
-                d.addTo(compositeDisposable)
-            }
-
-            override fun onNext(newValue: Boolean) {
-                dispatcher.dispatch(SettingAction.SendUsageData(newValue))
-            }
+    private val sendUsageDataObserver: Consumer<Boolean>
+        get() = Consumer {
+                newValue -> dispatcher.dispatch(SettingAction.SendUsageData(newValue))
         }
 
     override fun onViewReady() {

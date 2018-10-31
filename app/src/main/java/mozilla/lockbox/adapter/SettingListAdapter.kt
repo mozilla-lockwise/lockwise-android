@@ -68,7 +68,10 @@ class SettingListAdapter : RecyclerView.Adapter<SettingViewHolder>() {
                         holder.toggle.isChecked = it
                     }
                     .addTo(holder.compositeDisposable)
-                holder.toggleValueChanges.skip(1).subscribe(configuration.toggleObserver)
+                holder.toggleValueChanges
+                    .skip(1)
+                    .subscribe(configuration.toggleObserver)
+                    .addTo(holder.compositeDisposable)
             }
             holder is AppVersionSettingViewHolder && configuration is AppVersionSettingConfiguration -> {
                 holder.text = configuration.text
