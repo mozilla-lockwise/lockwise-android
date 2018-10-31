@@ -7,7 +7,6 @@
 package mozilla.lockbox.store
 
 import android.content.Context
-import android.preference.PreferenceManager
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.BuildConfig
@@ -16,6 +15,7 @@ import mozilla.lockbox.action.TelemetryAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 import org.mozilla.telemetry.Telemetry
+import org.mozilla.telemetry.TelemetryHolder
 import org.mozilla.telemetry.config.TelemetryConfiguration
 import org.mozilla.telemetry.event.TelemetryEvent
 import org.mozilla.telemetry.net.HttpURLConnectionTelemetryClient
@@ -25,32 +25,37 @@ import org.mozilla.telemetry.schedule.jobscheduler.JobSchedulerTelemetrySchedule
 import org.mozilla.telemetry.serialize.JSONPingSerializer
 import org.mozilla.telemetry.storage.FileTelemetryStorage
 
-open class TelemetryWrapper() {
+open class TelemetryWrapper {
     private var subject: Telemetry? = null
 
     open val ready: Boolean get() = (subject != null)
 
     open fun apply(ctx: Context) {
         val res = ctx.resources
-        val prefs = PreferenceManager.getDefaultSharedPreferences(ctx)
-        val enabled = prefs.getBoolean(
-                res.getString(R.string.setting_key_telemetry),
-                res.getBoolean(R.bool.setting_telemetry_default))
-
+        val enabled = false
         val config = TelemetryConfiguration(ctx)
-                .setAppName(res.getString(R.string.app_label))
-                .setServerEndpoint(res.getString(R.string.telemetry_server_endpoint))
-                .setUpdateChannel(BuildConfig.BUILD_TYPE)
-                .setBuildId(BuildConfig.VERSION_CODE.toString())
-                .setCollectionEnabled(enabled)
-                .setUploadEnabled(enabled)
+            .setAppName(res.getString(R.string.app_label))
+            .setServerEndpoint(res.getString(R.string.telemetry_server_endpoint))
+            .setUpdateChannel(BuildConfig.BUILD_TYPE)
+            .setBuildId(BuildConfig.VERSION_CODE.toString())
+            .setCollectionEnabled(enabled)
+            .setUploadEnabled(enabled)
         val storage = FileTelemetryStorage(config, JSONPingSerializer())
         val client = HttpURLConnectionTelemetryClient()
         val scheduler = JobSchedulerTelemetryScheduler()
 
         subject = Telemetry(config, storage, client, scheduler)
-                .addPingBuilder(TelemetryCorePingBuilder(config))
-                .addPingBuilder(TelemetryMobileEventPingBuilder(config))
+            .addPingBuilder(TelemetryCorePingBuilder(config))
+            .addPingBuilder(TelemetryMobileEventPingBuilder(config))
+
+        TelemetryHolder.set(subject)
+    }
+
+    open fun update(enabled: Boolean) {
+        subject?.configuration!!.apply {
+            isCollectionEnabled = enabled
+            isUploadEnabled = enabled
+        }
     }
 
     open fun recordEvent(event: TelemetryEvent) {
@@ -70,15 +75,20 @@ open class TelemetryStore(
 
     init {
         dispatcher.register
-                .filterByType(TelemetryAction::class.java)
-                .subscribe {
-                    if (!wrapper.ready) {
-                        return@subscribe
-                    }
-                    wrapper.recordEvent(it.createEvent())
+            .filterByType(TelemetryAction::class.java)
+            .subscribe {
+                if (!wrapper.ready) {
+                    return@subscribe
                 }
-                .addTo(compositeDisposable)
+                wrapper.recordEvent(it.createEvent())
+            }
+            .addTo(compositeDisposable)
     }
 
-    fun applyContext(ctx: Context) = wrapper.apply(ctx)
+    fun applyContext(ctx: Context) {
+        wrapper.apply(ctx)
+        SettingStore.shared.sendUsageData
+            .subscribe(wrapper::update)
+            .addTo(compositeDisposable)
+    }
 }
