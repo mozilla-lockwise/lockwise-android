@@ -7,7 +7,6 @@
 package mozilla.lockbox.robots
 
 import android.support.test.espresso.Espresso
-import android.support.test.espresso.Espresso.onData
 import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.NoActivityResumedException
 import android.support.test.espresso.ViewInteraction
@@ -17,9 +16,8 @@ import android.support.test.espresso.action.ViewActions.replaceText
 import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.ViewMatchers.withId
 import android.support.test.espresso.matcher.ViewMatchers.withText
+import br.com.concretesolutions.kappuccino.custom.recyclerView.RecyclerViewInteractions.recyclerView
 import junit.framework.Assert
-import org.hamcrest.CoreMatchers.allOf
-import org.hamcrest.CoreMatchers.anything
 
 interface BaseTestRobot {
     fun exists()
@@ -35,9 +33,9 @@ interface BaseTestRobot {
     fun matchText(resId: Int, text: String): ViewInteraction = matchText(textView(resId), text)
 
     fun clickListItem(listRes: Int, position: Int) {
-        onData(anything())
-            .inAdapterView(allOf(withId(listRes)))
-            .atPosition(position).perform(click())
+        recyclerView(listRes) {
+            atPosition(position) { click() }
+        }
     }
 
     fun back(remainInApplication: Boolean = true) {

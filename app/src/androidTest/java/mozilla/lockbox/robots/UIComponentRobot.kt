@@ -11,13 +11,10 @@ import br.com.concretesolutions.kappuccino.assertions.VisibilityAssertions.displ
 import mozilla.lockbox.R
 
 // Fingerprint Dialog
-class FingerprintDialogRobot : BaseTestRobot {
-    override fun exists() = displayed { id(R.id.fingerprintStatus) }
+class UIComponentRobot : BaseTestRobot {
+    override fun exists() = displayed { id(R.id.uiComponents) }
 
-    fun touchFingerprint(finger: String = "1") {
-        Runtime.getRuntime().exec("adb -e emu finger $finger")
-    }
-
-    fun tapCancel() = click { id(R.id.cancel) }
+    fun launchFingerprintDialog() = click { id(R.id.button_launch_fingerprint) }
 }
-fun fingerprintDialog(f: FingerprintDialogRobot.() -> Unit) = FingerprintDialogRobot().apply(f)
+
+fun uiComponents(f: UIComponentRobot.() -> Unit) = UIComponentRobot().apply(f)

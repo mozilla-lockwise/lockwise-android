@@ -80,15 +80,6 @@ open class RoutePresenterTest {
     }
 
     @Test
-    fun testItemDetail_fromFilter() {
-        navigator.gotoItemList_filter()
-        navigator.gotoItemDetail_from_itemList()
-        navigator.checkAtItemDetail()
-        navigator.back()
-        navigator.checkAtFilterList()
-    }
-
-    @Test
     fun testLockScreen() {
         navigator.gotoLockScreen()
         navigator.back(false)
