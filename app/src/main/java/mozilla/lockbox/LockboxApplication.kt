@@ -7,12 +7,10 @@
 package mozilla.lockbox
 
 import android.app.Application
-import android.app.KeyguardManager
 import android.arch.lifecycle.ProcessLifecycleOwner
 import android.content.ClipboardManager
 import android.content.Context
 import android.preference.PreferenceManager
-import android.hardware.fingerprint.FingerprintManager
 import com.squareup.leakcanary.LeakCanary
 import io.sentry.Sentry
 import io.sentry.android.AndroidSentryClientFactory
@@ -22,7 +20,6 @@ import mozilla.components.support.base.log.sink.AndroidLogSink
 import mozilla.lockbox.presenter.ApplicationPresenter
 import mozilla.lockbox.store.ClipboardStore
 import mozilla.lockbox.store.FingerprintStore
-import mozilla.lockbox.store.LockedStore
 import mozilla.lockbox.store.TelemetryStore
 import mozilla.lockbox.support.SecurePreferences
 
@@ -47,8 +44,6 @@ class LockboxApplication : Application() {
 
         // use context for system service
         ClipboardStore.shared.apply(getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
-        FingerprintStore.shared.apply(getSystemService(Context.FINGERPRINT_SERVICE) as FingerprintManager)
-        LockedStore.shared.apply(getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager)
 
         // use context for PreferenceManager
         SecurePreferences.shared.apply(PreferenceManager.getDefaultSharedPreferences(this))

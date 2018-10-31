@@ -1,5 +1,6 @@
 package mozilla.lockbox.store
 
+import android.app.KeyguardManager
 import android.content.Context
 import android.hardware.fingerprint.FingerprintManager
 import android.hardware.fingerprint.FingerprintManager.FINGERPRINT_ERROR_LOCKOUT
@@ -33,7 +34,8 @@ open class FingerprintStore(
     val dispatcher: Dispatcher = Dispatcher.shared
 ) {
     internal val compositeDisposable = CompositeDisposable()
-    private lateinit var fingerprintManager: FingerprintManager
+    open lateinit var fingerprintManager: FingerprintManager
+    open lateinit var keyguardManager: KeyguardManager
     private lateinit var authenticationCallback: AuthenticationCallback
 
     private lateinit var keyStore: KeyStore
@@ -68,17 +70,16 @@ open class FingerprintStore(
             .addTo(compositeDisposable)
     }
 
-    fun apply(manager: FingerprintManager) {
-        fingerprintManager = manager
-    }
-
     fun applyContext(context: Context) {
+        fingerprintManager = context.getSystemService(Context.FINGERPRINT_SERVICE) as FingerprintManager
+        keyguardManager = context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
         authenticationCallback = AuthenticationCallback(context)
     }
 
-    open fun isFingerprintAuthAvailable(): Boolean {
-        return fingerprintManager.isHardwareDetected && fingerprintManager.hasEnrolledFingerprints()
-    }
+    open val isFingerprintAuthAvailable: Boolean
+        get() = fingerprintManager.isHardwareDetected && fingerprintManager.hasEnrolledFingerprints()
+
+    val isKeyguardSecure get() = keyguardManager.isKeyguardSecure
 
     private fun initFingerprint() {
         setupKeyStoreAndKeyGenerator()
@@ -90,7 +91,7 @@ open class FingerprintStore(
     }
 
     private fun startListening(cryptoObject: FingerprintManager.CryptoObject) {
-        if (!isFingerprintAuthAvailable()) {
+        if (!isFingerprintAuthAvailable) {
             return
         }
         cancellationSignal = CancellationSignal()

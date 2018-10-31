@@ -8,6 +8,7 @@ package mozilla.lockbox.view
 
 import android.app.Activity.RESULT_OK
 import android.app.KeyguardManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -37,8 +38,9 @@ class LockedFragment : CommonFragment(), LockedView {
     override val unlockButtonTaps: Observable<Unit>
         get() = view!!.unlockButton.clicks()
 
-    override fun unlockFallback(manager: KeyguardManager) {
-        val intent = manager.createConfirmDeviceCredentialIntent(
+    override fun unlockFallback() {
+        val manager = context?.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+        val intent = manager?.createConfirmDeviceCredentialIntent(
             getString(R.string.unlock_fallback_title),
             getString(R.string.confirm_pattern)
         )

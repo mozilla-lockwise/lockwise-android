@@ -6,7 +6,6 @@
 
 package mozilla.lockbox.store
 
-import android.app.KeyguardManager
 import io.reactivex.Observable
 import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.extensions.filterByType
@@ -15,8 +14,6 @@ import mozilla.lockbox.flux.Dispatcher
 open class LockedStore(
     val dispatcher: Dispatcher = Dispatcher.shared
 ) {
-    lateinit var keyguardManager: KeyguardManager
-
     companion object {
         val shared = LockedStore()
     }
@@ -24,10 +21,4 @@ open class LockedStore(
     open val onAuthentication: Observable<FingerprintAuthAction> =
         dispatcher.register
             .filterByType(FingerprintAuthAction::class.java)
-
-    fun apply(manager: KeyguardManager) {
-        keyguardManager = manager
-    }
-
-    val isKeyguardSecure get() = keyguardManager.isKeyguardSecure
 }

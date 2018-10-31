@@ -29,7 +29,7 @@ import org.robolectric.annotation.Config
 class LockedPresenterTest {
 
     open class FakeView : LockedView {
-        override fun unlockFallback(manager: KeyguardManager) {
+        override fun unlockFallback() {
         }
 
         val unlockConfirmedStub = PublishSubject.create<Boolean>()
@@ -37,7 +37,13 @@ class LockedPresenterTest {
         override val unlockButtonTaps = PublishSubject.create<Unit>()
     }
 
-    open class FakeFingerprintStore : FingerprintStore()
+    open class FakeFingerprintStore : FingerprintStore() {
+        override var fingerprintManager: FingerprintManager =
+            RuntimeEnvironment.application.getSystemService(Context.FINGERPRINT_SERVICE) as FingerprintManager
+
+        override var keyguardManager: KeyguardManager =
+            spy(RuntimeEnvironment.application.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager)
+    }
 
     class FakeLockedStore : LockedStore() {
         val onAuth = PublishSubject.create<FingerprintAuthAction>()
@@ -54,32 +60,30 @@ class LockedPresenterTest {
     @Before
     fun setUp() {
         Dispatcher.shared.register.subscribe(dispatcherObserver)
-        fingerprintStore.apply(fingerprintManager)
-        lockedStore.apply(keyguradManager)
         subject.onViewReady()
     }
 
     @Test
     fun `unlock button tap shows fingerprint dialog`() {
-        `when`(fingerprintStore.isFingerprintAuthAvailable()).thenReturn(true)
+        `when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(true)
         view.unlockButtonTaps.onNext(Unit)
         dispatcherObserver.assertLastValue(RouteAction.FingerprintDialog)
     }
 
     @Test
     fun `unlock button tap fallback if no fingerprint`() {
-        `when`(fingerprintStore.isFingerprintAuthAvailable()).thenReturn(false)
-        `when`(keyguradManager.isKeyguardSecure).thenReturn(true)
+        `when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(false)
+        `when`(fingerprintStore.isKeyguardSecure).thenReturn(true)
         view.unlockButtonTaps.onNext(Unit)
-        verify(view).unlockFallback(keyguradManager)
+        verify(view).unlockFallback()
     }
 
     @Test
     fun `unlock button tap fallback on fingerprint error`() {
-        `when`(fingerprintStore.isFingerprintAuthAvailable()).thenReturn(true)
-        `when`(keyguradManager.isKeyguardSecure).thenReturn(true)
+        `when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(true)
+        `when`(fingerprintStore.isKeyguardSecure).thenReturn(true)
         lockedStore.onAuth.onNext(FingerprintAuthAction.OnAuthentication(AuthCallback.OnError))
-        verify(view).unlockFallback(keyguradManager)
+        verify(view).unlockFallback()
     }
 
     @Test
@@ -90,7 +94,7 @@ class LockedPresenterTest {
 
     @Test
     fun `handle error authentication callback`() {
-        `when`(lockedStore.isKeyguardSecure).thenReturn(false)
+        `when`(fingerprintStore.isKeyguardSecure).thenReturn(false)
         lockedStore.onAuth.onNext(FingerprintAuthAction.OnAuthentication(AuthCallback.OnError))
         dispatcherObserver.assertLastValue(RouteAction.LockScreen)
     }
@@ -106,10 +110,4 @@ class LockedPresenterTest {
         view.unlockConfirmedStub.onNext(false)
         dispatcherObserver.assertLastValue(RouteAction.LockScreen)
     }
-
-    private val fingerprintManager =
-        RuntimeEnvironment.application.getSystemService(Context.FINGERPRINT_SERVICE) as FingerprintManager
-
-    private val keyguradManager =
-        spy(RuntimeEnvironment.application.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager)
 }

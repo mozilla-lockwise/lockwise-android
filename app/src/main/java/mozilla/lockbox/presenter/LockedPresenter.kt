@@ -6,7 +6,6 @@
 
 package mozilla.lockbox.presenter
 
-import android.app.KeyguardManager
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.action.FingerprintAuthAction
@@ -19,7 +18,7 @@ import mozilla.lockbox.view.FingerprintAuthDialogFragment.AuthCallback
 
 interface LockedView {
     val unlockButtonTaps: Observable<Unit>
-    fun unlockFallback(manager: KeyguardManager)
+    fun unlockFallback()
     val unlockConfirmed: Observable<Boolean>
 }
 
@@ -32,7 +31,7 @@ class LockedPresenter(
     override fun onViewReady() {
         view.unlockButtonTaps
             .subscribe {
-                if (fingerprintStore.isFingerprintAuthAvailable()) {
+                if (fingerprintStore.isFingerprintAuthAvailable) {
                     dispatcher.dispatch(RouteAction.FingerprintDialog)
                 } else {
                     unlockFallback()
@@ -63,8 +62,8 @@ class LockedPresenter(
     }
 
     private fun unlockFallback() {
-        if (lockedStore.isKeyguardSecure) {
-            view.unlockFallback(lockedStore.keyguardManager)
+        if (fingerprintStore.isKeyguardSecure) {
+            view.unlockFallback()
         } else {
             dispatcher.dispatch(RouteAction.LockScreen)
         }
