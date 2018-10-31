@@ -6,16 +6,12 @@
 
 package mozilla.lockbox.robots
 
-import br.com.concretesolutions.kappuccino.actions.TextActions
 import br.com.concretesolutions.kappuccino.actions.TextActions.typeText
-import br.com.concretesolutions.kappuccino.assertions.VisibilityAssertions
 import br.com.concretesolutions.kappuccino.assertions.VisibilityAssertions.displayed
-import br.com.concretesolutions.kappuccino.custom.recyclerView.RecyclerViewInteractions
-import br.com.concretesolutions.kappuccino.custom.recyclerView.RecyclerViewInteractions.recyclerView
 import mozilla.lockbox.R
 
 // Filter ItemList
-class FilteredItemListRobot: BaseTestRobot {
+class FilteredItemListRobot : BaseTestRobot {
     override fun exists() = displayed { id(R.id.filterField) }
 
     fun typeFilterText(text: String) = typeText(text) { id(R.id.filterField) }

@@ -10,7 +10,7 @@ import br.com.concretesolutions.kappuccino.assertions.VisibilityAssertions.displ
 import mozilla.lockbox.R
 
 // ItemDetail
-class ItemDetailRobot: BaseTestRobot {
+class ItemDetailRobot : BaseTestRobot {
     override fun exists() = displayed { id(R.id.inputHostname) }
 }
 

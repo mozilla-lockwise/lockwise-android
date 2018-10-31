@@ -13,7 +13,6 @@ import android.support.test.espresso.contrib.NavigationViewActions.navigateTo
 import android.support.test.espresso.matcher.ViewMatchers.withId
 import br.com.concretesolutions.kappuccino.actions.ClickActions.click
 import br.com.concretesolutions.kappuccino.assertions.VisibilityAssertions.displayed
-import br.com.concretesolutions.kappuccino.custom.recyclerView.RecyclerViewInteractions
 import br.com.concretesolutions.kappuccino.custom.recyclerView.RecyclerViewInteractions.recyclerView
 import mozilla.lockbox.R
 

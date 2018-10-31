@@ -11,7 +11,7 @@ import br.com.concretesolutions.kappuccino.assertions.VisibilityAssertions.displ
 import mozilla.lockbox.R
 
 // FxALogin
-class FxALoginRobot: BaseTestRobot {
+class FxALoginRobot : BaseTestRobot {
     override fun exists() =
         displayed { id(R.id.logMeInButton) }
 

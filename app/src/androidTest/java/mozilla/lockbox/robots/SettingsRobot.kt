@@ -6,12 +6,11 @@
 
 package mozilla.lockbox.robots
 
-import br.com.concretesolutions.kappuccino.assertions.VisibilityAssertions
 import br.com.concretesolutions.kappuccino.assertions.VisibilityAssertions.displayed
 import mozilla.lockbox.R
 
 // Settings
-class SettingsRobot: BaseTestRobot {
+class SettingsRobot : BaseTestRobot {
     override fun exists() = displayed { id(R.id.settingList) }
 }
 

@@ -10,7 +10,7 @@ import br.com.concretesolutions.kappuccino.assertions.VisibilityAssertions.displ
 import mozilla.lockbox.R
 
 // Fingerprint Dialog
-class FingerprintDialogRobot: BaseTestRobot {
+class FingerprintDialogRobot : BaseTestRobot {
     override fun exists() = displayed { id(R.id.fingerprintStatus) }
 
     fun fingerprint(finger: String = "1") {

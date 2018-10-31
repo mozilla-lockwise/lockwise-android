@@ -11,7 +11,7 @@ import br.com.concretesolutions.kappuccino.assertions.VisibilityAssertions.displ
 import mozilla.lockbox.R
 
 // LockScreen
-class LockScreenRobot: BaseTestRobot {
+class LockScreenRobot : BaseTestRobot {
     override fun exists() = displayed { id(R.id.unlockButton) }
 
     fun promptFingerprint() = click { id(R.id.unlockButton) }
