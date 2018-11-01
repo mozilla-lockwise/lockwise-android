@@ -6,8 +6,6 @@
 
 package mozilla.lockbox.presenter
 
-import android.support.v7.widget.RecyclerView
-import kotlinx.android.extensions.LayoutContainer
 import mozilla.lockbox.R.string.email_example
 import mozilla.lockbox.R.string.button_summary
 import mozilla.lockbox.R.string.button_title

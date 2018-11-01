@@ -99,6 +99,7 @@ class ItemListPresenter(
                 )
             }
             R.id.fragment_setting -> RouteAction.SettingList
+            R.id.fragment_account -> RouteAction.FxaAccount
             else -> return log.error("Cannot route from item list menu")
         }
 

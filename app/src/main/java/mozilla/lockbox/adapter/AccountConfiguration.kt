@@ -6,9 +6,7 @@
 
 package mozilla.lockbox.adapter
 
-import android.graphics.drawable.ShapeDrawable
-
-class AccountConfiguration(
+open class AccountConfiguration(
     val email: String,
     val summary: String? = null,
     val buttonTitle: String,

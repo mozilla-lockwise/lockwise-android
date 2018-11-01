@@ -13,6 +13,7 @@ sealed class RouteAction : Action {
     object ItemList : RouteAction()
     object Login : RouteAction()
     object SettingList : RouteAction()
+    object FxaAccount : RouteAction()
     object Back : RouteAction()
     object LockScreen : RouteAction()
     object Filter : RouteAction()
