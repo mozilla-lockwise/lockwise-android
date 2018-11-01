@@ -12,7 +12,6 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
-import android.hardware.fingerprint.FingerprintManager
 import com.squareup.leakcanary.LeakCanary
 import io.sentry.Sentry
 import io.sentry.android.AndroidSentryClientFactory
@@ -56,10 +55,11 @@ class LockboxApplication : Application() {
 
         // use context for system service
         ClipboardStore.shared.apply(getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
-        FingerprintStore.shared.apply(getSystemService(Context.FINGERPRINT_SERVICE) as FingerprintManager)
 
         // hook this context into Telemetry
         TelemetryStore.shared.applyContext(this)
+
+        FingerprintStore.shared.applyContext(this)
 
         // Set up Sentry using DSN (client key) from the Project Settings page on Sentry
         val ctx = this.applicationContext

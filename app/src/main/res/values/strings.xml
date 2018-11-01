@@ -51,5 +51,8 @@
     <string name="cancel">Cancel</string>
     <string name="fingerprint_not_recognized">Not recognized</string>
     <string name="fingerprint_success">Success!</string>
-    <string name="error">Fingerprint sensor error</string>
+    <string name="fingerprint_error_lockout">Too many attempts.</string>
+    <string name="fingerprint_sensor_error">Fingerprint sensor error</string>
+    <string name="unlock_fallback_title">Unlock Firefox Lockbox</string>
+    <string name="confirm_pattern">Enter your device Pattern, PIN, or Password.</string>
 </resources>
