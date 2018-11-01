@@ -7,10 +7,23 @@
 package mozilla.lockbox
 
 import io.reactivex.subjects.PublishSubject
+import mozilla.components.support.base.log.logger.Logger
+import mozilla.lockbox.extensions.debug
 import mozilla.lockbox.extensions.filterByType
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.mockito.Mockito
+import org.mockito.Mockito.verify
+import org.powermock.api.mockito.PowerMockito
+import org.powermock.api.mockito.PowerMockito.`when`
+import org.powermock.core.classloader.annotations.PrepareForTest
+import org.powermock.modules.junit4.PowerMockRunner
+import org.powermock.reflect.Whitebox
+import org.mockito.Mockito.`when` as whenCalled
 import java.util.concurrent.atomic.AtomicBoolean
 
 private enum class ValidAction {
@@ -21,7 +34,17 @@ private enum class InvalidAction {
     INVALID
 }
 
+@RunWith(PowerMockRunner::class)
+@PrepareForTest(LogProvider::class)
 class ObservableExtensionTest {
+    @Mock
+    val logger = Mockito.mock(Logger::class.java)
+
+    @Before
+    fun setUp() {
+        PowerMockito.mockStatic(LogProvider::class.java)
+        Whitebox.setInternalState(LogProvider::class.java, "log", logger)
+    }
 
     @Test
     fun testFilterByType() {
@@ -36,5 +59,24 @@ class ObservableExtensionTest {
         assertTrue(flag.get())
 
         subscription.dispose()
+    }
+
+    @Test
+    fun debug() {
+        val subject = PublishSubject.create<String>()
+        subject.debug().subscribe({}, {})
+
+        verify(logger).info("subscribed")
+
+        val eventMessage = "message"
+        subject.onNext(eventMessage)
+
+        verify(logger).info("event: $eventMessage")
+
+        val errorMessage = "error_message"
+        val error = Throwable(message = errorMessage)
+        subject.onError(error)
+
+        verify(logger).info("error: $errorMessage")
     }
 }
