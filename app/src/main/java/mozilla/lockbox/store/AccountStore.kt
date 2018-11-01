@@ -13,11 +13,13 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.PublishSubject
 import mozilla.components.service.fxa.Config
 import mozilla.components.service.fxa.FirefoxAccount
+import mozilla.components.service.fxa.FxaResult
 import mozilla.components.service.fxa.OAuthInfo
 import mozilla.components.service.fxa.Profile
 import mozilla.lockbox.action.AccountAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.log
 import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.SecurePreferences
