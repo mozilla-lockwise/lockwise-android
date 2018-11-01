@@ -103,6 +103,7 @@ dependencies {
         exclude module: 'support-annotations'
         exclude module: 'recyclerview-v7'
     }
+    androidTestImplementation 'br.com.concretesolutions:kappuccino:1.2.1'
     ktlint "com.github.shyiko:ktlint:0.28.0"
 }
 

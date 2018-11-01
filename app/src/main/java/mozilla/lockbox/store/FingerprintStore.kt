@@ -61,6 +61,7 @@ open class FingerprintStore(
     init {
         dispatcher.register.filterByType(FingerprintSensorAction::class.java)
             .doOnDispose { stopListening() }
+            .filter { isFingerprintAuthAvailable }
             .subscribe {
                 when (it) {
                     is FingerprintSensorAction.Start -> initFingerprint()
