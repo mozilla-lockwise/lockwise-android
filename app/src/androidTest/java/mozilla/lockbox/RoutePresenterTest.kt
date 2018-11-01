@@ -6,12 +6,10 @@
 
 package mozilla.lockbox
 
-import android.support.test.InstrumentationRegistry
 import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
 import mozilla.lockbox.robots.filteredItemList
 import mozilla.lockbox.view.RootActivity
-import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -27,13 +25,6 @@ open class RoutePresenterTest {
 
     @Rule @JvmField
     val activityRule: ActivityTestRule<RootActivity> = ActivityTestRule(RootActivity::class.java)
-
-    @Test
-    fun useAppContext() {
-        // Context of the app under test.
-        val appContext = InstrumentationRegistry.getTargetContext()
-        assertEquals("mozilla.lockbox", appContext.packageName)
-    }
 
     @Test
     fun testFxALogin() {
