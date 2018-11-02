@@ -13,10 +13,9 @@ import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.R
 import mozilla.lockbox.action.DataStoreAction
-import mozilla.lockbox.action.ItemListSort
+import mozilla.lockbox.model.ItemListSort
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.SettingAction
-import mozilla.lockbox.action.SettingsAction
 import mozilla.lockbox.extensions.mapToItemViewModelList
 import mozilla.lockbox.flux.Dispatcher
 

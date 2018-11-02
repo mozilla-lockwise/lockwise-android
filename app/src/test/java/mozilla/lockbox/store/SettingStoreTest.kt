@@ -10,7 +10,7 @@ import android.content.SharedPreferences
 import io.reactivex.observers.TestObserver
 import junit.framework.Assert.assertEquals
 import mozilla.lockbox.DisposingTest
-import mozilla.lockbox.action.ItemListSort
+import mozilla.lockbox.model.ItemListSort
 import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.flux.Dispatcher
 import org.junit.Before

@@ -11,7 +11,7 @@ import com.f2prateek.rx.preferences2.RxSharedPreferences
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
-import mozilla.lockbox.action.ItemListSort
+import mozilla.lockbox.model.ItemListSort
 import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher

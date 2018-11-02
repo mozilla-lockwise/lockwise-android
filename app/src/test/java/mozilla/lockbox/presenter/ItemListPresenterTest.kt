@@ -13,10 +13,9 @@ import io.reactivex.subjects.PublishSubject
 import junit.framework.Assert
 import junit.framework.Assert.assertEquals
 import mozilla.lockbox.R
-import mozilla.lockbox.action.ItemListSort
+import mozilla.lockbox.model.ItemListSort
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.SettingAction
-import mozilla.lockbox.action.SettingsAction
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.extensions.toViewModel
 import mozilla.lockbox.flux.Action
