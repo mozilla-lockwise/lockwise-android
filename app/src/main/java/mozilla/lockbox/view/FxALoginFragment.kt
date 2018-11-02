@@ -15,6 +15,8 @@ import android.view.ViewGroup
 import android.webkit.CookieManager
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import com.jakewharton.rxbinding2.view.clicks
+import io.reactivex.Observable
 import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.fragment_fxa_login.*
 import kotlinx.android.synthetic.main.fragment_fxa_login.view.*
@@ -25,7 +27,6 @@ import mozilla.lockbox.presenter.FxALoginView
 
 class FxALoginFragment : BackableFragment(), FxALoginView {
     override var webViewObserver: Consumer<String?>? = null
-
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,4 +58,6 @@ class FxALoginFragment : BackableFragment(), FxALoginView {
 
         webView.loadUrl(url)
     }
+
+    override var skipFxAClicks: Observable<Unit> = skipFxA.clicks()
 }

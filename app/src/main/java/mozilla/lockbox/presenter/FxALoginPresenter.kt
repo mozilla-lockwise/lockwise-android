@@ -6,6 +6,7 @@
 
 package mozilla.lockbox.presenter
 
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.addTo
@@ -19,6 +20,7 @@ import mozilla.lockbox.support.Constant
 
 interface FxALoginView {
     var webViewObserver: Consumer<String?>?
+    var skipFxAClicks: Observable<Unit>
     fun loadURL(url: String)
 }
 
@@ -39,11 +41,18 @@ class FxALoginPresenter(
             }
         }
 
+        view.skipFxAClicks
+            .subscribe {
+                dispatcher.dispatch(RouteAction.ItemList)
+            }
+            .addTo(compositeDisposable)
+
         accountStore.loginURL
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
+            .subscribe( {
                 view.loadURL(it)
-            }
+            },
+                {log.info(it.localizedMessage)})
             .addTo(compositeDisposable)
     }
 }

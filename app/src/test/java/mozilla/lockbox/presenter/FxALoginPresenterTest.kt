@@ -6,10 +6,12 @@
 
 package mozilla.lockbox.presenter
 
+import io.reactivex.Observable
 import io.reactivex.functions.Consumer
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import mozilla.lockbox.action.AccountAction
+import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.AccountStore
@@ -22,15 +24,15 @@ import org.mockito.Mock
 import org.powermock.api.mockito.PowerMockito
 import org.powermock.core.classloader.annotations.PrepareForTest
 import org.powermock.modules.junit4.PowerMockRunner
+import org.robolectric.RobolectricTestRunner
 import org.mockito.Mockito.`when` as whenCalled
 
-@RunWith(PowerMockRunner::class)
+@RunWith(RobolectricTestRunner::class)
 @PrepareForTest(AccountStore::class)
 class FxALoginPresenterTest {
     class FakeFxALoginView : FxALoginView {
         val webViewRedirects = PublishSubject.create<String>()
         var loadedURL: String? = null
-
         override var webViewObserver: Consumer<String?>?
             get() = TODO("not implemented")
             set(value) {
@@ -40,6 +42,8 @@ class FxALoginPresenterTest {
         override fun loadURL(url: String) {
             loadedURL = url
         }
+
+        override var skipFxAClicks: Observable<Unit> = PublishSubject.create<Unit>()
     }
 
     val view = FakeFxALoginView()
@@ -64,26 +68,34 @@ class FxALoginPresenterTest {
     }
 
     @Test
-    fun onViewReady_loginURL() {
+    fun `onViewReady, when the accountStore pushes a new loginURL`() {
         val url = "www.mozilla.org"
-        (accountStore.loginURL as PublishSubject).onNext(url)
+        loginURLSubject.onNext(url)
 
         Assert.assertEquals(url, view.loadedURL)
     }
 
     @Test
-    fun onViewReady_gettingURL_matchingRedirect() {
+    fun `onViewReady, when the webview redirects to a URL starting with the expected redirect`() {
         val url = Constant.FxA.redirectUri + "/moz_fake"
         view.webViewRedirects.onNext(url)
 
-        dispatcherObserver.assertValue(AccountAction.OauthRedirect(url))
+        val redirectAction = dispatcherObserver.values().first() as AccountAction.OauthRedirect
+        Assert.assertEquals(url, redirectAction.url)
     }
 
     @Test
-    fun onViewReady_gettingURL_notMatchingRedirect() {
+    fun `onViewReady, when the webview redirects to a URL not starting with the expected redirect`() {
         val url = "www.mozilla.org"
         view.webViewRedirects.onNext(url)
 
         dispatcherObserver.assertEmpty()
+    }
+
+    @Test
+    fun `onViewReady, when the skipFXA button is tapped`() {
+        (view.skipFxAClicks as PublishSubject).onNext(Unit)
+
+        dispatcherObserver.assertValue(RouteAction.ItemList)
     }
 }
