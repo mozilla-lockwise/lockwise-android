@@ -58,7 +58,6 @@ class FingerprintDialogPresenterTest {
     @Before
     fun setUp() {
         Dispatcher.shared.register.subscribe(dispatcherObserver)
-        fingerprintStore.apply(fingerprintManager)
         subject.onViewReady()
     }
 

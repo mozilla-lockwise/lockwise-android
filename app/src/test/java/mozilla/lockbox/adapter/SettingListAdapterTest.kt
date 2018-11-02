@@ -9,7 +9,8 @@ package mozilla.lockbox.adapter
 import android.content.Context
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import mozilla.lockbox.adapter.SettingListAdapter.Companion.SETTING_APP_VERSION_TYPE
+import mozilla.lockbox.BuildConfig
+import mozilla.lockbox.R
 import mozilla.lockbox.adapter.SettingListAdapter.Companion.SETTING_TEXT_TYPE
 import mozilla.lockbox.adapter.SettingListAdapter.Companion.SETTING_TOGGLE_TYPE
 import mozilla.lockbox.view.TextSettingViewHolder
@@ -33,44 +34,38 @@ class SettingListAdapterTest {
     val subject = SettingListAdapter()
     private lateinit var context: Context
     private lateinit var parent: RecyclerView
+    private lateinit var testHelper: ListAdapterTestHelper
+    private val expectedVersionNumber = BuildConfig.VERSION_NAME
 
     class SettingCellConfigFake : SettingCellConfiguration(
         title = "Fake title",
-        subtitle = "I will fail")
+        subtitle = "I will fail"
+    )
 
     @Before
     fun setUp() {
         context = RuntimeEnvironment.application
         parent = RecyclerView(context)
         parent.layoutManager = LinearLayoutManager(context)
+        testHelper = ListAdapterTestHelper(context)
     }
 
     @Test
     fun getItemCountTest() {
-        val sectionConfig = listOf(
-                TextSettingConfiguration(title = "Auto Lock", detailText = "one hour"),
-                ToggleSettingConfiguration(title = "Unlock with finger", toggle = true),
-                AppVersionSettingConfiguration(text = "App Version: 1.0")
-        )
-
+        val sectionConfig = testHelper.createListOfSettings()
+        var size = sectionConfig.size
         subject.setItems(sectionConfig)
-
-        Assert.assertEquals(subject.itemCount, 3)
+        Assert.assertEquals(subject.itemCount, size)
     }
 
     @Test
     fun getItemViewTypeTest_WithValidViewTypes() {
-        val sectionConfig = listOf(
-                TextSettingConfiguration(title = "Auto Lock", detailText = "one hour"),
-                ToggleSettingConfiguration(title = "Unlock with finger", toggle = true),
-                AppVersionSettingConfiguration(text = "App Version: 1.0")
-        )
+        val sectionConfig = testHelper.createListOfSettings()
 
         subject.setItems(sectionConfig)
 
-        Assert.assertEquals(subject.getItemViewType(0), SETTING_TEXT_TYPE)
-        Assert.assertEquals(subject.getItemViewType(1), SETTING_TOGGLE_TYPE)
-        Assert.assertEquals(subject.getItemViewType(2), SETTING_APP_VERSION_TYPE)
+        Assert.assertEquals(subject.getItemViewType(0), SETTING_TOGGLE_TYPE)
+        Assert.assertEquals(subject.getItemViewType(1), SETTING_TEXT_TYPE)
     }
 
     @Test
@@ -118,52 +113,46 @@ class SettingListAdapterTest {
 
     @Test
     fun onBindViewHolderTest_textSettingCell() {
-        val title = "Auto Lock"
-        val detailText = "one hour"
-        val sectionConfig = listOf(
-            TextSettingConfiguration(title = title, detailText = detailText),
-            ToggleSettingConfiguration(title = "Unlock with finger", toggle = true),
-            AppVersionSettingConfiguration(text = "App Version: 1.0")
-        )
+        val expectedTitle = context.getString(R.string.auto_lock)
+        val expectedDetailText = context.getString(R.string.auto_lock_option)
+
+        val sectionConfig = testHelper.createListOfSettings()
 
         subject.setItems(sectionConfig)
 
-        val textViewHolder = subject.onCreateViewHolder(parent, 0) as TextSettingViewHolder
+        val textViewHolder = subject.onCreateViewHolder(parent, 0)
+            as TextSettingViewHolder
 
-        subject.onBindViewHolder(textViewHolder, 0)
+        subject.onBindViewHolder(textViewHolder, 1)
 
-        Assert.assertEquals(title, textViewHolder.title)
-        Assert.assertEquals(detailText, textViewHolder.detailText)
+        Assert.assertEquals(expectedTitle, textViewHolder.title)
+        Assert.assertEquals(expectedDetailText, textViewHolder.detailText)
     }
 
     @Test
     fun onBindViewHolderTest_toggleSettingCell() {
-        val title = "Unlock with finger"
-        val toggleValue = true
-        val buttonTitle = "Learn more"
-        val sectionConfig = listOf(
-            TextSettingConfiguration(title = "Auto Lock", detailText = "one hour"),
-            ToggleSettingConfiguration(title = title, toggle = toggleValue, buttonTitle = buttonTitle),
-            AppVersionSettingConfiguration(text = "App Version: 1.0")
-        )
+        val expectedTitle = context.getString(R.string.unlock)
+        val expectedToggleValue = false
+
+        val sectionConfig = testHelper.createListOfSettings()
 
         subject.setItems(sectionConfig)
 
         val toggleViewHolder = subject.onCreateViewHolder(parent, 1)
             as ToggleSettingViewHolder
 
-        subject.onBindViewHolder(toggleViewHolder, 1)
+        subject.onBindViewHolder(toggleViewHolder, 0)
 
-        Assert.assertEquals(title, toggleViewHolder.title)
-        Assert.assertEquals(toggleValue, toggleViewHolder.toggle)
-        Assert.assertEquals(buttonTitle, toggleViewHolder.buttonTitle)
+        Assert.assertEquals(expectedTitle, toggleViewHolder.title)
+        Assert.assertEquals(expectedToggleValue, toggleViewHolder.toggle.isChecked)
     }
 
     @Test
     fun onBindViewHolderTest_appVersionSettingCell() {
-        val appVersion = "App Version: 1.0"
+        val expectedAppVersion = "App Version: $expectedVersionNumber"
+
         val sectionConfig = listOf(
-            AppVersionSettingConfiguration(text = appVersion)
+            AppVersionSettingConfiguration(text = expectedAppVersion)
         )
 
         subject.setItems(sectionConfig)
@@ -173,6 +162,6 @@ class SettingListAdapterTest {
 
         subject.onBindViewHolder(appVersionViewHolder, 0)
 
-        Assert.assertEquals(appVersion, appVersionViewHolder.text)
+        Assert.assertEquals(expectedAppVersion, appVersionViewHolder.text)
     }
 }

@@ -8,90 +8,82 @@ package mozilla.lockbox
 
 import android.support.test.espresso.Espresso.closeSoftKeyboard
 import android.support.test.espresso.Espresso.pressBack
-import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.NoActivityResumedException
-import android.support.test.espresso.action.ViewActions.click
-import android.support.test.espresso.assertion.ViewAssertions.matches
-import android.support.test.espresso.contrib.DrawerActions.open
-import android.support.test.espresso.contrib.NavigationViewActions.navigateTo
-import android.support.test.espresso.matcher.ViewMatchers.isDisplayed
-import android.support.test.espresso.matcher.ViewMatchers.withId
 import junit.framework.Assert
+import mozilla.lockbox.robots.filteredItemList
+import mozilla.lockbox.robots.fxaLogin
+import mozilla.lockbox.robots.itemDetail
+import mozilla.lockbox.robots.itemList
+import mozilla.lockbox.robots.lockScreen
+import mozilla.lockbox.robots.settings
+import mozilla.lockbox.robots.welcome
 
 class Navigator {
     fun gotoFxALogin() {
-        onView(withId(R.id.buttonGetStarted)).perform(click())
+        welcome { tapGetStarted() }
         checkAtFxALogin()
     }
 
     fun checkAtFxALogin() {
-        onView(withId(R.id.logMeInButton)).check(matches(isDisplayed()))
+        fxaLogin { exists() }
     }
 
     fun gotoItemList() {
         gotoFxALogin()
-        onView(withId(R.id.logMeInButton)).perform(click())
+        fxaLogin { tapPlaceholderLogin() }
         checkAtItemList()
     }
 
     fun checkAtItemList() {
-        onView(withId(R.id.filterButton)).check(matches(isDisplayed()))
-        onView(withId(R.id.appDrawer)).check(matches(isDisplayed()))
+        itemList { exists() }
     }
 
     fun gotoItemList_filter() {
         gotoItemList()
-        onView(withId(R.id.filterButton)).perform(click())
+        itemList { tapFilterList() }
         checkAtFilterList()
     }
 
     fun checkAtFilterList() {
-        onView(withId(R.id.filterField)).check(matches(isDisplayed()))
-    }
-
-    fun gotoItemList_openMenu() {
-        gotoItemList()
-        val drawer = onView(withId(R.id.appDrawer))
-        drawer.check(matches(isDisplayed()))
-        drawer.perform(open())
+        filteredItemList { exists() }
     }
 
     fun gotoSettings() {
-        gotoItemList_openMenu()
-        onView(withId(R.id.navView)).perform(navigateTo(R.id.fragment_setting))
+        gotoItemList()
+        itemList { tapSettings() }
         checkAtSettings()
     }
 
     fun checkAtSettings() {
-        onView(withId(R.id.settingList)).check(matches(isDisplayed()))
+        settings { exists() }
     }
 
     fun gotoLockScreen() {
-        gotoItemList_openMenu()
-        onView(withId(R.id.navView)).perform(navigateTo(R.id.fragment_locked))
+        gotoItemList()
+        itemList { tapLockNow() }
         checkAtLockScreen()
     }
 
     private fun checkAtLockScreen() {
-        onView(withId(R.id.unlockButton)).check(matches(isDisplayed()))
+        lockScreen { exists() }
     }
 
-    fun gotoItemDetail() {
+    fun gotoItemDetail(position: Int = 0) {
         gotoItemList()
-        gotoItemDetail_from_itemList()
+        gotoItemDetail_from_itemList(position)
     }
 
-    fun gotoItemDetail_from_itemList() {
-        onView(withId(R.id.entriesView)).perform(click())
+    fun gotoItemDetail_from_itemList(position: Int = 0) {
+        itemList { selectItem(position) }
         checkAtItemDetail()
     }
 
     fun checkAtItemDetail() {
-        onView(withId(R.id.inputHostname)).check(matches(isDisplayed()))
+        itemDetail { exists() }
     }
 
     fun checkOnWelcome() {
-        onView(withId(R.id.buttonGetStarted)).check(matches(isDisplayed()))
+        welcome { exists() }
     }
 
     fun back(remainInApplication: Boolean = true) {

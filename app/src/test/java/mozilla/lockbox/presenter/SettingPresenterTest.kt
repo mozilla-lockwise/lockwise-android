@@ -6,13 +6,13 @@
 
 package mozilla.lockbox.presenter
 
+import android.content.Context
 import junit.framework.Assert.assertEquals
-import mozilla.lockbox.BuildConfig
-import mozilla.lockbox.adapter.AppVersionSettingConfiguration
+import mozilla.lockbox.R
+import mozilla.lockbox.adapter.ListAdapterTestHelper
 import mozilla.lockbox.adapter.SectionedAdapter
 import mozilla.lockbox.adapter.SettingCellConfiguration
-import mozilla.lockbox.adapter.TextSettingConfiguration
-import mozilla.lockbox.adapter.ToggleSettingConfiguration
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -20,7 +20,6 @@ import org.robolectric.RuntimeEnvironment
 
 @RunWith(RobolectricTestRunner::class)
 class SettingPresenterTest {
-
     class SettingViewFake : SettingView {
 
         var settingItem: List<SettingCellConfiguration>? = null
@@ -35,42 +34,27 @@ class SettingPresenterTest {
         }
     }
 
+    private lateinit var context: Context
+    private lateinit var testHelper: ListAdapterTestHelper
     private val settingView = SettingViewFake()
     private val subject = SettingPresenter(settingView, RuntimeEnvironment.application.applicationContext)
-    private val expectedVersionNumber = BuildConfig.VERSION_NAME
 
-    private val expectedSettings = listOf(
-        ToggleSettingConfiguration(
-            title = "Unlock with fingerprint",
-            toggle = false
-        ),
-        TextSettingConfiguration(
-            title = "Auto lock",
-            detailText = "5 minutes"
-        ),
-        ToggleSettingConfiguration(
-            title = "Autofill",
-            subtitle = "Let Firefox Lockbox fill in logins for you",
-            toggle = false
-        ),
-        ToggleSettingConfiguration(
-            title = "Send usage data",
-            subtitle = "Mozilla strives to only collect what we need to provide and improve Firefox for everyone. ",
-            buttonTitle = "Learn more",
-            toggle = true
-        ),
-        AppVersionSettingConfiguration(
-            text = "App Version: $expectedVersionNumber"
-        )
-    )
-
-    private val expectedSections = listOf(
-        SectionedAdapter.Section(0, "Security"),
-        SectionedAdapter.Section(3, "Support")
-    )
+    @Before
+    fun setUp() {
+        context = RuntimeEnvironment.application
+        testHelper = ListAdapterTestHelper(context)
+    }
 
     @Test
     fun onViewReadyTest() {
+
+        val expectedSettings = testHelper.createAccurateListOfSettings()
+
+        val expectedSections = listOf(
+            SectionedAdapter.Section(0, context.getString(R.string.security_title)),
+            SectionedAdapter.Section(3, context.getString(R.string.support_title))
+        )
+
         subject.onViewReady()
 
         assertEquals(settingView.settingItem!![0].title, expectedSettings[0].title)

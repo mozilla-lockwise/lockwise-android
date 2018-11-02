@@ -24,6 +24,7 @@ import mozilla.lockbox.presenter.SettingPresenter
 import mozilla.lockbox.presenter.SettingView
 
 class SettingFragment : BackableFragment(), SettingView {
+
     private val adapter = SettingListAdapter()
     @Suppress("UNCHECKED_CAST")
     private val sectionedAdapter = SectionedAdapter(

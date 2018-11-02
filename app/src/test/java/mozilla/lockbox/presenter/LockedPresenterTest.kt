@@ -1,5 +1,6 @@
 package mozilla.lockbox.presenter
 
+import android.app.KeyguardManager
 import android.content.Context
 import android.hardware.fingerprint.FingerprintManager
 import io.reactivex.Observable
@@ -18,6 +19,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.spy
+import org.mockito.Mockito.verify
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
@@ -26,11 +28,22 @@ import org.robolectric.annotation.Config
 @Config(packageName = "mozilla.lockbox")
 class LockedPresenterTest {
 
-    class FakeView : LockedView {
+    open class FakeView : LockedView {
+        override fun unlockFallback() {
+        }
+
+        val unlockConfirmedStub = PublishSubject.create<Boolean>()
+        override val unlockConfirmed: Observable<Boolean> get() = unlockConfirmedStub
         override val unlockButtonTaps = PublishSubject.create<Unit>()
     }
 
-    open class FakeFingerprintStore : FingerprintStore()
+    open class FakeFingerprintStore : FingerprintStore() {
+        override var fingerprintManager: FingerprintManager =
+            RuntimeEnvironment.application.getSystemService(Context.FINGERPRINT_SERVICE) as FingerprintManager
+
+        override var keyguardManager: KeyguardManager =
+            spy(RuntimeEnvironment.application.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager)
+    }
 
     class FakeLockedStore : LockedStore() {
         val onAuth = PublishSubject.create<FingerprintAuthAction>()
@@ -38,7 +51,7 @@ class LockedPresenterTest {
             get() = onAuth
     }
 
-    val view = FakeView()
+    val view = spy(FakeView())
     val fingerprintStore = spy(FakeFingerprintStore())
     val lockedStore = FakeLockedStore()
     val dispatcherObserver = TestObserver.create<Action>()
@@ -47,22 +60,30 @@ class LockedPresenterTest {
     @Before
     fun setUp() {
         Dispatcher.shared.register.subscribe(dispatcherObserver)
-        fingerprintStore.apply(fingerprintManager)
         subject.onViewReady()
     }
 
     @Test
     fun `unlock button tap shows fingerprint dialog`() {
-        `when`(fingerprintStore.isFingerprintAuthAvailable()).thenReturn(true)
+        `when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(true)
         view.unlockButtonTaps.onNext(Unit)
         dispatcherObserver.assertLastValue(RouteAction.FingerprintDialog)
     }
 
     @Test
-    fun `unlock button tap shows item list`() {
-        `when`(fingerprintStore.isFingerprintAuthAvailable()).thenReturn(false)
+    fun `unlock button tap fallback if no fingerprint`() {
+        `when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(false)
+        `when`(fingerprintStore.isKeyguardSecure).thenReturn(true)
         view.unlockButtonTaps.onNext(Unit)
-        dispatcherObserver.assertLastValue(RouteAction.ItemList)
+        verify(view).unlockFallback()
+    }
+
+    @Test
+    fun `unlock button tap fallback on fingerprint error`() {
+        `when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(true)
+        `when`(fingerprintStore.isKeyguardSecure).thenReturn(true)
+        lockedStore.onAuth.onNext(FingerprintAuthAction.OnAuthentication(AuthCallback.OnError))
+        verify(view).unlockFallback()
     }
 
     @Test
@@ -73,10 +94,20 @@ class LockedPresenterTest {
 
     @Test
     fun `handle error authentication callback`() {
+        `when`(fingerprintStore.isKeyguardSecure).thenReturn(false)
         lockedStore.onAuth.onNext(FingerprintAuthAction.OnAuthentication(AuthCallback.OnError))
         dispatcherObserver.assertLastValue(RouteAction.LockScreen)
     }
 
-    private val fingerprintManager =
-        RuntimeEnvironment.application.getSystemService(Context.FINGERPRINT_SERVICE) as FingerprintManager
+    @Test
+    fun `handle unlock confirmed true`() {
+        view.unlockConfirmedStub.onNext(true)
+        dispatcherObserver.assertLastValue(RouteAction.ItemList)
+    }
+
+    @Test
+    fun `handle unlock confirmed false`() {
+        view.unlockConfirmedStub.onNext(false)
+        dispatcherObserver.assertLastValue(RouteAction.LockScreen)
+    }
 }
