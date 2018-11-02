@@ -2,4 +2,6 @@
     <issue id="InvalidPackage">
         <ignore path="**/sentry*.jar"/>
     </issue>
+
+    <issue id="GoogleAppIndexingWarning" severity="ignore" />
 </lint>

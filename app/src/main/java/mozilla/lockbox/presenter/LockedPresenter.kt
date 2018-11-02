@@ -18,6 +18,8 @@ import mozilla.lockbox.view.FingerprintAuthDialogFragment.AuthCallback
 
 interface LockedView {
     val unlockButtonTaps: Observable<Unit>
+    fun unlockFallback()
+    val unlockConfirmed: Observable<Boolean>
 }
 
 class LockedPresenter(
@@ -29,22 +31,41 @@ class LockedPresenter(
     override fun onViewReady() {
         view.unlockButtonTaps
             .subscribe {
-                if (fingerprintStore.isFingerprintAuthAvailable()) {
+                if (fingerprintStore.isFingerprintAuthAvailable) {
                     dispatcher.dispatch(RouteAction.FingerprintDialog)
                 } else {
-                    dispatcher.dispatch(RouteAction.ItemList)
+                    unlockFallback()
                 }
             }
             .addTo(compositeDisposable)
+
+        view.unlockConfirmed
+            .subscribe {
+                if (it) {
+                    dispatcher.dispatch(RouteAction.ItemList)
+                } else {
+                    dispatcher.dispatch(RouteAction.LockScreen)
+                }
+            }
+            .addTo(compositeDisposable)
+
         lockedStore.onAuthentication
             .subscribe {
                 if (it is FingerprintAuthAction.OnAuthentication) {
                     when (it.authCallback) {
                         is AuthCallback.OnAuth -> dispatcher.dispatch(RouteAction.ItemList)
-                        is AuthCallback.OnError -> dispatcher.dispatch(RouteAction.LockScreen)
+                        is AuthCallback.OnError -> unlockFallback()
                     }
                 }
             }
             .addTo(compositeDisposable)
+    }
+
+    private fun unlockFallback() {
+        if (fingerprintStore.isKeyguardSecure) {
+            view.unlockFallback()
+        } else {
+            dispatcher.dispatch(RouteAction.LockScreen)
+        }
     }
 }

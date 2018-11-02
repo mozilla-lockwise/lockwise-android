@@ -1,6 +1,9 @@
 package mozilla.lockbox.store
 
+import android.app.KeyguardManager
+import android.content.Context
 import android.hardware.fingerprint.FingerprintManager
+import android.hardware.fingerprint.FingerprintManager.FINGERPRINT_ERROR_LOCKOUT
 import android.os.CancellationSignal
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyPermanentlyInvalidatedException
@@ -9,6 +12,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.PublishSubject
+import mozilla.lockbox.R
 import mozilla.lockbox.action.FingerprintSensorAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
@@ -30,7 +34,9 @@ open class FingerprintStore(
     val dispatcher: Dispatcher = Dispatcher.shared
 ) {
     internal val compositeDisposable = CompositeDisposable()
-    private lateinit var fingerprintManager: FingerprintManager
+    open lateinit var fingerprintManager: FingerprintManager
+    open lateinit var keyguardManager: KeyguardManager
+    private lateinit var authenticationCallback: AuthenticationCallback
 
     private lateinit var keyStore: KeyStore
     private lateinit var keyGenerator: KeyGenerator
@@ -55,6 +61,7 @@ open class FingerprintStore(
     init {
         dispatcher.register.filterByType(FingerprintSensorAction::class.java)
             .doOnDispose { stopListening() }
+            .filter { isFingerprintAuthAvailable }
             .subscribe {
                 when (it) {
                     is FingerprintSensorAction.Start -> initFingerprint()
@@ -64,13 +71,16 @@ open class FingerprintStore(
             .addTo(compositeDisposable)
     }
 
-    fun apply(manager: FingerprintManager) {
-        fingerprintManager = manager
+    fun applyContext(context: Context) {
+        fingerprintManager = context.getSystemService(Context.FINGERPRINT_SERVICE) as FingerprintManager
+        keyguardManager = context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+        authenticationCallback = AuthenticationCallback(context)
     }
 
-    open fun isFingerprintAuthAvailable(): Boolean {
-        return fingerprintManager.isHardwareDetected && fingerprintManager.hasEnrolledFingerprints()
-    }
+    open val isFingerprintAuthAvailable: Boolean
+        get() = fingerprintManager.isHardwareDetected && fingerprintManager.hasEnrolledFingerprints()
+
+    val isKeyguardSecure get() = keyguardManager.isKeyguardSecure
 
     private fun initFingerprint() {
         setupKeyStoreAndKeyGenerator()
@@ -82,12 +92,12 @@ open class FingerprintStore(
     }
 
     private fun startListening(cryptoObject: FingerprintManager.CryptoObject) {
-        if (!isFingerprintAuthAvailable()) {
+        if (!isFingerprintAuthAvailable) {
             return
         }
         cancellationSignal = CancellationSignal()
         selfCancelled = false
-        fingerprintManager.authenticate(cryptoObject, cancellationSignal, 0, AuthenticationCallback(), null)
+        fingerprintManager.authenticate(cryptoObject, cancellationSignal, 0, authenticationCallback, null)
     }
 
     private fun stopListening() {
@@ -180,11 +190,15 @@ open class FingerprintStore(
         }
     }
 
-    inner class AuthenticationCallback : FingerprintManager.AuthenticationCallback() {
+    inner class AuthenticationCallback(val context: Context) : FingerprintManager.AuthenticationCallback() {
         override fun onAuthenticationError(errorCode: Int, errString: CharSequence?) {
             super.onAuthenticationError(errorCode, errString)
             if (!selfCancelled) {
-                _state.onNext(AuthenticationState.Error(errString.toString()))
+                if (errorCode == FINGERPRINT_ERROR_LOCKOUT) {
+                    _state.onNext(AuthenticationState.Error(context.getString(R.string.fingerprint_error_lockout)))
+                } else {
+                    _state.onNext(AuthenticationState.Error(errString.toString()))
+                }
             }
         }
 
