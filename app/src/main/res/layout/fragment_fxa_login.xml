@@ -18,11 +18,13 @@
     <WebView
             android:id="@+id/webView"
             android:layout_width="match_parent"
-            android:layout_height="fill_parent"/>
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
 
     <Button
             android:id="@+id/skipFxA"
-            android:layout_width="0dp"
-            android:layout_height="0dp"/>
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/transparent"/>
 
 </LinearLayout>

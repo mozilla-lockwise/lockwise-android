@@ -59,5 +59,6 @@ class FxALoginFragment : BackableFragment(), FxALoginView {
         webView.loadUrl(url)
     }
 
-    override var skipFxAClicks: Observable<Unit> = skipFxA.clicks()
+    override val skipFxAClicks: Observable<Unit>
+        get() = skipFxA.clicks()
 }

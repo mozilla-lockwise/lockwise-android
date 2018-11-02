@@ -20,7 +20,7 @@ import mozilla.lockbox.support.Constant
 
 interface FxALoginView {
     var webViewObserver: Consumer<String?>?
-    var skipFxAClicks: Observable<Unit>
+    val skipFxAClicks: Observable<Unit>
     fun loadURL(url: String)
 }
 

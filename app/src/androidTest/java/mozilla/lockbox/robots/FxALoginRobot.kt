@@ -13,10 +13,10 @@ import mozilla.lockbox.R
 // FxALogin
 class FxALoginRobot : BaseTestRobot {
     override fun exists() =
-        displayed { id(R.id.logMeInButton) }
+        displayed { id(R.id.webView) }
 
     fun tapPlaceholderLogin() =
-        click { id(R.id.logMeInButton) }
+        click { id(R.id.skipFxA) }
 }
 
 fun fxaLogin(f: FxALoginRobot.() -> Unit) = FxALoginRobot().apply(f)
