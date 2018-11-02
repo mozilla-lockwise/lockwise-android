@@ -44,7 +44,7 @@ class FxALoginFragment : BackableFragment(), FxALoginView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        view.toolbar.setNavigationIcon(android.R.drawable.ic_menu_close_clear_cancel)
+        view.toolbar.setNavigationIcon(R.drawable.ic_close)
     }
 
     override fun loadURL(url: String) {
