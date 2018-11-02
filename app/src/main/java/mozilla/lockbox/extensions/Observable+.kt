@@ -15,7 +15,7 @@ fun <T : Any, U : T> Observable<T>.filterByType(clazz: Class<out U>): Observable
     return this.filter { t -> clazz.isInstance(t) }.map { t -> clazz.cast(t) }
 }
 
-fun <T: Any> Observable<T>.debug(): Observable<T> {
+fun <T : Any> Observable<T>.debug(): Observable<T> {
     return this
         .doOnSubscribe {
             LogProvider.log.info("subscribed")

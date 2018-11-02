@@ -19,11 +19,9 @@ import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.Mockito.verify
 import org.powermock.api.mockito.PowerMockito
-import org.powermock.api.mockito.PowerMockito.`when`
 import org.powermock.core.classloader.annotations.PrepareForTest
 import org.powermock.modules.junit4.PowerMockRunner
 import org.powermock.reflect.Whitebox
-import org.mockito.Mockito.`when` as whenCalled
 import java.util.concurrent.atomic.AtomicBoolean
 
 private enum class ValidAction {
