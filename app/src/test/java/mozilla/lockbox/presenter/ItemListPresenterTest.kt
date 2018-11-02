@@ -15,6 +15,7 @@ import junit.framework.Assert.assertEquals
 import mozilla.lockbox.R
 import mozilla.lockbox.action.ItemListSort
 import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.action.SettingsAction
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.extensions.toViewModel
@@ -22,7 +23,7 @@ import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.store.DataStore
-import mozilla.lockbox.store.PreferencesStore
+import mozilla.lockbox.store.SettingStore
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -95,16 +96,16 @@ class ItemListPresenterTest {
             get() = listStub
     }
 
-    class FakePreferencesStore : PreferencesStore {
+    class FakeSettingStore : SettingStore() {
         val itemListSortStub = BehaviorSubject.createDefault(ItemListSort.ALPHABETICALLY)
-        override val itemListSortObservable: Observable<ItemListSort> = itemListSortStub
+        override var itemListSortOrder: Observable<ItemListSort> = itemListSortStub
     }
 
     val view = FakeView()
     val dataStore = FakeDataStore()
-    val prefsStore = FakePreferencesStore()
+    val settingStore = FakeSettingStore()
     val dispatcher = Dispatcher()
-    val subject = ItemListPresenter(view, dispatcher, dataStore, prefsStore)
+    val subject = ItemListPresenter(view, dispatcher, dataStore, settingStore)
 
     val dispatcherObserver = TestObserver.create<Action>()
 
@@ -147,18 +148,18 @@ class ItemListPresenterTest {
         // last used
         var sortOrder = ItemListSort.RECENTLY_USED
         view.sortItemSelectionStub.onNext(sortOrder)
-        dispatcherObserver.assertLastValue(SettingsAction.SortAction(sortOrder))
+        dispatcherObserver.assertLastValue(SettingAction.ItemListSortOrder(sortOrder))
 
-        prefsStore.itemListSortStub.onNext(sortOrder)
+        settingStore.itemListSortStub.onNext(sortOrder)
         assertEquals(sortOrder, view.itemListSort)
         assertEquals(lastUsed, view.updateItemsArgument)
 
         // alphabetically
         sortOrder = ItemListSort.ALPHABETICALLY
         view.sortItemSelectionStub.onNext(sortOrder)
-        dispatcherObserver.assertLastValue(SettingsAction.SortAction(sortOrder))
+        dispatcherObserver.assertLastValue(SettingAction.ItemListSortOrder(sortOrder))
 
-        prefsStore.itemListSortStub.onNext(sortOrder)
+        settingStore.itemListSortStub.onNext(sortOrder)
         assertEquals(sortOrder, view.itemListSort)
         assertEquals(alphabetically, view.updateItemsArgument)
     }
