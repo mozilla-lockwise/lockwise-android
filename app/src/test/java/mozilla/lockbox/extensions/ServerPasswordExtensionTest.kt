@@ -25,7 +25,7 @@ class ServerPasswordExtensionTest {
                 password = "woof",
                 timeLastUsed = time)
 
-        val expectedItemViewModel = ItemViewModel("mozilla.org", username, guid, time)
+        val expectedItemViewModel = ItemViewModel("mozilla.org", username, guid)
 
         Assert.assertEquals(serverPassword.toViewModel(), expectedItemViewModel)
     }

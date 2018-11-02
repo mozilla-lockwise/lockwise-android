@@ -23,7 +23,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mozilla.sync15.logins.ServerPassword
 import org.robolectric.RobolectricTestRunner
-import java.util.Date
 
 @RunWith(RobolectricTestRunner::class)
 class FilterPresenterTest {
@@ -139,7 +138,7 @@ class FilterPresenterTest {
     @Test
     fun itemSelection() {
         val guid = "fdssdfsdf"
-        val model = ItemViewModel("mozilla.org", "cats@cats.com", guid, Date().time)
+        val model = ItemViewModel("mozilla.org", "cats@cats.com", guid)
         view.itemSelectionStub.onNext(model)
 
         dispatcherObserver.assertValue(RouteAction.ItemDetail(guid))

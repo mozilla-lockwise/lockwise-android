@@ -42,18 +42,16 @@ class ItemListPresenter(
 ) : Presenter() {
 
     override fun onViewReady() {
-        val itemViewModelList = dataStore.list
-                .filter { it.isNotEmpty() }
-                .mapToItemViewModelList()
-
-        Observables.combineLatest(itemViewModelList, prefsStore.itemListSortObservable)
+        Observables.combineLatest(dataStore.list, prefsStore.itemListSortObservable)
+                .filter { it.first.isNotEmpty() }
                 .distinctUntilChanged()
                 .map { pair ->
                     when (pair.second) {
-                        ItemListSort.ALPHABETICALLY -> { pair.first.sortedBy { it.title } }
+                        ItemListSort.ALPHABETICALLY -> { pair.first.sortedBy { titleFromHostname(it.hostname) } }
                         ItemListSort.RECENTLY_USED -> { pair.first.sortedBy { -it.timeLastUsed } }
                     }
                 }
+                .mapToItemViewModelList()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(view::updateItems)
                 .addTo(compositeDisposable)

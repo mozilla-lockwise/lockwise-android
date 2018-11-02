@@ -28,7 +28,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mozilla.sync15.logins.ServerPassword
 import org.robolectric.RobolectricTestRunner
-import java.util.Date
 
 private val username = "dogs@dogs.com"
 private val password1 = ServerPassword(
@@ -119,7 +118,7 @@ class ItemListPresenterTest {
     @Test
     fun receivingItemSelected() {
         val id = "the_guid"
-        view.itemSelectedStub.onNext(ItemViewModel("title", "subtitle", id, Date().time))
+        view.itemSelectedStub.onNext(ItemViewModel("title", "subtitle", id))
 
         dispatcherObserver.assertLastValue(RouteAction.ItemDetail(id))
     }

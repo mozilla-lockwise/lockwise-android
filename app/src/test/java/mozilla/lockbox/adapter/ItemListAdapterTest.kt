@@ -18,7 +18,6 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
-import java.util.Date
 
 @RunWith(RobolectricTestRunner::class)
 @Config(packageName = "mozilla.lockbox")
@@ -29,9 +28,9 @@ class ItemListAdapterTest {
     private lateinit var parent: RecyclerView
 
     private val list = listOf<ItemViewModel>(
-            ItemViewModel("mozilla.org", "example@example.com", "", Date().time),
-            ItemViewModel("cats.org", "cats@cats.com", "", Date().time),
-            ItemViewModel("dogs.org", "woof@woof.com", "", Date().time)
+            ItemViewModel("mozilla.org", "example@example.com", ""),
+            ItemViewModel("cats.org", "cats@cats.com", ""),
+            ItemViewModel("dogs.org", "woof@woof.com", "")
     )
 
     @Before
