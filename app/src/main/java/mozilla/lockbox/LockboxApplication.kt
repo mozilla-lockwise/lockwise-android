@@ -25,7 +25,14 @@ import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.store.TelemetryStore
 import mozilla.lockbox.support.SecurePreferences
 
-val log: Logger = Logger("Lockbox")
+sealed class LogProvider {
+    companion object {
+        val log: Logger = Logger("Log")
+    }
+}
+
+val log = LogProvider.log
+
 class LockboxApplication : Application() {
 
     private lateinit var presenter: ApplicationPresenter
