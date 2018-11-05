@@ -11,6 +11,7 @@ import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.store.FingerprintStore
@@ -32,31 +33,27 @@ class LockedPresenter(
     override fun onViewReady() {
         view.unlockButtonTaps
             .subscribe {
-                if (fingerprintStore.isFingerprintAuthAvailable) {
-                    dispatcher.dispatch(RouteAction.FingerprintDialog)
-                } else {
-                    unlockFallback()
+                when {
+                    fingerprintStore.isFingerprintAuthAvailable -> dispatcher.dispatch(RouteAction.FingerprintDialog)
+                    fingerprintStore.isKeyguardSecure -> view.unlockFallback()
+                    else -> performUnlock()
                 }
             }
             .addTo(compositeDisposable)
 
         view.unlockConfirmed
+            .filter { it }
             .subscribe {
-                if (it) {
-                    performUnlock()
-                } else {
-                    dispatcher.dispatch(RouteAction.LockScreen)
-                }
+                performUnlock()
             }
             .addTo(compositeDisposable)
 
         lockedStore.onAuthentication
+            .filterByType(FingerprintAuthAction.OnAuthentication::class.java)
             .subscribe {
-                if (it is FingerprintAuthAction.OnAuthentication) {
-                    when (it.authCallback) {
-                        is AuthCallback.OnAuth -> performUnlock()
-                        is AuthCallback.OnError -> unlockFallback()
-                    }
+                when (it.authCallback) {
+                    is AuthCallback.OnAuth -> performUnlock()
+                    is AuthCallback.OnError -> unlockFallback()
                 }
             }
             .addTo(compositeDisposable)
@@ -64,13 +61,14 @@ class LockedPresenter(
 
     private fun performUnlock() {
         dispatcher.dispatch(DataStoreAction.Unlock)
+//        dispatcher.dispatch(RouteAction.ItemList)
     }
 
     private fun unlockFallback() {
         if (fingerprintStore.isKeyguardDeviceSecure) {
             view.unlockFallback()
         } else {
-            dispatcher.dispatch(RouteAction.LockScreen)
+            performUnlock()
         }
     }
 }

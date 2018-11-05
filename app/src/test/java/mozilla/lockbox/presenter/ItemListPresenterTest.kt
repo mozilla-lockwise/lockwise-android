@@ -11,6 +11,7 @@ import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import mozilla.lockbox.R
+import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.model.ItemListSort
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.SettingIntent
@@ -182,7 +183,7 @@ open class ItemListPresenterTest {
     }
 
     @Test
-    fun `menuItem clicks cause RouteActions`() {
+    fun `menuItem clicks cause Actions`() {
         view.menuItemSelectionStub.onNext(R.id.setting_menu_item)
         dispatcherObserver.assertLastValue(RouteAction.SettingList)
         view.menuItemSelectionStub.onNext(R.id.account_setting_menu_item)
@@ -207,6 +208,6 @@ open class ItemListPresenterTest {
     fun `tapping on the lock menu item when the user has device security routes to lock screen`() {
         whenCalled(fingerprintStore.isDeviceSecure).thenReturn(true)
         view.menuItemSelectionStub.onNext(R.id.lock_now_menu_item)
-        dispatcherObserver.assertLastValue(RouteAction.LockScreen)
+        dispatcherObserver.assertLastValue(DataStoreAction.Lock)
     }
 }
