@@ -81,8 +81,8 @@ class SecurePreferencesTest {
         verify(keystore).generateKey()
     }
 
-    @Test(expected = IllegalArgumentException::class)
-    fun `getString, when the keystore is not available, decrypting throws an error, & the preferences contain the string, generates the key and returns the unencrypted value`() {
+    @Test
+    fun `getString, when the keystore is not available, decrypting throws an error, & the preferences contain the string, returns null`() {
         val key = "some_key"
         whenCalled(keystore.available()).thenReturn(false)
         whenCalled(preferences.contains(key)).thenReturn(true)
@@ -91,7 +91,7 @@ class SecurePreferencesTest {
         whenCalled(keystore.decryptBytes(decodeValue)).thenThrow(IllegalArgumentException())
         whenCalled(preferences.getString(key, "")).thenReturn(encodedValue)
 
-        subject.getString(key)
+        Assert.assertNull(subject.getString(key))
         verify(keystore).generateKey()
     }
 
@@ -116,20 +116,6 @@ class SecurePreferencesTest {
         whenCalled(preferences.getString(key, "")).thenReturn(encodedValue)
 
         Assert.assertEquals(String(decryptedBytes, StandardCharsets.UTF_8), subject.getString(key))
-        verify(keystore).decryptBytes(decodeValue)
-    }
-
-    @Test(expected = IllegalArgumentException::class)
-    fun `getString, when the keystore is available, decrypting throws an error, & the preferences contain the string, returns the unencrypted value`() {
-        whenCalled(keystore.available()).thenReturn(true)
-        val key = "some_key"
-        whenCalled(preferences.contains(key)).thenReturn(true)
-
-        val encodedValue = "khulhjkkjkjhhjkdsfsdf"
-        whenCalled(keystore.decryptBytes(decodeValue)).thenThrow(IllegalArgumentException())
-        whenCalled(preferences.getString(key, "")).thenReturn(encodedValue)
-
-        subject.getString(key)
         verify(keystore).decryptBytes(decodeValue)
     }
 

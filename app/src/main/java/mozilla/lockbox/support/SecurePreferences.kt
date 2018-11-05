@@ -14,7 +14,7 @@ import java.nio.charset.StandardCharsets
 private const val BASE_64_FLAGS = Base64.URL_SAFE or Base64.NO_PADDING
 
 open class SecurePreferences(
-    private val keystore: Keystore = Keystore(Constant.App.KEYSTORE_LABEL)
+    private val keystore: Keystore = Keystore(Constant.App.keystoreLabel)
 ) {
     companion object {
         val shared = SecurePreferences()
@@ -26,7 +26,6 @@ open class SecurePreferences(
         prefs = sharedPreferences
     }
 
-    @Throws
     open fun getString(key: String): String? {
         verifyKey()
 
@@ -37,7 +36,7 @@ open class SecurePreferences(
                 val plain = keystore.decryptBytes(encrypted)
                 String(plain, StandardCharsets.UTF_8)
             } catch (error: IllegalArgumentException) {
-                throw error
+                null
             }
         } else {
             null

@@ -37,12 +37,7 @@ open class AccountStore(
     internal val compositeDisposable = CompositeDisposable()
 
     private val storedAccountJSON: String?
-        get() =
-            try {
-                securePreferences.getString(FIREFOX_ACCOUNT_KEY)
-            } catch (error: IllegalArgumentException) {
-                null
-            }
+        get() = securePreferences.getString(FIREFOX_ACCOUNT_KEY)
 
     private var fxa: FirefoxAccount? = null
 
