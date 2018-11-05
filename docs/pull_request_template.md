@@ -26,3 +26,4 @@ _(Optional: to clearly demonstrate the feature or fix to help with testing and r
 - consider running this branch in a debug simulator and check for memory leak notifications or any warnings
 - [ ] request the "UX" team perform a design review (if/when applicable)
 - [ ] make sure CI builds are passing (e.g.: fix lint and other errors)
+- [ ] check on the [accessibility](accessibility.md) of any added UI
