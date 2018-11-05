@@ -8,20 +8,53 @@ package mozilla.lockbox.presenter
 
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
+import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import junit.framework.Assert
+import junit.framework.Assert.assertEquals
 import mozilla.lockbox.R
+import mozilla.lockbox.model.ItemListSort
 import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.extensions.assertLastValue
+import mozilla.lockbox.extensions.toViewModel
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.store.DataStore
+import mozilla.lockbox.store.SettingStore
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mozilla.sync15.logins.ServerPassword
 import org.robolectric.RobolectricTestRunner
+
+private val username = "dogs@dogs.com"
+private val password1 = ServerPassword(
+    "fdsfda",
+    "https://www.mozilla.org",
+    username,
+    "woof",
+    timesUsed = 0,
+    timeCreated = 0L,
+    timeLastUsed = 1L,
+    timePasswordChanged = 0L)
+private val password2 = ServerPassword("ghfdhg",
+    "https://www.cats.org",
+    username,
+    "meow",
+    timesUsed = 0,
+    timeCreated = 0L,
+    timeLastUsed = 2L,
+    timePasswordChanged = 0L)
+private val password3 = ServerPassword("ioupiouiuy",
+    "www.dogs.org",
+    password = "baaaaa",
+    username = null,
+    timesUsed = 0,
+    timeCreated = 0L,
+    timeLastUsed = 3L,
+    timePasswordChanged = 0L)
 
 @RunWith(RobolectricTestRunner::class)
 class ItemListPresenterTest {
@@ -29,11 +62,16 @@ class ItemListPresenterTest {
         val itemSelectedStub = PublishSubject.create<ItemViewModel>()
         val filterClickStub = PublishSubject.create<Unit>()
         val menuItemSelectionStub = PublishSubject.create<Int>()
+        val sortItemSelectionStub = PublishSubject.create<ItemListSort>()
 
         var updateItemsArgument: List<ItemViewModel>? = null
+        var itemListSort: ItemListSort? = null
 
         override val itemSelection: Observable<ItemViewModel>
             get() = itemSelectedStub
+
+        override val sortItemSelection: Observable<ItemListSort>
+            get() = sortItemSelectionStub
 
         override val filterClicks: Observable<Unit>
             get() = filterClickStub
@@ -44,6 +82,10 @@ class ItemListPresenterTest {
         override fun updateItems(itemList: List<ItemViewModel>) {
             updateItemsArgument = itemList
         }
+
+        override fun updateItemListSort(sort: ItemListSort) {
+            itemListSort = sort
+        }
     }
 
     class FakeDataStore : DataStore() {
@@ -53,15 +95,22 @@ class ItemListPresenterTest {
             get() = listStub
     }
 
+    class FakeSettingStore : SettingStore() {
+        val itemListSortStub = BehaviorSubject.createDefault(ItemListSort.ALPHABETICALLY)
+        override var itemListSortOrder: Observable<ItemListSort> = itemListSortStub
+    }
+
     val view = FakeView()
     val dataStore = FakeDataStore()
-    val subject = ItemListPresenter(view, dataStore = dataStore)
+    val settingStore = FakeSettingStore()
+    val dispatcher = Dispatcher()
+    val subject = ItemListPresenter(view, dispatcher, dataStore, settingStore)
 
     val dispatcherObserver = TestObserver.create<Action>()
 
     @Before
     fun setUp() {
-        Dispatcher.shared.register.subscribe(dispatcherObserver)
+        dispatcher.register.subscribe(dispatcherObserver)
 
         subject.onViewReady()
     }
@@ -76,49 +125,42 @@ class ItemListPresenterTest {
 
     @Test
     fun receivingPasswordList_somePasswords() {
-        val username = "dogs@dogs.com"
-        val password1 = ServerPassword(
-                "fdsfda",
-                "https://www.mozilla.org",
-                username,
-                "woof",
-                timesUsed = 0,
-                timeCreated = 0L,
-                timeLastUsed = 0L,
-                timePasswordChanged = 0L)
-        val password2 = ServerPassword("ghfdhg",
-                "https://www.cats.org",
-                username,
-                "meow",
-                timesUsed = 0,
-                timeCreated = 0L,
-                timeLastUsed = 0L,
-                timePasswordChanged = 0L)
-        val password3 = ServerPassword("ioupiouiuy",
-                "www.dogs.org",
-                password = "baaaaa",
-                username = null,
-                timesUsed = 0,
-                timeCreated = 0L,
-                timeLastUsed = 0L,
-                timePasswordChanged = 0L)
         val list = listOf(password1, password2, password3)
-
         dataStore.listStub.onNext(list)
+        val expectedList = listOf(password2, password3, password1).map { it.toViewModel() }
 
-        val expectedList = listOf<ItemViewModel>(
-                ItemViewModel("mozilla.org",
-                        username,
-                        password1.id),
-                ItemViewModel("cats.org",
-                        username,
-                        password2.id),
-                ItemViewModel("dogs.org",
-                        "",
-                        password3.id)
-        )
+        assertEquals(expectedList, view.updateItemsArgument)
+        assertEquals(ItemListSort.ALPHABETICALLY, view.itemListSort)
+    }
 
-        Assert.assertEquals(expectedList, view.updateItemsArgument)
+    @Test
+    fun `updates sort order of list when item sort order menu changes`() {
+        val list = listOf(password1, password2, password3)
+        dataStore.listStub.onNext(list)
+        val alphabetically = listOf(password2, password3, password1).map { it.toViewModel() }
+        val lastUsed = listOf(password3, password2, password1).map { it.toViewModel() }
+
+        // default
+        assertEquals(alphabetically, view.updateItemsArgument)
+        assertEquals(ItemListSort.ALPHABETICALLY, view.itemListSort)
+
+        // last used
+        var sortOrder = ItemListSort.RECENTLY_USED
+        view.sortItemSelectionStub.onNext(sortOrder)
+        dispatcherObserver.assertLastValue(SettingAction.ItemListSortOrder(sortOrder))
+
+        settingStore.itemListSortStub.onNext(sortOrder)
+        assertEquals(sortOrder, view.itemListSort)
+        assertEquals(lastUsed, view.updateItemsArgument)
+
+        // alphabetically
+        sortOrder = ItemListSort.ALPHABETICALLY
+        view.sortItemSelectionStub.onNext(sortOrder)
+        dispatcherObserver.assertLastValue(SettingAction.ItemListSortOrder(sortOrder))
+
+        settingStore.itemListSortStub.onNext(sortOrder)
+        assertEquals(sortOrder, view.itemListSort)
+        assertEquals(alphabetically, view.updateItemsArgument)
     }
 
     @Test
