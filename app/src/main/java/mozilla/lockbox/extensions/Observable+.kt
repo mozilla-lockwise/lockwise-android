@@ -15,5 +15,5 @@ fun <T : Any, U : T> Observable<T>.filterByType(clazz: Class<out U>): Observable
 }
 
 fun Observable<List<ServerPassword>>.mapToItemViewModelList(): Observable<List<ItemViewModel>> {
-    return this.map { it.map { it.toViewModel() } }
+    return this.map { list -> list.map { it.toViewModel() } }
 }
