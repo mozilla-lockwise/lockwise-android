@@ -29,6 +29,6 @@ sealed class RouteAction : Action {
     }
 }
 
-enum class SettingIntent(val settingIntent: String) {
+enum class SettingIntent(val intentAction: String) {
     Security(android.provider.Settings.ACTION_SECURITY_SETTINGS)
 }

@@ -39,31 +39,31 @@ class RoutePresenter(
         routeStore.routes.subscribe(this::route).addTo(compositeDisposable)
     }
 
-    private fun route(destination: RouteAction) {
-        when (destination) {
-            is RouteAction.Welcome -> navigateToFragment(destination, R.id.fragment_welcome)
-            is RouteAction.Login -> navigateToFragment(destination, R.id.fragment_fxa_login)
-            is RouteAction.ItemList -> navigateToFragment(destination, R.id.fragment_item_list)
-            is RouteAction.SettingList -> navigateToFragment(destination, R.id.fragment_setting)
-            is RouteAction.LockScreen -> navigateToFragment(destination, R.id.fragment_locked)
-            is RouteAction.Filter -> navigateToFragment(destination, R.id.fragment_filter)
+    private fun route(action: RouteAction) {
+        when (action) {
+            is RouteAction.Welcome -> navigateToFragment(action, R.id.fragment_welcome)
+            is RouteAction.Login -> navigateToFragment(action, R.id.fragment_fxa_login)
+            is RouteAction.ItemList -> navigateToFragment(action, R.id.fragment_item_list)
+            is RouteAction.SettingList -> navigateToFragment(action, R.id.fragment_setting)
+            is RouteAction.LockScreen -> navigateToFragment(action, R.id.fragment_locked)
+            is RouteAction.Filter -> navigateToFragment(action, R.id.fragment_filter)
             is RouteAction.ItemDetail -> {
                 // Possibly overkill for passing a single id string,
                 // but it's typesafe™.
                 val bundle = ItemDetailFragmentArgs.Builder()
-                    .setItemId(destination.id)
+                    .setItemId(action.id)
                     .build()
                     .toBundle()
-                navigateToFragment(destination, R.id.fragment_item_detail, bundle)
+                navigateToFragment(action, R.id.fragment_item_detail, bundle)
             }
             is RouteAction.OpenWebsite -> {
-                openWebsite(destination.url)
+                openWebsite(action.url)
             }
             is RouteAction.SystemSetting -> {
-                openSetting(destination.setting.settingIntent)
+                openSetting(action)
             }
             is RouteAction.FingerprintDialog -> showDialogFragment(FingerprintAuthDialogFragment())
-            is RouteAction.DialogAction -> showDialog(destination)
+            is RouteAction.DialogAction -> showDialog(action)
 
             is RouteAction.Back -> navController.popBackStack()
         }
@@ -160,8 +160,8 @@ class RoutePresenter(
         activity.startActivity(browserIntent, null)
     }
 
-    private fun openSetting(setting: String) {
-        val settingIntent = Intent(setting)
+    private fun openSetting(settingAction: RouteAction.SystemSetting) {
+        val settingIntent = Intent(settingAction.setting.intentAction)
         activity.startActivity(settingIntent, null)
     }
 }
