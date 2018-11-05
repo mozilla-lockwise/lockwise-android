@@ -114,14 +114,7 @@ class ItemListFragment : CommonFragment(), ItemListView {
     }
 
     private fun setSortButtonTitleForSortOption(sort: ItemListSort) {
-        when (sort) {
-            ItemListSort.ALPHABETICALLY -> {
-                view!!.sortButton.setText(R.string.all_entries_a_z)
-            }
-            ItemListSort.RECENTLY_USED -> {
-                view!!.sortButton.setText(R.string.all_entries_recent)
-            }
-        }
+        view!!.sortButton.setText(sort.displayStringId)
     }
 
     private fun scrollToTop() {
