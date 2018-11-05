@@ -18,7 +18,6 @@ import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.extensions.mapToItemViewModelList
 import mozilla.lockbox.flux.Dispatcher
-
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
 import mozilla.lockbox.model.ItemViewModel
