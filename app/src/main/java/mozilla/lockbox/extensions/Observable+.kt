@@ -32,5 +32,5 @@ fun <T : Any> Observable<T>.debug(): Observable<T> {
 }
 
 fun Observable<List<ServerPassword>>.mapToItemViewModelList(): Observable<List<ItemViewModel>> {
-    return this.map { it.map { it.toViewModel() } }
+    return this.map { list -> list.map { it.toViewModel() } }
 }

@@ -10,17 +10,20 @@ import mozilla.lockbox.model.ItemViewModel
 import org.junit.Assert
 import org.junit.Test
 import org.mozilla.sync15.logins.ServerPassword
+import java.util.Date
 
 class ServerPasswordExtensionTest {
     @Test
     fun toViewModel() {
         val guid = "afdsfdsa"
         val username = "cats@cats.com"
+        val time = Date().time
         val serverPassword = ServerPassword(
                 guid,
                 hostname = "www.mozilla.org",
                 username = username,
-                password = "woof")
+                password = "woof",
+                timeLastUsed = time)
 
         val expectedItemViewModel = ItemViewModel("mozilla.org", username, guid)
 

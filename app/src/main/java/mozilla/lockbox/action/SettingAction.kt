@@ -7,7 +7,9 @@
 package mozilla.lockbox.action
 
 import mozilla.lockbox.flux.Action
+import mozilla.lockbox.model.ItemListSort
 
 open class SettingAction : Action {
     data class SendUsageData(val sendUsageData: Boolean) : SettingAction()
+    data class ItemListSortOrder(val sortOrder: ItemListSort) : SettingAction()
 }

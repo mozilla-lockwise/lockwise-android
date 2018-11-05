@@ -6,12 +6,7 @@
 
 package mozilla.lockbox.support
 
-import android.os.Looper
 import mozilla.lockbox.BuildConfig
-
-fun isOnUiThread(): Boolean {
-    return Looper.getMainLooper() == Looper.myLooper()
-}
 
 fun isDebug(): Boolean {
     return BuildConfig.DEBUG
