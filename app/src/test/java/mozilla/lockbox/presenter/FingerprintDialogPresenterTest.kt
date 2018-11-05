@@ -1,5 +1,6 @@
 package mozilla.lockbox.presenter
 
+import android.app.KeyguardManager
 import android.content.Context
 import android.hardware.fingerprint.FingerprintManager
 import io.reactivex.Observable
@@ -14,6 +15,8 @@ import mozilla.lockbox.view.FingerprintAuthDialogFragment
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.mockito.Mockito
 import org.mockito.Mockito.spy
 import org.mockito.Mockito.verify
 import org.robolectric.RobolectricTestRunner
@@ -49,6 +52,8 @@ class FingerprintDialogPresenterTest {
         override val authState: Observable<AuthenticationState>
             get() = authStateStub
     }
+    @Mock
+    val keyguardManager = Mockito.mock(KeyguardManager::class.java)
 
     val view = spy(FakeView())
     val fingerprintStore = spy(FakeFingerprintStore())

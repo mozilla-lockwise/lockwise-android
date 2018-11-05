@@ -59,4 +59,7 @@
     <string name="fingerprint_sensor_error">Fingerprint sensor error</string>
     <string name="unlock_fallback_title">Unlock Firefox Lockbox</string>
     <string name="confirm_pattern">Enter your device Pattern, PIN, or Password.</string>
+    <string name="no_device_security_title">Secure your device.</string>
+    <string name="no_device_security_message">In order to lock Firefox Lockbox, a Pattern, PIN, or Password must be set up on your device. Without this, anyone who has your phone can access the information saved here.</string>
+    <string name="set_up_security_button">Set up Now</string>
 </resources>

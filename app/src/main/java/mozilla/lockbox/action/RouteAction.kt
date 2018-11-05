@@ -19,4 +19,16 @@ sealed class RouteAction : Action {
     object FingerprintDialog : RouteAction()
     data class ItemDetail(val id: String) : RouteAction()
     data class OpenWebsite(val url: String) : RouteAction()
+    data class SystemSetting(val setting: SettingIntent) : RouteAction()
+
+    sealed class DialogAction(
+        val positiveButtonAction: Action? = null,
+        val negativeButtonAction: Action? = null
+    ) : RouteAction() {
+        class SecurityDisclaimerDialog(setUpAction: Action) : DialogAction(positiveButtonAction = setUpAction)
+    }
+}
+
+enum class SettingIntent(val intentAction: String) {
+    Security(android.provider.Settings.ACTION_SECURITY_SETTINGS)
 }

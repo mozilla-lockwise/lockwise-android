@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package mozilla.lockbox.store
 
 import android.app.KeyguardManager
@@ -77,15 +79,18 @@ open class FingerprintStore(
         authenticationCallback = AuthenticationCallback(context)
     }
 
+    open val isDeviceSecure: Boolean
+        get() = isFingerprintAuthAvailable || isKeyguardDeviceSecure
+
     open val isFingerprintAuthAvailable: Boolean
         get() = fingerprintManager.isHardwareDetected && fingerprintManager.hasEnrolledFingerprints()
 
-    val isKeyguardSecure get() = keyguardManager.isKeyguardSecure
+    val isKeyguardDeviceSecure get() = keyguardManager.isDeviceSecure
 
     private fun initFingerprint() {
         setupKeyStoreAndKeyGenerator()
         createKey(DEFAULT_KEY)
-        val (defaultCipher: javax.crypto.Cipher, cipherNotInvalidated: javax.crypto.Cipher) = setupCiphers()
+        val (defaultCipher: javax.crypto.Cipher, _: javax.crypto.Cipher) = setupCiphers()
         initCipher(defaultCipher, DEFAULT_KEY)
 
         startListening(FingerprintManager.CryptoObject(defaultCipher))
