@@ -185,6 +185,8 @@ open class ItemListPresenterTest {
     fun `menuItem clicks cause RouteActions`() {
         view.menuItemSelectionStub.onNext(R.id.setting_menu_item)
         dispatcherObserver.assertLastValue(RouteAction.SettingList)
+        view.menuItemSelectionStub.onNext(R.id.account_setting_menu_item)
+        dispatcherObserver.assertLastValue(RouteAction.AccountSetting)
     }
 
     @Test

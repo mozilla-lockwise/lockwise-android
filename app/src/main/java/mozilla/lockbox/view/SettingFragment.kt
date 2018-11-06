@@ -41,10 +41,7 @@ class SettingFragment : BackableFragment(), SettingView {
         presenter = SettingPresenter(this, context!!)
 
         // Inflate the layout for this fragment
-        val view = inflater.inflate(
-            R.layout.fragment_setting,
-            container,
-            false)
+        val view = inflater.inflate(R.layout.fragment_setting, container, false)
 
         view.settingList.adapter = sectionedAdapter
         val layoutManager = LinearLayoutManager(context)

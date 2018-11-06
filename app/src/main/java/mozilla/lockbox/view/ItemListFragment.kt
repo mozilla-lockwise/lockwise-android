@@ -168,7 +168,7 @@ class ItemListFragment : CommonFragment(), ItemListView {
         // set sort button text
         setSortButtonTitleForSortOption(sort)
 
-        // scroll list accountSettingView to top
+        // scroll list view to top
         scrollToTop()
     }
 }

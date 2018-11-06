@@ -57,10 +57,10 @@ class ToggleSettingViewHolder(val view: View) : SettingViewHolder(view) {
         set(value) {
             field = value
             value?.let {
-                view.disconnectButton.text = value
-                view.disconnectButton.visibility = View.VISIBLE
+                view.button.text = value
+                view.button.visibility = View.VISIBLE
             } ?: run {
-                view.disconnectButton.visibility = View.GONE
+                view.button.visibility = View.GONE
             }
         }
 
