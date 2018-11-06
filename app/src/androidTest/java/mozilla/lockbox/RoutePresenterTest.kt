@@ -64,6 +64,13 @@ open class RoutePresenterTest {
     }
 
     @Test
+    fun testAccountSetting() {
+        navigator.gotoAccountSetting()
+        navigator.back()
+        navigator.checkAtItemList()
+    }
+
+    @Test
     fun testItemDetail() {
         navigator.gotoItemDetail()
         navigator.back()

@@ -183,7 +183,7 @@ open class ItemListPresenterTest {
 
     @Test
     fun `menuItem clicks cause RouteActions`() {
-        view.menuItemSelectionStub.onNext(R.id.fragment_setting)
+        view.menuItemSelectionStub.onNext(R.id.setting_menu_item)
         dispatcherObserver.assertLastValue(RouteAction.SettingList)
     }
 
@@ -191,7 +191,7 @@ open class ItemListPresenterTest {
     fun `tapping on the lock menu item when the user has no device security routes to security disclaimer dialog`() {
         whenCalled(fingerprintStore.isDeviceSecure).thenReturn(false)
         setUp()
-        view.menuItemSelectionStub.onNext(R.id.fragment_locked)
+        view.menuItemSelectionStub.onNext(R.id.lock_now_menu_item)
 
         view.disclaimerActionStub.onNext(AlertState.BUTTON_POSITIVE)
         val routeAction = dispatcherObserver.values().last() as RouteAction.DialogAction
@@ -204,7 +204,7 @@ open class ItemListPresenterTest {
     @Test
     fun `tapping on the lock menu item when the user has device security routes to lock screen`() {
         whenCalled(fingerprintStore.isDeviceSecure).thenReturn(true)
-        view.menuItemSelectionStub.onNext(R.id.fragment_locked)
+        view.menuItemSelectionStub.onNext(R.id.lock_now_menu_item)
         dispatcherObserver.assertLastValue(RouteAction.LockScreen)
     }
 }
