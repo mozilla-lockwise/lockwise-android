@@ -26,7 +26,9 @@ class AccountSettingFragment : BackableFragment(), AccountSettingView {
         savedInstanceState: Bundle?
     ): View? {
         presenter = AccountSettingPresenter(this)
-        return inflater.inflate(R.layout.fragment_account_setting, container, false)
+        val view = inflater.inflate(R.layout.fragment_account_setting, container, false)
+        view.profileImage.clipToOutline = true
+        return view
     }
 
     override fun setDisplayName(text: String) {
