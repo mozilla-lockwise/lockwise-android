@@ -10,20 +10,20 @@ import android.net.Uri
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
-import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.ReplaySubject
 import io.reactivex.subjects.Subject
 import mozilla.components.service.fxa.Config
 import mozilla.components.service.fxa.FirefoxAccount
 import mozilla.components.service.fxa.OAuthInfo
-import mozilla.components.service.fxa.Profile
 import mozilla.lockbox.action.AccountAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.support.Constant
+import mozilla.lockbox.support.FxAProfile
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.SecurePreferences
 import mozilla.lockbox.support.asOptional
+import mozilla.lockbox.support.toFxAProfile
 
 private const val FIREFOX_ACCOUNT_KEY = "firefox-account"
 private val FXA_SCOPES = arrayOf("profile", "https://identity.mozilla.com/apps/lockbox", "https://identity.mozilla.com/apps/oldsync")
@@ -45,7 +45,7 @@ open class AccountStore(
 
     open val loginURL: Observable<String> = ReplaySubject.createWithSize(1)
     val oauthInfo: Observable<Optional<OAuthInfo>> = ReplaySubject.createWithSize(1)
-    val profile: Observable<Optional<Profile>> = ReplaySubject.createWithSize(1)
+    val profile: Observable<Optional<FxAProfile>> = ReplaySubject.createWithSize(1)
 
     init {
         this.dispatcher.register
@@ -83,7 +83,7 @@ open class AccountStore(
 
         val profileSubject = profile as Subject
         fxa?.getProfile()?.whenComplete {
-            profileSubject.onNext(it.asOptional())
+            profileSubject.onNext(it.toFxAProfile().asOptional())
         }
 
         val oauthSubject = oauthInfo as Subject

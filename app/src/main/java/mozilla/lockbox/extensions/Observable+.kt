@@ -32,7 +32,7 @@ fun <T : Any> Observable<T>.debug(): Observable<T> {
         }
 }
 
-fun <T: Any, U: Optional<T>> Observable<U>.filterNull(): Observable<T> {
+fun <T : Any, U : Optional<T>> Observable<U>.filterNull(): Observable<T> {
     return this.filter { it.value != null }.map { it.value }
 }
 

@@ -23,8 +23,8 @@ class AccountSettingFragment : BackableFragment(), AccountSettingView {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?): View?
-    {
+        savedInstanceState: Bundle?
+    ): View? {
         presenter = AccountSettingPresenter(this)
         return inflater.inflate(R.layout.fragment_account_setting, container, false)
     }
@@ -36,7 +36,7 @@ class AccountSettingFragment : BackableFragment(), AccountSettingView {
     override fun setAvatarFromURL(url: String) {
         Picasso.get()
             .load(url)
-            .placeholder(R.drawable.default_avatar)
+            .placeholder(R.drawable.ic_avatar_placeholder)
             .resize(80, 80)
             .transform(CropCircleTransformation())
             .into(view!!.profileImage)

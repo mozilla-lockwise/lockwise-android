@@ -10,8 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".view.AccountSettingFragment"
-        android:orientation="vertical"
-        android:background="@color/backgroundWhite">
+        android:orientation="vertical">
 
     <include layout="@layout/include_backable"/>
 
@@ -21,7 +20,7 @@
             android:layout_height="80dp"
             android:layout_marginTop="67dp"
             android:layout_gravity="center_horizontal"
-            android:src="@drawable/default_avatar"
+            android:src="@drawable/ic_avatar_placeholder"
             android:contentDescription="@string/profile_image_content_description"
     />
 
