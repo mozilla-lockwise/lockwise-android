@@ -36,6 +36,7 @@ class AccountSettingFragment : BackableFragment(), AccountSettingView {
     override fun setAvatarFromURL(url: String) {
         Picasso.get()
             .load(url)
+            .placeholder(R.drawable.default_avatar)
             .resize(80, 80)
             .transform(CropCircleTransformation())
             .into(view!!.profileImage)
