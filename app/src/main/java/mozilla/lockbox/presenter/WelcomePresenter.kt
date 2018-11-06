@@ -16,8 +16,10 @@ interface WelcomeView {
     val getStartedClicks: Observable<Unit>
 }
 
-class WelcomePresenter(private val view: WelcomeView,
-    private val dispatcher: Dispatcher = Dispatcher.shared) : Presenter() {
+class WelcomePresenter(
+    private val view: WelcomeView,
+    private val dispatcher: Dispatcher = Dispatcher.shared
+) : Presenter() {
     override fun onViewReady() {
         view.getStartedClicks
                 .subscribe { dispatcher.dispatch(RouteAction.Login) }

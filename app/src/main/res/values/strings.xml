@@ -39,7 +39,6 @@
     <string name="copy_password_content_description">Copy your password</string>
     <string name="display_password_content_description">Display your password in plain text</string>
 
-    <!--Settings content-->
     <string name="security_title">Security</string>
     <string name="support_title">Support</string>
     <string name="learn_more">Learn more</string>
@@ -64,7 +63,8 @@
     <string name="set_up_security_button">Set up Now</string>
     <string name="error">Fingerprint sensor error</string>
     <string name="email_example">asadotzler@example.com</string>
-    <string name="disconnect_account_summary">To make changes to your account,  log in to your Firefox Account from  any browser.</string>
-    <string name="button_title">Disconnect Firefox Lockbox</string>
-    <string name="button_summary">This removes synced entries from Firefox Lockbox, but will not delete your entries from Firefox.</string>
+    <string name="account_information">To make changes to your account,  log in to your Firefox Account from  any browser.</string>
+    <string name="disconnect_button">Disconnect Firefox Lockbox</string>
+    <string name="disconnect_disclaimer">This removes synced entries from Firefox Lockbox, but will not delete your entries from Firefox.</string>
+    <string name="profile_image_content_description">Firefox Account Profile Image</string>
 </resources>

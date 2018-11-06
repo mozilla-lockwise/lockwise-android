@@ -10,28 +10,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.fragment_account.*
 import kotlinx.android.synthetic.main.include_backable.*
 import mozilla.lockbox.R
 import mozilla.lockbox.R.string.*
-import mozilla.lockbox.adapter.AccountConfiguration
-import mozilla.lockbox.presenter.AccountPresenter
-import mozilla.lockbox.presenter.AccountView
+import mozilla.lockbox.presenter.AccountSettingPresenter
+import mozilla.lockbox.presenter.AccountSettingView
 
-class AccountFragment : BackableFragment(), AccountView {
+class AccountSettingFragment : BackableFragment(), AccountSettingView {
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?): View?
     {
-        presenter = AccountPresenter(this)
-        return inflater.inflate(R.layout.fragment_account, container, false)
-    }
-
-    override fun update(account: AccountConfiguration) {
-        toolbar.title = nav_menu_settings.toString()
-
-        // set view = configuration here
+        presenter = AccountSettingPresenter(this)
+        return inflater.inflate(R.layout.fragment_account_setting, container, false)
     }
 }

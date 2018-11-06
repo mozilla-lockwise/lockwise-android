@@ -84,9 +84,9 @@
 
     <fragment
         android:id="@+id/fragment_account"
-        android:name="mozilla.lockbox.view.AccountFragment"
+        android:name="mozilla.lockbox.view.AccountSettingFragment"
         android:label="@string/nav_menu_account"
-        tools:layout="@layout/fragment_account"/>
+        tools:layout="@layout/fragment_account_setting"/>
 
     <fragment
         android:id="@+id/fragment_filter"
