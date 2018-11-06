@@ -10,14 +10,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.include_backable.*
+import com.jakewharton.rxbinding2.view.clicks
+import com.squareup.picasso.Picasso
+import io.reactivex.Observable
+import jp.wasabeef.picasso.transformations.CropCircleTransformation
+import kotlinx.android.synthetic.main.fragment_account_setting.view.*
 import mozilla.lockbox.R
-import mozilla.lockbox.R.string.*
 import mozilla.lockbox.presenter.AccountSettingPresenter
 import mozilla.lockbox.presenter.AccountSettingView
 
 class AccountSettingFragment : BackableFragment(), AccountSettingView {
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -26,4 +28,19 @@ class AccountSettingFragment : BackableFragment(), AccountSettingView {
         presenter = AccountSettingPresenter(this)
         return inflater.inflate(R.layout.fragment_account_setting, container, false)
     }
+
+    override fun setDisplayName(text: String) {
+        view!!.displayName.text = text
+    }
+
+    override fun setAvatarFromURL(url: String) {
+        Picasso.get()
+            .load(url)
+            .resize(80, 80)
+            .transform(CropCircleTransformation())
+            .into(view!!.profileImage)
+    }
+
+    override val disconnectButtonClicks: Observable<Unit>
+        get() = view!!.disconnectButton.clicks()
 }

@@ -6,19 +6,42 @@
 
 package mozilla.lockbox.presenter
 
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxkotlin.addTo
+import mozilla.lockbox.extensions.filterNull
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.store.AccountStore
+import mozilla.lockbox.support.asOptional
 
 interface AccountSettingView {
-
+    fun setDisplayName(text: String)
+    fun setAvatarFromURL(url: String)
+    val disconnectButtonClicks: Observable<Unit>
 }
 
 class AccountSettingPresenter(
-    val accountSettingView: AccountSettingView,
+    val view: AccountSettingView,
     private val accountStore: AccountStore = AccountStore.shared
 ) : Presenter() {
 
     override fun onViewReady() {
+        accountStore.profile
+            .map {
+                (it.value?.displayName ?: it.value?.email).asOptional()
+            }
+            .filterNull()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(view::setDisplayName)
+            .addTo(compositeDisposable)
 
+        accountStore.profile
+            .map {
+                it.value?.avatar.asOptional()
+            }
+            .filterNull()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(view::setAvatarFromURL)
+            .addTo(compositeDisposable)
     }
 }

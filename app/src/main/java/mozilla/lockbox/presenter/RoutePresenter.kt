@@ -37,6 +37,8 @@ class RoutePresenter(
     override fun onViewReady() {
         navController = Navigation.findNavController(activity, R.id.fragment_nav_host)
         routeStore.routes.subscribe(this::route).addTo(compositeDisposable)
+
+        dispatcher.dispatch(RouteAction.ItemList)
     }
 
     private fun route(action: RouteAction) {
@@ -45,7 +47,7 @@ class RoutePresenter(
             is RouteAction.Login -> navigateToFragment(action, R.id.fragment_fxa_login)
             is RouteAction.ItemList -> navigateToFragment(action, R.id.fragment_item_list)
             is RouteAction.SettingList -> navigateToFragment(action, R.id.fragment_setting)
-            is RouteAction.AccountSetting -> navigateToFragment(action, R.id.fragment_account)
+            is RouteAction.AccountSetting -> navigateToFragment(action, R.id.fragment_account_setting)
             is RouteAction.LockScreen -> navigateToFragment(action, R.id.fragment_locked)
             is RouteAction.Filter -> navigateToFragment(action, R.id.fragment_filter)
             is RouteAction.ItemDetail -> {
@@ -115,7 +117,7 @@ class RoutePresenter(
     }
 
     private fun navigateToFragment(action: RouteAction, @IdRes destinationId: Int, args: Bundle? = null) {
-        var src = navController.currentDestination ?: return
+        val src = navController.currentDestination ?: return
         val srcId = src.id
         if (srcId == destinationId && args == null) {
             // No point in navigating if nothing has changed.
@@ -147,7 +149,7 @@ class RoutePresenter(
 
             Pair(R.id.fragment_item_list, R.id.fragment_item_detail) -> return R.id.action_itemList_to_itemDetail
             Pair(R.id.fragment_item_list, R.id.fragment_setting) -> return R.id.action_itemList_to_setting
-            Pair(R.id.fragment_item_list, R.id.fragment_account) -> return R.id.action_itemList_to_account
+            Pair(R.id.fragment_item_list, R.id.fragment_account_setting) -> return R.id.action_itemList_to_accountSetting
             Pair(R.id.fragment_item_list, R.id.fragment_locked) -> return R.id.action_itemList_to_locked
             Pair(R.id.fragment_item_list, R.id.fragment_filter) -> return R.id.action_itemList_to_filter
 

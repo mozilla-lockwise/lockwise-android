@@ -10,10 +10,10 @@ import org.junit.Test
 
 class AccountSettingPresenterTest {
 
-    class AccountSettingViewFake : AccountSettingView {
+    class FakeAccountSettingView : AccountSettingView {
     }
 
-    private val view = AccountSettingViewFake()
+    private val view = FakeAccountSettingView()
     private val subject = AccountSettingPresenter(view)
 
     @Test

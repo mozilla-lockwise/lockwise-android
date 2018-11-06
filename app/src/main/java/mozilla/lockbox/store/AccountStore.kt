@@ -11,6 +11,8 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.ReplaySubject
+import io.reactivex.subjects.Subject
 import mozilla.components.service.fxa.Config
 import mozilla.components.service.fxa.FirefoxAccount
 import mozilla.components.service.fxa.OAuthInfo
@@ -41,9 +43,9 @@ open class AccountStore(
 
     private var fxa: FirefoxAccount? = null
 
-    open val loginURL: Observable<String> = PublishSubject.create()
-    val oauthInfo: Observable<Optional<OAuthInfo>> = PublishSubject.create()
-    val profile: Observable<Optional<Profile>> = PublishSubject.create()
+    open val loginURL: Observable<String> = ReplaySubject.createWithSize(1)
+    val oauthInfo: Observable<Optional<OAuthInfo>> = ReplaySubject.createWithSize(1)
+    val profile: Observable<Optional<Profile>> = ReplaySubject.createWithSize(1)
 
     init {
         this.dispatcher.register
@@ -68,8 +70,8 @@ open class AccountStore(
                 this.fxa = FirefoxAccount(it, Constant.FxA.clientID, Constant.FxA.redirectUri)
                 this.generateLoginURL()
 
-                (this.oauthInfo as PublishSubject).onNext(Optional(null))
-                (this.profile as PublishSubject).onNext(Optional(null))
+                (this.oauthInfo as Subject).onNext(Optional(null))
+                (this.profile as Subject).onNext(Optional(null))
             }
         }
     }
@@ -79,12 +81,12 @@ open class AccountStore(
             securePreferences.putString(FIREFOX_ACCOUNT_KEY, it)
         }
 
-        val profileSubject = profile as PublishSubject
+        val profileSubject = profile as Subject
         fxa?.getProfile()?.whenComplete {
             profileSubject.onNext(it.asOptional())
         }
 
-        val oauthSubject = oauthInfo as PublishSubject
+        val oauthSubject = oauthInfo as Subject
         fxa?.getOAuthToken(FXA_SCOPES)?.whenComplete {
             oauthSubject.onNext(it.asOptional())
         }
@@ -92,7 +94,7 @@ open class AccountStore(
 
     private fun generateLoginURL() {
         this.fxa?.beginOAuthFlow(Constant.FxA.scopes, true)?.whenComplete {
-            (this.loginURL as PublishSubject).onNext(it)
+            (this.loginURL as Subject).onNext(it)
         }
     }
 

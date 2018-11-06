@@ -99,7 +99,7 @@ class ItemListPresenter(
                 )
             }
             R.id.fragment_setting -> RouteAction.SettingList
-            R.id.fragment_account -> RouteAction.AccountSetting
+            R.id.goto_account -> RouteAction.AccountSetting
             else -> return log.error("Cannot route from item list menu")
         }
 
