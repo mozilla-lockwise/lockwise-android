@@ -14,7 +14,6 @@ sealed class RouteAction : Action {
     object Login : RouteAction()
     object SettingList : RouteAction()
     object AccountSetting : RouteAction()
-    object Back : RouteAction()
     object LockScreen : RouteAction()
     object Filter : RouteAction()
     object FingerprintDialog : RouteAction()

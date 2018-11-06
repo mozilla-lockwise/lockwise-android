@@ -81,16 +81,10 @@ class RoutePresenter(
                     .toBundle()
                 navigateToFragment(action, R.id.fragment_item_detail, bundle)
             }
-            is RouteAction.OpenWebsite -> {
-                openWebsite(action.url)
-            }
-            is RouteAction.SystemSetting -> {
-                openSetting(action)
-            }
+            is RouteAction.OpenWebsite -> openWebsite(action.url)
+            is RouteAction.SystemSetting -> openSetting(action)
             is RouteAction.FingerprintDialog -> showDialogFragment(FingerprintAuthDialogFragment())
             is RouteAction.DialogAction -> showDialog(action)
-
-            is RouteAction.Back -> navController.popBackStack()
         }
     }
 
