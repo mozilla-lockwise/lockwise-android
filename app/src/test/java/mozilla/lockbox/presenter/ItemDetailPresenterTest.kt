@@ -94,14 +94,14 @@ class ItemDetailPresenterTest {
     @Test
     fun `sends a detail view model to view on onViewReady`() {
         for (exp in fakeCredentials) {
-            // put the presenter/accountSettingView on screen.
+            // put the presenter/view on screen.
             val subject = ItemDetailPresenter(view, exp.id, dispatcher, dataStore)
             subject.onViewReady()
 
             // drive the fake datastore.
             dataStore.list.onNext(fakeCredentials)
 
-            // test the results that the accountSettingView gets.
+            // test the results that the view gets.
             val obs = view.item ?: return fail("Expected an item")
             assertEquals(exp.hostname, obs.hostname)
             assertEquals(exp.username, obs.username)
@@ -113,7 +113,7 @@ class ItemDetailPresenterTest {
     @Test
     fun `opens a browser when tapping on the hostname`() {
         for (exp in fakeCredentials) {
-            // put the presenter/accountSettingView on screen.
+            // put the presenter/view on screen.
             val subject = ItemDetailPresenter(view, exp.id, dispatcher, dataStore)
             subject.onViewReady()
 

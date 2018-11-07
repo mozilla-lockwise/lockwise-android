@@ -9,7 +9,7 @@ package mozilla.lockbox.presenter
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
-import mozilla.lockbox.extensions.filterNull
+import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.support.asOptional
@@ -30,7 +30,7 @@ class AccountSettingPresenter(
             .map {
                 (it.value?.displayName ?: it.value?.email).asOptional()
             }
-            .filterNull()
+            .filterNotNull()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(view::setDisplayName)
             .addTo(compositeDisposable)
@@ -39,7 +39,7 @@ class AccountSettingPresenter(
             .map {
                 it.value?.avatar.asOptional()
             }
-            .filterNull()
+            .filterNotNull()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(view::setAvatarFromURL)
             .addTo(compositeDisposable)
