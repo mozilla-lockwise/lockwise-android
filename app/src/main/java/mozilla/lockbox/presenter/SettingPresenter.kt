@@ -46,7 +46,12 @@ class SettingPresenter(
     private val autoLockObserver: Consumer<Boolean>
         get() = Consumer { isToggleOn ->
             if (isToggleOn && fingerprintStore.isFingerprintAuthAvailable) {
-                dispatcher.dispatch(RouteAction.FingerprintDialog)
+                dispatcher.dispatch(
+                    RouteAction.DialogFragment.FingerprintDialog(
+                        context.getString(R.string.enable_fingerprint_dialog_title),
+                        context.getString(R.string.enable_fingerprint_dialog_subtitle)
+                    )
+                )
             }
         }
 
@@ -59,12 +64,33 @@ class SettingPresenter(
         }
 
     override fun onViewReady() {
-        val settings = listOf(
-            ToggleSettingConfiguration(
-                title = context.getString(R.string.unlock),
-                toggleDriver = settingStore.unlockWithFingerprint,
-                toggleObserver = autoLockObserver
-            ),
+        settingStore.onEnablingFingerprint
+            .subscribe {
+                if (it is FingerprintAuthAction.OnAuthentication) {
+                    when (it.authCallback) {
+                        is FingerprintAuthDialogFragment.AuthCallback.OnAuth -> dispatcher.dispatch(
+                            SettingAction.UnlockWithFingerprint(true)
+                        )
+                        is FingerprintAuthDialogFragment.AuthCallback.OnError -> {
+                            dispatcher.dispatch(SettingAction.UnlockWithFingerprint(false))
+                            updateSettings()
+                        }
+                    }
+                } else {
+                    dispatcher.dispatch(SettingAction.UnlockWithFingerprint(false))
+                    updateSettings()
+                }
+            }
+            .addTo(compositeDisposable)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateSettings()
+    }
+
+    private fun updateSettings() {
+        var settings = listOf(
             TextSettingConfiguration(
                 title = context.getString(R.string.auto_lock),
                 detailText = context.getString(R.string.auto_lock_option)
@@ -87,30 +113,21 @@ class SettingPresenter(
             )
         )
 
+        if (fingerprintStore.isFingerprintAuthAvailable) {
+            settings = listOf(
+                ToggleSettingConfiguration(
+                    title = context.getString(R.string.unlock),
+                    toggleDriver = settingStore.unlockWithFingerprint,
+                    toggleObserver = autoLockObserver
+                )
+            ) + settings
+        }
+
         val sections = listOf(
             SectionedAdapter.Section(0, context.getString(R.string.security_title)),
             SectionedAdapter.Section(3, context.getString(R.string.support_title))
         )
 
         view.updateSettingList(settings, sections)
-
-        settingStore.onAuthentication
-            .subscribe {
-                if (it is FingerprintAuthAction.OnAuthentication) {
-                    when (it.authCallback) {
-                        is FingerprintAuthDialogFragment.AuthCallback.OnAuth -> dispatcher.dispatch(
-                            SettingAction.UnlockWithFingerprint(true)
-                        )
-                        is FingerprintAuthDialogFragment.AuthCallback.OnError -> {
-                            dispatcher.dispatch(SettingAction.UnlockWithFingerprint(false))
-                            view.updateSettingList(settings, sections)
-                        }
-                    }
-                } else {
-                    dispatcher.dispatch(SettingAction.UnlockWithFingerprint(false))
-                    view.updateSettingList(settings, sections)
-                }
-            }
-            .addTo(compositeDisposable)
     }
 }

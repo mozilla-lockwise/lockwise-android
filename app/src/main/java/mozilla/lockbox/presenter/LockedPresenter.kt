@@ -6,8 +6,10 @@
 
 package mozilla.lockbox.presenter
 
+import android.content.Context
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
+import mozilla.lockbox.R
 import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Dispatcher
@@ -24,6 +26,7 @@ interface LockedView {
 
 class LockedPresenter(
     private val view: LockedView,
+    private val context: Context,
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val fingerprintStore: FingerprintStore = FingerprintStore.shared,
     private val lockedStore: LockedStore = LockedStore.shared
@@ -32,7 +35,7 @@ class LockedPresenter(
         view.unlockButtonTaps
             .subscribe {
                 if (fingerprintStore.isFingerprintAuthAvailable) {
-                    dispatcher.dispatch(RouteAction.FingerprintDialog)
+                    dispatcher.dispatch(RouteAction.DialogFragment.FingerprintDialog(context.getString(R.string.fingerprint_dialog_title)))
                 } else {
                     unlockFallback()
                 }

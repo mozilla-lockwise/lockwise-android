@@ -23,7 +23,7 @@ interface FingerprintDialogView {
     fun onError(error: String?)
     val authCallback: Observable<AuthCallback>
     val cancelTapped: Observable<Unit>
-    fun onCancel()
+    fun onDismiss()
 }
 
 class FingerprintDialogPresenter(
@@ -45,7 +45,7 @@ class FingerprintDialogPresenter(
         view.cancelTapped
             .subscribe {
                 dispatcher.dispatch(FingerprintAuthAction.OnCancel)
-                view.onCancel()
+                view.onDismiss()
             }
             .addTo(compositeDisposable)
     }

@@ -31,7 +31,7 @@ class LockedFragment : CommonFragment(), LockedView {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        presenter = LockedPresenter(this)
+        presenter = LockedPresenter(this, context!!)
         return inflater.inflate(R.layout.fragment_locked, container, false)
     }
 

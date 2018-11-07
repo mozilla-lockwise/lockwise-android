@@ -41,7 +41,7 @@ open class SettingStore(
     open lateinit var itemListSortOrder: Observable<ItemListSort>
     open lateinit var unlockWithFingerprint: Observable<Boolean>
 
-    open val onAuthentication: Observable<FingerprintAuthAction> =
+    open val onEnablingFingerprint: Observable<FingerprintAuthAction> =
         dispatcher.register
             .filterByType(FingerprintAuthAction::class.java)
 

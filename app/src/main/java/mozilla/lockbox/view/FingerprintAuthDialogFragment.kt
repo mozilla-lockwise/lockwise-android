@@ -55,7 +55,7 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
             setImageResource(R.drawable.ic_fingerprint_success)
             postDelayed({
                 _authCallback.onNext(AuthCallback.OnAuth)
-                dismiss()
+                onDismiss()
             }, SUCCESS_DELAY_MILLIS)
         }
     }
@@ -69,7 +69,7 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
         showError(error ?: getString(R.string.fingerprint_sensor_error))
         view!!.imageView.postDelayed({
             _authCallback.onNext(AuthCallback.OnError)
-            dismiss()
+            onDismiss()
         }, ERROR_TIMEOUT_MILLIS)
     }
 
@@ -80,9 +80,7 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
     override val cancelTapped: Observable<Unit>
         get() = view!!.cancel.clicks()
 
-    override fun onCancel() {
-        dismiss()
-    }
+    override fun onDismiss() = dismiss()
 
     private fun showError(error: CharSequence) {
         view!!.imageView.setImageResource(R.drawable.ic_fingerprint_fail)

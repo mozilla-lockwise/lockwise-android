@@ -51,13 +51,8 @@ class ListAdapterTestHelper(ctx: Context) {
         )
     }
 
-    fun createAccurateListOfSettings(): List<SettingCellConfiguration> {
-        return listOf(
-            ToggleSettingConfiguration(
-                title = context.getString(R.string.unlock),
-                toggleDriver = toggleDriverFake,
-                toggleObserver = toggleConsumerFake
-            ),
+    fun createAccurateListOfSettings(isFingerprintAvailable: Boolean): List<SettingCellConfiguration> {
+        var settings = listOf(
             TextSettingConfiguration(
                 title = "Auto lock",
                 detailText = "5 minutes"
@@ -79,5 +74,15 @@ class ListAdapterTestHelper(ctx: Context) {
                 text = "App Version: $expectedVersionNumber"
             )
         )
+        if (isFingerprintAvailable) {
+            settings = listOf(
+                ToggleSettingConfiguration(
+                    title = context.getString(R.string.unlock),
+                    toggleDriver = toggleDriverFake,
+                    toggleObserver = toggleConsumerFake
+                )
+            ) + settings
+        }
+        return settings
     }
 }

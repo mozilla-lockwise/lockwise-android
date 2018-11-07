@@ -66,7 +66,8 @@ class RoutePresenter(
             is RouteAction.SystemSetting -> {
                 openSetting(action)
             }
-            is RouteAction.FingerprintDialog -> showDialogFragment(FingerprintAuthDialogFragment())
+
+            is RouteAction.DialogFragment -> showDialogFragment(FingerprintAuthDialogFragment(), action)
             is RouteAction.Dialog -> showDialog(action)
 
             is RouteAction.Back -> navController.popBackStack()
@@ -97,20 +98,13 @@ class RoutePresenter(
             .addTo(compositeDisposable)
     }
 
-    private fun showDialogFragment(dialogFragment: DialogFragment?) {
+    private fun showDialogFragment(dialogFragment: DialogFragment?, destination: RouteAction.DialogFragment) {
         var src = navController.currentDestination ?: return
         if (dialogFragment != null) {
             val fragmentManager = activity.supportFragmentManager
             try {
                 dialogFragment.show(fragmentManager, dialogFragment.javaClass.name)
-                if (src.id == R.id.fragment_locked) {
-                    dialogFragment.setupDialog(activity.getString(R.string.fingerprint_dialog_title))
-                } else {
-                    dialogFragment.setupDialog(
-                        activity.getString(R.string.enable_fingerprint_dialog_title),
-                        activity.getString(R.string.enable_fingerprint_dialog_subtitle)
-                    )
-                }
+                dialogFragment.setupDialog(destination.dialogTitle, destination.dialogSubtitle)
             } catch (e: IllegalStateException) {
                 log.error("Could not show dialog", e)
             }
@@ -171,7 +165,10 @@ class RoutePresenter(
 
             Pair(R.id.fragment_item_list, R.id.fragment_item_detail) -> return R.id.action_itemList_to_itemDetail
             Pair(R.id.fragment_item_list, R.id.fragment_setting) -> return R.id.action_itemList_to_setting
-            Pair(R.id.fragment_item_list, R.id.fragment_account_setting) -> return R.id.action_itemList_to_accountSetting
+            Pair(
+                R.id.fragment_item_list,
+                R.id.fragment_account_setting
+            ) -> return R.id.action_itemList_to_accountSetting
             Pair(R.id.fragment_item_list, R.id.fragment_locked) -> return R.id.action_itemList_to_locked
             Pair(R.id.fragment_item_list, R.id.fragment_filter) -> return R.id.action_itemList_to_filter
 

@@ -43,7 +43,7 @@ class FingerprintDialogPresenterTest {
 
         override val cancelTapped = PublishSubject.create<Unit>()
 
-        override fun onCancel() {
+        override fun onDismiss() {
         }
     }
 
