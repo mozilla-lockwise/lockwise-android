@@ -9,6 +9,7 @@ package mozilla.lockbox.presenter
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.Subject
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.AccountStore
@@ -59,7 +60,7 @@ class AccountSettingPresenterTest {
         PowerMockito.whenNew(AccountStore::class.java).withAnyArguments().thenReturn(accountStore)
         Dispatcher.shared.register.subscribe(dispatcherObserver)
 
-        subject = AccountSettingPresenter(view, accountStore)
+        subject = AccountSettingPresenter(view, Dispatcher.shared, accountStore)
         subject.onViewReady()
     }
 
@@ -171,5 +172,12 @@ class AccountSettingPresenterTest {
 
         Assert.assertNull(view.setDisplayNameArgument)
         Assert.assertNull(view.setAvatarFromURLArgument)
+    }
+
+    @Test
+    fun disconnectButtonClicks() {
+        (view.disconnectButtonClicks as Subject).onNext(Unit)
+
+
     }
 }

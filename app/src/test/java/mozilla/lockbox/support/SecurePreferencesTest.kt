@@ -146,4 +146,14 @@ class SecurePreferencesTest {
         verify(editor).putString(key, encodeValue)
         verify(editor).apply()
     }
+
+    @Test
+    fun `remove`() {
+        val keyToRemove = "some_key"
+
+        subject.remove(keyToRemove)
+
+        verify(editor).remove(keyToRemove)
+        verify(editor).apply()
+    }
 }

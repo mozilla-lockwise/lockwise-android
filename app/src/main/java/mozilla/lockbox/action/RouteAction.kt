@@ -26,7 +26,8 @@ sealed class RouteAction : Action {
         val positiveButtonAction: Action? = null,
         val negativeButtonAction: Action? = null
     ) : RouteAction() {
-        class SecurityDisclaimerDialog(setUpAction: Action) : DialogAction(positiveButtonAction = setUpAction)
+        object SecurityDisclaimerDialog : DialogAction(RouteAction.SystemSetting(SettingIntent.Security))
+        object UnlinkDisclaimerDialog : DialogAction(DataStoreAction.Reset)
     }
 }
 

@@ -73,6 +73,7 @@ class RoutePresenter(
     private fun showDialog(destination: RouteAction.DialogAction) {
         val dialogStateObservable = when (destination) {
             is RouteAction.DialogAction.SecurityDisclaimerDialog -> showSecurityDisclaimerDialog()
+            is RouteAction.DialogAction.UnlinkDisclaimerDialog -> showUnlinkDisclaimerDialog()
         }
 
         dialogStateObservable
@@ -111,6 +112,17 @@ class RoutePresenter(
             R.string.no_device_security_message,
             R.string.set_up_security_button,
             R.string.cancel
+        )
+    }
+
+    private fun showUnlinkDisclaimerDialog(): Observable<AlertState> {
+        return AlertDialogHelper.showAlertDialog(
+            activity,
+            R.string.disconnect_disclaimer_title,
+            R.string.disconnect_disclaimer_message,
+            R.string.disconnect,
+            R.string.cancel,
+            R.color.red
         )
     }
 

@@ -71,6 +71,11 @@ open class RoutePresenterTest {
     }
 
     @Test
+    fun testUnlinkAccount() {
+        navigator.gotoAccountSetting()
+    }
+
+    @Test
     fun testItemDetail() {
         navigator.gotoItemDetail()
         navigator.back()

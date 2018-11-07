@@ -15,6 +15,7 @@ import mozilla.lockbox.model.ItemListSort
 import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.support.Constant
 
 open class SettingStore(
     val dispatcher: Dispatcher = Dispatcher.shared
@@ -57,9 +58,12 @@ open class SettingStore(
 
         val rxPrefs = RxSharedPreferences.create(sharedPreferences)
 
-        sendUsageData = rxPrefs.getBoolean(Keys.SEND_USAGE_DATA, true).asObservable()
+        sendUsageData = rxPrefs
+            .getBoolean(Keys.SEND_USAGE_DATA, Constant.Setting.defaultSendUsageData)
+            .asObservable()
 
-        itemListSortOrder = rxPrefs.getString(Keys.ITEM_LIST_SORT_ORDER, ItemListSort.ALPHABETICALLY.name)
+        itemListSortOrder = rxPrefs
+            .getString(Keys.ITEM_LIST_SORT_ORDER, Constant.Setting.defaultItemListSort.name)
             .asObservable()
             .map {
                 ItemListSort.valueOf(it)

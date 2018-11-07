@@ -9,7 +9,9 @@ package mozilla.lockbox.presenter
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
+import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.filterNotNull
+import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.support.asOptional
@@ -22,6 +24,7 @@ interface AccountSettingView {
 
 class AccountSettingPresenter(
     val view: AccountSettingView,
+    private val dispatcher: Dispatcher = Dispatcher.shared,
     private val accountStore: AccountStore = AccountStore.shared
 ) : Presenter() {
 
@@ -42,6 +45,12 @@ class AccountSettingPresenter(
             .filterNotNull()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(view::setAvatarFromURL)
+            .addTo(compositeDisposable)
+
+        view.disconnectButtonClicks
+            .subscribe {
+                dispatcher.dispatch(RouteAction.DialogAction.UnlinkDisclaimerDialog)
+            }
             .addTo(compositeDisposable)
     }
 }

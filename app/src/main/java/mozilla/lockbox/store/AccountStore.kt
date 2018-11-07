@@ -55,6 +55,9 @@ open class AccountStore(
                     is AccountAction.OauthRedirect -> {
                         this.oauthLogin(it.url)
                     }
+                    is AccountAction.Clear -> {
+                        this.clear()
+                    }
                 }
             }
             .addTo(compositeDisposable)
@@ -66,13 +69,7 @@ open class AccountStore(
                 this.populateAccountInformation()
             }
         } ?: run {
-            Config.release().whenComplete {
-                this.fxa = FirefoxAccount(it, Constant.FxA.clientID, Constant.FxA.redirectUri)
-                this.generateLoginURL()
-
-                (this.oauthInfo as Subject).onNext(Optional(null))
-                (this.profile as Subject).onNext(Optional(null))
-            }
+            this.generateNewFirefoxAccount()
         }
     }
 
@@ -89,6 +86,16 @@ open class AccountStore(
         val oauthSubject = oauthInfo as Subject
         fxa?.getOAuthToken(FXA_SCOPES)?.whenComplete {
             oauthSubject.onNext(it.asOptional())
+        }
+    }
+
+    private fun generateNewFirefoxAccount() {
+        Config.release().whenComplete {
+            this.fxa = FirefoxAccount(it, Constant.FxA.clientID, Constant.FxA.redirectUri)
+            this.generateLoginURL()
+
+            (this.oauthInfo as Subject).onNext(Optional(null))
+            (this.profile as Subject).onNext(Optional(null))
         }
     }
 
@@ -110,5 +117,10 @@ open class AccountStore(
                 }
             }
         }
+    }
+
+    private fun clear() {
+        this.securePreferences.remove(FIREFOX_ACCOUNT_KEY)
+        this.generateNewFirefoxAccount()
     }
 }

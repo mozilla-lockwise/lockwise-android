@@ -53,6 +53,14 @@ open class SecurePreferences(
         editor.putString(key, data).apply()
     }
 
+    open fun remove(key: String) {
+        val editor = prefs.edit()
+
+        editor.remove(key)
+
+        editor.apply()
+    }
+
     // these methods won't be used until https://github.com/mozilla-lockbox/lockbox-android/issues/165
     // is addressed.
 //    open fun createEncryptCipher(): Cipher {
