@@ -7,6 +7,7 @@
 package mozilla.lockbox.extensions.view
 
 import android.content.Context
+import android.content.DialogInterface
 import android.support.annotation.ColorRes
 import android.support.annotation.StringRes
 import android.support.v7.app.AlertDialog
@@ -49,10 +50,12 @@ object AlertDialogHelper {
                 emitter.onComplete()
             }
 
-            val dialog = builder.show()
+            val dialog = builder.create()
+
+            dialog.show()
 
             positiveButtonColor?.let {
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(it)
+                dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(context.getColor(it))
             }
         }
     }
