@@ -18,6 +18,7 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito
+import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 
 class SettingStoreTest : DisposingTest() {
@@ -57,8 +58,8 @@ class SettingStoreTest : DisposingTest() {
         val action = SettingAction.SendUsageData(newValue)
         dispatcher.dispatch(action)
 
-        Mockito.verify(editor).putBoolean(Mockito.anyString(), Mockito.anyBoolean())
-        Mockito.verify(editor).apply()
+        verify(editor).putBoolean(Mockito.anyString(), Mockito.anyBoolean())
+        verify(editor).apply()
     }
 
     @Test
@@ -85,7 +86,16 @@ class SettingStoreTest : DisposingTest() {
         val action = SettingAction.ItemListSortOrder(newValue)
         dispatcher.dispatch(action)
 
-        Mockito.verify(editor).putString(SettingStore.Keys.ITEM_LIST_SORT_ORDER, newValue.name)
-        Mockito.verify(editor).apply()
+        verify(editor).putString(SettingStore.Keys.ITEM_LIST_SORT_ORDER, newValue.name)
+        verify(editor).apply()
+    }
+
+    @Test
+    fun `reset actions restore default values`() {
+        dispatcher.dispatch(SettingAction.Reset)
+
+        verify(editor).putString(SettingStore.Keys.ITEM_LIST_SORT_ORDER, Constant.Setting.defaultItemListSort.name)
+        verify(editor).putBoolean(SettingStore.Keys.SEND_USAGE_DATA, Constant.Setting.defaultSendUsageData)
+        verify(editor).apply()
     }
 }

@@ -47,6 +47,10 @@ open class SettingStore(
                     is SettingAction.ItemListSortOrder -> {
                         edit.putString(Keys.ITEM_LIST_SORT_ORDER, it.sortOrder.name)
                     }
+                    is SettingAction.Reset -> {
+                        edit.putBoolean(Keys.SEND_USAGE_DATA, Constant.Setting.defaultSendUsageData)
+                        edit.putString(Keys.ITEM_LIST_SORT_ORDER, Constant.Setting.defaultItemListSort.name)
+                    }
                 }
                 edit.apply()
             }

@@ -9,6 +9,6 @@ package mozilla.lockbox.action
 import mozilla.lockbox.flux.Action
 
 sealed class AccountAction : Action {
-    object Clear : AccountAction()
+    object Reset : AccountAction()
     data class OauthRedirect(val url: String) : AccountAction()
 }

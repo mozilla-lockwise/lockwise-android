@@ -7,6 +7,8 @@
 package mozilla.lockbox.store
 
 import android.net.Uri
+import android.webkit.CookieManager
+import android.webkit.WebStorage
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -55,7 +57,7 @@ open class AccountStore(
                     is AccountAction.OauthRedirect -> {
                         this.oauthLogin(it.url)
                     }
-                    is AccountAction.Clear -> {
+                    is AccountAction.Reset -> {
                         this.clear()
                     }
                 }
@@ -120,6 +122,9 @@ open class AccountStore(
     }
 
     private fun clear() {
+        CookieManager.getInstance().removeAllCookies { }
+        WebStorage.getInstance().deleteAllData()
+
         this.securePreferences.remove(FIREFOX_ACCOUNT_KEY)
         this.generateNewFirefoxAccount()
     }

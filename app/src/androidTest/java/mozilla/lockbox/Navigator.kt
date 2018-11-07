@@ -14,6 +14,7 @@ import android.support.test.espresso.intent.Intents
 import br.com.concretesolutions.kappuccino.custom.intent.IntentMatcherInteractions.sentIntent
 import br.com.concretesolutions.kappuccino.custom.intent.IntentMatcherInteractions.stubIntent
 import mozilla.lockbox.robots.accountSettingScreen
+import mozilla.lockbox.robots.disconnectDisclaimer
 import mozilla.lockbox.robots.filteredItemList
 import mozilla.lockbox.robots.fxaLogin
 import mozilla.lockbox.robots.itemDetail
@@ -32,6 +33,10 @@ class Navigator {
 
     private fun checkAtFxALogin() {
         fxaLogin { exists() }
+    }
+
+    private fun checkAtWelcome() {
+        welcome { exists() }
     }
 
     fun gotoItemList() {
@@ -70,7 +75,7 @@ class Navigator {
         checkAtAccountSetting()
     }
 
-    private fun checkAtAccountSetting() {
+    fun checkAtAccountSetting() {
         accountSettingScreen { exists() }
     }
 
@@ -106,6 +111,22 @@ class Navigator {
         sentIntent {
             action(Settings.ACTION_SECURITY_SETTINGS)
         }
+    }
+
+    fun gotoDisconnectDisclaimer() {
+        gotoAccountSetting()
+        accountSettingScreen { tapDisconnect() }
+        checkAtDisconnectDisclaimer()
+    }
+
+    private fun checkAtDisconnectDisclaimer() {
+        disconnectDisclaimer { exists() }
+    }
+
+    fun disconnect() {
+        gotoDisconnectDisclaimer()
+        disconnectDisclaimer { tapDisconnect() }
+        checkAtWelcome()
     }
 
     @Suppress("unused")

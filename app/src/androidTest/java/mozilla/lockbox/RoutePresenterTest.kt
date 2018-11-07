@@ -71,8 +71,16 @@ open class RoutePresenterTest {
     }
 
     @Test
-    fun testUnlinkAccount() {
-        navigator.gotoAccountSetting()
+    fun testDisconnectDisclaimer() {
+        navigator.gotoDisconnectDisclaimer()
+        navigator.back()
+        navigator.checkAtAccountSetting()
+    }
+
+    @Test
+    fun testDisconnecting() {
+        // note: this won't work until routing PR is merged
+//        navigator.disconnect()
     }
 
     @Test

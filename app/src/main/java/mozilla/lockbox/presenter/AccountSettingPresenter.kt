@@ -49,7 +49,7 @@ class AccountSettingPresenter(
 
         view.disconnectButtonClicks
             .subscribe {
-                dispatcher.dispatch(RouteAction.DialogAction.UnlinkDisclaimerDialog)
+                dispatcher.dispatch(RouteAction.Dialog.UnlinkDisclaimer)
             }
             .addTo(compositeDisposable)
     }

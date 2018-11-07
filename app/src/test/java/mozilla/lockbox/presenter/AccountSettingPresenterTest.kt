@@ -10,6 +10,7 @@ import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
+import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.AccountStore
@@ -178,6 +179,6 @@ class AccountSettingPresenterTest {
     fun disconnectButtonClicks() {
         (view.disconnectButtonClicks as Subject).onNext(Unit)
 
-
+        dispatcherObserver.assertValue(RouteAction.Dialog.UnlinkDisclaimer)
     }
 }
