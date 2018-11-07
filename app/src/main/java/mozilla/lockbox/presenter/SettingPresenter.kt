@@ -9,6 +9,7 @@ package mozilla.lockbox.presenter
 import android.content.Context
 import io.reactivex.Observable
 import io.reactivex.functions.Consumer
+import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.adapter.AppVersionSettingConfiguration
 import mozilla.lockbox.adapter.SectionedAdapter
 import mozilla.lockbox.adapter.SettingCellConfiguration
@@ -17,9 +18,13 @@ import mozilla.lockbox.adapter.ToggleSettingConfiguration
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.BuildConfig
 import mozilla.lockbox.R
+import mozilla.lockbox.action.FingerprintAuthAction
+import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.SettingStore
+import mozilla.lockbox.view.FingerprintAuthDialogFragment
 
 interface SettingView {
     fun updateSettingList(
@@ -32,27 +37,32 @@ class SettingPresenter(
     val view: SettingView,
     private val context: Context,
     private val dispatcher: Dispatcher = Dispatcher.shared,
-    private val settingStore: SettingStore = SettingStore.shared
+    private val settingStore: SettingStore = SettingStore.shared,
+    private val fingerprintStore: FingerprintStore = FingerprintStore.shared
 ) : Presenter() {
 
     private val versionNumber = BuildConfig.VERSION_NAME
 
     private val autoLockObserver: Consumer<Boolean>
-        get() = Consumer { }
+        get() = Consumer { isToggleOn ->
+            if (isToggleOn && fingerprintStore.isFingerprintAuthAvailable) {
+                dispatcher.dispatch(RouteAction.FingerprintDialog)
+            }
+        }
 
     private val autoFillObserver: Consumer<Boolean>
         get() = Consumer { }
 
     private val sendUsageDataObserver: Consumer<Boolean>
-        get() = Consumer {
-                newValue -> dispatcher.dispatch(SettingAction.SendUsageData(newValue))
+        get() = Consumer { newValue ->
+            dispatcher.dispatch(SettingAction.SendUsageData(newValue))
         }
 
     override fun onViewReady() {
         val settings = listOf(
             ToggleSettingConfiguration(
                 title = context.getString(R.string.unlock),
-                toggleDriver = Observable.just(true),
+                toggleDriver = settingStore.unlockWithFingerprint,
                 toggleObserver = autoLockObserver
             ),
             TextSettingConfiguration(
@@ -83,5 +93,24 @@ class SettingPresenter(
         )
 
         view.updateSettingList(settings, sections)
+
+        settingStore.onAuthentication
+            .subscribe {
+                if (it is FingerprintAuthAction.OnAuthentication) {
+                    when (it.authCallback) {
+                        is FingerprintAuthDialogFragment.AuthCallback.OnAuth -> dispatcher.dispatch(
+                            SettingAction.UnlockWithFingerprint(true)
+                        )
+                        is FingerprintAuthDialogFragment.AuthCallback.OnError -> {
+                            dispatcher.dispatch(SettingAction.UnlockWithFingerprint(false))
+                            view.updateSettingList(settings, sections)
+                        }
+                    }
+                } else {
+                    dispatcher.dispatch(SettingAction.UnlockWithFingerprint(false))
+                    view.updateSettingList(settings, sections)
+                }
+            }
+            .addTo(compositeDisposable)
     }
 }

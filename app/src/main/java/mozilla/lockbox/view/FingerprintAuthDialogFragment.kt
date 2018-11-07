@@ -21,6 +21,8 @@ import mozilla.lockbox.presenter.FingerprintDialogView
 class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
     private val _authCallback = PublishSubject.create<AuthCallback>()
     override val authCallback: Observable<AuthCallback> get() = _authCallback
+    private lateinit var title: String
+    private var subtitle: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +32,17 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         presenter = FingerprintDialogPresenter(this)
         return inflater.inflate(R.layout.fragment_fingerprint_dialog, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        view.dialogTitle.text = title
+        subtitle?.let {
+            view.dialogSubtitle.text = it
+            view.dialogSubtitle.visibility = View.VISIBLE
+        } ?: run {
+            view.dialogSubtitle.visibility = View.GONE
+        }
     }
 
     override fun onSucceeded() {
@@ -45,6 +58,11 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
                 dismiss()
             }, SUCCESS_DELAY_MILLIS)
         }
+    }
+
+    override fun setupDialog(title: String, subtitle: String?) {
+        this.title = title
+        this.subtitle = subtitle
     }
 
     override fun onError(error: String?) {

@@ -10,7 +10,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.support.annotation.IdRes
-import android.support.v4.app.DialogFragment
 import android.support.v7.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -27,6 +26,7 @@ import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.support.asOptional
+import mozilla.lockbox.view.DialogFragment
 import mozilla.lockbox.view.FingerprintAuthDialogFragment
 import mozilla.lockbox.view.ItemDetailFragmentArgs
 
@@ -98,10 +98,19 @@ class RoutePresenter(
     }
 
     private fun showDialogFragment(dialogFragment: DialogFragment?) {
+        var src = navController.currentDestination ?: return
         if (dialogFragment != null) {
             val fragmentManager = activity.supportFragmentManager
             try {
                 dialogFragment.show(fragmentManager, dialogFragment.javaClass.name)
+                if (src.id == R.id.fragment_locked) {
+                    dialogFragment.setupDialog(activity.getString(R.string.fingerprint_dialog_title))
+                } else {
+                    dialogFragment.setupDialog(
+                        activity.getString(R.string.enable_fingerprint_dialog_title),
+                        activity.getString(R.string.enable_fingerprint_dialog_subtitle)
+                    )
+                }
             } catch (e: IllegalStateException) {
                 log.error("Could not show dialog", e)
             }

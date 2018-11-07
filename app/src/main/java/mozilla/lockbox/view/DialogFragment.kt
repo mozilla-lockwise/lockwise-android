@@ -33,4 +33,6 @@ open class DialogFragment : DialogFragment() {
         super.onPause()
         presenter.onPause()
     }
+
+    open fun setupDialog(title: String, subtitle: String? = null) {}
 }
