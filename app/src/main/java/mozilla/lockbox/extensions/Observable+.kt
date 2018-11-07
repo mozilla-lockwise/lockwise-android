@@ -9,6 +9,7 @@ package mozilla.lockbox.extensions
 import io.reactivex.Observable
 import mozilla.lockbox.LogProvider
 import mozilla.lockbox.model.ItemViewModel
+import mozilla.lockbox.support.Optional
 import org.mozilla.sync15.logins.ServerPassword
 
 fun <T : Any, U : T> Observable<T>.filterByType(clazz: Class<out U>): Observable<U> {
@@ -29,6 +30,10 @@ fun <T : Any> Observable<T>.debug(): Observable<T> {
         .doOnDispose {
             LogProvider.log.info("disposed")
         }
+}
+
+fun <T : Any, U : Optional<T>> Observable<U>.filterNotNull(): Observable<T> {
+    return this.filter { it.value != null }.map { it.value }
 }
 
 fun Observable<List<ServerPassword>>.mapToItemViewModelList(): Observable<List<ItemViewModel>> {

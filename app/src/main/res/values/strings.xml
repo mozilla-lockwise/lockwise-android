@@ -14,6 +14,7 @@
 
     <string name="welcome_learn_more_btn">Learn More</string>
     <string name="nav_menu_faq">FAQ</string>
+    <string name="nav_menu_account">Account</string>
     <string name="nav_menu_settings">Settings</string>
 
     <string name="sort_menu_az">Alphabetically</string>
@@ -37,6 +38,7 @@
     <string name="copy_username_content_description">Copy your username</string>
     <string name="copy_password_content_description">Copy your password</string>
     <string name="display_password_content_description">Display your password in plain text</string>
+
     <string name="security_title">Security</string>
     <string name="support_title">Support</string>
     <string name="learn_more">Learn more</string>
@@ -59,4 +61,9 @@
     <string name="no_device_security_title">Secure your device.</string>
     <string name="no_device_security_message">In order to lock Firefox Lockbox, a Pattern, PIN, or Password must be set up on your device. Without this, anyone who has your phone can access the information saved here.</string>
     <string name="set_up_security_button">Set up Now</string>
+    <string name="account_information">To make changes to your account, log in to your Firefox Account from any browser.</string>
+    <string name="disconnect_button">Disconnect Firefox Lockbox</string>
+    <string name="disconnect_disclaimer">This removes synced entries from Firefox Lockbox, but will not delete your entries from Firefox.</string>
+    <string name="profile_image_content_description">Firefox Account Profile Image</string>
+    <string name="firefox_account">Firefox Account</string>
 </resources>

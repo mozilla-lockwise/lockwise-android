@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ This Source Code Form is subject to the terms of the Mozilla Public
+  ~  License, v. 2.0. If a copy of the MPL was not distributed with this
+  ~  file, You can obtain one at http://mozilla.org/MPL/2.0/.
+  -->
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".view.AccountSettingFragment"
+        android:orientation="vertical">
+
+    <include layout="@layout/include_backable"/>
+
+    <ImageView
+            android:id="@+id/profileImage"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="67dp"
+            android:layout_gravity="center_horizontal"
+            android:elevation="1dp"
+            android:background="@drawable/round_outline"
+            android:src="@drawable/ic_avatar_placeholder"
+            android:contentDescription="@string/profile_image_content_description"
+    />
+
+    <TextView
+            android:id="@+id/displayName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_gravity="center_horizontal"
+            android:textSize="15sp"
+            android:textColor="@color/gray_73_percent"
+            android:gravity="center_horizontal"
+            android:fontFamily="sans-serif"
+            android:textStyle="normal"
+            android:lineSpacingExtra="7.5sp"
+            android:text="@string/firefox_account"
+    />
+
+    <TextView
+            android:id="@+id/accountInformation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="40dp"
+            android:layout_marginStart="60dp"
+            android:layout_marginEnd="60dp"
+            android:textSize="15sp"
+            android:fontFamily="sans-serif"
+            android:textStyle="normal"
+            android:textColor="@color/textGrey"
+            android:lineSpacingExtra="7.5sp"
+            android:gravity="center_horizontal"
+            android:text="@string/account_information"
+    />
+
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+    />
+
+    <Button
+            android:id="@+id/disconnectButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:backgroundTint="@color/red"
+            android:textSize="14sp"
+            android:fontFamily="sans-serif-medium"
+            android:textStyle="normal"
+            android:textColor="#ffffff"
+            android:letterSpacing="0.09"
+            android:lineSpacingExtra="2sp"
+            android:text="@string/disconnect_button"
+    />
+
+    <TextView
+            android:id="@+id/disconnectDisclaimer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16.5dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="30dp"
+            android:textSize="13sp"
+            android:fontFamily="sans-serif"
+            android:textStyle="normal"
+            android:textColor="@color/gray_73_percent"
+            android:lineSpacingExtra="7.5sp"
+            android:gravity="center_horizontal"
+            android:text="@string/disconnect_disclaimer"
+    />
+</LinearLayout>

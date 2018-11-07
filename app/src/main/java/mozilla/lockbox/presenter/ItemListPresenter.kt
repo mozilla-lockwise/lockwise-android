@@ -92,13 +92,14 @@ class ItemListPresenter(
 
     private fun onMenuItem(@IdRes item: Int) {
         val action = when (item) {
-            R.id.fragment_locked -> {
+            R.id.lock_now_menu_item -> {
                 if (fingerprintStore.isDeviceSecure) RouteAction.LockScreen
                 else RouteAction.DialogAction.SecurityDisclaimerDialog(
                     RouteAction.SystemSetting(SettingIntent.Security)
                 )
             }
-            R.id.fragment_setting -> RouteAction.SettingList
+            R.id.setting_menu_item -> RouteAction.SettingList
+            R.id.account_setting_menu_item -> RouteAction.AccountSetting
             else -> return log.error("Cannot route from item list menu")
         }
 

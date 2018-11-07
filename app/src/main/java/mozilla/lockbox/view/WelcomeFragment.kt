@@ -15,9 +15,9 @@ import com.jakewharton.rxbinding2.view.clicks
 import kotlinx.android.synthetic.main.fragment_welcome.view.*
 import mozilla.lockbox.R
 import mozilla.lockbox.presenter.WelcomePresenter
-import mozilla.lockbox.presenter.WelcomeViewProtocol
+import mozilla.lockbox.presenter.WelcomeView
 
-class WelcomeFragment : CommonFragment(), WelcomeViewProtocol {
+class WelcomeFragment : CommonFragment(), WelcomeView {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

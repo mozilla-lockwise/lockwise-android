@@ -13,6 +13,7 @@ import android.support.test.espresso.NoActivityResumedException
 import android.support.test.espresso.intent.Intents
 import br.com.concretesolutions.kappuccino.custom.intent.IntentMatcherInteractions.sentIntent
 import br.com.concretesolutions.kappuccino.custom.intent.IntentMatcherInteractions.stubIntent
+import mozilla.lockbox.robots.accountSettingScreen
 import mozilla.lockbox.robots.filteredItemList
 import mozilla.lockbox.robots.fxaLogin
 import mozilla.lockbox.robots.itemDetail
@@ -61,6 +62,16 @@ class Navigator {
 
     private fun checkAtSettings() {
         settings { exists() }
+    }
+
+    fun gotoAccountSetting() {
+        gotoItemList()
+        itemList { tapAccountSetting() }
+        checkAtAccountSetting()
+    }
+
+    private fun checkAtAccountSetting() {
+        accountSettingScreen { exists() }
     }
 
     fun gotoNoSecurityDialog() {

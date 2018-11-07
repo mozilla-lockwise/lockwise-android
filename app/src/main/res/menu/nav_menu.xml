@@ -9,15 +9,19 @@
 
     <group android:checkableBehavior="none">
         <item
-            android:id="@+id/goto_faq"
+            android:id="@+id/account_setting_menu_item"
+            android:icon="@drawable/ic_account"
+            android:title="@string/nav_menu_account" />
+        <item
+            android:id="@+id/faq_menu_item"
             android:icon="@drawable/ic_help_faq"
             android:title="@string/nav_menu_faq" />
         <item
-            android:id="@+id/fragment_setting"
+            android:id="@+id/setting_menu_item"
             android:icon="@android:drawable/ic_menu_preferences"
             android:title="@string/nav_menu_settings" />
         <item
-            android:id="@+id/fragment_locked"
+            android:id="@+id/lock_now_menu_item"
             android:icon="@android:drawable/ic_lock_lock"
             android:title="@string/lock_now" />
     </group>
