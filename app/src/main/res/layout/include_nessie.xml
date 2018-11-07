@@ -13,13 +13,15 @@
     <ImageView
         android:contentDescription="@null"
         android:id="@+id/nessie"
-        android:layout_width="360dp"
-        android:layout_height="96dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="89dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_nessie" />
+        android:background="@android:color/transparent"
+        android:adjustViewBounds="true"
+        app:srcCompat="@drawable/nessie" />
 
     <TextView
         android:id="@+id/name_text"
@@ -47,4 +49,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/name_text" />
+
 </merge>

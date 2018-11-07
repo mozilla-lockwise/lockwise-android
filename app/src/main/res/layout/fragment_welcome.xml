@@ -12,16 +12,53 @@
     android:layout_height="match_parent"
     android:background="@color/backgroundGrey">
 
+    <!--<include-->
+        <!--android:id="@+id/include"-->
+        <!--layout="@layout/include_nessie"-->
+        <!--tools:ignore="MissingConstraints" />-->
 
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraintLayout2"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="168dp"
+        android:layout_marginTop="76dp"
         android:background="@drawable/welcome_gradient"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="@+id/nessie">
+
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="224dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="83dp"
+            android:layout_marginEnd="8dp"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:contentDescription="@null"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_logo" />
+
+        <TextView
+            android:id="@+id/tagline_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="8dp"
+            android:background="@android:color/transparent"
+            android:fontFamily="sans-serif-medium"
+            android:letterSpacing="-0.01"
+            android:lineSpacingExtra="7.5sp"
+            android:text="@string/app_tagline"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/logo" />
 
     </android.support.constraint.ConstraintLayout>
 
@@ -30,25 +67,30 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="89dp"
+        android:adjustViewBounds="true"
         android:contentDescription="@null"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:background="@android:color/transparent"
-        app:srcCompat="@drawable/ic_nessie" />
-
+        app:srcCompat="@drawable/ic_nessie_vector" />
 
     <Button
         android:id="@+id/buttonGetStarted"
         android:layout_width="180dp"
         android:layout_height="36dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="312dp"
+        android:layout_marginTop="225dp"
         android:layout_marginEnd="8dp"
+        android:background="@drawable/round_corner_selector"
+        android:letterSpacing="0.09"
+        android:lineSpacingExtra="2sp"
         android:text="@string/welcome_start_btn"
+        android:textColor="#137db5"
+        android:textStyle="normal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/constraintLayout2" />
 
     <!--<TextView-->
     <!--android:id="@+id/instructions_text"-->
