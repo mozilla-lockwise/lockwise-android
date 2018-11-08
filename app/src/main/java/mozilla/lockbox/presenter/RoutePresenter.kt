@@ -56,6 +56,7 @@ class RoutePresenter(
     private fun dataStoreRoutes(storageState: State): RouteAction {
         return when (storageState) {
             is State.Unlocked -> RouteAction.ItemList
+            is State.Unlocking -> RouteAction.ItemList
             is State.Locked -> RouteAction.LockScreen
             is State.Unprepared -> RouteAction.Welcome
             else -> RouteAction.LockScreen

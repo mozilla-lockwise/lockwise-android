@@ -31,6 +31,7 @@ open class DataStore(
     sealed class State {
         object Unprepared : State()
         object Locked : State()
+        object Unlocking: State()
         object Unlocked : State()
         data class Errored(val error: Throwable) : State()
     }
@@ -81,7 +82,7 @@ open class DataStore(
     fun unlock(): Observable<Unit> {
         val unlockSubject = SingleSubject.create<Unit>()
         log.info("unlocking")
-
+        stateSubject.onNext(State.Unlocking)
         backend.isLocked().then {
             if (it) {
                 backend.unlock(support.encryptionKey).then {

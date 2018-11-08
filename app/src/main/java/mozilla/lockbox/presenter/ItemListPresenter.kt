@@ -45,8 +45,9 @@ class ItemListPresenter(
 ) : Presenter() {
 
     override fun onViewReady() {
-        Observables.combineLatest(dataStore.list, settingStore.itemListSortOrder)
+        Observables.combineLatest(dataStore.list, settingStore.itemListSortOrder, dataStore.state)
                 .filter { it.first.isNotEmpty() }
+                .filter { it.third == DataStore.State.Unlocked }
                 .distinctUntilChanged()
                 .map { pair ->
                     when (pair.second) {
