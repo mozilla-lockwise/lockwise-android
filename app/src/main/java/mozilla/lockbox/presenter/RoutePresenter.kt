@@ -18,8 +18,8 @@ import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.R
 import mozilla.lockbox.action.RouteAction
-import mozilla.lockbox.extensions.AlertDialogHelper
-import mozilla.lockbox.extensions.AlertState
+import mozilla.lockbox.extensions.view.AlertDialogHelper
+import mozilla.lockbox.extensions.view.AlertState
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
