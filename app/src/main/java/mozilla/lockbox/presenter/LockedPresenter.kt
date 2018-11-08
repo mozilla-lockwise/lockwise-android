@@ -35,16 +35,19 @@ class LockedPresenter(
             .subscribe {
                 when {
                     fingerprintStore.isFingerprintAuthAvailable -> dispatcher.dispatch(RouteAction.FingerprintDialog)
-                    fingerprintStore.isKeyguardSecure -> view.unlockFallback()
+                    fingerprintStore.isKeyguardDeviceSecure -> view.unlockFallback()
                     else -> performUnlock()
                 }
             }
             .addTo(compositeDisposable)
 
         view.unlockConfirmed
-            .filter { it }
             .subscribe {
-                performUnlock()
+                if (it) {
+                    performUnlock()
+                } else {
+                    remainLocked()
+                }
             }
             .addTo(compositeDisposable)
 
@@ -57,6 +60,10 @@ class LockedPresenter(
                 }
             }
             .addTo(compositeDisposable)
+    }
+
+    private fun remainLocked() {
+        dispatcher.dispatch(RouteAction.LockScreen)
     }
 
     private fun performUnlock() {
