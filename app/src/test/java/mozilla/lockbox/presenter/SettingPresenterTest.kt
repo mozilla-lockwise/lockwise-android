@@ -27,8 +27,11 @@ import mozilla.lockbox.view.FingerprintAuthDialogFragment
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers.anyList
 import org.mockito.Mockito
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.spy
+import org.mockito.Mockito.verify
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 
@@ -59,7 +62,7 @@ class SettingPresenterTest {
 
     private lateinit var context: Context
     private lateinit var testHelper: ListAdapterTestHelper
-    private val settingView = SettingViewFake()
+    private val settingView = spy(SettingViewFake())
     private val fingerprintStore = mock(FingerprintStore::class.java)
     private val settingStore = FakeSettingStore()
     val dispatcher = Dispatcher()
@@ -124,15 +127,23 @@ class SettingPresenterTest {
     }
 
     @Test
-    fun `handle success authentication callback`() {
+    fun `handle success enabling fingerprint`() {
         settingStore.enablingFingerprint.onNext(FingerprintAuthAction.OnAuthentication(FingerprintAuthDialogFragment.AuthCallback.OnAuth))
         val last = dispatcherObserver.valueCount() - 1
         dispatcherObserver.assertValueAt(last, SettingAction.UnlockWithFingerprint(true))
     }
 
     @Test
-    fun `handle error authentication callback`() {
+    fun `handle error enabling fingerprint`() {
         settingStore.enablingFingerprint.onNext(FingerprintAuthAction.OnAuthentication(FingerprintAuthDialogFragment.AuthCallback.OnError))
         dispatcherObserver.assertLastValue(SettingAction.UnlockWithFingerprint(false))
+        verify(settingView).updateSettingList(anyList(), anyList())
+    }
+
+    @Test
+    fun `handle cancel enabling fingerprint`() {
+        settingStore.enablingFingerprint.onNext(FingerprintAuthAction.OnCancel)
+        dispatcherObserver.assertLastValue(SettingAction.UnlockWithFingerprint(false))
+        verify(settingView).updateSettingList(anyList(), anyList())
     }
 }

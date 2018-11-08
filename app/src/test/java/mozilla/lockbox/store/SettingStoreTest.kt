@@ -44,6 +44,7 @@ class SettingStoreTest : DisposingTest() {
     val subject = SettingStore(dispatcher)
     private val sendUsageDataObserver = TestObserver<Boolean>()
     private val itemListSortOrder = TestObserver<ItemListSort>()
+    private val unlockWithFingerprint = TestObserver<Boolean>()
 
     @Before
     fun setUp() {
@@ -55,6 +56,7 @@ class SettingStoreTest : DisposingTest() {
 
         subject.injectContext(context)
         subject.sendUsageData.subscribe(sendUsageDataObserver)
+        subject.unlockWithFingerprint.subscribe(unlockWithFingerprint)
         subject.itemListSortOrder.subscribe(itemListSortOrder)
     }
 
@@ -76,6 +78,20 @@ class SettingStoreTest : DisposingTest() {
 
         verify(editor).putBoolean(Mockito.anyString(), Mockito.anyBoolean())
         verify(editor).apply()
+    }
+
+    @Test
+    fun unlockWithFingerprint_newValue() {
+        val newValue = true
+        val defaultValue = false
+
+        unlockWithFingerprint.assertValue(defaultValue)
+
+        val action = SettingAction.UnlockWithFingerprint(newValue)
+        dispatcher.dispatch(action)
+
+        Mockito.verify(editor).putBoolean(Mockito.anyString(), Mockito.anyBoolean())
+        Mockito.verify(editor).apply()
     }
 
     @Test
