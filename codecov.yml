@@ -6,7 +6,12 @@ coverage:
   status:
     project:
       default:
-        threshold: 5  
+        threshold: 5
+      fxa: # declare a new status context for FxA
+        paths: "app/src/main/java/mozilla/lockbox/store/AccountStore.kt"
+        target: 0%
+      app: # declare a new status context without
+        paths: "!app/src/main/java/mozilla/lockbox/store/AccountStore.kt"
     patch:
         default:
           target: 50
