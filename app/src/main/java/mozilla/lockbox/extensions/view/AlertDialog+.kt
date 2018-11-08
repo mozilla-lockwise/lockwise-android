@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-package mozilla.lockbox.extensions
+package mozilla.lockbox.extensions.view
 
 import android.content.Context
 import android.support.annotation.StringRes

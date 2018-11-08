@@ -7,7 +7,7 @@
 @file:JvmName("RxListPopupWindow")
 @file:JvmMultifileClass
 
-package mozilla.lockbox.rx
+package mozilla.lockbox.extensions.view
 
 import android.support.annotation.CheckResult
 import android.widget.ListPopupWindow

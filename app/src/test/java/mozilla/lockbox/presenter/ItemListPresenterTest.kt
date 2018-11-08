@@ -14,7 +14,7 @@ import mozilla.lockbox.R
 import mozilla.lockbox.model.ItemListSort
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.SettingIntent
-import mozilla.lockbox.extensions.AlertState
+import mozilla.lockbox.extensions.view.AlertState
 import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.extensions.toViewModel
