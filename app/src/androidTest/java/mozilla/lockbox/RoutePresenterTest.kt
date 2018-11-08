@@ -31,7 +31,7 @@ open class RoutePresenterTest {
     fun setUp() {
         navigator.reset()
     }
-    
+
     @Test
     fun testFxALogin() {
         navigator.gotoFxALogin()

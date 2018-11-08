@@ -13,6 +13,8 @@ import android.support.test.espresso.NoActivityResumedException
 import android.support.test.espresso.intent.Intents
 import br.com.concretesolutions.kappuccino.custom.intent.IntentMatcherInteractions.sentIntent
 import br.com.concretesolutions.kappuccino.custom.intent.IntentMatcherInteractions.stubIntent
+import mozilla.lockbox.action.DataStoreAction
+import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.robots.accountSettingScreen
 import mozilla.lockbox.robots.filteredItemList
 import mozilla.lockbox.robots.fxaLogin
@@ -142,9 +144,9 @@ class Navigator {
         closeSoftKeyboard()
         try {
             pressBack()
-            Assert.assertTrue("Expected to be still in the app, but aren't", remainInApplication)
+            Assert.assertTrue("Expected to have left, but haven't", remainInApplication)
         } catch (e: NoActivityResumedException) {
-            Assert.assertFalse("Expected to have left the app, but haven't", remainInApplication)
+            Assert.assertFalse("Expected to still in the app, but aren't", remainInApplication)
         }
     }
 
