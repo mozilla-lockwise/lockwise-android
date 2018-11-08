@@ -40,7 +40,6 @@ class RoutePresenter(
 
     override fun onViewReady() {
         navController = Navigation.findNavController(activity, R.id.fragment_nav_host)
-        navController.setGraph(R.navigation.graph_main)
 
         dataStore.state
             .observeOn(mainThread())
