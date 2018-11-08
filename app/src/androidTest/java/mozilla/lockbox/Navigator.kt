@@ -147,4 +147,9 @@ class Navigator {
             Assert.assertFalse("Expected to have left the app, but haven't", remainInApplication)
         }
     }
+
+    fun reset() {
+        closeSoftKeyboard()
+        Dispatcher.shared.dispatch(DataStoreAction.Reset)
+    }
 }

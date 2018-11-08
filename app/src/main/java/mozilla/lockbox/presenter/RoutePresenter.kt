@@ -64,7 +64,7 @@ class RoutePresenter(
 
     private fun route(action: RouteAction) {
         when (action) {
-            is RouteAction.Welcome -> navigateToFragment(action, R.id.fragment_welcome)
+            is RouteAction.Welcome -> navigateToFragment(action, R.id.graph_welcome)
             is RouteAction.Login -> navigateToFragment(action, R.id.fragment_fxa_login)
             is RouteAction.ItemList -> navigateToFragment(action, R.id.fragment_item_list)
             is RouteAction.SettingList -> navigateToFragment(action, R.id.fragment_setting)
