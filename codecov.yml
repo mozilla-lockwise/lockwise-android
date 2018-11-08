@@ -1,0 +1,15 @@
+comment: false
+coverage:
+  range: 75..95
+  round: down
+  precision: 1
+  status:
+    project:
+      default:
+        threshold: 5  
+    patch:
+        default:
+          target: 50
+ignore:
+  - "app/src/main/java/mozilla/lockbox/view"
+  - "app/src/main/java/mozilla/lockbox/extensions/view"
