@@ -62,6 +62,7 @@ open class DataStore(
                         is DataStoreAction.Lock -> lock()
                         is DataStoreAction.Unlock -> unlock()
                         is DataStoreAction.Sync -> sync()
+                        is DataStoreAction.Reset -> reset()
                     }
                 }
                 .addTo(compositeDisposable)
@@ -145,10 +146,22 @@ open class DataStore(
     private fun clearList() {
         this.listSubject.accept(emptyList())
     }
+
     private fun updateList(): SyncResult<Unit> {
         return backend.list().then {
             this.listSubject.accept(it)
             SyncResult.fromValue(Unit)
         }
+    }
+
+    private fun reset() {
+        clearList()
+        backend.reset().then({
+            this.stateSubject.onNext(DataStore.State.Unprepared)
+            SyncResult.fromValue(Unit)
+        }, {
+            this.stateSubject.onNext(DataStore.State.Unprepared)
+            SyncResult.fromValue(Unit)
+        })
     }
 }
