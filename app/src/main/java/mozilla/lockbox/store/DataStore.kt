@@ -11,6 +11,7 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.ReplaySubject
 import io.reactivex.subjects.SingleSubject
 import mozilla.lockbox.action.DataStoreAction
+import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.log
@@ -54,17 +55,22 @@ open class DataStore(
             }
         }.addTo(compositeDisposable)
 
+        val resetObservable = dispatcher.register
+            .filter { it == LifecycleAction.UserReset }
+            .map { DataStoreAction.Reset }
+
         // register for actions
         dispatcher.register
-                .filterByType(DataStoreAction::class.java)
-                .subscribe {
-                    when (it) {
-                        is DataStoreAction.Lock -> lock()
-                        is DataStoreAction.Unlock -> unlock()
-                        is DataStoreAction.Sync -> sync()
-                    }
+            .mergeWith(resetObservable)
+            .filterByType(DataStoreAction::class.java)
+            .subscribe {
+                when (it) {
+                    is DataStoreAction.Lock -> lock()
+                    is DataStoreAction.Unlock -> unlock()
+                    is DataStoreAction.Sync -> sync()
                 }
-                .addTo(compositeDisposable)
+            }
+            .addTo(compositeDisposable)
     }
 
     val state: Observable<State> get() = stateSubject

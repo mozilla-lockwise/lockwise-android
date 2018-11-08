@@ -11,6 +11,7 @@ import com.f2prateek.rx.preferences2.RxSharedPreferences
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
+import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.model.ItemListSort
 import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.extensions.filterByType
@@ -36,8 +37,13 @@ open class SettingStore(
     open lateinit var itemListSortOrder: Observable<ItemListSort>
 
     init {
+        val resetObservable = dispatcher.register
+            .filter { it == LifecycleAction.UserReset }
+            .map { SettingAction.Reset }
+
         dispatcher.register
             .filterByType(SettingAction::class.java)
+            .mergeWith(resetObservable)
             .subscribe {
                 val edit = preferences.edit()
                 when (it) {

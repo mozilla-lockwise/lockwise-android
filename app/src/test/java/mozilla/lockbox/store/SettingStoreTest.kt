@@ -9,6 +9,7 @@ package mozilla.lockbox.store
 import android.content.SharedPreferences
 import io.reactivex.observers.TestObserver
 import mozilla.lockbox.DisposingTest
+import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.model.ItemListSort
@@ -93,6 +94,15 @@ class SettingStoreTest : DisposingTest() {
     @Test
     fun `reset actions restore default values`() {
         dispatcher.dispatch(SettingAction.Reset)
+
+        verify(editor).putString(SettingStore.Keys.ITEM_LIST_SORT_ORDER, Constant.Setting.defaultItemListSort.name)
+        verify(editor).putBoolean(SettingStore.Keys.SEND_USAGE_DATA, Constant.Setting.defaultSendUsageData)
+        verify(editor).apply()
+    }
+
+    @Test
+    fun `userreset lifecycle actions restore default values`() {
+        dispatcher.dispatch(LifecycleAction.UserReset)
 
         verify(editor).putString(SettingStore.Keys.ITEM_LIST_SORT_ORDER, Constant.Setting.defaultItemListSort.name)
         verify(editor).putBoolean(SettingStore.Keys.SEND_USAGE_DATA, Constant.Setting.defaultSendUsageData)

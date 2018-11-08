@@ -80,7 +80,7 @@ open class RoutePresenterTest {
     @Test
     fun testDisconnecting() {
         // note: this won't work until routing PR is merged
-//        navigator.disconnect()
+//        navigator.disconnectAccountFromDisclaimer()
     }
 
     @Test

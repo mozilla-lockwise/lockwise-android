@@ -18,6 +18,7 @@ import mozilla.components.service.fxa.Config
 import mozilla.components.service.fxa.FirefoxAccount
 import mozilla.components.service.fxa.OAuthInfo
 import mozilla.lockbox.action.AccountAction
+import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.support.Constant
@@ -50,8 +51,13 @@ open class AccountStore(
     val profile: Observable<Optional<FxAProfile>> = ReplaySubject.createWithSize(1)
 
     init {
+        val resetObservable = this.dispatcher.register
+            .filter { it == LifecycleAction.UserReset }
+            .map { AccountAction.Reset }
+
         this.dispatcher.register
             .filterByType(AccountAction::class.java)
+            .mergeWith(resetObservable)
             .subscribe {
                 when (it) {
                     is AccountAction.OauthRedirect -> {

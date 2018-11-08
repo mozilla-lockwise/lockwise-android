@@ -123,7 +123,7 @@ class Navigator {
         disconnectDisclaimer { exists() }
     }
 
-    fun disconnect() {
+    fun disconnectAccountFromDisclaimer() {
         gotoDisconnectDisclaimer()
         disconnectDisclaimer { tapDisconnect() }
         checkAtWelcome()

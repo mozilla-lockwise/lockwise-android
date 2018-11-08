@@ -20,11 +20,13 @@ import mozilla.lockbox.R
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.view.AlertDialogHelper
 import mozilla.lockbox.extensions.view.AlertState
+import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
 import mozilla.lockbox.store.RouteStore
+import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.view.FingerprintAuthDialogFragment
 import mozilla.lockbox.view.ItemDetailFragmentArgs
 
@@ -78,8 +80,8 @@ class RoutePresenter(
         }
 
         dialogStateObservable
-            .subscribe { alertState ->
-                val actions: List<Action>? = when (alertState) {
+            .map { alertState ->
+                val action: Action? = when (alertState) {
                     AlertState.BUTTON_POSITIVE -> {
                         destination.positiveButtonActions
                     }
@@ -88,10 +90,10 @@ class RoutePresenter(
                     }
                 }
 
-                actions?.forEach {
-                    dispatcher.dispatch(it)
-                }
+                action.asOptional()
             }
+            .filterNotNull()
+            .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
     }
 

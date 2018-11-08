@@ -23,17 +23,11 @@ sealed class RouteAction : Action {
     data class SystemSetting(val setting: SettingIntent) : RouteAction()
 
     sealed class Dialog(
-        val positiveButtonActions: List<Action>? = null,
-        val negativeButtonActions: List<Action>? = null
+        val positiveButtonActions: Action? = null,
+        val negativeButtonActions: Action? = null
     ) : RouteAction() {
-        object SecurityDisclaimer : Dialog(positiveButtonActions = listOf(
-            RouteAction.SystemSetting(SettingIntent.Security)
-        ))
-        object UnlinkDisclaimer : Dialog(positiveButtonActions = listOf(
-            DataStoreAction.Reset,
-            SettingAction.Reset,
-            AccountAction.Reset
-        ))
+        object SecurityDisclaimer : Dialog(RouteAction.SystemSetting(SettingIntent.Security))
+        object UnlinkDisclaimer : Dialog(LifecycleAction.UserReset)
     }
 }
 

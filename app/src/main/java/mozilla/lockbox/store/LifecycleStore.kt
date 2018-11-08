@@ -7,9 +7,6 @@
 package mozilla.lockbox.store
 
 import io.reactivex.Observable
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
-import io.reactivex.subjects.PublishSubject
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
@@ -21,14 +18,7 @@ class LifecycleStore(
         val shared = LifecycleStore()
     }
 
-    internal val compositeDisposable = CompositeDisposable()
-    val lifecycleFilter: Observable<LifecycleAction> = PublishSubject.create()
-
-    init {
-        val subject = lifecycleFilter as PublishSubject
+    val lifecycleFilter: Observable<LifecycleAction> =
         dispatcher.register
             .filterByType(LifecycleAction::class.java)
-            .subscribe(subject::onNext)
-            .addTo(compositeDisposable)
-    }
 }
