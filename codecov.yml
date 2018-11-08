@@ -13,3 +13,4 @@ coverage:
 ignore:
   - "app/src/main/java/mozilla/lockbox/view"
   - "app/src/main/java/mozilla/lockbox/extensions/view"
+  - "app/src/debug/java/mozilla/lockbox/view/UITestActivity.kt"
