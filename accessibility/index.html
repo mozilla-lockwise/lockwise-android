@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Build and Install - Firefox Lockbox for Android</title>
+  <title>Accessibility - Firefox Lockbox for Android</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -17,9 +17,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Build and Install";
-    var mkdocs_page_input_path = "install.md";
-    var mkdocs_page_url = "/install/";
+    var mkdocs_page_name = "Accessibility";
+    var mkdocs_page_input_path = "accessibility.md";
+    var mkdocs_page_url = "/accessibility/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js"></script>
@@ -66,18 +66,9 @@
 		
     <span class="caption-text">Developer Guides</span>
     <ul class="subnav">
-                <li class=" current">
+                <li class="">
                     
-    <a class="current" href="./">Build and Install</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l3"><a href="#required-libraries">Required Libraries</a></li>
-    
-
-    <li class="toctree-l3"><a href="#steps-to-run-build">Steps to Run / Build</a></li>
-    
-
-    </ul>
+    <a class="" href="../install/">Build and Install</a>
                 </li>
                 <li class="">
                     
@@ -87,9 +78,23 @@
                     
     <a class="" href="../architecture/sec-apis/">Using Keys and Biometrics</a>
                 </li>
-                <li class="">
+                <li class=" current">
                     
-    <a class="" href="../accessibility/">Accessibility</a>
+    <a class="current" href="./">Accessibility</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#accessibility-on-lockbox-for-android">Accessibility on Lockbox for Android</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#automatic-accessibility">Automatic Accessibility</a></li>
+        
+            <li><a class="toctree-l4" href="#manual-accessibility-testing">Manual Accessibility Testing</a></li>
+        
+        </ul>
+    
+
+    </ul>
                 </li>
     </ul>
 	    </li>
@@ -120,10 +125,10 @@
         
       
     
-    <li>Build and Install</li>
+    <li>Accessibility</li>
     <li class="wy-breadcrumbs-aside">
       
-        <a href="https://github.com/mozilla-lockbox/lockbox-android/edit/master/docs/install.md"
+        <a href="https://github.com/mozilla-lockbox/lockbox-android/edit/master/docs/accessibility.md"
           class="icon icon-github"> Edit on GitHub</a>
       
     </li>
@@ -133,24 +138,28 @@
           <div role="main">
             <div class="section">
               
-                <h3 id="required-libraries">Required Libraries</h3>
-<p>Our linting configuration requires you to have an up-to-date installation of
-<a href="https://github.com/shyiko/ktlint#installation"><code>ktlint</code></a></p>
-<h3 id="steps-to-run-build">Steps to Run / Build</h3>
-<ol>
-<li>
-<p>Install the latest Android Studio</p>
-</li>
-<li>
-<p>Clone the repository</p>
-</li>
-<li>
-<p>Open the project in Android Studio</p>
-</li>
-<li>
-<p>Gradle Sync &amp; build/run the project</p>
-</li>
-</ol>
+                <h1 id="accessibility-on-lockbox-for-android">Accessibility on Lockbox for Android</h1>
+<p>On Lockbox for Android, we implement two forms of automatic testing and
+encourage developers and testers to use the recommended forms of manual testing
+to ensure that our application is accessible to every possible user.</p>
+<h3 id="automatic-accessibility">Automatic Accessibility</h3>
+<h6 id="lint-checks">Lint Checks</h6>
+<p>These are fairly simple static analysis checks. You're probably familiar with warning pop-ups when you have small code style issues; in Lockbox for Android, the build will fail if you do not address these warnings!</p>
+<p>The most important accessibility warning is the <code>contentDescription</code> warning on images. This warning will appear when the <code>contentDescription</code> attribute-- the text description of the image --has not been set.</p>
+<h6 id="espresso-tests">Espresso Tests</h6>
+<p><code>AccessibilityChecks.enable()</code> -- This should be added in setup methods for your Espresso tests.</p>
+<p>When adding new Espresso tests, you may notice failures related to things like
+tap target size. The automated Espresso accessibility checks occur on every
+method call in the <a href="https://developer.android.com/reference/android/support/test/espresso/action/ViewActions"><code>ViewActions</code></a> class.</p>
+<h3 id="manual-accessibility-testing">Manual Accessibility Testing</h3>
+<h6 id="accessibilityscanner">AccessibilityScanner</h6>
+<p>The <a href="https://support.google.com/accessibility/android/answer/6376570?hl=en">Android Accessibility Scanner</a> is a tool used to scan your app's screen to identify potential areas of improvement.</p>
+<h6 id="talkback">TalkBack</h6>
+<p>TalkBack is a screen reader that is built into all (?) Android devices. This tool can be used to test your application by closing your eyes while attempting to navigate.</p>
+<p>Instructions on enabling TalkBack on your device: https://support.google.com/accessibility/android/answer/6283677?hl=en&amp;ref_topic=3529932</p>
+<h6 id="changing-text">Changing Text</h6>
+<p>A common accessibility problem arises with users who have changed their font size. Test your app by <a href="https://support.google.com/accessibility/android/answer/6006972?hl=en&amp;ref_topic=9079043">increasing your device's font size</a>.</p>
+<p>In addition to font size, be aware of text contrast, <a href="https://support.google.com/accessibility/android/answer/6151800?hl=en&amp;ref_topic=9079043">color inversion</a>, colorblindness, and color correction.</p>
               
             </div>
           </div>
@@ -158,10 +167,8 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../architecture/flux/" class="btn btn-neutral float-right" title="Flux Architecture">Next <span class="icon icon-circle-arrow-right"></span></a>
       
-      
-        <a href="../metrics/" class="btn btn-neutral" title="Telemetry and Metrics"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../architecture/sec-apis/" class="btn btn-neutral" title="Using Keys and Biometrics"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -189,10 +196,8 @@
           <a href="https://github.com/mozilla-lockbox/lockbox-android/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
-        <span><a href="../metrics/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../architecture/sec-apis/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
-      
-        <span style="margin-left: 15px"><a href="../architecture/flux/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

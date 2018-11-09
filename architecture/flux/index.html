@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>Flux Architecture - Firefox Lockbox for Android</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/highlight.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Flux Architecture";
+    var mkdocs_page_input_path = "architecture/flux.md";
+    var mkdocs_page_url = "/architecture/flux/";
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> Firefox Lockbox for Android</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../..">Introduction</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../../contributing/">Contributing</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../../metrics/">Telemetry and Metrics</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Developer Guides</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../install/">Build and Install</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">Flux Architecture</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#firefox-lockbox-for-android-architecture">Firefox Lockbox for Android Architecture</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#rxkotlin">RxKotlin</a></li>
+        
+            <li><a class="toctree-l4" href="#flux">Flux</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../sec-apis/">Using Keys and Biometrics</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../accessibility/">Accessibility</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">Firefox Lockbox for Android</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Developer Guides &raquo;</li>
+        
+      
+    
+    <li>Flux Architecture</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/mozilla-lockbox/lockbox-android/edit/master/docs/architecture/flux.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="firefox-lockbox-for-android-architecture">Firefox Lockbox for Android Architecture</h1>
+<h2 id="rxkotlin">RxKotlin</h2>
+<p>Firefox Lockbox for Android makes extensive use of RxKotlin, an implementation of the Observable pattern from ReactiveX. More information and many marble diagrams can be found in the <a href="http://reactivex.io/">ReactiveX documentation</a>. The rest of this document relies on a basic understanding of the reader of the ReactiveX-style Observer implementation. Their intro document is a <a href="http://reactivex.io/intro.html">good starting point</a>.</p>
+<h2 id="flux">Flux</h2>
+<h3 id="architecture-pattern">Architecture Pattern</h3>
+<p>In short, Flux architecture design maintains a unidirectional data flow, in which a global Dispatcher receives Actions &amp; dispatches them to appropriate Stores. The Stores, in turn, process data &amp; provide the source of truth for the Views. As users interact with the Views, any updates are made via a dispatched Action and the cycle begins again. See this <a href="https://facebook.github.io/flux/docs/overview.html">flux architecture</a> writeup for more details on the original Flux architecture scheme.</p>
+<p>Lockbox implements a modified version of the described architecture (LockFlux), keeping in mind that the original implementation ignores asynchronous work. In this implementation, all asynchronous work is handled by the Stores as they reduce actions and state updates to their observable state.</p>
+<h3 id="memory-management">Memory Management</h3>
+<p>The five major components of this architecture (<code>View</code>, <code>Presenter</code>, <code>Store</code>, <code>Dispatcher</code>, and <code>Action</code>) have distinct lifecycle management based on their functions.</p>
+<p><code>View</code>/<code>Presenter</code> pairs are allocated and de-allocated as views get displayed or hidden in turn.</p>
+<p><code>Store</code>s and the <code>Dispatcher</code> are global singleton objects, meaning that they get lazy-loaded by the application as their shared members get accessed by the <code>Presenter</code>s for view configuration or dispatching.</p>
+<p><code>Action</code>s get deallocated as soon as they reach the end observer for their intended function.</p>
+<h3 id="viewpresenter">View/Presenter</h3>
+<p>All views are bound to a presenter. In this separation, the presenter is responsible for all business logic, and the view is abstracted to a simple interface. The view is responsible for UI-specific configuration and passing user input to its presenter for handling. This allows any complex view-related configuration to be abstracted when dealing with business logic changes, and vice versa.</p>
+<p>In the current implementation of LockFlux on Android, all <code>View</code>s are composed of Fragments, not Activities. Situations requiring an <code>Activity</code> to be added to the application will be reviewed on a case-to-case basis.</p>
+<h3 id="action">Action</h3>
+<p>Actions are tiny <code>enum</code>s or <code>sealed class</code>es that contain declarative language about either the triggering user action or the update request for a given <code>Store</code>.</p>
+<h3 id="dispatcher">Dispatcher</h3>
+<p>The dispatcher class is the simplest in the application; it provides an <code>Action</code>-accepting method as a wrapper for the <code>PublishSubject&lt;Action&gt;</code> that publishes all dispatched actions to interested <code>Stores</code>:</p>
+<pre><code>class Dispatcher {
+    companion object {
+        val shared = Dispatcher()
+    }
+
+    private val actionSubject = PublishSubject.create&lt;Action&gt;()
+
+    val register: Observable&lt;Action&gt; = this.actionSubject
+
+    fun dispatch(action: Action) {
+        this.actionSubject.onNext(action)
+    }
+}
+</code></pre>
+
+<h3 id="store">Store</h3>
+<p>Stores provide an opaque wrapper around system storage or simple <code>Replay- /Publish- Subject</code>s for the purposes of data access and view configuration. They selectively <code>register</code> with the <code>Dispatcher</code> for the <code>Action</code>s that they care about for updating state.</p>
+<p>Stores also perform any asynchronous tasks that relate to the updating of their local state. The <code>Action</code>s dispatched by <code>Presenter</code>s are completely decoupled from observed <code>Store</code> state, removing the need for callback configurations.</p>
+<p>It's important to note that there is no concept of ordering; all <code>Action</code>s will be delivered to <code>Store</code>s in realtime as they are dispatched.</p>
+<h3 id="view-routing">View Routing</h3>
+<p>The special case in this scenario is view routing. To handle the view-changing component of the architecture, there is a <code>RouteStore</code> observed by a <code>RoutePresenter</code> that rides along on the back of a <code>RootActivity</code>. This “containing” activity is not displayed to the user; rather, it performs the role of listening for navigation-specific <code>Action</code>s &amp; performing the necessary top-level fragment swapping and back stack manipulation. Routing logic lives entirely separately from individual view configuration logic, allowing for modular view manipulation and easy testing.</p>
+<h3 id="benefits-of-flux">Benefits of Flux</h3>
+<p>Close readers will note that this document borrows heavily from a similar one in our <a href="https://mozilla-lockbox.github.io/lockbox-ios/architecture/">iOS application</a>.</p>
+<p>The shared Flux pattern and reactive libraries allow us to "borrow" view-presentation logic from iOS as we move forward on Android.</p>
+<p>Additionally, the separation of high-level view manipulation from view allows us to iterate quickly on implementation details and design feedback without implications for unrelated parts of the app.</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../sec-apis/" class="btn btn-neutral float-right" title="Using Keys and Biometrics">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../../install/" class="btn btn-neutral" title="Build and Install"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+          <a href="https://github.com/mozilla-lockbox/lockbox-android/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+      
+      
+        <span><a href="../../install/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../sec-apis/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/require.js"></script>
+      <script src="../../search/search.js"></script>
+
+</body>
+</html>
