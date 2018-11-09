@@ -13,19 +13,18 @@
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  <link rel="stylesheet" href="../css/highlight.css">
   
   <script>
     // Current page data
     var mkdocs_page_name = "Contributing";
     var mkdocs_page_input_path = "contributing.md";
-    var mkdocs_page_url = null;
+    var mkdocs_page_url = "/contributing/";
   </script>
   
-  <script src="../js/jquery-2.1.1.min.js" defer></script>
-  <script src="../js/modernizr-2.8.3.min.js" defer></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
-  <script>hljs.initHighlightingOnLoad();</script> 
+  <script src="../js/jquery-2.1.1.min.js"></script>
+  <script src="../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../js/highlight.pack.js"></script> 
   
 </head>
 
@@ -39,7 +38,7 @@
         <a href=".." class="icon icon-home"> Firefox Lockbox for Android</a>
         <div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+    <input type="text" name="q" placeholder="Search docs" />
   </form>
 </div>
       </div>
@@ -65,6 +64,8 @@
             <li><a class="toctree-l3" href="#code-of-conduct">Code of Conduct</a></li>
         
             <li><a class="toctree-l3" href="#how-to-get-started">How to Get Started</a></li>
+        
+            <li><a class="toctree-l3" href="#leakcanary">LeakCanary</a></li>
         
             <li><a class="toctree-l3" href="#how-to-report-bugs">How to Report Bugs</a></li>
         
@@ -140,6 +141,8 @@
 <p>This repository is governed by Mozilla's code of conduct and etiquette guidelines. For more details please see the <a href="https://www.mozilla.org/about/governance/policies/participation/">Mozilla Community Participation Guidelines</a> and <a href="https://bugzilla.mozilla.org/page.cgi?id=etiquette.html">Developer Etiquette Guidelines</a>.</p>
 <h2 id="how-to-get-started">How to Get Started</h2>
 <p>Please refer to installation and build instructions in the <a href="../install/">documentation</a>.</p>
+<h2 id="leakcanary">LeakCanary</h2>
+<p>We use <a href="https://github.com/square/leakcanary/wiki/FAQ">LeakCanary</a> to monitor memory leaks in Debug builds of the Lockbox Android application. Please read the documentation and pay attention to warnings while debugging the application!</p>
 <h2 id="how-to-report-bugs">How to Report Bugs</h2>
 <p>Please open <a href="https://github.com/mozilla-lockbox/lockbox-android/issues/new">a new issue in the GitHub repository</a> with steps to reproduce the problem you're experiencing.</p>
 <p>Be sure to include as much information including screenshots, text output, and both your expected and actual results.</p>
@@ -154,7 +157,7 @@
 <p>If there's something else you'd like to work on, just add a comment in the relevant issue and we'll be happy to discuss your plans. If you have an idea that doesn't have an issue at all, be sure to <a href="#how-to-request-enhancements">file an issue</a> first.</p>
 <p>Once you have a patch ready:</p>
 <ul>
-<li>Make sure all tests are passing and try to add tests for the code you've written. </li>
+<li>Make sure all tests are passing and try to add tests for the code you've written.</li>
 <li>Submit a pull request! From there, we'll guide you through the review process to the eventual landing of your code. We aim to respond to all review requests within two business days.</li>
 </ul>
               
@@ -203,8 +206,9 @@
     </span>
 </div>
     <script>var base_url = '..';</script>
-    <script src="../js/theme.js" defer></script>
-      <script src="../search/main.js" defer></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/require.js"></script>
+      <script src="../search/search.js"></script>
 
 </body>
 </html>
