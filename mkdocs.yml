@@ -10,4 +10,6 @@ pages:
 - 'Telemetry and Metrics': 'metrics.md'
 - 'Developer Guides':
   - 'Build and Install': 'install.md'
+  - 'Flux Architecture': 'architecture/flux.md'
   - 'Using Keys and Biometrics': 'architecture/sec-apis.md'
+  - 'Accessibility': 'accessibility.md'
