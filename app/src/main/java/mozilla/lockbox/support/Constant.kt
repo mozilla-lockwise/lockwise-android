@@ -6,6 +6,8 @@
 
 package mozilla.lockbox.support
 
+import mozilla.lockbox.model.ItemListSort
+
 object Constant {
     object App {
         const val keystoreLabel = "lockbox-keystore"
@@ -19,5 +21,10 @@ object Constant {
             "https://identity.mozilla.com/apps/lockbox",
             "https://identity.mozilla.com/apps/oldsync"
         )
+    }
+
+    object Setting {
+        val defaultItemListSort = ItemListSort.ALPHABETICALLY
+        val defaultSendUsageData = true
     }
 }

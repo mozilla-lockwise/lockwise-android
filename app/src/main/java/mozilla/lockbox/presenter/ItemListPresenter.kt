@@ -15,7 +15,6 @@ import mozilla.lockbox.R
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.SettingAction
-import mozilla.lockbox.action.SettingIntent
 import mozilla.lockbox.extensions.mapToItemViewModelList
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
@@ -94,9 +93,7 @@ class ItemListPresenter(
         val action = when (item) {
             R.id.lock_now_menu_item -> {
                 if (fingerprintStore.isDeviceSecure) RouteAction.LockScreen
-                else RouteAction.DialogAction.SecurityDisclaimerDialog(
-                    RouteAction.SystemSetting(SettingIntent.Security)
-                )
+                else RouteAction.Dialog.SecurityDisclaimer
             }
             R.id.setting_menu_item -> RouteAction.SettingList
             R.id.account_setting_menu_item -> RouteAction.AccountSetting

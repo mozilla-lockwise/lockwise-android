@@ -7,6 +7,8 @@
 package mozilla.lockbox.extensions.view
 
 import android.content.Context
+import android.content.DialogInterface
+import android.support.annotation.ColorRes
 import android.support.annotation.StringRes
 import android.support.v7.app.AlertDialog
 import io.reactivex.Observable
@@ -22,7 +24,8 @@ object AlertDialogHelper {
         @StringRes title: Int? = null,
         @StringRes message: Int? = null,
         @StringRes positiveButtonTitle: Int? = null,
-        @StringRes negativeButtonTitle: Int? = null
+        @StringRes negativeButtonTitle: Int? = null,
+        @ColorRes positiveButtonColor: Int? = null
     ): Observable<AlertState> {
         return Observable.create { emitter ->
             val builder = AlertDialog.Builder(context, R.style.AlertDialogStyle)
@@ -47,7 +50,13 @@ object AlertDialogHelper {
                 emitter.onComplete()
             }
 
-            builder.show()
+            val dialog = builder.create()
+
+            dialog.show()
+
+            positiveButtonColor?.let {
+                dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(context.getColor(it))
+            }
         }
     }
 }

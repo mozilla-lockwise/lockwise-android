@@ -6,11 +6,15 @@
 
 package mozilla.lockbox.robots
 
+import br.com.concretesolutions.kappuccino.actions.ClickActions.click
 import br.com.concretesolutions.kappuccino.assertions.VisibilityAssertions.displayed
 import mozilla.lockbox.R
 
+// AccountSettingScreen
 class AccountSettingRobot : BaseTestRobot {
     override fun exists() = displayed { id(R.id.profileImage) }
+
+    fun tapDisconnect() = click { id(R.id.disconnectButton) }
 }
 
 fun accountSettingScreen(f: AccountSettingRobot.() -> Unit) = AccountSettingRobot().apply(f)

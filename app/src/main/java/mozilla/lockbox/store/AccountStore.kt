@@ -7,6 +7,8 @@
 package mozilla.lockbox.store
 
 import android.net.Uri
+import android.webkit.CookieManager
+import android.webkit.WebStorage
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -16,6 +18,7 @@ import mozilla.components.service.fxa.Config
 import mozilla.components.service.fxa.FirefoxAccount
 import mozilla.components.service.fxa.OAuthInfo
 import mozilla.lockbox.action.AccountAction
+import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.support.Constant
@@ -48,12 +51,20 @@ open class AccountStore(
     val profile: Observable<Optional<FxAProfile>> = ReplaySubject.createWithSize(1)
 
     init {
+        val resetObservable = this.dispatcher.register
+            .filter { it == LifecycleAction.UserReset }
+            .map { AccountAction.Reset }
+
         this.dispatcher.register
             .filterByType(AccountAction::class.java)
+            .mergeWith(resetObservable)
             .subscribe {
                 when (it) {
                     is AccountAction.OauthRedirect -> {
                         this.oauthLogin(it.url)
+                    }
+                    is AccountAction.Reset -> {
+                        this.clear()
                     }
                 }
             }
@@ -66,13 +77,7 @@ open class AccountStore(
                 this.populateAccountInformation()
             }
         } ?: run {
-            Config.release().whenComplete {
-                this.fxa = FirefoxAccount(it, Constant.FxA.clientID, Constant.FxA.redirectUri)
-                this.generateLoginURL()
-
-                (this.oauthInfo as Subject).onNext(Optional(null))
-                (this.profile as Subject).onNext(Optional(null))
-            }
+            this.generateNewFirefoxAccount()
         }
     }
 
@@ -89,6 +94,16 @@ open class AccountStore(
         val oauthSubject = oauthInfo as Subject
         fxa?.getOAuthToken(FXA_SCOPES)?.whenComplete {
             oauthSubject.onNext(it.asOptional())
+        }
+    }
+
+    private fun generateNewFirefoxAccount() {
+        Config.release().whenComplete {
+            this.fxa = FirefoxAccount(it, Constant.FxA.clientID, Constant.FxA.redirectUri)
+            this.generateLoginURL()
+
+            (this.oauthInfo as Subject).onNext(Optional(null))
+            (this.profile as Subject).onNext(Optional(null))
         }
     }
 
@@ -110,5 +125,13 @@ open class AccountStore(
                 }
             }
         }
+    }
+
+    private fun clear() {
+        CookieManager.getInstance().removeAllCookies { }
+        WebStorage.getInstance().deleteAllData()
+
+        this.securePreferences.remove(FIREFOX_ACCOUNT_KEY)
+        this.generateNewFirefoxAccount()
     }
 }

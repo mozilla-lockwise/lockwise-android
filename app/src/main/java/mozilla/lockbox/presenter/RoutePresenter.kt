@@ -20,10 +20,13 @@ import mozilla.lockbox.R
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.view.AlertDialogHelper
 import mozilla.lockbox.extensions.view.AlertState
+import mozilla.lockbox.extensions.filterNotNull
+import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
 import mozilla.lockbox.store.RouteStore
+import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.view.FingerprintAuthDialogFragment
 import mozilla.lockbox.view.ItemDetailFragmentArgs
 
@@ -64,32 +67,33 @@ class RoutePresenter(
                 openSetting(action)
             }
             is RouteAction.FingerprintDialog -> showDialogFragment(FingerprintAuthDialogFragment())
-            is RouteAction.DialogAction -> showDialog(action)
+            is RouteAction.Dialog -> showDialog(action)
 
             is RouteAction.Back -> navController.popBackStack()
         }
     }
 
-    private fun showDialog(destination: RouteAction.DialogAction) {
+    private fun showDialog(destination: RouteAction.Dialog) {
         val dialogStateObservable = when (destination) {
-            is RouteAction.DialogAction.SecurityDisclaimerDialog -> showSecurityDisclaimerDialog()
+            is RouteAction.Dialog.SecurityDisclaimer -> showSecurityDisclaimerDialog()
+            is RouteAction.Dialog.UnlinkDisclaimer -> showUnlinkDisclaimerDialog()
         }
 
         dialogStateObservable
-            .subscribe { alertState ->
-                val action = when (alertState) {
+            .map { alertState ->
+                val action: Action? = when (alertState) {
                     AlertState.BUTTON_POSITIVE -> {
-                        destination.positiveButtonAction
+                        destination.positiveButtonActions
                     }
                     AlertState.BUTTON_NEGATIVE -> {
-                        destination.negativeButtonAction
+                        destination.negativeButtonActions
                     }
                 }
 
-                action?.let {
-                    dispatcher.dispatch(action)
-                }
+                action.asOptional()
             }
+            .filterNotNull()
+            .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
     }
 
@@ -111,6 +115,17 @@ class RoutePresenter(
             R.string.no_device_security_message,
             R.string.set_up_security_button,
             R.string.cancel
+        )
+    }
+
+    private fun showUnlinkDisclaimerDialog(): Observable<AlertState> {
+        return AlertDialogHelper.showAlertDialog(
+            activity,
+            R.string.disconnect_disclaimer_title,
+            R.string.disconnect_disclaimer_message,
+            R.string.disconnect,
+            R.string.cancel,
+            R.color.red
         )
     }
 

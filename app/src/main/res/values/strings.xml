@@ -66,4 +66,9 @@
     <string name="disconnect_disclaimer">This removes synced entries from Firefox Lockbox, but will not delete your entries from Firefox.</string>
     <string name="profile_image_content_description">Firefox Account Profile Image</string>
     <string name="firefox_account">Firefox Account</string>
+    <string name="disconnect_disclaimer_title">Disconnect Firefox Lockbox?</string>
+    <string name="disconnect_disclaimer_message">This will delete your Firefox Account information and all saved entries
+        from Firefox Lockbox.
+    </string>
+    <string name="disconnect">Disconnect</string>
 </resources>

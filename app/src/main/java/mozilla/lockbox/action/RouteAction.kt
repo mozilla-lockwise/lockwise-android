@@ -22,11 +22,12 @@ sealed class RouteAction : Action {
     data class OpenWebsite(val url: String) : RouteAction()
     data class SystemSetting(val setting: SettingIntent) : RouteAction()
 
-    sealed class DialogAction(
-        val positiveButtonAction: Action? = null,
-        val negativeButtonAction: Action? = null
+    sealed class Dialog(
+        val positiveButtonActions: Action? = null,
+        val negativeButtonActions: Action? = null
     ) : RouteAction() {
-        class SecurityDisclaimerDialog(setUpAction: Action) : DialogAction(positiveButtonAction = setUpAction)
+        object SecurityDisclaimer : Dialog(RouteAction.SystemSetting(SettingIntent.Security))
+        object UnlinkDisclaimer : Dialog(LifecycleAction.UserReset)
     }
 }
 

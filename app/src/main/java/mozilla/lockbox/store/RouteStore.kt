@@ -10,12 +10,14 @@ import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 
-class RouteStore(dispatcher: Dispatcher = Dispatcher.shared) {
+class RouteStore(
+    dispatcher: Dispatcher = Dispatcher.shared
+) {
     companion object {
         val shared = RouteStore()
     }
 
     val routes: Observable<RouteAction> =
             dispatcher.register
-            .filterByType(RouteAction::class.java)
+                .filterByType(RouteAction::class.java)
 }

@@ -8,15 +8,18 @@ package mozilla.lockbox.store
 
 import android.content.SharedPreferences
 import io.reactivex.observers.TestObserver
-import junit.framework.Assert.assertEquals
 import mozilla.lockbox.DisposingTest
-import mozilla.lockbox.model.ItemListSort
+import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.model.ItemListSort
+import mozilla.lockbox.support.Constant
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito
+import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 
 class SettingStoreTest : DisposingTest() {
@@ -42,7 +45,7 @@ class SettingStoreTest : DisposingTest() {
 
     @Test
     fun sendUsageDataTest_defaultValue() {
-        val defaultValue = true
+        val defaultValue = Constant.Setting.defaultSendUsageData
         sendUsageDataObserver.assertValue(defaultValue)
     }
 
@@ -53,11 +56,11 @@ class SettingStoreTest : DisposingTest() {
 
         sendUsageDataObserver.assertValue(defaultValue)
 
-        var action = SettingAction.SendUsageData(newValue)
+        val action = SettingAction.SendUsageData(newValue)
         dispatcher.dispatch(action)
 
-        Mockito.verify(editor).putBoolean(Mockito.anyString(), Mockito.anyBoolean())
-        Mockito.verify(editor).apply()
+        verify(editor).putBoolean(Mockito.anyString(), Mockito.anyBoolean())
+        verify(editor).apply()
     }
 
     @Test
@@ -70,7 +73,7 @@ class SettingStoreTest : DisposingTest() {
 
     @Test
     fun itemListSortOrder_defaultValue() {
-        val defaultValue = ItemListSort.ALPHABETICALLY
+        val defaultValue = Constant.Setting.defaultItemListSort
         itemListSortOrder.assertValue(defaultValue)
     }
 
@@ -81,10 +84,28 @@ class SettingStoreTest : DisposingTest() {
 
         itemListSortOrder.assertValue(defaultValue)
 
-        var action = SettingAction.ItemListSortOrder(newValue)
+        val action = SettingAction.ItemListSortOrder(newValue)
         dispatcher.dispatch(action)
 
-        Mockito.verify(editor).putString(SettingStore.Keys.ITEM_LIST_SORT_ORDER, newValue.name)
-        Mockito.verify(editor).apply()
+        verify(editor).putString(SettingStore.Keys.ITEM_LIST_SORT_ORDER, newValue.name)
+        verify(editor).apply()
+    }
+
+    @Test
+    fun `reset actions restore default values`() {
+        dispatcher.dispatch(SettingAction.Reset)
+
+        verify(editor).putString(SettingStore.Keys.ITEM_LIST_SORT_ORDER, Constant.Setting.defaultItemListSort.name)
+        verify(editor).putBoolean(SettingStore.Keys.SEND_USAGE_DATA, Constant.Setting.defaultSendUsageData)
+        verify(editor).apply()
+    }
+
+    @Test
+    fun `userreset lifecycle actions restore default values`() {
+        dispatcher.dispatch(LifecycleAction.UserReset)
+
+        verify(editor).putString(SettingStore.Keys.ITEM_LIST_SORT_ORDER, Constant.Setting.defaultItemListSort.name)
+        verify(editor).putBoolean(SettingStore.Keys.SEND_USAGE_DATA, Constant.Setting.defaultSendUsageData)
+        verify(editor).apply()
     }
 }

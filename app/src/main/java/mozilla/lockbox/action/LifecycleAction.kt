@@ -14,5 +14,6 @@ enum class LifecycleAction(
     Background(TelemetryEventMethod.background, TelemetryEventObject.app),
     Startup(TelemetryEventMethod.startup, TelemetryEventObject.app),
     // TODO: Add a TelemetryEventMethod for upgrading
-    Upgrade(TelemetryEventMethod.startup, TelemetryEventObject.app)
+    Upgrade(TelemetryEventMethod.startup, TelemetryEventObject.app),
+    UserReset(TelemetryEventMethod.tap, TelemetryEventObject.settings_reset)
 }

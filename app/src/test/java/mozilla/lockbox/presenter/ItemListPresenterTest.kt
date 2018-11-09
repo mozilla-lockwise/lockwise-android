@@ -11,20 +11,19 @@ import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import mozilla.lockbox.R
-import mozilla.lockbox.model.ItemListSort
 import mozilla.lockbox.action.RouteAction
-import mozilla.lockbox.action.SettingIntent
-import mozilla.lockbox.extensions.view.AlertState
 import mozilla.lockbox.action.SettingAction
+import mozilla.lockbox.extensions.view.AlertState
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.extensions.toViewModel
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.model.ItemListSort
 import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.FingerprintStore
-import org.junit.Assert
 import mozilla.lockbox.store.SettingStore
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -196,11 +195,9 @@ open class ItemListPresenterTest {
         view.menuItemSelectionStub.onNext(R.id.lock_now_menu_item)
 
         view.disclaimerActionStub.onNext(AlertState.BUTTON_POSITIVE)
-        val routeAction = dispatcherObserver.values().last() as RouteAction.DialogAction
+        val routeAction = dispatcherObserver.values().last() as RouteAction.Dialog
 
-        Assert.assertTrue(routeAction is RouteAction.DialogAction.SecurityDisclaimerDialog)
-
-        Assert.assertEquals(RouteAction.SystemSetting(SettingIntent.Security), routeAction.positiveButtonAction)
+        Assert.assertTrue(routeAction is RouteAction.Dialog.SecurityDisclaimer)
     }
 
     @Test
