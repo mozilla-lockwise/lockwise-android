@@ -21,6 +21,7 @@ import mozilla.lockbox.R
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.AlertDialogHelper
 import mozilla.lockbox.extensions.AlertState
+import mozilla.lockbox.extensions.debug
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
@@ -43,11 +44,13 @@ class RoutePresenter(
 
         dataStore.state
             .observeOn(mainThread())
+            .debug()
             .map(this::dataStoreRoutes)
             .subscribe(this::route)
             .addTo(compositeDisposable)
 
         routeStore.routes
+            .debug()
             .observeOn(mainThread())
             .subscribe(this::route)
             .addTo(compositeDisposable)
@@ -64,6 +67,7 @@ class RoutePresenter(
     }
 
     private fun route(action: RouteAction) {
+        log.info("ACTION IS: $action")
         when (action) {
             is RouteAction.Welcome -> navigateToFragment(action, R.id.graph_welcome)
             is RouteAction.Login -> navigateToFragment(action, R.id.fragment_fxa_login)
@@ -158,6 +162,9 @@ class RoutePresenter(
         // If a RouteAction is called from a place the graph doesn't know about then
         // the app will log.error.
         return when (Pair(from, to)) {
+            Pair(R.id.fragment_app_startup_placeholder, R.id.graph_welcome) -> R.id.action_startup_to_welcome
+            Pair(R.id.fragment_app_startup_placeholder, R.id.fragment_item_list) -> R.id.action_startup_to_itemList
+            Pair(R.id.fragment_app_startup_placeholder, R.id.fragment_locked) -> R.id.action_startup_to_locked
             Pair(R.id.fragment_welcome, R.id.fragment_fxa_login) -> R.id.action_welcome_to_fxaLogin
 
             Pair(R.id.fragment_fxa_login, R.id.fragment_item_list) -> R.id.action_fxaLogin_to_itemList

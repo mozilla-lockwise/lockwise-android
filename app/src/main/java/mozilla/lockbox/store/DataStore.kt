@@ -17,6 +17,7 @@ import mozilla.lockbox.log
 import mozilla.lockbox.support.DataStoreSupport
 import mozilla.lockbox.support.FixedDataStoreSupport
 import org.mozilla.sync15.logins.LoginsStorage
+import org.mozilla.sync15.logins.MemoryLoginsStorage
 import org.mozilla.sync15.logins.ServerPassword
 import org.mozilla.sync15.logins.SyncResult
 
@@ -81,7 +82,6 @@ open class DataStore(
 
     fun unlock(): Observable<Unit> {
         val unlockSubject = SingleSubject.create<Unit>()
-        log.info("unlocking")
         stateSubject.onNext(State.Unlocking)
         backend.isLocked().then {
             if (it) {
@@ -158,9 +158,17 @@ open class DataStore(
     private fun reset() {
         clearList()
         backend.reset().then({
+            if (backend is MemoryLoginsStorage) {
+                updateList()
+            }
+
             this.stateSubject.onNext(DataStore.State.Unprepared)
             SyncResult.fromValue(Unit)
         }, {
+            if (backend is MemoryLoginsStorage) {
+                updateList()
+            }
+
             this.stateSubject.onNext(DataStore.State.Unprepared)
             SyncResult.fromValue(Unit)
         })

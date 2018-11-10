@@ -9,7 +9,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/graph_main"
-    app:startDestination="@id/graph_welcome">
+    app:startDestination="@id/fragment_app_startup_placeholder">
+
+    <fragment
+            android:id="@+id/fragment_app_startup_placeholder"
+            android:name="mozilla.lockbox.view.AppStartupPlaceholder"
+            tools:layout="@layout/fragment_app_startup_placeholder">
+        <action
+                android:id="@+id/action_startup_to_itemList"
+                app:destination="@+id/fragment_item_list" />
+        <action
+                android:id="@+id/action_startup_to_welcome"
+                app:destination="@+id/graph_welcome" />
+        <action
+                android:id="@+id/action_startup_to_locked"
+                app:destination="@+id/fragment_locked" />
+    </fragment>
 
     <fragment
         android:id="@+id/fragment_item_list"
@@ -88,7 +103,8 @@
                 app:popUpToInclusive="true"/>
     </fragment>
 
-    <navigation android:id="@+id/graph_welcome" app:startDestination="@id/fragment_welcome">
+    <navigation android:id="@+id/graph_welcome"
+                app:startDestination="@id/fragment_welcome">
         <fragment
                 android:id="@+id/fragment_welcome"
                 android:name="mozilla.lockbox.view.WelcomeFragment"

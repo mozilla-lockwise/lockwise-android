@@ -46,6 +46,7 @@ android {
         baseline file("lint-baseline.xml")
     }
     testOptions {
+        animationsDisabled = true
         unitTests {
             includeAndroidResources = true
             returnDefaultValues = true

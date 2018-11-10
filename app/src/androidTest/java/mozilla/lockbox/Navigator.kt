@@ -132,7 +132,7 @@ class Navigator {
         checkAtItemDetail()
     }
 
-    private fun checkAtItemDetail() {
+    fun checkAtItemDetail() {
         itemDetail { exists() }
     }
 
