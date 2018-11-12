@@ -71,6 +71,8 @@
         from Firefox Lockbox.
     </string>
     <string name="disconnect">Disconnect</string>
+    <string name="error">Fingerprint sensor error</string>
+    <string name="application_logo">Firefox Lockbox Logo</string>
     <string name="enable_fingerprint_dialog_title">Enable Fingerprint</string>
     <string name="enable_fingerprint_dialog_subtitle">Give Lockbox permission to unlock this app with the fingerprint sensor.</string>
 </resources>

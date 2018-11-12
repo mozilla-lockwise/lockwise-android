@@ -5,9 +5,13 @@
   ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
   -->
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="wrap_content">
 
-    <group android:checkableBehavior="none">
+    <group android:checkableBehavior="none"
+           android:layout_height="match_parent"
+           android:layout_width="wrap_content">
         <item
             android:id="@+id/account_setting_menu_item"
             android:icon="@drawable/ic_account"
@@ -18,11 +22,13 @@
             android:title="@string/nav_menu_faq" />
         <item
             android:id="@+id/setting_menu_item"
-            android:icon="@android:drawable/ic_menu_preferences"
+            android:icon="@drawable/ic_icon_settings"
             android:title="@string/nav_menu_settings" />
+        
         <item
             android:id="@+id/lock_now_menu_item"
-            android:icon="@android:drawable/ic_lock_lock"
-            android:title="@string/lock_now" />
+            android:icon="@drawable/ic_icon_lock"
+            android:title="@string/lock_now"
+            android:gravity="bottom"/>
     </group>
 </menu>
