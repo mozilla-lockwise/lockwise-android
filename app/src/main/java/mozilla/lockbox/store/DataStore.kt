@@ -143,7 +143,7 @@ open class DataStore(
         return syncSubject.toObservable()
     }
 
-    // item list management
+    // item list managementa
     private fun clearList() {
         this.listSubject.accept(emptyList())
     }

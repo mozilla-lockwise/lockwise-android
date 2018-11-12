@@ -34,7 +34,6 @@ open class RoutePresenterTest {
 
     @Test
     fun testFxALogin() {
-        log.info("new test!")
         navigator.gotoFxALogin()
         navigator.back()
         navigator.checkOnWelcome()
@@ -42,14 +41,12 @@ open class RoutePresenterTest {
 
     @Test
     fun testItemList() {
-        log.info("new test!")
         navigator.gotoItemList()
         navigator.back(false)
     }
 
     @Test
     fun testFilterList() {
-        log.info("new test!")
         navigator.gotoItemList_filter()
         navigator.back()
         navigator.checkAtItemList()
@@ -57,7 +54,6 @@ open class RoutePresenterTest {
 
     @Test
     fun testFilterToItemDetail() {
-        log.info("new test!")
         navigator.gotoItemList_filter()
         filteredItemList {
             selectItem(0)
@@ -69,7 +65,6 @@ open class RoutePresenterTest {
 
     @Test
     fun testSettings() {
-        log.info("new test!")
         navigator.gotoSettings()
         navigator.back()
         navigator.checkAtItemList()
@@ -77,7 +72,6 @@ open class RoutePresenterTest {
 
     @Test
     fun testAccountSetting() {
-        log.info("new test!")
         navigator.gotoAccountSetting()
         navigator.back()
         navigator.checkAtItemList()
@@ -85,7 +79,6 @@ open class RoutePresenterTest {
 
     @Test
     fun testItemDetail() {
-        log.info("new test!")
         navigator.gotoItemDetail()
         navigator.back()
         navigator.checkAtItemList()
@@ -93,7 +86,6 @@ open class RoutePresenterTest {
 
     @Test
     fun testNoSecurityDialog() {
-        log.info("new test!")
         navigator.gotoNoSecurityDialog()
         navigator.back(true)
         navigator.checkAtItemList()
@@ -101,7 +93,6 @@ open class RoutePresenterTest {
 
     @Test
     fun testNoSecurityDialogSetupSecurity() {
-        log.info("new test!")
         navigator.goToSecuritySettings()
     }
 }

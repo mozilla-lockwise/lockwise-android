@@ -25,6 +25,7 @@ import mozilla.lockbox.robots.securityDisclaimer
 import mozilla.lockbox.robots.settings
 import mozilla.lockbox.robots.welcome
 import org.junit.Assert
+import java.lang.Thread.sleep
 
 class Navigator {
     fun gotoFxALogin() {
@@ -153,5 +154,6 @@ class Navigator {
     fun reset() {
         closeSoftKeyboard()
         Dispatcher.shared.dispatch(DataStoreAction.Reset)
+        sleep(6)
     }
 }

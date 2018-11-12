@@ -21,7 +21,6 @@ import mozilla.lockbox.R
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.AlertDialogHelper
 import mozilla.lockbox.extensions.AlertState
-import mozilla.lockbox.extensions.debug
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
@@ -42,15 +41,11 @@ class RoutePresenter(
     override fun onViewReady() {
         navController = Navigation.findNavController(activity, R.id.fragment_nav_host)
 
-        dataStore.state
-            .observeOn(mainThread())
-            .debug()
+        val dataStoreRoutes = dataStore.state
             .map(this::dataStoreRoutes)
-            .subscribe(this::route)
-            .addTo(compositeDisposable)
 
         routeStore.routes
-            .debug()
+            .mergeWith(dataStoreRoutes)
             .observeOn(mainThread())
             .subscribe(this::route)
             .addTo(compositeDisposable)
@@ -67,7 +62,6 @@ class RoutePresenter(
     }
 
     private fun route(action: RouteAction) {
-        log.info("ACTION IS: $action")
         when (action) {
             is RouteAction.Welcome -> navigateToFragment(action, R.id.graph_welcome)
             is RouteAction.Login -> navigateToFragment(action, R.id.fragment_fxa_login)
