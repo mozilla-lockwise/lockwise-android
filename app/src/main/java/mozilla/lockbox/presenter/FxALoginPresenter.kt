@@ -44,6 +44,7 @@ class FxALoginPresenter(
         view.skipFxAClicks
             .subscribe {
                 dispatcher.dispatch(DataStoreAction.Unlock)
+                dispatcher.dispatch(DataStoreAction.Sync)
             }
             .addTo(compositeDisposable)
 

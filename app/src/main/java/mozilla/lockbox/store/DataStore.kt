@@ -158,10 +158,6 @@ open class DataStore(
     private fun reset() {
         clearList()
         backend.reset().then({
-            if (backend is MemoryLoginsStorage) {
-                updateList()
-            }
-
             this.stateSubject.onNext(DataStore.State.Unprepared)
             SyncResult.fromValue(Unit)
         }, {
