@@ -24,8 +24,8 @@ class UITestActivity : AppCompatActivity() {
         try {
             dialogFragment.show(fragmentManager, dialogFragment.javaClass.name)
             dialogFragment.setupDialog(
-                this.getString(R.string.enable_fingerprint_dialog_title),
-                this.getString(R.string.enable_fingerprint_dialog_subtitle)
+                R.string.enable_fingerprint_dialog_title,
+                R.string.enable_fingerprint_dialog_subtitle
             )
         } catch (e: IllegalStateException) {
             log.error("Could not show dialog", e)

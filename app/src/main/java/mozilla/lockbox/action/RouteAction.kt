@@ -6,6 +6,7 @@
 
 package mozilla.lockbox.action
 
+import android.support.annotation.StringRes
 import mozilla.lockbox.flux.Action
 
 sealed class RouteAction : Action {
@@ -29,8 +30,8 @@ sealed class RouteAction : Action {
         object UnlinkDisclaimer : Dialog(LifecycleAction.UserReset)
     }
 
-    sealed class DialogFragment(val dialogTitle: String, val dialogSubtitle: String? = null) : RouteAction() {
-        class FingerprintDialog(val title: String, val subtitle: String? = null) :
+    sealed class DialogFragment(@StringRes val dialogTitle: Int, @StringRes val dialogSubtitle: Int? = null) : RouteAction() {
+        class FingerprintDialog(@StringRes title: Int, @StringRes subtitle: Int? = null) :
             DialogFragment(dialogTitle = title, dialogSubtitle = subtitle)
     }
 }

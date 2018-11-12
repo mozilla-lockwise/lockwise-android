@@ -99,7 +99,6 @@ class RoutePresenter(
     }
 
     private fun showDialogFragment(dialogFragment: DialogFragment?, destination: RouteAction.DialogFragment) {
-        var src = navController.currentDestination ?: return
         if (dialogFragment != null) {
             val fragmentManager = activity.supportFragmentManager
             try {

@@ -38,7 +38,7 @@ class LockedPresenter(
         Observables.combineLatest(view.unlockButtonTaps, settingStore.unlockWithFingerprint)
             .subscribe {
                 if (fingerprintStore.isFingerprintAuthAvailable && it.second) {
-                    dispatcher.dispatch(RouteAction.DialogFragment.FingerprintDialog(context.getString(R.string.fingerprint_dialog_title)))
+                    dispatcher.dispatch(RouteAction.DialogFragment.FingerprintDialog(R.string.fingerprint_dialog_title))
                 } else {
                     unlockFallback()
                 }

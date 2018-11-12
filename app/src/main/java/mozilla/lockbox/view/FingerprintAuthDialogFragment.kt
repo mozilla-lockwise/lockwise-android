@@ -7,6 +7,7 @@
 package mozilla.lockbox.view
 
 import android.os.Bundle
+import android.support.annotation.StringRes
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,8 +22,8 @@ import mozilla.lockbox.presenter.FingerprintDialogView
 class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
     private val _authCallback = PublishSubject.create<AuthCallback>()
     override val authCallback: Observable<AuthCallback> get() = _authCallback
-    private lateinit var title: String
-    private var subtitle: String? = null
+    private var titleId: Int? = null
+    private var subtitleId: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,9 +37,9 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        view.dialogTitle.text = title
-        subtitle?.let {
-            view.dialogSubtitle.text = it
+        titleId?.let { view.dialogTitle.text = getString(it) }
+        subtitleId?.let {
+            view.dialogSubtitle.text = getString(it)
             view.dialogSubtitle.visibility = View.VISIBLE
         } ?: run {
             view.dialogSubtitle.visibility = View.GONE
@@ -60,9 +61,9 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
         }
     }
 
-    override fun setupDialog(title: String, subtitle: String?) {
-        this.title = title
-        this.subtitle = subtitle
+    override fun setupDialog(@StringRes titleId: Int, @StringRes subtitleId: Int?) {
+        this.titleId = titleId
+        this.subtitleId = subtitleId
     }
 
     override fun onError(error: String?) {

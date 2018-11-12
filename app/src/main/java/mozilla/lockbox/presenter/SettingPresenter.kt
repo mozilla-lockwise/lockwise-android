@@ -48,8 +48,8 @@ class SettingPresenter(
             if (isToggleOn && fingerprintStore.isFingerprintAuthAvailable) {
                 dispatcher.dispatch(
                     RouteAction.DialogFragment.FingerprintDialog(
-                        context.getString(R.string.enable_fingerprint_dialog_title),
-                        context.getString(R.string.enable_fingerprint_dialog_subtitle)
+                        R.string.enable_fingerprint_dialog_title,
+                        R.string.enable_fingerprint_dialog_subtitle
                     )
                 )
             }
