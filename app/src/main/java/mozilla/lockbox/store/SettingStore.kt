@@ -6,7 +6,9 @@
 
 package mozilla.lockbox.store
 
+import android.content.Context
 import android.content.SharedPreferences
+import android.preference.PreferenceManager
 import com.f2prateek.rx.preferences2.RxSharedPreferences
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -20,7 +22,7 @@ import mozilla.lockbox.support.Constant
 
 open class SettingStore(
     val dispatcher: Dispatcher = Dispatcher.shared
-) {
+) : ContextStore {
     companion object {
         val shared = SettingStore()
     }
@@ -63,10 +65,10 @@ open class SettingStore(
             .addTo(compositeDisposable)
     }
 
-    fun apply(sharedPreferences: SharedPreferences) {
-        preferences = sharedPreferences
+    override fun injectContext(context: Context) {
+        preferences = PreferenceManager.getDefaultSharedPreferences(context)
 
-        val rxPrefs = RxSharedPreferences.create(sharedPreferences)
+        val rxPrefs = RxSharedPreferences.create(preferences)
 
         sendUsageData = rxPrefs
             .getBoolean(Keys.SEND_USAGE_DATA, Constant.Setting.defaultSendUsageData)

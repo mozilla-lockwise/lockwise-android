@@ -8,11 +8,6 @@ package mozilla.lockbox.store
 
 import android.content.Context
 
-class ContextStore {
-
-    lateinit var context: Context
-
-    fun applyContext(context: Context) {
-        this.context = context
-    }
+interface ContextStore {
+    fun injectContext(context: Context)
 }

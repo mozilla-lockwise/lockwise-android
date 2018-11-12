@@ -34,7 +34,7 @@ import javax.crypto.SecretKey
 
 open class FingerprintStore(
     val dispatcher: Dispatcher = Dispatcher.shared
-) {
+) : ContextStore {
     internal val compositeDisposable = CompositeDisposable()
     open lateinit var fingerprintManager: FingerprintManager
     open lateinit var keyguardManager: KeyguardManager
@@ -73,7 +73,7 @@ open class FingerprintStore(
             .addTo(compositeDisposable)
     }
 
-    fun applyContext(context: Context) {
+    override fun injectContext(context: Context) {
         fingerprintManager = context.getSystemService(Context.FINGERPRINT_SERVICE) as FingerprintManager
         keyguardManager = context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
         authenticationCallback = AuthenticationCallback(context)

@@ -6,7 +6,9 @@
 
 package mozilla.lockbox.store
 
+import android.content.Context
 import android.content.SharedPreferences
+import android.preference.PreferenceManager
 import io.reactivex.observers.TestObserver
 import mozilla.lockbox.DisposingTest
 import mozilla.lockbox.action.LifecycleAction
@@ -17,28 +19,41 @@ import mozilla.lockbox.support.Constant
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.Mockito.verify
-import org.mockito.Mockito.`when`
+import org.powermock.api.mockito.PowerMockito
+import org.powermock.core.classloader.annotations.PrepareForTest
+import org.powermock.modules.junit4.PowerMockRunner
+import org.mockito.Mockito.`when` as whenCalled
 
+@RunWith(PowerMockRunner::class)
+@PrepareForTest(PreferenceManager::class)
 class SettingStoreTest : DisposingTest() {
     @Mock
+    val context: Context = Mockito.mock(Context::class.java)
+
+    @Mock
     val sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
+
     @Mock
     val editor: SharedPreferences.Editor = Mockito.mock(SharedPreferences.Editor::class.java)
 
     val dispatcher = Dispatcher()
     val subject = SettingStore(dispatcher)
-    val sendUsageDataObserver = TestObserver<Boolean>()
-    val itemListSortOrder = TestObserver<ItemListSort>()
+    private val sendUsageDataObserver = TestObserver<Boolean>()
+    private val itemListSortOrder = TestObserver<ItemListSort>()
 
     @Before
     fun setUp() {
-        `when`(editor.putBoolean(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(editor)
-        `when`(sharedPreferences.edit()).thenReturn(editor)
+        whenCalled(editor.putBoolean(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(editor)
+        whenCalled(sharedPreferences.edit()).thenReturn(editor)
 
-        subject.apply(sharedPreferences)
+        PowerMockito.mockStatic(PreferenceManager::class.java)
+        whenCalled(PreferenceManager.getDefaultSharedPreferences(context)).thenReturn(sharedPreferences)
+
+        subject.injectContext(context)
         subject.sendUsageData.subscribe(sendUsageDataObserver)
         subject.itemListSortOrder.subscribe(itemListSortOrder)
     }
