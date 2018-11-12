@@ -143,7 +143,7 @@ open class DataStore(
         return syncSubject.toObservable()
     }
 
-    // item list managementa
+    // item list management
     private fun clearList() {
         this.listSubject.accept(emptyList())
     }
@@ -161,10 +161,6 @@ open class DataStore(
             this.stateSubject.onNext(DataStore.State.Unprepared)
             SyncResult.fromValue(Unit)
         }, {
-            if (backend is MemoryLoginsStorage) {
-                updateList()
-            }
-
             this.stateSubject.onNext(DataStore.State.Unprepared)
             SyncResult.fromValue(Unit)
         })
