@@ -13,6 +13,7 @@ import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.LockedStore
+import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.view.FingerprintAuthDialogFragment.AuthCallback
 import org.junit.Assert
 import org.junit.Before
@@ -52,17 +53,24 @@ class LockedPresenterTest {
             get() = onAuth
     }
 
-    val view = spy(FakeView())
-    val fingerprintStore = spy(FakeFingerprintStore())
-    val lockedStore = FakeLockedStore()
-    val dispatcherObserver = TestObserver.create<Action>()
+    class FakeSettingStore : SettingStore() {
+        val unlock = PublishSubject.create<Boolean>()
+        override var unlockWithFingerprint: Observable<Boolean> = unlock
+    }
+
+    val view: FakeView = spy(FakeView())
+    private val fingerprintStore: FakeFingerprintStore = spy(FakeFingerprintStore())
+    private val lockedStore = FakeLockedStore()
+    private val settingStore = FakeSettingStore()
+    private val dispatcherObserver = TestObserver.create<Action>()
     private lateinit var context: Context
     val subject = LockedPresenter(
         view,
         RuntimeEnvironment.application.applicationContext,
         Dispatcher.shared,
         fingerprintStore,
-        lockedStore
+        lockedStore,
+        settingStore
     )
 
     @Before
@@ -76,6 +84,7 @@ class LockedPresenterTest {
     fun `unlock button tap shows fingerprint dialog`() {
         `when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(true)
         view.unlockButtonTaps.onNext(Unit)
+        settingStore.unlock.onNext(true)
         val routeAction = dispatcherObserver.values().last() as RouteAction.DialogFragment
         Assert.assertTrue(routeAction is RouteAction.DialogFragment.FingerprintDialog)
     }
@@ -85,6 +94,7 @@ class LockedPresenterTest {
         `when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(false)
         `when`(fingerprintStore.isKeyguardDeviceSecure).thenReturn(true)
         view.unlockButtonTaps.onNext(Unit)
+        settingStore.unlock.onNext(false)
         verify(view).unlockFallback()
     }
 

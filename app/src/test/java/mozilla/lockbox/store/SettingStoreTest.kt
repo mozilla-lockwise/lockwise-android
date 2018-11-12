@@ -17,6 +17,8 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.model.ItemListSort
 import mozilla.lockbox.support.Constant
 import org.junit.Assert.assertEquals
+import mozilla.lockbox.action.FingerprintAuthAction
+import mozilla.lockbox.view.FingerprintAuthDialogFragment
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -138,5 +140,23 @@ class SettingStoreTest : DisposingTest() {
         verify(editor).putString(SettingStore.Keys.ITEM_LIST_SORT_ORDER, Constant.Setting.defaultItemListSort.name)
         verify(editor).putBoolean(SettingStore.Keys.SEND_USAGE_DATA, Constant.Setting.defaultSendUsageData)
         verify(editor).apply()
+    }
+
+    @Test
+    fun test_FingerprintAuthAction() {
+        val fingerprintAuthObserver = createTestObserver<FingerprintAuthAction>()
+        subject.onEnablingFingerprint.subscribe(fingerprintAuthObserver)
+
+        dispatcher.dispatch(FingerprintAuthAction.OnAuthentication(FingerprintAuthDialogFragment.AuthCallback.OnAuth))
+        dispatcher.dispatch(FingerprintAuthAction.OnAuthentication(FingerprintAuthDialogFragment.AuthCallback.OnError))
+        dispatcher.dispatch(FingerprintAuthAction.OnCancel)
+
+        fingerprintAuthObserver.assertValueSequence(
+            listOf(
+                FingerprintAuthAction.OnAuthentication(FingerprintAuthDialogFragment.AuthCallback.OnAuth),
+                FingerprintAuthAction.OnAuthentication(FingerprintAuthDialogFragment.AuthCallback.OnError),
+                FingerprintAuthAction.OnCancel
+            )
+        )
     }
 }
