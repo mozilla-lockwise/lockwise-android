@@ -9,16 +9,19 @@ package mozilla.lockbox.store
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import junit.framework.Assert.assertEquals
 import mozilla.lockbox.DisposingTest
 import mozilla.lockbox.action.ClipboardAction
 import mozilla.lockbox.flux.Dispatcher
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.mockito.Mockito
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
+import org.mockito.Mockito.`when` as whenCalled
 
 @RunWith(RobolectricTestRunner::class)
 @Config(packageName = "mozilla.lockbox")
@@ -27,22 +30,26 @@ class ClipboardStoreTest : DisposingTest() {
     private lateinit var dispatcher: Dispatcher
     private lateinit var subject: ClipboardStore
 
-    @Before
-    fun setUp() {
-        dispatcher = Dispatcher()
-        subject = ClipboardStore(dispatcher)
-        subject.apply(clipboardManager)
-    }
+    @Mock
+    val context: Context = Mockito.mock(Context::class.java)
 
     private val clipboardManager =
         RuntimeEnvironment.application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+
+    @Before
+    fun setUp() {
+        whenCalled(context.getSystemService(Context.CLIPBOARD_SERVICE)).thenReturn(clipboardManager)
+        dispatcher = Dispatcher()
+        subject = ClipboardStore(dispatcher)
+        subject.injectContext(context)
+    }
 
     @Test
     fun testCopyUsername() {
         val testString = "my_test_string"
         dispatcher.dispatch(ClipboardAction.CopyUsername(testString))
         val clip = clipboardManager.primaryClip.getItemAt(0)
-        assertEquals(testString, clip.text)
+        Assert.assertEquals(testString, clip.text)
     }
 
     @Test
@@ -50,7 +57,7 @@ class ClipboardStoreTest : DisposingTest() {
         val testString = "my_test_password"
         dispatcher.dispatch(ClipboardAction.CopyPassword(testString))
         val clip = clipboardManager.primaryClip.getItemAt(0)
-        assertEquals(testString, clip.text)
+        Assert.assertEquals(testString, clip.text)
     }
 
     @Test
@@ -60,11 +67,11 @@ class ClipboardStoreTest : DisposingTest() {
         dispatcher.dispatch(ClipboardAction.CopyPassword(testString))
 
         val dirty = clipboardManager.primaryClip.getItemAt(0)
-        assertEquals(testString, dirty.text)
+        Assert.assertEquals(testString, dirty.text)
 
         subject.replaceDirty(testString)
         val clean = clipboardManager.primaryClip.getItemAt(0)
-        assertEquals("", clean.text)
+        Assert.assertEquals("", clean.text)
     }
 
     @Test
@@ -74,13 +81,13 @@ class ClipboardStoreTest : DisposingTest() {
         dispatcher.dispatch(ClipboardAction.CopyPassword(testString))
 
         val dirty = clipboardManager.primaryClip.getItemAt(0)
-        assertEquals(testString, dirty.text)
+        Assert.assertEquals(testString, dirty.text)
 
         val url = "https://www.mozilla.org"
         clipboardManager.primaryClip = ClipData.newPlainText("url", url)
 
         subject.replaceDirty(testString)
         val clean = clipboardManager.primaryClip.getItemAt(0)
-        assertEquals(url, clean.text)
+        Assert.assertEquals(url, clean.text)
     }
 }

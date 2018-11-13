@@ -8,10 +8,6 @@ package mozilla.lockbox
 
 import android.app.Application
 import android.arch.lifecycle.ProcessLifecycleOwner
-import android.content.ClipboardManager
-import android.content.Context
-import android.content.SharedPreferences
-import android.preference.PreferenceManager
 import com.squareup.leakcanary.LeakCanary
 import io.sentry.Sentry
 import io.sentry.android.AndroidSentryClientFactory
@@ -20,6 +16,7 @@ import mozilla.components.support.base.log.logger.Logger
 import mozilla.components.support.base.log.sink.AndroidLogSink
 import mozilla.lockbox.presenter.ApplicationPresenter
 import mozilla.lockbox.store.ClipboardStore
+import mozilla.lockbox.store.ContextStore
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.store.TelemetryStore
@@ -36,42 +33,52 @@ val log = LogProvider.log
 class LockboxApplication : Application() {
 
     private lateinit var presenter: ApplicationPresenter
-    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate() {
         super.onCreate()
-        if (LeakCanary.isInAnalyzerProcess(this)) {
-            // This process is dedicated to LeakCanary for heap analysis.
-            // You should not init your app in this process.
-            return
+        if (leakCanary()) return
+        injectContext()
+        setupLifecycleListener()
+        setupSentry()
+    }
+
+    private fun injectContext() {
+        val contextStoreList: List<ContextStore> = listOf(
+            SettingStore.shared,
+            SecurePreferences.shared,
+            ClipboardStore.shared,
+            FingerprintStore.shared,
+            TelemetryStore.shared
+        )
+
+        contextStoreList.forEach {
+            it.injectContext(this)
         }
-        LeakCanary.install(this)
+    }
 
-        Log.addSink(AndroidLogSink())
-
-        // find shared preferences
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        SettingStore.shared.apply(sharedPreferences)
-
-        // use context for PreferenceManager
-        SecurePreferences.shared.apply(PreferenceManager.getDefaultSharedPreferences(this))
-
-        // Watch for application lifecycle and take appropriate actions
-        presenter = ApplicationPresenter()
-        ProcessLifecycleOwner.get().lifecycle.addObserver(presenter)
-
-        // use context for system service
-        ClipboardStore.shared.apply(getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
-
-        // hook this context into Telemetry
-        TelemetryStore.shared.applyContext(this)
-
-        FingerprintStore.shared.applyContext(this)
-
+    private fun setupSentry() {
         // Set up Sentry using DSN (client key) from the Project Settings page on Sentry
         val ctx = this.applicationContext
         // Retrieved from environment's local (or bitrise's "Secrets") environment variable
         val sentryDsn: String? = System.getenv("SENTRY_DSN")
         Sentry.init(sentryDsn, AndroidSentryClientFactory(ctx))
+    }
+
+    private fun setupLifecycleListener() {
+        // Watch for application lifecycle and take appropriate actions
+        presenter = ApplicationPresenter()
+        ProcessLifecycleOwner.get().lifecycle.addObserver(presenter)
+    }
+
+    private fun leakCanary(): Boolean {
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return true
+        }
+        LeakCanary.install(this)
+
+        Log.addSink(AndroidLogSink())
+        return false
     }
 }

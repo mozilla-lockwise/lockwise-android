@@ -76,6 +76,6 @@ class FingerprintStoreTest {
         whenCalled(context.getSystemService(Context.FINGERPRINT_SERVICE)).thenReturn(fingerprintManager)
         whenCalled(context.getSystemService(Context.KEYGUARD_SERVICE)).thenReturn(keyguardManager)
 
-        subject.applyContext(context)
+        subject.injectContext(context)
     }
 }

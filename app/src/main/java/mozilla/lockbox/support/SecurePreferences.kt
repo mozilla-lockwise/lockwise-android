@@ -6,24 +6,28 @@
 
 package mozilla.lockbox.support
 
+import android.content.Context
 import android.content.SharedPreferences
+import android.preference.PreferenceManager
 import android.util.Base64
 import mozilla.components.lib.dataprotect.Keystore
+import mozilla.lockbox.store.ContextStore
 import java.nio.charset.StandardCharsets
 
 private const val BASE_64_FLAGS = Base64.URL_SAFE or Base64.NO_PADDING
 
 open class SecurePreferences(
     private val keystore: Keystore = Keystore(Constant.App.keystoreLabel)
-) {
+) : ContextStore {
+
     companion object {
         val shared = SecurePreferences()
     }
 
     private lateinit var prefs: SharedPreferences
 
-    open fun apply(sharedPreferences: SharedPreferences) {
-        prefs = sharedPreferences
+    override fun injectContext(context: Context) {
+        prefs = PreferenceManager.getDefaultSharedPreferences(context)
     }
 
     open fun getString(key: String): String? {

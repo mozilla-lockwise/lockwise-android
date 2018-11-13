@@ -28,7 +28,7 @@ class TelemetryStoreTest : DisposingTest() {
         val eventsSubject: ReplaySubject<TelemetryEvent> = ReplaySubject.create(1)
 
         override val ready: Boolean get() = true
-        override fun apply(ctx: Context) {
+        override fun lateinitContext(ctx: Context) {
             applySubject.onNext(ctx)
         }
         override fun recordEvent(event: TelemetryEvent) {
@@ -44,7 +44,7 @@ class TelemetryStoreTest : DisposingTest() {
 
         val applyObserver = createTestObserver<Context>()
         wrapper.applySubject.subscribe(applyObserver)
-        subject.applyContext(RuntimeEnvironment.application)
+        subject.injectContext(RuntimeEnvironment.application)
         applyObserver.assertValue(RuntimeEnvironment.application)
     }
 
@@ -52,12 +52,12 @@ class TelemetryStoreTest : DisposingTest() {
     fun testActionHandling() {
         val dispatcher = Dispatcher()
         val wrapper = FakeTelemetryWrapper()
-        val subject = TelemetryStore(dispatcher, wrapper)
+        TelemetryStore(dispatcher, wrapper)
 
         val eventsObserver = createTestObserver<TelemetryEvent>()
         wrapper.eventsSubject.subscribe(eventsObserver)
 
-        var action = object : TelemetryAction {
+        val action = object : TelemetryAction {
             override val eventMethod: TelemetryEventMethod
                 get() = TelemetryEventMethod.foreground
             override val eventObject: TelemetryEventObject
