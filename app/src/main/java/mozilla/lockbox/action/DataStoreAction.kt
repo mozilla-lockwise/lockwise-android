@@ -13,4 +13,5 @@ sealed class DataStoreAction : Action {
     object Unlock : DataStoreAction()
     object Reset : DataStoreAction()
     object Sync : DataStoreAction()
+    data class Touch(val id: String) : DataStoreAction()
 }

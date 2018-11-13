@@ -12,6 +12,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.R
 import mozilla.lockbox.action.ClipboardAction
+import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.toDetailViewModel
 import mozilla.lockbox.flux.Dispatcher
@@ -46,6 +47,7 @@ class ItemDetailPresenter(
             val username = it.username ?: ""
             if (username.isNotEmpty()) {
                 dispatcher.dispatch(ClipboardAction.CopyUsername(username))
+                dispatcher.dispatch(DataStoreAction.Touch(it.id))
                 view.showToastNotification(R.string.toast_username_copied)
             }
         }
@@ -53,6 +55,7 @@ class ItemDetailPresenter(
         handleClicks(view.passwordCopyClicks) {
             if (it.password.isNotEmpty()) {
                 dispatcher.dispatch(ClipboardAction.CopyPassword(it.password))
+                dispatcher.dispatch(DataStoreAction.Touch(it.id))
                 view.showToastNotification(R.string.toast_password_copied)
             }
         }
@@ -84,7 +87,7 @@ class ItemDetailPresenter(
 
     private fun handleClicks(clicks: Observable<Unit>, withServerPassword: (ServerPassword) -> Unit) {
         clicks.subscribe {
-                this.credentials?.let { withServerPassword(it) }
+                this.credentials?.let { password -> withServerPassword(password) }
             }
             .addTo(compositeDisposable)
     }

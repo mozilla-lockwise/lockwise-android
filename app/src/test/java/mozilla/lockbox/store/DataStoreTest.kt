@@ -97,4 +97,21 @@ class DataStoreTest : DisposingTest() {
         Mockito.verify(support.storage).lock()
         Mockito.clearInvocations(support.storage)
     }
+
+    @Test
+    fun testTouch() {
+        val stateObserver = createTestObserver<State>()
+        val listObserver = createTestObserver<List<ServerPassword>>()
+
+        support.storage.unlock("fdsfsdfds")
+
+        subject.state.subscribe(stateObserver)
+        subject.list.subscribe(listObserver)
+
+        val id = "lkjhkj"
+        dispatcher.dispatch(DataStoreAction.Touch(id))
+
+        Mockito.verify(support.storage).touch(id)
+        Mockito.verify(support.storage).list()
+    }
 }
