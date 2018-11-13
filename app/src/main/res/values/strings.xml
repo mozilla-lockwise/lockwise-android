@@ -76,4 +76,5 @@
     <string name="application_logo">Firefox Lockbox Logo</string>
     <string name="enable_fingerprint_dialog_title">Enable Fingerprint</string>
     <string name="enable_fingerprint_dialog_subtitle">Give Lockbox permission to unlock this app with the fingerprint sensor.</string>
+    <string name="placeholder_skip_fxa">Use test data</string>
 </resources>
