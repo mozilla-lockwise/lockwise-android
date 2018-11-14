@@ -15,6 +15,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.NavController
@@ -24,6 +25,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.jakewharton.rxbinding2.support.design.widget.itemSelections
 import android.widget.Button
 import android.widget.ListPopupWindow
+import com.github.magiepooh.recycleritemdecoration.ItemDecorations
 import com.jakewharton.rxbinding2.support.v7.widget.navigationClicks
 import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
@@ -36,8 +38,12 @@ import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.presenter.ItemListPresenter
 import mozilla.lockbox.presenter.ItemListView
 import kotlinx.android.synthetic.main.fragment_item_list.*
+import kotlinx.android.synthetic.main.fragment_setting.view.*
+import kotlinx.android.synthetic.main.list_cell_item.view.*
+import mozilla.lockbox.R.string.lock_now
 import mozilla.lockbox.model.ItemListSort
 import mozilla.lockbox.adapter.ItemListSortAdapter
+import mozilla.lockbox.adapter.SettingListAdapter
 import mozilla.lockbox.extensions.view.itemClicks
 import mozilla.lockbox.support.dpToPixels
 
@@ -55,7 +61,12 @@ class ItemListFragment : CommonFragment(), ItemListView {
     ): View? {
         presenter = ItemListPresenter(this)
         val view = inflater.inflate(R.layout.fragment_item_list, container, false)
+
         val navController = requireActivity().findNavController(R.id.fragment_nav_host)
+        view.navView.menu.add(R.id.lock_now_menu_item, 4, 4, R.string.lock_now)
+            .setIcon(R.drawable.ic_icon_lock)
+//        view.navView.set
+//            .setPadding(0, 100,0,0)
 
         setupToolbar(view.toolbar, view.appDrawer)
         setupNavigationView(navController, view.navView)

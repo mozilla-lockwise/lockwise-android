@@ -14,6 +14,7 @@
 
     <string name="welcome_learn_more_btn">Learn More</string>
     <string name="nav_menu_faq">FAQ</string>
+    <string name="nav_menu_feedback">Provide Feedback</string>
     <string name="nav_menu_account">Account</string>
     <string name="nav_menu_settings">Settings</string>
 

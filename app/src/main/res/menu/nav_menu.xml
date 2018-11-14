@@ -4,31 +4,47 @@
   ~ License, v. 2.0. If a copy of the MPL was not distributed with this
   ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
   -->
-<menu xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
-    android:layout_width="wrap_content">
+    android:layout_width="match_parent">
 
     <group android:checkableBehavior="none"
            android:layout_height="match_parent"
-           android:layout_width="wrap_content">
+           android:layout_width="wrap_content"
+           android:theme="@style/NavDrawerStyle">
         <item
             android:id="@+id/account_setting_menu_item"
             android:icon="@drawable/ic_account"
-            android:title="@string/nav_menu_account" />
+            android:title="@string/nav_menu_account"
+            android:theme="@style/NavDrawerStyle" />
         <item
             android:id="@+id/faq_menu_item"
             android:icon="@drawable/ic_help_faq"
             android:title="@string/nav_menu_faq" />
         <item
+            android:id="@+id/feedback_menu_item"
+            android:icon="@drawable/ic_icon_feedback"
+            android:title="@string/nav_menu_feedback" />
+        <item
             android:id="@+id/setting_menu_item"
             android:icon="@drawable/ic_icon_settings"
-            android:title="@string/nav_menu_settings" />
-        
+            android:title="@string/nav_menu_settings"/>
+    </group>
+    <group android:checkableBehavior="none"
+           android:layout_height="match_parent"
+           android:layout_width="wrap_content"
+           android:gravity="bottom"
+           android:padding="@dimen/nav_padding_lock_now">
         <item
             android:id="@+id/lock_now_menu_item"
             android:icon="@drawable/ic_icon_lock"
             android:title="@string/lock_now"
-            android:gravity="bottom"/>
+            android:gravity="bottom"
+            android:layout_height="match_parent"
+            android:theme="@style/NavDrawerLockNow"
+            android:top="100dp"
+            android:padding="@dimen/nav_padding_lock_now"
+            android:visible="false"
+        />
     </group>
 </menu>
