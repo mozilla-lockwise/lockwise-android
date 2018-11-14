@@ -66,7 +66,6 @@ class LockedPresenterTest {
     private lateinit var context: Context
     val subject = LockedPresenter(
         view,
-        RuntimeEnvironment.application.applicationContext,
         Dispatcher.shared,
         fingerprintStore,
         lockedStore,

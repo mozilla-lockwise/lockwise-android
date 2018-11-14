@@ -6,7 +6,6 @@
 
 package mozilla.lockbox.presenter
 
-import android.content.Context
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
@@ -28,7 +27,6 @@ interface LockedView {
 
 class LockedPresenter(
     private val view: LockedView,
-    private val context: Context,
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val fingerprintStore: FingerprintStore = FingerprintStore.shared,
     private val lockedStore: LockedStore = LockedStore.shared,
