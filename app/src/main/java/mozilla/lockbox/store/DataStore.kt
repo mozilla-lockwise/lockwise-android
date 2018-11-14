@@ -63,14 +63,25 @@ open class DataStore(
         dispatcher.register
             .mergeWith(resetObservable)
             .filterByType(DataStoreAction::class.java)
-            .subscribe {
-                when (it) {
+            .subscribe { action ->
+                when (action) {
                     is DataStoreAction.Lock -> lock()
                     is DataStoreAction.Unlock -> unlock()
                     is DataStoreAction.Sync -> sync()
+                    is DataStoreAction.Touch -> touch(action.id)
                 }
             }
             .addTo(compositeDisposable)
+    }
+
+    private fun touch(id: String) {
+        backend.isLocked().whenComplete {
+            if (!it) {
+                backend.touch(id).then {
+                    updateList()
+                }
+            }
+        }
     }
 
     val state: Observable<State> get() = stateSubject
