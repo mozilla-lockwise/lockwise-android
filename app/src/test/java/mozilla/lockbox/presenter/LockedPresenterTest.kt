@@ -13,12 +13,12 @@ import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.LockedStore
+import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.view.FingerprintAuthDialogFragment.AuthCallback
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.spy
 import org.mockito.Mockito.verify
@@ -52,17 +52,29 @@ class LockedPresenterTest {
         override val onAuthentication: Observable<FingerprintAuthAction>
             get() = onAuth
     }
-    @Mock
-    val keyguardManager = Mockito.mock(KeyguardManager::class.java)
 
-    val view = spy(FakeView())
-    val fingerprintStore = spy(FakeFingerprintStore())
-    val lockedStore = FakeLockedStore()
-    val dispatcherObserver = TestObserver.create<Action>()
-    val subject = LockedPresenter(view, Dispatcher.shared, fingerprintStore, lockedStore)
+    class FakeSettingStore : SettingStore() {
+        val unlock = PublishSubject.create<Boolean>()
+        override var unlockWithFingerprint: Observable<Boolean> = unlock
+    }
+
+    val view: FakeView = spy(FakeView())
+    private val fingerprintStore: FakeFingerprintStore = spy(FakeFingerprintStore())
+    private val lockedStore = FakeLockedStore()
+    private val settingStore = FakeSettingStore()
+    private val dispatcherObserver = TestObserver.create<Action>()
+    private lateinit var context: Context
+    val subject = LockedPresenter(
+        view,
+        Dispatcher.shared,
+        fingerprintStore,
+        lockedStore,
+        settingStore
+    )
 
     @Before
     fun setUp() {
+        context = RuntimeEnvironment.application.applicationContext
         Dispatcher.shared.register.subscribe(dispatcherObserver)
         subject.onViewReady()
     }
@@ -71,7 +83,9 @@ class LockedPresenterTest {
     fun `unlock button tap shows fingerprint dialog`() {
         `when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(true)
         view.unlockButtonTaps.onNext(Unit)
-        dispatcherObserver.assertLastValue(RouteAction.FingerprintDialog)
+        settingStore.unlock.onNext(true)
+        val routeAction = dispatcherObserver.values().last() as RouteAction.DialogFragment
+        Assert.assertTrue(routeAction is RouteAction.DialogFragment.FingerprintDialog)
     }
 
     @Test
@@ -79,6 +93,7 @@ class LockedPresenterTest {
         `when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(false)
         `when`(fingerprintStore.isKeyguardDeviceSecure).thenReturn(true)
         view.unlockButtonTaps.onNext(Unit)
+        settingStore.unlock.onNext(false)
         verify(view).unlockFallback()
     }
 

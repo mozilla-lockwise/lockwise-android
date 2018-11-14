@@ -10,7 +10,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.support.annotation.IdRes
-import android.support.v4.app.DialogFragment
 import android.support.v7.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -27,6 +26,7 @@ import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.support.asOptional
+import mozilla.lockbox.view.DialogFragment
 import mozilla.lockbox.view.FingerprintAuthDialogFragment
 import mozilla.lockbox.view.ItemDetailFragmentArgs
 
@@ -66,7 +66,8 @@ class RoutePresenter(
             is RouteAction.SystemSetting -> {
                 openSetting(action)
             }
-            is RouteAction.FingerprintDialog -> showDialogFragment(FingerprintAuthDialogFragment())
+
+            is RouteAction.DialogFragment -> showDialogFragment(FingerprintAuthDialogFragment(), action)
             is RouteAction.Dialog -> showDialog(action)
 
             is RouteAction.Back -> navController.popBackStack()
@@ -97,11 +98,12 @@ class RoutePresenter(
             .addTo(compositeDisposable)
     }
 
-    private fun showDialogFragment(dialogFragment: DialogFragment?) {
+    private fun showDialogFragment(dialogFragment: DialogFragment?, destination: RouteAction.DialogFragment) {
         if (dialogFragment != null) {
             val fragmentManager = activity.supportFragmentManager
             try {
                 dialogFragment.show(fragmentManager, dialogFragment.javaClass.name)
+                dialogFragment.setupDialog(destination.dialogTitle, destination.dialogSubtitle)
             } catch (e: IllegalStateException) {
                 log.error("Could not show dialog", e)
             }

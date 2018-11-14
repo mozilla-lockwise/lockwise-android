@@ -15,6 +15,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.model.ItemListSort
+import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
@@ -30,6 +31,7 @@ open class SettingStore(
     object Keys {
         const val SEND_USAGE_DATA = "send_usage_data"
         const val ITEM_LIST_SORT_ORDER = "sort_order"
+        const val UNLOCK_WITH_FINGERPRINT = "unlock_with_fingerprint"
     }
 
     private lateinit var preferences: SharedPreferences
@@ -37,6 +39,11 @@ open class SettingStore(
 
     open lateinit var sendUsageData: Observable<Boolean>
     open lateinit var itemListSortOrder: Observable<ItemListSort>
+    open lateinit var unlockWithFingerprint: Observable<Boolean>
+
+    open val onEnablingFingerprint: Observable<FingerprintAuthAction> =
+        dispatcher.register
+            .filterByType(FingerprintAuthAction::class.java)
 
     init {
         val resetObservable = dispatcher.register
@@ -59,6 +66,8 @@ open class SettingStore(
                         edit.putBoolean(Keys.SEND_USAGE_DATA, Constant.Setting.defaultSendUsageData)
                         edit.putString(Keys.ITEM_LIST_SORT_ORDER, Constant.Setting.defaultItemListSort.name)
                     }
+                    is SettingAction.UnlockWithFingerprint ->
+                        edit.putBoolean(Keys.UNLOCK_WITH_FINGERPRINT, it.unlockWithFingerprint)
                 }
                 edit.apply()
             }
@@ -80,5 +89,7 @@ open class SettingStore(
             .map {
                 ItemListSort.valueOf(it)
             }
+
+        unlockWithFingerprint = rxPrefs.getBoolean(Keys.UNLOCK_WITH_FINGERPRINT, false).asObservable()
     }
 }
