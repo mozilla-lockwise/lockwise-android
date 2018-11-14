@@ -15,6 +15,8 @@ class UIComponentRobot : BaseTestRobot {
     override fun exists() = displayed { id(R.id.uiComponents) }
 
     fun launchFingerprintDialog() = click { id(R.id.button_launch_fingerprint) }
+
+    fun launchEnableFingerprintDialog() = click { id(R.id.button_enable_fingerprint) }
 }
 
 fun uiComponents(f: UIComponentRobot.() -> Unit) = UIComponentRobot().apply(f)

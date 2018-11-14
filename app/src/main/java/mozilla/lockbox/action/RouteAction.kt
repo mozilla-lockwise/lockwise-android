@@ -6,6 +6,7 @@
 
 package mozilla.lockbox.action
 
+import android.support.annotation.StringRes
 import mozilla.lockbox.flux.Action
 
 sealed class RouteAction : Action {
@@ -17,7 +18,6 @@ sealed class RouteAction : Action {
     object Back : RouteAction()
     object LockScreen : RouteAction()
     object Filter : RouteAction()
-    object FingerprintDialog : RouteAction()
     data class ItemDetail(val id: String) : RouteAction()
     data class OpenWebsite(val url: String) : RouteAction()
     data class SystemSetting(val setting: SettingIntent) : RouteAction()
@@ -28,6 +28,11 @@ sealed class RouteAction : Action {
     ) : RouteAction() {
         object SecurityDisclaimer : Dialog(RouteAction.SystemSetting(SettingIntent.Security))
         object UnlinkDisclaimer : Dialog(LifecycleAction.UserReset)
+    }
+
+    sealed class DialogFragment(@StringRes val dialogTitle: Int, @StringRes val dialogSubtitle: Int? = null) : RouteAction() {
+        class FingerprintDialog(@StringRes title: Int, @StringRes subtitle: Int? = null) :
+            DialogFragment(dialogTitle = title, dialogSubtitle = subtitle)
     }
 }
 

@@ -11,4 +11,5 @@ import mozilla.lockbox.view.FingerprintAuthDialogFragment.AuthCallback
 
 sealed class FingerprintAuthAction : Action {
     data class OnAuthentication(val authCallback: AuthCallback) : FingerprintAuthAction()
+    object OnCancel : FingerprintAuthAction()
 }

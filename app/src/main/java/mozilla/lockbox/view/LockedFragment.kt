@@ -40,7 +40,7 @@ class LockedFragment : CommonFragment(), LockedView {
 
     override fun unlockFallback() {
         val manager = context?.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
-        val intent = manager?.createConfirmDeviceCredentialIntent(
+        val intent = manager.createConfirmDeviceCredentialIntent(
             getString(R.string.unlock_fallback_title),
             getString(R.string.confirm_pattern)
         )

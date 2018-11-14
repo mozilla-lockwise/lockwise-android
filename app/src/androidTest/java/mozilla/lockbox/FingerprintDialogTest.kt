@@ -40,4 +40,21 @@ open class FingerprintDialogTest {
             exists()
         }
     }
+
+    @Test
+    fun testLaunchEnableFingerprintRobot() {
+        uiComponents {
+            launchEnableFingerprintDialog()
+        }
+
+        fingerprintDialog {
+            exists()
+            // touchFingerprint() // does not work.
+            tapCancel()
+        }
+
+        uiComponents {
+            exists()
+        }
+    }
 }
