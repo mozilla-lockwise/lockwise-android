@@ -30,7 +30,6 @@ import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.support.toFxAProfile
 
 private const val FIREFOX_ACCOUNT_KEY = "firefox-account"
-private val FXA_SCOPES = arrayOf("profile", "https://identity.mozilla.com/apps/lockbox", "https://identity.mozilla.com/apps/oldsync")
 
 data class SyncCredentials(
     val syncKeys: SyncKeys,
@@ -99,7 +98,7 @@ open class AccountStore(
         }
 
         val syncCredentialsSubject = syncCredentials as Subject
-        fxa?.getOAuthToken(FXA_SCOPES)?.whenComplete {
+        fxa?.getOAuthToken(Constant.FxA.scopes)?.whenComplete {
             val credentials = generateSyncCredentials(it)
             syncCredentialsSubject.onNext(credentials.asOptional())
         }
