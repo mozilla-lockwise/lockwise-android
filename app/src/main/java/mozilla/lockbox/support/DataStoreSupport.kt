@@ -10,7 +10,7 @@ import org.mozilla.sync15.logins.LoginsStorage
 import org.mozilla.sync15.logins.SyncUnlockInfo
 
 interface DataStoreSupport {
-    var encryptionKey: String
-    var syncConfig: SyncUnlockInfo
+    val encryptionKey: String
+    var syncConfig: SyncUnlockInfo?
     fun createLoginsStorage(): LoginsStorage
 }

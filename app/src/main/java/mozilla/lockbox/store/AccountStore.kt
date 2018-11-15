@@ -17,6 +17,7 @@ import io.reactivex.subjects.Subject
 import mozilla.components.service.fxa.Config
 import mozilla.components.service.fxa.FirefoxAccount
 import mozilla.components.service.fxa.OAuthInfo
+import mozilla.components.service.fxa.SyncKeys
 import mozilla.lockbox.action.AccountAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.extensions.filterByType
@@ -30,6 +31,12 @@ import mozilla.lockbox.support.toFxAProfile
 
 private const val FIREFOX_ACCOUNT_KEY = "firefox-account"
 private val FXA_SCOPES = arrayOf("profile", "https://identity.mozilla.com/apps/lockbox", "https://identity.mozilla.com/apps/oldsync")
+
+data class SyncCredentials(
+    val syncKeys: SyncKeys,
+    val oauthInfo: OAuthInfo,
+    val tokenServerURL: String
+)
 
 open class AccountStore(
     private val dispatcher: Dispatcher = Dispatcher.shared,
@@ -47,7 +54,7 @@ open class AccountStore(
     private var fxa: FirefoxAccount? = null
 
     open val loginURL: Observable<String> = ReplaySubject.createWithSize(1)
-    val oauthInfo: Observable<Optional<OAuthInfo>> = ReplaySubject.createWithSize(1)
+    val syncCredentials: Observable<Optional<SyncCredentials>> = ReplaySubject.createWithSize(1)
     val profile: Observable<Optional<FxAProfile>> = ReplaySubject.createWithSize(1)
 
     init {
@@ -91,10 +98,19 @@ open class AccountStore(
             profileSubject.onNext(it.toFxAProfile().asOptional())
         }
 
-        val oauthSubject = oauthInfo as Subject
+        val syncCredentialsSubject = syncCredentials as Subject
         fxa?.getOAuthToken(FXA_SCOPES)?.whenComplete {
-            oauthSubject.onNext(it.asOptional())
+            val credentials = generateSyncCredentials(it)
+            syncCredentialsSubject.onNext(credentials.asOptional())
         }
+    }
+
+    private fun generateSyncCredentials(oauthInfo: OAuthInfo): SyncCredentials? {
+        val fxa = fxa ?: return null
+        val tokenServerURL = fxa.getTokenServerEndpointURL() ?: return null
+        val syncKeys = fxa.getSyncKeys()
+
+        return SyncCredentials(syncKeys, oauthInfo, tokenServerURL)
     }
 
     private fun generateNewFirefoxAccount() {
@@ -102,7 +118,7 @@ open class AccountStore(
             this.fxa = FirefoxAccount(it, Constant.FxA.clientID, Constant.FxA.redirectUri)
             this.generateLoginURL()
 
-            (this.oauthInfo as Subject).onNext(Optional(null))
+            (this.syncCredentials as Subject).onNext(Optional(null))
             (this.profile as Subject).onNext(Optional(null))
         }
     }

@@ -45,7 +45,7 @@ class RoutePresenter(
         navController = Navigation.findNavController(activity, R.id.fragment_nav_host)
         routeStore.routes.subscribe(this::route).addTo(compositeDisposable)
 
-        accountStore.oauthInfo
+        accountStore.syncCredentials
             .filterNotNull()
             .subscribe {
                 dispatcher.dispatch(DataStoreAction.UpdateCredentials(it))

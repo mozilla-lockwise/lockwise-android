@@ -25,7 +25,7 @@ class FixedDataStoreSupport(
 
     override var encryptionKey: String = "shh-keep-it-secret"
 
-    override var syncConfig: SyncUnlockInfo =
+    override var syncConfig: SyncUnlockInfo? =
         SyncUnlockInfo(
             kid = "fake-kid",
             fxaAccessToken = "fake-at",

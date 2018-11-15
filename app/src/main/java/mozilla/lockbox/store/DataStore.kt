@@ -9,13 +9,15 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.SingleSubject
-import mozilla.components.service.fxa.OAuthInfo
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.DataStoreSupport
 import mozilla.lockbox.support.FixedDataStoreSupport
+import mozilla.lockbox.support.FxASyncDataStoreSupport
+import org.json.JSONObject
 import org.mozilla.sync15.logins.LoginsStorage
 import org.mozilla.sync15.logins.ServerPassword
 import org.mozilla.sync15.logins.SyncResult
@@ -26,7 +28,7 @@ open class DataStore(
     val support: DataStoreSupport = FixedDataStoreSupport.shared
 ) {
     companion object {
-        val shared = DataStore()
+        val shared = DataStore(support = FxASyncDataStoreSupport())
     }
 
     sealed class State {
@@ -70,7 +72,7 @@ open class DataStore(
                     is DataStoreAction.Sync -> sync()
                     is DataStoreAction.Touch -> touch(action.id)
                     is DataStoreAction.Reset -> reset()
-                    is DataStoreAction.UpdateCredentials -> updateCredentials(action.oauthInfo)
+                    is DataStoreAction.UpdateCredentials -> updateCredentials(action.syncCredentials)
                 }
             }
             .addTo(compositeDisposable)
@@ -145,7 +147,13 @@ open class DataStore(
     fun sync(): Observable<Unit> {
         val syncSubject = SingleSubject.create<Unit>()
 
-        backend.sync(support.syncConfig).then {
+        val syncConfig = support.syncConfig ?: return {
+            val throwable = IllegalStateException("syncConfig should already be defined")
+            syncSubject.onError(throwable)
+            stateSubject.accept(State.Errored(throwable))
+            syncSubject.toObservable()
+        }()
+        backend.sync(syncConfig).then {
             updateList()
         }.then {
             syncSubject.onSuccess(Unit)
@@ -188,14 +196,20 @@ open class DataStore(
             }
     }
 
-    fun updateCredentials(oauthInfo: OAuthInfo) {
-        val encryptionKey = ""
-        val kid = ""
-        val accessToken = oauthInfo.accessToken ?: return
-        val syncKey = ""
-        val tokenServerURL = ""
+    fun updateCredentials(credentials: SyncCredentials): Observable<Unit>? {
+        val oauthInfo = credentials.oauthInfo
+        val accessToken = oauthInfo.accessToken ?: return null
+        val syncKey = credentials.syncKeys.syncKey ?: return null
+        val tokenServerURL = credentials.tokenServerURL
 
-        support.encryptionKey = encryptionKey
+        val keysString = oauthInfo.keys ?: return null
+        val keysObject = JSONObject(keysString)
+
+        val scopedKeyObject = keysObject[Constant.FxA.oldSyncScope] as JSONObject
+        val kid = scopedKeyObject["kid"] as String
+
         support.syncConfig = SyncUnlockInfo(kid, accessToken, syncKey, tokenServerURL)
+
+        return sync()
     }
 }
