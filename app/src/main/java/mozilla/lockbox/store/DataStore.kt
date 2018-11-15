@@ -9,6 +9,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.SingleSubject
+import mozilla.components.service.fxa.OAuthInfo
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.extensions.filterByType
@@ -18,6 +19,7 @@ import mozilla.lockbox.support.FixedDataStoreSupport
 import org.mozilla.sync15.logins.LoginsStorage
 import org.mozilla.sync15.logins.ServerPassword
 import org.mozilla.sync15.logins.SyncResult
+import org.mozilla.sync15.logins.SyncUnlockInfo
 
 open class DataStore(
     val dispatcher: Dispatcher = Dispatcher.shared,
@@ -68,6 +70,7 @@ open class DataStore(
                     is DataStoreAction.Sync -> sync()
                     is DataStoreAction.Touch -> touch(action.id)
                     is DataStoreAction.Reset -> reset()
+                    is DataStoreAction.UpdateCredentials -> updateCredentials(action.oauthInfo)
                 }
             }
             .addTo(compositeDisposable)
@@ -183,5 +186,16 @@ open class DataStore(
             .thenCatch {
                 resetState()
             }
+    }
+
+    fun updateCredentials(oauthInfo: OAuthInfo) {
+        val encryptionKey = ""
+        val kid = ""
+        val accessToken = oauthInfo.accessToken ?: return
+        val syncKey = ""
+        val tokenServerURL = ""
+
+        support.encryptionKey = encryptionKey
+        support.syncConfig = SyncUnlockInfo(kid, accessToken, syncKey, tokenServerURL)
     }
 }

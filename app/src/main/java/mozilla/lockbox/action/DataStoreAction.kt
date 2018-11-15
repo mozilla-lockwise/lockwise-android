@@ -6,6 +6,7 @@
 
 package mozilla.lockbox.action
 
+import mozilla.components.service.fxa.OAuthInfo
 import mozilla.lockbox.flux.Action
 
 sealed class DataStoreAction : Action {
@@ -14,4 +15,5 @@ sealed class DataStoreAction : Action {
     object Reset : DataStoreAction()
     object Sync : DataStoreAction()
     data class Touch(val id: String) : DataStoreAction()
+    data class UpdateCredentials(val oauthInfo: OAuthInfo) : DataStoreAction()
 }

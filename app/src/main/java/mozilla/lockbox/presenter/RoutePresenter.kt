@@ -16,6 +16,7 @@ import androidx.navigation.Navigation
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.R
+import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.view.AlertDialogHelper
 import mozilla.lockbox.extensions.view.AlertState
@@ -24,6 +25,7 @@ import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
+import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.view.DialogFragment
@@ -33,13 +35,22 @@ import mozilla.lockbox.view.ItemDetailFragmentArgs
 class RoutePresenter(
     private val activity: AppCompatActivity,
     private val dispatcher: Dispatcher = Dispatcher.shared,
-    private val routeStore: RouteStore = RouteStore.shared
+    private val routeStore: RouteStore = RouteStore.shared,
+
+    private val accountStore: AccountStore = AccountStore.shared
 ) : Presenter() {
     private lateinit var navController: NavController
 
     override fun onViewReady() {
         navController = Navigation.findNavController(activity, R.id.fragment_nav_host)
         routeStore.routes.subscribe(this::route).addTo(compositeDisposable)
+
+        accountStore.oauthInfo
+            .filterNotNull()
+            .subscribe {
+                dispatcher.dispatch(DataStoreAction.UpdateCredentials(it))
+            }
+            .addTo(compositeDisposable)
     }
 
     private fun route(action: RouteAction) {
