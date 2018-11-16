@@ -9,6 +9,7 @@ package mozilla.lockbox.presenter
 import android.content.Context
 import io.reactivex.Observable
 import io.reactivex.functions.Consumer
+import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.adapter.AppVersionSettingConfiguration
 import mozilla.lockbox.adapter.SectionedAdapter
@@ -46,6 +47,7 @@ class SettingPresenter(
     private val autoLockObserver: Consumer<Boolean>
         get() = Consumer { isToggleOn ->
             if (isToggleOn && fingerprintStore.isFingerprintAuthAvailable) {
+                dispatcher.dispatch(SettingAction.UnlockWithFingerprintTemp(true))
                 dispatcher.dispatch(
                     RouteAction.DialogFragment.FingerprintDialog(
                         R.string.enable_fingerprint_dialog_title,
@@ -82,6 +84,7 @@ class SettingPresenter(
                     dispatcher.dispatch(SettingAction.UnlockWithFingerprint(false))
                     updateSettings()
                 }
+                dispatcher.dispatch(SettingAction.UnlockWithFingerprintTemp(false))
             }
             .addTo(compositeDisposable)
     }
@@ -119,7 +122,11 @@ class SettingPresenter(
             settings = listOf(
                 ToggleSettingConfiguration(
                     title = context.getString(R.string.unlock),
-                    toggleDriver = settingStore.unlockWithFingerprint,
+                    toggleDriver = Observables.combineLatest(
+                        settingStore.unlockWithFingerprintTemp,
+                        settingStore.unlockWithFingerprint
+                    )
+                        .map { unlock -> unlock.first.takeIf { it } ?: unlock.second },
                     toggleObserver = autoLockObserver
                 )
             ) + settings

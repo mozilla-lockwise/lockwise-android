@@ -17,7 +17,6 @@ import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.adapter.ListAdapterTestHelper
 import mozilla.lockbox.adapter.SectionedAdapter
 import mozilla.lockbox.adapter.SettingCellConfiguration
-import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.model.ItemListSort
@@ -53,7 +52,9 @@ class SettingPresenterTest {
     class FakeSettingStore : SettingStore() {
         override var sendUsageData: Observable<Boolean> = PublishSubject.create<Boolean>()
         override var itemListSortOrder: Observable<ItemListSort> = PublishSubject.create<ItemListSort>()
-        override var unlockWithFingerprint: Observable<Boolean> = PublishSubject.create<Boolean>()
+        val unlockWithFingerprintStub = PublishSubject.create<Boolean>()
+        override var unlockWithFingerprint: Observable<Boolean> = unlockWithFingerprintStub
+        override var unlockWithFingerprintTemp: Observable<Boolean> = PublishSubject.create<Boolean>()
 
         val enablingFingerprint = PublishSubject.create<FingerprintAuthAction>()
         override val onEnablingFingerprint: Observable<FingerprintAuthAction>
@@ -130,20 +131,25 @@ class SettingPresenterTest {
     fun `handle success enabling fingerprint`() {
         settingStore.enablingFingerprint.onNext(FingerprintAuthAction.OnAuthentication(FingerprintAuthDialogFragment.AuthCallback.OnAuth))
         val last = dispatcherObserver.valueCount() - 1
-        dispatcherObserver.assertValueAt(last, SettingAction.UnlockWithFingerprint(true))
+        dispatcherObserver.assertValueAt(last - 1, SettingAction.UnlockWithFingerprint(true))
+        dispatcherObserver.assertValueAt(last, SettingAction.UnlockWithFingerprintTemp(false))
     }
 
     @Test
     fun `handle error enabling fingerprint`() {
         settingStore.enablingFingerprint.onNext(FingerprintAuthAction.OnAuthentication(FingerprintAuthDialogFragment.AuthCallback.OnError))
-        dispatcherObserver.assertLastValue(SettingAction.UnlockWithFingerprint(false))
+        val last = dispatcherObserver.valueCount() - 1
+        dispatcherObserver.assertValueAt(last - 1, SettingAction.UnlockWithFingerprint(false))
+        dispatcherObserver.assertValueAt(last, SettingAction.UnlockWithFingerprintTemp(false))
         verify(settingView).updateSettingList(anyList(), anyList())
     }
 
     @Test
     fun `handle cancel enabling fingerprint`() {
         settingStore.enablingFingerprint.onNext(FingerprintAuthAction.OnCancel)
-        dispatcherObserver.assertLastValue(SettingAction.UnlockWithFingerprint(false))
+        val last = dispatcherObserver.valueCount() - 1
+        dispatcherObserver.assertValueAt(last - 1, SettingAction.UnlockWithFingerprint(false))
+        dispatcherObserver.assertValueAt(last, SettingAction.UnlockWithFingerprintTemp(false))
         verify(settingView).updateSettingList(anyList(), anyList())
     }
 }
