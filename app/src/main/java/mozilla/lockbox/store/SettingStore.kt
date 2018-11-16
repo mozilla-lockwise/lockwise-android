@@ -90,6 +90,6 @@ open class SettingStore(
                 ItemListSort.valueOf(it)
             }
 
-        unlockWithFingerprint = rxPrefs.getBoolean(Keys.UNLOCK_WITH_FINGERPRINT, false).asObservable()
+        unlockWithFingerprint = rxPrefs.getBoolean(Keys.UNLOCK_WITH_FINGERPRINT).asObservable()
     }
 }

@@ -52,6 +52,8 @@ class SettingPresenter(
                         R.string.enable_fingerprint_dialog_subtitle
                     )
                 )
+            } else {
+                dispatcher.dispatch(SettingAction.UnlockWithFingerprint(false))
             }
         }
 

@@ -32,6 +32,7 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         presenter = FingerprintDialogPresenter(this)
+        retainInstance = true
         return inflater.inflate(R.layout.fragment_fingerprint_dialog, container, false)
     }
 
@@ -99,6 +100,15 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
             setTextColor(resources.getColor(R.color.gray_73_percent, null))
             text = getString(R.string.touch_fingerprint_sensor)
         }
+    }
+
+    override fun onDestroyView() {
+        val dialog = dialog
+        // handles https://code.google.com/p/android/issues/detail?id=17423
+        if (dialog != null && retainInstance) {
+            dialog.setDismissMessage(null)
+        }
+        super.onDestroyView()
     }
 
     companion object {

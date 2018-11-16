@@ -5,6 +5,7 @@ package mozilla.lockbox.store
 import android.app.KeyguardManager
 import android.content.Context
 import android.hardware.fingerprint.FingerprintManager
+import android.hardware.fingerprint.FingerprintManager.FINGERPRINT_ERROR_CANCELED
 import android.hardware.fingerprint.FingerprintManager.FINGERPRINT_ERROR_LOCKOUT
 import android.os.CancellationSignal
 import android.security.keystore.KeyGenParameterSpec
@@ -198,7 +199,7 @@ open class FingerprintStore(
     inner class AuthenticationCallback(val context: Context) : FingerprintManager.AuthenticationCallback() {
         override fun onAuthenticationError(errorCode: Int, errString: CharSequence?) {
             super.onAuthenticationError(errorCode, errString)
-            if (!selfCancelled) {
+            if (!selfCancelled && errorCode != FINGERPRINT_ERROR_CANCELED) {
                 if (errorCode == FINGERPRINT_ERROR_LOCKOUT) {
                     _state.onNext(AuthenticationState.Error(context.getString(R.string.fingerprint_error_lockout)))
                 } else {
