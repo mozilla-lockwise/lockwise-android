@@ -59,25 +59,12 @@
     <style name="AlertButtonStyle" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:textColor">@color/colorPrimary</item>
     </style>
-
     <style name="NavDrawerStyle" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:textSize">16sp</item>
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textStyle">normal</item>
         <item name="android:lineSpacingExtra">6.5sp</item>
     </style>
-
-    <style name="NavDrawerLockNow" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:textSize">16sp</item>
-        <item name="android:fontFamily">sans-serif-medium</item>
-        <item name="android:textStyle">normal</item>
-        <item name="android:lineSpacingExtra">6.5sp</item>
-        <item name="android:paddingTop">100dp</item>        <item name="android:textColor">@color/red</item>
-
-    </style>
-
-
-
     <style name="NoTitleDialog" parent="@android:style/Theme.Dialog">
         <item name="android:windowFrame">@null</item>
         <item name="android:windowNoTitle">true</item>
@@ -85,7 +72,6 @@
         <item name="android:windowIsFloating">true</item>
         <item name="android:background">@android:color/transparent</item>
     </style>
-
     <style name="SortItemsPopupAnimation">
         <item name="android:windowEnterAnimation">@anim/sort_items_menu_enter</item>
     </style>

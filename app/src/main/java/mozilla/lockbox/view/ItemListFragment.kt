@@ -63,10 +63,6 @@ class ItemListFragment : CommonFragment(), ItemListView {
         val view = inflater.inflate(R.layout.fragment_item_list, container, false)
 
         val navController = requireActivity().findNavController(R.id.fragment_nav_host)
-        view.navView.menu.add(R.id.lock_now_menu_item, 4, 4, R.string.lock_now)
-            .setIcon(R.drawable.ic_icon_lock)
-//        view.navView.set
-//            .setPadding(0, 100,0,0)
 
         setupToolbar(view.toolbar, view.appDrawer)
         setupNavigationView(navController, view.navView)

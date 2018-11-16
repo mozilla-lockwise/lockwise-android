@@ -6,20 +6,23 @@
   -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
-    android:layout_width="match_parent">
+    android:layout_width="match_parent"
+    android:textSize="36sp">
 
     <group android:checkableBehavior="none"
            android:layout_height="match_parent"
            android:layout_width="wrap_content"
-           android:theme="@style/NavDrawerStyle">
+           android:theme="@style/NavDrawerStyle"
+           android:textSize="36sp">
         <item
             android:id="@+id/account_setting_menu_item"
             android:icon="@drawable/ic_account"
             android:title="@string/nav_menu_account"
-            android:theme="@style/NavDrawerStyle" />
+            android:theme="@style/NavDrawerStyle"
+            android:textSize="36sp"/>
         <item
             android:id="@+id/faq_menu_item"
-            android:icon="@drawable/ic_help_faq"
+            android:icon="@drawable/ic_icon_faq"
             android:title="@string/nav_menu_faq" />
         <item
             android:id="@+id/feedback_menu_item"
@@ -32,19 +35,13 @@
     </group>
     <group android:checkableBehavior="none"
            android:layout_height="match_parent"
-           android:layout_width="wrap_content"
-           android:gravity="bottom"
-           android:padding="@dimen/nav_padding_lock_now">
+           android:layout_width="wrap_content">
         <item
             android:id="@+id/lock_now_menu_item"
             android:icon="@drawable/ic_icon_lock"
             android:title="@string/lock_now"
             android:gravity="bottom"
             android:layout_height="match_parent"
-            android:theme="@style/NavDrawerLockNow"
-            android:top="100dp"
-            android:padding="@dimen/nav_padding_lock_now"
-            android:visible="false"
         />
     </group>
 </menu>
