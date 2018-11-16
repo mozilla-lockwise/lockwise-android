@@ -13,6 +13,7 @@ import io.reactivex.subjects.PublishSubject
 import junit.framework.Assert.assertEquals
 import mozilla.lockbox.R
 import mozilla.lockbox.action.FingerprintAuthAction
+import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.adapter.ListAdapterTestHelper
 import mozilla.lockbox.adapter.SectionedAdapter
@@ -23,16 +24,17 @@ import mozilla.lockbox.model.ItemListSort
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.view.FingerprintAuthDialogFragment
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers.anyList
-import org.mockito.Mockito
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.spy
 import org.mockito.Mockito.verify
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
+import org.mockito.Mockito.`when` as whenCalled
 
 @RunWith(RobolectricTestRunner::class)
 class SettingPresenterTest {
@@ -86,7 +88,7 @@ class SettingPresenterTest {
 
     @Test
     fun `update settings when fingerprint available`() {
-        Mockito.`when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(true)
+        whenCalled(fingerprintStore.isFingerprintAuthAvailable).thenReturn(true)
         val expectedSettings = testHelper.createAccurateListOfSettings(true)
 
         val expectedSections = listOf(
@@ -108,7 +110,7 @@ class SettingPresenterTest {
 
     @Test
     fun `update settings when fingerprint unavailable`() {
-        Mockito.`when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(false)
+        whenCalled(fingerprintStore.isFingerprintAuthAvailable).thenReturn(false)
         val expectedSettings = testHelper.createAccurateListOfSettings(false)
 
         val expectedSections = listOf(
@@ -125,6 +127,28 @@ class SettingPresenterTest {
 
         assertEquals(settingView.sectionsItem!![0].title, expectedSections[0].title)
         assertEquals(settingView.sectionsItem!![1].title, expectedSections[1].title)
+    }
+
+    @Test
+    fun `route to fingeprint dialog when toggle on`() {
+        whenCalled(fingerprintStore.isFingerprintAuthAvailable).thenReturn(true)
+        subject.onResume()
+        settingStore.unlockWithFingerprintStub.subscribe(subject.autoLockObserver)
+        settingStore.unlockWithFingerprintStub.onNext(true)
+        val last = dispatcherObserver.valueCount() - 1
+        dispatcherObserver.assertValueAt(last - 1, SettingAction.UnlockWithFingerprintTemp(true))
+        val routeAction = dispatcherObserver.values().last() as RouteAction.DialogFragment
+        Assert.assertTrue(routeAction is RouteAction.DialogFragment.FingerprintDialog)
+    }
+
+    @Test
+    fun `dispatch save selection to shared prefs when toggle off`() {
+        whenCalled(fingerprintStore.isFingerprintAuthAvailable).thenReturn(true)
+        subject.onResume()
+        settingStore.unlockWithFingerprintStub.subscribe(subject.autoLockObserver)
+        settingStore.unlockWithFingerprintStub.onNext(false)
+        val last = dispatcherObserver.valueCount() - 1
+        dispatcherObserver.assertValueAt(last, SettingAction.UnlockWithFingerprint(false))
     }
 
     @Test

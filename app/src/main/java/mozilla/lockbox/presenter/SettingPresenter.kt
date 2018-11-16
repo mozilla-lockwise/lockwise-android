@@ -44,7 +44,7 @@ class SettingPresenter(
 
     private val versionNumber = BuildConfig.VERSION_NAME
 
-    private val autoLockObserver: Consumer<Boolean>
+    val autoLockObserver: Consumer<Boolean>
         get() = Consumer { isToggleOn ->
             if (isToggleOn && fingerprintStore.isFingerprintAuthAvailable) {
                 dispatcher.dispatch(SettingAction.UnlockWithFingerprintTemp(true))
