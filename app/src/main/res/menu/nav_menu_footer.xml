@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ This Source Code Form is subject to the terms of the Mozilla Public
+  ~ License, v. 2.0. If a copy of the MPL was not distributed with this
+  ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
+  -->
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="none"
+           android:layout_height="wrap_content"
+           android:layout_width="wrap_content">
+        <item
+                android:id="@+id/lock_now_menu_item"
+                android:icon="@drawable/ic_icon_lock"
+                android:title="@string/lock_now"
+                android:gravity="bottom"
+        />
+    </group>
+</menu>

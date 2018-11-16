@@ -56,18 +56,31 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </LinearLayout>
-
     <android.support.design.widget.NavigationView
-        android:id="@+id/navView"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:fitsSystemWindows="true"
-        android:theme="@style/NavDrawerStyle"
-        android:fontFamily="sans-serif-smallcaps"
-        app:itemTextColor="@color/textGrey"
-        app:itemTextAppearance="@style/NavDrawerStyle"
-        app:menu="@menu/nav_menu"
-        app:headerLayout="@layout/nav_header">
+            android:id="@+id/nav_view_container"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="false"
+            android:layout_gravity="start">
+        <android.support.design.widget.NavigationView
+                android:id="@+id/navView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="start"
+                android:fitsSystemWindows="true"
+                android:theme="@style/NavDrawerStyle"
+                app:itemTextColor="@color/textGrey"
+                app:itemTextAppearance="@style/NavDrawerStyle"
+                app:menu="@menu/nav_menu"
+                app:headerLayout="@layout/nav_header"/>
+
+        <android.support.design.widget.NavigationView
+                android:id="@+id/navView_footer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                app:menu="@menu/nav_menu_footer"
+                app:itemTextColor="@color/textGrey" />
+
     </android.support.design.widget.NavigationView>
 </android.support.v4.widget.DrawerLayout>

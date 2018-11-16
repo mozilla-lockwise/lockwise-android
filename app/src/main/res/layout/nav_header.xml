@@ -14,6 +14,7 @@
     android:paddingEnd="16dp"
     android:theme="@style/AppTheme"
     android:backgroundTint="@color/dark_gray_background"
+    android:id="@+id/menuHeader"
     tools:ignore="UseCompoundDrawables">
 
     <ImageView
@@ -27,6 +28,7 @@
     />
 
     <TextView
+        android:id="@+id/accountName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="2dp"

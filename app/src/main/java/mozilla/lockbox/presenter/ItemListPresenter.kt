@@ -15,6 +15,7 @@ import mozilla.lockbox.R
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.SettingAction
+import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.extensions.mapToItemViewModelList
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
@@ -22,9 +23,11 @@ import mozilla.lockbox.log
 import mozilla.lockbox.model.ItemListSort
 import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.model.titleFromHostname
+import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.SettingStore
+import mozilla.lockbox.support.asOptional
 
 interface ItemListView {
     val itemSelection: Observable<ItemViewModel>
@@ -33,6 +36,7 @@ interface ItemListView {
     val sortItemSelection: Observable<ItemListSort>
     fun updateItems(itemList: List<ItemViewModel>)
     fun updateItemListSort(sort: ItemListSort)
+    fun setDisplayName(text: String)
 }
 
 class ItemListPresenter(
@@ -40,7 +44,9 @@ class ItemListPresenter(
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val dataStore: DataStore = DataStore.shared,
     private val settingStore: SettingStore = SettingStore.shared,
-    private val fingerprintStore: FingerprintStore = FingerprintStore.shared
+    private val fingerprintStore: FingerprintStore = FingerprintStore.shared,
+    private val accountStore: AccountStore = AccountStore.shared
+
 ) : Presenter() {
 
     override fun onViewReady() {
@@ -85,21 +91,36 @@ class ItemListPresenter(
                     dispatcher.dispatch(SettingAction.ItemListSortOrder(sortBy))
                 }.addTo(compositeDisposable)
 
+        accountStore.profile
+            .map {
+                (it.value?.displayName ?: it.value?.email).asOptional()
+            }
+            .filterNotNull()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(view::setDisplayName)
+            .addTo(compositeDisposable)
+
         // TODO: remove this when we have proper locking / unlocking
         dispatcher.dispatch(DataStoreAction.Unlock)
     }
 
     private fun onMenuItem(@IdRes item: Int) {
+        when (item) {
+            R.id.setting_menu_item -> dispatcher.dispatch(RouteAction.SettingList)
+            R.id.account_setting_menu_item -> dispatcher.dispatch(RouteAction.AccountSetting)
+            else -> onLockNow(item)
+        }
+    }
+
+    private fun onLockNow(@IdRes item: Int) {
         val action = when (item) {
             R.id.lock_now_menu_item -> {
                 if (fingerprintStore.isDeviceSecure) RouteAction.LockScreen
                 else RouteAction.Dialog.SecurityDisclaimer
             }
-            R.id.setting_menu_item -> RouteAction.SettingList
-            R.id.account_setting_menu_item -> RouteAction.AccountSetting
             else -> return log.error("Cannot route from item list menu")
         }
-
         dispatcher.dispatch(action)
     }
+
 }
