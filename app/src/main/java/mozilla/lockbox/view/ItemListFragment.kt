@@ -44,11 +44,10 @@ import mozilla.lockbox.support.dpToPixels
 class ItemListFragment : CommonFragment(), ItemListView {
 
     private val compositeDisposable = CompositeDisposable()
-
     private val adapter = ItemListAdapter()
     private lateinit var sortItemsMenu: ListPopupWindow
-
     private lateinit var sortItemsAdapter: ItemListSortAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -61,6 +60,7 @@ class ItemListFragment : CommonFragment(), ItemListView {
 
         setupToolbar(view.toolbar, view.appDrawer)
         setupNavigationView(navController, view.navView)
+//        setupNavigationView(navController, view.navView_footer)
         setupListView(view.entriesView)
         setupItemListSortMenu(view.sortButton)
 
@@ -153,17 +153,6 @@ class ItemListFragment : CommonFragment(), ItemListView {
             return navView.itemSelections()
                 .doOnNext {
                     drawerLayout.closeDrawer(navView)
-                }
-                .map { it.itemId }
-        }
-
-    override val lockNowSelection: Observable<Int>
-        get() {
-            val navViewFooter = view!!.navView_footer
-            val drawerLayout = view!!.appDrawer
-            return navViewFooter.itemSelections()
-                .doOnNext {
-                    drawerLayout.closeDrawer(navViewFooter)
                 }
                 .map { it.itemId }
         }

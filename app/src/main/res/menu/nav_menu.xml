@@ -6,20 +6,15 @@
   -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    android:textSize="36sp">
+    android:layout_width="match_parent">
 
     <group android:checkableBehavior="none"
            android:layout_height="match_parent"
-           android:layout_width="wrap_content"
-           android:theme="@style/NavDrawerStyle"
-           android:textSize="36sp">
+           android:layout_width="wrap_content">
         <item
             android:id="@+id/account_setting_menu_item"
             android:icon="@drawable/ic_account"
-            android:title="@string/nav_menu_account"
-            android:theme="@style/NavDrawerStyle"
-            android:textSize="36sp"/>
+            android:title="@string/nav_menu_account"/>
         <item
             android:id="@+id/faq_menu_item"
             android:icon="@drawable/ic_icon_faq"

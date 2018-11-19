@@ -56,12 +56,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </LinearLayout>
-    <android.support.design.widget.NavigationView
-            android:id="@+id/nav_view_container"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="false"
-            android:layout_gravity="start">
         <android.support.design.widget.NavigationView
                 android:id="@+id/navView"
                 android:layout_width="wrap_content"
@@ -72,16 +66,28 @@
                 app:itemTextColor="@color/textGrey"
                 app:itemTextAppearance="@style/NavDrawerStyle"
                 app:menu="@menu/nav_menu"
-                app:headerLayout="@layout/nav_header"/>
-
-        <android.support.design.widget.NavigationView
-                android:id="@+id/navView_footer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                app:menu="@menu/nav_menu_footer"
-                app:itemTextAppearance="@style/NavDrawerStyle"
-                app:itemTextColor="@color/textGrey" />
-
+                app:headerLayout="@layout/nav_header">
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_alignParentBottom="true">
+                <Button
+                    android:id="@+id/lockNow"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="16dp"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="16dp"
+                    android:drawableLeft="@drawable/ic_icon_lock"
+                    android:drawablePadding="32dp"
+                    android:text="@string/lock_now"
+                    android:textAlignment="viewStart"
+                    android:backgroundTint="@color/backgroundWhite"
+                    android:textColor="@color/textGrey"
+                    android:theme="@style/NavDrawerButtonStyle"
+                    android:elevation="0dp"
+                    android:stateListAnimator="@null"/>
+            </LinearLayout>
     </android.support.design.widget.NavigationView>
 </android.support.v4.widget.DrawerLayout>
