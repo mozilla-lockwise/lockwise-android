@@ -4,7 +4,7 @@
   ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
   -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
@@ -64,6 +64,7 @@
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textStyle">normal</item>
         <item name="android:lineSpacingExtra">6.5sp</item>
+        <item name="android:drawableTint">@color/dark_gray_background</item>
     </style>
     <style name="NavDrawerButtonStyle" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:textSize">16sp</item>
@@ -72,6 +73,7 @@
         <item name="android:textStyle">normal</item>
         <item name="android:shadowColor">@color/backgroundWhite</item>
         <item name="android:stateListAnimator">@null</item>
+        <item name="android:drawableTint">@color/dark_gray_background</item>
     </style>
     <style name="NoTitleDialog" parent="@android:style/Theme.Dialog">
         <item name="android:windowFrame">@null</item>
