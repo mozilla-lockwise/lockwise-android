@@ -20,6 +20,7 @@ import mozilla.lockbox.store.ContextStore
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.store.TelemetryStore
+import mozilla.lockbox.support.FxASyncDataStoreSupport
 import mozilla.lockbox.support.SecurePreferences
 
 sealed class LogProvider {
@@ -46,6 +47,7 @@ class LockboxApplication : Application() {
         val contextStoreList: List<ContextStore> = listOf(
             SettingStore.shared,
             SecurePreferences.shared,
+            FxASyncDataStoreSupport.shared,
             ClipboardStore.shared,
             FingerprintStore.shared,
             TelemetryStore.shared

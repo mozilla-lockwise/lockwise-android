@@ -7,7 +7,7 @@
 package mozilla.lockbox.action
 
 import mozilla.lockbox.flux.Action
-import mozilla.lockbox.store.SyncCredentials
+import mozilla.lockbox.model.SyncCredentials
 
 sealed class DataStoreAction : Action {
     object Lock : DataStoreAction()

@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import io.reactivex.Observable
+import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.R
 import mozilla.lockbox.action.DataStoreAction
@@ -26,6 +27,7 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
 import mozilla.lockbox.store.AccountStore
+import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.view.DialogFragment
@@ -37,6 +39,7 @@ class RoutePresenter(
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val routeStore: RouteStore = RouteStore.shared,
 
+    private val dataStore: DataStore = DataStore.shared,
     private val accountStore: AccountStore = AccountStore.shared
 ) : Presenter() {
     private lateinit var navController: NavController
@@ -49,6 +52,14 @@ class RoutePresenter(
             .filterNotNull()
             .subscribe {
                 dispatcher.dispatch(DataStoreAction.UpdateCredentials(it))
+            }
+            .addTo(compositeDisposable)
+
+        Observables.combineLatest(
+                accountStore.syncCredentials.filterNotNull(),
+                dataStore.state.filter { it == DataStore.State.Unlocked })
+            .subscribe {
+                dispatcher.dispatch(DataStoreAction.Sync)
             }
             .addTo(compositeDisposable)
     }

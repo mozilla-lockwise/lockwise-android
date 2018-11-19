@@ -17,11 +17,11 @@ import io.reactivex.subjects.Subject
 import mozilla.components.service.fxa.Config
 import mozilla.components.service.fxa.FirefoxAccount
 import mozilla.components.service.fxa.OAuthInfo
-import mozilla.components.service.fxa.SyncKeys
 import mozilla.lockbox.action.AccountAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.model.SyncCredentials
 import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.FxAProfile
 import mozilla.lockbox.support.Optional
@@ -30,12 +30,6 @@ import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.support.toFxAProfile
 
 private const val FIREFOX_ACCOUNT_KEY = "firefox-account"
-
-data class SyncCredentials(
-    val syncKeys: SyncKeys,
-    val oauthInfo: OAuthInfo,
-    val tokenServerURL: String
-)
 
 open class AccountStore(
     private val dispatcher: Dispatcher = Dispatcher.shared,
@@ -107,9 +101,7 @@ open class AccountStore(
     private fun generateSyncCredentials(oauthInfo: OAuthInfo): SyncCredentials? {
         val fxa = fxa ?: return null
         val tokenServerURL = fxa.getTokenServerEndpointURL() ?: return null
-        val syncKeys = fxa.getSyncKeys()
-
-        return SyncCredentials(syncKeys, oauthInfo, tokenServerURL)
+        return SyncCredentials(oauthInfo, tokenServerURL, Constant.FxA.oldSyncScope)
     }
 
     private fun generateNewFirefoxAccount() {

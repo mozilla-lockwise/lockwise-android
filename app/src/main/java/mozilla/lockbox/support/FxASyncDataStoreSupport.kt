@@ -6,6 +6,8 @@
 
 package mozilla.lockbox.support
 
+import android.content.Context
+import mozilla.lockbox.store.ContextStore
 import org.mozilla.sync15.logins.DatabaseLoginsStorage
 import org.mozilla.sync15.logins.LoginsStorage
 import org.mozilla.sync15.logins.SyncUnlockInfo
@@ -16,7 +18,13 @@ private const val dbPath = "my-first-db.db"
 
 class FxASyncDataStoreSupport(
     private val preferences: SecurePreferences = SecurePreferences.shared
-) : DataStoreSupport {
+) : DataStoreSupport, ContextStore {
+
+    companion object {
+        val shared = FxASyncDataStoreSupport()
+    }
+
+    private lateinit var dbFilePath: String
 
     override var syncConfig: SyncUnlockInfo? = null
 
@@ -31,10 +39,9 @@ class FxASyncDataStoreSupport(
         encryptionKey
     }
 
-    fun wipe() {
-        preferences.remove(encryptionKeyKey)
+    override fun createLoginsStorage(): LoginsStorage = DatabaseLoginsStorage(dbFilePath)
+
+    override fun injectContext(context: Context) {
+        dbFilePath = context.getDatabasePath(dbPath).absolutePath
     }
-
-    override fun createLoginsStorage(): LoginsStorage = DatabaseLoginsStorage(dbPath)
-
 }

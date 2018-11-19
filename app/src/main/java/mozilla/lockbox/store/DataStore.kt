@@ -13,11 +13,10 @@ import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
-import mozilla.lockbox.support.Constant
+import mozilla.lockbox.model.SyncCredentials
 import mozilla.lockbox.support.DataStoreSupport
 import mozilla.lockbox.support.FixedDataStoreSupport
 import mozilla.lockbox.support.FxASyncDataStoreSupport
-import org.json.JSONObject
 import org.mozilla.sync15.logins.LoginsStorage
 import org.mozilla.sync15.logins.ServerPassword
 import org.mozilla.sync15.logins.SyncResult
@@ -28,7 +27,7 @@ open class DataStore(
     val support: DataStoreSupport = FixedDataStoreSupport.shared
 ) {
     companion object {
-        val shared = DataStore(support = FxASyncDataStoreSupport())
+        val shared = DataStore(support = FxASyncDataStoreSupport.shared)
     }
 
     sealed class State {
@@ -196,20 +195,15 @@ open class DataStore(
             }
     }
 
-    fun updateCredentials(credentials: SyncCredentials): Observable<Unit>? {
-        val oauthInfo = credentials.oauthInfo
-        val accessToken = oauthInfo.accessToken ?: return null
-        val syncKey = credentials.syncKeys.syncKey ?: return null
-        val tokenServerURL = credentials.tokenServerURL
+    private fun updateCredentials(credentials: SyncCredentials): Observable<Unit>? {
+        if (!credentials.isValid) {
+            return null
+        }
 
-        val keysString = oauthInfo.keys ?: return null
-        val keysObject = JSONObject(keysString)
+        credentials.apply {
+            support.syncConfig = SyncUnlockInfo(kid, accessToken, syncKey, tokenServerURL)
+        }
 
-        val scopedKeyObject = keysObject[Constant.FxA.oldSyncScope] as JSONObject
-        val kid = scopedKeyObject["kid"] as String
-
-        support.syncConfig = SyncUnlockInfo(kid, accessToken, syncKey, tokenServerURL)
-
-        return sync()
+        return unlock()
     }
 }
