@@ -11,6 +11,7 @@ import mozilla.lockbox.store.ContextStore
 import org.mozilla.sync15.logins.DatabaseLoginsStorage
 import org.mozilla.sync15.logins.LoginsStorage
 import org.mozilla.sync15.logins.SyncUnlockInfo
+import java.security.SecureRandom
 import java.util.UUID.randomUUID
 
 class FxASyncDataStoreSupport(
@@ -30,10 +31,29 @@ class FxASyncDataStoreSupport(
             return@lazy it
         }
 
-        val encryptionKey = randomUUID().toString()
+        // val encryptionKey = randomUUID().toString()
+        val encryptionKey = generateRandomString(50)
         preferences.putString(Constant.Key.encryptionKey, encryptionKey)
 
         encryptionKey
+    }
+
+    /*
+     * This serves as a placeholder, and should definitely not be considered secure.
+     * TODO make this cryptographically interesting; add method to KeyStore/DataProtect
+     */
+    private fun generateRandomString(keyLength: Int): String {
+        val charPool = "0123456789ABCDEF".toCharArray()
+
+        val bytes = ByteArray(keyLength)
+        val random = SecureRandom()
+        random.nextBytes(bytes)
+
+        return bytes
+            .map {
+                charPool[(it.toInt() and 0xFF % charPool.size)]
+            }
+            .joinToString("")
     }
 
     override fun createLoginsStorage(): LoginsStorage = DatabaseLoginsStorage(dbFilePath)
