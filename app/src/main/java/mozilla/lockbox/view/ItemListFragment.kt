@@ -36,7 +36,7 @@ import mozilla.lockbox.presenter.ItemListPresenter
 import mozilla.lockbox.presenter.ItemListView
 import kotlinx.android.synthetic.main.fragment_item_list.*
 import kotlinx.android.synthetic.main.nav_header.view.*
-import mozilla.lockbox.model.ItemListSort
+import mozilla.lockbox.action.Setting
 import mozilla.lockbox.adapter.ItemListSortAdapter
 import mozilla.lockbox.extensions.view.itemClicks
 import mozilla.lockbox.support.dpToPixels
@@ -118,12 +118,12 @@ class ItemListFragment : CommonFragment(), ItemListView {
         sortItemsMenu.dismiss()
     }
 
-    private fun setSortButtonTitleForSortOption(sort: ItemListSort) {
+    private fun setSortButtonTitleForSortOption(sort: Setting.ItemListSort) {
         when (sort) {
-            ItemListSort.ALPHABETICALLY -> {
+            Setting.ItemListSort.ALPHABETICALLY -> {
                 view!!.sortButton.setText(R.string.all_entries_a_z)
             }
-            ItemListSort.RECENTLY_USED -> {
+            Setting.ItemListSort.RECENTLY_USED -> {
                 view!!.sortButton.setText(R.string.all_entries_recent)
             }
         }
@@ -163,17 +163,17 @@ class ItemListFragment : CommonFragment(), ItemListView {
     override val lockNowClick: Observable<Unit>
         get() = view!!.lockNow.clicks()
 
-    override val sortItemSelection: Observable<ItemListSort>
+    override val sortItemSelection: Observable<Setting.ItemListSort>
         get() = sortItemsMenu.itemClicks().map { sortMenuOptions[it.position] }
 
-    private val sortMenuOptions: Array<ItemListSort>
-        get() = ItemListSort.values()
+    private val sortMenuOptions: Array<Setting.ItemListSort>
+        get() = Setting.ItemListSort.values()
 
     override fun updateItems(itemList: List<ItemViewModel>) {
         adapter.updateItems(itemList)
     }
 
-    override fun updateItemListSort(sort: ItemListSort) {
+    override fun updateItemListSort(sort: Setting.ItemListSort) {
         // select the menu item
         selectSortMenuItem(sortMenuOptions.indexOf(sort))
 

@@ -11,14 +11,14 @@ import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import io.reactivex.observers.TestObserver
 import mozilla.lockbox.DisposingTest
+import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.LifecycleAction
+import mozilla.lockbox.action.Setting
 import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.flux.Dispatcher
-import mozilla.lockbox.model.ItemListSort
 import mozilla.lockbox.support.Constant
-import org.junit.Assert.assertEquals
-import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.view.FingerprintAuthDialogFragment
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -45,8 +45,9 @@ class SettingStoreTest : DisposingTest() {
     val dispatcher = Dispatcher()
     val subject = SettingStore(dispatcher)
     private val sendUsageDataObserver = TestObserver<Boolean>()
-    private val itemListSortOrder = TestObserver<ItemListSort>()
+    private val itemListSortOrder = TestObserver<Setting.ItemListSort>()
     private val unlockWithFingerprint = TestObserver<Boolean>()
+    private val autoLockTime = TestObserver<Setting.AutoLockTime>()
 
     @Before
     fun setUp() {
@@ -60,11 +61,12 @@ class SettingStoreTest : DisposingTest() {
         subject.sendUsageData.subscribe(sendUsageDataObserver)
         subject.unlockWithFingerprint.subscribe(unlockWithFingerprint)
         subject.itemListSortOrder.subscribe(itemListSortOrder)
+        subject.autoLockTime.subscribe(autoLockTime)
     }
 
     @Test
     fun sendUsageDataTest_defaultValue() {
-        val defaultValue = Constant.Setting.defaultSendUsageData
+        val defaultValue = Constant.SettingDefault.sendUsageData
         sendUsageDataObserver.assertValue(defaultValue)
     }
 
@@ -98,22 +100,22 @@ class SettingStoreTest : DisposingTest() {
 
     @Test
     fun itemListSortOrder_enumRoundtrip() {
-        val start = ItemListSort.RECENTLY_USED
-        val end = ItemListSort.valueOf(start.name)
+        val start = Setting.ItemListSort.RECENTLY_USED
+        val end = Setting.ItemListSort.valueOf(start.name)
 
         assertEquals(start, end)
     }
 
     @Test
     fun itemListSortOrder_defaultValue() {
-        val defaultValue = Constant.Setting.defaultItemListSort
+        val defaultValue = Constant.SettingDefault.itemListSort
         itemListSortOrder.assertValue(defaultValue)
     }
 
     @Test
     fun itemListSortOrder_newValue() {
-        val newValue = ItemListSort.RECENTLY_USED
-        val defaultValue = ItemListSort.ALPHABETICALLY
+        val newValue = Setting.ItemListSort.RECENTLY_USED
+        val defaultValue = Setting.ItemListSort.ALPHABETICALLY
 
         itemListSortOrder.assertValue(defaultValue)
 
@@ -125,11 +127,32 @@ class SettingStoreTest : DisposingTest() {
     }
 
     @Test
+    fun autoLockTime_defaultValue() {
+        val defaultValue = Constant.SettingDefault.autoLockTime
+        autoLockTime.assertValue(defaultValue)
+    }
+
+    @Test
+    fun autoLockTime_newValue() {
+        val newValue = Setting.AutoLockTime.OneHour
+        val defaultValue = Setting.AutoLockTime.FiveMinutes
+
+        autoLockTime.assertValue(defaultValue)
+
+        val action = SettingAction.AutoLockTime(newValue)
+        dispatcher.dispatch(action)
+
+        verify(editor).putString(SettingStore.Keys.AUTO_LOCK_TIME, newValue.name)
+        verify(editor).apply()
+    }
+
+    @Test
     fun `reset actions restore default values`() {
         dispatcher.dispatch(SettingAction.Reset)
 
-        verify(editor).putString(SettingStore.Keys.ITEM_LIST_SORT_ORDER, Constant.Setting.defaultItemListSort.name)
-        verify(editor).putBoolean(SettingStore.Keys.SEND_USAGE_DATA, Constant.Setting.defaultSendUsageData)
+        verify(editor).putString(SettingStore.Keys.ITEM_LIST_SORT_ORDER, Constant.SettingDefault.itemListSort.name)
+        verify(editor).putBoolean(SettingStore.Keys.SEND_USAGE_DATA, Constant.SettingDefault.sendUsageData)
+        verify(editor).putString(SettingStore.Keys.AUTO_LOCK_TIME, Constant.SettingDefault.autoLockTime.name)
         verify(editor).apply()
     }
 
@@ -137,8 +160,9 @@ class SettingStoreTest : DisposingTest() {
     fun `userreset lifecycle actions restore default values`() {
         dispatcher.dispatch(LifecycleAction.UserReset)
 
-        verify(editor).putString(SettingStore.Keys.ITEM_LIST_SORT_ORDER, Constant.Setting.defaultItemListSort.name)
-        verify(editor).putBoolean(SettingStore.Keys.SEND_USAGE_DATA, Constant.Setting.defaultSendUsageData)
+        verify(editor).putString(SettingStore.Keys.ITEM_LIST_SORT_ORDER, Constant.SettingDefault.itemListSort.name)
+        verify(editor).putBoolean(SettingStore.Keys.SEND_USAGE_DATA, Constant.SettingDefault.sendUsageData)
+        verify(editor).putString(SettingStore.Keys.AUTO_LOCK_TIME, Constant.SettingDefault.autoLockTime.name)
         verify(editor).apply()
     }
 

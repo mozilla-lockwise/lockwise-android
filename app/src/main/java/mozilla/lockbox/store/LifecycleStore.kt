@@ -11,14 +11,14 @@ import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 
-class LifecycleStore(
+open class LifecycleStore(
     val dispatcher: Dispatcher = Dispatcher.shared
 ) {
     companion object {
         val shared = LifecycleStore()
     }
 
-    val lifecycleFilter: Observable<LifecycleAction> =
+    open val lifecycleFilter: Observable<LifecycleAction> =
         dispatcher.register
             .filterByType(LifecycleAction::class.java)
 }

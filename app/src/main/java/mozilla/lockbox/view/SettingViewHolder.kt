@@ -6,6 +6,7 @@
 
 package mozilla.lockbox.view
 
+import android.support.annotation.StringRes
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.Switch
@@ -24,40 +25,46 @@ abstract class SettingViewHolder(override val containerView: View) :
 }
 
 class TextSettingViewHolder(val view: View) : SettingViewHolder(view) {
-    var title: String? = null
-        set(value) {
+    var title: Int? = null
+        set(@StringRes value) {
             field = value
-            view.description.text = value
+            value?.let {
+                view.description.text = view.resources.getString(it)
+            }
         }
-    var detailText: String? = null
-        set(value) {
+    var detailTextRes: Int? = null
+        set(@StringRes value) {
             field = value
-            view.settingSelection.text = value
+            value?.let {
+                view.settingSelection.text = view.resources.getString(it)
+            }
         }
 }
 
 class ToggleSettingViewHolder(val view: View) : SettingViewHolder(view) {
-    var title: String? = null
-        set(value) {
-            field = value
-            view.title.text = value
-        }
-    var subtitle: String? = null
-        set(value) {
+    var title: Int? = null
+        set(@StringRes value) {
             field = value
             value?.let {
-                view.subtitle.text = value
+                view.title.text = view.resources.getString(it)
+            }
+        }
+    var subtitle: Int? = null
+        set(@StringRes value) {
+            field = value
+            value?.let {
+                view.subtitle.text = view.resources.getString(it)
                 view.subtitle.visibility = View.VISIBLE
             } ?: run {
                 view.subtitle.visibility = View.GONE
             }
         }
 
-    var buttonTitle: String? = null
-        set(value) {
+    var buttonTitle: Int? = null
+        set(@StringRes value) {
             field = value
             value?.let {
-                view.button.text = value
+                view.button.text = view.resources.getString(value)
                 view.button.visibility = View.VISIBLE
             } ?: run {
                 view.button.visibility = View.GONE

@@ -132,6 +132,7 @@ open class DataStore(
 
         return unlockSubject.toObservable()
     }
+
     fun lock(): Observable<Unit> {
         val lockSubject = SingleSubject.create<Unit>()
 

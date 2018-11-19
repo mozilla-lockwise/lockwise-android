@@ -54,6 +54,8 @@
     <style name="AlertDialogStyle" parent="Theme.AppCompat.Light.Dialog">
         <item name="android:textColorPrimary">@color/black_60_percent</item>
         <item name="android:textColor">@color/black_87_percent</item>
+        <item name="android:textColorSecondary">@color/black_54_percent</item>
+        <item name="colorAccent">@color/colorPrimary</item>
         <item name="buttonBarButtonStyle">@style/AlertButtonStyle</item>
     </style>
     <style name="AlertButtonStyle" parent="Widget.AppCompat.Button.Borderless">
