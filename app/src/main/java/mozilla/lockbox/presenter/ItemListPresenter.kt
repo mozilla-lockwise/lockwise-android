@@ -33,6 +33,7 @@ interface ItemListView {
     val itemSelection: Observable<ItemViewModel>
     val filterClicks: Observable<Unit>
     val menuItemSelections: Observable<Int>
+    val lockNowSelection: Observable<Int>
     val sortItemSelection: Observable<ItemListSort>
     fun updateItems(itemList: List<ItemViewModel>)
     fun updateItemListSort(sort: ItemListSort)
@@ -46,7 +47,6 @@ class ItemListPresenter(
     private val settingStore: SettingStore = SettingStore.shared,
     private val fingerprintStore: FingerprintStore = FingerprintStore.shared,
     private val accountStore: AccountStore = AccountStore.shared
-
 ) : Presenter() {
 
     override fun onViewReady() {
@@ -86,6 +86,10 @@ class ItemListPresenter(
             .subscribe(this::onMenuItem)
             .addTo(compositeDisposable)
 
+        view.lockNowSelection
+            .subscribe(this::onLockNow)
+            .addTo(compositeDisposable)
+
         view.sortItemSelection
                 .subscribe { sortBy ->
                     dispatcher.dispatch(SettingAction.ItemListSortOrder(sortBy))
@@ -105,11 +109,12 @@ class ItemListPresenter(
     }
 
     private fun onMenuItem(@IdRes item: Int) {
-        when (item) {
-            R.id.setting_menu_item -> dispatcher.dispatch(RouteAction.SettingList)
-            R.id.account_setting_menu_item -> dispatcher.dispatch(RouteAction.AccountSetting)
-            else -> onLockNow(item)
+        val action = when (item) {
+            R.id.setting_menu_item -> RouteAction.SettingList
+            R.id.account_setting_menu_item -> RouteAction.AccountSetting
+            else -> return log.error("Cannot route from item list menu")
         }
+        dispatcher.dispatch(action)
     }
 
     private fun onLockNow(@IdRes item: Int) {

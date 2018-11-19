@@ -157,6 +157,17 @@ class ItemListFragment : CommonFragment(), ItemListView {
                 .map { it.itemId }
         }
 
+    override val lockNowSelection: Observable<Int>
+        get() {
+            val navViewFooter = view!!.navView_footer
+            val drawerLayout = view!!.appDrawer
+            return navViewFooter.itemSelections()
+                .doOnNext {
+                    drawerLayout.closeDrawer(navViewFooter)
+                }
+                .map { it.itemId }
+        }
+
     override val sortItemSelection: Observable<ItemListSort>
         get() = sortItemsMenu.itemClicks().map { sortMenuOptions[it.position] }
 

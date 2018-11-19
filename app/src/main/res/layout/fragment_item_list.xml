@@ -80,6 +80,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 app:menu="@menu/nav_menu_footer"
+                app:itemTextAppearance="@style/NavDrawerStyle"
                 app:itemTextColor="@color/textGrey" />
 
     </android.support.design.widget.NavigationView>
