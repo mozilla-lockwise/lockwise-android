@@ -29,8 +29,6 @@ import mozilla.lockbox.support.SecurePreferences
 import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.support.toFxAProfile
 
-private const val FIREFOX_ACCOUNT_KEY = "firefox-account"
-
 open class AccountStore(
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val securePreferences: SecurePreferences = SecurePreferences.shared
@@ -42,7 +40,7 @@ open class AccountStore(
     internal val compositeDisposable = CompositeDisposable()
 
     private val storedAccountJSON: String?
-        get() = securePreferences.getString(FIREFOX_ACCOUNT_KEY)
+        get() = securePreferences.getString(Constant.Key.firefoxAccount)
 
     private var fxa: FirefoxAccount? = null
 
@@ -83,7 +81,7 @@ open class AccountStore(
 
     private fun populateAccountInformation() {
         fxa?.toJSONString()?.let {
-            securePreferences.putString(FIREFOX_ACCOUNT_KEY, it)
+            securePreferences.putString(Constant.Key.firefoxAccount, it)
         }
 
         val profileSubject = profile as Subject
@@ -138,7 +136,7 @@ open class AccountStore(
         CookieManager.getInstance().removeAllCookies { }
         WebStorage.getInstance().deleteAllData()
 
-        this.securePreferences.remove(FIREFOX_ACCOUNT_KEY)
+        this.securePreferences.remove(Constant.Key.firefoxAccount)
         this.generateNewFirefoxAccount()
     }
 }

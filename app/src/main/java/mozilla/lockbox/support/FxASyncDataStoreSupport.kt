@@ -13,9 +13,6 @@ import org.mozilla.sync15.logins.LoginsStorage
 import org.mozilla.sync15.logins.SyncUnlockInfo
 import java.util.UUID.randomUUID
 
-private const val encryptionKeyKey: String = "database-encryption-key"
-private const val dbPath = "my-first-db.db"
-
 class FxASyncDataStoreSupport(
     private val preferences: SecurePreferences = SecurePreferences.shared
 ) : DataStoreSupport, ContextStore {
@@ -29,12 +26,12 @@ class FxASyncDataStoreSupport(
     override var syncConfig: SyncUnlockInfo? = null
 
     override val encryptionKey by lazy {
-        preferences.getString(encryptionKeyKey)?.let {
+        preferences.getString(Constant.Key.encryptionKey)?.let {
             return@lazy it
         }
 
         val encryptionKey = randomUUID().toString()
-        preferences.putString(encryptionKeyKey, encryptionKey)
+        preferences.putString(Constant.Key.encryptionKey, encryptionKey)
 
         encryptionKey
     }
@@ -42,6 +39,6 @@ class FxASyncDataStoreSupport(
     override fun createLoginsStorage(): LoginsStorage = DatabaseLoginsStorage(dbFilePath)
 
     override fun injectContext(context: Context) {
-        dbFilePath = context.getDatabasePath(dbPath).absolutePath
+        dbFilePath = context.getDatabasePath(Constant.App.dbFilename).absolutePath
     }
 }

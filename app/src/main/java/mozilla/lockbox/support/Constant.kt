@@ -11,6 +11,7 @@ import mozilla.lockbox.model.ItemListSort
 object Constant {
     object App {
         const val keystoreLabel = "lockbox-keystore"
+        const val dbFilename = "firefox-lockbox.db"
     }
 
     object FxA {
@@ -26,5 +27,10 @@ object Constant {
     object Setting {
         val defaultItemListSort = ItemListSort.ALPHABETICALLY
         val defaultSendUsageData = true
+    }
+
+    object Key {
+        const val firefoxAccount = "firefox-account"
+        const val encryptionKey = "database-encryption-key"
     }
 }
