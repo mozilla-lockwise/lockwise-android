@@ -33,7 +33,7 @@ interface ItemListView {
     val itemSelection: Observable<ItemViewModel>
     val filterClicks: Observable<Unit>
     val menuItemSelections: Observable<Int>
-//    val lockNowSelection: Observable<Int>
+    val lockNowClick: Observable<Unit>
     val sortItemSelection: Observable<ItemListSort>
     fun updateItems(itemList: List<ItemViewModel>)
     fun updateItemListSort(sort: ItemListSort)
@@ -85,10 +85,10 @@ class ItemListPresenter(
         view.menuItemSelections
             .subscribe(this::onMenuItem)
             .addTo(compositeDisposable)
-//
-//        view.lockNowSelection
-//            .subscribe(this::onLockNow)
-//            .addTo(compositeDisposable)
+
+        view.lockNowClick
+            .subscribe(this::onLockNow)
+            .addTo(compositeDisposable)
 
         view.sortItemSelection
                 .subscribe { sortBy ->
@@ -116,16 +116,10 @@ class ItemListPresenter(
         }
         dispatcher.dispatch(action)
     }
-//
-//    private fun onLockNow(@IdRes item: Int) {
-//        val action = when (item) {
-//            R.id.lock_now_menu_item -> {
-//                if (fingerprintStore.isDeviceSecure) RouteAction.LockScreen
-//                else RouteAction.Dialog.SecurityDisclaimer
-//            }
-//            else -> return log.error("Cannot route from item list menu")
-//        }
-//        dispatcher.dispatch(action)
-//    }
+
+    private fun onLockNow(item: Unit) {
+        if (fingerprintStore.isDeviceSecure) dispatcher.dispatch(RouteAction.LockScreen)
+        else dispatcher.dispatch(RouteAction.Dialog.SecurityDisclaimer)
+    }
 
 }

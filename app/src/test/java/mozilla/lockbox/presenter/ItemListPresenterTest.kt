@@ -64,14 +64,14 @@ private val password3 = ServerPassword("ioupiouiuy",
 open class ItemListPresenterTest {
     class FakeView : ItemListView {
         val itemSelectedStub = PublishSubject.create<ItemViewModel>()
-
         val filterClickStub = PublishSubject.create<Unit>()
+
         val menuItemSelectionStub = PublishSubject.create<Int>()
+        val lockNowSelectionStub = PublishSubject.create<Unit>()
         val sortItemSelectionStub = PublishSubject.create<ItemListSort>()
-
         var updateItemsArgument: List<ItemViewModel>? = null
-        var itemListSort: ItemListSort? = null
 
+        var itemListSort: ItemListSort? = null
         val disclaimerActionStub = PublishSubject.create<AlertState>()
 
         override val itemSelection: Observable<ItemViewModel>
@@ -85,6 +85,12 @@ open class ItemListPresenterTest {
 
         override val menuItemSelections: Observable<Int>
             get() = menuItemSelectionStub
+
+        override val lockNowClick: Observable<Unit>
+            get() = lockNowSelectionStub
+
+        override fun setDisplayName(text: String) {
+        }
 
         override fun updateItems(itemList: List<ItemViewModel>) {
             updateItemsArgument = itemList
@@ -110,13 +116,14 @@ open class ItemListPresenterTest {
         override var itemListSortOrder: Observable<ItemListSort> = itemListSortStub
     }
 
+    private val dataStore = FakeDataStore()
+    private val settingStore = FakeSettingStore()
+
     val view = FakeView()
-    val dataStore = FakeDataStore()
-    val settingStore = FakeSettingStore()
     val dispatcher = Dispatcher()
     val subject = ItemListPresenter(view, dispatcher, dataStore, settingStore, fingerprintStore)
 
-    val dispatcherObserver = TestObserver.create<Action>()
+    private val dispatcherObserver = TestObserver.create<Action>()!!
 
     @Before
     fun setUp() {
