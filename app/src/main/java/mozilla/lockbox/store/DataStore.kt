@@ -16,7 +16,6 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.model.SyncCredentials
 import mozilla.lockbox.support.DataStoreSupport
 import mozilla.lockbox.support.FixedDataStoreSupport
-import mozilla.lockbox.support.FxASyncDataStoreSupport
 import org.mozilla.sync15.logins.LoginsStorage
 import org.mozilla.sync15.logins.ServerPassword
 import org.mozilla.sync15.logins.SyncResult
@@ -24,10 +23,10 @@ import org.mozilla.sync15.logins.SyncUnlockInfo
 
 open class DataStore(
     val dispatcher: Dispatcher = Dispatcher.shared,
-    val support: DataStoreSupport = FixedDataStoreSupport.shared
+    var support: DataStoreSupport = FixedDataStoreSupport.shared
 ) {
     companion object {
-        val shared = DataStore(support = FxASyncDataStoreSupport.shared)
+        val shared = DataStore()
     }
 
     sealed class State {
@@ -41,10 +40,9 @@ open class DataStore(
     private val stateSubject: BehaviorRelay<State> = BehaviorRelay.createDefault(State.Unprepared)
     private val listSubject: BehaviorRelay<List<ServerPassword>> = BehaviorRelay.createDefault(emptyList())
 
-    private val backend: LoginsStorage
+    private var backend: LoginsStorage
 
     init {
-        // TODO: Replace test data with real backend
         backend = support.createLoginsStorage()
 
         // handle state changes
@@ -75,6 +73,15 @@ open class DataStore(
                 }
             }
             .addTo(compositeDisposable)
+    }
+
+    fun resetSupport(support: DataStoreSupport) {
+        val currentState = stateSubject.value
+        if (currentState != State.Unprepared) {
+            throw IllegalStateException("Support cannot be reset when in the $currentState")
+        }
+        this.support = support
+        this.backend = support.createLoginsStorage()
     }
 
     private fun touch(id: String) {

@@ -17,8 +17,11 @@ import mozilla.lockbox.store.DataStore.State
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.assertThrows
 import org.mockito.Mockito
 import org.mozilla.sync15.logins.ServerPassword
+import java.lang.IllegalStateException
 
 class DataStoreTest : DisposingTest() {
     private val support = MockDataStoreSupport()
@@ -92,7 +95,7 @@ class DataStoreTest : DisposingTest() {
         Mockito.clearInvocations(support.storage)
 
         dispatcher.dispatch(DataStoreAction.Sync)
-        Mockito.verify(support.storage).sync(support.syncConfig)
+        Mockito.verify(support.storage).sync(support.syncConfig!!)
         Mockito.verify(support.storage).list()
         Mockito.clearInvocations(support.storage)
 
@@ -152,5 +155,29 @@ class DataStoreTest : DisposingTest() {
 
         listObserver.assertLastValue(emptyList())
         stateObserver.assertLastValue(DataStore.State.Unprepared)
+    }
+
+    @Test
+    fun testResetSupport() {
+        val stateObserver = createTestObserver<State>()
+        val listObserver = createTestObserver<List<ServerPassword>>()
+
+        subject.state.subscribe(stateObserver)
+        subject.list.subscribe(listObserver)
+
+        val newSupport = MockDataStoreSupport()
+        Assert.assertNotSame("Support should be not the new one", newSupport, subject.support)
+
+        stateObserver.assertLastValue(State.Unprepared)
+        subject.resetSupport(newSupport)
+        Assert.assertSame("Support should be the new one", newSupport, subject.support)
+
+        stateObserver.assertLastValue(State.Unprepared)
+
+        subject.unlock()
+        stateObserver.assertLastValue(State.Unlocked)
+        Assertions.assertThrows(IllegalStateException::class.java) {
+            subject.resetSupport(MockDataStoreSupport())
+        }
     }
 }
