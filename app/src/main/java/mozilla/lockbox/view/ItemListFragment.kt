@@ -60,7 +60,6 @@ class ItemListFragment : CommonFragment(), ItemListView {
 
         setupToolbar(view.toolbar, view.appDrawer)
         setupNavigationView(navController, view.navView)
-//        setupNavigationView(navController, view.navView_footer)
         setupListView(view.entriesView)
         setupItemListSortMenu(view.sortButton)
 
@@ -86,13 +85,17 @@ class ItemListFragment : CommonFragment(), ItemListView {
     private fun setupToolbar(toolbar: Toolbar, drawerLayout: DrawerLayout) {
         toolbar.navigationIcon = resources.getDrawable(R.drawable.ic_menu, null)
         toolbar.navigationClicks().subscribe { drawerLayout.openDrawer(GravityCompat.START) }
-                .addTo(compositeDisposable)
+            .addTo(compositeDisposable)
     }
 
     private fun setupItemListSortMenu(sortButton: Button) {
         val context = requireContext()
         sortItemsMenu = ListPopupWindow(context)
-        sortItemsAdapter = ItemListSortAdapter(context, R.layout.sort_menu_item, sortMenuOptions.map { context.getString(it.displayStringId) }.toTypedArray())
+        sortItemsAdapter = ItemListSortAdapter(
+            context,
+            R.layout.sort_menu_item,
+            sortMenuOptions.map { context.getString(it.displayStringId) }.toTypedArray()
+        )
         sortItemsAdapter.selectedBackgroundColor = R.color.menuItemSelected
         sortItemsMenu.setAdapter(sortItemsAdapter)
         sortItemsMenu.anchorView = sortButton
@@ -158,7 +161,7 @@ class ItemListFragment : CommonFragment(), ItemListView {
         }
 
     override val lockNowClick: Observable<Unit>
-        get() = view!!.navView.lockNow.clicks()
+        get() = view!!.lockNow.clicks()
 
     override val sortItemSelection: Observable<ItemListSort>
         get() = sortItemsMenu.itemClicks().map { sortMenuOptions[it.position] }

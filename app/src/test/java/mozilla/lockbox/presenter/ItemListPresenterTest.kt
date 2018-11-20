@@ -20,16 +20,20 @@ import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.model.ItemListSort
 import mozilla.lockbox.model.ItemViewModel
+import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.SettingStore
+import mozilla.lockbox.support.FxAProfile
+import mozilla.lockbox.support.Optional
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.Mockito
 import org.mozilla.sync15.logins.ServerPassword
+import org.powermock.api.mockito.PowerMockito
+import org.powermock.core.classloader.annotations.PrepareForTest
 import org.robolectric.RobolectricTestRunner
 import org.mockito.Mockito.`when` as whenCalled
 
@@ -42,37 +46,44 @@ private val password1 = ServerPassword(
     timesUsed = 0,
     timeCreated = 0L,
     timeLastUsed = 1L,
-    timePasswordChanged = 0L)
-private val password2 = ServerPassword("ghfdhg",
+    timePasswordChanged = 0L
+)
+private val password2 = ServerPassword(
+    "ghfdhg",
     "https://www.cats.org",
     username,
     "meow",
     timesUsed = 0,
     timeCreated = 0L,
     timeLastUsed = 2L,
-    timePasswordChanged = 0L)
-private val password3 = ServerPassword("ioupiouiuy",
+    timePasswordChanged = 0L
+)
+private val password3 = ServerPassword(
+    "ioupiouiuy",
     "www.dogs.org",
     username = "",
     password = "baaaaa",
     timesUsed = 0,
     timeCreated = 0L,
     timeLastUsed = 3L,
-    timePasswordChanged = 0L)
+    timePasswordChanged = 0L
+)
 
 @RunWith(RobolectricTestRunner::class)
+@PrepareForTest(AccountStore::class)
 open class ItemListPresenterTest {
     class FakeView : ItemListView {
-        val itemSelectedStub = PublishSubject.create<ItemViewModel>()
-        val filterClickStub = PublishSubject.create<Unit>()
-
-        val menuItemSelectionStub = PublishSubject.create<Int>()
-        val lockNowSelectionStub = PublishSubject.create<Unit>()
-        val sortItemSelectionStub = PublishSubject.create<ItemListSort>()
+        var setDisplayNameArgument: String? = null
         var updateItemsArgument: List<ItemViewModel>? = null
 
         var itemListSort: ItemListSort? = null
+        val menuItemSelectionStub = PublishSubject.create<Int>()
+
+        val itemSelectedStub = PublishSubject.create<ItemViewModel>()
+        val sortItemSelectionStub = PublishSubject.create<ItemListSort>()
         val disclaimerActionStub = PublishSubject.create<AlertState>()
+        val filterClickStub = PublishSubject.create<Unit>()
+        val lockNowSelectionStub = PublishSubject.create<Unit>()
 
         override val itemSelection: Observable<ItemViewModel>
             get() = itemSelectedStub
@@ -90,6 +101,7 @@ open class ItemListPresenterTest {
             get() = lockNowSelectionStub
 
         override fun setDisplayName(text: String) {
+            setDisplayNameArgument = text
         }
 
         override fun updateItems(itemList: List<ItemViewModel>) {
@@ -108,8 +120,13 @@ open class ItemListPresenterTest {
             get() = listStub
     }
 
+    private val profileStub = PublishSubject.create<Optional<FxAProfile>>()
+
     @Mock
-    val fingerprintStore = Mockito.mock(FingerprintStore::class.java)
+    val fingerprintStore = PowerMockito.mock(FingerprintStore::class.java)
+
+    @Mock
+    val accountStore = PowerMockito.mock(AccountStore::class.java)
 
     class FakeSettingStore : SettingStore() {
         val itemListSortStub = BehaviorSubject.createDefault(ItemListSort.ALPHABETICALLY)
@@ -121,12 +138,15 @@ open class ItemListPresenterTest {
 
     val view = FakeView()
     val dispatcher = Dispatcher()
-    val subject = ItemListPresenter(view, dispatcher, dataStore, settingStore, fingerprintStore)
+    val subject = ItemListPresenter(view, dispatcher, dataStore, settingStore, fingerprintStore, accountStore)
 
     private val dispatcherObserver = TestObserver.create<Action>()!!
 
     @Before
     fun setUp() {
+
+        PowerMockito.`when`(accountStore.profile).thenReturn(profileStub)
+        PowerMockito.whenNew(AccountStore::class.java).withAnyArguments().thenReturn(accountStore)
         dispatcher.register.subscribe(dispatcherObserver)
 
         subject.onViewReady()
@@ -199,18 +219,16 @@ open class ItemListPresenterTest {
     fun `tapping on the lock menu item when the user has no device security routes to security disclaimer dialog`() {
         whenCalled(fingerprintStore.isDeviceSecure).thenReturn(false)
         setUp()
-        view.menuItemSelectionStub.onNext(R.id.lock_now_menu_item)
-
+        view.lockNowSelectionStub.onNext(Unit)
         view.disclaimerActionStub.onNext(AlertState.BUTTON_POSITIVE)
-        val routeAction = dispatcherObserver.values().last() as RouteAction.Dialog
 
-        Assert.assertTrue(routeAction is RouteAction.Dialog.SecurityDisclaimer)
+        Assert.assertTrue(dispatcherObserver.values().last() is RouteAction.Dialog.SecurityDisclaimer)
     }
 
     @Test
     fun `tapping on the lock menu item when the user has device security routes to lock screen`() {
         whenCalled(fingerprintStore.isDeviceSecure).thenReturn(true)
-        view.menuItemSelectionStub.onNext(R.id.lock_now_menu_item)
+        view.lockNowSelectionStub.onNext(Unit)
         dispatcherObserver.assertLastValue(RouteAction.LockScreen)
     }
 }

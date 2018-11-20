@@ -87,7 +87,12 @@ class ItemListPresenter(
             .addTo(compositeDisposable)
 
         view.lockNowClick
-            .subscribe(this::onLockNow)
+            .map {
+                if (fingerprintStore.isDeviceSecure)
+                    RouteAction.LockScreen
+                else RouteAction.Dialog.SecurityDisclaimer
+            }
+            .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
 
         view.sortItemSelection
@@ -116,10 +121,4 @@ class ItemListPresenter(
         }
         dispatcher.dispatch(action)
     }
-
-    private fun onLockNow(item: Unit) {
-        if (fingerprintStore.isDeviceSecure) dispatcher.dispatch(RouteAction.LockScreen)
-        else dispatcher.dispatch(RouteAction.Dialog.SecurityDisclaimer)
-    }
-
 }

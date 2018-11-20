@@ -59,10 +59,10 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
             field = value
             if (value) {
                 inputPassword.transformationMethod = null
-                btnPasswordToggle.setImageResource(R.drawable.ic_icon_hide)
+                btnPasswordToggle.setImageResource(R.drawable.ic_hide)
             } else {
                 inputPassword.transformationMethod = PasswordTransformationMethod.getInstance()
-                btnPasswordToggle.setImageResource(R.drawable.ic_icon_show)
+                btnPasswordToggle.setImageResource(R.drawable.ic_show)
             }
         }
 

@@ -11,7 +11,7 @@
            android:layout_width="wrap_content">
         <item
                 android:id="@+id/lock_now_menu_item"
-                android:icon="@drawable/ic_icon_lock"
+                android:icon="@drawable/ic_lock"
                 android:title="@string/lock_now"
                 android:gravity="bottom"
         />
