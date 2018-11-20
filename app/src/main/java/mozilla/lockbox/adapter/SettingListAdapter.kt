@@ -53,7 +53,7 @@ class SettingListAdapter : RecyclerView.Adapter<SettingViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: SettingViewHolder, position: Int) {
-        holder.disposable?.let { compositeDisposable.remove(holder.disposable!!) }
+        holder.disposable?.let { compositeDisposable.remove(it) }
 
         val configuration = settingListConfig[position]
         when {
