@@ -28,6 +28,7 @@ import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
 import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.DataStore
+import mozilla.lockbox.store.DataStore.State
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.view.DialogFragment
@@ -48,18 +49,16 @@ class RoutePresenter(
         navController = Navigation.findNavController(activity, R.id.fragment_nav_host)
         routeStore.routes.subscribe(this::route).addTo(compositeDisposable)
 
-        accountStore.syncCredentials
-            .filterNotNull()
-            .subscribe {
-                dispatcher.dispatch(DataStoreAction.UpdateCredentials(it))
-            }
-            .addTo(compositeDisposable)
-
         Observables.combineLatest(
                 accountStore.syncCredentials.filterNotNull(),
-                dataStore.state.filter { it == DataStore.State.Unlocked })
+                dataStore.state)
             .subscribe {
-                dispatcher.dispatch(DataStoreAction.Sync)
+                val action = when (it.second) {
+                    is State.Unprepared -> DataStoreAction.UpdateCredentials(it.first)
+                    is State.Unlocked -> DataStoreAction.Sync
+                    else -> return@subscribe
+                }
+                dispatcher.dispatch(action)
             }
             .addTo(compositeDisposable)
     }
