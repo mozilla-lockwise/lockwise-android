@@ -12,7 +12,6 @@ import org.mozilla.sync15.logins.DatabaseLoginsStorage
 import org.mozilla.sync15.logins.LoginsStorage
 import org.mozilla.sync15.logins.SyncUnlockInfo
 import java.security.SecureRandom
-import java.util.UUID.randomUUID
 
 class FxASyncDataStoreSupport(
     private val preferences: SecurePreferences = SecurePreferences.shared
