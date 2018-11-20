@@ -75,13 +75,18 @@ open class DataStore(
             .addTo(compositeDisposable)
     }
 
+    // Warning: this is testing code.
+    // It's only called immediately after the user has pressed "Use Test Data".
     fun resetSupport(support: DataStoreSupport) {
         val currentState = stateSubject.value
         if (currentState != State.Unprepared) {
-            throw IllegalStateException("Support cannot be reset when in the $currentState")
+            backend.reset()
         }
         this.support = support
         this.backend = support.createLoginsStorage()
+        // we shouldn't set the status of this to Unprepared,
+        // as we don't want to change any UI.
+
     }
 
     private fun touch(id: String) {

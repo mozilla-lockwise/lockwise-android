@@ -172,12 +172,12 @@ class DataStoreTest : DisposingTest() {
         subject.resetSupport(newSupport)
         Assert.assertSame("Support should be the new one", newSupport, subject.support)
 
+
         stateObserver.assertLastValue(State.Unprepared)
 
         subject.unlock()
         stateObserver.assertLastValue(State.Unlocked)
-        Assertions.assertThrows(IllegalStateException::class.java) {
-            subject.resetSupport(MockDataStoreSupport())
-        }
+        subject.resetSupport(MockDataStoreSupport())
+        Mockito.verify(newSupport.storage).reset()
     }
 }

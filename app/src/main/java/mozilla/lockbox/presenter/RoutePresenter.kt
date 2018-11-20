@@ -18,6 +18,7 @@ import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.R
 import mozilla.lockbox.action.DataStoreAction
+import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.view.AlertDialogHelper
 import mozilla.lockbox.extensions.view.AlertState
@@ -29,7 +30,9 @@ import mozilla.lockbox.log
 import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.DataStore.State
+import mozilla.lockbox.store.LifecycleStore
 import mozilla.lockbox.store.RouteStore
+import mozilla.lockbox.support.FixedDataStoreSupport
 import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.view.DialogFragment
 import mozilla.lockbox.view.FingerprintAuthDialogFragment
@@ -41,14 +44,15 @@ class RoutePresenter(
     private val routeStore: RouteStore = RouteStore.shared,
 
     private val dataStore: DataStore = DataStore.shared,
-    private val accountStore: AccountStore = AccountStore.shared
+    private val accountStore: AccountStore = AccountStore.shared,
+    private val lifecycleStore: LifecycleStore = LifecycleStore.shared
 ) : Presenter() {
     private lateinit var navController: NavController
 
     override fun onViewReady() {
         navController = Navigation.findNavController(activity, R.id.fragment_nav_host)
-        routeStore.routes.subscribe(this::route).addTo(compositeDisposable)
 
+        // Mediates credentials from the AccountStore, into the DataStore.
         Observables.combineLatest(
                 accountStore.syncCredentials.filterNotNull(),
                 dataStore.state)
@@ -60,6 +64,18 @@ class RoutePresenter(
                 }
                 dispatcher.dispatch(action)
             }
+            .addTo(compositeDisposable)
+
+        val useTestData = lifecycleStore.lifecycleFilter
+            .filter { it == LifecycleAction.UseTestData }
+            .doOnNext {
+                dataStore.resetSupport(FixedDataStoreSupport())
+            }
+            .map { RouteAction.ItemList }
+
+        routeStore.routes
+            .mergeWith(useTestData)
+            .subscribe(this::route)
             .addTo(compositeDisposable)
     }
 
