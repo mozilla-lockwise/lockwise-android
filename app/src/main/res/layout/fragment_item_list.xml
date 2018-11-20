@@ -27,20 +27,22 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
                 <Button
-                        android:id="@+id/sortButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:textAllCaps="false"
-                        android:drawableEnd="@drawable/ic_down_caret"
-                        android:textSize="20sp"
-                        style="@style/ToolbarButton"/>
+                    android:id="@+id/sortButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:textAllCaps="false"
+                    android:drawableEnd="@drawable/ic_down_caret"
+                    android:contentDescription="@string/sort_description"
+                    android:textSize="20sp"
+                    style="@style/ToolbarButton"/>
                 <Button
-                        android:id="@+id/filterButton"
-                        android:layout_width="fill_parent"
-                        android:layout_height="match_parent"
-                        android:drawableEnd="@drawable/ic_search"
-                        android:layout_marginEnd="16dp"
-                        style="@style/ToolbarButton"/>
+                    android:id="@+id/filterButton"
+                    android:layout_width="fill_parent"
+                    android:layout_height="match_parent"
+                    android:drawableEnd="@drawable/ic_search"
+                    android:contentDescription="@string/search_description"
+                    android:layout_marginEnd="16dp"
+                    style="@style/ToolbarButton"/>
             </LinearLayout>
         </android.support.v7.widget.Toolbar>
         <android.support.v7.widget.RecyclerView

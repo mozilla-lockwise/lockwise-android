@@ -85,6 +85,7 @@ class ItemListFragment : CommonFragment(), ItemListView {
 
     private fun setupToolbar(toolbar: Toolbar, drawerLayout: DrawerLayout) {
         toolbar.navigationIcon = resources.getDrawable(R.drawable.ic_menu, null)
+        toolbar.setNavigationContentDescription(R.string.menu_description)
         toolbar.navigationClicks().subscribe { drawerLayout.openDrawer(GravityCompat.START) }
                 .addTo(compositeDisposable)
     }
