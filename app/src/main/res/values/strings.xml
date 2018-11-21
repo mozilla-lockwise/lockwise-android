@@ -91,4 +91,5 @@
     <string name="sort_description">Sort entries</string>
     <string name="search_clear_content_description">Clear search bar text</string>
     <string name="profile_image_content_description">Firefox Account Profile Image</string>
+    <string name="app_version">Application version number</string>
 </resources>

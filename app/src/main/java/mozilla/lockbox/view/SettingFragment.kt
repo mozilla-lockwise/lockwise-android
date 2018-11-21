@@ -14,6 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.github.magiepooh.recycleritemdecoration.ItemDecorations
 import kotlinx.android.synthetic.main.fragment_setting.view.*
+import kotlinx.android.synthetic.main.list_cell_setting_toggle.view.*
 import mozilla.lockbox.R
 import mozilla.lockbox.adapter.SectionedAdapter
 import mozilla.lockbox.adapter.SettingCellConfiguration
@@ -61,9 +62,11 @@ class SettingFragment : BackableFragment(), SettingView {
     }
 
     private fun addContentDescriptions(view: View?) {
-        for(i in 0 until view!!.settingList.childCount) {
-
-        }
+        view!!.settingList.getChildAt(0).title.contentDescription = R.string.auto_lock.toString()
+        view.settingList.getChildAt(1).toggle.contentDescription = R.string.autofill.toString()
+        view.settingList.getChildAt(2).toggle.contentDescription = R.string.send_usage_data.toString()
+        view.settingList.getChildAt(3).title.contentDescription = R.string.app_version.toString()
+        view.settingList.getChildAt(4).toggle.contentDescription = R.string.unlock.toString()
     }
 
     override fun updateSettingList(
