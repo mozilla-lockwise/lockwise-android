@@ -35,7 +35,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_logo" />
+            android:src="@drawable/logo" />
 
         <TextView
             android:id="@+id/tag_line_text"
