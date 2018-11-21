@@ -26,6 +26,10 @@ method call in the [`ViewActions`](https://developer.android.com/reference/andro
 
 The [Android Accessibility Scanner](https://support.google.com/accessibility/android/answer/6376570?hl=en) is a tool used to scan your app's screen to identify potential areas of improvement.
 
+If you are using an emulator, download the Accessibility Scanner [APK package](https://apkpure.com/accessibility-scanner/com.google.android.apps.accessibility.auditor). Once the APK is downloaded, drag and drop the file into your active emulator and follow onscreen instructions to use the Scanner on your app.
+
+If you are using an Android device, download the Android Accessibility Scanner from the Google Play Store on your phone.
+
 ### TalkBack
 
 TalkBack is a screen reader that is built into Android devices. This tool can be used to test your application by closing your eyes while attempting to navigate.
@@ -37,3 +41,4 @@ Instructions on enabling TalkBack on your device: <https://support.google.com/ac
 A common accessibility problem arises with users who have changed their font size. Test your app by [increasing your device's font size](https://support.google.com/accessibility/android/answer/6006972?hl=en&ref_topic=9079043).
 
 In addition to font size, be aware of text contrast, [color inversion](https://support.google.com/accessibility/android/answer/6151800?hl=en&ref_topic=9079043), colorblindness, and color correction.
+
