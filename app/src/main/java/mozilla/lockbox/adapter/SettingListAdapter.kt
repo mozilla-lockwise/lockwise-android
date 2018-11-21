@@ -9,6 +9,7 @@ package mozilla.lockbox.adapter
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.R
 import mozilla.lockbox.view.AppVersionSettingViewHolder
@@ -18,6 +19,7 @@ import mozilla.lockbox.view.ToggleSettingViewHolder
 
 class SettingListAdapter : RecyclerView.Adapter<SettingViewHolder>() {
     private var settingListConfig: List<SettingCellConfiguration> = emptyList()
+    private val compositeDisposable = CompositeDisposable()
 
     companion object {
         const val SETTING_TEXT_TYPE = 0
@@ -51,7 +53,7 @@ class SettingListAdapter : RecyclerView.Adapter<SettingViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: SettingViewHolder, position: Int) {
-        holder.compositeDisposable.clear()
+        holder.disposable?.let { compositeDisposable.remove(it) }
 
         val configuration = settingListConfig[position]
         when {
@@ -67,11 +69,11 @@ class SettingListAdapter : RecyclerView.Adapter<SettingViewHolder>() {
                     .subscribe {
                         holder.toggle.isChecked = it
                     }
-                    .addTo(holder.compositeDisposable)
+                    .addTo(compositeDisposable)
                 holder.toggleValueChanges
                     .skip(1)
                     .subscribe(configuration.toggleObserver)
-                    .addTo(holder.compositeDisposable)
+                    .addTo(compositeDisposable)
             }
             holder is AppVersionSettingViewHolder && configuration is AppVersionSettingConfiguration -> {
                 holder.text = configuration.text
@@ -81,24 +83,20 @@ class SettingListAdapter : RecyclerView.Adapter<SettingViewHolder>() {
 
     override fun getItemViewType(position: Int): Int {
         val configurationType = settingListConfig[position]
-        when (configurationType) {
-            is TextSettingConfiguration -> {
-                return SETTING_TEXT_TYPE
-            }
-            is ToggleSettingConfiguration -> {
-                return SETTING_TOGGLE_TYPE
-            }
-            is AppVersionSettingConfiguration -> {
-                return SETTING_APP_VERSION_TYPE
-            }
-            else -> {
-                throw IllegalStateException("Please use a valid defined setting type.")
-            }
+        return when (configurationType) {
+            is TextSettingConfiguration -> SETTING_TEXT_TYPE
+            is ToggleSettingConfiguration -> SETTING_TOGGLE_TYPE
+            is AppVersionSettingConfiguration -> SETTING_APP_VERSION_TYPE
+            else -> throw IllegalStateException("Please use a valid defined setting type.")
         }
     }
 
     fun setItems(settingConfig: List<SettingCellConfiguration>) {
         settingListConfig = settingConfig
         notifyDataSetChanged()
+    }
+
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        compositeDisposable.clear()
     }
 }
