@@ -17,11 +17,8 @@ import mozilla.lockbox.store.DataStore.State
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.assertThrows
 import org.mockito.Mockito
 import org.mozilla.sync15.logins.ServerPassword
-import java.lang.IllegalStateException
 
 class DataStoreTest : DisposingTest() {
     private val support = MockDataStoreSupport()
@@ -171,7 +168,6 @@ class DataStoreTest : DisposingTest() {
         stateObserver.assertLastValue(State.Unprepared)
         subject.resetSupport(newSupport)
         Assert.assertSame("Support should be the new one", newSupport, subject.support)
-
 
         stateObserver.assertLastValue(State.Unprepared)
 

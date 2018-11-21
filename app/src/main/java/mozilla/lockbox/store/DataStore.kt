@@ -13,6 +13,7 @@ import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.log
 import mozilla.lockbox.model.SyncCredentials
 import mozilla.lockbox.support.DataStoreSupport
 import mozilla.lockbox.support.FixedDataStoreSupport
@@ -78,15 +79,13 @@ open class DataStore(
     // Warning: this is testing code.
     // It's only called immediately after the user has pressed "Use Test Data".
     fun resetSupport(support: DataStoreSupport) {
-        val currentState = stateSubject.value
-        if (currentState != State.Unprepared) {
+        if (stateSubject.value != State.Unprepared) {
             backend.reset()
         }
         this.support = support
         this.backend = support.createLoginsStorage()
         // we shouldn't set the status of this to Unprepared,
         // as we don't want to change any UI.
-
     }
 
     private fun touch(id: String) {
@@ -126,6 +125,7 @@ open class DataStore(
             unlockSubject.onSuccess(Unit)
             SyncResult.fromValue(Unit)
         }.thenCatch {
+            log.error("Error unlocking", it)
             unlockSubject.onError(it)
             SyncResult.fromValue(Unit)
         }
@@ -148,6 +148,7 @@ open class DataStore(
             lockSubject.onSuccess(Unit)
             SyncResult.fromValue(Unit)
         }.thenCatch {
+            log.error("Error locking", it)
             lockSubject.onError(it)
             SyncResult.fromValue(Unit)
         }
@@ -170,6 +171,7 @@ open class DataStore(
             syncSubject.onSuccess(Unit)
             SyncResult.fromValue(Unit)
         }.thenCatch {
+            log.error("Error syncing", it)
             stateSubject.accept(State.Errored(it))
             syncSubject.onError(it)
             SyncResult.fromValue(Unit)

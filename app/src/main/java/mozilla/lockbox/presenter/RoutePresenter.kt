@@ -42,7 +42,6 @@ class RoutePresenter(
     private val activity: AppCompatActivity,
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val routeStore: RouteStore = RouteStore.shared,
-
     private val dataStore: DataStore = DataStore.shared,
     private val accountStore: AccountStore = AccountStore.shared,
     private val lifecycleStore: LifecycleStore = LifecycleStore.shared

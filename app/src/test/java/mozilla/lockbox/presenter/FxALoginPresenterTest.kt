@@ -12,7 +12,6 @@ import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import mozilla.lockbox.action.AccountAction
 import mozilla.lockbox.action.LifecycleAction
-import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.AccountStore

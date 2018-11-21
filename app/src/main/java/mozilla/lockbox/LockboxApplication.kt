@@ -47,7 +47,8 @@ class LockboxApplication : Application() {
 
     private fun setupDataStoreSupport() {
         // this needs to be done after injectContext, as
-        // SyncDataStoreSupport requires a context.
+        // SyncDataStoreSupport needs to find the database
+        // path from the context
         val support = FxASyncDataStoreSupport.shared
         DataStore.shared.resetSupport(support)
     }
