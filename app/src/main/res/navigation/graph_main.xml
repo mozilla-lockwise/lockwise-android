@@ -48,6 +48,13 @@
             app:popEnterAnim="@anim/none"
             />
         <action
+            android:id="@+id/action_itemList_to_faq"
+            app:destination="@id/fragment_faq"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+        <action
             android:id="@+id/action_itemList_to_accountSetting"
             app:destination="@id/fragment_account_setting"
             app:enterAnim="@anim/slide_in_bottom"
@@ -84,6 +91,11 @@
         android:name="mozilla.lockbox.view.SettingFragment"
         android:label="@string/nav_menu_settings"
         tools:layout="@layout/fragment_setting" />
+
+    <fragment
+        android:id="@+id/fragment_faq"
+        android:name="mozilla.lockbox.view.FaqFragment"
+        android:label="@string/nav_menu_faq"/>
 
     <fragment
         android:id="@+id/fragment_account_setting"
