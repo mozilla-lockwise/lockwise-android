@@ -32,7 +32,7 @@ open class SettingStore(
         const val SEND_USAGE_DATA = "send_usage_data"
         const val ITEM_LIST_SORT_ORDER = "sort_order"
         const val UNLOCK_WITH_FINGERPRINT = "unlock_with_fingerprint"
-        const val UNLOCK_WITH_FINGERPRINT_TEMP = "unlock_with_fingerprint_temp"
+        const val UNLOCK_WITH_FINGERPRINT_PENDING_AUTH = "unlock_with_fingerprint_pending_auth"
     }
 
     private lateinit var preferences: SharedPreferences
@@ -41,7 +41,7 @@ open class SettingStore(
     open lateinit var sendUsageData: Observable<Boolean>
     open lateinit var itemListSortOrder: Observable<ItemListSort>
     open lateinit var unlockWithFingerprint: Observable<Boolean>
-    open lateinit var unlockWithFingerprintTemp: Observable<Boolean>
+    open lateinit var unlockWithFingerprintPendingAuth: Observable<Boolean>
 
     open val onEnablingFingerprint: Observable<FingerprintAuthAction> =
         dispatcher.register
@@ -71,8 +71,8 @@ open class SettingStore(
                     is SettingAction.UnlockWithFingerprint ->
                         edit.putBoolean(Keys.UNLOCK_WITH_FINGERPRINT, it.unlockWithFingerprint)
 
-                    is SettingAction.UnlockWithFingerprintTemp ->
-                        edit.putBoolean(Keys.UNLOCK_WITH_FINGERPRINT_TEMP, it.unlockWithFingerprintTemp)
+                    is SettingAction.UnlockWithFingerprintPendingAuth ->
+                        edit.putBoolean(Keys.UNLOCK_WITH_FINGERPRINT_PENDING_AUTH, it.unlockWithFingerprintPendingAuth)
                 }
                 edit.apply()
             }
@@ -96,6 +96,6 @@ open class SettingStore(
             }
 
         unlockWithFingerprint = rxPrefs.getBoolean(Keys.UNLOCK_WITH_FINGERPRINT).asObservable()
-        unlockWithFingerprintTemp = rxPrefs.getBoolean(Keys.UNLOCK_WITH_FINGERPRINT_TEMP).asObservable()
+        unlockWithFingerprintPendingAuth = rxPrefs.getBoolean(Keys.UNLOCK_WITH_FINGERPRINT_PENDING_AUTH).asObservable()
     }
 }

@@ -36,10 +36,7 @@ class FingerprintDialogPresenterTest {
         override val authCallback: Observable<FingerprintAuthDialogFragment.AuthCallback>
             get() = authCallbackStub
 
-        override val cancelTapped = PublishSubject.create<Unit>()
-
-        override fun onDismiss() {
-        }
+        override val onDismiss = PublishSubject.create<Unit>()
     }
 
     open class FakeFingerprintStore : FingerprintStore() {
@@ -85,9 +82,8 @@ class FingerprintDialogPresenterTest {
 
     @Test
     fun `dismiss dialog on cancel tapped`() {
-        view.cancelTapped.onNext(Unit)
+        view.onDismiss.onNext(Unit)
         dispatcherObserver.assertValue(FingerprintAuthAction.OnCancel)
-        verify(view).onDismiss()
     }
 
     @Test

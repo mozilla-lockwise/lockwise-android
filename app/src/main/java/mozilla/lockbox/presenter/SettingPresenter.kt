@@ -47,7 +47,7 @@ class SettingPresenter(
     val autoLockObserver: Consumer<Boolean>
         get() = Consumer { isToggleOn ->
             if (isToggleOn && fingerprintStore.isFingerprintAuthAvailable) {
-                dispatcher.dispatch(SettingAction.UnlockWithFingerprintTemp(true))
+                dispatcher.dispatch(SettingAction.UnlockWithFingerprintPendingAuth(true))
                 dispatcher.dispatch(
                     RouteAction.DialogFragment.FingerprintDialog(
                         R.string.enable_fingerprint_dialog_title,
@@ -77,14 +77,12 @@ class SettingPresenter(
                         )
                         is FingerprintAuthDialogFragment.AuthCallback.OnError -> {
                             dispatcher.dispatch(SettingAction.UnlockWithFingerprint(false))
-                            updateSettings()
                         }
                     }
                 } else {
                     dispatcher.dispatch(SettingAction.UnlockWithFingerprint(false))
-                    updateSettings()
                 }
-                dispatcher.dispatch(SettingAction.UnlockWithFingerprintTemp(false))
+                dispatcher.dispatch(SettingAction.UnlockWithFingerprintPendingAuth(false))
             }
             .addTo(compositeDisposable)
     }
@@ -123,7 +121,7 @@ class SettingPresenter(
                 ToggleSettingConfiguration(
                     title = context.getString(R.string.unlock),
                     toggleDriver = Observables.combineLatest(
-                        settingStore.unlockWithFingerprintTemp,
+                        settingStore.unlockWithFingerprintPendingAuth,
                         settingStore.unlockWithFingerprint
                     )
                         .map { unlock -> unlock.first.takeIf { it } ?: unlock.second },

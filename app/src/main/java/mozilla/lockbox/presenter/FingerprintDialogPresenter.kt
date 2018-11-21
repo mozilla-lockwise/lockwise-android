@@ -22,8 +22,7 @@ interface FingerprintDialogView {
     fun onFailed(error: String?)
     fun onError(error: String?)
     val authCallback: Observable<AuthCallback>
-    val cancelTapped: Observable<Unit>
-    fun onDismiss()
+    val onDismiss: Observable<Unit>
 }
 
 class FingerprintDialogPresenter(
@@ -42,11 +41,8 @@ class FingerprintDialogPresenter(
             .subscribe { dispatcher.dispatch(OnAuthentication(it)) }
             .addTo(compositeDisposable)
 
-        view.cancelTapped
-            .subscribe {
-                dispatcher.dispatch(FingerprintAuthAction.OnCancel)
-                view.onDismiss()
-            }
+        view.onDismiss
+            .subscribe { dispatcher.dispatch(FingerprintAuthAction.OnCancel) }
             .addTo(compositeDisposable)
     }
 
