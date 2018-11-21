@@ -30,7 +30,6 @@
             android:layout_marginStart="67dp"
             android:layout_marginTop="83dp"
             android:layout_marginEnd="67dp"
-            android:adjustViewBounds="true"
             android:background="@android:color/transparent"
             android:contentDescription="@null"
             app:layout_constraintEnd_toEndOf="parent"
@@ -63,11 +62,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="89dp"
         android:background="@android:color/transparent"
-        android:contentDescription="@null"
+        android:adjustViewBounds="true"
         android:cropToPadding="false"
+        android:contentDescription="@null"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_nessie" />
+        android:src="@drawable/nessie" />
 
 </merge>
