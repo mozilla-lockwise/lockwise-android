@@ -1,0 +1,22 @@
+<!--
+  ~ This Source Code Form is subject to the terms of the Mozilla Public
+  ~ License, v. 2.0. If a copy of the MPL was not distributed with this
+  ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
+  -->
+
+<!--
+  ~ This Source Code Form is subject to the terms of the Mozilla Public
+  ~ License, v. 2.0. If a copy of the MPL was not distributed with this
+  ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
+  -->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+  <path
+      android:pathData="M22.5,10.5h-3.15a7.45,7.45 0,0 0,-1.098 -2.63l2.235,-2.234a1.5,1.5 0,0 0,-2.121 -2.122L16.131,5.75a7.452,7.452 0,0 0,-2.631 -1.1V1.5a1.5,1.5 0,0 0,-3 0v3.15a7.452,7.452 0,0 0,-2.63 1.098L5.636,3.513a1.5,1.5 0,0 0,-2.122 2.123L5.75,7.87a7.45,7.45 0,0 0,-1.1 2.63H1.5a1.5,1.5 0,0 0,0 3h3.15c0.194,0.945 0.57,1.843 1.105,2.645 -0.02,0.019 -0.048,0.025 -0.067,0.044l-2.175,2.175a1.5,1.5 0,1 0,2.121 2.121l2.175,-2.174c0.02,-0.02 0.027,-0.047 0.045,-0.068 0.802,0.537 1.7,0.913 2.646,1.107v3.15a1.5,1.5 0,0 0,3 0v-3.15a7.452,7.452 0,0 0,2.63 -1.098l2.235,2.235a1.5,1.5 0,0 0,2.12 -2.121l-2.235,-2.235a7.45,7.45 0,0 0,1.1 -2.631h3.15a1.5,1.5 0,0 0,0 -3zM7.5,12a4.5,4.5 0,1 1,9 0,4.5 4.5,0 0,1 -9,0z"
+      android:fillColor="#4A4A4F"
+      android:fillType="evenOdd"/>
+</vector>

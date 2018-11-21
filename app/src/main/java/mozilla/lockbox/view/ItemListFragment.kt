@@ -20,7 +20,6 @@ import android.view.ViewGroup
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
-
 import com.jakewharton.rxbinding2.support.design.widget.itemSelections
 import android.widget.Button
 import android.widget.ListPopupWindow
@@ -36,15 +35,16 @@ import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.presenter.ItemListPresenter
 import mozilla.lockbox.presenter.ItemListView
 import kotlinx.android.synthetic.main.fragment_item_list.*
+import kotlinx.android.synthetic.main.nav_header.view.*
 import mozilla.lockbox.model.ItemListSort
 import mozilla.lockbox.adapter.ItemListSortAdapter
 import mozilla.lockbox.extensions.view.itemClicks
 import mozilla.lockbox.support.dpToPixels
 
 class ItemListFragment : CommonFragment(), ItemListView {
+
     private val compositeDisposable = CompositeDisposable()
     private val adapter = ItemListAdapter()
-
     private lateinit var sortItemsMenu: ListPopupWindow
     private lateinit var sortItemsAdapter: ItemListSortAdapter
 
@@ -55,6 +55,7 @@ class ItemListFragment : CommonFragment(), ItemListView {
     ): View? {
         presenter = ItemListPresenter(this)
         val view = inflater.inflate(R.layout.fragment_item_list, container, false)
+
         val navController = requireActivity().findNavController(R.id.fragment_nav_host)
 
         setupToolbar(view.toolbar, view.appDrawer)
@@ -84,13 +85,17 @@ class ItemListFragment : CommonFragment(), ItemListView {
     private fun setupToolbar(toolbar: Toolbar, drawerLayout: DrawerLayout) {
         toolbar.navigationIcon = resources.getDrawable(R.drawable.ic_menu, null)
         toolbar.navigationClicks().subscribe { drawerLayout.openDrawer(GravityCompat.START) }
-                .addTo(compositeDisposable)
+            .addTo(compositeDisposable)
     }
 
     private fun setupItemListSortMenu(sortButton: Button) {
         val context = requireContext()
         sortItemsMenu = ListPopupWindow(context)
-        sortItemsAdapter = ItemListSortAdapter(context, R.layout.sort_menu_item, sortMenuOptions.map { context.getString(it.displayStringId) }.toTypedArray())
+        sortItemsAdapter = ItemListSortAdapter(
+            context,
+            R.layout.sort_menu_item,
+            sortMenuOptions.map { context.getString(it.displayStringId) }.toTypedArray()
+        )
         sortItemsAdapter.selectedBackgroundColor = R.color.menuItemSelected
         sortItemsMenu.setAdapter(sortItemsAdapter)
         sortItemsMenu.anchorView = sortButton
@@ -124,6 +129,10 @@ class ItemListFragment : CommonFragment(), ItemListView {
         }
     }
 
+    override fun setDisplayName(text: String) {
+        view!!.navView.menuHeader.accountName.text = text
+    }
+
     private fun scrollToTop() {
         entriesView.layoutManager?.scrollToPosition(0)
     }
@@ -150,6 +159,9 @@ class ItemListFragment : CommonFragment(), ItemListView {
                 }
                 .map { it.itemId }
         }
+
+    override val lockNowClick: Observable<Unit>
+        get() = view!!.lockNow.clicks()
 
     override val sortItemSelection: Observable<ItemListSort>
         get() = sortItemsMenu.itemClicks().map { sortMenuOptions[it.position] }
