@@ -64,6 +64,26 @@ open class RoutePresenterTest {
     }
 
     @Test
+    fun testAccountSetting() {
+        navigator.gotoAccountSetting()
+        navigator.back()
+        navigator.checkAtItemList()
+    }
+
+    @Test
+    fun testDisconnectDisclaimer() {
+        navigator.gotoDisconnectDisclaimer()
+        navigator.back()
+        navigator.checkAtAccountSetting()
+    }
+
+    @Test
+    fun testDisconnecting() {
+        // note: this won't work until routing PR is merged
+//        navigator.disconnectAccountFromDisclaimer()
+    }
+
+    @Test
     fun testItemDetail() {
         navigator.gotoItemDetail()
         navigator.back()
@@ -71,8 +91,14 @@ open class RoutePresenterTest {
     }
 
     @Test
-    fun testLockScreen() {
-        navigator.gotoLockScreen()
-        navigator.back(false)
+    fun testNoSecurityDialog() {
+//        navigator.gotoNoSecurityDialog()
+//        navigator.back(true)
+//        navigator.checkAtItemList()
+    }
+
+    @Test
+    fun testNoSecurityDialogSetupSecurity() {
+//        navigator.goToSecuritySettings()
     }
 }

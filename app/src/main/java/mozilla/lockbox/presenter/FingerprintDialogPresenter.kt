@@ -8,6 +8,7 @@ package mozilla.lockbox.presenter
 
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
+import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.FingerprintAuthAction.OnAuthentication
 import mozilla.lockbox.action.FingerprintSensorAction
 import mozilla.lockbox.flux.Dispatcher
@@ -22,7 +23,7 @@ interface FingerprintDialogView {
     fun onError(error: String?)
     val authCallback: Observable<AuthCallback>
     val cancelTapped: Observable<Unit>
-    fun onCancel()
+    fun onDismiss()
 }
 
 class FingerprintDialogPresenter(
@@ -42,7 +43,10 @@ class FingerprintDialogPresenter(
             .addTo(compositeDisposable)
 
         view.cancelTapped
-            .subscribe { view.onCancel() }
+            .subscribe {
+                dispatcher.dispatch(FingerprintAuthAction.OnCancel)
+                view.onDismiss()
+            }
             .addTo(compositeDisposable)
     }
 

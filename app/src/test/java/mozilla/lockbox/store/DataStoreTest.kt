@@ -9,6 +9,8 @@ package mozilla.lockbox.store
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.DisposingTest
 import mozilla.lockbox.action.DataStoreAction
+import mozilla.lockbox.action.LifecycleAction
+import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.mocks.MockDataStoreSupport
 import mozilla.lockbox.store.DataStore.State
@@ -39,7 +41,7 @@ class DataStoreTest : DisposingTest() {
             Assert.assertTrue(it.isEmpty())
         }.addTo(disposer)
         subject.state.subscribe {
-            Assert.assertEquals(State.Locked, it)
+            Assert.assertEquals(State.Unprepared, it)
         }.addTo(disposer)
     }
 
@@ -62,9 +64,10 @@ class DataStoreTest : DisposingTest() {
 
         stateObserver.apply {
             // TODO: figure out why the initialized state isn't here?
-            assertValueCount(2)
-            assertValueAt(0, State.Unlocked)
-            assertValueAt(1, State.Locked)
+            assertValueCount(3)
+            assertValueAt(0, State.Unprepared)
+            assertValueAt(1, State.Unlocked)
+            assertValueAt(2, State.Locked)
         }
         listObserver.apply {
             val results = values()
@@ -96,5 +99,58 @@ class DataStoreTest : DisposingTest() {
         dispatcher.dispatch(DataStoreAction.Lock)
         Mockito.verify(support.storage).lock()
         Mockito.clearInvocations(support.storage)
+    }
+
+    @Test
+    fun testTouch() {
+        val stateObserver = createTestObserver<State>()
+        val listObserver = createTestObserver<List<ServerPassword>>()
+
+        support.storage.unlock("fdsfsdfds")
+
+        subject.state.subscribe(stateObserver)
+        subject.list.subscribe(listObserver)
+
+        val id = "lkjhkj"
+        dispatcher.dispatch(DataStoreAction.Touch(id))
+
+        Mockito.verify(support.storage).touch(id)
+        Mockito.verify(support.storage).list()
+    }
+
+    @Test
+    fun testReset() {
+        val stateObserver = createTestObserver<State>()
+        val listObserver = createTestObserver<List<ServerPassword>>()
+
+        support.storage.unlock("fdsfsdfds")
+
+        subject.state.subscribe(stateObserver)
+        subject.list.subscribe(listObserver)
+
+        dispatcher.dispatch(DataStoreAction.Reset)
+
+        Mockito.verify(support.storage).reset()
+
+        listObserver.assertLastValue(emptyList())
+        stateObserver.assertLastValue(DataStore.State.Unprepared)
+    }
+
+    @Test
+    fun testUserReset() {
+        val stateObserver = createTestObserver<State>()
+        val listObserver = createTestObserver<List<ServerPassword>>()
+
+        support.storage.unlock("fdsfsdfds")
+
+        subject.state.subscribe(stateObserver)
+        subject.list.subscribe(listObserver)
+
+        dispatcher.dispatch(LifecycleAction.UserReset)
+
+        Mockito.verify(support.storage).reset()
+
+        listObserver.assertLastValue(emptyList())
+        stateObserver.assertLastValue(DataStore.State.Unprepared)
     }
 }

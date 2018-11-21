@@ -8,6 +8,7 @@ package mozilla.lockbox.store
 
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.Context
 import android.os.Handler
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -17,7 +18,7 @@ import mozilla.lockbox.flux.Dispatcher
 
 open class ClipboardStore(
     val dispatcher: Dispatcher = Dispatcher.shared
-) {
+) : ContextStore {
     internal val compositeDisposable = CompositeDisposable()
     companion object {
         val shared = ClipboardStore()
@@ -43,8 +44,8 @@ open class ClipboardStore(
                 .addTo(compositeDisposable)
     }
 
-    fun apply(manager: ClipboardManager) {
-        clipboardManager = manager
+    override fun injectContext(context: Context) {
+        this.clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     }
 
     private fun addToClipboard(label: String, string: String) {

@@ -21,7 +21,8 @@
         android:name=".LockboxApplication">
         <activity
             android:name=".view.RootActivity"
-            android:label="@string/app_label" >
+            android:label="@string/app_label"
+            android:windowSoftInputMode="adjustResize" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

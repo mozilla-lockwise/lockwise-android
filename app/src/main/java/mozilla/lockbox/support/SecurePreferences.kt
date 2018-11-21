@@ -6,28 +6,30 @@
 
 package mozilla.lockbox.support
 
+import android.content.Context
 import android.content.SharedPreferences
+import android.preference.PreferenceManager
 import android.util.Base64
 import mozilla.components.lib.dataprotect.Keystore
+import mozilla.lockbox.store.ContextStore
 import java.nio.charset.StandardCharsets
 
-private const val KEYSTORE_LABEL = "lockbox-keystore"
 private const val BASE_64_FLAGS = Base64.URL_SAFE or Base64.NO_PADDING
 
 open class SecurePreferences(
-    private val keystore: Keystore = Keystore(KEYSTORE_LABEL)
-) {
+    private val keystore: Keystore = Keystore(Constant.App.keystoreLabel)
+) : ContextStore {
+
     companion object {
         val shared = SecurePreferences()
     }
 
     private lateinit var prefs: SharedPreferences
 
-    open fun apply(sharedPreferences: SharedPreferences) {
-        prefs = sharedPreferences
+    override fun injectContext(context: Context) {
+        prefs = PreferenceManager.getDefaultSharedPreferences(context)
     }
 
-    @Throws
     open fun getString(key: String): String? {
         verifyKey()
 
@@ -38,7 +40,7 @@ open class SecurePreferences(
                 val plain = keystore.decryptBytes(encrypted)
                 String(plain, StandardCharsets.UTF_8)
             } catch (error: IllegalArgumentException) {
-                throw error
+                null
             }
         } else {
             null
@@ -53,6 +55,14 @@ open class SecurePreferences(
         val data = Base64.encodeToString(encrypted, BASE_64_FLAGS)
 
         editor.putString(key, data).apply()
+    }
+
+    open fun remove(key: String) {
+        val editor = prefs.edit()
+
+        editor.remove(key)
+
+        editor.apply()
     }
 
     // these methods won't be used until https://github.com/mozilla-lockbox/lockbox-android/issues/165

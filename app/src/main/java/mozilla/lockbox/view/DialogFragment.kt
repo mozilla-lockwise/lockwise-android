@@ -7,6 +7,7 @@
 package mozilla.lockbox.view
 
 import android.os.Bundle
+import android.support.annotation.StringRes
 import android.support.v4.app.DialogFragment
 import android.view.View
 import mozilla.lockbox.flux.Presenter
@@ -33,4 +34,6 @@ open class DialogFragment : DialogFragment() {
         super.onPause()
         presenter.onPause()
     }
+
+    open fun setupDialog(@StringRes titleId: Int, @StringRes subtitleId: Int? = null) {}
 }

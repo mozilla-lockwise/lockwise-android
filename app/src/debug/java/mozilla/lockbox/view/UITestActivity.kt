@@ -23,6 +23,10 @@ class UITestActivity : AppCompatActivity() {
         val fragmentManager = this.supportFragmentManager
         try {
             dialogFragment.show(fragmentManager, dialogFragment.javaClass.name)
+            dialogFragment.setupDialog(
+                R.string.enable_fingerprint_dialog_title,
+                R.string.enable_fingerprint_dialog_subtitle
+            )
         } catch (e: IllegalStateException) {
             log.error("Could not show dialog", e)
         }

@@ -8,12 +8,11 @@ import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
-import io.reactivex.subjects.ReplaySubject
 import io.reactivex.subjects.SingleSubject
 import mozilla.lockbox.action.DataStoreAction
+import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
-import mozilla.lockbox.log
 import mozilla.lockbox.support.DataStoreSupport
 import mozilla.lockbox.support.FixedDataStoreSupport
 import org.mozilla.sync15.logins.LoginsStorage
@@ -36,7 +35,7 @@ open class DataStore(
     }
 
     internal val compositeDisposable = CompositeDisposable()
-    private val stateSubject: ReplaySubject<State> = ReplaySubject.create(1)
+    private val stateSubject: BehaviorRelay<State> = BehaviorRelay.createDefault(State.Unprepared)
     private val listSubject: BehaviorRelay<List<ServerPassword>> = BehaviorRelay.createDefault(emptyList())
 
     private val backend: LoginsStorage
@@ -54,17 +53,34 @@ open class DataStore(
             }
         }.addTo(compositeDisposable)
 
+        val resetObservable = dispatcher.register
+            .filter { it == LifecycleAction.UserReset }
+            .map { DataStoreAction.Reset }
+
         // register for actions
         dispatcher.register
-                .filterByType(DataStoreAction::class.java)
-                .subscribe {
-                    when (it) {
-                        is DataStoreAction.Lock -> lock()
-                        is DataStoreAction.Unlock -> unlock()
-                        is DataStoreAction.Sync -> sync()
-                    }
+            .mergeWith(resetObservable)
+            .filterByType(DataStoreAction::class.java)
+            .subscribe { action ->
+                when (action) {
+                    is DataStoreAction.Lock -> lock()
+                    is DataStoreAction.Unlock -> unlock()
+                    is DataStoreAction.Sync -> sync()
+                    is DataStoreAction.Touch -> touch(action.id)
+                    is DataStoreAction.Reset -> reset()
                 }
-                .addTo(compositeDisposable)
+            }
+            .addTo(compositeDisposable)
+    }
+
+    private fun touch(id: String) {
+        backend.isLocked().whenComplete {
+            if (!it) {
+                backend.touch(id).then {
+                    updateList()
+                }
+            }
+        }
     }
 
     val state: Observable<State> get() = stateSubject
@@ -79,12 +95,11 @@ open class DataStore(
 
     fun unlock(): Observable<Unit> {
         val unlockSubject = SingleSubject.create<Unit>()
-        log.info("unlocking")
 
         backend.isLocked().then {
             if (it) {
                 backend.unlock(support.encryptionKey).then {
-                    stateSubject.onNext(State.Unlocked)
+                    stateSubject.accept(State.Unlocked)
                     SyncResult.fromValue(Unit)
                 }
             } else {
@@ -107,7 +122,7 @@ open class DataStore(
         backend.isLocked().then {
             if (!it) {
                 backend.lock().then {
-                    stateSubject.onNext(State.Locked)
+                    stateSubject.accept(State.Locked)
                     SyncResult.fromValue(Unit)
                 }
             } else {
@@ -133,7 +148,7 @@ open class DataStore(
             syncSubject.onSuccess(Unit)
             SyncResult.fromValue(Unit)
         }.thenCatch {
-            stateSubject.onNext(State.Errored(it))
+            stateSubject.accept(State.Errored(it))
             syncSubject.onError(it)
             SyncResult.fromValue(Unit)
         }
@@ -145,10 +160,28 @@ open class DataStore(
     private fun clearList() {
         this.listSubject.accept(emptyList())
     }
+
     private fun updateList(): SyncResult<Unit> {
         return backend.list().then {
             this.listSubject.accept(it)
             SyncResult.fromValue(Unit)
         }
+    }
+
+    fun reset() {
+        clearList()
+
+        fun resetState(): SyncResult<Unit> {
+            this.stateSubject.accept(State.Unprepared)
+            return SyncResult.fromValue(Unit)
+        }
+
+        backend.reset()
+            .then {
+                resetState()
+            }
+            .thenCatch {
+                resetState()
+            }
     }
 }

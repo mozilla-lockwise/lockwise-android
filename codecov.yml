@@ -1,0 +1,21 @@
+comment: false
+coverage:
+  range: 75..95
+  round: down
+  precision: 1
+  status:
+    project:
+      default:
+        threshold: 5
+      fxa: # declare a new status context for FxA
+        paths: "app/src/main/java/mozilla/lockbox/store/AccountStore.kt"
+        target: 0%
+      app: # declare a new status context without
+        paths: "!app/src/main/java/mozilla/lockbox/store/AccountStore.kt"
+    patch:
+        default:
+          target: 50
+ignore:
+  - "app/src/main/java/mozilla/lockbox/view"
+  - "app/src/main/java/mozilla/lockbox/extensions/view"
+  - "app/src/debug/java/mozilla/lockbox/view/UITestActivity.kt"

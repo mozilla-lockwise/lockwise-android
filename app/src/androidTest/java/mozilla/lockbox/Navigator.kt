@@ -6,17 +6,24 @@
 
 package mozilla.lockbox
 
+import android.provider.Settings
 import android.support.test.espresso.Espresso.closeSoftKeyboard
 import android.support.test.espresso.Espresso.pressBack
 import android.support.test.espresso.NoActivityResumedException
-import junit.framework.Assert
+import android.support.test.espresso.intent.Intents
+import br.com.concretesolutions.kappuccino.custom.intent.IntentMatcherInteractions.sentIntent
+import br.com.concretesolutions.kappuccino.custom.intent.IntentMatcherInteractions.stubIntent
+import mozilla.lockbox.robots.accountSettingScreen
+import mozilla.lockbox.robots.disconnectDisclaimer
 import mozilla.lockbox.robots.filteredItemList
 import mozilla.lockbox.robots.fxaLogin
 import mozilla.lockbox.robots.itemDetail
 import mozilla.lockbox.robots.itemList
 import mozilla.lockbox.robots.lockScreen
+import mozilla.lockbox.robots.securityDisclaimer
 import mozilla.lockbox.robots.settings
 import mozilla.lockbox.robots.welcome
+import org.junit.Assert
 
 class Navigator {
     fun gotoFxALogin() {
@@ -24,8 +31,12 @@ class Navigator {
         checkAtFxALogin()
     }
 
-    fun checkAtFxALogin() {
+    private fun checkAtFxALogin() {
         fxaLogin { exists() }
+    }
+
+    private fun checkAtWelcome() {
+        welcome { exists() }
     }
 
     fun gotoItemList() {
@@ -54,11 +65,73 @@ class Navigator {
         checkAtSettings()
     }
 
-    fun checkAtSettings() {
+    private fun checkAtSettings() {
         settings { exists() }
     }
 
-    fun gotoLockScreen() {
+    fun gotoAccountSetting() {
+        gotoItemList()
+        itemList { tapAccountSetting() }
+        checkAtAccountSetting()
+    }
+
+    fun checkAtAccountSetting() {
+        accountSettingScreen { exists() }
+    }
+
+    fun gotoNoSecurityDialog() {
+        gotoItemList()
+        itemList { tapLockNow() }
+        checkAtSecurityDialog()
+    }
+
+    private fun checkAtSecurityDialog() {
+        securityDisclaimer { exists() }
+    }
+
+    fun goToSecuritySettings() {
+        gotoNoSecurityDialog()
+        Intents.init()
+        stubSystemSecuritySettingIntent()
+        securityDisclaimer { tapSetUp() }
+        listenSystemSecuritySettingIntent()
+        Intents.release()
+    }
+
+    private fun stubSystemSecuritySettingIntent() {
+        stubIntent {
+            action(Settings.ACTION_SECURITY_SETTINGS)
+            respondWith {
+                ok()
+            }
+        }
+    }
+
+    private fun listenSystemSecuritySettingIntent() {
+        sentIntent {
+            action(Settings.ACTION_SECURITY_SETTINGS)
+        }
+    }
+
+    fun gotoDisconnectDisclaimer() {
+        gotoAccountSetting()
+        accountSettingScreen { tapDisconnect() }
+        checkAtDisconnectDisclaimer()
+    }
+
+    private fun checkAtDisconnectDisclaimer() {
+        disconnectDisclaimer { exists() }
+    }
+
+    fun disconnectAccountFromDisclaimer() {
+        gotoDisconnectDisclaimer()
+        disconnectDisclaimer { tapDisconnect() }
+        checkAtWelcome()
+    }
+
+    @Suppress("unused")
+    fun goToLockScreen() {
+        // not called until we can stub FingerprintStore in tests
         gotoItemList()
         itemList { tapLockNow() }
         checkAtLockScreen()
@@ -73,12 +146,12 @@ class Navigator {
         gotoItemDetail_from_itemList(position)
     }
 
-    fun gotoItemDetail_from_itemList(position: Int = 0) {
+    private fun gotoItemDetail_from_itemList(position: Int = 0) {
         itemList { selectItem(position) }
         checkAtItemDetail()
     }
 
-    fun checkAtItemDetail() {
+    private fun checkAtItemDetail() {
         itemDetail { exists() }
     }
 

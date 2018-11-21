@@ -10,21 +10,29 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.support.annotation.IdRes
-import android.support.v4.app.DialogFragment
 import android.support.v7.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.R
 import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.extensions.view.AlertDialogHelper
+import mozilla.lockbox.extensions.view.AlertState
+import mozilla.lockbox.extensions.filterNotNull
+import mozilla.lockbox.flux.Action
+import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
 import mozilla.lockbox.store.RouteStore
+import mozilla.lockbox.support.asOptional
+import mozilla.lockbox.view.DialogFragment
 import mozilla.lockbox.view.FingerprintAuthDialogFragment
 import mozilla.lockbox.view.ItemDetailFragmentArgs
 
 class RoutePresenter(
     private val activity: AppCompatActivity,
+    private val dispatcher: Dispatcher = Dispatcher.shared,
     private val routeStore: RouteStore = RouteStore.shared
 ) : Presenter() {
     private lateinit var navController: NavController
@@ -34,45 +42,97 @@ class RoutePresenter(
         routeStore.routes.subscribe(this::route).addTo(compositeDisposable)
     }
 
-    private fun route(destination: RouteAction) {
-        when (destination) {
-            is RouteAction.Welcome -> navigateToFragment(destination, R.id.fragment_welcome)
-            is RouteAction.Login -> navigateToFragment(destination, R.id.fragment_fxa_login)
-            is RouteAction.ItemList -> navigateToFragment(destination, R.id.fragment_item_list)
-            is RouteAction.SettingList -> navigateToFragment(destination, R.id.fragment_setting)
-            is RouteAction.LockScreen -> navigateToFragment(destination, R.id.fragment_locked)
-            is RouteAction.Filter -> navigateToFragment(destination, R.id.fragment_filter)
+    private fun route(action: RouteAction) {
+        when (action) {
+            is RouteAction.Welcome -> navigateToFragment(action, R.id.fragment_welcome)
+            is RouteAction.Login -> navigateToFragment(action, R.id.fragment_fxa_login)
+            is RouteAction.ItemList -> navigateToFragment(action, R.id.fragment_item_list)
+            is RouteAction.SettingList -> navigateToFragment(action, R.id.fragment_setting)
+            is RouteAction.AccountSetting -> navigateToFragment(action, R.id.fragment_account_setting)
+            is RouteAction.LockScreen -> navigateToFragment(action, R.id.fragment_locked)
+            is RouteAction.Filter -> navigateToFragment(action, R.id.fragment_filter)
             is RouteAction.ItemDetail -> {
                 // Possibly overkill for passing a single id string,
                 // but it's typesafe™.
                 val bundle = ItemDetailFragmentArgs.Builder()
-                    .setItemId(destination.id)
+                    .setItemId(action.id)
                     .build()
                     .toBundle()
-                navigateToFragment(destination, R.id.fragment_item_detail, bundle)
+                navigateToFragment(action, R.id.fragment_item_detail, bundle)
             }
             is RouteAction.OpenWebsite -> {
-                openWebsite(destination.url)
+                openWebsite(action.url)
             }
-            is RouteAction.FingerprintDialog -> showDialogFragment(FingerprintAuthDialogFragment())
+            is RouteAction.SystemSetting -> {
+                openSetting(action)
+            }
+
+            is RouteAction.DialogFragment -> showDialogFragment(FingerprintAuthDialogFragment(), action)
+            is RouteAction.Dialog -> showDialog(action)
 
             is RouteAction.Back -> navController.popBackStack()
         }
     }
 
-    private fun showDialogFragment(dialogFragment: DialogFragment?) {
+    private fun showDialog(destination: RouteAction.Dialog) {
+        val dialogStateObservable = when (destination) {
+            is RouteAction.Dialog.SecurityDisclaimer -> showSecurityDisclaimerDialog()
+            is RouteAction.Dialog.UnlinkDisclaimer -> showUnlinkDisclaimerDialog()
+        }
+
+        dialogStateObservable
+            .map { alertState ->
+                val action: Action? = when (alertState) {
+                    AlertState.BUTTON_POSITIVE -> {
+                        destination.positiveButtonActions
+                    }
+                    AlertState.BUTTON_NEGATIVE -> {
+                        destination.negativeButtonActions
+                    }
+                }
+
+                action.asOptional()
+            }
+            .filterNotNull()
+            .subscribe(dispatcher::dispatch)
+            .addTo(compositeDisposable)
+    }
+
+    private fun showDialogFragment(dialogFragment: DialogFragment?, destination: RouteAction.DialogFragment) {
         if (dialogFragment != null) {
             val fragmentManager = activity.supportFragmentManager
             try {
                 dialogFragment.show(fragmentManager, dialogFragment.javaClass.name)
+                dialogFragment.setupDialog(destination.dialogTitle, destination.dialogSubtitle)
             } catch (e: IllegalStateException) {
                 log.error("Could not show dialog", e)
             }
         }
     }
 
+    private fun showSecurityDisclaimerDialog(): Observable<AlertState> {
+        return AlertDialogHelper.showAlertDialog(
+            activity,
+            R.string.no_device_security_title,
+            R.string.no_device_security_message,
+            R.string.set_up_security_button,
+            R.string.cancel
+        )
+    }
+
+    private fun showUnlinkDisclaimerDialog(): Observable<AlertState> {
+        return AlertDialogHelper.showAlertDialog(
+            activity,
+            R.string.disconnect_disclaimer_title,
+            R.string.disconnect_disclaimer_message,
+            R.string.disconnect,
+            R.string.cancel,
+            R.color.red
+        )
+    }
+
     private fun navigateToFragment(action: RouteAction, @IdRes destinationId: Int, args: Bundle? = null) {
-        var src = navController.currentDestination ?: return
+        val src = navController.currentDestination ?: return
         val srcId = src.id
         if (srcId == destinationId && args == null) {
             // No point in navigating if nothing has changed.
@@ -104,6 +164,7 @@ class RoutePresenter(
 
             Pair(R.id.fragment_item_list, R.id.fragment_item_detail) -> return R.id.action_itemList_to_itemDetail
             Pair(R.id.fragment_item_list, R.id.fragment_setting) -> return R.id.action_itemList_to_setting
+            Pair(R.id.fragment_item_list, R.id.fragment_account_setting) -> return R.id.action_itemList_to_accountSetting
             Pair(R.id.fragment_item_list, R.id.fragment_locked) -> return R.id.action_itemList_to_locked
             Pair(R.id.fragment_item_list, R.id.fragment_filter) -> return R.id.action_itemList_to_filter
 
@@ -116,5 +177,10 @@ class RoutePresenter(
     private fun openWebsite(url: String) {
         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         activity.startActivity(browserIntent, null)
+    }
+
+    private fun openSetting(settingAction: RouteAction.SystemSetting) {
+        val settingIntent = Intent(settingAction.setting.intentAction)
+        activity.startActivity(settingIntent, null)
     }
 }

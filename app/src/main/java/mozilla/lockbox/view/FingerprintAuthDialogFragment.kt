@@ -7,6 +7,7 @@
 package mozilla.lockbox.view
 
 import android.os.Bundle
+import android.support.annotation.StringRes
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +22,8 @@ import mozilla.lockbox.presenter.FingerprintDialogView
 class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
     private val _authCallback = PublishSubject.create<AuthCallback>()
     override val authCallback: Observable<AuthCallback> get() = _authCallback
+    private var titleId: Int? = null
+    private var subtitleId: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +33,17 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         presenter = FingerprintDialogPresenter(this)
         return inflater.inflate(R.layout.fragment_fingerprint_dialog, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        titleId?.let { view.dialogTitle.text = getString(it) }
+        subtitleId?.let {
+            view.dialogSubtitle.text = getString(it)
+            view.dialogSubtitle.visibility = View.VISIBLE
+        } ?: run {
+            view.dialogSubtitle.visibility = View.GONE
+        }
     }
 
     override fun onSucceeded() {
@@ -42,16 +56,21 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
             setImageResource(R.drawable.ic_fingerprint_success)
             postDelayed({
                 _authCallback.onNext(AuthCallback.OnAuth)
-                dismiss()
+                onDismiss()
             }, SUCCESS_DELAY_MILLIS)
         }
+    }
+
+    override fun setupDialog(@StringRes titleId: Int, @StringRes subtitleId: Int?) {
+        this.titleId = titleId
+        this.subtitleId = subtitleId
     }
 
     override fun onError(error: String?) {
         showError(error ?: getString(R.string.fingerprint_sensor_error))
         view!!.imageView.postDelayed({
             _authCallback.onNext(AuthCallback.OnError)
-            dismiss()
+            onDismiss()
         }, ERROR_TIMEOUT_MILLIS)
     }
 
@@ -62,9 +81,7 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
     override val cancelTapped: Observable<Unit>
         get() = view!!.cancel.clicks()
 
-    override fun onCancel() {
-        dismiss()
-    }
+    override fun onDismiss() = dismiss()
 
     private fun showError(error: CharSequence) {
         view!!.imageView.setImageResource(R.drawable.ic_fingerprint_fail)

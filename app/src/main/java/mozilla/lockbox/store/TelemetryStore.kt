@@ -30,7 +30,7 @@ open class TelemetryWrapper {
 
     open val ready: Boolean get() = (subject != null)
 
-    open fun apply(ctx: Context) {
+    open fun lateinitContext(ctx: Context) {
         val res = ctx.resources
         val enabled = false
         val config = TelemetryConfiguration(ctx)
@@ -65,8 +65,8 @@ open class TelemetryWrapper {
 
 open class TelemetryStore(
     val dispatcher: Dispatcher = Dispatcher.shared,
-    val wrapper: TelemetryWrapper = TelemetryWrapper()
-) {
+    private val wrapper: TelemetryWrapper = TelemetryWrapper()
+) : ContextStore {
     companion object {
         val shared = TelemetryStore()
     }
@@ -85,9 +85,10 @@ open class TelemetryStore(
             .addTo(compositeDisposable)
     }
 
-    fun applyContext(ctx: Context) {
-        wrapper.apply(ctx)
-        SettingStore.shared.sendUsageData
+    override fun injectContext(context: Context) {
+        wrapper.lateinitContext(context)
+        SettingStore.shared
+            .sendUsageData
             .subscribe(wrapper::update)
             .addTo(compositeDisposable)
     }

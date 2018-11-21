@@ -4,7 +4,7 @@
   ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
   -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
@@ -14,6 +14,10 @@
         <item name="android:windowTranslucentStatus">false</item>
         <item name="android:colorControlActivated">@color/switch_activated</item>
         <item name="android:background">@color/backgroundWhite</item>
+        <item name="actionMenuTextAppearance">@style/NavDrawerStyle</item>
+        <item name="android:actionMenuTextAppearance">@style/NavDrawerStyle</item>
+        <item name="actionMenuTextColor">@style/NavDrawerStyle</item>
+        <item name="android:titleTextAppearance">@style/NavDrawerStyle</item>
     </style>
     <style name="ToolBar" parent="ThemeOverlay.AppCompat.ActionBar">
         <item name="android:textColorPrimary">@android:color/white</item>
@@ -38,7 +42,7 @@
         <item name="android:textSize">16sp</item>
         <item name="android:fontFamily">sans-serif</item>
         <item name="android:textStyle">normal</item>
-        <item name="android:textColor">@color/opaque_black</item>
+        <item name="android:textColor">@color/black_87_percent</item>
         <item name="android:letterSpacing">0.01</item>
         <item name="android:lineSpacingExtra">8sp</item>
         <item name="android:backgroundTint">@color/white_E4</item>
@@ -52,11 +56,38 @@
         <item name="android:background">@color/backgroundGrey</item>
     </style>
 
+    <style name="AlertDialogStyle" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:textColorPrimary">@color/black_60_percent</item>
+        <item name="android:textColor">@color/black_87_percent</item>
+        <item name="buttonBarButtonStyle">@style/AlertButtonStyle</item>
+    </style>
+    <style name="AlertButtonStyle" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+    <style name="NavDrawerStyle" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:lineSpacingExtra">6.5sp</item>
+        <item name="android:drawableTint">@color/dark_gray_background</item>
+    </style>
+    <style name="NavDrawerButtonStyle" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:shadowColor">@color/backgroundWhite</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:drawableTint">@color/dark_gray_background</item>
+    </style>
     <style name="NoTitleDialog" parent="@android:style/Theme.Dialog">
         <item name="android:windowFrame">@null</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowIsFloating">true</item>
         <item name="android:background">@android:color/transparent</item>
+    </style>
+    <style name="SortItemsPopupAnimation">
+        <item name="android:windowEnterAnimation">@anim/sort_items_menu_enter</item>
     </style>
 </resources>

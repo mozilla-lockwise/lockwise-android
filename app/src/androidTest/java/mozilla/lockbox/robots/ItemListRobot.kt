@@ -32,9 +32,11 @@ class ItemListRobot : BaseTestRobot {
 
     fun tapFilterList() = click { id(R.id.filterButton) }
 
-    fun tapSettings() = menuOption(R.id.fragment_setting)
+    fun tapSettings() = menuOption(R.id.setting_menu_item)
 
-    fun tapLockNow() = menuOption(R.id.fragment_locked)
+    fun tapLockNow() = click { id(R.id.lockNow) }
+
+    fun tapAccountSetting() = menuOption(R.id.account_setting_menu_item)
 
     fun selectItem(position: Int = 0) = clickListItem(R.id.entriesView, position)
 }

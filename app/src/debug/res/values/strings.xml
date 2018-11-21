@@ -7,4 +7,5 @@
 <resources>
     <string name="activityName">UI Components</string>
     <string name="button_launch_fingerprint">Launch Fingerprint</string>
+    <string name="button_enable_fingerprint">Enable Fingerprint</string>
 </resources>
