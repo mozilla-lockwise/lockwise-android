@@ -78,6 +78,7 @@
     <!--suppress CheckTagEmptyBody -->
     <string name="empty_string"></string>
     <string name="default_avatar_url">https://firefoxusercontent.com/00000000000000000000000000000000</string>
+    <string name="syncing_entries">Syncing your entries…</string>
 
     <!--Accessibility: content descriptions-->
     <string name="copy_username_content_description">Copy your username</string>

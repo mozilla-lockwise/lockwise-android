@@ -1,88 +1,139 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ This Source Code Form is subject to the terms of the Mozilla Public
   ~ License, v. 2.0. If a copy of the MPL was not distributed with this
   ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
   -->
-<android.support.v4.widget.DrawerLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/appDrawer"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/appDrawer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.ItemListFragment">
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".view.ItemListFragment">
-    <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="false">
+        android:fitsSystemWindows="false"
+        android:orientation="vertical">
+
         <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:theme="@style/ToolBar">
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:theme="@style/ToolBar">
+
             <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
                 <Button
-                    android:id="@+id/sortButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:textAllCaps="false"
-                    android:drawableEnd="@drawable/ic_down_caret"
-                    android:contentDescription="@string/sort_description"
-                    android:textSize="20sp"
-                    style="@style/ToolbarButton"/>
+                        android:id="@+id/sortButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:textAllCaps="false"
+                        android:drawableEnd="@drawable/ic_down_caret"
+                        android:contentDescription="@string/sort_description"
+                        android:textSize="20sp"
+                        style="@style/ToolbarButton"/>
                 <Button
-                    android:id="@+id/filterButton"
-                    android:layout_width="fill_parent"
-                    android:layout_height="match_parent"
-                    android:drawableEnd="@drawable/ic_search"
-                    android:contentDescription="@string/search_description"
-                    android:layout_marginEnd="16dp"
-                    style="@style/ToolbarButton"/>
+                        android:id="@+id/filterButton"
+                        android:layout_width="fill_parent"
+                        android:layout_height="match_parent"
+                        android:drawableEnd="@drawable/ic_search"
+                        android:contentDescription="@string/search_description"
+                        android:layout_marginEnd="16dp"
+                        style="@style/ToolbarButton"/>
             </LinearLayout>
         </android.support.v7.widget.Toolbar>
+
         <android.support.v7.widget.RecyclerView
-                android:id="@+id/entriesView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-    </LinearLayout>
-    <android.support.design.widget.NavigationView
-            android:id="@+id/navView"
-            android:layout_width="wrap_content"
+            android:id="@+id/entriesView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <RelativeLayout
+            android:id="@+id/loadingView"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="start"
-            android:fitsSystemWindows="true"
-            android:theme="@style/NavDrawerStyle"
-            app:itemTextColor="@color/textGrey"
-            app:itemTextAppearance="@style/NavDrawerStyle"
-            app:menu="@menu/nav_menu"
-            app:headerLayout="@layout/nav_header">
-        <LinearLayout
-                android:layout_width="fill_parent"
+            android:background="@color/backgroundGrey">
+
+            <ImageView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:layout_alignParentBottom="true">
-            <Button
-                    android:id="@+id/lockNow"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:contentDescription="@null"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/ic_placeholder_entries" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_alignParentBottom="true"
+                android:layout_margin="10dp"
+                android:background="@color/dark_grey"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ProgressBar
+                    android:id="@+id/updateProgressBar"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@android:color/transparent"
+                    android:indeterminateDrawable="@drawable/progress_icon" />
+
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingStart="16dp"
-                    android:paddingTop="16dp"
-                    android:paddingBottom="16dp"
-                    android:drawableStart="@drawable/ic_lock"
-                    android:drawablePadding="32dp"
-                    android:text="@string/lock_now"
-                    android:textAlignment="viewStart"
-                    android:backgroundTint="@color/backgroundWhite"
-                    android:textColor="@color/textGrey"
-                    android:theme="@style/NavDrawerButtonStyle"
-                    android:elevation="0dp"
-                    android:stateListAnimator="@null"/>
+                    android:background="@android:color/transparent"
+                    android:fontFamily="sans-serif"
+                    android:letterSpacing="0.02"
+                    android:lineSpacingExtra="6sp"
+                    android:text="@string/syncing_entries"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    android:textStyle="normal" />
+            </LinearLayout>
+        </RelativeLayout>
+    </LinearLayout>
+
+    <android.support.design.widget.NavigationView
+        android:id="@+id/navView"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        android:theme="@style/NavDrawerStyle"
+        app:headerLayout="@layout/nav_header"
+        app:itemTextAppearance="@style/NavDrawerStyle"
+        app:itemTextColor="@color/textGrey"
+        app:menu="@menu/nav_menu">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="bottom">
+
+            <Button
+                android:id="@+id/lockNow"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="@color/backgroundWhite"
+                android:drawableStart="@drawable/ic_lock"
+                android:drawablePadding="32dp"
+                android:elevation="0dp"
+                android:paddingStart="16dp"
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp"
+                android:stateListAnimator="@null"
+                android:text="@string/lock_now"
+                android:textAlignment="viewStart"
+                android:textColor="@color/textGrey"
+                android:theme="@style/NavDrawerButtonStyle" />
         </LinearLayout>
     </android.support.design.widget.NavigationView>
 </android.support.v4.widget.DrawerLayout>

@@ -121,6 +121,10 @@ open class ItemListPresenterTest {
         override fun updateItemListSort(sort: Setting.ItemListSort) {
             itemListSort = sort
         }
+
+        override fun loading(isLoading: Boolean) {
+        }
+
     }
 
     class FakeDataStore : DataStore() {

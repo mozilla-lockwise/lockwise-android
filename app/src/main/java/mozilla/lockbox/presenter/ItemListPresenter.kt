@@ -38,6 +38,7 @@ interface ItemListView {
     fun updateItems(itemList: List<ItemViewModel>)
     fun updateAccountProfile(profile: AccountViewModel)
     fun updateItemListSort(sort: Setting.ItemListSort)
+    fun loading(isLoading: Boolean)
 }
 
 @ExperimentalCoroutinesApi
