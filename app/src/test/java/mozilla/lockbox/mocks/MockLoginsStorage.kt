@@ -120,8 +120,8 @@ open class MockLoginsStorage : LoginsStorage {
 class MockDataStoreSupport : DataStoreSupport {
     val storage = Mockito.spy<MockLoginsStorage>(MockLoginsStorage())
 
-    override val encryptionKey = "testing-key"
-    override val syncConfig = SyncUnlockInfo("mock-kid", "mock-at", "mock-synckey", "https://mock.example.com/oauth/token")
+    override var encryptionKey = "testing-key"
+    override var syncConfig: SyncUnlockInfo? = SyncUnlockInfo("mock-kid", "mock-at", "mock-synckey", "https://mock.example.com/oauth/token")
 
     override fun createLoginsStorage(): LoginsStorage = storage
 }

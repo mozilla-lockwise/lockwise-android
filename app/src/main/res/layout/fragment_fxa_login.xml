@@ -5,26 +5,30 @@
   ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
   -->
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".view.FxALoginFragment">
 
+<android.support.constraint.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/welcome_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".view.FxALoginFragment">
     <include layout="@layout/include_backable" />
 
     <WebView
             android:id="@+id/webView"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="?attr/actionBarSize"
             android:layout_weight="1"/>
 
     <Button
             android:id="@+id/skipFxA"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/transparent"/>
+            android:layout_height="wrap_content"
+            android:text="@string/placeholder_skip_fxa"
+            android:background="@android:color/holo_red_dark"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>
