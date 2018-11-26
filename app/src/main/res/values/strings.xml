@@ -84,4 +84,6 @@
     <string name="twenty_four_hours">24 hours</string>
     <string name="never">Never</string>
     <string name="placeholder_skip_fxa">Use test data</string>
+    <!--suppress CheckTagEmptyBody -->
+    <string name="empty_string"></string>
 </resources>

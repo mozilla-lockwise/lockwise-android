@@ -71,8 +71,8 @@ class SettingListAdapter : RecyclerView.Adapter<SettingViewHolder>() {
             }
             holder is ToggleSettingViewHolder && configuration is ToggleSettingConfiguration -> {
                 holder.title = configuration.title
-                holder.subtitle = configuration.subtitle
-                holder.buttonTitle = configuration.buttonTitle
+                holder.subtitle = configuration.subtitle ?: R.string.empty_string
+                holder.buttonTitle = configuration.buttonTitle ?: R.string.empty_string
                 configuration.toggleDriver
                     .subscribe {
                         holder.toggle.isChecked = it
