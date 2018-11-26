@@ -55,7 +55,9 @@ Mozilla Product Integrity provides embedded QA to work with the team throughout 
   
 ## Accessibility
 
-There are a number of best practices and accessibility features available to Android developers and we intend to build and test for:
+There are a number of best practices and accessibility features available to Android developers and we intend to build and test for.
+
+We've [documented the tools and techniques available to test accessibility](/accessibility.md) and ask that every pull request consider these before merging so as to not accumulate "debt" during development but also test all of the following at certain intervals in the project:
 
 ## 1. TalkBack support
 
