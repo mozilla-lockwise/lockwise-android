@@ -50,8 +50,11 @@ Mozilla Product Integrity provides embedded QA to work with the team throughout 
   - 06 View entry
   - 07 Copy / paste retrieval
   - 08 View password
-  - 09 Account management
-  - 10 Support
+  - 09 Autofill
+  - 10 Account management
+  - 11 Browser setting
+  - 12 Support
+  - 13 Telemetry
   
 ## Accessibility
 
