@@ -210,5 +210,8 @@ class ItemListFragment : CommonFragment(), ItemListView {
         } else {
             showAndRemove(view!!.entriesView, view!!.loadingView)
         }
+        view!!.filterButton.isClickable = !isLoading
+        view!!.filterButton.isEnabled = !isLoading
+        view!!.sortButton.isClickable = !isLoading
     }
 }
