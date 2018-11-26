@@ -13,6 +13,9 @@ import android.support.test.espresso.NoActivityResumedException
 import android.support.test.espresso.intent.Intents
 import br.com.concretesolutions.kappuccino.custom.intent.IntentMatcherInteractions.sentIntent
 import br.com.concretesolutions.kappuccino.custom.intent.IntentMatcherInteractions.stubIntent
+import mozilla.lockbox.action.LifecycleAction
+import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.robots.accountSettingScreen
 import mozilla.lockbox.robots.disconnectDisclaimer
 import mozilla.lockbox.robots.filteredItemList
@@ -26,7 +29,12 @@ import mozilla.lockbox.robots.welcome
 import org.junit.Assert
 
 class Navigator {
+    fun gotoWelcome() {
+        Dispatcher.shared.dispatch(RouteAction.Welcome)
+    }
+
     fun gotoFxALogin() {
+        gotoWelcome()
         welcome { tapGetStarted() }
         checkAtFxALogin()
     }
@@ -35,13 +43,17 @@ class Navigator {
         fxaLogin { exists() }
     }
 
-    private fun checkAtWelcome() {
+    fun checkAtWelcome() {
         welcome { exists() }
     }
 
-    fun gotoItemList() {
-        gotoFxALogin()
-        fxaLogin { tapPlaceholderLogin() }
+    fun gotoItemList(goManuallly: Boolean = false) {
+        if (goManuallly) {
+            gotoFxALogin()
+            fxaLogin { tapPlaceholderLogin() }
+        } else {
+            Dispatcher.shared.dispatch(LifecycleAction.UseTestData)
+        }
         checkAtItemList()
     }
 
@@ -123,12 +135,6 @@ class Navigator {
         disconnectDisclaimer { exists() }
     }
 
-    fun disconnectAccountFromDisclaimer() {
-        gotoDisconnectDisclaimer()
-        disconnectDisclaimer { tapDisconnect() }
-        checkAtWelcome()
-    }
-
     @Suppress("unused")
     fun goToLockScreen() {
         // not called until we can stub FingerprintStore in tests
@@ -163,9 +169,9 @@ class Navigator {
         closeSoftKeyboard()
         try {
             pressBack()
-            Assert.assertTrue("Expected to be still in the app, but aren't", remainInApplication)
+            Assert.assertTrue("Expected to have left, but haven't", remainInApplication)
         } catch (e: NoActivityResumedException) {
-            Assert.assertFalse("Expected to have left the app, but haven't", remainInApplication)
+            Assert.assertFalse("Expected to still be in the app, but aren't", remainInApplication)
         }
     }
 }

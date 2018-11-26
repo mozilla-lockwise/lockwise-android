@@ -8,6 +8,7 @@ package mozilla.lockbox
 
 import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
+import mozilla.lockbox.robots.disconnectDisclaimer
 import mozilla.lockbox.robots.filteredItemList
 import mozilla.lockbox.view.RootActivity
 import org.junit.Rule
@@ -35,7 +36,7 @@ open class RoutePresenterTest {
 
     @Test
     fun testItemList() {
-        navigator.gotoItemList()
+        navigator.gotoItemList(true)
         navigator.back(false)
     }
 
@@ -80,7 +81,9 @@ open class RoutePresenterTest {
     @Test
     fun testDisconnecting() {
         // note: this won't work until routing PR is merged
-//        navigator.disconnectAccountFromDisclaimer()
+        navigator.gotoDisconnectDisclaimer()
+        disconnectDisclaimer { tapDisconnect() }
+        navigator.checkAtWelcome()
     }
 
     @Test

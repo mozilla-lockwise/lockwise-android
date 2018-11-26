@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.R
@@ -76,10 +77,24 @@ class RoutePresenter(
             }
             .map { RouteAction.ItemList }
 
+        val dataStoreRoutes = dataStore.state
+            .map(this::dataStoreRoutes)
+
         routeStore.routes
             .mergeWith(useTestData)
+            .mergeWith(dataStoreRoutes)
+            .observeOn(mainThread())
             .subscribe(this::route)
             .addTo(compositeDisposable)
+    }
+
+    private fun dataStoreRoutes(storageState: State): RouteAction {
+        return when (storageState) {
+            is State.Unlocked -> RouteAction.ItemList
+            is State.Locked -> RouteAction.LockScreen
+            is State.Unprepared -> RouteAction.Welcome
+            else -> RouteAction.LockScreen
+        }
     }
 
     private fun route(action: RouteAction) {
