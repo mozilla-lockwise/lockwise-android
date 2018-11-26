@@ -7,6 +7,7 @@
 package mozilla.lockbox.store
 
 import io.reactivex.rxkotlin.addTo
+import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.DisposingTest
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
@@ -18,7 +19,6 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito
-import org.mozilla.sync15.logins.ServerPassword
 
 class DataStoreTest : DisposingTest() {
     private val support = MockDataStoreSupport()
@@ -54,13 +54,9 @@ class DataStoreTest : DisposingTest() {
         subject.list.subscribe(listObserver)
 
         stateObserver.values()
-        var waiter = createTestObserver<Unit>()
-        subject.unlock().subscribe(waiter)
-        waiter.assertComplete()
+        dispatcher.dispatch(DataStoreAction.Unlock)
 
-        waiter = createTestObserver()
-        subject.lock().subscribe(waiter)
-        waiter.assertComplete()
+        dispatcher.dispatch(DataStoreAction.Lock)
 
         stateObserver.apply {
             // TODO: figure out why the initialized state isn't here?
@@ -92,7 +88,7 @@ class DataStoreTest : DisposingTest() {
         Mockito.clearInvocations(support.storage)
 
         dispatcher.dispatch(DataStoreAction.Sync)
-        Mockito.verify(support.storage).sync(support.syncConfig!!)
+        Mockito.verify(support.storage).sync(support.syncConfig)
         Mockito.verify(support.storage).list()
         Mockito.clearInvocations(support.storage)
 
@@ -106,7 +102,9 @@ class DataStoreTest : DisposingTest() {
         val stateObserver = createTestObserver<State>()
         val listObserver = createTestObserver<List<ServerPassword>>()
 
-        support.storage.unlock("fdsfsdfds")
+        dispatcher.dispatch(DataStoreAction.Unlock)
+
+        Mockito.clearInvocations(support.storage)
 
         subject.state.subscribe(stateObserver)
         subject.list.subscribe(listObserver)
@@ -123,7 +121,7 @@ class DataStoreTest : DisposingTest() {
         val stateObserver = createTestObserver<State>()
         val listObserver = createTestObserver<List<ServerPassword>>()
 
-        support.storage.unlock("fdsfsdfds")
+        dispatcher.dispatch(DataStoreAction.Unlock)
 
         subject.state.subscribe(stateObserver)
         subject.list.subscribe(listObserver)
@@ -141,7 +139,7 @@ class DataStoreTest : DisposingTest() {
         val stateObserver = createTestObserver<State>()
         val listObserver = createTestObserver<List<ServerPassword>>()
 
-        support.storage.unlock("fdsfsdfds")
+        dispatcher.dispatch(DataStoreAction.Unlock)
 
         subject.state.subscribe(stateObserver)
         subject.list.subscribe(listObserver)

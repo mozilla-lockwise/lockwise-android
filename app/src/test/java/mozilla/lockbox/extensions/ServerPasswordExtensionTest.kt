@@ -6,10 +6,10 @@
 
 package mozilla.lockbox.extensions
 
+import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.model.ItemViewModel
 import org.junit.Assert
 import org.junit.Test
-import org.mozilla.sync15.logins.ServerPassword
 import java.util.Date
 
 class ServerPasswordExtensionTest {

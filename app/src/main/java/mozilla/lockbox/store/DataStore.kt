@@ -8,23 +8,18 @@ import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
-import io.reactivex.subjects.SingleSubject
+import mozilla.appservices.logins.LoginsStorage
+import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
-import mozilla.lockbox.log
-import mozilla.lockbox.model.SyncCredentials
 import mozilla.lockbox.support.DataStoreSupport
 import mozilla.lockbox.support.FixedDataStoreSupport
-import org.mozilla.sync15.logins.LoginsStorage
-import org.mozilla.sync15.logins.ServerPassword
-import org.mozilla.sync15.logins.SyncResult
-import org.mozilla.sync15.logins.SyncUnlockInfo
 
 open class DataStore(
     val dispatcher: Dispatcher = Dispatcher.shared,
-    var support: DataStoreSupport = FixedDataStoreSupport.shared
+    val support: DataStoreSupport = FixedDataStoreSupport.shared
 ) {
     companion object {
         val shared = DataStore()

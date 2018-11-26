@@ -14,6 +14,9 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.ReplaySubject
 import io.reactivex.subjects.Subject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.rx2.asSingle
 import mozilla.components.service.fxa.Config
 import mozilla.components.service.fxa.FirefoxAccount
 import mozilla.components.service.fxa.OAuthInfo
@@ -21,7 +24,6 @@ import mozilla.lockbox.action.AccountAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
-import mozilla.lockbox.model.SyncCredentials
 import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.FxAProfile
 import mozilla.lockbox.support.Optional
@@ -29,6 +31,9 @@ import mozilla.lockbox.support.SecurePreferences
 import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.support.toFxAProfile
 
+private const val FIREFOX_ACCOUNT_KEY = "firefox-account"
+
+@ExperimentalCoroutinesApi
 open class AccountStore(
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val securePreferences: SecurePreferences = SecurePreferences.shared
@@ -40,12 +45,12 @@ open class AccountStore(
     internal val compositeDisposable = CompositeDisposable()
 
     private val storedAccountJSON: String?
-        get() = securePreferences.getString(Constant.Key.firefoxAccount)
+        get() = securePreferences.getString(FIREFOX_ACCOUNT_KEY)
 
     private var fxa: FirefoxAccount? = null
 
     open val loginURL: Observable<String> = ReplaySubject.createWithSize(1)
-    val syncCredentials: Observable<Optional<SyncCredentials>> = ReplaySubject.createWithSize(1)
+    val oauthInfo: Observable<Optional<OAuthInfo>> = ReplaySubject.createWithSize(1)
     val profile: Observable<Optional<FxAProfile>> = ReplaySubject.createWithSize(1)
 
     init {
@@ -69,65 +74,68 @@ open class AccountStore(
             .addTo(compositeDisposable)
 
         storedAccountJSON?.let { accountJSON ->
-            FirefoxAccount.fromJSONString(accountJSON).whenComplete {
-                this.fxa = it
-                this.generateLoginURL()
-                this.populateAccountInformation()
-            }
+            this.fxa = FirefoxAccount.fromJSONString(accountJSON)
+            generateLoginURL()
+            populateAccountInformation()
         } ?: run {
             this.generateNewFirefoxAccount()
         }
     }
 
     private fun populateAccountInformation() {
-        fxa?.toJSONString()?.let {
-            securePreferences.putString(Constant.Key.firefoxAccount, it)
-        }
-
         val profileSubject = profile as Subject
-        fxa?.getProfile()?.whenComplete {
-            profileSubject.onNext(it.toFxAProfile().asOptional())
-        }
+        val oauthSubject = oauthInfo as Subject
 
-        val syncCredentialsSubject = syncCredentials as Subject
-        fxa?.getOAuthToken(Constant.FxA.scopes)?.whenComplete {
-            val credentials = generateSyncCredentials(it)
-            syncCredentialsSubject.onNext(credentials.asOptional())
-        }
-    }
+        fxa?.let { fxa ->
+            securePreferences.putString(FIREFOX_ACCOUNT_KEY, fxa.toJSONString())
 
-    private fun generateSyncCredentials(oauthInfo: OAuthInfo): SyncCredentials? {
-        val fxa = fxa ?: return null
-        val tokenServerURL = fxa.getTokenServerEndpointURL() ?: return null
-        return SyncCredentials(oauthInfo, tokenServerURL, Constant.FxA.oldSyncScope)
+            fxa.getProfile().asSingle(Dispatchers.Default)
+                .subscribe { profile ->
+                    profileSubject.onNext(profile.toFxAProfile().asOptional())
+                }
+                .addTo(compositeDisposable)
+
+            // can't use asSingle here because the OAuthToken is optional :-/
+            Observable
+                .create<Optional<OAuthInfo>> { emitter ->
+                    val oauthDeferred = fxa.getCachedOAuthToken(Constant.FxA.scopes)
+                    oauthDeferred.invokeOnCompletion {
+                        emitter.onNext(oauthDeferred.getCompleted().asOptional())
+                    }
+                }
+                .subscribe(oauthSubject)
+        }
     }
 
     private fun generateNewFirefoxAccount() {
-        Config.release().whenComplete {
-            this.fxa = FirefoxAccount(it, Constant.FxA.clientID, Constant.FxA.redirectUri)
-            this.generateLoginURL()
+        Config.release().asSingle(Dispatchers.Default)
+            .subscribe { config ->
+                fxa = FirefoxAccount(config, Constant.FxA.clientID, Constant.FxA.redirectUri)
+                generateLoginURL()
+            }
+            .addTo(compositeDisposable)
 
-            (this.syncCredentials as Subject).onNext(Optional(null))
-            (this.profile as Subject).onNext(Optional(null))
-        }
+        (oauthInfo as Subject).onNext(Optional(null))
+        (profile as Subject).onNext(Optional(null))
     }
 
     private fun generateLoginURL() {
-        this.fxa?.beginOAuthFlow(Constant.FxA.scopes, true)?.whenComplete {
-            (this.loginURL as Subject).onNext(it)
-        }
+        fxa?.beginOAuthFlow(Constant.FxA.scopes, true)?.asSingle(Dispatchers.Default)?.subscribe { url ->
+            (this.loginURL as Subject).onNext(url)
+        }?.addTo(compositeDisposable)
     }
 
     private fun oauthLogin(url: String) {
         val uri = Uri.parse(url)
-        val code = uri.getQueryParameter("code")
-        val state = uri.getQueryParameter("state")
+        val codeQP = uri.getQueryParameter("code")
+        val stateQP = uri.getQueryParameter("state")
 
-        code?.let { it ->
-            state?.let { state ->
-                fxa?.completeOAuthFlow(it, state)?.whenComplete {
+        codeQP?.let { code ->
+            stateQP?.let { state ->
+                fxa?.completeOAuthFlow(code, state)?.asSingle(Dispatchers.Default)?.subscribe { oauthInfo ->
+                    (this.oauthInfo as Subject).onNext(oauthInfo.asOptional())
                     this.populateAccountInformation()
-                }
+                }?.addTo(compositeDisposable)
             }
         }
     }
@@ -136,7 +144,7 @@ open class AccountStore(
         CookieManager.getInstance().removeAllCookies { }
         WebStorage.getInstance().deleteAllData()
 
-        this.securePreferences.remove(Constant.Key.firefoxAccount)
+        this.securePreferences.remove(FIREFOX_ACCOUNT_KEY)
         this.generateNewFirefoxAccount()
     }
 }
