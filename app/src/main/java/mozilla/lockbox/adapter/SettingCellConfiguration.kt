@@ -6,28 +6,31 @@
 
 package mozilla.lockbox.adapter
 
+import android.support.annotation.StringRes
 import io.reactivex.Observable
 import io.reactivex.functions.Consumer
 
 abstract class SettingCellConfiguration(
-    open val title: String,
-    open val subtitle: String? = null
+    @StringRes open val title: Int? = null,
+    @StringRes open val subtitle: Int? = null
 )
 
+@Suppress("WRONG_ANNOTATION_TARGET_WITH_USE_SITE_TARGET_ON_TYPE")
 class TextSettingConfiguration(
-    override val title: String,
-    override val subtitle: String? = null,
-    val detailText: String
+    @StringRes override val title: Int,
+    @StringRes override val subtitle: Int? = null,
+    val detailTextDriver: Observable<@param:StringRes Int>,
+    val clickListener: Consumer<Unit>
 ) : SettingCellConfiguration(title, subtitle)
 
 class ToggleSettingConfiguration(
-    override val title: String,
-    override val subtitle: String? = null,
-    val buttonTitle: String? = null,
+    @StringRes override val title: Int,
+    override val subtitle: Int? = null,
+    @StringRes val buttonTitle: Int? = null,
     val toggleDriver: Observable<Boolean>,
     val toggleObserver: Consumer<Boolean>
 ) : SettingCellConfiguration(title)
 
 class AppVersionSettingConfiguration(
     val text: String
-) : SettingCellConfiguration(text)
+) : SettingCellConfiguration()

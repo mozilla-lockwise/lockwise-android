@@ -6,7 +6,7 @@
 
 package mozilla.lockbox.support
 
-import mozilla.lockbox.model.ItemListSort
+import mozilla.lockbox.action.Setting
 
 object Constant {
     object App {
@@ -24,9 +24,11 @@ object Constant {
         val scopes = arrayOf(profileScope, lockboxScope, oldSyncScope)
     }
 
-    object Setting {
-        val defaultItemListSort = ItemListSort.ALPHABETICALLY
-        val defaultSendUsageData = true
+    object SettingDefault {
+        val itemListSort = Setting.ItemListSort.ALPHABETICALLY
+        val autoLockTime = Setting.AutoLockTime.FiveMinutes
+        const val sendUsageData = true
+        const val unlockWithFingerprint = false
     }
 
     object Key {

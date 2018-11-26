@@ -6,7 +6,6 @@
 
 package mozilla.lockbox.adapter
 
-import android.content.Context
 import android.support.v7.widget.RecyclerView
 import io.reactivex.Observable
 import io.reactivex.functions.Consumer
@@ -17,28 +16,32 @@ import mozilla.lockbox.TestConsumer
 import org.robolectric.annotation.Config
 
 @Config(packageName = "mozilla.lockbox")
-class ListAdapterTestHelper(ctx: Context) {
-    var context: Context = ctx
+class ListAdapterTestHelper {
+    private val textDriverFake = Observable.just(R.string.five_minutes)
     private val toggleDriverFake = Observable.just(false)
     private val toggleObserverFake = TestObserver<Boolean>()
     private val toggleConsumerFake = TestConsumer(toggleObserverFake) as Consumer<Boolean>
+    private val textClicksObserverFake = TestObserver<Unit>()
+    private val textClicksConsumerFake = TestConsumer(toggleObserverFake) as Consumer<Unit>
     private val expectedVersionNumber = BuildConfig.VERSION_NAME
 
     fun createListOfSettings(): List<SettingCellConfiguration> {
 
         return listOf(
             ToggleSettingConfiguration(
-                title = context.getString(R.string.unlock),
+                title = R.string.unlock,
                 toggleDriver = toggleDriverFake,
                 toggleObserver = toggleConsumerFake
             ),
             TextSettingConfiguration(
-                title = context.getString(R.string.auto_lock),
-                detailText = context.getString(R.string.auto_lock_option)
+                title = R.string.auto_lock,
+                detailTextDriver = textDriverFake,
+                clickListener = textClicksConsumerFake
             )
         )
     }
 
+    @Suppress("UNCHECKED_CAST")
     fun createSectionedAdapter(
         settingAdapter: SettingListAdapter,
         sectionLayoutId: Int = 0,
@@ -54,19 +57,20 @@ class ListAdapterTestHelper(ctx: Context) {
     fun createAccurateListOfSettings(isFingerprintAvailable: Boolean): List<SettingCellConfiguration> {
         var settings = listOf(
             TextSettingConfiguration(
-                title = "Auto lock",
-                detailText = "5 minutes"
+                title = R.string.auto_lock,
+                detailTextDriver = textDriverFake,
+                clickListener = textClicksConsumerFake
             ),
             ToggleSettingConfiguration(
-                title = context.getString(R.string.autofill),
-                subtitle = context.getString(R.string.autofill_summary),
+                title = R.string.autofill,
+                subtitle = R.string.autofill_summary,
                 toggleDriver = toggleDriverFake,
                 toggleObserver = toggleConsumerFake
             ),
             ToggleSettingConfiguration(
-                title = context.getString(R.string.send_usage_data),
-                subtitle = context.getString(R.string.send_usage_data_summary),
-                buttonTitle = context.getString(R.string.learn_more),
+                title = R.string.send_usage_data,
+                subtitle = R.string.send_usage_data_summary,
+                buttonTitle = R.string.learn_more,
                 toggleDriver = toggleDriverFake,
                 toggleObserver = toggleConsumerFake
             ),
@@ -77,7 +81,7 @@ class ListAdapterTestHelper(ctx: Context) {
         if (isFingerprintAvailable) {
             settings = listOf(
                 ToggleSettingConfiguration(
-                    title = context.getString(R.string.unlock),
+                    title = R.string.unlock,
                     toggleDriver = toggleDriverFake,
                     toggleObserver = toggleConsumerFake
                 )

@@ -9,6 +9,7 @@
 
 package mozilla.lockbox.adapter
 
+import android.support.annotation.StringRes
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -44,7 +45,8 @@ class SectionedAdapter(
 
     override fun onBindViewHolder(sectionViewHolder: RecyclerView.ViewHolder, position: Int) {
         if (isSectionHeaderPosition(position)) {
-            (sectionViewHolder as SectionViewHolder).title.text = sections.get(position).title
+            val title = sectionViewHolder.itemView.context.getString(sections.get(position).title)
+            (sectionViewHolder as SectionViewHolder).title.text = title
         } else {
             baseAdapter.onBindViewHolder(sectionViewHolder, sectionedPositionToPosition(position))
         }
@@ -57,9 +59,9 @@ class SectionedAdapter(
             baseAdapter.getItemViewType(sectionedPositionToPosition(position)) + 1
     }
 
-    class Section(internal var firstPosition: Int, title: CharSequence) {
+    class Section(internal var firstPosition: Int, @StringRes title: Int) {
         internal var sectionedPosition: Int = 0
-        var title: CharSequence
+        @StringRes var title: Int
             internal set
 
         init {

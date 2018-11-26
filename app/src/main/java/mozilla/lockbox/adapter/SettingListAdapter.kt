@@ -9,6 +9,7 @@ package mozilla.lockbox.adapter
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.R
@@ -59,12 +60,19 @@ class SettingListAdapter : RecyclerView.Adapter<SettingViewHolder>() {
         when {
             holder is TextSettingViewHolder && configuration is TextSettingConfiguration -> {
                 holder.title = configuration.title
-                holder.detailText = configuration.detailText
+                holder.itemView.clicks()
+                    .subscribe(configuration.clickListener)
+                    .addTo(compositeDisposable)
+                configuration.detailTextDriver
+                    .subscribe {
+                        holder.detailTextRes = it
+                    }
+                    .addTo(compositeDisposable)
             }
             holder is ToggleSettingViewHolder && configuration is ToggleSettingConfiguration -> {
                 holder.title = configuration.title
-                holder.subtitle = configuration.subtitle
-                holder.buttonTitle = configuration.buttonTitle
+                holder.subtitle = configuration.subtitle ?: R.string.empty_string
+                holder.buttonTitle = configuration.buttonTitle ?: R.string.empty_string
                 configuration.toggleDriver
                     .subscribe {
                         holder.toggle.isChecked = it
