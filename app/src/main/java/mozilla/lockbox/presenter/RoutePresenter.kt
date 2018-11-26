@@ -30,6 +30,7 @@ import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
+import mozilla.lockbox.model.SyncCredentials
 import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.DataStore.State
@@ -57,17 +58,10 @@ class RoutePresenter(
         navController = Navigation.findNavController(activity, R.id.fragment_nav_host)
 
         // Mediates credentials from the AccountStore, into the DataStore.
-        Observables.combineLatest(
-                accountStore.syncCredentials.filterNotNull(),
-                dataStore.state)
-            .subscribe {
-                val action = when (it.second) {
-                    is State.Unprepared -> DataStoreAction.UpdateCredentials(it.first)
-                    is State.Unlocked -> DataStoreAction.Sync
-                    else -> return@subscribe
-                }
-                dispatcher.dispatch(action)
-            }
+        Observables.combineLatest( accountStore.syncCredentials.filterNotNull(), dataStore.state)
+            .map { accountToDataStoreActions(it).asOptional() }
+            .filterNotNull()
+            .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
 
         val useTestData = lifecycleStore.lifecycleFilter
@@ -97,6 +91,15 @@ class RoutePresenter(
         }
     }
 
+    private fun accountToDataStoreActions(it: Pair<SyncCredentials, State>): Action? {
+        val (credentials, state) = it
+        return when (state) {
+            is State.Unprepared -> DataStoreAction.UpdateCredentials(credentials)
+            is State.Unlocked -> DataStoreAction.Sync
+            else -> null
+        }
+    }
+
     private fun route(action: RouteAction) {
         when (action) {
             is RouteAction.Welcome -> navigateToFragment(action, R.id.fragment_welcome)
@@ -106,29 +109,22 @@ class RoutePresenter(
             is RouteAction.AccountSetting -> navigateToFragment(action, R.id.fragment_account_setting)
             is RouteAction.LockScreen -> navigateToFragment(action, R.id.fragment_locked)
             is RouteAction.Filter -> navigateToFragment(action, R.id.fragment_filter)
-            is RouteAction.ItemDetail -> {
-                // Possibly overkill for passing a single id string,
-                // but it's typesafe™.
-                val bundle = ItemDetailFragmentArgs.Builder()
-                    .setItemId(action.id)
-                    .build()
-                    .toBundle()
-                navigateToFragment(action, R.id.fragment_item_detail, bundle)
-            }
-            is RouteAction.OpenWebsite -> {
-                openWebsite(action.url)
-            }
-            is RouteAction.SystemSetting -> {
-                openSetting(action)
-            }
-
+            is RouteAction.ItemDetail -> navigateToFragment(action, R.id.fragment_item_detail, bundle(action))
+            is RouteAction.OpenWebsite -> openWebsite(action.url)
+            is RouteAction.SystemSetting -> openSetting(action)
             is RouteAction.DialogFragment -> showDialogFragment(FingerprintAuthDialogFragment(), action)
             is RouteAction.Dialog -> showDialog(action)
-
             is RouteAction.AutoLockSetting -> showAutoLockSelections()
-
-            is RouteAction.Back -> navController.popBackStack()
         }
+    }
+
+    private fun bundle(action: RouteAction.ItemDetail): Bundle {
+        // Possibly overkill for passing a single id string,
+        // but it's typesafe™.
+        return ItemDetailFragmentArgs.Builder()
+            .setItemId(action.id)
+            .build()
+            .toBundle()
     }
 
     private fun showDialog(destination: RouteAction.Dialog) {
@@ -226,6 +222,7 @@ class RoutePresenter(
             // Without being able to detect if we're in developer mode,
             // it is too dangerous to RuntimeException.
             log.error(
+
                 "Cannot route from ${src.label} to $action. " +
                     "This is a developer bug, fixable by adding an action to graph_main.xml"
             )
