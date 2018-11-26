@@ -25,9 +25,11 @@ import android.widget.Button
 import android.widget.ListPopupWindow
 import com.jakewharton.rxbinding2.support.v7.widget.navigationClicks
 import com.jakewharton.rxbinding2.view.clicks
+import com.squareup.picasso.Picasso
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
+import jp.wasabeef.picasso.transformations.CropCircleTransformation
 import kotlinx.android.synthetic.main.fragment_item_list.view.*
 import mozilla.lockbox.R
 import mozilla.lockbox.adapter.ItemListAdapter
@@ -127,8 +129,23 @@ class ItemListFragment : CommonFragment(), ItemListView {
         }
     }
 
-    override fun setDisplayName(text: String) {
+    // sets large text in header as either email or display name
+    override fun setDisplayEmailName(text: String) {
+        view!!.navView.menuHeader.displayName.text = text
+    }
+
+    // sets smaller text in header as email
+    override fun setAccountName(text: String) {
         view!!.navView.menuHeader.accountName.text = text
+    }
+
+    override fun setAvatarFromURL(url: String) {
+        Picasso.get()
+            .load(url)
+            .placeholder(R.drawable.ic_avatar_placeholder)
+            .resize(80, 80)
+            .transform(CropCircleTransformation())
+            .into(view!!.profileImage)
     }
 
     private fun scrollToTop() {

@@ -37,7 +37,9 @@ interface ItemListView {
     val sortItemSelection: Observable<Setting.ItemListSort>
     fun updateItems(itemList: List<ItemViewModel>)
     fun updateItemListSort(sort: Setting.ItemListSort)
-    fun setDisplayName(text: String)
+    fun setDisplayEmailName(text: String)
+    fun setAccountName(text: String)
+    fun setAvatarFromURL(url: String)
 }
 
 @ExperimentalCoroutinesApi
@@ -107,7 +109,33 @@ class ItemListPresenter(
             }
             .filterNotNull()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(view::setDisplayName, {
+            .subscribe(view::setAccountName, {
+                log.error("Lifecycle problem caused ${it.javaClass.simpleName} here", it)
+            }, {
+                log.info("onCompleted: ${javaClass.simpleName}")
+            })
+            .addTo(compositeDisposable)
+
+        accountStore.profile
+            .map {
+                it.value?.email.asOptional()
+            }
+            .filterNotNull()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(view::setDisplayEmailName, {
+                log.error("Lifecycle problem caused ${it.javaClass.simpleName} here", it)
+            }, {
+                log.info("onCompleted: ${javaClass.simpleName}")
+            })
+            .addTo(compositeDisposable)
+
+        accountStore.profile
+            .map {
+                it.value?.avatar.asOptional()
+            }
+            .filterNotNull()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(view::setAvatarFromURL, {
                 log.error("Lifecycle problem caused ${it.javaClass.simpleName} here", it)
             }, {
                 log.info("onCompleted: ${javaClass.simpleName}")
