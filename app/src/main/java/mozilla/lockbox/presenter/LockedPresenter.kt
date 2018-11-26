@@ -44,12 +44,9 @@ class LockedPresenter(
             .addTo(compositeDisposable)
 
         view.unlockConfirmed
+            .filter { it }
             .subscribe {
-                if (it) {
-                    dispatcher.dispatch(RouteAction.ItemList)
-                } else {
-                    dispatcher.dispatch(RouteAction.LockScreen)
-                }
+                unlock()
             }
             .addTo(compositeDisposable)
 
@@ -57,12 +54,16 @@ class LockedPresenter(
             .subscribe {
                 if (it is FingerprintAuthAction.OnAuthentication) {
                     when (it.authCallback) {
-                        is AuthCallback.OnAuth -> dispatcher.dispatch(RouteAction.ItemList)
+                        is AuthCallback.OnAuth -> unlock()
                         is AuthCallback.OnError -> unlockFallback()
                     }
                 }
             }
             .addTo(compositeDisposable)
+    }
+
+    private fun unlock() {
+        dispatcher.dispatch(RouteAction.ItemList)
     }
 
     private fun unlockFallback() {

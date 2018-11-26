@@ -127,6 +127,6 @@ class LockedPresenterTest {
     @Test
     fun `handle unlock confirmed false`() {
         view.unlockConfirmedStub.onNext(false)
-        dispatcherObserver.assertLastValue(RouteAction.LockScreen)
+        Assert.assertEquals(0, dispatcherObserver.valueCount())
     }
 }
