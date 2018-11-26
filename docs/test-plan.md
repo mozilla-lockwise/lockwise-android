@@ -79,14 +79,14 @@ The interface is legible and tappable by designing and testing for:
   
 ### Out of Scope
 
-1. Internal [metrics/analytics][4] review and testing (see [metrics.md][5])
-2. Internal [security review][6] (performed separately)
+1. Internal metrics/analytics review and testing (see [metrics.md][5])
+2. Internal security review (performed separately)
 
 ---
 
-[1]: https://github.com/mozilla-lockbox/lockbox-ios
-[2]: https://testrail.stage.mozaws.net/index.php?/projects/overview/52
-[3]: https://docs.google.com/document/d/1q2xYGsoB0ylfir-Bkg8BwP4Aj1H6OjjJHW2FmX-JexU/edit#
-[4]: https://github.com/mozilla-lockbox/lockbox-ios/issues/202
+[1]: https://github.com/mozilla-lockbox/lockbox-android
+[2]: https://testrail.stage.mozaws.net/index.php?/suites/view/3060&group_by=cases:section_id&group_order=asc
+[3]: https://docs.google.com/document/d/1FfyD7A0qB-WGT2dx3pA5CzS764DVQyfXLs9RVbEpw0s/edit#heading=h.nz3yfasvpfpu
+[4]: https://github.com/mozilla-lockbox/lockbox-android/issues/202
 [5]: /metrics.md 
 [6]: https://github.com/mozilla-lockbox/lockbox-ios/issues/51
