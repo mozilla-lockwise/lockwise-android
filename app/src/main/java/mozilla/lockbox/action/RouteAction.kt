@@ -15,6 +15,7 @@ sealed class RouteAction : Action {
     object Login : RouteAction()
     object SettingList : RouteAction()
     object AccountSetting : RouteAction()
+    object AutoLockSetting : RouteAction()
     object Back : RouteAction()
     object LockScreen : RouteAction()
     object Filter : RouteAction()
@@ -23,8 +24,8 @@ sealed class RouteAction : Action {
     data class SystemSetting(val setting: SettingIntent) : RouteAction()
 
     sealed class Dialog(
-        val positiveButtonActions: Action? = null,
-        val negativeButtonActions: Action? = null
+        val positiveButtonAction: Action? = null,
+        val negativeButtonAction: Action? = null
     ) : RouteAction() {
         object SecurityDisclaimer : Dialog(RouteAction.SystemSetting(SettingIntent.Security))
         object UnlinkDisclaimer : Dialog(LifecycleAction.UserReset)

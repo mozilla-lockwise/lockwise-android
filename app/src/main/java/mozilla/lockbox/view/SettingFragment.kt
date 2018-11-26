@@ -38,7 +38,7 @@ class SettingFragment : BackableFragment(), SettingView {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        presenter = SettingPresenter(this, context!!)
+        presenter = SettingPresenter(this)
 
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_setting, container, false)
@@ -64,5 +64,10 @@ class SettingFragment : BackableFragment(), SettingView {
     ) {
         adapter.setItems(settings)
         sectionedAdapter.setSections(sections)
+    }
+
+    override fun onDestroyView() {
+        adapter.onDetachedFromRecyclerView(view!!.settingList)
+        super.onDestroyView()
     }
 }

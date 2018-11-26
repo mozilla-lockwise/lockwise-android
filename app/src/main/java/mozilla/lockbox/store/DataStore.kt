@@ -13,15 +13,18 @@ import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.log
+import mozilla.lockbox.model.SyncCredentials
 import mozilla.lockbox.support.DataStoreSupport
 import mozilla.lockbox.support.FixedDataStoreSupport
 import org.mozilla.sync15.logins.LoginsStorage
 import org.mozilla.sync15.logins.ServerPassword
 import org.mozilla.sync15.logins.SyncResult
+import org.mozilla.sync15.logins.SyncUnlockInfo
 
 open class DataStore(
     val dispatcher: Dispatcher = Dispatcher.shared,
-    val support: DataStoreSupport = FixedDataStoreSupport.shared
+    var support: DataStoreSupport = FixedDataStoreSupport.shared
 ) {
     companion object {
         val shared = DataStore()
@@ -38,10 +41,9 @@ open class DataStore(
     private val stateSubject: BehaviorRelay<State> = BehaviorRelay.createDefault(State.Unprepared)
     private val listSubject: BehaviorRelay<List<ServerPassword>> = BehaviorRelay.createDefault(emptyList())
 
-    private val backend: LoginsStorage
+    private var backend: LoginsStorage
 
     init {
-        // TODO: Replace test data with real backend
         backend = support.createLoginsStorage()
 
         // handle state changes
@@ -68,9 +70,22 @@ open class DataStore(
                     is DataStoreAction.Sync -> sync()
                     is DataStoreAction.Touch -> touch(action.id)
                     is DataStoreAction.Reset -> reset()
+                    is DataStoreAction.UpdateCredentials -> updateCredentials(action.syncCredentials)
                 }
             }
             .addTo(compositeDisposable)
+    }
+
+    // Warning: this is testing code.
+    // It's only called immediately after the user has pressed "Use Test Data".
+    fun resetSupport(support: DataStoreSupport) {
+        if (stateSubject.value != State.Unprepared) {
+            backend.reset()
+        }
+        this.support = support
+        this.backend = support.createLoginsStorage()
+        // we shouldn't set the status of this to Unprepared,
+        // as we don't want to change any UI.
     }
 
     private fun touch(id: String) {
@@ -110,12 +125,14 @@ open class DataStore(
             unlockSubject.onSuccess(Unit)
             SyncResult.fromValue(Unit)
         }.thenCatch {
+            log.error("Error unlocking", it)
             unlockSubject.onError(it)
             SyncResult.fromValue(Unit)
         }
 
         return unlockSubject.toObservable()
     }
+
     fun lock(): Observable<Unit> {
         val lockSubject = SingleSubject.create<Unit>()
 
@@ -132,6 +149,7 @@ open class DataStore(
             lockSubject.onSuccess(Unit)
             SyncResult.fromValue(Unit)
         }.thenCatch {
+            log.error("Error locking", it)
             lockSubject.onError(it)
             SyncResult.fromValue(Unit)
         }
@@ -142,12 +160,19 @@ open class DataStore(
     fun sync(): Observable<Unit> {
         val syncSubject = SingleSubject.create<Unit>()
 
-        backend.sync(support.syncConfig).then {
+        val syncConfig = support.syncConfig ?: return {
+            val throwable = IllegalStateException("syncConfig should already be defined")
+            syncSubject.onError(throwable)
+            stateSubject.accept(State.Errored(throwable))
+            syncSubject.toObservable()
+        }()
+        backend.sync(syncConfig).then {
             updateList()
         }.then {
             syncSubject.onSuccess(Unit)
             SyncResult.fromValue(Unit)
         }.thenCatch {
+            log.error("Error syncing", it)
             stateSubject.accept(State.Errored(it))
             syncSubject.onError(it)
             SyncResult.fromValue(Unit)
@@ -183,5 +208,17 @@ open class DataStore(
             .thenCatch {
                 resetState()
             }
+    }
+
+    private fun updateCredentials(credentials: SyncCredentials): Observable<Unit>? {
+        if (!credentials.isValid) {
+            return null
+        }
+
+        credentials.apply {
+            support.syncConfig = SyncUnlockInfo(kid, accessToken, syncKey, tokenServerURL)
+        }
+
+        return unlock()
     }
 }

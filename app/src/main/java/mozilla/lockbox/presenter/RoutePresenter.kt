@@ -14,9 +14,14 @@ import android.support.v7.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import io.reactivex.Observable
+import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.R
+import mozilla.lockbox.action.DataStoreAction
+import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.action.Setting
+import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.extensions.view.AlertDialogHelper
 import mozilla.lockbox.extensions.view.AlertState
 import mozilla.lockbox.extensions.filterNotNull
@@ -24,7 +29,13 @@ import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
+import mozilla.lockbox.store.AccountStore
+import mozilla.lockbox.store.DataStore
+import mozilla.lockbox.store.DataStore.State
+import mozilla.lockbox.store.LifecycleStore
 import mozilla.lockbox.store.RouteStore
+import mozilla.lockbox.store.SettingStore
+import mozilla.lockbox.support.FixedDataStoreSupport
 import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.view.DialogFragment
 import mozilla.lockbox.view.FingerprintAuthDialogFragment
@@ -33,13 +44,42 @@ import mozilla.lockbox.view.ItemDetailFragmentArgs
 class RoutePresenter(
     private val activity: AppCompatActivity,
     private val dispatcher: Dispatcher = Dispatcher.shared,
-    private val routeStore: RouteStore = RouteStore.shared
+    private val routeStore: RouteStore = RouteStore.shared,
+    private val settingStore: SettingStore = SettingStore.shared,
+    private val dataStore: DataStore = DataStore.shared,
+    private val accountStore: AccountStore = AccountStore.shared,
+    private val lifecycleStore: LifecycleStore = LifecycleStore.shared
 ) : Presenter() {
     private lateinit var navController: NavController
 
     override fun onViewReady() {
         navController = Navigation.findNavController(activity, R.id.fragment_nav_host)
-        routeStore.routes.subscribe(this::route).addTo(compositeDisposable)
+
+        // Mediates credentials from the AccountStore, into the DataStore.
+        Observables.combineLatest(
+                accountStore.syncCredentials.filterNotNull(),
+                dataStore.state)
+            .subscribe {
+                val action = when (it.second) {
+                    is State.Unprepared -> DataStoreAction.UpdateCredentials(it.first)
+                    is State.Unlocked -> DataStoreAction.Sync
+                    else -> return@subscribe
+                }
+                dispatcher.dispatch(action)
+            }
+            .addTo(compositeDisposable)
+
+        val useTestData = lifecycleStore.lifecycleFilter
+            .filter { it == LifecycleAction.UseTestData }
+            .doOnNext {
+                dataStore.resetSupport(FixedDataStoreSupport())
+            }
+            .map { RouteAction.ItemList }
+
+        routeStore.routes
+            .mergeWith(useTestData)
+            .subscribe(this::route)
+            .addTo(compositeDisposable)
     }
 
     private fun route(action: RouteAction) {
@@ -70,6 +110,8 @@ class RoutePresenter(
             is RouteAction.DialogFragment -> showDialogFragment(FingerprintAuthDialogFragment(), action)
             is RouteAction.Dialog -> showDialog(action)
 
+            is RouteAction.AutoLockSetting -> showAutoLockSelections()
+
             is RouteAction.Back -> navController.popBackStack()
         }
     }
@@ -84,10 +126,10 @@ class RoutePresenter(
             .map { alertState ->
                 val action: Action? = when (alertState) {
                     AlertState.BUTTON_POSITIVE -> {
-                        destination.positiveButtonActions
+                        destination.positiveButtonAction
                     }
                     AlertState.BUTTON_NEGATIVE -> {
-                        destination.negativeButtonActions
+                        destination.negativeButtonAction
                     }
                 }
 
@@ -95,6 +137,30 @@ class RoutePresenter(
             }
             .filterNotNull()
             .subscribe(dispatcher::dispatch)
+            .addTo(compositeDisposable)
+    }
+
+    private fun showAutoLockSelections() {
+        val autoLockValues = Setting.AutoLockTime.values()
+        val items = autoLockValues.map { it.stringValue }.toTypedArray()
+
+        settingStore.autoLockTime.take(1)
+            .map { autoLockValues.indexOf(it) }
+            .flatMap {
+                AlertDialogHelper.showRadioAlertDialog(
+                    activity,
+                    R.string.auto_lock,
+                    items,
+                    it,
+                    negativeButtonTitle = R.string.cancel
+                )
+            }
+            .map {
+                autoLockValues[it]
+            }
+            .subscribe {
+                dispatcher.dispatch(SettingAction.AutoLockTime(it))
+            }
             .addTo(compositeDisposable)
     }
 

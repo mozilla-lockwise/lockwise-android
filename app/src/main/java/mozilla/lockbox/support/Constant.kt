@@ -6,25 +6,33 @@
 
 package mozilla.lockbox.support
 
-import mozilla.lockbox.model.ItemListSort
+import mozilla.lockbox.action.Setting
 
 object Constant {
     object App {
         const val keystoreLabel = "lockbox-keystore"
+        const val dbFilename = "firefox-lockbox.db"
     }
 
     object FxA {
         const val clientID = "e7ce535d93522896"
         const val redirectUri = "https://lockbox.firefox.com/fxa/android-redirect.html"
-        val scopes = arrayOf(
-            "profile",
-            "https://identity.mozilla.com/apps/lockbox",
-            "https://identity.mozilla.com/apps/oldsync"
-        )
+        const val oldSyncScope = "https://identity.mozilla.com/apps/oldsync"
+        const val lockboxScope = "https://identity.mozilla.com/apps/lockbox"
+        const val profileScope = "profile"
+
+        val scopes = arrayOf(profileScope, lockboxScope, oldSyncScope)
     }
 
-    object Setting {
-        val defaultItemListSort = ItemListSort.ALPHABETICALLY
-        val defaultSendUsageData = true
+    object SettingDefault {
+        val itemListSort = Setting.ItemListSort.ALPHABETICALLY
+        val autoLockTime = Setting.AutoLockTime.FiveMinutes
+        const val sendUsageData = true
+        const val unlockWithFingerprint = false
+    }
+
+    object Key {
+        const val firefoxAccount = "firefox-account"
+        const val encryptionKey = "database-encryption-key"
     }
 }

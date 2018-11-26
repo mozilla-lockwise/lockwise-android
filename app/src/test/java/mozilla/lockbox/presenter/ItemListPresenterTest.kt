@@ -12,24 +12,28 @@ import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import mozilla.lockbox.R
 import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.action.Setting
 import mozilla.lockbox.action.SettingAction
-import mozilla.lockbox.extensions.view.AlertState
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.extensions.toViewModel
+import mozilla.lockbox.extensions.view.AlertState
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
-import mozilla.lockbox.model.ItemListSort
 import mozilla.lockbox.model.ItemViewModel
+import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.SettingStore
+import mozilla.lockbox.support.FxAProfile
+import mozilla.lockbox.support.Optional
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.Mockito
 import org.mozilla.sync15.logins.ServerPassword
+import org.powermock.api.mockito.PowerMockito
+import org.powermock.core.classloader.annotations.PrepareForTest
 import org.robolectric.RobolectricTestRunner
 import org.mockito.Mockito.`when` as whenCalled
 
@@ -42,42 +46,51 @@ private val password1 = ServerPassword(
     timesUsed = 0,
     timeCreated = 0L,
     timeLastUsed = 1L,
-    timePasswordChanged = 0L)
-private val password2 = ServerPassword("ghfdhg",
+    timePasswordChanged = 0L
+)
+private val password2 = ServerPassword(
+    "ghfdhg",
     "https://www.cats.org",
     username,
     "meow",
     timesUsed = 0,
     timeCreated = 0L,
     timeLastUsed = 2L,
-    timePasswordChanged = 0L)
-private val password3 = ServerPassword("ioupiouiuy",
+    timePasswordChanged = 0L
+)
+private val password3 = ServerPassword(
+    "ioupiouiuy",
     "www.dogs.org",
     username = "",
     password = "baaaaa",
     timesUsed = 0,
     timeCreated = 0L,
     timeLastUsed = 3L,
-    timePasswordChanged = 0L)
+    timePasswordChanged = 0L
+)
 
 @RunWith(RobolectricTestRunner::class)
+@PrepareForTest(AccountStore::class)
 open class ItemListPresenterTest {
     class FakeView : ItemListView {
+        var setDisplayNameArgument: String? = null
+        var updateItemsArgument: List<ItemViewModel>? = null
+
+        var itemListSort: Setting.ItemListSort? = null
+        val menuItemSelectionStub = PublishSubject.create<Int>()
+
         val itemSelectedStub = PublishSubject.create<ItemViewModel>()
 
         val filterClickStub = PublishSubject.create<Unit>()
-        val menuItemSelectionStub = PublishSubject.create<Int>()
-        val sortItemSelectionStub = PublishSubject.create<ItemListSort>()
-
-        var updateItemsArgument: List<ItemViewModel>? = null
-        var itemListSort: ItemListSort? = null
+        val sortItemSelectionStub = PublishSubject.create<Setting.ItemListSort>()
 
         val disclaimerActionStub = PublishSubject.create<AlertState>()
+        val lockNowSelectionStub = PublishSubject.create<Unit>()
 
         override val itemSelection: Observable<ItemViewModel>
             get() = itemSelectedStub
 
-        override val sortItemSelection: Observable<ItemListSort>
+        override val sortItemSelection: Observable<Setting.ItemListSort>
             get() = sortItemSelectionStub
 
         override val filterClicks: Observable<Unit>
@@ -86,11 +99,18 @@ open class ItemListPresenterTest {
         override val menuItemSelections: Observable<Int>
             get() = menuItemSelectionStub
 
+        override val lockNowClick: Observable<Unit>
+            get() = lockNowSelectionStub
+
+        override fun setDisplayName(text: String) {
+            setDisplayNameArgument = text
+        }
+
         override fun updateItems(itemList: List<ItemViewModel>) {
             updateItemsArgument = itemList
         }
 
-        override fun updateItemListSort(sort: ItemListSort) {
+        override fun updateItemListSort(sort: Setting.ItemListSort) {
             itemListSort = sort
         }
     }
@@ -102,24 +122,33 @@ open class ItemListPresenterTest {
             get() = listStub
     }
 
+    private val profileStub = PublishSubject.create<Optional<FxAProfile>>()
+
     @Mock
-    val fingerprintStore = Mockito.mock(FingerprintStore::class.java)
+    val fingerprintStore = PowerMockito.mock(FingerprintStore::class.java)
+
+    @Mock
+    val accountStore = PowerMockito.mock(AccountStore::class.java)
 
     class FakeSettingStore : SettingStore() {
-        val itemListSortStub = BehaviorSubject.createDefault(ItemListSort.ALPHABETICALLY)
-        override var itemListSortOrder: Observable<ItemListSort> = itemListSortStub
+        val itemListSortStub = BehaviorSubject.createDefault(Setting.ItemListSort.ALPHABETICALLY)
+        override var itemListSortOrder: Observable<Setting.ItemListSort> = itemListSortStub
     }
 
-    val view = FakeView()
-    val dataStore = FakeDataStore()
-    val settingStore = FakeSettingStore()
-    val dispatcher = Dispatcher()
-    val subject = ItemListPresenter(view, dispatcher, dataStore, settingStore, fingerprintStore)
+    private val dataStore = FakeDataStore()
+    private val settingStore = FakeSettingStore()
 
-    val dispatcherObserver = TestObserver.create<Action>()
+    val view = FakeView()
+    val dispatcher = Dispatcher()
+    val subject = ItemListPresenter(view, dispatcher, dataStore, settingStore, fingerprintStore, accountStore)
+
+    private val dispatcherObserver = TestObserver.create<Action>()!!
 
     @Before
     fun setUp() {
+
+        PowerMockito.`when`(accountStore.profile).thenReturn(profileStub)
+        PowerMockito.whenNew(AccountStore::class.java).withAnyArguments().thenReturn(accountStore)
         dispatcher.register.subscribe(dispatcherObserver)
 
         subject.onViewReady()
@@ -140,7 +169,7 @@ open class ItemListPresenterTest {
         val expectedList = listOf(password2, password3, password1).map { it.toViewModel() }
 
         Assert.assertEquals(expectedList, view.updateItemsArgument)
-        Assert.assertEquals(ItemListSort.ALPHABETICALLY, view.itemListSort)
+        Assert.assertEquals(Setting.ItemListSort.ALPHABETICALLY, view.itemListSort)
     }
 
     @Test
@@ -152,10 +181,10 @@ open class ItemListPresenterTest {
 
         // default
         Assert.assertEquals(alphabetically, view.updateItemsArgument)
-        Assert.assertEquals(ItemListSort.ALPHABETICALLY, view.itemListSort)
+        Assert.assertEquals(Setting.ItemListSort.ALPHABETICALLY, view.itemListSort)
 
         // last used
-        var sortOrder = ItemListSort.RECENTLY_USED
+        var sortOrder = Setting.ItemListSort.RECENTLY_USED
         view.sortItemSelectionStub.onNext(sortOrder)
         dispatcherObserver.assertLastValue(SettingAction.ItemListSortOrder(sortOrder))
 
@@ -164,7 +193,7 @@ open class ItemListPresenterTest {
         Assert.assertEquals(lastUsed, view.updateItemsArgument)
 
         // alphabetically
-        sortOrder = ItemListSort.ALPHABETICALLY
+        sortOrder = Setting.ItemListSort.ALPHABETICALLY
         view.sortItemSelectionStub.onNext(sortOrder)
         dispatcherObserver.assertLastValue(SettingAction.ItemListSortOrder(sortOrder))
 
@@ -192,18 +221,16 @@ open class ItemListPresenterTest {
     fun `tapping on the lock menu item when the user has no device security routes to security disclaimer dialog`() {
         whenCalled(fingerprintStore.isDeviceSecure).thenReturn(false)
         setUp()
-        view.menuItemSelectionStub.onNext(R.id.lock_now_menu_item)
-
+        view.lockNowSelectionStub.onNext(Unit)
         view.disclaimerActionStub.onNext(AlertState.BUTTON_POSITIVE)
-        val routeAction = dispatcherObserver.values().last() as RouteAction.Dialog
 
-        Assert.assertTrue(routeAction is RouteAction.Dialog.SecurityDisclaimer)
+        Assert.assertTrue(dispatcherObserver.values().last() is RouteAction.Dialog.SecurityDisclaimer)
     }
 
     @Test
     fun `tapping on the lock menu item when the user has device security routes to lock screen`() {
         whenCalled(fingerprintStore.isDeviceSecure).thenReturn(true)
-        view.menuItemSelectionStub.onNext(R.id.lock_now_menu_item)
+        view.lockNowSelectionStub.onNext(Unit)
         dispatcherObserver.assertLastValue(RouteAction.LockScreen)
     }
 }

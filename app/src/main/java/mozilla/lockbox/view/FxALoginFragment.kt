@@ -24,6 +24,7 @@ import kotlinx.android.synthetic.main.include_backable.view.*
 import mozilla.lockbox.R
 import mozilla.lockbox.presenter.FxALoginPresenter
 import mozilla.lockbox.presenter.FxALoginView
+import mozilla.lockbox.support.isDebug
 
 class FxALoginFragment : BackableFragment(), FxALoginView {
     override var webViewObserver: Consumer<String?>? = null
@@ -39,6 +40,9 @@ class FxALoginFragment : BackableFragment(), FxALoginView {
         view.webView.settings.javaScriptEnabled = true
         CookieManager.getInstance().setAcceptCookie(true)
 
+        if (!isDebug()) {
+            skipFxA.visibility = View.GONE
+        }
         return view
     }
 

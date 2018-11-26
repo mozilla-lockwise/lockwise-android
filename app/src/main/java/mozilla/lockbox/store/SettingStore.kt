@@ -13,9 +13,9 @@ import com.f2prateek.rx.preferences2.RxSharedPreferences
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
-import mozilla.lockbox.action.LifecycleAction
-import mozilla.lockbox.model.ItemListSort
 import mozilla.lockbox.action.FingerprintAuthAction
+import mozilla.lockbox.action.LifecycleAction
+import mozilla.lockbox.action.Setting
 import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
@@ -32,14 +32,18 @@ open class SettingStore(
         const val SEND_USAGE_DATA = "send_usage_data"
         const val ITEM_LIST_SORT_ORDER = "sort_order"
         const val UNLOCK_WITH_FINGERPRINT = "unlock_with_fingerprint"
+        const val AUTO_LOCK_TIME = "auto_lock_time"
+        const val UNLOCK_WITH_FINGERPRINT_PENDING_AUTH = "unlock_with_fingerprint_pending_auth"
     }
 
     private lateinit var preferences: SharedPreferences
     private val compositeDisposable = CompositeDisposable()
 
     open lateinit var sendUsageData: Observable<Boolean>
-    open lateinit var itemListSortOrder: Observable<ItemListSort>
+    open lateinit var itemListSortOrder: Observable<Setting.ItemListSort>
     open lateinit var unlockWithFingerprint: Observable<Boolean>
+    open lateinit var autoLockTime: Observable<Setting.AutoLockTime>
+    open lateinit var unlockWithFingerprintPendingAuth: Observable<Boolean>
 
     open val onEnablingFingerprint: Observable<FingerprintAuthAction> =
         dispatcher.register
@@ -62,12 +66,18 @@ open class SettingStore(
                     is SettingAction.ItemListSortOrder -> {
                         edit.putString(Keys.ITEM_LIST_SORT_ORDER, it.sortOrder.name)
                     }
-                    is SettingAction.Reset -> {
-                        edit.putBoolean(Keys.SEND_USAGE_DATA, Constant.Setting.defaultSendUsageData)
-                        edit.putString(Keys.ITEM_LIST_SORT_ORDER, Constant.Setting.defaultItemListSort.name)
-                    }
                     is SettingAction.UnlockWithFingerprint ->
                         edit.putBoolean(Keys.UNLOCK_WITH_FINGERPRINT, it.unlockWithFingerprint)
+                    is SettingAction.AutoLockTime ->
+                        edit.putString(Keys.AUTO_LOCK_TIME, it.time.name)
+                    is SettingAction.UnlockWithFingerprintPendingAuth ->
+                        edit.putBoolean(Keys.UNLOCK_WITH_FINGERPRINT_PENDING_AUTH, it.unlockWithFingerprintPendingAuth)
+                    is SettingAction.Reset -> {
+                        edit.putBoolean(Keys.SEND_USAGE_DATA, Constant.SettingDefault.sendUsageData)
+                        edit.putString(Keys.ITEM_LIST_SORT_ORDER, Constant.SettingDefault.itemListSort.name)
+                        edit.putBoolean(Keys.UNLOCK_WITH_FINGERPRINT, Constant.SettingDefault.unlockWithFingerprint)
+                        edit.putString(Keys.AUTO_LOCK_TIME, Constant.SettingDefault.autoLockTime.name)
+                    }
                 }
                 edit.apply()
             }
@@ -80,16 +90,26 @@ open class SettingStore(
         val rxPrefs = RxSharedPreferences.create(preferences)
 
         sendUsageData = rxPrefs
-            .getBoolean(Keys.SEND_USAGE_DATA, Constant.Setting.defaultSendUsageData)
+            .getBoolean(Keys.SEND_USAGE_DATA, Constant.SettingDefault.sendUsageData)
             .asObservable()
 
         itemListSortOrder = rxPrefs
-            .getString(Keys.ITEM_LIST_SORT_ORDER, Constant.Setting.defaultItemListSort.name)
+            .getString(Keys.ITEM_LIST_SORT_ORDER, Constant.SettingDefault.itemListSort.name)
             .asObservable()
             .map {
-                ItemListSort.valueOf(it)
+                Setting.ItemListSort.valueOf(it)
             }
 
-        unlockWithFingerprint = rxPrefs.getBoolean(Keys.UNLOCK_WITH_FINGERPRINT, false).asObservable()
+        unlockWithFingerprint = rxPrefs
+            .getBoolean(Keys.UNLOCK_WITH_FINGERPRINT, Constant.SettingDefault.unlockWithFingerprint)
+            .asObservable()
+        unlockWithFingerprintPendingAuth = rxPrefs.getBoolean(Keys.UNLOCK_WITH_FINGERPRINT_PENDING_AUTH).asObservable()
+
+        autoLockTime = rxPrefs
+            .getString(Keys.AUTO_LOCK_TIME, Constant.SettingDefault.autoLockTime.name)
+            .asObservable()
+            .map {
+                Setting.AutoLockTime.valueOf(it)
+            }
     }
 }

@@ -6,22 +6,22 @@
 
 package mozilla.lockbox.presenter
 
-import android.content.Context
 import io.reactivex.Observable
 import io.reactivex.functions.Consumer
+import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
-import mozilla.lockbox.adapter.AppVersionSettingConfiguration
-import mozilla.lockbox.adapter.SectionedAdapter
-import mozilla.lockbox.adapter.SettingCellConfiguration
-import mozilla.lockbox.adapter.TextSettingConfiguration
-import mozilla.lockbox.adapter.ToggleSettingConfiguration
-import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.BuildConfig
 import mozilla.lockbox.R
 import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.SettingAction
+import mozilla.lockbox.adapter.AppVersionSettingConfiguration
+import mozilla.lockbox.adapter.SectionedAdapter
+import mozilla.lockbox.adapter.SettingCellConfiguration
+import mozilla.lockbox.adapter.TextSettingConfiguration
+import mozilla.lockbox.adapter.ToggleSettingConfiguration
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.view.FingerprintAuthDialogFragment
@@ -35,7 +35,6 @@ interface SettingView {
 
 class SettingPresenter(
     val view: SettingView,
-    private val context: Context,
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val settingStore: SettingStore = SettingStore.shared,
     private val fingerprintStore: FingerprintStore = FingerprintStore.shared
@@ -43,15 +42,23 @@ class SettingPresenter(
 
     private val versionNumber = BuildConfig.VERSION_NAME
 
-    private val autoLockObserver: Consumer<Boolean>
+    private val autoLockTimeClickListener: Consumer<Unit>
+        get() = Consumer {
+            dispatcher.dispatch(RouteAction.AutoLockSetting)
+        }
+
+    private val enableFingerprintObserver: Consumer<Boolean>
         get() = Consumer { isToggleOn ->
             if (isToggleOn && fingerprintStore.isFingerprintAuthAvailable) {
+                dispatcher.dispatch(SettingAction.UnlockWithFingerprintPendingAuth(true))
                 dispatcher.dispatch(
                     RouteAction.DialogFragment.FingerprintDialog(
                         R.string.enable_fingerprint_dialog_title,
                         R.string.enable_fingerprint_dialog_subtitle
                     )
                 )
+            } else {
+                dispatcher.dispatch(SettingAction.UnlockWithFingerprint(false))
             }
         }
 
@@ -73,38 +80,31 @@ class SettingPresenter(
                         )
                         is FingerprintAuthDialogFragment.AuthCallback.OnError -> {
                             dispatcher.dispatch(SettingAction.UnlockWithFingerprint(false))
-                            updateSettings()
                         }
                     }
                 } else {
                     dispatcher.dispatch(SettingAction.UnlockWithFingerprint(false))
-                    updateSettings()
                 }
+                dispatcher.dispatch(SettingAction.UnlockWithFingerprintPendingAuth(false))
             }
             .addTo(compositeDisposable)
-    }
 
-    override fun onResume() {
-        super.onResume()
-        updateSettings()
-    }
-
-    private fun updateSettings() {
         var settings = listOf(
             TextSettingConfiguration(
-                title = context.getString(R.string.auto_lock),
-                detailText = context.getString(R.string.auto_lock_option)
+                title = R.string.auto_lock,
+                detailTextDriver = settingStore.autoLockTime.map { it.stringValue },
+                clickListener = autoLockTimeClickListener
             ),
             ToggleSettingConfiguration(
-                title = context.getString(R.string.autofill),
-                subtitle = context.getString(R.string.autofill_summary),
+                title = R.string.autofill,
+                subtitle = R.string.autofill_summary,
                 toggleDriver = Observable.just(true),
                 toggleObserver = autoFillObserver
             ),
             ToggleSettingConfiguration(
-                title = context.getString(R.string.send_usage_data),
-                subtitle = context.getString(R.string.send_usage_data_summary),
-                buttonTitle = context.getString(R.string.learn_more),
+                title = R.string.send_usage_data,
+                subtitle = R.string.send_usage_data_summary,
+                buttonTitle = R.string.learn_more,
                 toggleDriver = settingStore.sendUsageData,
                 toggleObserver = sendUsageDataObserver
             ),
@@ -113,19 +113,27 @@ class SettingPresenter(
             )
         )
 
+        var supportIndex = 2
+
         if (fingerprintStore.isFingerprintAuthAvailable) {
             settings = listOf(
                 ToggleSettingConfiguration(
-                    title = context.getString(R.string.unlock),
-                    toggleDriver = settingStore.unlockWithFingerprint,
-                    toggleObserver = autoLockObserver
+                    title = R.string.unlock,
+                    toggleDriver = Observables.combineLatest(
+                        settingStore.unlockWithFingerprintPendingAuth,
+                        settingStore.unlockWithFingerprint
+                    )
+                        .map { unlock -> unlock.first.takeIf { it } ?: unlock.second },
+                    toggleObserver = enableFingerprintObserver
                 )
             ) + settings
+
+            supportIndex += 1
         }
 
         val sections = listOf(
-            SectionedAdapter.Section(0, context.getString(R.string.security_title)),
-            SectionedAdapter.Section(3, context.getString(R.string.support_title))
+            SectionedAdapter.Section(0, R.string.security_title),
+            SectionedAdapter.Section(supportIndex, R.string.support_title)
         )
 
         view.updateSettingList(settings, sections)

@@ -17,9 +17,11 @@ import mozilla.components.support.base.log.sink.AndroidLogSink
 import mozilla.lockbox.presenter.ApplicationPresenter
 import mozilla.lockbox.store.ClipboardStore
 import mozilla.lockbox.store.ContextStore
+import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.store.TelemetryStore
+import mozilla.lockbox.support.FxASyncDataStoreSupport
 import mozilla.lockbox.support.SecurePreferences
 
 sealed class LogProvider {
@@ -38,14 +40,24 @@ class LockboxApplication : Application() {
         super.onCreate()
         if (leakCanary()) return
         injectContext()
+        setupDataStoreSupport()
         setupLifecycleListener()
         setupSentry()
+    }
+
+    private fun setupDataStoreSupport() {
+        // this needs to be done after injectContext, as
+        // SyncDataStoreSupport needs to find the database
+        // path from the context
+        val support = FxASyncDataStoreSupport.shared
+        DataStore.shared.resetSupport(support)
     }
 
     private fun injectContext() {
         val contextStoreList: List<ContextStore> = listOf(
             SettingStore.shared,
             SecurePreferences.shared,
+            FxASyncDataStoreSupport.shared,
             ClipboardStore.shared,
             FingerprintStore.shared,
             TelemetryStore.shared

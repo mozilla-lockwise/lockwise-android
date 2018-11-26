@@ -13,6 +13,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_fingerprint_dialog.view.*
 import mozilla.lockbox.R
@@ -20,8 +22,12 @@ import mozilla.lockbox.presenter.FingerprintDialogPresenter
 import mozilla.lockbox.presenter.FingerprintDialogView
 
 class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
+    private val compositeDisposable = CompositeDisposable()
     private val _authCallback = PublishSubject.create<AuthCallback>()
     override val authCallback: Observable<AuthCallback> get() = _authCallback
+    private val _dismiss = PublishSubject.create<Unit>()
+    override val onDismiss: Observable<Unit> get() = _dismiss
+    private var isEnablingDismissed: Boolean = true
     private var titleId: Int? = null
     private var subtitleId: Int? = null
 
@@ -32,6 +38,7 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         presenter = FingerprintDialogPresenter(this)
+        retainInstance = true
         return inflater.inflate(R.layout.fragment_fingerprint_dialog, container, false)
     }
 
@@ -44,6 +51,10 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
         } ?: run {
             view.dialogSubtitle.visibility = View.GONE
         }
+
+        view.cancel.clicks()
+            .subscribe { dismiss() }
+            .addTo(compositeDisposable)
     }
 
     override fun onSucceeded() {
@@ -56,7 +67,8 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
             setImageResource(R.drawable.ic_fingerprint_success)
             postDelayed({
                 _authCallback.onNext(AuthCallback.OnAuth)
-                onDismiss()
+                isEnablingDismissed = false
+                dismiss()
             }, SUCCESS_DELAY_MILLIS)
         }
     }
@@ -70,18 +82,13 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
         showError(error ?: getString(R.string.fingerprint_sensor_error))
         view!!.imageView.postDelayed({
             _authCallback.onNext(AuthCallback.OnError)
-            onDismiss()
+            dismiss()
         }, ERROR_TIMEOUT_MILLIS)
     }
 
     override fun onFailed(error: String?) {
         showError(error ?: getString(R.string.fingerprint_not_recognized))
     }
-
-    override val cancelTapped: Observable<Unit>
-        get() = view!!.cancel.clicks()
-
-    override fun onDismiss() = dismiss()
 
     private fun showError(error: CharSequence) {
         view!!.imageView.setImageResource(R.drawable.ic_fingerprint_fail)
@@ -99,6 +106,20 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
             setTextColor(resources.getColor(R.color.gray_73_percent, null))
             text = getString(R.string.touch_fingerprint_sensor)
         }
+    }
+
+    override fun onDestroyView() {
+        if (isEnablingDismissed) {
+            _dismiss.onNext(Unit)
+        }
+        compositeDisposable.clear()
+
+        val dialog = dialog
+        // handles https://code.google.com/p/android/issues/detail?id=17423
+        if (dialog != null && retainInstance) {
+            dialog.setDismissMessage(null)
+        }
+        super.onDestroyView()
     }
 
     companion object {

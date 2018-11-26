@@ -11,7 +11,7 @@ import io.reactivex.functions.Consumer
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import mozilla.lockbox.action.AccountAction
-import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.AccountStore
@@ -95,6 +95,6 @@ class FxALoginPresenterTest {
     fun `onViewReady, when the skipFXA button is tapped`() {
         (view.skipFxAClicks as PublishSubject).onNext(Unit)
 
-        dispatcherObserver.assertValue(RouteAction.ItemList)
+        dispatcherObserver.assertValue(LifecycleAction.UseTestData)
     }
 }

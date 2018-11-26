@@ -38,8 +38,8 @@ class SettingListAdapterTest {
     private val expectedVersionNumber = BuildConfig.VERSION_NAME
 
     class SettingCellConfigFake : SettingCellConfiguration(
-        title = "Fake title",
-        subtitle = "I will fail"
+        title = R.string.search_menu_title,
+        subtitle = R.string.cancel
     )
 
     @Before
@@ -47,13 +47,13 @@ class SettingListAdapterTest {
         context = RuntimeEnvironment.application
         parent = RecyclerView(context)
         parent.layoutManager = LinearLayoutManager(context)
-        testHelper = ListAdapterTestHelper(context)
+        testHelper = ListAdapterTestHelper()
     }
 
     @Test
     fun getItemCountTest() {
         val sectionConfig = testHelper.createListOfSettings()
-        var size = sectionConfig.size
+        val size = sectionConfig.size
         subject.setItems(sectionConfig)
         Assert.assertEquals(subject.itemCount, size)
     }
@@ -113,8 +113,8 @@ class SettingListAdapterTest {
 
     @Test
     fun onBindViewHolderTest_textSettingCell() {
-        val expectedTitle = context.getString(R.string.auto_lock)
-        val expectedDetailText = context.getString(R.string.auto_lock_option)
+        val expectedTitle = R.string.auto_lock
+        val expectedDetailText = R.string.five_minutes
 
         val sectionConfig = testHelper.createListOfSettings()
 
@@ -126,7 +126,7 @@ class SettingListAdapterTest {
         subject.onBindViewHolder(textViewHolder, 1)
 
         Assert.assertEquals(expectedTitle, textViewHolder.title)
-        Assert.assertEquals(expectedDetailText, textViewHolder.detailText)
+        Assert.assertEquals(expectedDetailText, textViewHolder.detailTextRes)
     }
 
     @Test
@@ -143,7 +143,7 @@ class SettingListAdapterTest {
 
         subject.onBindViewHolder(toggleViewHolder, 0)
 
-        Assert.assertEquals(expectedTitle, toggleViewHolder.title)
+        Assert.assertEquals(expectedTitle, context.getString(toggleViewHolder.title!!))
         Assert.assertEquals(expectedToggleValue, toggleViewHolder.toggle.isChecked)
     }
 

@@ -1,12 +1,10 @@
 package mozilla.lockbox.presenter
 
-import android.app.KeyguardManager
-import android.content.Context
-import android.hardware.fingerprint.FingerprintManager
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import mozilla.lockbox.action.FingerprintAuthAction
+import mozilla.lockbox.action.FingerprintSensorAction
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
@@ -15,12 +13,9 @@ import mozilla.lockbox.view.FingerprintAuthDialogFragment
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.Mockito
 import org.mockito.Mockito.spy
 import org.mockito.Mockito.verify
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
@@ -41,10 +36,7 @@ class FingerprintDialogPresenterTest {
         override val authCallback: Observable<FingerprintAuthDialogFragment.AuthCallback>
             get() = authCallbackStub
 
-        override val cancelTapped = PublishSubject.create<Unit>()
-
-        override fun onDismiss() {
-        }
+        override val onDismiss = PublishSubject.create<Unit>()
     }
 
     open class FakeFingerprintStore : FingerprintStore() {
@@ -52,12 +44,10 @@ class FingerprintDialogPresenterTest {
         override val authState: Observable<AuthenticationState>
             get() = authStateStub
     }
-    @Mock
-    val keyguardManager = Mockito.mock(KeyguardManager::class.java)
 
-    val view = spy(FakeView())
-    val fingerprintStore = spy(FakeFingerprintStore())
-    val dispatcherObserver = TestObserver.create<Action>()
+    private val view = spy(FakeView())
+    private val fingerprintStore = spy(FakeFingerprintStore())
+    private val dispatcherObserver = TestObserver.create<Action>()
     val subject = FingerprintDialogPresenter(view, Dispatcher.shared, fingerprintStore)
 
     @Before
@@ -65,9 +55,6 @@ class FingerprintDialogPresenterTest {
         Dispatcher.shared.register.subscribe(dispatcherObserver)
         subject.onViewReady()
     }
-
-    private val fingerprintManager =
-        RuntimeEnvironment.application.getSystemService(Context.FINGERPRINT_SERVICE) as FingerprintManager
 
     @Test
     fun `update on succeeded state`() {
@@ -91,5 +78,23 @@ class FingerprintDialogPresenterTest {
     fun `dispatch authentication status for routing`() {
         view.authCallbackStub.onNext(FingerprintAuthDialogFragment.AuthCallback.OnAuth)
         dispatcherObserver.assertLastValue(FingerprintAuthAction.OnAuthentication(FingerprintAuthDialogFragment.AuthCallback.OnAuth))
+    }
+
+    @Test
+    fun `dismiss dialog on cancel tapped`() {
+        view.onDismiss.onNext(Unit)
+        dispatcherObserver.assertValue(FingerprintAuthAction.OnCancel)
+    }
+
+    @Test
+    fun `should start listening on resume`() {
+        subject.onResume()
+        dispatcherObserver.assertLastValue(FingerprintSensorAction.Start)
+    }
+
+    @Test
+    fun `should stop listening on pause`() {
+        subject.onPause()
+        dispatcherObserver.assertLastValue(FingerprintSensorAction.Stop)
     }
 }

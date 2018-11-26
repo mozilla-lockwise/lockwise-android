@@ -89,6 +89,7 @@ dependencies {
     implementation 'jp.wasabeef:picasso-transformations:2.2.1'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.2'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.2'
+    testImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.2'
     implementation "android.arch.lifecycle:extensions:$lifecycle_version"
     implementation "android.arch.lifecycle:common-java8:$lifecycle_version"
     implementation "android.arch.navigation:navigation-fragment:$navigation_version"
