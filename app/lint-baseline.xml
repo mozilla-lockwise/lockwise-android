@@ -325,6 +325,17 @@
     </issue>
 
     <issue
+        id="UnusedResources"
+        message="The resource `R.string.app_version` appears to be unused"
+        errorLine1="    &lt;string name=&quot;app_version&quot;>Application version number&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="86"
+            column="13"/>
+    </issue>
+
+    <issue
         id="IconLauncherShape"
         message="Launcher icons should not fill every pixel of their square region; see the design guide for details">
         <location

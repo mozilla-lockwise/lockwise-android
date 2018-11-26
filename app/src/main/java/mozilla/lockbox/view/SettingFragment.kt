@@ -48,8 +48,6 @@ class SettingFragment : BackableFragment(), SettingView {
         val layoutManager = LinearLayoutManager(context)
         view.settingList.layoutManager = layoutManager
 
-        addContentDescriptions(view)
-
         // Add one to account for viewType configuration in the SectionedAdapter
         val decoration = ItemDecorations.vertical(context)
             .type(SETTING_TEXT_TYPE + 1, R.drawable.divider)
@@ -59,14 +57,6 @@ class SettingFragment : BackableFragment(), SettingView {
         view.settingList.addItemDecoration(decoration)
 
         return view
-    }
-
-    private fun addContentDescriptions(view: View?) {
-        view!!.settingList.getChildAt(0).title.contentDescription = R.string.auto_lock.toString()
-        view.settingList.getChildAt(1).toggle.contentDescription = R.string.autofill.toString()
-        view.settingList.getChildAt(2).toggle.contentDescription = R.string.send_usage_data.toString()
-        view.settingList.getChildAt(3).title.contentDescription = R.string.app_version.toString()
-        view.settingList.getChildAt(4).toggle.contentDescription = R.string.unlock.toString()
     }
 
     override fun updateSettingList(

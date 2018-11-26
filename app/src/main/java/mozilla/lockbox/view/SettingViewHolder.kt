@@ -30,6 +30,7 @@ class TextSettingViewHolder(val view: View) : SettingViewHolder(view) {
         set(@StringRes value) {
             field = value
             view.description.setText(value)
+            view.contentDescription = value.toString()
         }
     var detailTextRes: Int = R.string.empty_string
         set(@StringRes value) {
@@ -43,6 +44,7 @@ class ToggleSettingViewHolder(val view: View) : SettingViewHolder(view) {
         set(@StringRes value) {
             field = value
             view.title.setText(value)
+            view.contentDescription = value.toString()
         }
     var subtitle: Int = R.string.empty_string
         set(@StringRes value) {
@@ -61,6 +63,7 @@ class ToggleSettingViewHolder(val view: View) : SettingViewHolder(view) {
             if (value != R.string.empty_string) {
                 view.button.text = view.resources.getString(value)
                 view.button.visibility = View.VISIBLE
+                view.button.contentDescription = value.toString()
             } else {
                 view.button.visibility = View.GONE
             }
