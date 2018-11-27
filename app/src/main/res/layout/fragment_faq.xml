@@ -5,19 +5,8 @@
   ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
   -->
 
-<LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+<WebView
+        android:id="@+id/faq_webview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".view.FaqFragment"
-        android:orientation="vertical">
-
-    <include layout="@layout/include_backable"/>
-        <Button android:layout_height="match_parent"
-                android:layout_width="match_parent"
-                android:text="@string/nav_menu_faq"
-                android:backgroundTint="@color/red"/>
-
-
-</LinearLayout>
+        xmlns:android="http://schemas.android.com/apk/res/android"/>

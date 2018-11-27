@@ -11,15 +11,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import mozilla.lockbox.R
+import mozilla.lockbox.presenter.FaqPresenter
 
-class FaqFragment : BackableFragment() {
+class FaqFragment : CommonFragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         val view = inflater.inflate(R.layout.fragment_faq, container, false)
+        presenter = FaqPresenter(view)
+//        val context = requireContext()
+//        val view: WebView = WebView(context)
+//        setContentView(R.layout.fragment_faq)
+//        view.loadUrl("http://www.example.com")
         return view
     }
+
 }
