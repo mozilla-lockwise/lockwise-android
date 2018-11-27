@@ -11,6 +11,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.BuildConfig
 import mozilla.lockbox.R
+import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.TelemetryAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
@@ -38,7 +39,7 @@ open class TelemetryWrapper {
             .setServerEndpoint(res.getString(R.string.telemetry_server_endpoint))
             .setUpdateChannel(BuildConfig.BUILD_TYPE)
             .setBuildId(BuildConfig.VERSION_CODE.toString())
-            .setCollectionEnabled(enabled)
+            .setCollectionEnabled(true)
             .setUploadEnabled(enabled)
         val storage = FileTelemetryStorage(config, JSONPingSerializer())
         val client = HttpURLConnectionTelemetryClient()
@@ -52,6 +53,9 @@ open class TelemetryWrapper {
     }
 
     open fun update(enabled: Boolean) {
+        // process any outstanding pings before settings change ...
+        scheduleUpload()
+
         subject?.configuration!!.apply {
             isCollectionEnabled = enabled
             isUploadEnabled = enabled
@@ -60,6 +64,14 @@ open class TelemetryWrapper {
 
     open fun recordEvent(event: TelemetryEvent) {
         subject?.queueEvent(event)
+    }
+
+    open fun scheduleUpload() {
+        val telem = subject ?: return
+
+        telem.queuePing(TelemetryMobileEventPingBuilder.TYPE)
+            .queuePing(TelemetryCorePingBuilder.TYPE)
+            .scheduleUpload()
     }
 }
 
@@ -82,6 +94,10 @@ open class TelemetryStore(
                     return@subscribe
                 }
                 wrapper.recordEvent(it.createEvent())
+                if (it == LifecycleAction.Background) {
+                    // upload pings when going into the background ...
+                    wrapper.scheduleUpload()
+                }
             }
             .addTo(compositeDisposable)
     }

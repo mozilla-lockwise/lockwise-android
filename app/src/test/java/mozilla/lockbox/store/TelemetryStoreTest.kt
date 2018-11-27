@@ -8,12 +8,14 @@ package mozilla.lockbox.store
 
 import android.content.Context
 import io.reactivex.Observable
+import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.ReplaySubject
 import mozilla.lockbox.DisposingTest
+import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.TelemetryAction
-import mozilla.lockbox.action.TelemetryEventMethod
-import mozilla.lockbox.action.TelemetryEventObject
+import mozilla.lockbox.extensions.assertLastValue
+import mozilla.lockbox.extensions.assertLastValueMatches
 import mozilla.lockbox.flux.Dispatcher
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -28,6 +30,7 @@ class TelemetryStoreTest : DisposingTest() {
     class FakeTelemetryWrapper : TelemetryWrapper() {
         val applySubject: ReplaySubject<Context> = ReplaySubject.create(1)
         val eventsSubject: ReplaySubject<TelemetryEvent> = ReplaySubject.create(1)
+        var uploadSubject: BehaviorSubject<Int> = BehaviorSubject.createDefault(0)
 
         override val ready: Boolean get() = true
         override fun lateinitContext(ctx: Context) {
@@ -35,6 +38,10 @@ class TelemetryStoreTest : DisposingTest() {
         }
         override fun recordEvent(event: TelemetryEvent) {
             eventsSubject.onNext(event)
+        }
+
+        override fun scheduleUpload() {
+            uploadSubject.onNext(1 + uploadSubject.value!!)
         }
     }
 
@@ -58,17 +65,20 @@ class TelemetryStoreTest : DisposingTest() {
     @Test
     fun testActionHandling() {
         val eventsObserver = createTestObserver<TelemetryEvent>()
+        val uploadObserver = createTestObserver<Int>()
         wrapper.eventsSubject.subscribe(eventsObserver)
+        wrapper.uploadSubject.subscribe(uploadObserver)
 
-        val action = object : TelemetryAction {
-            override val eventMethod: TelemetryEventMethod
-                get() = TelemetryEventMethod.foreground
-            override val eventObject: TelemetryEventObject
-                get() = TelemetryEventObject.app
-        }
+        var action: TelemetryAction = LifecycleAction.Foreground
         dispatcher.dispatch(action)
-        eventsObserver.assertValue {
+        eventsObserver.assertLastValueMatches {
             it.toJSON() == action.createEvent().toJSON()
         }
+        action = LifecycleAction.Background
+        dispatcher.dispatch(action)
+        eventsObserver.assertLastValueMatches {
+            it.toJSON() == action.createEvent().toJSON()
+        }
+        uploadObserver.assertLastValue(1)
     }
 }
