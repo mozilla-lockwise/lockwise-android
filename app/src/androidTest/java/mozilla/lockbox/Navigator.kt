@@ -16,6 +16,8 @@ import br.com.concretesolutions.kappuccino.custom.intent.IntentMatcherInteractio
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Dispatcher
+import io.reactivex.plugins.RxJavaPlugins
+import io.reactivex.schedulers.TestScheduler
 import mozilla.lockbox.robots.accountSettingScreen
 import mozilla.lockbox.robots.disconnectDisclaimer
 import mozilla.lockbox.robots.filteredItemList
@@ -27,6 +29,7 @@ import mozilla.lockbox.robots.securityDisclaimer
 import mozilla.lockbox.robots.settings
 import mozilla.lockbox.robots.welcome
 import org.junit.Assert
+import java.util.concurrent.TimeUnit
 
 class Navigator {
     fun gotoWelcome() {
@@ -54,7 +57,6 @@ class Navigator {
         } else {
             Dispatcher.shared.dispatch(LifecycleAction.UseTestData)
         }
-        checkAtItemList()
     }
 
     fun checkAtItemList() {

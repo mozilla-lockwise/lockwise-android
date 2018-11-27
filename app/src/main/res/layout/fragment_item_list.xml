@@ -71,7 +71,7 @@
                 android:layout_height="48dp"
                 android:layout_alignParentBottom="true"
                 android:layout_margin="10dp"
-                android:background="@color/dark_grey"
+                android:background="@drawable/rounded_corner_bg"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
