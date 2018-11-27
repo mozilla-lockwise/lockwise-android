@@ -9,6 +9,7 @@ package mozilla.lockbox.presenter
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.flux.Dispatcher
@@ -22,6 +23,7 @@ interface AccountSettingView {
     val disconnectButtonClicks: Observable<Unit>
 }
 
+@ExperimentalCoroutinesApi
 class AccountSettingPresenter(
     val view: AccountSettingView,
     private val dispatcher: Dispatcher = Dispatcher.shared,

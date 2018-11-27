@@ -4,7 +4,6 @@
 
 package mozilla.lockbox.store
 
-import android.content.SyncResult
 import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -90,9 +89,9 @@ open class DataStore(
     }
 
     private fun touch(id: String) {
-        if (backend.isLocked()) {
+        if (!backend.isLocked()) {
             backend.touch(id)
-                updateList()
+            updateList()
         }
     }
 
@@ -103,10 +102,10 @@ open class DataStore(
     }
 
     fun unlock() {
-        if (!backend.isLocked()) {
-                backend.unlock(support.encryptionKey)
-                stateSubject.accept(State.Unlocked)
-            }
+        if (backend.isLocked()) {
+            backend.unlock(support.encryptionKey)
+            stateSubject.accept(State.Unlocked)
+        }
     }
 
     private fun lock() {
@@ -131,7 +130,7 @@ open class DataStore(
         this.listSubject.accept(emptyList())
     }
 
-    private fun updateList(){
+    private fun updateList() {
         this.listSubject.accept(backend.list())
     }
 

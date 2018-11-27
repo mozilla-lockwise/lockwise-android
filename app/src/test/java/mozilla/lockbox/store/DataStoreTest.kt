@@ -88,7 +88,7 @@ class DataStoreTest : DisposingTest() {
         Mockito.clearInvocations(support.storage)
 
         dispatcher.dispatch(DataStoreAction.Sync)
-        Mockito.verify(support.storage).sync(support.syncConfig)
+        Mockito.verify(support.storage).sync(support.syncConfig!!)
         Mockito.verify(support.storage).list()
         Mockito.clearInvocations(support.storage)
 

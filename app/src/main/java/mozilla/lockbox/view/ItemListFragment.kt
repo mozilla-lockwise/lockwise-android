@@ -36,11 +36,13 @@ import mozilla.lockbox.presenter.ItemListPresenter
 import mozilla.lockbox.presenter.ItemListView
 import kotlinx.android.synthetic.main.fragment_item_list.*
 import kotlinx.android.synthetic.main.nav_header.view.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.adapter.ItemListSortAdapter
 import mozilla.lockbox.extensions.view.itemClicks
 import mozilla.lockbox.support.dpToPixels
 
+@ExperimentalCoroutinesApi
 class ItemListFragment : CommonFragment(), ItemListView {
     private val compositeDisposable = CompositeDisposable()
     private val adapter = ItemListAdapter()

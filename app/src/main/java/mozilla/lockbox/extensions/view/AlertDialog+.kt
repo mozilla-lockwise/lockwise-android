@@ -58,11 +58,10 @@ object AlertDialogHelper {
         }
     }
 
-    @Suppress("WRONG_ANNOTATION_TARGET_WITH_USE_SITE_TARGET_ON_TYPE")
     fun showRadioAlertDialog(
         context: Context,
         @StringRes title: Int? = null,
-        items: Array<@param:StringRes Int>,
+        items: Array<Int>,
         checkedItem: Int,
         @StringRes positiveButtonTitle: Int? = null,
         @StringRes negativeButtonTitle: Int? = null

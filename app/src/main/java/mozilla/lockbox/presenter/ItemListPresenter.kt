@@ -11,6 +11,7 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.RouteAction
@@ -40,6 +41,7 @@ interface ItemListView {
     fun setDisplayName(text: String)
 }
 
+@ExperimentalCoroutinesApi
 class ItemListPresenter(
     private val view: ItemListView,
     private val dispatcher: Dispatcher = Dispatcher.shared,
