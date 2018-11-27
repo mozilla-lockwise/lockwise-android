@@ -24,6 +24,7 @@ import mozilla.lockbox.action.AccountAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.model.SyncCredentials
 import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.FxAProfile
 import mozilla.lockbox.support.Optional
@@ -50,7 +51,7 @@ open class AccountStore(
     private var fxa: FirefoxAccount? = null
 
     open val loginURL: Observable<String> = ReplaySubject.createWithSize(1)
-    val oauthInfo: Observable<Optional<OAuthInfo>> = ReplaySubject.createWithSize(1)
+    val syncCredentials: Observable<Optional<SyncCredentials>> = ReplaySubject.createWithSize(1)
     val profile: Observable<Optional<FxAProfile>> = ReplaySubject.createWithSize(1)
 
     init {
@@ -84,7 +85,7 @@ open class AccountStore(
 
     private fun populateAccountInformation() {
         val profileSubject = profile as Subject
-        val oauthSubject = oauthInfo as Subject
+        val syncCredentialSubject = syncCredentials as Subject
 
         fxa?.let { fxa ->
             securePreferences.putString(FIREFOX_ACCOUNT_KEY, fxa.toJSONString())
@@ -97,14 +98,23 @@ open class AccountStore(
 
             // can't use asSingle here because the OAuthToken is optional :-/
             Observable
-                .create<Optional<OAuthInfo>> { emitter ->
+                .create<Optional<SyncCredentials>> { emitter ->
                     val oauthDeferred = fxa.getCachedOAuthToken(Constant.FxA.scopes)
                     oauthDeferred.invokeOnCompletion {
-                        emitter.onNext(oauthDeferred.getCompleted().asOptional())
+                        val credentials = oauthDeferred.getCompleted()?.let { oauthInfo ->
+                            generateSyncCredentials(oauthInfo)
+                        }
+                        emitter.onNext(credentials.asOptional())
                     }
                 }
-                .subscribe(oauthSubject)
+                .subscribe(syncCredentialSubject)
         }
+    }
+
+    private fun generateSyncCredentials(oauthInfo: OAuthInfo): SyncCredentials? {
+        val fxa = fxa ?: return null
+        val tokenServerURL = fxa.getTokenServerEndpointURL()
+        return SyncCredentials(oauthInfo, tokenServerURL, Constant.FxA.oldSyncScope)
     }
 
     private fun generateNewFirefoxAccount() {
@@ -115,7 +125,7 @@ open class AccountStore(
             }
             .addTo(compositeDisposable)
 
-        (oauthInfo as Subject).onNext(Optional(null))
+        (syncCredentials as Subject).onNext(Optional(null))
         (profile as Subject).onNext(Optional(null))
     }
 
@@ -133,7 +143,6 @@ open class AccountStore(
         codeQP?.let { code ->
             stateQP?.let { state ->
                 fxa?.completeOAuthFlow(code, state)?.asSingle(Dispatchers.Default)?.subscribe { oauthInfo ->
-                    (this.oauthInfo as Subject).onNext(oauthInfo.asOptional())
                     this.populateAccountInformation()
                 }?.addTo(compositeDisposable)
             }
