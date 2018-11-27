@@ -15,11 +15,10 @@ abstract class SettingCellConfiguration(
     @StringRes open val subtitle: Int? = null
 )
 
-@Suppress("WRONG_ANNOTATION_TARGET_WITH_USE_SITE_TARGET_ON_TYPE")
 class TextSettingConfiguration(
     @StringRes override val title: Int,
     @StringRes override val subtitle: Int? = null,
-    val detailTextDriver: Observable<@param:StringRes Int>,
+    val detailTextDriver: Observable<Int>,
     val clickListener: Consumer<Unit>
 ) : SettingCellConfiguration(title, subtitle)
 

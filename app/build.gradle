@@ -5,15 +5,13 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-apply plugin: 'com.android.application'
-
-apply plugin: 'androidx.navigation.safeargs'
-
-apply plugin: 'kotlin-android'
-
-apply plugin: 'kotlin-android-extensions'
-
-apply plugin: 'io.sentry.android.gradle'
+plugins {
+    id 'com.android.application'
+    id 'androidx.navigation.safeargs'
+    id 'kotlin-android-extensions'
+    id 'kotlin-android'
+    id 'io.sentry.android.gradle'
+}
 
 android {
     compileSdkVersion 28
@@ -83,10 +81,13 @@ dependencies {
     implementation "org.mozilla.components:service-firefox-accounts:${rootProject.ext.android_components_version}"
     implementation "org.mozilla.components:service-telemetry:${rootProject.ext.android_components_version}"
     implementation "org.mozilla.components:lib-dataprotect:${rootProject.ext.android_components_version}"
-    implementation 'io.sentry:sentry-android:1.7.10'
+    implementation 'io.sentry:sentry-android:1.7.14'
     implementation 'com.github.magiepooh:recycler-itemdecoration:1.1.1@aar'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'jp.wasabeef:picasso-transformations:2.2.1'
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutine_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutine_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:$coroutine_version"
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.2'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.2'
     testImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.2'
@@ -96,7 +97,7 @@ dependencies {
     implementation "android.arch.navigation:navigation-ui-ktx:$navigation_version"
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:2.22.0'
-    testImplementation 'org.robolectric:robolectric:4.0'
+    testImplementation 'org.robolectric:robolectric:4.0.1'
     testImplementation "org.powermock:powermock-module-junit4:2.0.0-beta.5"
     testImplementation "org.powermock:powermock-api-mockito2:2.0.0-beta.5"
     testImplementation "org.junit.jupiter:junit-jupiter-api:5.3.1"

@@ -8,6 +8,7 @@ package mozilla.lockbox
 
 import android.app.Application
 import android.arch.lifecycle.ProcessLifecycleOwner
+import android.os.Build
 import com.squareup.leakcanary.LeakCanary
 import io.sentry.Sentry
 import io.sentry.android.AndroidSentryClientFactory
@@ -39,6 +40,7 @@ class LockboxApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         if (leakCanary()) return
+        if (isUnitTest()) return
         injectContext()
         setupDataStoreSupport()
         setupLifecycleListener()
@@ -92,5 +94,18 @@ class LockboxApplication : Application() {
 
         Log.addSink(AndroidLogSink())
         return false
+    }
+
+    private fun isUnitTest(): Boolean {
+        var device = Build.DEVICE
+        var product = Build.PRODUCT
+        if (device == null) {
+            device = ""
+        }
+
+        if (product == null) {
+            product = ""
+        }
+        return device == "robolectric" && product == "robolectric"
     }
 }

@@ -10,6 +10,7 @@ import android.support.annotation.StringRes
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
+import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.R
 import mozilla.lockbox.action.ClipboardAction
 import mozilla.lockbox.action.DataStoreAction
@@ -25,7 +26,6 @@ import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mozilla.sync15.logins.ServerPassword
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)

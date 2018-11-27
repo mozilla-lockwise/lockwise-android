@@ -8,19 +8,16 @@ import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
-import io.reactivex.subjects.SingleSubject
+import mozilla.appservices.logins.LoginsStorage
+import mozilla.appservices.logins.ServerPassword
+import mozilla.appservices.logins.SyncUnlockInfo
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
-import mozilla.lockbox.log
 import mozilla.lockbox.model.SyncCredentials
 import mozilla.lockbox.support.DataStoreSupport
 import mozilla.lockbox.support.FixedDataStoreSupport
-import org.mozilla.sync15.logins.LoginsStorage
-import org.mozilla.sync15.logins.ServerPassword
-import org.mozilla.sync15.logins.SyncResult
-import org.mozilla.sync15.logins.SyncUnlockInfo
 
 open class DataStore(
     val dispatcher: Dispatcher = Dispatcher.shared,
@@ -40,6 +37,9 @@ open class DataStore(
     internal val compositeDisposable = CompositeDisposable()
     private val stateSubject: BehaviorRelay<State> = BehaviorRelay.createDefault(State.Unprepared)
     private val listSubject: BehaviorRelay<List<ServerPassword>> = BehaviorRelay.createDefault(emptyList())
+
+    val state: Observable<State> get() = stateSubject
+    open val list: Observable<List<ServerPassword>> get() = listSubject
 
     private var backend: LoginsStorage
 
@@ -89,18 +89,11 @@ open class DataStore(
     }
 
     private fun touch(id: String) {
-        backend.isLocked().whenComplete {
-            if (!it) {
-                backend.touch(id).then {
-                    updateList()
-                }
-            }
+        if (!backend.isLocked()) {
+            backend.touch(id)
+            updateList()
         }
     }
-
-    val state: Observable<State> get() = stateSubject
-
-    open val list: Observable<List<ServerPassword>> get() = listSubject
 
     open fun get(id: String): Observable<ServerPassword?> {
         return list.map { items ->
@@ -108,77 +101,28 @@ open class DataStore(
         }
     }
 
-    fun unlock(): Observable<Unit> {
-        val unlockSubject = SingleSubject.create<Unit>()
-
-        backend.isLocked().then {
-            if (it) {
-                backend.unlock(support.encryptionKey).then {
-                    stateSubject.accept(State.Unlocked)
-                    SyncResult.fromValue(Unit)
-                }
-            } else {
-                unlockSubject.onSuccess(Unit)
-                SyncResult.fromValue(Unit)
-            }
-        }.then {
-            unlockSubject.onSuccess(Unit)
-            SyncResult.fromValue(Unit)
-        }.thenCatch {
-            log.error("Error unlocking", it)
-            unlockSubject.onError(it)
-            SyncResult.fromValue(Unit)
+    fun unlock() {
+        if (backend.isLocked()) {
+            backend.unlock(support.encryptionKey)
+            stateSubject.accept(State.Unlocked)
         }
-
-        return unlockSubject.toObservable()
     }
 
-    fun lock(): Observable<Unit> {
-        val lockSubject = SingleSubject.create<Unit>()
-
-        backend.isLocked().then {
-            if (!it) {
-                backend.lock().then {
-                    stateSubject.accept(State.Locked)
-                    SyncResult.fromValue(Unit)
-                }
-            } else {
-                SyncResult.fromValue(Unit)
-            }
-        }.then {
-            lockSubject.onSuccess(Unit)
-            SyncResult.fromValue(Unit)
-        }.thenCatch {
-            log.error("Error locking", it)
-            lockSubject.onError(it)
-            SyncResult.fromValue(Unit)
+    private fun lock() {
+        if (!backend.isLocked()) {
+            backend.lock()
+            stateSubject.accept(State.Locked)
         }
-
-        return lockSubject.toObservable()
     }
 
-    fun sync(): Observable<Unit> {
-        val syncSubject = SingleSubject.create<Unit>()
-
+    fun sync() {
         val syncConfig = support.syncConfig ?: return {
             val throwable = IllegalStateException("syncConfig should already be defined")
-            syncSubject.onError(throwable)
             stateSubject.accept(State.Errored(throwable))
-            syncSubject.toObservable()
         }()
-        backend.sync(syncConfig).then {
-            updateList()
-        }.then {
-            syncSubject.onSuccess(Unit)
-            SyncResult.fromValue(Unit)
-        }.thenCatch {
-            log.error("Error syncing", it)
-            stateSubject.accept(State.Errored(it))
-            syncSubject.onError(it)
-            SyncResult.fromValue(Unit)
-        }
 
-        return syncSubject.toObservable()
+        backend.sync(syncConfig)
+        updateList()
     }
 
     // item list management
@@ -186,39 +130,25 @@ open class DataStore(
         this.listSubject.accept(emptyList())
     }
 
-    private fun updateList(): SyncResult<Unit> {
-        return backend.list().then {
-            this.listSubject.accept(it)
-            SyncResult.fromValue(Unit)
-        }
+    private fun updateList() {
+        this.listSubject.accept(backend.list())
     }
 
-    fun reset() {
+    private fun reset() {
         clearList()
-
-        fun resetState(): SyncResult<Unit> {
-            this.stateSubject.accept(State.Unprepared)
-            return SyncResult.fromValue(Unit)
-        }
-
         backend.reset()
-            .then {
-                resetState()
-            }
-            .thenCatch {
-                resetState()
-            }
+        this.stateSubject.accept(State.Unprepared)
     }
 
-    private fun updateCredentials(credentials: SyncCredentials): Observable<Unit>? {
+    private fun updateCredentials(credentials: SyncCredentials) {
         if (!credentials.isValid) {
-            return null
+            return
         }
 
         credentials.apply {
             support.syncConfig = SyncUnlockInfo(kid, accessToken, syncKey, tokenServerURL)
         }
 
-        return unlock()
+        unlock()
     }
 }

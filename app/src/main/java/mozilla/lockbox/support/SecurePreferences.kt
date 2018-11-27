@@ -21,7 +21,7 @@ open class SecurePreferences(
 ) : ContextStore {
 
     companion object {
-        val shared = SecurePreferences()
+        val shared by lazy { SecurePreferences() }
     }
 
     private lateinit var prefs: SharedPreferences

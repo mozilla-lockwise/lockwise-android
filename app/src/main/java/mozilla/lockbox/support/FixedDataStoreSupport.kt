@@ -6,14 +6,13 @@
 
 package mozilla.lockbox.support
 
-import org.mozilla.sync15.logins.LoginsStorage
-import org.mozilla.sync15.logins.MemoryLoginsStorage
-import org.mozilla.sync15.logins.ServerPassword
-import org.mozilla.sync15.logins.SyncUnlockInfo
+import mozilla.appservices.logins.LoginsStorage
+import mozilla.appservices.logins.MemoryLoginsStorage
+import mozilla.appservices.logins.ServerPassword
+import mozilla.appservices.logins.SyncUnlockInfo
 import java.util.Date
 import java.util.Random
 import java.util.UUID
-import kotlin.coroutines.experimental.buildSequence
 
 // Fixed-Data Implementation
 class FixedDataStoreSupport(
@@ -89,7 +88,7 @@ internal fun createHostname(): String {
 
     var hostnameLength = getRandomInRange(8, 20)
     val hostname =
-        buildSequence {
+        sequence {
             val r = Random(); while (true) yield(r.nextInt(26))
         }
             .take(hostnameLength)
