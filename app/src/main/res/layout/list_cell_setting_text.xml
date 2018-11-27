@@ -7,19 +7,19 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <TextView
-        android:id="@+id/description"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:textSize="16sp"
-        android:fontFamily="sans-serif"
-        android:textStyle="normal"
-        android:textColor="@color/black_87_percent"
-        android:letterSpacing="0.03"
-        android:lineSpacingExtra="12sp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="12dp"
-        tools:text="Auto lock"/>
+            android:id="@+id/description"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textSize="16sp"
+            android:fontFamily="sans-serif"
+            android:textStyle="normal"
+            android:textColor="@color/black_87_percent"
+            android:letterSpacing="0.03"
+            android:lineSpacingExtra="12sp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            tools:text="Auto lock"/>
 
     <TextView
         android:id="@+id/settingSelection"

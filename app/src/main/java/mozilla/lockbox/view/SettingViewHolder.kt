@@ -14,10 +14,15 @@ import com.jakewharton.rxbinding2.widget.checkedChanges
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.list_cell_setting_appversion.view.*
-import kotlinx.android.synthetic.main.list_cell_setting_text.view.*
-import kotlinx.android.synthetic.main.list_cell_setting_toggle.view.*
+import kotlinx.android.synthetic.main.list_cell_setting_appversion.view.appVersion
+import kotlinx.android.synthetic.main.list_cell_setting_text.view.description
+import kotlinx.android.synthetic.main.list_cell_setting_text.view.settingSelection
+import kotlinx.android.synthetic.main.list_cell_setting_toggle.view.subtitle
+import kotlinx.android.synthetic.main.list_cell_setting_toggle.view.button
+import kotlinx.android.synthetic.main.list_cell_setting_toggle.view.title
+import kotlinx.android.synthetic.main.list_cell_setting_toggle.view.toggle
 import mozilla.lockbox.R
+import mozilla.lockbox.R.string.empty_string
 
 abstract class SettingViewHolder(override val containerView: View) :
     RecyclerView.ViewHolder(containerView),
@@ -26,13 +31,13 @@ abstract class SettingViewHolder(override val containerView: View) :
 }
 
 class TextSettingViewHolder(val view: View) : SettingViewHolder(view) {
-    var title: Int = R.string.empty_string
+    var title: Int = empty_string
         set(@StringRes value) {
             field = value
             view.description.setText(value)
-            view.contentDescription = value.toString()
         }
-    var detailTextRes: Int = R.string.empty_string
+
+    var detailTextRes: Int = empty_string
         set(@StringRes value) {
             field = value
             view.settingSelection.setText(value)
@@ -40,16 +45,15 @@ class TextSettingViewHolder(val view: View) : SettingViewHolder(view) {
 }
 
 class ToggleSettingViewHolder(val view: View) : SettingViewHolder(view) {
-    var title: Int = R.string.empty_string
+    var title: Int = empty_string
         set(@StringRes value) {
             field = value
             view.title.setText(value)
-            view.contentDescription = value.toString()
         }
-    var subtitle: Int = R.string.empty_string
+    var subtitle: Int = empty_string
         set(@StringRes value) {
             field = value
-            if (value != R.string.empty_string) {
+            if (value != empty_string) {
                 view.subtitle.setText(value)
                 view.subtitle.visibility = View.VISIBLE
             } else {
@@ -57,19 +61,20 @@ class ToggleSettingViewHolder(val view: View) : SettingViewHolder(view) {
             }
         }
 
-    var buttonTitle: Int = R.string.empty_string
+    var buttonTitle: Int = empty_string
         set(@StringRes value) {
             field = value
-            if (value != R.string.empty_string) {
+            if (value != empty_string) {
                 view.button.text = view.resources.getString(value)
+                view.button.contentDescription = view.resources.getString(R.string.learn_more_description)
                 view.button.visibility = View.VISIBLE
-                view.button.contentDescription = value.toString()
             } else {
                 view.button.visibility = View.GONE
             }
         }
 
     var toggle: Switch = view.toggle
+
     val toggleValueChanges: Observable<Boolean> = view.toggle.checkedChanges()
 }
 

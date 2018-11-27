@@ -92,4 +92,9 @@
     <string name="search_clear_content_description">Clear search bar text</string>
     <string name="profile_image_content_description">Firefox Account Profile Image</string>
     <string name="app_version">Application version number</string>
+    <string name="auto_lock_description">Auto lock setting</string>
+    <string name="app_version_description">Application version number</string>
+    <string name="autofill_description">Application autofill setting</string>
+    <string name="fingerprint_description">Enable fingerprint setting</string>
+    <string name="learn_more_description">Learn more about sending usage data</string>
 </resources>
