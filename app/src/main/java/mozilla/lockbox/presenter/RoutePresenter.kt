@@ -38,6 +38,7 @@ import mozilla.lockbox.store.LifecycleStore
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.support.FixedDataStoreSupport
+import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.view.DialogFragment
 import mozilla.lockbox.view.FingerprintAuthDialogFragment
@@ -57,47 +58,49 @@ class RoutePresenter(
     override fun onViewReady() {
         navController = Navigation.findNavController(activity, R.id.fragment_nav_host)
 
-        // Mediates credentials from the AccountStore, into the DataStore.
+        // Allow us to use randomized data for tests.
+        val useTestData = lifecycleStore.lifecycleFilter
+            .filter { it == LifecycleAction.UseTestData }
+            .doOnNext { dataStore.resetSupport(FixedDataStoreSupport()) }
+            .map { (DataStoreAction.Unlock as DataStoreAction).asOptional() }
+
+        // Moves credentials from the AccountStore, into the DataStore.
         Observables.combineLatest( accountStore.syncCredentials.filterNotNull(), dataStore.state)
-            .map { accountToDataStoreActions(it).asOptional() }
+            .map(this::accountToDataStoreActions)
+            .mergeWith(useTestData)
             .filterNotNull()
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
 
-        val useTestData = lifecycleStore.lifecycleFilter
-            .filter { it == LifecycleAction.UseTestData }
-            .doOnNext {
-                dataStore.resetSupport(FixedDataStoreSupport())
-            }
-            .map { RouteAction.ItemList }
-
+        // Make the routing contingent on the state of the dataStore.
         val dataStoreRoutes = dataStore.state
-            .map(this::dataStoreRoutes)
+            .map(this::dataStoreToRouteActions)
+            .filterNotNull()
 
         routeStore.routes
-            .mergeWith(useTestData)
             .mergeWith(dataStoreRoutes)
             .observeOn(mainThread())
             .subscribe(this::route)
             .addTo(compositeDisposable)
     }
 
-    private fun dataStoreRoutes(storageState: State): RouteAction {
+    private fun dataStoreToRouteActions(storageState: State): Optional<RouteAction> {
         return when (storageState) {
-            is State.Unlocked -> RouteAction.ItemList
+            is State.Unlocking -> RouteAction.ItemList
+            is State.Unlocked -> null
             is State.Locked -> RouteAction.LockScreen
             is State.Unprepared -> RouteAction.Welcome
             else -> RouteAction.LockScreen
-        }
+        }.asOptional()
     }
 
-    private fun accountToDataStoreActions(it: Pair<SyncCredentials, State>): Action? {
+    private fun accountToDataStoreActions(it: Pair<SyncCredentials, State>): Optional<DataStoreAction> {
         val (credentials, state) = it
         return when (state) {
             is State.Unprepared -> DataStoreAction.UpdateCredentials(credentials)
             is State.Unlocked -> DataStoreAction.Sync
             else -> null
-        }
+        }.asOptional()
     }
 
     private fun route(action: RouteAction) {

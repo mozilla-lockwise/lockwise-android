@@ -36,6 +36,7 @@ open class DataStore(
     sealed class State {
         object Unprepared : State()
         object Locked : State()
+        object Unlocking : State()
         object Unlocked : State()
         data class Errored(val error: Throwable) : State()
     }
@@ -105,6 +106,7 @@ open class DataStore(
     }
 
     private fun unlock() {
+        stateSubject.accept(State.Unlocking)
         if (backend.isLocked()) {
             backend.unlock(support.encryptionKey)
                 .asSingle(Dispatchers.Default)

@@ -10,6 +10,7 @@ import io.reactivex.Observable
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.R
+import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Dispatcher
@@ -63,7 +64,7 @@ class LockedPresenter(
     }
 
     private fun unlock() {
-        dispatcher.dispatch(RouteAction.ItemList)
+        dispatcher.dispatch(DataStoreAction.Unlock)
     }
 
     private fun unlockFallback() {

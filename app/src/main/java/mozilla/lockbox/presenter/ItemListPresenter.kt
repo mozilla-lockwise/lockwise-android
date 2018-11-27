@@ -110,9 +110,6 @@ class ItemListPresenter(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(view::setDisplayName)
             .addTo(compositeDisposable)
-
-        // TODO: remove this when we have proper locking / unlocking
-        dispatcher.dispatch(DataStoreAction.Unlock)
     }
 
     private fun onMenuItem(@IdRes item: Int) {
