@@ -43,5 +43,6 @@ object Constant {
     object Key {
         const val firefoxAccount = "firefox-account"
         const val encryptionKey = "database-encryption-key"
+        const val autoLockTimerDate = "auto-lock-timer-date"
     }
 }

@@ -31,6 +31,7 @@ import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
 import mozilla.lockbox.model.SyncCredentials
 import mozilla.lockbox.store.AccountStore
+import mozilla.lockbox.store.AutoLockStore
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.DataStore.State
 import mozilla.lockbox.store.LifecycleStore
@@ -51,7 +52,8 @@ class RoutePresenter(
     private val settingStore: SettingStore = SettingStore.shared,
     private val dataStore: DataStore = DataStore.shared,
     private val accountStore: AccountStore = AccountStore.shared,
-    private val lifecycleStore: LifecycleStore = LifecycleStore.shared
+    private val lifecycleStore: LifecycleStore = LifecycleStore.shared,
+    private val autoLockStore: AutoLockStore = AutoLockStore.shared
 ) : Presenter() {
     private lateinit var navController: NavController
 
@@ -74,6 +76,11 @@ class RoutePresenter(
             .mergeWith(dataStoreRoutes)
             .observeOn(mainThread())
             .subscribe(this::route)
+            .addTo(compositeDisposable)
+
+        autoLockStore.lockRequired
+            .map { if (it) DataStoreAction.Lock else DataStoreAction.Unlock }
+            .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
     }
 

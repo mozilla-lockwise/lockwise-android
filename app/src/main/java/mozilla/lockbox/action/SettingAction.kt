@@ -20,30 +20,20 @@ open class SettingAction : Action {
 }
 
 class Setting {
-    enum class AutoLockTime {
-        OneMinute,
-        FiveMinutes,
-        FifteenMinutes,
-        ThirtyMinutes,
-        OneHour,
-        TwelveHours,
-        TwentyFourHours,
-        Never;
+    enum class AutoLockTime(
+        @StringRes val stringValue: Int,
+        private val seconds: Long
+    ) {
+        OneMinute(R.string.one_minute, 60),
+        FiveMinutes(R.string.five_minutes, 60 * 5),
+        FifteenMinutes(R.string.fifteen_minutes, 60 * 15),
+        ThirtyMinutes(R.string.thirty_minutes, 60 * 30),
+        OneHour(R.string.one_hour, 60 * 60),
+        TwelveHours(R.string.twelve_hours, 60 * 60 * 12),
+        TwentyFourHours(R.string.twenty_four_hours, 60 * 60 * 24),
+        Never(R.string.never, 0);
 
-        val stringValue: Int
-            @StringRes
-            get() {
-                return when (this) {
-                    OneMinute -> R.string.one_minute
-                    FiveMinutes -> R.string.five_minutes
-                    FifteenMinutes -> R.string.fifteen_minutes
-                    ThirtyMinutes -> R.string.thirty_minutes
-                    OneHour -> R.string.one_hour
-                    TwelveHours -> R.string.twelve_hours
-                    TwentyFourHours -> R.string.twenty_four_hours
-                    Never -> R.string.never
-                }
-            }
+        val ms: Long by lazy { (this.seconds * 1000) }
     }
 
     enum class ItemListSort(val displayStringId: Int) {

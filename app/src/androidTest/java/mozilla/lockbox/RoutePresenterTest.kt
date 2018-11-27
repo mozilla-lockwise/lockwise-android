@@ -48,12 +48,14 @@ open class RoutePresenterTest {
 
     @Test
     fun testItemList() {
+        Dispatcher.shared.dispatch(DataStoreAction.Unlock)
         navigator.gotoItemList(true)
         navigator.back(false)
     }
 
     @Test
     fun testFilterList() {
+        Dispatcher.shared.dispatch(DataStoreAction.Unlock)
         navigator.gotoItemList_filter()
         navigator.back()
         navigator.checkAtItemList()
@@ -61,6 +63,7 @@ open class RoutePresenterTest {
 
     @Test
     fun testFilterToItemDetail() {
+        Dispatcher.shared.dispatch(DataStoreAction.Unlock)
         navigator.gotoItemList_filter()
         filteredItemList {
             selectItem(0)
@@ -71,6 +74,7 @@ open class RoutePresenterTest {
 
     @Test
     fun testSettings() {
+        Dispatcher.shared.dispatch(DataStoreAction.Unlock)
         navigator.gotoSettings()
         navigator.back()
         navigator.checkAtItemList()
@@ -78,6 +82,7 @@ open class RoutePresenterTest {
 
     @Test
     fun testAccountSetting() {
+        Dispatcher.shared.dispatch(DataStoreAction.Unlock)
         navigator.gotoAccountSetting()
         navigator.back()
         navigator.checkAtItemList()
@@ -85,6 +90,7 @@ open class RoutePresenterTest {
 
     @Test
     fun testDisconnectDisclaimer() {
+        Dispatcher.shared.dispatch(DataStoreAction.Unlock)
         navigator.gotoDisconnectDisclaimer()
         navigator.back()
         navigator.checkAtAccountSetting()
@@ -93,6 +99,7 @@ open class RoutePresenterTest {
     @Test
     fun testDisconnecting() {
         // note: this won't work until routing PR is merged
+        Dispatcher.shared.dispatch(DataStoreAction.Unlock)
         navigator.gotoDisconnectDisclaimer()
         disconnectDisclaimer { tapDisconnect() }
         navigator.checkAtWelcome()
@@ -100,6 +107,7 @@ open class RoutePresenterTest {
 
     @Test
     fun testItemDetail() {
+        Dispatcher.shared.dispatch(DataStoreAction.Unlock)
         navigator.gotoItemDetail()
         navigator.back()
         navigator.checkAtItemList()
@@ -107,6 +115,7 @@ open class RoutePresenterTest {
 
     @Test
     fun testNoSecurityDialog() {
+//        Dispatcher.shared.dispatch(DataStoreAction.Unlock)
 //        navigator.gotoNoSecurityDialog()
 //        navigator.back(true)
 //        navigator.checkAtItemList()
@@ -114,6 +123,7 @@ open class RoutePresenterTest {
 
     @Test
     fun testNoSecurityDialogSetupSecurity() {
+//        Dispatcher.shared.dispatch(DataStoreAction.Unlock)
 //        navigator.goToSecuritySettings()
     }
 }
