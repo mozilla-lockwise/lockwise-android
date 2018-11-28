@@ -35,7 +35,7 @@ Mozilla Product Integrity provides embedded QA to work with the team throughout 
   - **TBD**
 - Major operating system versions to be tested:
   - Minimum: API 23
-  - Target: API 26
+  - Target: API 28
 
 ## Test Suites
 
@@ -60,7 +60,7 @@ Mozilla Product Integrity provides embedded QA to work with the team throughout 
 
 There are a number of best practices and accessibility features available to Android developers and we intend to build and test for.
 
-We've [documented the tools and techniques available to test accessibility](/accessibility.md) and ask that every pull request consider these before merging so as to not accumulate "debt" during development but also test all of the following at certain intervals in the project:
+We've [documented the tools and techniques available to test accessibility][7] and ask that every pull request consider these before merging so as to not accumulate "debt" during development but also test all of the following at certain intervals in the project:
 
 ## 1. TalkBack support
 
@@ -95,3 +95,4 @@ The interface is legible and tappable by designing and testing for:
 [4]: https://github.com/mozilla-lockbox/lockbox-android/issues/202
 [5]: /metrics.md 
 [6]: https://github.com/mozilla-lockbox/lockbox-ios/issues/51
+[7]: https://github.com/mozilla-lockbox/lockbox-android/blob/master/docs/accessibility.md
