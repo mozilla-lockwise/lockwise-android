@@ -8,9 +8,12 @@ import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
-import mozilla.appservices.logins.LoginsStorage
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.rx2.asSingle
 import mozilla.appservices.logins.ServerPassword
 import mozilla.appservices.logins.SyncUnlockInfo
+import mozilla.components.service.sync.logins.AsyncLoginsStorage
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.extensions.filterByType
@@ -19,6 +22,7 @@ import mozilla.lockbox.model.SyncCredentials
 import mozilla.lockbox.support.DataStoreSupport
 import mozilla.lockbox.support.FixedDataStoreSupport
 
+@ExperimentalCoroutinesApi
 open class DataStore(
     val dispatcher: Dispatcher = Dispatcher.shared,
     var support: DataStoreSupport = FixedDataStoreSupport.shared
@@ -41,7 +45,7 @@ open class DataStore(
     val state: Observable<State> get() = stateSubject
     open val list: Observable<List<ServerPassword>> get() = listSubject
 
-    private var backend: LoginsStorage
+    private var backend: AsyncLoginsStorage
 
     init {
         backend = support.createLoginsStorage()
@@ -50,7 +54,7 @@ open class DataStore(
         state.subscribe { state ->
             when (state) {
                 is State.Locked -> clearList()
-                is State.Unlocked -> updateList()
+                is State.Unlocked -> sync()
                 else -> Unit
             }
         }.addTo(compositeDisposable)
@@ -81,6 +85,9 @@ open class DataStore(
     fun resetSupport(support: DataStoreSupport) {
         if (stateSubject.value != State.Unprepared) {
             backend.reset()
+                .asSingle(Dispatchers.Default)
+                .subscribe()
+                .addTo(compositeDisposable)
         }
         this.support = support
         this.backend = support.createLoginsStorage()
@@ -91,7 +98,11 @@ open class DataStore(
     private fun touch(id: String) {
         if (!backend.isLocked()) {
             backend.touch(id)
-            updateList()
+                .asSingle(Dispatchers.Default)
+                .subscribe { _, _ ->
+                    updateList()
+                }
+                .addTo(compositeDisposable)
         }
     }
 
@@ -104,14 +115,22 @@ open class DataStore(
     fun unlock() {
         if (backend.isLocked()) {
             backend.unlock(support.encryptionKey)
-            stateSubject.accept(State.Unlocked)
+                .asSingle(Dispatchers.Default)
+                .subscribe { _, _ ->
+                    stateSubject.accept(State.Unlocked)
+                }
+                .addTo(compositeDisposable)
         }
     }
 
     private fun lock() {
         if (!backend.isLocked()) {
             backend.lock()
-            stateSubject.accept(State.Locked)
+                .asSingle(Dispatchers.Default)
+                .subscribe { _, _ ->
+                    stateSubject.accept(State.Locked)
+                }
+                .addTo(compositeDisposable)
         }
     }
 
@@ -122,7 +141,11 @@ open class DataStore(
         }()
 
         backend.sync(syncConfig)
-        updateList()
+            .asSingle(Dispatchers.Default)
+            .subscribe { _, _ ->
+                updateList()
+            }
+            .addTo(compositeDisposable)
     }
 
     // item list management
@@ -131,13 +154,24 @@ open class DataStore(
     }
 
     private fun updateList() {
-        this.listSubject.accept(backend.list())
+        if (!backend.isLocked()) {
+            backend.list()
+                .asSingle(Dispatchers.Default)
+                .subscribe { list, _ ->
+                    listSubject.accept(list)
+                }
+                .addTo(compositeDisposable)
+        }
     }
 
     private fun reset() {
         clearList()
         backend.reset()
-        this.stateSubject.accept(State.Unprepared)
+            .asSingle(Dispatchers.Default)
+            .subscribe { _, _ ->
+                this.stateSubject.accept(State.Unprepared)
+            }
+            .addTo(compositeDisposable)
     }
 
     private fun updateCredentials(credentials: SyncCredentials) {

@@ -6,10 +6,11 @@
 
 package mozilla.lockbox.support
 
-import mozilla.appservices.logins.LoginsStorage
 import mozilla.appservices.logins.MemoryLoginsStorage
 import mozilla.appservices.logins.ServerPassword
 import mozilla.appservices.logins.SyncUnlockInfo
+import mozilla.components.service.sync.logins.AsyncLoginsStorage
+import mozilla.components.service.sync.logins.AsyncLoginsStorageAdapter
 import java.util.Date
 import java.util.Random
 import java.util.UUID
@@ -31,7 +32,7 @@ class FixedDataStoreSupport(
             syncKey = "fake-key",
             tokenserverURL = "https://oauth.example.com/token")
 
-    override fun createLoginsStorage(): LoginsStorage = logins
+    override fun createLoginsStorage(): AsyncLoginsStorage = AsyncLoginsStorageAdapter(logins)
 
     companion object {
         val shared = FixedDataStoreSupport()

@@ -8,8 +8,9 @@ package mozilla.lockbox.support
 
 import android.content.Context
 import mozilla.appservices.logins.DatabaseLoginsStorage
-import mozilla.appservices.logins.LoginsStorage
 import mozilla.appservices.logins.SyncUnlockInfo
+import mozilla.components.service.sync.logins.AsyncLoginsStorage
+import mozilla.components.service.sync.logins.AsyncLoginsStorageAdapter
 import mozilla.lockbox.store.ContextStore
 import java.security.SecureRandom
 
@@ -55,7 +56,7 @@ class FxASyncDataStoreSupport(
             .joinToString("")
     }
 
-    override fun createLoginsStorage(): LoginsStorage = DatabaseLoginsStorage(dbFilePath)
+    override fun createLoginsStorage(): AsyncLoginsStorage = AsyncLoginsStorageAdapter(DatabaseLoginsStorage(dbFilePath))
 
     override fun injectContext(context: Context) {
         dbFilePath = context.getDatabasePath(Constant.App.dbFilename).absolutePath
