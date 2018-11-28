@@ -11,6 +11,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.BuildConfig
 import mozilla.lockbox.R
+import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.TelemetryAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
@@ -26,40 +27,50 @@ import org.mozilla.telemetry.serialize.JSONPingSerializer
 import org.mozilla.telemetry.storage.FileTelemetryStorage
 
 open class TelemetryWrapper {
-    private var subject: Telemetry? = null
+    private var telemetry: Telemetry? = null
 
-    open val ready: Boolean get() = (subject != null)
+    open val ready: Boolean get() = (telemetry != null)
 
     open fun lateinitContext(ctx: Context) {
         val res = ctx.resources
-        val enabled = false
         val config = TelemetryConfiguration(ctx)
             .setAppName(res.getString(R.string.app_label))
             .setServerEndpoint(res.getString(R.string.telemetry_server_endpoint))
             .setUpdateChannel(BuildConfig.BUILD_TYPE)
             .setBuildId(BuildConfig.VERSION_CODE.toString())
-            .setCollectionEnabled(enabled)
-            .setUploadEnabled(enabled)
+            .setCollectionEnabled(true)     // gather the data (so we get startup) ...
+            .setUploadEnabled(false)        // ... but don't upload it
         val storage = FileTelemetryStorage(config, JSONPingSerializer())
         val client = HttpURLConnectionTelemetryClient()
         val scheduler = JobSchedulerTelemetryScheduler()
 
-        subject = Telemetry(config, storage, client, scheduler)
+        telemetry = Telemetry(config, storage, client, scheduler)
             .addPingBuilder(TelemetryCorePingBuilder(config))
             .addPingBuilder(TelemetryMobileEventPingBuilder(config))
 
-        TelemetryHolder.set(subject)
+        TelemetryHolder.set(telemetry)
     }
 
     open fun update(enabled: Boolean) {
-        subject?.configuration!!.apply {
+        // process any outstanding pings before settings change ...
+        scheduleUpload()
+
+        telemetry?.configuration!!.apply {
             isCollectionEnabled = enabled
             isUploadEnabled = enabled
         }
     }
 
     open fun recordEvent(event: TelemetryEvent) {
-        subject?.queueEvent(event)
+        telemetry?.queueEvent(event)
+    }
+
+    open fun scheduleUpload() {
+        telemetry?.apply {
+            queuePing(TelemetryMobileEventPingBuilder.TYPE)
+            queuePing(TelemetryCorePingBuilder.TYPE)
+            scheduleUpload()
+        }
     }
 }
 
@@ -82,6 +93,10 @@ open class TelemetryStore(
                     return@subscribe
                 }
                 wrapper.recordEvent(it.createEvent())
+                if (it == LifecycleAction.Background) {
+                    // upload pings when going into the background ...
+                    wrapper.scheduleUpload()
+                }
             }
             .addTo(compositeDisposable)
     }

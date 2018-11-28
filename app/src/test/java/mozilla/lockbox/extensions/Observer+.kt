@@ -12,3 +12,8 @@ fun <T> TestObserver<T>.assertLastValue(expectedValue: T) {
     val count = this.valueCount()
     this.assertValueAt(count - 1, expectedValue)
 }
+
+fun <T> TestObserver<T>.assertLastValueMatches(expectedPredicate: (value: T) -> Boolean) {
+    val count = this.valueCount()
+    this.assertValueAt(count - 1, expectedPredicate)
+}
