@@ -7,10 +7,14 @@
 package mozilla.lockbox.presenter
 
 import android.support.annotation.IdRes
+import com.squareup.picasso.Picasso
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
+import jp.wasabeef.picasso.transformations.CropCircleTransformation
+import kotlinx.android.synthetic.main.fragment_item_list.view.*
+import kotlinx.android.synthetic.main.nav_header.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
 import mozilla.lockbox.action.RouteAction
@@ -35,11 +39,11 @@ interface ItemListView {
     val menuItemSelections: Observable<Int>
     val lockNowClick: Observable<Unit>
     val sortItemSelection: Observable<Setting.ItemListSort>
+    var displayEmailName: String
+    var accountName: String
+    var avatarFromURL: String
     fun updateItems(itemList: List<ItemViewModel>)
     fun updateItemListSort(sort: Setting.ItemListSort)
-    fun setDisplayEmailName(text: String)
-    fun setAccountName(text: String)
-    fun setAvatarFromURL(url: String)
 }
 
 @ExperimentalCoroutinesApi
@@ -105,41 +109,16 @@ class ItemListPresenter(
 
         accountStore.profile
             .map {
-                (it.value?.displayName ?: it.value?.email).asOptional()
+                (it.value?.asOptional())
             }
-            .filterNotNull()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(view::setAccountName, {
+            .subscribe{
+                view.accountName = it?.value?.displayName ?: it?.value?.email!!
+                view.displayEmailName = it?.value?.email!!
+                view.avatarFromURL = it?.value?.avatar!!
                 log.error("Lifecycle problem caused ${it.javaClass.simpleName} here", it)
-            }, {
                 log.info("onCompleted: ${javaClass.simpleName}")
-            })
-            .addTo(compositeDisposable)
-
-        accountStore.profile
-            .map {
-                it.value?.email.asOptional()
             }
-            .filterNotNull()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(view::setDisplayEmailName, {
-                log.error("Lifecycle problem caused ${it.javaClass.simpleName} here", it)
-            }, {
-                log.info("onCompleted: ${javaClass.simpleName}")
-            })
-            .addTo(compositeDisposable)
-
-        accountStore.profile
-            .map {
-                it.value?.avatar.asOptional()
-            }
-            .filterNotNull()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(view::setAvatarFromURL, {
-                log.error("Lifecycle problem caused ${it.javaClass.simpleName} here", it)
-            }, {
-                log.info("onCompleted: ${javaClass.simpleName}")
-            })
             .addTo(compositeDisposable)
     }
 

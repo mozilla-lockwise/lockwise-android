@@ -48,10 +48,9 @@ import mozilla.lockbox.support.dpToPixels
 class ItemListFragment : CommonFragment(), ItemListView {
     private val compositeDisposable = CompositeDisposable()
     private val adapter = ItemListAdapter()
-
     private lateinit var sortItemsMenu: ListPopupWindow
-    private lateinit var sortItemsAdapter: ItemListSortAdapter
 
+    private lateinit var sortItemsAdapter: ItemListSortAdapter
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -129,25 +128,6 @@ class ItemListFragment : CommonFragment(), ItemListView {
         }
     }
 
-    // sets large text in header as either email or display name
-    override fun setDisplayEmailName(text: String) {
-        view!!.navView.menuHeader.displayName.text = text
-    }
-
-    // sets smaller text in header as email
-    override fun setAccountName(text: String) {
-        view!!.navView.menuHeader.accountName.text = text
-    }
-
-    override fun setAvatarFromURL(url: String) {
-        Picasso.get()
-            .load(url)
-            .placeholder(R.drawable.ic_avatar_placeholder)
-            .resize(80, 80)
-            .transform(CropCircleTransformation())
-            .into(view!!.profileImage)
-    }
-
     private fun scrollToTop() {
         entriesView.layoutManager?.scrollToPosition(0)
     }
@@ -163,6 +143,26 @@ class ItemListFragment : CommonFragment(), ItemListView {
 
     override val itemSelection: Observable<ItemViewModel>
         get() = adapter.clicks()
+
+    override var displayEmailName: String = resources.getString(R.string.empty_string)
+        set(value) {
+            view!!.navView.menuHeader.displayName.text = value
+        }
+
+    override var accountName: String = resources.getString(R.string.empty_string)
+        set(value) {
+            view!!.navView.menuHeader.accountName.text = value
+        }
+
+    override var avatarFromURL: String = resources.getString(R.string.empty_string)
+        set(value) {
+            Picasso.get()
+                .load(value)
+                .placeholder(R.drawable.ic_avatar_placeholder)
+                .resize(R.attr.avatar_image_size, R.attr.avatar_image_size)
+                .transform(CropCircleTransformation())
+                .into(view!!.profileImage)
+        }
 
     override val menuItemSelections: Observable<Int>
         get() {
