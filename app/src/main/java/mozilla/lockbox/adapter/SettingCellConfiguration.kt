@@ -12,24 +12,28 @@ import io.reactivex.functions.Consumer
 
 abstract class SettingCellConfiguration(
     @StringRes open val title: Int? = null,
-    @StringRes open val subtitle: Int? = null
+    @StringRes open val subtitle: Int? = null,
+    @StringRes open val contentDescription: Int
 )
 
 class TextSettingConfiguration(
     @StringRes override val title: Int,
     @StringRes override val subtitle: Int? = null,
+    @StringRes override val contentDescription: Int,
     val detailTextDriver: Observable<Int>,
     val clickListener: Consumer<Unit>
-) : SettingCellConfiguration(title, subtitle)
+) : SettingCellConfiguration(title, subtitle, contentDescription)
 
 class ToggleSettingConfiguration(
     @StringRes override val title: Int,
     override val subtitle: Int? = null,
+    @StringRes override val contentDescription: Int,
     @StringRes val buttonTitle: Int? = null,
     val toggleDriver: Observable<Boolean>,
     val toggleObserver: Consumer<Boolean>
-) : SettingCellConfiguration(title)
+) : SettingCellConfiguration(title = title, contentDescription = contentDescription)
 
 class AppVersionSettingConfiguration(
-    val text: String
-) : SettingCellConfiguration()
+    val text: String,
+    @StringRes override val contentDescription: Int
+) : SettingCellConfiguration(contentDescription = contentDescription)

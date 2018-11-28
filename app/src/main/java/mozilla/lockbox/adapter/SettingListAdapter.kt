@@ -60,6 +60,7 @@ class SettingListAdapter : RecyclerView.Adapter<SettingViewHolder>() {
         when {
             holder is TextSettingViewHolder && configuration is TextSettingConfiguration -> {
                 holder.title = configuration.title
+                holder.contentDescription = configuration.contentDescription
                 holder.itemView.clicks()
                     .subscribe(configuration.clickListener)
                     .addTo(compositeDisposable)
@@ -73,6 +74,7 @@ class SettingListAdapter : RecyclerView.Adapter<SettingViewHolder>() {
                 holder.title = configuration.title
                 holder.subtitle = configuration.subtitle ?: R.string.empty_string
                 holder.buttonTitle = configuration.buttonTitle ?: R.string.empty_string
+                holder.contentDescription = configuration.contentDescription
                 configuration.toggleDriver
                     .subscribe {
                         holder.toggle.isChecked = it
@@ -85,34 +87,7 @@ class SettingListAdapter : RecyclerView.Adapter<SettingViewHolder>() {
             }
             holder is AppVersionSettingViewHolder && configuration is AppVersionSettingConfiguration -> {
                 holder.text = configuration.text
-            }
-        }
-        setContentDescription(holder)
-    }
-
-    private fun setContentDescription(holder: SettingViewHolder) {
-        when (holder) {
-            is TextSettingViewHolder -> {
-                holder.view.contentDescription = holder.view.resources.getString(R.string.auto_lock_description)
-            }
-            is AppVersionSettingViewHolder -> {
-                holder.view.contentDescription = holder.view.resources.getString(R.string.app_version_description)
-            }
-            is ToggleSettingViewHolder -> {
-                val title = holder.view.resources.getString(holder.title)
-                when (title) {
-                    holder.view.resources.getString(R.string.autofill) -> {
-                        holder.toggle.contentDescription =
-                            holder.view.resources.getString(R.string.autofill_description)
-                    }
-                    holder.view.resources.getString(R.string.unlock) -> {
-                        holder.toggle.contentDescription = holder.view.resources.getString(R.string.send_usage_data)
-                    }
-                    holder.view.resources.getString(R.string.send_usage_data) -> {
-                        holder.toggle.contentDescription =
-                            holder.view.resources.getString(R.string.fingerprint_description)
-                    }
-                }
+                holder.contentDescription = configuration.contentDescription
             }
         }
     }

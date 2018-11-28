@@ -22,22 +22,29 @@ import kotlinx.android.synthetic.main.list_cell_setting_toggle.view.button
 import kotlinx.android.synthetic.main.list_cell_setting_toggle.view.title
 import kotlinx.android.synthetic.main.list_cell_setting_toggle.view.toggle
 import mozilla.lockbox.R
-import mozilla.lockbox.R.string.empty_string
 
 abstract class SettingViewHolder(override val containerView: View) :
     RecyclerView.ViewHolder(containerView),
     LayoutContainer {
     var disposable: Disposable? = null
+    abstract var contentDescription: Int
 }
 
 class TextSettingViewHolder(val view: View) : SettingViewHolder(view) {
-    var title: Int = empty_string
+
+    override var contentDescription: Int = R.string.empty_string
+        set(@StringRes value) {
+            field = value
+            view.description.contentDescription = view.resources.getString(value)
+        }
+
+    var title: Int = R.string.empty_string
         set(@StringRes value) {
             field = value
             view.description.setText(value)
         }
 
-    var detailTextRes: Int = empty_string
+    var detailTextRes: Int = R.string.empty_string
         set(@StringRes value) {
             field = value
             view.settingSelection.setText(value)
@@ -45,15 +52,21 @@ class TextSettingViewHolder(val view: View) : SettingViewHolder(view) {
 }
 
 class ToggleSettingViewHolder(val view: View) : SettingViewHolder(view) {
-    var title: Int = empty_string
+    // toggle content description
+    override var contentDescription: Int = R.string.empty_string
+        set(@StringRes value) {
+            view.toggle.contentDescription = view.resources.getString(value)
+        }
+
+    var title: Int = R.string.empty_string
         set(@StringRes value) {
             field = value
             view.title.setText(value)
         }
-    var subtitle: Int = empty_string
+    var subtitle: Int = R.string.empty_string
         set(@StringRes value) {
             field = value
-            if (value != empty_string) {
+            if (value != R.string.empty_string) {
                 view.subtitle.setText(value)
                 view.subtitle.visibility = View.VISIBLE
             } else {
@@ -61,10 +74,10 @@ class ToggleSettingViewHolder(val view: View) : SettingViewHolder(view) {
             }
         }
 
-    var buttonTitle: Int = empty_string
+    var buttonTitle: Int = R.string.empty_string
         set(@StringRes value) {
             field = value
-            if (value != empty_string) {
+            if (value != R.string.empty_string) {
                 view.button.text = view.resources.getString(value)
                 view.button.contentDescription = view.resources.getString(R.string.learn_more_description)
                 view.button.visibility = View.VISIBLE
@@ -79,6 +92,12 @@ class ToggleSettingViewHolder(val view: View) : SettingViewHolder(view) {
 }
 
 class AppVersionSettingViewHolder(val view: View) : SettingViewHolder(view) {
+
+    override var contentDescription: Int = R.string.empty_string
+        set(@StringRes value) {
+            view.contentDescription = view.resources.getString(value)
+        }
+
     var text: String? = null
         set(value) {
             field = value
