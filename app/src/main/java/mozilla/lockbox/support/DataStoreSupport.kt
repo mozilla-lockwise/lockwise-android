@@ -6,8 +6,8 @@
 
 package mozilla.lockbox.support
 
-import org.mozilla.sync15.logins.LoginsStorage
-import org.mozilla.sync15.logins.SyncUnlockInfo
+import mozilla.appservices.logins.LoginsStorage
+import mozilla.appservices.logins.SyncUnlockInfo
 
 interface DataStoreSupport {
     val encryptionKey: String

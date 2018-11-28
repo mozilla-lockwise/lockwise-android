@@ -7,10 +7,10 @@
 package mozilla.lockbox.extensions
 
 import io.reactivex.Observable
+import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.LogProvider
 import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.support.Optional
-import org.mozilla.sync15.logins.ServerPassword
 
 fun <T : Any, U : T> Observable<T>.filterByType(clazz: Class<out U>): Observable<U> {
     return this.filter { t -> clazz.isInstance(t) }.map { t -> clazz.cast(t) }

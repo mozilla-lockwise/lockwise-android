@@ -38,7 +38,7 @@ class SettingFragment : BackableFragment(), SettingView {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        presenter = SettingPresenter(this, context!!)
+        presenter = SettingPresenter(this)
 
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_setting, container, false)

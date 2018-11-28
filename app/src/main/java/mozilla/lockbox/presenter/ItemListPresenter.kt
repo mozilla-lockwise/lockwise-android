@@ -11,16 +11,17 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.action.Setting
 import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.extensions.mapToItemViewModelList
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
-import mozilla.lockbox.model.ItemListSort
 import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.model.titleFromHostname
 import mozilla.lockbox.store.AccountStore
@@ -34,12 +35,13 @@ interface ItemListView {
     val filterClicks: Observable<Unit>
     val menuItemSelections: Observable<Int>
     val lockNowClick: Observable<Unit>
-    val sortItemSelection: Observable<ItemListSort>
+    val sortItemSelection: Observable<Setting.ItemListSort>
     fun updateItems(itemList: List<ItemViewModel>)
-    fun updateItemListSort(sort: ItemListSort)
+    fun updateItemListSort(sort: Setting.ItemListSort)
     fun setDisplayName(text: String)
 }
 
+@ExperimentalCoroutinesApi
 class ItemListPresenter(
     private val view: ItemListView,
     private val dispatcher: Dispatcher = Dispatcher.shared,
@@ -55,8 +57,8 @@ class ItemListPresenter(
                 .distinctUntilChanged()
                 .map { pair ->
                     when (pair.second) {
-                        ItemListSort.ALPHABETICALLY -> { pair.first.sortedBy { titleFromHostname(it.hostname) } }
-                        ItemListSort.RECENTLY_USED -> { pair.first.sortedBy { -it.timeLastUsed } }
+                        Setting.ItemListSort.ALPHABETICALLY -> { pair.first.sortedBy { titleFromHostname(it.hostname) } }
+                        Setting.ItemListSort.RECENTLY_USED -> { pair.first.sortedBy { -it.timeLastUsed } }
                     }
                 }
                 .mapToItemViewModelList()

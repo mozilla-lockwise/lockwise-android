@@ -65,6 +65,7 @@ open class TelemetryWrapper {
 
 open class TelemetryStore(
     val dispatcher: Dispatcher = Dispatcher.shared,
+    private val settingStore: SettingStore = SettingStore.shared,
     private val wrapper: TelemetryWrapper = TelemetryWrapper()
 ) : ContextStore {
     companion object {
@@ -87,7 +88,7 @@ open class TelemetryStore(
 
     override fun injectContext(context: Context) {
         wrapper.lateinitContext(context)
-        SettingStore.shared
+        settingStore
             .sendUsageData
             .subscribe(wrapper::update)
             .addTo(compositeDisposable)

@@ -45,7 +45,6 @@
     <string name="learn_more">Learn more</string>
     <string name="auto_lock">Auto lock</string>
     <string name="unlock">Unlock with fingerprint</string>
-    <string name="auto_lock_option">5 minutes</string>
     <string name="autofill">Autofill</string>
     <string name="autofill_summary">Let Firefox Lockbox fill in logins for you</string>
     <string name="send_usage_data">Send usage data</string>
@@ -72,9 +71,18 @@
         from Firefox Lockbox.
     </string>
     <string name="disconnect">Disconnect</string>
-    <string name="error">Fingerprint sensor error</string>
     <string name="application_logo">Firefox Lockbox Logo</string>
     <string name="enable_fingerprint_dialog_title">Enable Fingerprint</string>
     <string name="enable_fingerprint_dialog_subtitle">Give Lockbox permission to unlock this app with the fingerprint sensor.</string>
+    <string name="one_minute">1 minute</string>
+    <string name="fifteen_minutes">15 minutes</string>
+    <string name="five_minutes">5 minutes</string>
+    <string name="thirty_minutes">30 minutes</string>
+    <string name="one_hour">1 hour</string>
+    <string name="twelve_hours">12 hours</string>
+    <string name="twenty_four_hours">24 hours</string>
+    <string name="never">Never</string>
     <string name="placeholder_skip_fxa">Use test data</string>
+    <!--suppress CheckTagEmptyBody -->
+    <string name="empty_string"></string>
 </resources>

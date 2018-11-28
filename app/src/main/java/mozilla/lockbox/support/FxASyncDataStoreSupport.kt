@@ -7,10 +7,10 @@
 package mozilla.lockbox.support
 
 import android.content.Context
+import mozilla.appservices.logins.DatabaseLoginsStorage
+import mozilla.appservices.logins.LoginsStorage
+import mozilla.appservices.logins.SyncUnlockInfo
 import mozilla.lockbox.store.ContextStore
-import org.mozilla.sync15.logins.DatabaseLoginsStorage
-import org.mozilla.sync15.logins.LoginsStorage
-import org.mozilla.sync15.logins.SyncUnlockInfo
 import java.security.SecureRandom
 
 class FxASyncDataStoreSupport(

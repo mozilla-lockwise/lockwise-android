@@ -36,14 +36,14 @@ class SectionedAdapterTest {
         context = RuntimeEnvironment.application
         parent = RecyclerView(context)
         parent.layoutManager = LinearLayoutManager(context)
-        testHelper = ListAdapterTestHelper(context)
+        testHelper = ListAdapterTestHelper()
     }
 
     @Test
     fun getItemViewTypeTest() {
         val sections = listOf(
-            Section(0, context.getString(R.string.security_title)),
-            Section(1, context.getString(R.string.support_title))
+            Section(0, R.string.security_title),
+            Section(1, R.string.support_title)
         )
 
         val settings = testHelper.createListOfSettings()
@@ -61,8 +61,8 @@ class SectionedAdapterTest {
     @Test
     fun getItemCountTest() {
         val sections = listOf(
-            Section(0, context.getString(R.string.security_title)),
-            Section(3, context.getString(R.string.support_title))
+            Section(0, R.string.security_title),
+            Section(3, R.string.support_title)
         )
 
         val settings = testHelper.createListOfSettings()
@@ -78,8 +78,8 @@ class SectionedAdapterTest {
     @Test
     fun isSectionHeaderPositionTest() {
         val sections = listOf(
-            Section(0, context.getString(R.string.security_title)),
-            Section(3, context.getString(R.string.support_title))
+            Section(0, R.string.security_title),
+            Section(3, R.string.support_title)
         )
         val settings = testHelper.createListOfSettings()
 
@@ -97,8 +97,8 @@ class SectionedAdapterTest {
     @Test
     fun onCreateViewHolderTest_HeaderSection() {
         val sections = listOf(
-            Section(0, context.getString(R.string.security_title)),
-            Section(3, context.getString(R.string.support_title))
+            Section(0, R.string.security_title),
+            Section(3, R.string.support_title)
         )
 
         val subject = testHelper.createSectionedAdapter(
@@ -120,8 +120,8 @@ class SectionedAdapterTest {
     @Test
     fun onCreateViewHolderTest_ChildViewHolderElement() {
         val sections = listOf(
-            Section(0, context.getString(R.string.security_title)),
-            Section(3, context.getString(R.string.support_title))
+            Section(0, R.string.security_title),
+            Section(3, R.string.support_title)
         )
 
         val settings = testHelper.createListOfSettings()
@@ -145,7 +145,7 @@ class SectionedAdapterTest {
 
     @Test
     fun onBindViewHolderTest_HeaderSection() {
-        val securityTitle = context.getString(R.string.security_title)
+        val securityTitle = R.string.security_title
 
         val sections = listOf(
             Section(0, securityTitle)
@@ -164,15 +164,15 @@ class SectionedAdapterTest {
         ) as SectionedAdapter.SectionViewHolder
         subject.onBindViewHolder(sectionViewHolder = viewHolder, position = 0)
 
-        Assert.assertEquals(securityTitle, viewHolder.title.text)
+        Assert.assertEquals(context.getString(securityTitle), viewHolder.title.text)
     }
 
     @Test
     fun onBindViewHolderTest_ChildViewHolderElement() {
-        val settingsTitle = context.getString(R.string.unlock)
+        val settingsTitle = R.string.unlock
 
         val sections = listOf(
-            SectionedAdapter.Section(0, context.getString(R.string.security_title))
+            SectionedAdapter.Section(0, R.string.security_title)
         )
         val settings = testHelper.createListOfSettings()
         settingAdapter.setItems(settings)

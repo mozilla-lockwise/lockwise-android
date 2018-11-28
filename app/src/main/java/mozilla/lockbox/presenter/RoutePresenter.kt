@@ -20,6 +20,8 @@ import mozilla.lockbox.R
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.action.Setting
+import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.extensions.view.AlertDialogHelper
 import mozilla.lockbox.extensions.view.AlertState
 import mozilla.lockbox.extensions.filterNotNull
@@ -32,6 +34,7 @@ import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.DataStore.State
 import mozilla.lockbox.store.LifecycleStore
 import mozilla.lockbox.store.RouteStore
+import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.support.FixedDataStoreSupport
 import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.view.DialogFragment
@@ -42,6 +45,7 @@ class RoutePresenter(
     private val activity: AppCompatActivity,
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val routeStore: RouteStore = RouteStore.shared,
+    private val settingStore: SettingStore = SettingStore.shared,
     private val dataStore: DataStore = DataStore.shared,
     private val accountStore: AccountStore = AccountStore.shared,
     private val lifecycleStore: LifecycleStore = LifecycleStore.shared
@@ -106,6 +110,8 @@ class RoutePresenter(
             is RouteAction.DialogFragment -> showDialogFragment(FingerprintAuthDialogFragment(), action)
             is RouteAction.Dialog -> showDialog(action)
 
+            is RouteAction.AutoLockSetting -> showAutoLockSelections()
+
             is RouteAction.Back -> navController.popBackStack()
         }
     }
@@ -120,10 +126,10 @@ class RoutePresenter(
             .map { alertState ->
                 val action: Action? = when (alertState) {
                     AlertState.BUTTON_POSITIVE -> {
-                        destination.positiveButtonActions
+                        destination.positiveButtonAction
                     }
                     AlertState.BUTTON_NEGATIVE -> {
-                        destination.negativeButtonActions
+                        destination.negativeButtonAction
                     }
                 }
 
@@ -131,6 +137,30 @@ class RoutePresenter(
             }
             .filterNotNull()
             .subscribe(dispatcher::dispatch)
+            .addTo(compositeDisposable)
+    }
+
+    private fun showAutoLockSelections() {
+        val autoLockValues = Setting.AutoLockTime.values()
+        val items = autoLockValues.map { it.stringValue }.toTypedArray()
+
+        settingStore.autoLockTime.take(1)
+            .map { autoLockValues.indexOf(it) }
+            .flatMap {
+                AlertDialogHelper.showRadioAlertDialog(
+                    activity,
+                    R.string.auto_lock,
+                    items,
+                    it,
+                    negativeButtonTitle = R.string.cancel
+                )
+            }
+            .map {
+                autoLockValues[it]
+            }
+            .subscribe {
+                dispatcher.dispatch(SettingAction.AutoLockTime(it))
+            }
             .addTo(compositeDisposable)
     }
 

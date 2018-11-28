@@ -10,15 +10,16 @@ import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
+import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.R
 import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.action.Setting
 import mozilla.lockbox.action.SettingAction
-import mozilla.lockbox.extensions.view.AlertState
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.extensions.toViewModel
+import mozilla.lockbox.extensions.view.AlertState
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
-import mozilla.lockbox.model.ItemListSort
 import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.DataStore
@@ -31,7 +32,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mozilla.sync15.logins.ServerPassword
 import org.powermock.api.mockito.PowerMockito
 import org.powermock.core.classloader.annotations.PrepareForTest
 import org.robolectric.RobolectricTestRunner
@@ -76,19 +76,21 @@ open class ItemListPresenterTest {
         var setDisplayNameArgument: String? = null
         var updateItemsArgument: List<ItemViewModel>? = null
 
-        var itemListSort: ItemListSort? = null
+        var itemListSort: Setting.ItemListSort? = null
         val menuItemSelectionStub = PublishSubject.create<Int>()
 
         val itemSelectedStub = PublishSubject.create<ItemViewModel>()
-        val sortItemSelectionStub = PublishSubject.create<ItemListSort>()
-        val disclaimerActionStub = PublishSubject.create<AlertState>()
+
         val filterClickStub = PublishSubject.create<Unit>()
+        val sortItemSelectionStub = PublishSubject.create<Setting.ItemListSort>()
+
+        val disclaimerActionStub = PublishSubject.create<AlertState>()
         val lockNowSelectionStub = PublishSubject.create<Unit>()
 
         override val itemSelection: Observable<ItemViewModel>
             get() = itemSelectedStub
 
-        override val sortItemSelection: Observable<ItemListSort>
+        override val sortItemSelection: Observable<Setting.ItemListSort>
             get() = sortItemSelectionStub
 
         override val filterClicks: Observable<Unit>
@@ -108,7 +110,7 @@ open class ItemListPresenterTest {
             updateItemsArgument = itemList
         }
 
-        override fun updateItemListSort(sort: ItemListSort) {
+        override fun updateItemListSort(sort: Setting.ItemListSort) {
             itemListSort = sort
         }
     }
@@ -129,8 +131,8 @@ open class ItemListPresenterTest {
     val accountStore = PowerMockito.mock(AccountStore::class.java)
 
     class FakeSettingStore : SettingStore() {
-        val itemListSortStub = BehaviorSubject.createDefault(ItemListSort.ALPHABETICALLY)
-        override var itemListSortOrder: Observable<ItemListSort> = itemListSortStub
+        val itemListSortStub = BehaviorSubject.createDefault(Setting.ItemListSort.ALPHABETICALLY)
+        override var itemListSortOrder: Observable<Setting.ItemListSort> = itemListSortStub
     }
 
     private val dataStore = FakeDataStore()
@@ -167,7 +169,7 @@ open class ItemListPresenterTest {
         val expectedList = listOf(password2, password3, password1).map { it.toViewModel() }
 
         Assert.assertEquals(expectedList, view.updateItemsArgument)
-        Assert.assertEquals(ItemListSort.ALPHABETICALLY, view.itemListSort)
+        Assert.assertEquals(Setting.ItemListSort.ALPHABETICALLY, view.itemListSort)
     }
 
     @Test
@@ -179,10 +181,10 @@ open class ItemListPresenterTest {
 
         // default
         Assert.assertEquals(alphabetically, view.updateItemsArgument)
-        Assert.assertEquals(ItemListSort.ALPHABETICALLY, view.itemListSort)
+        Assert.assertEquals(Setting.ItemListSort.ALPHABETICALLY, view.itemListSort)
 
         // last used
-        var sortOrder = ItemListSort.RECENTLY_USED
+        var sortOrder = Setting.ItemListSort.RECENTLY_USED
         view.sortItemSelectionStub.onNext(sortOrder)
         dispatcherObserver.assertLastValue(SettingAction.ItemListSortOrder(sortOrder))
 
@@ -191,7 +193,7 @@ open class ItemListPresenterTest {
         Assert.assertEquals(lastUsed, view.updateItemsArgument)
 
         // alphabetically
-        sortOrder = ItemListSort.ALPHABETICALLY
+        sortOrder = Setting.ItemListSort.ALPHABETICALLY
         view.sortItemSelectionStub.onNext(sortOrder)
         dispatcherObserver.assertLastValue(SettingAction.ItemListSortOrder(sortOrder))
 

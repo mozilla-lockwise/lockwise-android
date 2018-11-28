@@ -6,6 +6,7 @@
 
 package mozilla.lockbox.view
 
+import android.support.annotation.StringRes
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.Switch
@@ -16,6 +17,7 @@ import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.list_cell_setting_appversion.view.*
 import kotlinx.android.synthetic.main.list_cell_setting_text.view.*
 import kotlinx.android.synthetic.main.list_cell_setting_toggle.view.*
+import mozilla.lockbox.R
 
 abstract class SettingViewHolder(override val containerView: View) :
     RecyclerView.ViewHolder(containerView),
@@ -24,42 +26,42 @@ abstract class SettingViewHolder(override val containerView: View) :
 }
 
 class TextSettingViewHolder(val view: View) : SettingViewHolder(view) {
-    var title: String? = null
-        set(value) {
+    var title: Int = R.string.empty_string
+        set(@StringRes value) {
             field = value
-            view.description.text = value
+            view.description.setText(value)
         }
-    var detailText: String? = null
-        set(value) {
+    var detailTextRes: Int = R.string.empty_string
+        set(@StringRes value) {
             field = value
-            view.settingSelection.text = value
+            view.settingSelection.setText(value)
         }
 }
 
 class ToggleSettingViewHolder(val view: View) : SettingViewHolder(view) {
-    var title: String? = null
-        set(value) {
+    var title: Int = R.string.empty_string
+        set(@StringRes value) {
             field = value
-            view.title.text = value
+            view.title.setText(value)
         }
-    var subtitle: String? = null
-        set(value) {
+    var subtitle: Int = R.string.empty_string
+        set(@StringRes value) {
             field = value
-            value?.let {
-                view.subtitle.text = value
+            if (value != R.string.empty_string) {
+                view.subtitle.setText(value)
                 view.subtitle.visibility = View.VISIBLE
-            } ?: run {
+            } else {
                 view.subtitle.visibility = View.GONE
             }
         }
 
-    var buttonTitle: String? = null
-        set(value) {
+    var buttonTitle: Int = R.string.empty_string
+        set(@StringRes value) {
             field = value
-            value?.let {
-                view.button.text = value
+            if (value != R.string.empty_string) {
+                view.button.text = view.resources.getString(value)
                 view.button.visibility = View.VISIBLE
-            } ?: run {
+            } else {
                 view.button.visibility = View.GONE
             }
         }

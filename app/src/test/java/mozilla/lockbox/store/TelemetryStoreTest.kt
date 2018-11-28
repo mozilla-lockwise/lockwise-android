@@ -7,6 +7,8 @@
 package mozilla.lockbox.store
 
 import android.content.Context
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.ReplaySubject
 import mozilla.lockbox.DisposingTest
 import mozilla.lockbox.action.TelemetryAction
@@ -36,12 +38,17 @@ class TelemetryStoreTest : DisposingTest() {
         }
     }
 
+    class FakeSettingStore : SettingStore() {
+        override var sendUsageData: Observable<Boolean> = PublishSubject.create()
+    }
+
+    private val dispatcher = Dispatcher()
+    private val wrapper = FakeTelemetryWrapper()
+    private val settingStore = FakeSettingStore()
+    val subject = TelemetryStore(dispatcher, settingStore, wrapper)
+
     @Test
     fun testApplyConfig() {
-        val dispatcher = Dispatcher()
-        val wrapper = FakeTelemetryWrapper()
-        val subject = TelemetryStore(dispatcher, wrapper)
-
         val applyObserver = createTestObserver<Context>()
         wrapper.applySubject.subscribe(applyObserver)
         subject.injectContext(RuntimeEnvironment.application)
@@ -50,10 +57,6 @@ class TelemetryStoreTest : DisposingTest() {
 
     @Test
     fun testActionHandling() {
-        val dispatcher = Dispatcher()
-        val wrapper = FakeTelemetryWrapper()
-        TelemetryStore(dispatcher, wrapper)
-
         val eventsObserver = createTestObserver<TelemetryEvent>()
         wrapper.eventsSubject.subscribe(eventsObserver)
 

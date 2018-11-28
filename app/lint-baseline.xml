@@ -2,12 +2,25 @@
 <issues format="4" by="lint 3.2.1" client="gradle" variant="all" version="3.2.1">
 
     <issue
-        id="ObsoleteLintCustomCheck"
-        message="Lint found an issue registry (`mozilla.components.tooling.lint.LintIssueRegistry`) which is older than the current API level; these checks may not work correctly.&#xA;&#xA;Recompile the checks against the latest version. Custom check API version is 1 (3.1+), current lint API level is 2 (3.2+)"
-        includedVariants="debug"
-        excludedVariants="release">
+            id="GradleDependency"
+            message="A newer version of org.mockito:mockito-core than 2.22.0 is available: 2.23.0"
+            errorLine1="    testImplementation &apos;org.mockito:mockito-core:2.22.0&apos;"
+            errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="../../../.gradle/caches/transforms-1/files-1.1/lib-dataprotect-0.29.0.aar/b5d1e10a1a4524dcf6f9fdb8443cd56f/jars/lint.jar"/>
+                file="build.gradle"
+                line="98"
+                column="5"/>
+    </issue>
+
+    <issue
+            id="GradleDependency"
+            message="A newer version of org.mockito:mockito-android than 2.22.0 is available: 2.23.0"
+            errorLine1="    testImplementation &apos;org.mockito:mockito-android:2.22.0&apos;"
+            errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+                file="build.gradle"
+                line="106"
+                column="5"/>
     </issue>
 
     <issue
@@ -63,7 +76,6 @@
                 file="src/main/res/mipmap-hdpi/ic_launcher_background.png"/>
     </issue>
 
-
     <issue
             id="IconLauncherShape"
             message="Launcher icons should not fill every pixel of their square region; see the design guide for details">
@@ -91,7 +103,6 @@
         <location
                 file="src/main/res/mipmap-xxxhdpi/ic_launcher_background.png"/>
     </issue>
-
 
     <issue
         id="VectorPath"
@@ -289,39 +300,6 @@
             file="src/main/res/drawable/ic_show.xml"
             line="7"
             column="25"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.dimen.nav_padding_lock_now` appears to be unused"
-        errorLine1="    &lt;dimen name=&quot;nav_padding_lock_now&quot; tools:override=&quot;true&quot;>125dp&lt;/dimen>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/dimens.xml"
-            line="8"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.menu.nav_menu_footer` appears to be unused"
-        errorLine1="&lt;menu xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;>"
-        errorLine2="^">
-        <location
-            file="src/main/res/menu/nav_menu_footer.xml"
-            line="8"
-            column="1"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.string.error` appears to be unused"
-        errorLine1="    &lt;string name=&quot;error&quot;>Fingerprint sensor error&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="75"
-            column="13"/>
     </issue>
 
     <issue
