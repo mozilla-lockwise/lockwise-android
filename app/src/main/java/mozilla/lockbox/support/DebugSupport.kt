@@ -23,3 +23,12 @@ fun assertNotOnUiThread(detailMessage: String = "Should not be on the UI thread"
         throw AssertionError(detailMessage)
     }
 }
+
+fun isTesting(): Boolean {
+    try {
+        Class.forName("org.robolectric.RuntimeEnvironment")
+    } catch (e: ClassNotFoundException) {
+        return false
+    }
+    return true
+}

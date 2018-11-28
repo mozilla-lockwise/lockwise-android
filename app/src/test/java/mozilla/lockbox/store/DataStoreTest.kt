@@ -69,10 +69,7 @@ class DataStoreTest : DisposingTest() {
 
         stateObserver.apply {
             // TODO: figure out why the initialized state isn't here?
-            assertValueCount(3)
-            assertValueAt(0, State.Unprepared)
-            assertValueAt(1, State.Unlocked)
-            assertValueAt(2, State.Locked)
+            assertValues(State.Unprepared, State.Unlocking, State.Unlocked, State.Locked)
         }
         listObserver.apply {
             val results = values()
