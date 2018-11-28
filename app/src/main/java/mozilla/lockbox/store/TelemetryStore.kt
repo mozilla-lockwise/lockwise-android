@@ -33,14 +33,13 @@ open class TelemetryWrapper {
 
     open fun lateinitContext(ctx: Context) {
         val res = ctx.resources
-        val enabled = false
         val config = TelemetryConfiguration(ctx)
             .setAppName(res.getString(R.string.app_label))
             .setServerEndpoint(res.getString(R.string.telemetry_server_endpoint))
             .setUpdateChannel(BuildConfig.BUILD_TYPE)
             .setBuildId(BuildConfig.VERSION_CODE.toString())
-            .setCollectionEnabled(true)
-            .setUploadEnabled(enabled)
+            .setCollectionEnabled(true)     // gather the data (so we get startup) ...
+            .setUploadEnabled(false)        // ... but don't upload it
         val storage = FileTelemetryStorage(config, JSONPingSerializer())
         val client = HttpURLConnectionTelemetryClient()
         val scheduler = JobSchedulerTelemetryScheduler()
