@@ -146,11 +146,11 @@ class SectionedAdapterTest {
 
     @Test
     fun onBindViewHolderTest_HeaderSection() {
-        val securityTitle = R.string.configuration_title
+        val configurationTitle = R.string.configuration_title
         val supportTitle = R.string.support_title
 
         val sections = listOf(
-            Section(0, securityTitle),
+            Section(0, configurationTitle),
             Section(3, supportTitle)
         )
 
@@ -170,12 +170,12 @@ class SectionedAdapterTest {
 
         subject.onBindViewHolder(sectionViewHolder = viewHolder, position = 0)
 
-        Assert.assertEquals(context.getString(securityTitle), viewHolder.title.text)
+        Assert.assertEquals(context.getString(configurationTitle), viewHolder.title.text)
         Assert.assertEquals(marginTopFirst, (viewHolder.title.layoutParams as LinearLayout.LayoutParams).topMargin)
 
         subject.onBindViewHolder(sectionViewHolder = viewHolder, position = 4)
 
-        Assert.assertEquals(supportTitle, viewHolder.title.text)
+        Assert.assertEquals(context.getString(supportTitle), viewHolder.title.text)
         Assert.assertEquals(marginTop, (viewHolder.title.layoutParams as LinearLayout.LayoutParams).topMargin)
     }
 
