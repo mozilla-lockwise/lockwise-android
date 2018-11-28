@@ -7,24 +7,20 @@
 package mozilla.lockbox.presenter
 
 import android.support.annotation.IdRes
-import com.squareup.picasso.Picasso
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
-import jp.wasabeef.picasso.transformations.CropCircleTransformation
-import kotlinx.android.synthetic.main.fragment_item_list.view.*
-import kotlinx.android.synthetic.main.nav_header.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.action.SettingAction
-import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.extensions.mapToItemViewModelList
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
+import mozilla.lockbox.model.AccountViewModel
 import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.model.titleFromHostname
 import mozilla.lockbox.store.AccountStore
@@ -39,10 +35,8 @@ interface ItemListView {
     val menuItemSelections: Observable<Int>
     val lockNowClick: Observable<Unit>
     val sortItemSelection: Observable<Setting.ItemListSort>
-    var displayEmailName: String
-    var accountName: String
-    var avatarFromURL: String
     fun updateItems(itemList: List<ItemViewModel>)
+    fun updateAccountProfile(profile: AccountViewModel)
     fun updateItemListSort(sort: Setting.ItemListSort)
 }
 
@@ -112,11 +106,13 @@ class ItemListPresenter(
                 (it.value?.asOptional())
             }
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe{
-                view.accountName = it?.value?.displayName ?: it?.value?.email!!
-                view.displayEmailName = it?.value?.email!!
-                view.avatarFromURL = it?.value?.avatar!!
-                log.error("Lifecycle problem caused ${it.javaClass.simpleName} here", it)
+            .subscribe{profile ->
+                val account = AccountViewModel (
+                    accountName = profile?.value?.displayName ?: profile?.value?.email!!,
+                    displayEmailName = profile?.value?.email!!,
+                    avatarFromURL = profile.value.avatar!!)
+                view.updateAccountProfile(account)
+                log.error("Lifecycle problem caused ${profile.javaClass.simpleName} here")
                 log.info("onCompleted: ${javaClass.simpleName}")
             }
             .addTo(compositeDisposable)

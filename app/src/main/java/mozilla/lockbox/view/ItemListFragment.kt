@@ -42,6 +42,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.adapter.ItemListSortAdapter
 import mozilla.lockbox.extensions.view.itemClicks
+import mozilla.lockbox.model.AccountViewModel
 import mozilla.lockbox.support.dpToPixels
 
 @ExperimentalCoroutinesApi
@@ -88,13 +89,17 @@ class ItemListFragment : CommonFragment(), ItemListView {
         toolbar.navigationIcon = resources.getDrawable(R.drawable.ic_menu, null)
         toolbar.setNavigationContentDescription(R.string.menu_description)
         toolbar.navigationClicks().subscribe { drawerLayout.openDrawer(GravityCompat.START) }
-                .addTo(compositeDisposable)
+            .addTo(compositeDisposable)
     }
 
     private fun setupItemListSortMenu(sortButton: Button) {
         val context = requireContext()
         sortItemsMenu = ListPopupWindow(context)
-        sortItemsAdapter = ItemListSortAdapter(context, R.layout.sort_menu_item, sortMenuOptions.map { context.getString(it.displayStringId) }.toTypedArray())
+        sortItemsAdapter = ItemListSortAdapter(
+            context,
+            R.layout.sort_menu_item,
+            sortMenuOptions.map { context.getString(it.displayStringId) }.toTypedArray()
+        )
         sortItemsAdapter.selectedBackgroundColor = R.color.menuItemSelected
         sortItemsMenu.setAdapter(sortItemsAdapter)
         sortItemsMenu.anchorView = sortButton
@@ -144,26 +149,6 @@ class ItemListFragment : CommonFragment(), ItemListView {
     override val itemSelection: Observable<ItemViewModel>
         get() = adapter.clicks()
 
-    override var displayEmailName: String = resources.getString(R.string.empty_string)
-        set(value) {
-            view!!.navView.menuHeader.displayName.text = value
-        }
-
-    override var accountName: String = resources.getString(R.string.empty_string)
-        set(value) {
-            view!!.navView.menuHeader.accountName.text = value
-        }
-
-    override var avatarFromURL: String = resources.getString(R.string.empty_string)
-        set(value) {
-            Picasso.get()
-                .load(value)
-                .placeholder(R.drawable.ic_avatar_placeholder)
-                .resize(R.attr.avatar_image_size, R.attr.avatar_image_size)
-                .transform(CropCircleTransformation())
-                .into(view!!.profileImage)
-        }
-
     override val menuItemSelections: Observable<Int>
         get() {
             val navView = view!!.navView
@@ -186,6 +171,17 @@ class ItemListFragment : CommonFragment(), ItemListView {
 
     override fun updateItems(itemList: List<ItemViewModel>) {
         adapter.updateItems(itemList)
+    }
+
+    override fun updateAccountProfile(profile: AccountViewModel) {
+        navView.menuHeader.displayName.text = profile.displayEmailName
+        view!!.navView.menuHeader.accountName.text = profile.accountName
+        Picasso.get()
+            .load(profile.avatarFromURL)
+            .placeholder(R.drawable.ic_avatar_placeholder)
+            .resize(R.attr.avatar_image_size, R.attr.avatar_image_size)
+            .transform(CropCircleTransformation())
+            .into(view!!.profileImage)
     }
 
     override fun updateItemListSort(sort: Setting.ItemListSort) {
