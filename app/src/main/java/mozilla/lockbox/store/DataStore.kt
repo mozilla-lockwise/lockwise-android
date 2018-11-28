@@ -62,7 +62,7 @@ open class DataStore(
         state.subscribe { state ->
             when (state) {
                 is State.Locked -> clearList()
-                is State.Unlocked -> updateList()
+                is State.Unlocked -> sync()
                 else -> Unit
             }
         }.addTo(compositeDisposable)
