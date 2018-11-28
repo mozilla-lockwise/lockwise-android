@@ -13,7 +13,8 @@
     android:layout_height="match_parent">
 
     <include android:id="@+id/include"
-        layout="@layout/include_nessie" />
+        layout="@layout/include_nessie"
+        tools:ignore="MissingConstraints" />
 
     <Button
         android:id="@+id/unlockButton"
