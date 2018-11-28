@@ -6,9 +6,9 @@
 
 package mozilla.lockbox.extensions
 
+import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.model.ItemViewModel
-import org.mozilla.sync15.logins.ServerPassword
 
 fun ServerPassword.toViewModel(): ItemViewModel {
     val username = this.username ?: ""

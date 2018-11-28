@@ -40,7 +40,7 @@
     <string name="copy_password_content_description">Copy your password</string>
     <string name="display_password_content_description">Display your password in plain text</string>
 
-    <string name="security_title">Security</string>
+    <string name="configuration_title">Configuration</string>
     <string name="support_title">Support</string>
     <string name="learn_more">Learn more</string>
     <string name="auto_lock">Auto lock</string>
@@ -71,7 +71,6 @@
         from Firefox Lockbox.
     </string>
     <string name="disconnect">Disconnect</string>
-    <string name="error">Fingerprint sensor error</string>
     <string name="application_logo">Firefox Lockbox Logo</string>
     <string name="enable_fingerprint_dialog_title">Enable Fingerprint</string>
     <string name="enable_fingerprint_dialog_subtitle">Give Lockbox permission to unlock this app with the fingerprint sensor.</string>

@@ -9,6 +9,7 @@ package mozilla.lockbox.adapter
 import android.content.Context
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.widget.LinearLayout
 import mozilla.lockbox.R
 import mozilla.lockbox.adapter.SectionedAdapter.Section
 import mozilla.lockbox.view.ToggleSettingViewHolder
@@ -42,7 +43,7 @@ class SectionedAdapterTest {
     @Test
     fun getItemViewTypeTest() {
         val sections = listOf(
-            Section(0, R.string.security_title),
+            Section(0, R.string.configuration_title),
             Section(1, R.string.support_title)
         )
 
@@ -61,7 +62,7 @@ class SectionedAdapterTest {
     @Test
     fun getItemCountTest() {
         val sections = listOf(
-            Section(0, R.string.security_title),
+            Section(0, R.string.configuration_title),
             Section(3, R.string.support_title)
         )
 
@@ -78,7 +79,7 @@ class SectionedAdapterTest {
     @Test
     fun isSectionHeaderPositionTest() {
         val sections = listOf(
-            Section(0, R.string.security_title),
+            Section(0, R.string.configuration_title),
             Section(3, R.string.support_title)
         )
         val settings = testHelper.createListOfSettings()
@@ -97,7 +98,7 @@ class SectionedAdapterTest {
     @Test
     fun onCreateViewHolderTest_HeaderSection() {
         val sections = listOf(
-            Section(0, R.string.security_title),
+            Section(0, R.string.configuration_title),
             Section(3, R.string.support_title)
         )
 
@@ -120,7 +121,7 @@ class SectionedAdapterTest {
     @Test
     fun onCreateViewHolderTest_ChildViewHolderElement() {
         val sections = listOf(
-            Section(0, R.string.security_title),
+            Section(0, R.string.configuration_title),
             Section(3, R.string.support_title)
         )
 
@@ -145,10 +146,12 @@ class SectionedAdapterTest {
 
     @Test
     fun onBindViewHolderTest_HeaderSection() {
-        val securityTitle = R.string.security_title
+        val configurationTitle = R.string.configuration_title
+        val supportTitle = R.string.support_title
 
         val sections = listOf(
-            Section(0, securityTitle)
+            Section(0, configurationTitle),
+            Section(3, supportTitle)
         )
 
         val subject = testHelper.createSectionedAdapter(
@@ -162,9 +165,18 @@ class SectionedAdapterTest {
             parent = parent,
             typeView = SectionedAdapter.SECTION_TYPE
         ) as SectionedAdapter.SectionViewHolder
+        val marginTopFirst = context.resources.getDimensionPixelSize(R.dimen.section_first_title_top_margin)
+        val marginTop = context.resources.getDimensionPixelSize(R.dimen.section_title_top_margin)
+
         subject.onBindViewHolder(sectionViewHolder = viewHolder, position = 0)
 
-        Assert.assertEquals(context.getString(securityTitle), viewHolder.title.text)
+        Assert.assertEquals(context.getString(configurationTitle), viewHolder.title.text)
+        Assert.assertEquals(marginTopFirst, (viewHolder.title.layoutParams as LinearLayout.LayoutParams).topMargin)
+
+        subject.onBindViewHolder(sectionViewHolder = viewHolder, position = 4)
+
+        Assert.assertEquals(context.getString(supportTitle), viewHolder.title.text)
+        Assert.assertEquals(marginTop, (viewHolder.title.layoutParams as LinearLayout.LayoutParams).topMargin)
     }
 
     @Test
@@ -172,7 +184,7 @@ class SectionedAdapterTest {
         val settingsTitle = R.string.unlock
 
         val sections = listOf(
-            SectionedAdapter.Section(0, R.string.security_title)
+            SectionedAdapter.Section(0, R.string.configuration_title)
         )
         val settings = testHelper.createListOfSettings()
         settingAdapter.setItems(settings)

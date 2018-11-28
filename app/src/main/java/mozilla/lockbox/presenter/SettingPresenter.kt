@@ -88,7 +88,14 @@ class SettingPresenter(
                 dispatcher.dispatch(SettingAction.UnlockWithFingerprintPendingAuth(false))
             }
             .addTo(compositeDisposable)
+    }
 
+    override fun onResume() {
+        super.onResume()
+        updateSettings()
+    }
+
+    private fun updateSettings() {
         var settings = listOf(
             TextSettingConfiguration(
                 title = R.string.auto_lock,
@@ -132,7 +139,7 @@ class SettingPresenter(
         }
 
         val sections = listOf(
-            SectionedAdapter.Section(0, R.string.security_title),
+            SectionedAdapter.Section(0, R.string.configuration_title),
             SectionedAdapter.Section(supportIndex, R.string.support_title)
         )
 

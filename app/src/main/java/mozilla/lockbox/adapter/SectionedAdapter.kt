@@ -16,6 +16,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.util.SparseArray
 import android.view.View
+import android.widget.LinearLayout
+import mozilla.lockbox.R
 
 class SectionedAdapter(
     private val sectionLayoutId: Int,
@@ -35,11 +37,11 @@ class SectionedAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, typeView: Int): RecyclerView.ViewHolder {
-        if (typeView == SECTION_TYPE) {
+        return if (typeView == SECTION_TYPE) {
             val view = LayoutInflater.from(parent.context).inflate(sectionLayoutId, parent, false)
-            return SectionViewHolder(view, sectionTitleId)
+            SectionViewHolder(view, sectionTitleId)
         } else {
-            return baseAdapter.onCreateViewHolder(parent, typeView - 1)
+            baseAdapter.onCreateViewHolder(parent, typeView - 1)
         }
     }
 
@@ -47,9 +49,19 @@ class SectionedAdapter(
         if (isSectionHeaderPosition(position)) {
             val title = sectionViewHolder.itemView.context.getString(sections.get(position).title)
             (sectionViewHolder as SectionViewHolder).title.text = title
+            setTitleTopMargin(sectionViewHolder.title, position)
         } else {
             baseAdapter.onBindViewHolder(sectionViewHolder, sectionedPositionToPosition(position))
         }
+    }
+
+    private fun setTitleTopMargin(textView: TextView, position: Int) {
+        val marginTop = if (position == 0) {
+            textView.resources.getDimensionPixelSize(R.dimen.section_first_title_top_margin)
+        } else {
+            textView.resources.getDimensionPixelSize(R.dimen.section_title_top_margin)
+        }
+        (textView.layoutParams as LinearLayout.LayoutParams).setMargins(0, marginTop, 0, 0)
     }
 
     override fun getItemViewType(position: Int): Int {

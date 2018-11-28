@@ -10,6 +10,7 @@ import io.reactivex.Observable
 import io.reactivex.functions.Consumer
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
+import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.TestConsumer
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.toViewModel
@@ -21,7 +22,6 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mozilla.sync15.logins.ServerPassword
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)

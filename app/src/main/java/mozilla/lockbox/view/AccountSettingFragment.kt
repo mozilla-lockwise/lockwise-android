@@ -15,10 +15,12 @@ import com.squareup.picasso.Picasso
 import io.reactivex.Observable
 import jp.wasabeef.picasso.transformations.CropCircleTransformation
 import kotlinx.android.synthetic.main.fragment_account_setting.view.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
 import mozilla.lockbox.presenter.AccountSettingPresenter
 import mozilla.lockbox.presenter.AccountSettingView
 
+@ExperimentalCoroutinesApi
 class AccountSettingFragment : BackableFragment(), AccountSettingView {
     override fun onCreateView(
         inflater: LayoutInflater,

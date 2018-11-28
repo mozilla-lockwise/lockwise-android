@@ -5,7 +5,7 @@
   ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
   -->
 
-<resources>
-    <dimen name="section_first_title_top_margin">13dp</dimen>
-    <dimen name="section_title_top_margin">30dp</dimen>
-</resources>
+<translate xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="@android:integer/config_mediumAnimTime"
+    android:fromYDelta="0%p"
+    android:toYDelta="0%p" />
