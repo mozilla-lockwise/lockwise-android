@@ -49,6 +49,7 @@ class SectionedAdapter(
         if (isSectionHeaderPosition(position)) {
             val title = sectionViewHolder.itemView.context.getString(sections.get(position).title)
             (sectionViewHolder as SectionViewHolder).title.text = title
+            sectionViewHolder.title.contentDescription = title
             setTitleTopMargin(sectionViewHolder.title, position)
         } else {
             baseAdapter.onBindViewHolder(sectionViewHolder, sectionedPositionToPosition(position))

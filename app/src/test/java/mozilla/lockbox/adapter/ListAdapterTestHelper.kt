@@ -30,11 +30,13 @@ class ListAdapterTestHelper {
         return listOf(
             ToggleSettingConfiguration(
                 title = R.string.unlock,
+                contentDescription = R.string.empty_string,
                 toggleDriver = toggleDriverFake,
                 toggleObserver = toggleConsumerFake
             ),
             TextSettingConfiguration(
                 title = R.string.auto_lock,
+                contentDescription = R.string.empty_string,
                 detailTextDriver = textDriverFake,
                 clickListener = textClicksConsumerFake
             )
@@ -58,30 +60,35 @@ class ListAdapterTestHelper {
         var settings = listOf(
             TextSettingConfiguration(
                 title = R.string.auto_lock,
+                contentDescription = R.string.empty_string,
                 detailTextDriver = textDriverFake,
                 clickListener = textClicksConsumerFake
             ),
             ToggleSettingConfiguration(
                 title = R.string.autofill,
                 subtitle = R.string.autofill_summary,
+                contentDescription = R.string.empty_string,
                 toggleDriver = toggleDriverFake,
                 toggleObserver = toggleConsumerFake
             ),
             ToggleSettingConfiguration(
                 title = R.string.send_usage_data,
                 subtitle = R.string.send_usage_data_summary,
+                contentDescription = R.string.empty_string,
                 buttonTitle = R.string.learn_more,
                 toggleDriver = toggleDriverFake,
                 toggleObserver = toggleConsumerFake
             ),
             AppVersionSettingConfiguration(
-                text = "App Version: $expectedVersionNumber"
+                text = "App Version: $expectedVersionNumber",
+                contentDescription = R.string.empty_string
             )
         )
         if (isFingerprintAvailable) {
             settings = listOf(
                 ToggleSettingConfiguration(
                     title = R.string.unlock,
+                    contentDescription = R.string.empty_string,
                     toggleDriver = toggleDriverFake,
                     toggleObserver = toggleConsumerFake
                 )

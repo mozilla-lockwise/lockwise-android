@@ -16,6 +16,7 @@ open class BackableFragment : CommonFragment(), BackableView {
         val navController = requireActivity().findNavController(R.id.fragment_nav_host)
         view.toolbar.setupWithNavController(navController)
         view.toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
+        view.toolbar.setNavigationContentDescription(R.string.backable_description)
         backablePresenter = BackablePresenter(this)
         backablePresenter.onViewReady()
 

@@ -39,7 +39,8 @@ class SettingListAdapterTest {
 
     class SettingCellConfigFake : SettingCellConfiguration(
         title = R.string.search_menu_title,
-        subtitle = R.string.cancel
+        subtitle = R.string.cancel,
+        contentDescription = R.string.empty_string
     )
 
     @Before
@@ -143,7 +144,7 @@ class SettingListAdapterTest {
 
         subject.onBindViewHolder(toggleViewHolder, 0)
 
-        Assert.assertEquals(expectedTitle, context.getString(toggleViewHolder.title!!))
+        Assert.assertEquals(expectedTitle, context.getString(toggleViewHolder.title))
         Assert.assertEquals(expectedToggleValue, toggleViewHolder.toggle.isChecked)
     }
 
@@ -152,7 +153,7 @@ class SettingListAdapterTest {
         val expectedAppVersion = "App Version: $expectedVersionNumber"
 
         val sectionConfig = listOf(
-            AppVersionSettingConfiguration(text = expectedAppVersion)
+            AppVersionSettingConfiguration(text = expectedAppVersion, contentDescription = R.string.empty_string)
         )
 
         subject.setItems(sectionConfig)

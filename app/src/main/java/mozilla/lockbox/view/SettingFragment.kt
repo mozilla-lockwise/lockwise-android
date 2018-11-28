@@ -14,6 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.github.magiepooh.recycleritemdecoration.ItemDecorations
 import kotlinx.android.synthetic.main.fragment_setting.view.*
+import kotlinx.android.synthetic.main.list_cell_setting_toggle.view.*
 import mozilla.lockbox.R
 import mozilla.lockbox.adapter.SectionedAdapter
 import mozilla.lockbox.adapter.SettingCellConfiguration

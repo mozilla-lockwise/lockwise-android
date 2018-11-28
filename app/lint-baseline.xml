@@ -303,6 +303,39 @@
     </issue>
 
     <issue
+        id="UnusedResources"
+        message="The resource `R.dimen.nav_padding_lock_now` appears to be unused"
+        errorLine1="    &lt;dimen name=&quot;nav_padding_lock_now&quot; tools:override=&quot;true&quot;>125dp&lt;/dimen>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/dimens.xml"
+            line="8"
+            column="12"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.menu.nav_menu_footer` appears to be unused"
+        errorLine1="&lt;menu xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;>"
+        errorLine2="^">
+        <location
+            file="src/main/res/menu/nav_menu_footer.xml"
+            line="8"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.app_version` appears to be unused"
+        errorLine1="    &lt;string name=&quot;app_version&quot;>Application version number&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="86"
+            column="13"/>
+    </issue>
+
+    <issue
         id="IconLauncherShape"
         message="Launcher icons should not fill every pixel of their square region; see the design guide for details">
         <location
@@ -316,8 +349,44 @@
         errorLine2="                    ~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/fragment_item_list.xml"
-            line="72"
+            line="74"
             column="21"/>
+    </issue>
+
+    <issue
+            id="IconLauncherShape"
+            message="Launcher icons should not fill every pixel of their square region; see the design guide for details">
+        <location
+                file="src/main/res/mipmap-hdpi/ic_launcher_background.png"/>
+    </issue>
+
+
+    <issue
+            id="IconLauncherShape"
+            message="Launcher icons should not fill every pixel of their square region; see the design guide for details">
+        <location
+                file="src/main/res/mipmap-mdpi/ic_launcher_background.png"/>
+    </issue>
+
+    <issue
+            id="IconLauncherShape"
+            message="Launcher icons should not fill every pixel of their square region; see the design guide for details">
+        <location
+                file="src/main/res/mipmap-xhdpi/ic_launcher_background.png"/>
+    </issue>
+
+    <issue
+            id="IconLauncherShape"
+            message="Launcher icons should not fill every pixel of their square region; see the design guide for details">
+        <location
+                file="src/main/res/mipmap-xxhdpi/ic_launcher_background.png"/>
+    </issue>
+
+    <issue
+            id="IconLauncherShape"
+            message="Launcher icons should not fill every pixel of their square region; see the design guide for details">
+        <location
+                file="src/main/res/mipmap-xxxhdpi/ic_launcher_background.png"/>
     </issue>
 
 </issues>

@@ -99,24 +99,28 @@ class SettingPresenter(
         var settings = listOf(
             TextSettingConfiguration(
                 title = R.string.auto_lock,
+                contentDescription = R.string.auto_lock_description,
                 detailTextDriver = settingStore.autoLockTime.map { it.stringValue },
                 clickListener = autoLockTimeClickListener
             ),
             ToggleSettingConfiguration(
                 title = R.string.autofill,
                 subtitle = R.string.autofill_summary,
+                contentDescription = R.string.autofill_description,
                 toggleDriver = Observable.just(true),
                 toggleObserver = autoFillObserver
             ),
             ToggleSettingConfiguration(
                 title = R.string.send_usage_data,
                 subtitle = R.string.send_usage_data_summary,
+                contentDescription = R.string.send_usage_data,
                 buttonTitle = R.string.learn_more,
                 toggleDriver = settingStore.sendUsageData,
                 toggleObserver = sendUsageDataObserver
             ),
             AppVersionSettingConfiguration(
-                text = "App Version: $versionNumber"
+                text = "App Version: $versionNumber",
+                contentDescription = R.string.app_version_description
             )
         )
 
@@ -126,6 +130,7 @@ class SettingPresenter(
             settings = listOf(
                 ToggleSettingConfiguration(
                     title = R.string.unlock,
+                    contentDescription = R.string.fingerprint_description,
                     toggleDriver = Observables.combineLatest(
                         settingStore.unlockWithFingerprintPendingAuth,
                         settingStore.unlockWithFingerprint

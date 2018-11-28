@@ -60,6 +60,7 @@ class SettingListAdapter : RecyclerView.Adapter<SettingViewHolder>() {
         when {
             holder is TextSettingViewHolder && configuration is TextSettingConfiguration -> {
                 holder.title = configuration.title
+                holder.contentDescription = configuration.contentDescription
                 holder.itemView.clicks()
                     .subscribe(configuration.clickListener)
                     .addTo(compositeDisposable)
@@ -73,6 +74,7 @@ class SettingListAdapter : RecyclerView.Adapter<SettingViewHolder>() {
                 holder.title = configuration.title
                 holder.subtitle = configuration.subtitle ?: R.string.empty_string
                 holder.buttonTitle = configuration.buttonTitle ?: R.string.empty_string
+                holder.contentDescription = configuration.contentDescription
                 configuration.toggleDriver
                     .subscribe {
                         holder.toggle.isChecked = it
@@ -85,6 +87,7 @@ class SettingListAdapter : RecyclerView.Adapter<SettingViewHolder>() {
             }
             holder is AppVersionSettingViewHolder && configuration is AppVersionSettingConfiguration -> {
                 holder.text = configuration.text
+                holder.contentDescription = configuration.contentDescription
             }
         }
     }
