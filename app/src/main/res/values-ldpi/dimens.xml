@@ -4,8 +4,7 @@
   ~ License, v. 2.0. If a copy of the MPL was not distributed with this
   ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
   -->
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <dimen name="nav_padding_lock_now" tools:override="true">125dp</dimen>
+<resources>
     <dimen name="nessie_blue_layout_margin_top">69dp</dimen>
     <dimen name="nessie_image_margin_top">79dp</dimen>
 </resources>
