@@ -27,9 +27,9 @@ import org.mozilla.telemetry.serialize.JSONPingSerializer
 import org.mozilla.telemetry.storage.FileTelemetryStorage
 
 open class TelemetryWrapper {
-    private var subject: Telemetry? = null
+    private var telemetry: Telemetry? = null
 
-    open val ready: Boolean get() = (subject != null)
+    open val ready: Boolean get() = (telemetry != null)
 
     open fun lateinitContext(ctx: Context) {
         val res = ctx.resources
@@ -45,33 +45,33 @@ open class TelemetryWrapper {
         val client = HttpURLConnectionTelemetryClient()
         val scheduler = JobSchedulerTelemetryScheduler()
 
-        subject = Telemetry(config, storage, client, scheduler)
+        telemetry = Telemetry(config, storage, client, scheduler)
             .addPingBuilder(TelemetryCorePingBuilder(config))
             .addPingBuilder(TelemetryMobileEventPingBuilder(config))
 
-        TelemetryHolder.set(subject)
+        TelemetryHolder.set(telemetry)
     }
 
     open fun update(enabled: Boolean) {
         // process any outstanding pings before settings change ...
         scheduleUpload()
 
-        subject?.configuration!!.apply {
+        telemetry?.configuration!!.apply {
             isCollectionEnabled = enabled
             isUploadEnabled = enabled
         }
     }
 
     open fun recordEvent(event: TelemetryEvent) {
-        subject?.queueEvent(event)
+        telemetry?.queueEvent(event)
     }
 
     open fun scheduleUpload() {
-        val telem = subject ?: return
-
-        telem.queuePing(TelemetryMobileEventPingBuilder.TYPE)
-            .queuePing(TelemetryCorePingBuilder.TYPE)
-            .scheduleUpload()
+        telemetry?.apply {
+            queuePing(TelemetryMobileEventPingBuilder.TYPE)
+            queuePing(TelemetryCorePingBuilder.TYPE)
+            scheduleUpload()
+        }
     }
 }
 
