@@ -80,6 +80,7 @@ class SettingPresenterTest {
     fun setUp() {
         dispatcher.register.subscribe(dispatcherObserver)
         testHelper = ListAdapterTestHelper()
+        subject.onViewReady()
     }
 
     @Test
@@ -88,11 +89,11 @@ class SettingPresenterTest {
         val expectedSettings = testHelper.createAccurateListOfSettings(true)
 
         val expectedSections = listOf(
-            SectionedAdapter.Section(0, R.string.security_title),
+            SectionedAdapter.Section(0, R.string.configuration_title),
             SectionedAdapter.Section(3, R.string.support_title)
         )
 
-        subject.onViewReady()
+        subject.onResume()
 
         assertEquals(view.settingItem!![0].title, expectedSettings[0].title)
         assertEquals(view.settingItem!![1].title, expectedSettings[1].title)
@@ -113,11 +114,11 @@ class SettingPresenterTest {
         val expectedSettings = testHelper.createAccurateListOfSettings(false)
 
         val expectedSections = listOf(
-            SectionedAdapter.Section(0, R.string.security_title),
+            SectionedAdapter.Section(0, R.string.configuration_title),
             SectionedAdapter.Section(2, R.string.support_title)
         )
 
-        subject.onViewReady()
+        subject.onResume()
 
         assertEquals(view.settingItem!![0].title, expectedSettings[0].title)
         assertEquals(view.settingItem!![1].title, expectedSettings[1].title)
@@ -134,7 +135,7 @@ class SettingPresenterTest {
     @Test
     fun `route to fingeprint dialog when toggle on`() {
         whenCalled(fingerprintStore.isFingerprintAuthAvailable).thenReturn(true)
-        subject.onViewReady()
+        subject.onResume()
         (view.settingItem!![0] as ToggleSettingConfiguration).toggleObserver.accept(true)
 
         dispatcherObserver.assertValueAt(0, SettingAction.UnlockWithFingerprintPendingAuth(true))
@@ -146,7 +147,7 @@ class SettingPresenterTest {
     @Test
     fun `dispatch save selection to shared prefs when toggle off`() {
         whenCalled(fingerprintStore.isFingerprintAuthAvailable).thenReturn(true)
-        subject.onViewReady()
+        subject.onResume()
         (view.settingItem!![0] as ToggleSettingConfiguration).toggleObserver.accept(false)
         settingStore.unlockWithFingerprintStub.onNext(false)
         dispatcherObserver.assertLastValue(SettingAction.UnlockWithFingerprint(false))
@@ -154,7 +155,7 @@ class SettingPresenterTest {
 
     @Test
     fun `handle success enabling fingerprint`() {
-        subject.onViewReady()
+        subject.onResume()
         (settingStore.onEnablingFingerprint as Subject).onNext(
             FingerprintAuthAction.OnAuthentication(
                 FingerprintAuthDialogFragment.AuthCallback.OnAuth
@@ -170,7 +171,7 @@ class SettingPresenterTest {
 
     @Test
     fun `handle error enabling fingerprint`() {
-        subject.onViewReady()
+        subject.onResume()
         (settingStore.onEnablingFingerprint as Subject).onNext(
             FingerprintAuthAction.OnAuthentication(
                 FingerprintAuthDialogFragment.AuthCallback.OnError
@@ -186,7 +187,7 @@ class SettingPresenterTest {
 
     @Test
     fun `handle cancel enabling fingerprint`() {
-        subject.onViewReady()
+        subject.onResume()
         (settingStore.onEnablingFingerprint as Subject).onNext(FingerprintAuthAction.OnCancel)
         dispatcherObserver.assertValueSequence(
             listOf<Action>(
@@ -200,7 +201,7 @@ class SettingPresenterTest {
     fun `autoLock with fingerprint enabling`() {
         Mockito.`when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(true)
 
-        subject.onViewReady()
+        subject.onResume()
 
         (view.settingItem!![0] as ToggleSettingConfiguration).toggleObserver.accept(true)
 
@@ -212,7 +213,7 @@ class SettingPresenterTest {
     @Test
     fun `sendUsageData updated`() {
         Mockito.`when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(false)
-        subject.onViewReady()
+        subject.onResume()
 
         (view.settingItem!![2] as ToggleSettingConfiguration).toggleObserver.accept(false)
 
@@ -223,7 +224,7 @@ class SettingPresenterTest {
     @Test
     fun `autoLockTime update requested`() {
         Mockito.`when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(false)
-        subject.onViewReady()
+        subject.onResume()
 
         (view.settingItem!![0] as TextSettingConfiguration).clickListener.accept(Unit)
 

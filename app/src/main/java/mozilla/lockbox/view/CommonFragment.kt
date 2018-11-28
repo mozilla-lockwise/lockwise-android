@@ -8,7 +8,11 @@ package mozilla.lockbox.view
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.view.ViewCompat
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import mozilla.lockbox.R
 import mozilla.lockbox.flux.Presenter
 
 open class CommonFragment : Fragment() {
@@ -27,5 +31,32 @@ open class CommonFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         presenter.onResume()
+    }
+
+    override fun onCreateAnimation(transit: Int, enter: Boolean, nextAnim: Int): Animation? {
+        if (nextAnim == R.anim.slide_in_bottom) {
+            val nextAnimation = AnimationUtils.loadAnimation(context, nextAnim)
+            nextAnimation.setAnimationListener(object : Animation.AnimationListener {
+                private var startZ = 0f
+                override fun onAnimationStart(animation: Animation) {
+                    view?.apply {
+                        startZ = ViewCompat.getTranslationZ(this)
+                        ViewCompat.setTranslationZ(this, 1f)
+                    }
+                }
+
+                override fun onAnimationEnd(animation: Animation) {
+                    // Short delay required to prevent flicker since other Fragment wasn't removed just yet.
+                    view?.apply {
+                        this.postDelayed({ ViewCompat.setTranslationZ(this, startZ) }, 100)
+                    }
+                }
+
+                override fun onAnimationRepeat(animation: Animation) {}
+            })
+            return nextAnimation
+        } else {
+            return null
+        }
     }
 }
