@@ -10,7 +10,7 @@
     <string name="app_tagline">Take your passwords everywhere.</string>
 
     <string name="welcome_start_btn">Get Started</string>
-    <string name="welcome_instructions">To use Firefox Lockbox, you\'ll need a Firefox Account with saved logins.</string>
+    <string name="welcome_instructions">To use Firefox Lockbox, you\'ll need a\nFirefox Account with saved logins.</string>
 
     <string name="welcome_learn_more_btn">Learn More</string>
     <string name="nav_menu_faq">FAQ</string>
@@ -40,7 +40,7 @@
     <string name="copy_password_content_description">Copy your password</string>
     <string name="display_password_content_description">Display your password in plain text</string>
 
-    <string name="security_title">Security</string>
+    <string name="configuration_title">Configuration</string>
     <string name="support_title">Support</string>
     <string name="learn_more">Learn more</string>
     <string name="auto_lock">Auto lock</string>
