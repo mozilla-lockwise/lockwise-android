@@ -65,4 +65,9 @@ class SettingFragment : BackableFragment(), SettingView {
         adapter.setItems(settings)
         sectionedAdapter.setSections(sections)
     }
+
+    override fun onDestroyView() {
+        adapter.onDetachedFromRecyclerView(view!!.settingList)
+        super.onDestroyView()
+    }
 }

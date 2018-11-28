@@ -92,7 +92,7 @@ class DataStoreTest : DisposingTest() {
         Mockito.clearInvocations(support.storage)
 
         dispatcher.dispatch(DataStoreAction.Sync)
-        Mockito.verify(support.storage).sync(support.syncConfig)
+        Mockito.verify(support.storage).sync(support.syncConfig!!)
         Mockito.verify(support.storage).list()
         Mockito.clearInvocations(support.storage)
 
@@ -152,5 +152,28 @@ class DataStoreTest : DisposingTest() {
 
         listObserver.assertLastValue(emptyList())
         stateObserver.assertLastValue(DataStore.State.Unprepared)
+    }
+
+    @Test
+    fun testResetSupport() {
+        val stateObserver = createTestObserver<State>()
+        val listObserver = createTestObserver<List<ServerPassword>>()
+
+        subject.state.subscribe(stateObserver)
+        subject.list.subscribe(listObserver)
+
+        val newSupport = MockDataStoreSupport()
+        Assert.assertNotSame("Support should be not the new one", newSupport, subject.support)
+
+        stateObserver.assertLastValue(State.Unprepared)
+        subject.resetSupport(newSupport)
+        Assert.assertSame("Support should be the new one", newSupport, subject.support)
+
+        stateObserver.assertLastValue(State.Unprepared)
+
+        subject.unlock()
+        stateObserver.assertLastValue(State.Unlocked)
+        subject.resetSupport(MockDataStoreSupport())
+        Mockito.verify(newSupport.storage).reset()
     }
 }

@@ -13,27 +13,26 @@ import io.reactivex.subjects.PublishSubject
 import junit.framework.Assert.assertEquals
 import mozilla.lockbox.R
 import mozilla.lockbox.action.FingerprintAuthAction
+import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.adapter.ListAdapterTestHelper
 import mozilla.lockbox.adapter.SectionedAdapter
 import mozilla.lockbox.adapter.SettingCellConfiguration
-import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.model.ItemListSort
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.view.FingerprintAuthDialogFragment
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentMatchers.anyList
-import org.mockito.Mockito
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.spy
-import org.mockito.Mockito.verify
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
+import org.mockito.Mockito.`when` as whenCalled
 
 @RunWith(RobolectricTestRunner::class)
 class SettingPresenterTest {
@@ -53,7 +52,9 @@ class SettingPresenterTest {
     class FakeSettingStore : SettingStore() {
         override var sendUsageData: Observable<Boolean> = PublishSubject.create<Boolean>()
         override var itemListSortOrder: Observable<ItemListSort> = PublishSubject.create<ItemListSort>()
-        override var unlockWithFingerprint: Observable<Boolean> = PublishSubject.create<Boolean>()
+        val unlockWithFingerprintStub = PublishSubject.create<Boolean>()
+        override var unlockWithFingerprint: Observable<Boolean> = unlockWithFingerprintStub
+        override var unlockWithFingerprintPendingAuth: Observable<Boolean> = PublishSubject.create<Boolean>()
 
         val enablingFingerprint = PublishSubject.create<FingerprintAuthAction>()
         override val onEnablingFingerprint: Observable<FingerprintAuthAction>
@@ -85,7 +86,7 @@ class SettingPresenterTest {
 
     @Test
     fun `update settings when fingerprint available`() {
-        Mockito.`when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(true)
+        whenCalled(fingerprintStore.isFingerprintAuthAvailable).thenReturn(true)
         val expectedSettings = testHelper.createAccurateListOfSettings(true)
 
         val expectedSections = listOf(
@@ -107,7 +108,7 @@ class SettingPresenterTest {
 
     @Test
     fun `update settings when fingerprint unavailable`() {
-        Mockito.`when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(false)
+        whenCalled(fingerprintStore.isFingerprintAuthAvailable).thenReturn(false)
         val expectedSettings = testHelper.createAccurateListOfSettings(false)
 
         val expectedSections = listOf(
@@ -127,23 +128,48 @@ class SettingPresenterTest {
     }
 
     @Test
+    fun `route to fingeprint dialog when toggle on`() {
+        whenCalled(fingerprintStore.isFingerprintAuthAvailable).thenReturn(true)
+        subject.onResume()
+        settingStore.unlockWithFingerprintStub.subscribe(subject.autoLockObserver)
+        settingStore.unlockWithFingerprintStub.onNext(true)
+        val last = dispatcherObserver.valueCount() - 1
+        dispatcherObserver.assertValueAt(last - 1, SettingAction.UnlockWithFingerprintPendingAuth(true))
+        val routeAction = dispatcherObserver.values().last() as RouteAction.DialogFragment
+        Assert.assertTrue(routeAction is RouteAction.DialogFragment.FingerprintDialog)
+    }
+
+    @Test
+    fun `dispatch save selection to shared prefs when toggle off`() {
+        whenCalled(fingerprintStore.isFingerprintAuthAvailable).thenReturn(true)
+        subject.onResume()
+        settingStore.unlockWithFingerprintStub.subscribe(subject.autoLockObserver)
+        settingStore.unlockWithFingerprintStub.onNext(false)
+        val last = dispatcherObserver.valueCount() - 1
+        dispatcherObserver.assertValueAt(last, SettingAction.UnlockWithFingerprint(false))
+    }
+
+    @Test
     fun `handle success enabling fingerprint`() {
         settingStore.enablingFingerprint.onNext(FingerprintAuthAction.OnAuthentication(FingerprintAuthDialogFragment.AuthCallback.OnAuth))
         val last = dispatcherObserver.valueCount() - 1
-        dispatcherObserver.assertValueAt(last, SettingAction.UnlockWithFingerprint(true))
+        dispatcherObserver.assertValueAt(last - 1, SettingAction.UnlockWithFingerprint(true))
+        dispatcherObserver.assertValueAt(last, SettingAction.UnlockWithFingerprintPendingAuth(false))
     }
 
     @Test
     fun `handle error enabling fingerprint`() {
         settingStore.enablingFingerprint.onNext(FingerprintAuthAction.OnAuthentication(FingerprintAuthDialogFragment.AuthCallback.OnError))
-        dispatcherObserver.assertLastValue(SettingAction.UnlockWithFingerprint(false))
-        verify(settingView).updateSettingList(anyList(), anyList())
+        val last = dispatcherObserver.valueCount() - 1
+        dispatcherObserver.assertValueAt(last - 1, SettingAction.UnlockWithFingerprint(false))
+        dispatcherObserver.assertValueAt(last, SettingAction.UnlockWithFingerprintPendingAuth(false))
     }
 
     @Test
     fun `handle cancel enabling fingerprint`() {
         settingStore.enablingFingerprint.onNext(FingerprintAuthAction.OnCancel)
-        dispatcherObserver.assertLastValue(SettingAction.UnlockWithFingerprint(false))
-        verify(settingView).updateSettingList(anyList(), anyList())
+        val last = dispatcherObserver.valueCount() - 1
+        dispatcherObserver.assertValueAt(last - 1, SettingAction.UnlockWithFingerprint(false))
+        dispatcherObserver.assertValueAt(last, SettingAction.UnlockWithFingerprintPendingAuth(false))
     }
 }

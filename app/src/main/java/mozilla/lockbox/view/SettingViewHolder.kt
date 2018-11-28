@@ -11,7 +11,7 @@ import android.view.View
 import android.widget.Switch
 import com.jakewharton.rxbinding2.widget.checkedChanges
 import io.reactivex.Observable
-import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.list_cell_setting_appversion.view.*
 import kotlinx.android.synthetic.main.list_cell_setting_text.view.*
@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.list_cell_setting_toggle.view.*
 abstract class SettingViewHolder(override val containerView: View) :
     RecyclerView.ViewHolder(containerView),
     LayoutContainer {
-    val compositeDisposable = CompositeDisposable()
+    var disposable: Disposable? = null
 }
 
 class TextSettingViewHolder(val view: View) : SettingViewHolder(view) {
