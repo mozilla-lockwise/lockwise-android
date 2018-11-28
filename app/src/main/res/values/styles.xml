@@ -47,15 +47,9 @@
         <item name="android:lineSpacingExtra">8sp</item>
         <item name="android:backgroundTint">@color/white_E4</item>
     </style>
-    <style name="ColorSwitchStyle">
-        <item name="android:colorPressedHighlight">@color/switch_activated</item>
-        <item name="android:colorControlActivated">@color/switch_activated</item>
-    </style>
-
-    <style name="WelcomeScreen" parent="AppTheme" >
+   <style name="WelcomeScreen" parent="AppTheme" >
         <item name="android:background">@color/backgroundGrey</item>
     </style>
-
     <style name="AlertDialogStyle" parent="Theme.AppCompat.Light.Dialog">
         <item name="android:textColorPrimary">@color/black_60_percent</item>
         <item name="android:textColor">@color/black_87_percent</item>
