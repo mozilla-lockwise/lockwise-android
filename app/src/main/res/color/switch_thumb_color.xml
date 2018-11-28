@@ -8,5 +8,5 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_selected="true" android:color="@color/switch_activated"/>
     <item android:state_checked="true" android:color="@color/switch_activated"/>
-    <item android:state_selected="false" android:color="@android:color/white"/>
+    <item android:color="@android:color/white"/>
 </selector>

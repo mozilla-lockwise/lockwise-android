@@ -88,7 +88,7 @@ class SettingPresenterTest {
         val expectedSettings = testHelper.createAccurateListOfSettings(true)
 
         val expectedSections = listOf(
-            SectionedAdapter.Section(0, R.string.security_title),
+            SectionedAdapter.Section(0, R.string.configuration_title),
             SectionedAdapter.Section(3, R.string.support_title)
         )
 
@@ -113,7 +113,7 @@ class SettingPresenterTest {
         val expectedSettings = testHelper.createAccurateListOfSettings(false)
 
         val expectedSections = listOf(
-            SectionedAdapter.Section(0, R.string.security_title),
+            SectionedAdapter.Section(0, R.string.configuration_title),
             SectionedAdapter.Section(2, R.string.support_title)
         )
 

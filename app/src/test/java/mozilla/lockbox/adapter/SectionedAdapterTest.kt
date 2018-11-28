@@ -43,7 +43,7 @@ class SectionedAdapterTest {
     @Test
     fun getItemViewTypeTest() {
         val sections = listOf(
-            Section(0, R.string.security_title),
+            Section(0, R.string.configuration_title),
             Section(1, R.string.support_title)
         )
 
@@ -62,7 +62,7 @@ class SectionedAdapterTest {
     @Test
     fun getItemCountTest() {
         val sections = listOf(
-            Section(0, R.string.security_title),
+            Section(0, R.string.configuration_title),
             Section(3, R.string.support_title)
         )
 
@@ -79,7 +79,7 @@ class SectionedAdapterTest {
     @Test
     fun isSectionHeaderPositionTest() {
         val sections = listOf(
-            Section(0, R.string.security_title),
+            Section(0, R.string.configuration_title),
             Section(3, R.string.support_title)
         )
         val settings = testHelper.createListOfSettings()
@@ -98,7 +98,7 @@ class SectionedAdapterTest {
     @Test
     fun onCreateViewHolderTest_HeaderSection() {
         val sections = listOf(
-            Section(0, R.string.security_title),
+            Section(0, R.string.configuration_title),
             Section(3, R.string.support_title)
         )
 
@@ -121,7 +121,7 @@ class SectionedAdapterTest {
     @Test
     fun onCreateViewHolderTest_ChildViewHolderElement() {
         val sections = listOf(
-            Section(0, R.string.security_title),
+            Section(0, R.string.configuration_title),
             Section(3, R.string.support_title)
         )
 
@@ -146,7 +146,7 @@ class SectionedAdapterTest {
 
     @Test
     fun onBindViewHolderTest_HeaderSection() {
-        val securityTitle = R.string.security_title
+        val securityTitle = R.string.configuration_title
         val supportTitle = R.string.support_title
 
         val sections = listOf(
@@ -184,7 +184,7 @@ class SectionedAdapterTest {
         val settingsTitle = R.string.unlock
 
         val sections = listOf(
-            SectionedAdapter.Section(0, R.string.security_title)
+            SectionedAdapter.Section(0, R.string.configuration_title)
         )
         val settings = testHelper.createListOfSettings()
         settingAdapter.setItems(settings)
