@@ -80,19 +80,10 @@ open class DataStore(
             .addTo(compositeDisposable)
     }
 
-    // Warning: this is testing code.
-    // It's only called immediately after the user has pressed "Use Test Data".
-    fun resetSupport(support: DataStoreSupport) {
-        if (stateSubject.value != State.Unprepared) {
-            backend.reset()
-                .asSingle(Dispatchers.Default)
-                .subscribe()
-                .addTo(compositeDisposable)
+    open fun get(id: String): Observable<ServerPassword?> {
+        return list.map { items ->
+            items.findLast { item -> item.id == id }
         }
-        this.support = support
-        this.backend = support.createLoginsStorage()
-        // we shouldn't set the status of this to Unprepared,
-        // as we don't want to change any UI.
     }
 
     private fun touch(id: String) {
@@ -106,13 +97,7 @@ open class DataStore(
         }
     }
 
-    open fun get(id: String): Observable<ServerPassword?> {
-        return list.map { items ->
-            items.findLast { item -> item.id == id }
-        }
-    }
-
-    fun unlock() {
+    private fun unlock() {
         if (backend.isLocked()) {
             backend.unlock(support.encryptionKey)
                 .asSingle(Dispatchers.Default)
@@ -134,7 +119,7 @@ open class DataStore(
         }
     }
 
-    fun sync() {
+    private fun sync() {
         val syncConfig = support.syncConfig ?: return {
             val throwable = IllegalStateException("syncConfig should already be defined")
             stateSubject.accept(State.Errored(throwable))
@@ -184,5 +169,20 @@ open class DataStore(
         }
 
         unlock()
+    }
+
+    // Warning: this is testing code.
+    // It's only called immediately after the user has pressed "Use Test Data".
+    fun resetSupport(support: DataStoreSupport) {
+        if (stateSubject.value != State.Unprepared) {
+            backend.reset()
+                .asSingle(Dispatchers.Default)
+                .subscribe()
+                .addTo(compositeDisposable)
+        }
+        this.support = support
+        this.backend = support.createLoginsStorage()
+        // we shouldn't set the status of this to Unprepared,
+        // as we don't want to change any UI.
     }
 }

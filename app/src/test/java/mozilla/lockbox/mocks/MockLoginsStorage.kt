@@ -9,6 +9,8 @@ package mozilla.lockbox.mocks
 import mozilla.appservices.logins.LoginsStorage
 import mozilla.appservices.logins.ServerPassword
 import mozilla.appservices.logins.SyncUnlockInfo
+import mozilla.components.service.sync.logins.AsyncLoginsStorage
+import mozilla.components.service.sync.logins.AsyncLoginsStorageAdapter
 import mozilla.lockbox.support.DataStoreSupport
 import mozilla.lockbox.support.createDummyItem
 import org.mockito.Mockito
@@ -45,14 +47,11 @@ open class MockLoginsStorage : LoginsStorage {
 
     override fun close() {}
 
-    override fun sync(syncInfo: SyncUnlockInfo) {
-    }
+    override fun sync(syncInfo: SyncUnlockInfo) {}
 
-    override fun reset() {
-    }
+    override fun reset() {}
 
-    override fun wipe() {
-    }
+    override fun wipe() {}
 }
 
 class MockDataStoreSupport : DataStoreSupport {
@@ -62,5 +61,5 @@ class MockDataStoreSupport : DataStoreSupport {
     override var syncConfig: SyncUnlockInfo? =
         SyncUnlockInfo("mock-kid", "mock-at", "mock-synckey", "https://mock.example.com/oauth/token")
 
-    override fun createLoginsStorage(): LoginsStorage = storage
+    override fun createLoginsStorage(): AsyncLoginsStorage = AsyncLoginsStorageAdapter(storage)
 }
