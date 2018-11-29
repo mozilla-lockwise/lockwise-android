@@ -23,8 +23,7 @@ import mozilla.lockbox.support.FxAOauthInfo
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mockito.clearInvocations
-import org.mockito.Mockito.verify
+import org.mockito.Mockito
 import java.lang.Thread.sleep
 
 @ExperimentalCoroutinesApi
@@ -84,14 +83,14 @@ class DataStoreTest : DisposingTest() {
     fun testTouch() {
         dispatcher.dispatch(DataStoreAction.Unlock)
         sleep(100)
-        clearInvocations(support.storage)
+        Mockito.clearInvocations(support.storage)
 
         val id = "lkjhkj"
         dispatcher.dispatch(DataStoreAction.Touch(id))
 
-        verify(support.storage).touch(id)
+        Mockito.verify(support.storage).touch(id)
         sleep(100)
-        verify(support.storage).list()
+        Mockito.verify(support.storage).list()
     }
 
     @Test
@@ -138,7 +137,7 @@ class DataStoreTest : DisposingTest() {
 
         stateObserver.assertLastValue(State.Unlocked)
         subject.resetSupport(MockDataStoreSupport())
-        verify(newSupport.storage).reset()
+        Mockito.verify(newSupport.storage).reset()
     }
 
     @Test
