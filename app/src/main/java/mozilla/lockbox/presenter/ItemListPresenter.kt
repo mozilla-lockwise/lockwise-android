@@ -52,36 +52,40 @@ class ItemListPresenter(
 
     override fun onViewReady() {
         Observables.combineLatest(dataStore.list, settingStore.itemListSortOrder)
-                .filter { it.first.isNotEmpty() }
-                .distinctUntilChanged()
-                .map { pair ->
-                    when (pair.second) {
-                        Setting.ItemListSort.ALPHABETICALLY -> { pair.first.sortedBy { titleFromHostname(it.hostname) } }
-                        Setting.ItemListSort.RECENTLY_USED -> { pair.first.sortedBy { -it.timeLastUsed } }
+            .filter { it.first.isNotEmpty() }
+            .distinctUntilChanged()
+            .map { pair ->
+                when (pair.second) {
+                    Setting.ItemListSort.ALPHABETICALLY -> {
+                        pair.first.sortedBy { titleFromHostname(it.hostname) }
+                    }
+                    Setting.ItemListSort.RECENTLY_USED -> {
+                        pair.first.sortedBy { -it.timeLastUsed }
                     }
                 }
-                .mapToItemViewModelList()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(view::updateItems)
-                .addTo(compositeDisposable)
+            }
+            .mapToItemViewModelList()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(view::updateItems)
+            .addTo(compositeDisposable)
 
         settingStore.itemListSortOrder
-                .distinctUntilChanged()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(view::updateItemListSort)
-                .addTo(compositeDisposable)
+            .distinctUntilChanged()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(view::updateItemListSort)
+            .addTo(compositeDisposable)
 
         view.itemSelection
-                .subscribe { it ->
-                    dispatcher.dispatch(RouteAction.ItemDetail(it.guid))
-                }
-                .addTo(compositeDisposable)
+            .subscribe { it ->
+                dispatcher.dispatch(RouteAction.ItemDetail(it.guid))
+            }
+            .addTo(compositeDisposable)
 
         view.filterClicks
-                .subscribe {
-                    dispatcher.dispatch(RouteAction.Filter)
-                }
-                .addTo(compositeDisposable)
+            .subscribe {
+                dispatcher.dispatch(RouteAction.Filter)
+            }
+            .addTo(compositeDisposable)
 
         view.menuItemSelections
             .subscribe(this::onMenuItem)
@@ -97,20 +101,21 @@ class ItemListPresenter(
             .addTo(compositeDisposable)
 
         view.sortItemSelection
-                .subscribe { sortBy ->
-                    dispatcher.dispatch(SettingAction.ItemListSortOrder(sortBy))
-                }.addTo(compositeDisposable)
+            .subscribe { sortBy ->
+                dispatcher.dispatch(SettingAction.ItemListSortOrder(sortBy))
+            }.addTo(compositeDisposable)
 
         accountStore.profile
             .map {
                 (it.value?.asOptional())
             }
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe{profile ->
-                val account = AccountViewModel (
+            .subscribe { profile ->
+                val account = AccountViewModel(
                     accountName = profile?.value?.displayName ?: profile?.value?.email!!,
                     displayEmailName = profile?.value?.email!!,
-                    avatarFromURL = profile.value.avatar!!)
+                    avatarFromURL = profile.value.avatar!!
+                )
                 view.updateAccountProfile(account)
                 log.error("Lifecycle problem caused ${profile.javaClass.simpleName} here")
                 log.info("onCompleted: ${javaClass.simpleName}")
