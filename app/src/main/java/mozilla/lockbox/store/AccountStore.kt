@@ -79,7 +79,6 @@ open class AccountStore(
             }
             .addTo(compositeDisposable)
 
-        println("ELISETEST: storedAccountJSON: $storedAccountJSON")
         storedAccountJSON?.let { accountJSON ->
             if (accountJSON == Constant.App.testMarker) {
                 populateTestAccountInformation(false)
@@ -138,12 +137,10 @@ open class AccountStore(
     }
 
     private fun generateNewFirefoxAccount() {
-        println("ELISETEST: generateNewFirefoxAccount hit")
         Config.release().asSingle(Dispatchers.Default)
             .subscribe { config ->
                 fxa = FirefoxAccount(config, Constant.FxA.clientID, Constant.FxA.redirectUri)
                 generateLoginURL()
-                println("ELISETEST: Config.release.subscribe hit")
             }
             .addTo(compositeDisposable)
         (syncCredentials as Subject).onNext(Optional(null))
@@ -151,7 +148,6 @@ open class AccountStore(
     }
 
     private fun generateLoginURL() {
-        println("ELISETEST: generateLoginUrl hit")
         fxa?.beginOAuthFlow(Constant.FxA.scopes, true)?.asSingle(Dispatchers.Default)?.subscribe { url ->
             (this.loginURL as Subject).onNext(url)
         }?.addTo(compositeDisposable)

@@ -107,7 +107,7 @@ class ItemListPresenter(
 
         accountStore.profile
             .map {
-                (it.value?.asOptional())
+                it.value?.asOptional()
             }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { profile ->

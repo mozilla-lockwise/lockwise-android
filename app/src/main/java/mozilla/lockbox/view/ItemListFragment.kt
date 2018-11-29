@@ -179,7 +179,7 @@ class ItemListFragment : CommonFragment(), ItemListView {
         Picasso.get()
             .load(profile.avatarFromURL)
             .placeholder(R.drawable.ic_avatar_placeholder)
-            .resize(R.attr.avatar_image_size, R.attr.avatar_image_size)
+            .resizeDimen(R.dimen.avatar_image_size, R.dimen.avatar_image_size)
             .transform(CropCircleTransformation())
             .into(view!!.profileImage)
     }
