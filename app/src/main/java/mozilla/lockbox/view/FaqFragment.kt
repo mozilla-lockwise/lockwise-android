@@ -24,7 +24,7 @@ import mozilla.lockbox.presenter.FaqView
 import mozilla.lockbox.support.Constant
 
 
-class FaqFragment : CommonFragment(), FaqView {
+class FaqFragment : BackableFragment(), FaqView {
     override var webViewObserver: Consumer<String?>? = null
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -35,6 +35,11 @@ class FaqFragment : CommonFragment(), FaqView {
     ): View? {
         presenter = FaqPresenter(this)
         return inflater.inflate(R.layout.fragment_faq, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        view.toolbar.setNavigationIcon(R.drawable.ic_close)
     }
 
     override fun loadUrl(url: String) {
