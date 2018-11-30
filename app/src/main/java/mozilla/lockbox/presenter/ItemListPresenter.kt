@@ -108,7 +108,11 @@ class ItemListPresenter(
             }
             .filterNotNull()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(view::setDisplayName)
+            .subscribe(view::setDisplayName, {
+                log.error("Lifecycle problem caused ${it.javaClass.simpleName} here", it)
+            }, {
+                log.info("onCompleted: ${javaClass.simpleName}")
+            })
             .addTo(compositeDisposable)
     }
 
