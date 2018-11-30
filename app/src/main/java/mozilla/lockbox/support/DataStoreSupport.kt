@@ -6,11 +6,11 @@
 
 package mozilla.lockbox.support
 
-import mozilla.appservices.logins.LoginsStorage
 import mozilla.appservices.logins.SyncUnlockInfo
+import mozilla.components.service.sync.logins.AsyncLoginsStorage
 
 interface DataStoreSupport {
     val encryptionKey: String
     var syncConfig: SyncUnlockInfo?
-    fun createLoginsStorage(): LoginsStorage
+    fun createLoginsStorage(): AsyncLoginsStorage
 }

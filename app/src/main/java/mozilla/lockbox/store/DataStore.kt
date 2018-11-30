@@ -8,9 +8,14 @@ import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
-import mozilla.appservices.logins.LoginsStorage
+import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.Subject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.rx2.asSingle
 import mozilla.appservices.logins.ServerPassword
 import mozilla.appservices.logins.SyncUnlockInfo
+import mozilla.components.service.sync.logins.AsyncLoginsStorage
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.extensions.filterByType
@@ -19,6 +24,7 @@ import mozilla.lockbox.model.SyncCredentials
 import mozilla.lockbox.support.DataStoreSupport
 import mozilla.lockbox.support.FixedDataStoreSupport
 
+@ExperimentalCoroutinesApi
 open class DataStore(
     val dispatcher: Dispatcher = Dispatcher.shared,
     var support: DataStoreSupport = FixedDataStoreSupport.shared
@@ -34,14 +40,19 @@ open class DataStore(
         data class Errored(val error: Throwable) : State()
     }
 
+    enum class SyncState {
+        Syncing, NotSyncing
+    }
+
     internal val compositeDisposable = CompositeDisposable()
     private val stateSubject: BehaviorRelay<State> = BehaviorRelay.createDefault(State.Unprepared)
     private val listSubject: BehaviorRelay<List<ServerPassword>> = BehaviorRelay.createDefault(emptyList())
 
     val state: Observable<State> get() = stateSubject
+    val syncState: Observable<SyncState> = PublishSubject.create()
     open val list: Observable<List<ServerPassword>> get() = listSubject
 
-    private var backend: LoginsStorage
+    private var backend: AsyncLoginsStorage
 
     init {
         backend = support.createLoginsStorage()
@@ -76,53 +87,60 @@ open class DataStore(
             .addTo(compositeDisposable)
     }
 
-    // Warning: this is testing code.
-    // It's only called immediately after the user has pressed "Use Test Data".
-    fun resetSupport(support: DataStoreSupport) {
-        if (stateSubject.value != State.Unprepared) {
-            backend.reset()
-        }
-        this.support = support
-        this.backend = support.createLoginsStorage()
-        // we shouldn't set the status of this to Unprepared,
-        // as we don't want to change any UI.
-    }
-
-    private fun touch(id: String) {
-        if (!backend.isLocked()) {
-            backend.touch(id)
-            updateList()
-        }
-    }
-
     open fun get(id: String): Observable<ServerPassword?> {
         return list.map { items ->
             items.findLast { item -> item.id == id }
         }
     }
 
-    fun unlock() {
+    private fun touch(id: String) {
+        if (!backend.isLocked()) {
+            backend.touch(id)
+                .asSingle(Dispatchers.Default)
+                .subscribe { _, _ ->
+                    updateList()
+                }
+                .addTo(compositeDisposable)
+        }
+    }
+
+    private fun unlock() {
         if (backend.isLocked()) {
             backend.unlock(support.encryptionKey)
-            stateSubject.accept(State.Unlocked)
+                .asSingle(Dispatchers.Default)
+                .subscribe { _, _ ->
+                    stateSubject.accept(State.Unlocked)
+                }
+                .addTo(compositeDisposable)
         }
     }
 
     private fun lock() {
         if (!backend.isLocked()) {
             backend.lock()
-            stateSubject.accept(State.Locked)
+                .asSingle(Dispatchers.Default)
+                .subscribe { _, _ ->
+                    stateSubject.accept(State.Locked)
+                }
+                .addTo(compositeDisposable)
         }
     }
 
-    fun sync() {
+    private fun sync() {
         val syncConfig = support.syncConfig ?: return {
             val throwable = IllegalStateException("syncConfig should already be defined")
             stateSubject.accept(State.Errored(throwable))
         }()
 
+        (syncState as Subject).onNext(SyncState.Syncing)
+
         backend.sync(syncConfig)
-        updateList()
+            .asSingle(Dispatchers.Default)
+            .subscribe { _, _ ->
+                updateList()
+                (syncState as Subject).onNext(SyncState.NotSyncing)
+            }
+            .addTo(compositeDisposable)
     }
 
     // item list management
@@ -131,13 +149,24 @@ open class DataStore(
     }
 
     private fun updateList() {
-        this.listSubject.accept(backend.list())
+        if (!backend.isLocked()) {
+            backend.list()
+                .asSingle(Dispatchers.Default)
+                .subscribe { list, _ ->
+                    listSubject.accept(list)
+                }
+                .addTo(compositeDisposable)
+        }
     }
 
     private fun reset() {
         clearList()
         backend.reset()
-        this.stateSubject.accept(State.Unprepared)
+            .asSingle(Dispatchers.Default)
+            .subscribe { _, _ ->
+                this.stateSubject.accept(State.Unprepared)
+            }
+            .addTo(compositeDisposable)
     }
 
     private fun updateCredentials(credentials: SyncCredentials) {
@@ -148,7 +177,20 @@ open class DataStore(
         credentials.apply {
             support.syncConfig = SyncUnlockInfo(kid, accessToken, syncKey, tokenServerURL)
         }
+    }
 
-        unlock()
+    // Warning: this is testing code.
+    // It's only called immediately after the user has pressed "Use Test Data".
+    fun resetSupport(support: DataStoreSupport) {
+        if (stateSubject.value != State.Unprepared) {
+            backend.reset()
+                .asSingle(Dispatchers.Default)
+                .subscribe()
+                .addTo(compositeDisposable)
+        }
+        this.support = support
+        this.backend = support.createLoginsStorage()
+        // we shouldn't set the status of this to Unprepared,
+        // as we don't want to change any UI.
     }
 }
