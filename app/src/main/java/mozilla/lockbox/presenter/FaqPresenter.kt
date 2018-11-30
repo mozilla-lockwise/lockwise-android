@@ -15,6 +15,7 @@ import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
+import mozilla.lockbox.support.Constant
 
 interface FaqView {
     var webViewObserver: Consumer<String?>?
@@ -27,13 +28,6 @@ class FaqPresenter(
 ) : Presenter() {
 
     override fun onViewReady() {
-        view.webViewObserver = Consumer { url ->
-            url?.let {
-                    dispatcher.dispatch(FaqAction.Redirect(url))
-                    dispatcher.dispatch(RouteAction.FaqList)
-                }
-            }
-        }
-//        view.loadUrl(R.string.faq_url.toString())
+        dispatcher.dispatch(RouteAction.OpenWebsite(Constant.Faq.uri))
     }
 }

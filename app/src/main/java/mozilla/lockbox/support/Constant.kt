@@ -25,6 +25,10 @@ object Constant {
         val scopes = arrayOf(profileScope, lockboxScope, oldSyncScope)
     }
 
+    object Faq {
+        const val uri = "https://mozilla-lockbox.github.io/lockbox-android/"
+    }
+
     object SettingDefault {
         val itemListSort = Setting.ItemListSort.ALPHABETICALLY
         val autoLockTime = Setting.AutoLockTime.FiveMinutes

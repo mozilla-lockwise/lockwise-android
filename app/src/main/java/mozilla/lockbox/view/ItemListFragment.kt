@@ -39,6 +39,7 @@ import mozilla.lockbox.presenter.ItemListView
 import kotlinx.android.synthetic.main.fragment_item_list.*
 import kotlinx.android.synthetic.main.nav_header.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import mozilla.lockbox.R.id.faq_menu_item
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.adapter.ItemListSortAdapter
 import mozilla.lockbox.extensions.view.itemClicks

@@ -133,10 +133,11 @@ class ItemListPresenter(
     }
 
     private fun onMenuItem(@IdRes item: Int) {
+
         val action = when (item) {
             R.id.setting_menu_item -> RouteAction.SettingList
-            R.id.faq_menu_item -> RouteAction.FaqList
             R.id.account_setting_menu_item -> RouteAction.AccountSetting
+            R.id.faq_menu_item -> RouteAction.FaqList
             else -> return log.error("Cannot route from item list menu")
         }
         dispatcher.dispatch(action)

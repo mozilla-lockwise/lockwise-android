@@ -12,18 +12,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.CookieManager
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import io.reactivex.functions.Consumer
-import kotlinx.android.synthetic.main.fragment_fxa_login.*
-import kotlinx.android.synthetic.main.fragment_fxa_login.view.*
+import kotlinx.android.synthetic.main.fragment_faq.*
+import kotlinx.android.synthetic.main.fragment_faq.view.webView
+import kotlinx.android.synthetic.main.include_backable.view.*
 import mozilla.lockbox.R
 import mozilla.lockbox.presenter.FaqPresenter
 import mozilla.lockbox.presenter.FaqView
+import mozilla.lockbox.support.Constant
+
 
 class FaqFragment : CommonFragment(), FaqView {
-
     override var webViewObserver: Consumer<String?>? = null
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -32,30 +33,17 @@ class FaqFragment : CommonFragment(), FaqView {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         presenter = FaqPresenter(this)
-        val view = inflater.inflate(R.layout.fragment_faq, container, false)
-
-        view.webView.settings.domStorageEnabled = true
-        view.webView.settings.javaScriptEnabled = true
-        CookieManager.getInstance().setAcceptCookie(true)
-
-//        val context = requireContext()
-//        val view: WebView = WebView(context)
-//        setContentView(R.layout.fragment_faq)
-//        view.loadUrl("http://www.example.com")
-        return view
+        return inflater.inflate(R.layout.fragment_faq, container, false)
     }
 
     override fun loadUrl(url: String) {
         webView.webViewClient = object : WebViewClient() {
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 webViewObserver?.accept(url)
-
                 super.onPageStarted(view, url, favicon)
             }
         }
-
-        webView.loadUrl(url)
+        webView.loadUrl(Constant.Faq.uri)
     }
 }
