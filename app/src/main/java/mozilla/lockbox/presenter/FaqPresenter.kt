@@ -8,14 +8,32 @@ package mozilla.lockbox.presenter
 
 import android.view.View
 import android.webkit.WebView
+import io.reactivex.functions.Consumer
 import mozilla.lockbox.R
+import mozilla.lockbox.action.FaqAction
+import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.flux.Action
+import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 
-class FaqPresenter(val view: View) : Presenter() {
+interface FaqView {
+    var webViewObserver: Consumer<String?>?
+    fun loadUrl(url: String)
+}
+
+class FaqPresenter(
+    val view: FaqView,
+    private val dispatcher: Dispatcher = Dispatcher.shared
+) : Presenter() {
 
     override fun onViewReady() {
-
-        val faqView = view.findViewById<WebView>(R.id.faq_webview)
-        faqView.loadUrl(R.string.faq_url.toString())
+        view.webViewObserver = Consumer { url ->
+            url?.let {
+                    dispatcher.dispatch(FaqAction.Redirect(url))
+                    dispatcher.dispatch(RouteAction.FaqList)
+                }
+            }
+        }
+//        view.loadUrl(R.string.faq_url.toString())
     }
 }

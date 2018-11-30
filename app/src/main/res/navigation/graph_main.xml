@@ -45,8 +45,7 @@
             app:enterAnim="@anim/slide_in_bottom"
             app:exitAnim="@anim/none"
             app:popExitAnim="@anim/slide_out_bottom"
-            app:popEnterAnim="@anim/none"
-            />
+            app:popEnterAnim="@anim/none"/>
         <action
             android:id="@+id/action_itemList_to_faq"
             app:destination="@id/fragment_faq"
