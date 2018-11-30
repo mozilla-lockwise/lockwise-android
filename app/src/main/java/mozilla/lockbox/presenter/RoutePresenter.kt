@@ -91,14 +91,15 @@ class RoutePresenter(
     private fun accountToDataStoreActions(it: Pair<SyncCredentials, State>): Optional<Action> {
         val (credentials, state) = it
 
+        if (state != State.Unprepared) {
+            return Optional(null)
+        }
+
         if (credentials is FixedSyncCredentials) {
             dataStore.resetSupport(FixedDataStoreSupport.shared)
         }
 
-        return when (state) {
-            is State.Unprepared -> DataStoreAction.UpdateCredentials(credentials)
-            else -> null
-        }.asOptional()
+        return DataStoreAction.UpdateCredentials(credentials).asOptional()
     }
 
     private fun route(action: RouteAction) {
