@@ -224,9 +224,9 @@ class RoutePresenter(
         if (transition == destinationId) {
             // Without being able to detect if we're in developer mode,
             // it is too dangerous to RuntimeException.
-            log.error(
-
-                "Cannot route from ${src.label} to $action. " +
+            val from = activity.resources.getResourceName(srcId)
+            val to = activity.resources.getResourceName(destinationId)
+            log.error("Cannot route from $from to $to. " +
                     "This is a developer bug, fixable by adding an action to graph_main.xml"
             )
         }
@@ -237,22 +237,27 @@ class RoutePresenter(
         // This maps two nodes in the graph_main.xml to the edge between them.
         // If a RouteAction is called from a place the graph doesn't know about then
         // the app will log.error.
-        when (Pair(from, to)) {
-            Pair(R.id.fragment_welcome, R.id.fragment_fxa_login) -> return R.id.action_welcome_to_fxaLogin
+        return when (Pair(from, to)) {
+            Pair(R.id.fragment_welcome, R.id.fragment_fxa_login) -> R.id.action_welcome_to_fxaLogin
 
-            Pair(R.id.fragment_fxa_login, R.id.fragment_item_list) -> return R.id.action_fxaLogin_to_itemList
-            Pair(R.id.fragment_locked, R.id.fragment_item_list) -> return R.id.action_locked_to_itemList
+            Pair(R.id.fragment_welcome, R.id.fragment_locked) -> R.id.action_to_locked
+            Pair(R.id.fragment_welcome, R.id.fragment_item_list) -> R.id.action_to_itemList
 
-            Pair(R.id.fragment_item_list, R.id.fragment_item_detail) -> return R.id.action_itemList_to_itemDetail
-            Pair(R.id.fragment_item_list, R.id.fragment_setting) -> return R.id.action_itemList_to_setting
-            Pair(R.id.fragment_item_list, R.id.fragment_account_setting) -> return R.id.action_itemList_to_accountSetting
-            Pair(R.id.fragment_item_list, R.id.fragment_locked) -> return R.id.action_itemList_to_locked
-            Pair(R.id.fragment_item_list, R.id.fragment_filter) -> return R.id.action_itemList_to_filter
+            Pair(R.id.fragment_fxa_login, R.id.fragment_item_list) -> R.id.action_fxaLogin_to_itemList
+            Pair(R.id.fragment_locked, R.id.fragment_item_list) -> R.id.action_locked_to_itemList
 
-            Pair(R.id.fragment_filter, R.id.fragment_item_detail) -> return R.id.action_filter_to_itemDetail
+            Pair(R.id.fragment_item_list, R.id.fragment_item_detail) -> R.id.action_itemList_to_itemDetail
+            Pair(R.id.fragment_item_list, R.id.fragment_setting) -> R.id.action_itemList_to_setting
+            Pair(R.id.fragment_item_list, R.id.fragment_account_setting) -> R.id.action_itemList_to_accountSetting
+            Pair(R.id.fragment_item_list, R.id.fragment_locked) -> R.id.action_itemList_to_locked
+            Pair(R.id.fragment_item_list, R.id.fragment_filter) -> R.id.action_itemList_to_filter
+
+            Pair(R.id.fragment_account_setting, R.id.fragment_welcome) -> R.id.action_to_welcome
+
+            Pair(R.id.fragment_filter, R.id.fragment_item_detail) -> R.id.action_filter_to_itemDetail
+
+            else -> null
         }
-
-        return null
     }
 
     private fun openWebsite(url: String) {
