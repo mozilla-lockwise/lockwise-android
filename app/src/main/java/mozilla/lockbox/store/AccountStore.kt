@@ -94,7 +94,7 @@ open class AccountStore(
     private fun populateTestAccountInformation(isNew: Boolean) {
         val profileSubject = profile as Subject
         val syncCredentialSubject = syncCredentials as Subject
-        
+
         securePreferences.putString(Constant.Key.firefoxAccount, Constant.App.testMarker)
 
         profileSubject.onNext(FixedFxAProfile().asOptional())

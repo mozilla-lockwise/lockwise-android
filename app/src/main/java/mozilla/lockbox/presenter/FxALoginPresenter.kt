@@ -13,11 +13,9 @@ import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.action.AccountAction
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
-import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.store.AccountStore
-import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.support.Constant
 
 interface FxALoginView {
