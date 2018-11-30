@@ -30,6 +30,7 @@ import mozilla.lockbox.support.FxAProfile
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.SecurePreferences
 import mozilla.lockbox.support.asOptional
+import mozilla.lockbox.support.toFxAOauthInfo
 import mozilla.lockbox.support.toFxAProfile
 
 private const val FIREFOX_ACCOUNT_KEY = "firefox-account"
@@ -114,7 +115,7 @@ open class AccountStore(
     private fun generateSyncCredentials(oauthInfo: OAuthInfo): SyncCredentials? {
         val fxa = fxa ?: return null
         val tokenServerURL = fxa.getTokenServerEndpointURL()
-        return SyncCredentials(oauthInfo, tokenServerURL, Constant.FxA.oldSyncScope)
+        return SyncCredentials(oauthInfo.toFxAOauthInfo(), tokenServerURL, Constant.FxA.oldSyncScope)
     }
 
     private fun generateNewFirefoxAccount() {

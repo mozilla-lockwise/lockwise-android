@@ -6,13 +6,13 @@
 
 package mozilla.lockbox.model
 
-import mozilla.components.service.fxa.OAuthInfo
 import mozilla.components.service.fxa.OAuthScopedKey
+import mozilla.lockbox.support.FxAOauthInfo
 
 private val emptyString = ""
 
 class SyncCredentials(
-    private val oauthInfo: OAuthInfo,
+    private val oauthInfo: FxAOauthInfo,
     val tokenServerURL: String,
     private val scope: String
 ) {

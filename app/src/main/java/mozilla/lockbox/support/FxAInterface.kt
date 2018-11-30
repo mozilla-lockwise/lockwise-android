@@ -6,6 +6,8 @@
 
 package mozilla.lockbox.support
 
+import mozilla.components.service.fxa.OAuthInfo
+import mozilla.components.service.fxa.OAuthScopedKey
 import mozilla.components.service.fxa.Profile
 
 interface FxAProfile {
@@ -21,4 +23,17 @@ fun Profile.toFxAProfile() = object : FxAProfile {
     override val email = profile.email
     override val displayName = profile.displayName
     override val avatar = profile.avatar
+}
+
+interface FxAOauthInfo {
+    val accessToken: String
+    val keys: Map<String, OAuthScopedKey>?
+    val scopes: List<String>
+}
+
+fun OAuthInfo.toFxAOauthInfo() = object : FxAOauthInfo {
+    private val oauthInfo = this@toFxAOauthInfo
+    override val accessToken: String = oauthInfo.accessToken
+    override val keys: Map<String, OAuthScopedKey>? = oauthInfo.keys
+    override val scopes: List<String> = oauthInfo.scopes
 }

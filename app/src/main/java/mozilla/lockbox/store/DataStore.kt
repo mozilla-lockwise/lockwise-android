@@ -8,6 +8,8 @@ import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
+import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.Subject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.rx2.asSingle
@@ -38,11 +40,16 @@ open class DataStore(
         data class Errored(val error: Throwable) : State()
     }
 
+    enum class SyncState {
+        Syncing, NotSyncing
+    }
+
     internal val compositeDisposable = CompositeDisposable()
     private val stateSubject: BehaviorRelay<State> = BehaviorRelay.createDefault(State.Unprepared)
     private val listSubject: BehaviorRelay<List<ServerPassword>> = BehaviorRelay.createDefault(emptyList())
 
     val state: Observable<State> get() = stateSubject
+    val syncState: Observable<SyncState> = PublishSubject.create()
     open val list: Observable<List<ServerPassword>> get() = listSubject
 
     private var backend: AsyncLoginsStorage
@@ -54,7 +61,7 @@ open class DataStore(
         state.subscribe { state ->
             when (state) {
                 is State.Locked -> clearList()
-                is State.Unlocked -> sync()
+                is State.Unlocked -> updateList()
                 else -> Unit
             }
         }.addTo(compositeDisposable)
@@ -125,10 +132,13 @@ open class DataStore(
             stateSubject.accept(State.Errored(throwable))
         }()
 
+        (syncState as Subject).onNext(SyncState.Syncing)
+
         backend.sync(syncConfig)
             .asSingle(Dispatchers.Default)
             .subscribe { _, _ ->
                 updateList()
+                (syncState as Subject).onNext(SyncState.NotSyncing)
             }
             .addTo(compositeDisposable)
     }
@@ -167,8 +177,6 @@ open class DataStore(
         credentials.apply {
             support.syncConfig = SyncUnlockInfo(kid, accessToken, syncKey, tokenServerURL)
         }
-
-        unlock()
     }
 
     // Warning: this is testing code.
