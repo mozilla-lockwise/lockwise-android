@@ -174,14 +174,15 @@ class ItemListFragment : CommonFragment(), ItemListView {
     }
 
     override fun updateAccountProfile(profile: AccountViewModel) {
-        navView.menuHeader.displayName.text = profile.displayEmailName
-        view!!.navView.menuHeader.accountName.text = profile.accountName
-        Picasso.get()
-            .load(profile.avatarFromURL)
-            .placeholder(R.drawable.ic_avatar_placeholder)
-            .resizeDimen(R.dimen.avatar_image_size, R.dimen.avatar_image_size)
-            .transform(CropCircleTransformation())
-            .into(view!!.profileImage)
+        navView.menuHeader.displayName.text = profile.displayEmailName ?: resources.getString(R.string.firefox_account)
+        view!!.navView.menuHeader.accountName.text = profile.accountName ?: resources.getString(R.string.app_name)
+        if (profile.avatarFromURL != null)
+            Picasso.get()
+                .load(profile.avatarFromURL)
+                .placeholder(R.drawable.ic_avatar_placeholder)
+                .resizeDimen(R.dimen.avatar_image_size, R.dimen.avatar_image_size)
+                .transform(CropCircleTransformation())
+                .into(view!!.profileImage)
     }
 
     override fun updateItemListSort(sort: Setting.ItemListSort) {

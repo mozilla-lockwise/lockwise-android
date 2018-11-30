@@ -7,7 +7,7 @@
 package mozilla.lockbox.model
 
 data class AccountViewModel(
-    val accountName: String,
-    val displayEmailName: String,
-    val avatarFromURL: String
+    val accountName: String?,
+    val displayEmailName: String?,
+    val avatarFromURL: String?
 )

@@ -16,6 +16,7 @@ import mozilla.lockbox.R
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.action.SettingAction
+import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.extensions.mapToItemViewModelList
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
@@ -27,7 +28,6 @@ import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.SettingStore
-import mozilla.lockbox.support.asOptional
 
 interface ItemListView {
     val itemSelection: Observable<ItemViewModel>
@@ -106,20 +106,20 @@ class ItemListPresenter(
             }.addTo(compositeDisposable)
 
         accountStore.profile
+            .filterNotNull()
             .map {
-                it.value?.asOptional()
+                AccountViewModel(
+                    accountName = it.displayName ?: it.email,
+                    displayEmailName = it.email,
+                    avatarFromURL = it.avatar
+                )
             }
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { profile ->
-                val account = AccountViewModel(
-                    accountName = profile?.value?.displayName ?: profile?.value?.email!!,
-                    displayEmailName = profile?.value?.email!!,
-                    avatarFromURL = profile.value.avatar!!
-                )
-                view.updateAccountProfile(account)
-                log.error("Lifecycle problem caused ${profile.javaClass.simpleName} here")
+            .subscribe(view::updateAccountProfile, {
+                log.error("Lifecycle problem caused ${it.javaClass.simpleName} here", it)
+                }, {
                 log.info("onCompleted: ${javaClass.simpleName}")
-            }
+            })
             .addTo(compositeDisposable)
     }
 
