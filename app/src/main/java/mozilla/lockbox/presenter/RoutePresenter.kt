@@ -64,7 +64,7 @@ class RoutePresenter(
             .filterNotNull()
 
         // Moves credentials from the AccountStore, into the DataStore.
-        Observables.combineLatest(accountStore.syncCredentials.filterNotNull(), dataStore.state)
+        Observables.combineLatest(accountStore.syncCredentials, dataStore.state)
             .map(this::accountToDataStoreActions)
             .filterNotNull()
             .subscribe(dispatcher::dispatch)
@@ -79,16 +79,18 @@ class RoutePresenter(
 
     private fun dataStoreToRouteActions(storageState: State): Optional<RouteAction> {
         return when (storageState) {
-            is State.Unlocking -> RouteAction.ItemList
-            is State.Unlocked -> null
+            is State.Unlocking -> null
+            is State.Unlocked -> RouteAction.ItemList
             is State.Locked -> RouteAction.LockScreen
             is State.Unprepared -> RouteAction.Welcome
             else -> RouteAction.LockScreen
         }.asOptional()
     }
 
-    private fun accountToDataStoreActions(it: Pair<SyncCredentials, State>): Optional<Action> {
-        val (credentials, state) = it
+    private fun accountToDataStoreActions(it: Pair<Optional<SyncCredentials>, State>): Optional<DataStoreAction> {
+        val (opt, state) = it
+
+        val credentials = opt.value ?: return DataStoreAction.Reset.asOptional()
 
         if (state != State.Unprepared) {
             return Optional(null)

@@ -62,18 +62,13 @@ open class DataStore(
         state.subscribe { state ->
             when (state) {
                 is State.Locked -> clearList()
-                is State.Unlocked -> sync()
+                is State.Unlocked -> updateList()
                 else -> Unit
             }
         }.addTo(compositeDisposable)
 
-        val resetObservable = dispatcher.register
-            .filter { it == LifecycleAction.UserReset }
-            .map { DataStoreAction.Reset }
-
         // register for actions
         dispatcher.register
-            .mergeWith(resetObservable)
             .filterByType(DataStoreAction::class.java)
             .subscribe { action ->
                 when (action) {
@@ -164,6 +159,9 @@ open class DataStore(
     }
 
     private fun reset() {
+        if (stateSubject.value == State.Unprepared) {
+            return
+        }
         clearList()
         backend.reset()
             .asSingle(Dispatchers.Default)
