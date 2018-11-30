@@ -20,6 +20,7 @@ import mozilla.lockbox.extensions.toViewModel
 import mozilla.lockbox.extensions.view.AlertState
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.model.AccountViewModel
 import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.DataStore
@@ -72,18 +73,21 @@ private val password3 = ServerPassword(
 @RunWith(RobolectricTestRunner::class)
 @PrepareForTest(AccountStore::class)
 open class ItemListPresenterTest {
+    @Mock
+    val fingerprintStore = PowerMockito.mock(FingerprintStore::class.java)
+
+    @Mock
+    val accountStore = PowerMockito.mock(AccountStore::class.java)
+
     class FakeView : ItemListView {
+
         var setDisplayNameArgument: String? = null
         var updateItemsArgument: List<ItemViewModel>? = null
-
         var itemListSort: Setting.ItemListSort? = null
         val menuItemSelectionStub = PublishSubject.create<Int>()
-
         val itemSelectedStub = PublishSubject.create<ItemViewModel>()
-
         val filterClickStub = PublishSubject.create<Unit>()
         val sortItemSelectionStub = PublishSubject.create<Setting.ItemListSort>()
-
         val disclaimerActionStub = PublishSubject.create<AlertState>()
         val lockNowSelectionStub = PublishSubject.create<Unit>()
 
@@ -102,8 +106,8 @@ open class ItemListPresenterTest {
         override val lockNowClick: Observable<Unit>
             get() = lockNowSelectionStub
 
-        override fun setDisplayName(text: String) {
-            setDisplayNameArgument = text
+        override fun updateAccountProfile(profile: AccountViewModel) {
+            setDisplayNameArgument = profile.displayEmailName
         }
 
         override fun updateItems(itemList: List<ItemViewModel>) {
@@ -116,27 +120,21 @@ open class ItemListPresenterTest {
     }
 
     class FakeDataStore : DataStore() {
-        val listStub = PublishSubject.create<List<ServerPassword>>()
 
+        val listStub = PublishSubject.create<List<ServerPassword>>()
         override val list: Observable<List<ServerPassword>>
             get() = listStub
     }
 
-    private val profileStub = PublishSubject.create<Optional<FxAProfile>>()
-
-    @Mock
-    val fingerprintStore = PowerMockito.mock(FingerprintStore::class.java)
-
-    @Mock
-    val accountStore = PowerMockito.mock(AccountStore::class.java)
-
     class FakeSettingStore : SettingStore() {
+
         val itemListSortStub = BehaviorSubject.createDefault(Setting.ItemListSort.ALPHABETICALLY)
         override var itemListSortOrder: Observable<Setting.ItemListSort> = itemListSortStub
     }
 
     private val dataStore = FakeDataStore()
     private val settingStore = FakeSettingStore()
+    private val profileStub = PublishSubject.create<Optional<FxAProfile>>()
 
     val view = FakeView()
     val dispatcher = Dispatcher()
