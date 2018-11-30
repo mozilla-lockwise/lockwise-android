@@ -42,6 +42,7 @@ class LockboxApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         if (leakCanary()) return
+        if (isUnitTest()) return
         injectContext()
         setupDataStoreSupport()
         setupLifecycleListener()
