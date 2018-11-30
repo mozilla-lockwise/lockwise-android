@@ -5,22 +5,31 @@
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- This string is a promotional or short descriptional sentence to describe the purpose of the application -->
     <string name="app_tagline">Take your passwords everywhere.</string>
 
+    <!-- This is used as the label on a button on a first-run welcome screen to sign in and start using the application -->
     <string name="welcome_start_btn">Get Started</string>
+    <!-- This provides context near a button on the first-run welcome screen to describe application requirements -->
     <string name="welcome_instructions">To use Firefox Lockbox, you\'ll need a\nFirefox Account with saved logins.</string>
-
+    <!-- This is the link on the first-run welcome screen to learn more about the requirements of the application -->
     <string name="welcome_learn_more_btn">Learn More</string>
+    
+    <!-- This is the label for the navigation item that opens a Frequently Asked Questions web page -->
     <string name="nav_menu_faq">FAQ</string>
-    <string name="nav_menu_feedback">Provide Feedback</string>
+    <!-- This is the label for the navigation item that opens a survey or feedback web page to submit to the developers -->
+    <string name="nav_menu_feedback">Provide Feedback</string>h
+    <!-- This is the label for the navigation item that opens a screen to manage the user account currently signed in to the application -->
     <string name="nav_menu_account">Account</string>
+    <!-- This is the label for the navigation item that opens a settings screen with options and preferences and more application information -->
     <string name="nav_menu_settings">Settings</string>
+    <!-- This is the label for a button, primarily in the navigation drawer, that securely locks the application requiring the user to unlock it -->
+    <string name="lock_now">Lock Now</string>
 
     <string name="sort_menu_az">Alphabetically</string>
     <string name="sort_menu_recent">Recently Used</string>
 
     <string name="placeholder_unlock_button">Unlock Firefox Lockbox</string>
-    <string name="lock_now">Lock Now</string>
     <string name="all_entries_a_z">All entries (A-Z)</string>
     <string name="all_entries_recent">All entries (Recent)</string>
     <string name="search_your_entries" tools:ignore="ExtraTranslation">search your entries</string>
