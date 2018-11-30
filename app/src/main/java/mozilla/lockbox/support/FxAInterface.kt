@@ -37,3 +37,10 @@ fun OAuthInfo.toFxAOauthInfo() = object : FxAOauthInfo {
     override val keys: Map<String, OAuthScopedKey>? = oauthInfo.keys
     override val scopes: List<String> = oauthInfo.scopes
 }
+
+class FixedFxAProfile : FxAProfile {
+    override val uid = "test"
+    override val email = "whovian@tardis.net"
+    override val displayName = "Jodie Whittaker"
+    override val avatar = "https://nerdist.com/wp-content/uploads/2017/11/The-Doctor-Jodie-Whittaker.jpg"
+}

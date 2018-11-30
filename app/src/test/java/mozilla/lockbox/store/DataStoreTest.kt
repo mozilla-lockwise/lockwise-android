@@ -87,7 +87,7 @@ class DataStoreTest : DisposingTest() {
 
         val id = "lkjhkj"
         dispatcher.dispatch(DataStoreAction.Touch(id))
-
+        sleep(100)
         Mockito.verify(support.storage).touch(id)
         sleep(100)
         Mockito.verify(support.storage).list()

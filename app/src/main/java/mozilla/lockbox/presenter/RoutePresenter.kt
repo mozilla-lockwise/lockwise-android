@@ -30,6 +30,7 @@ import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
+import mozilla.lockbox.model.FixedSyncCredentials
 import mozilla.lockbox.model.SyncCredentials
 import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.DataStore
@@ -58,24 +59,17 @@ class RoutePresenter(
     override fun onViewReady() {
         navController = Navigation.findNavController(activity, R.id.fragment_nav_host)
 
-        // Allow us to use randomized data for tests.
-        val useTestData = lifecycleStore.lifecycleFilter
-            .filter { it == LifecycleAction.UseTestData }
-            .doOnNext { dataStore.resetSupport(FixedDataStoreSupport()) }
-            .map { (DataStoreAction.Unlock as DataStoreAction).asOptional() }
-
-        // Moves credentials from the AccountStore, into the DataStore.
-        Observables.combineLatest( accountStore.syncCredentials.filterNotNull(), dataStore.state)
-            .map(this::accountToDataStoreActions)
-            .mergeWith(useTestData)
-            .filterNotNull()
-            .subscribe(dispatcher::dispatch)
-            .addTo(compositeDisposable)
-
         // Make the routing contingent on the state of the dataStore.
         val dataStoreRoutes = dataStore.state
             .map(this::dataStoreToRouteActions)
             .filterNotNull()
+
+        // Moves credentials from the AccountStore, into the DataStore.
+        Observables.combineLatest(accountStore.syncCredentials.filterNotNull(), dataStore.state)
+            .map(this::accountToDataStoreActions)
+            .filterNotNull()
+            .subscribe(dispatcher::dispatch)
+            .addTo(compositeDisposable)
 
         routeStore.routes
             .mergeWith(dataStoreRoutes)
@@ -94,11 +88,15 @@ class RoutePresenter(
         }.asOptional()
     }
 
-    private fun accountToDataStoreActions(it: Pair<SyncCredentials, State>): Optional<DataStoreAction> {
+    private fun accountToDataStoreActions(it: Pair<SyncCredentials, State>): Optional<Action> {
         val (credentials, state) = it
+
+        if (credentials is FixedSyncCredentials) {
+            dataStore.resetSupport(FixedDataStoreSupport.shared)
+        }
+
         return when (state) {
             is State.Unprepared -> DataStoreAction.UpdateCredentials(credentials)
-            is State.Unlocked -> DataStoreAction.Sync
             else -> null
         }.asOptional()
     }

@@ -12,6 +12,7 @@ object Constant {
     object App {
         const val keystoreLabel = "lockbox-keystore"
         const val dbFilename = "firefox-lockbox.db"
+        const val testMarker = "TEST"
     }
 
     object FxA {

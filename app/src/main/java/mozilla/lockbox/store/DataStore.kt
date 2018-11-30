@@ -114,6 +114,8 @@ open class DataStore(
                     stateSubject.accept(State.Unlocked)
                 }
                 .addTo(compositeDisposable)
+        } else {
+            stateSubject.accept(State.Unlocked)
         }
     }
 
@@ -179,11 +181,39 @@ open class DataStore(
         credentials.apply {
             support.syncConfig = SyncUnlockInfo(kid, accessToken, syncKey, tokenServerURL)
         }
+
+        if (!credentials.isNew) {
+            val state = if (backend.isLocked()) {
+                State.Locked
+            } else {
+                unlock()
+                State.Unlocked
+            }
+            stateSubject.accept(state)
+            return
+        }
+
+        fun initialSync() {
+            unlock()
+            sync()
+        }
+
+        if (backend.isLocked()) {
+            backend.unlock(support.encryptionKey)
+                .asSingle(Dispatchers.Default)
+                .subscribe { _, _ -> initialSync() }
+                .addTo(compositeDisposable)
+        } else {
+            initialSync()
+        }
     }
 
     // Warning: this is testing code.
     // It's only called immediately after the user has pressed "Use Test Data".
     fun resetSupport(support: DataStoreSupport) {
+        if (support == this.support) {
+            return
+        }
         if (stateSubject.value != State.Unprepared) {
             backend.reset()
                 .asSingle(Dispatchers.Default)
