@@ -17,7 +17,6 @@ import mozilla.appservices.logins.ServerPassword
 import mozilla.appservices.logins.SyncUnlockInfo
 import mozilla.components.service.sync.logins.AsyncLoginsStorage
 import mozilla.lockbox.action.DataStoreAction
-import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.model.SyncCredentials

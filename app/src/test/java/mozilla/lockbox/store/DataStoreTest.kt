@@ -13,11 +13,10 @@ import mozilla.appservices.logins.SyncUnlockInfo
 import mozilla.components.service.fxa.OAuthScopedKey
 import mozilla.lockbox.DisposingTest
 import mozilla.lockbox.action.DataStoreAction
-import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.mocks.MockDataStoreSupport
-import mozilla.lockbox.model.SyncCredentials
+import mozilla.lockbox.model.FxASyncCredentials
 import mozilla.lockbox.store.DataStore.State
 import mozilla.lockbox.support.FxAOauthInfo
 import org.junit.Assert
@@ -101,21 +100,7 @@ class DataStoreTest : DisposingTest() {
         dispatcher.dispatch(DataStoreAction.Reset)
         sleep(100)
 
-        verify(support.storage).reset()
-
-        listObserver.assertLastValue(emptyList())
-        stateObserver.assertLastValue(DataStore.State.Unprepared)
-    }
-
-    @Test
-    fun testUserReset() {
-        dispatcher.dispatch(DataStoreAction.Unlock)
-        sleep(100)
-
-        dispatcher.dispatch(LifecycleAction.UserReset)
-        sleep(100)
-
-        verify(support.storage).reset()
+        Mockito.verify(support.storage).reset()
 
         listObserver.assertLastValue(emptyList())
         stateObserver.assertLastValue(DataStore.State.Unprepared)
@@ -153,10 +138,11 @@ class DataStoreTest : DisposingTest() {
             override val keys: Map<String, OAuthScopedKey>? = mapOf(Pair(scope, scopedKey))
             override val scopes: List<String> = listOf(scope)
         }
-        val syncCredentials = SyncCredentials(
+        val syncCredentials = FxASyncCredentials(
             oauthInfo,
             tokenServerURL,
-            scope
+            scope,
+            false
         )
         dispatcher.dispatch(DataStoreAction.UpdateCredentials(
             syncCredentials
