@@ -8,11 +8,17 @@ package mozilla.lockbox
 
 import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
+import mozilla.lockbox.action.DataStoreAction
+import mozilla.lockbox.action.LifecycleAction
+import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.robots.disconnectDisclaimer
 import mozilla.lockbox.robots.filteredItemList
+import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.view.RootActivity
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.jupiter.api.BeforeEach
 import org.junit.runner.RunWith
 
 /**
@@ -26,6 +32,14 @@ open class RoutePresenterTest {
 
     @Rule @JvmField
     val activityRule: ActivityTestRule<RootActivity> = ActivityTestRule(RootActivity::class.java)
+
+    @Before
+    fun setUp() {
+        Dispatcher.shared.dispatch(DataStoreAction.Unlock)
+        Thread.sleep(100L)
+        Dispatcher.shared.dispatch(LifecycleAction.UserReset)
+        Thread.sleep(100L)
+    }
 
     @Test
     fun testFxALogin() {

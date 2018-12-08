@@ -7,6 +7,7 @@
 package mozilla.lockbox.store
 
 import android.net.Uri
+import android.os.Looper
 import android.webkit.CookieManager
 import android.webkit.WebStorage
 import io.reactivex.Observable
@@ -168,8 +169,10 @@ open class AccountStore(
     }
 
     private fun clear() {
-        CookieManager.getInstance().removeAllCookies { }
-        WebStorage.getInstance().deleteAllData()
+        if (Looper.myLooper() != null) {
+            CookieManager.getInstance().removeAllCookies { }
+            WebStorage.getInstance().deleteAllData()
+        }
 
         this.securePreferences.remove(Constant.Key.firefoxAccount)
         this.generateNewFirefoxAccount()

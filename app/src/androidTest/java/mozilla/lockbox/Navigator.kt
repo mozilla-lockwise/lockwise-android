@@ -47,8 +47,8 @@ class Navigator {
         welcome { exists() }
     }
 
-    fun gotoItemList(goManuallly: Boolean = false) {
-        if (goManuallly) {
+    fun gotoItemList(goManually: Boolean = false) {
+        if (goManually) {
             gotoFxALogin()
             fxaLogin { tapPlaceholderLogin() }
         } else {
