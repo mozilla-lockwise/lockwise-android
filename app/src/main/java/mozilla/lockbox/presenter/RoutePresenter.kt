@@ -22,9 +22,9 @@ import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.action.SettingAction
+import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.extensions.view.AlertDialogHelper
 import mozilla.lockbox.extensions.view.AlertState
-import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
@@ -229,7 +229,15 @@ class RoutePresenter(
             log.error("Cannot route from $from to $to. " +
                     "This is a developer bug, fixable by adding an action to graph_main.xml"
             )
+        } else {
+            val clearBackStack = src.getAction(transition)?.navOptions?.shouldClearTask() ?: false
+            if (clearBackStack) {
+                while (navController.popBackStack()) {
+                    // NOP
+                }
+            }
         }
+
         navController.navigate(transition, args)
     }
 
