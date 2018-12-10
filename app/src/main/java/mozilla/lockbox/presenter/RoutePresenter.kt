@@ -230,7 +230,7 @@ class RoutePresenter(
                     "This is a developer bug, fixable by adding an action to graph_main.xml"
             )
         } else {
-            val clearBackStack = src.getAction(transition)?.navOptions?.shouldClearTask() ?: false
+            val clearBackStack = src.getAction(transition)?.navOptions?.shouldLaunchSingleTop() ?: false
             if (clearBackStack) {
                 while (navController.popBackStack()) {
                     // NOP
@@ -238,7 +238,12 @@ class RoutePresenter(
             }
         }
 
-        navController.navigate(transition, args)
+        try {
+            navController.navigate(transition, args)
+        } catch (e: IllegalArgumentException) {
+            log.error("This appears to be a bug in navController", e)
+            navController.navigate(destinationId, args)
+        }
     }
 
     private fun findTransitionId(@IdRes from: Int, @IdRes to: Int): Int? {

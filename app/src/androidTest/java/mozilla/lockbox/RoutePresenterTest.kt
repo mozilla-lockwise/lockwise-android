@@ -36,9 +36,9 @@ open class RoutePresenterTest {
     @Before
     fun setUp() {
         Dispatcher.shared.dispatch(DataStoreAction.Unlock)
-        Thread.sleep(100L)
+        Thread.sleep(200L)
         Dispatcher.shared.dispatch(LifecycleAction.UserReset)
-        Thread.sleep(100L)
+        Thread.sleep(200L)
     }
 
     @Test
