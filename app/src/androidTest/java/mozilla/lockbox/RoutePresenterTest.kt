@@ -13,12 +13,10 @@ import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.robots.disconnectDisclaimer
 import mozilla.lockbox.robots.filteredItemList
-import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.view.RootActivity
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.jupiter.api.BeforeEach
 import org.junit.runner.RunWith
 
 /**
