@@ -17,7 +17,6 @@ import mozilla.appservices.logins.ServerPassword
 import mozilla.appservices.logins.SyncUnlockInfo
 import mozilla.components.service.sync.logins.AsyncLoginsStorage
 import mozilla.lockbox.action.DataStoreAction
-import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.model.SyncCredentials
@@ -36,6 +35,7 @@ open class DataStore(
     sealed class State {
         object Unprepared : State()
         object Locked : State()
+        object Unlocking : State()
         object Unlocked : State()
         data class Errored(val error: Throwable) : State()
     }
@@ -66,13 +66,8 @@ open class DataStore(
             }
         }.addTo(compositeDisposable)
 
-        val resetObservable = dispatcher.register
-            .filter { it == LifecycleAction.UserReset }
-            .map { DataStoreAction.Reset }
-
         // register for actions
         dispatcher.register
-            .mergeWith(resetObservable)
             .filterByType(DataStoreAction::class.java)
             .subscribe { action ->
                 when (action) {
@@ -105,6 +100,7 @@ open class DataStore(
     }
 
     private fun unlock() {
+        stateSubject.accept(State.Unlocking)
         if (backend.isLocked()) {
             backend.unlock(support.encryptionKey)
                 .asSingle(Dispatchers.Default)
@@ -112,6 +108,8 @@ open class DataStore(
                     stateSubject.accept(State.Unlocked)
                 }
                 .addTo(compositeDisposable)
+        } else {
+            stateSubject.accept(State.Unlocked)
         }
     }
 
@@ -160,6 +158,9 @@ open class DataStore(
     }
 
     private fun reset() {
+        if (stateSubject.value == State.Unprepared) {
+            return
+        }
         clearList()
         backend.reset()
             .asSingle(Dispatchers.Default)
@@ -177,11 +178,39 @@ open class DataStore(
         credentials.apply {
             support.syncConfig = SyncUnlockInfo(kid, accessToken, syncKey, tokenServerURL)
         }
+
+        if (!credentials.isNew) {
+            val state = if (backend.isLocked()) {
+                State.Locked
+            } else {
+                unlock()
+                State.Unlocked
+            }
+            stateSubject.accept(state)
+            return
+        }
+
+        fun initialSync() {
+            unlock()
+            sync()
+        }
+
+        if (backend.isLocked()) {
+            backend.unlock(support.encryptionKey)
+                .asSingle(Dispatchers.Default)
+                .subscribe { _, _ -> initialSync() }
+                .addTo(compositeDisposable)
+        } else {
+            initialSync()
+        }
     }
 
     // Warning: this is testing code.
     // It's only called immediately after the user has pressed "Use Test Data".
     fun resetSupport(support: DataStoreSupport) {
+        if (support == this.support) {
+            return
+        }
         if (stateSubject.value != State.Unprepared) {
             backend.reset()
                 .asSingle(Dispatchers.Default)

@@ -13,18 +13,16 @@ import mozilla.appservices.logins.SyncUnlockInfo
 import mozilla.components.service.fxa.OAuthScopedKey
 import mozilla.lockbox.DisposingTest
 import mozilla.lockbox.action.DataStoreAction
-import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.mocks.MockDataStoreSupport
-import mozilla.lockbox.model.SyncCredentials
+import mozilla.lockbox.model.FxASyncCredentials
 import mozilla.lockbox.store.DataStore.State
 import mozilla.lockbox.support.FxAOauthInfo
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mockito.clearInvocations
-import org.mockito.Mockito.verify
+import org.mockito.Mockito
 import java.lang.Thread.sleep
 
 @ExperimentalCoroutinesApi
@@ -69,10 +67,7 @@ class DataStoreTest : DisposingTest() {
 
         stateObserver.apply {
             // TODO: figure out why the initialized state isn't here?
-            assertValueCount(3)
-            assertValueAt(0, State.Unprepared)
-            assertValueAt(1, State.Unlocked)
-            assertValueAt(2, State.Locked)
+            assertValues(State.Unprepared, State.Unlocking, State.Unlocked, State.Locked)
         }
         listObserver.apply {
             val results = values()
@@ -87,14 +82,14 @@ class DataStoreTest : DisposingTest() {
     fun testTouch() {
         dispatcher.dispatch(DataStoreAction.Unlock)
         sleep(100)
-        clearInvocations(support.storage)
+        Mockito.clearInvocations(support.storage)
 
         val id = "lkjhkj"
         dispatcher.dispatch(DataStoreAction.Touch(id))
-
-        verify(support.storage).touch(id)
         sleep(100)
-        verify(support.storage).list()
+        Mockito.verify(support.storage).touch(id)
+        sleep(100)
+        Mockito.verify(support.storage).list()
     }
 
     @Test
@@ -105,21 +100,7 @@ class DataStoreTest : DisposingTest() {
         dispatcher.dispatch(DataStoreAction.Reset)
         sleep(100)
 
-        verify(support.storage).reset()
-
-        listObserver.assertLastValue(emptyList())
-        stateObserver.assertLastValue(DataStore.State.Unprepared)
-    }
-
-    @Test
-    fun testUserReset() {
-        dispatcher.dispatch(DataStoreAction.Unlock)
-        sleep(100)
-
-        dispatcher.dispatch(LifecycleAction.UserReset)
-        sleep(100)
-
-        verify(support.storage).reset()
+        Mockito.verify(support.storage).reset()
 
         listObserver.assertLastValue(emptyList())
         stateObserver.assertLastValue(DataStore.State.Unprepared)
@@ -141,7 +122,7 @@ class DataStoreTest : DisposingTest() {
 
         stateObserver.assertLastValue(State.Unlocked)
         subject.resetSupport(MockDataStoreSupport())
-        verify(newSupport.storage).reset()
+        Mockito.verify(newSupport.storage).reset()
     }
 
     @Test
@@ -157,10 +138,11 @@ class DataStoreTest : DisposingTest() {
             override val keys: Map<String, OAuthScopedKey>? = mapOf(Pair(scope, scopedKey))
             override val scopes: List<String> = listOf(scope)
         }
-        val syncCredentials = SyncCredentials(
+        val syncCredentials = FxASyncCredentials(
             oauthInfo,
             tokenServerURL,
-            scope
+            scope,
+            false
         )
         dispatcher.dispatch(DataStoreAction.UpdateCredentials(
             syncCredentials

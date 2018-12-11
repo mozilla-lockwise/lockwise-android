@@ -13,7 +13,6 @@ import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
-import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.action.SettingAction
@@ -108,11 +107,12 @@ class ItemListPresenter(
             }
             .filterNotNull()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(view::setDisplayName)
+            .subscribe(view::setDisplayName, {
+                log.error("Lifecycle problem caused ${it.javaClass.simpleName} here", it)
+            }, {
+                log.info("onCompleted: ${javaClass.simpleName}")
+            })
             .addTo(compositeDisposable)
-
-        // TODO: remove this when we have proper locking / unlocking
-        dispatcher.dispatch(DataStoreAction.Unlock)
     }
 
     private fun onMenuItem(@IdRes item: Int) {

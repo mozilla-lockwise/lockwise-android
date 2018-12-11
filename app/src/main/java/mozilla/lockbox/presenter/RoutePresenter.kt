@@ -14,21 +14,23 @@ import android.support.v7.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.R
 import mozilla.lockbox.action.DataStoreAction
-import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.action.SettingAction
+import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.extensions.view.AlertDialogHelper
 import mozilla.lockbox.extensions.view.AlertState
-import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
+import mozilla.lockbox.model.FixedSyncCredentials
+import mozilla.lockbox.model.SyncCredentials
 import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.DataStore.State
@@ -36,6 +38,7 @@ import mozilla.lockbox.store.LifecycleStore
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.support.FixedDataStoreSupport
+import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.view.DialogFragment
 import mozilla.lockbox.view.FingerprintAuthDialogFragment
@@ -55,31 +58,49 @@ class RoutePresenter(
     override fun onViewReady() {
         navController = Navigation.findNavController(activity, R.id.fragment_nav_host)
 
-        // Mediates credentials from the AccountStore, into the DataStore.
-        Observables.combineLatest(
-                accountStore.syncCredentials.filterNotNull(),
-                dataStore.state)
-            .subscribe {
-                val action = when (it.second) {
-                    is State.Unprepared -> DataStoreAction.UpdateCredentials(it.first)
-                    is State.Unlocked -> DataStoreAction.Sync
-                    else -> return@subscribe
-                }
-                dispatcher.dispatch(action)
-            }
-            .addTo(compositeDisposable)
+        // Make the routing contingent on the state of the dataStore.
+        val dataStoreRoutes = dataStore.state
+            .map(this::dataStoreToRouteActions)
+            .filterNotNull()
 
-        val useTestData = lifecycleStore.lifecycleFilter
-            .filter { it == LifecycleAction.UseTestData }
-            .doOnNext {
-                dataStore.resetSupport(FixedDataStoreSupport())
-            }
-            .map { RouteAction.ItemList }
+        // Moves credentials from the AccountStore, into the DataStore.
+        Observables.combineLatest(accountStore.syncCredentials, dataStore.state)
+            .map(this::accountToDataStoreActions)
+            .filterNotNull()
+            .subscribe(dispatcher::dispatch)
+            .addTo(compositeDisposable)
 
         routeStore.routes
-            .mergeWith(useTestData)
+            .mergeWith(dataStoreRoutes)
+            .observeOn(mainThread())
             .subscribe(this::route)
             .addTo(compositeDisposable)
+    }
+
+    private fun dataStoreToRouteActions(storageState: State): Optional<RouteAction> {
+        return when (storageState) {
+            is State.Unlocking -> null
+            is State.Unlocked -> RouteAction.ItemList
+            is State.Locked -> RouteAction.LockScreen
+            is State.Unprepared -> RouteAction.Welcome
+            else -> RouteAction.LockScreen
+        }.asOptional()
+    }
+
+    private fun accountToDataStoreActions(it: Pair<Optional<SyncCredentials>, State>): Optional<DataStoreAction> {
+        val (opt, state) = it
+
+        val credentials = opt.value ?: return DataStoreAction.Reset.asOptional()
+
+        if (state != State.Unprepared) {
+            return Optional(null)
+        }
+
+        if (credentials is FixedSyncCredentials) {
+            dataStore.resetSupport(FixedDataStoreSupport.shared)
+        }
+
+        return DataStoreAction.UpdateCredentials(credentials).asOptional()
     }
 
     private fun route(action: RouteAction) {
@@ -91,29 +112,22 @@ class RoutePresenter(
             is RouteAction.AccountSetting -> navigateToFragment(action, R.id.fragment_account_setting)
             is RouteAction.LockScreen -> navigateToFragment(action, R.id.fragment_locked)
             is RouteAction.Filter -> navigateToFragment(action, R.id.fragment_filter)
-            is RouteAction.ItemDetail -> {
-                // Possibly overkill for passing a single id string,
-                // but it's typesafe™.
-                val bundle = ItemDetailFragmentArgs.Builder()
-                    .setItemId(action.id)
-                    .build()
-                    .toBundle()
-                navigateToFragment(action, R.id.fragment_item_detail, bundle)
-            }
-            is RouteAction.OpenWebsite -> {
-                openWebsite(action.url)
-            }
-            is RouteAction.SystemSetting -> {
-                openSetting(action)
-            }
-
+            is RouteAction.ItemDetail -> navigateToFragment(action, R.id.fragment_item_detail, bundle(action))
+            is RouteAction.OpenWebsite -> openWebsite(action.url)
+            is RouteAction.SystemSetting -> openSetting(action)
             is RouteAction.DialogFragment -> showDialogFragment(FingerprintAuthDialogFragment(), action)
             is RouteAction.Dialog -> showDialog(action)
-
             is RouteAction.AutoLockSetting -> showAutoLockSelections()
-
-            is RouteAction.Back -> navController.popBackStack()
         }
+    }
+
+    private fun bundle(action: RouteAction.ItemDetail): Bundle {
+        // Possibly overkill for passing a single id string,
+        // but it's typesafe™.
+        return ItemDetailFragmentArgs.Builder()
+            .setItemId(action.id)
+            .build()
+            .toBundle()
     }
 
     private fun showDialog(destination: RouteAction.Dialog) {
@@ -210,34 +224,53 @@ class RoutePresenter(
         if (transition == destinationId) {
             // Without being able to detect if we're in developer mode,
             // it is too dangerous to RuntimeException.
-            log.error(
-                "Cannot route from ${src.label} to $action. " +
+            val from = activity.resources.getResourceName(srcId)
+            val to = activity.resources.getResourceName(destinationId)
+            log.error("Cannot route from $from to $to. " +
                     "This is a developer bug, fixable by adding an action to graph_main.xml"
             )
+        } else {
+            val clearBackStack = src.getAction(transition)?.navOptions?.shouldLaunchSingleTop() ?: false
+            if (clearBackStack) {
+                while (navController.popBackStack()) {
+                    // NOP
+                }
+            }
         }
-        navController.navigate(transition, args)
+
+        try {
+            navController.navigate(transition, args)
+        } catch (e: IllegalArgumentException) {
+            log.error("This appears to be a bug in navController", e)
+            navController.navigate(destinationId, args)
+        }
     }
 
     private fun findTransitionId(@IdRes from: Int, @IdRes to: Int): Int? {
         // This maps two nodes in the graph_main.xml to the edge between them.
         // If a RouteAction is called from a place the graph doesn't know about then
         // the app will log.error.
-        when (Pair(from, to)) {
-            Pair(R.id.fragment_welcome, R.id.fragment_fxa_login) -> return R.id.action_welcome_to_fxaLogin
+        return when (Pair(from, to)) {
+            Pair(R.id.fragment_welcome, R.id.fragment_fxa_login) -> R.id.action_welcome_to_fxaLogin
 
-            Pair(R.id.fragment_fxa_login, R.id.fragment_item_list) -> return R.id.action_fxaLogin_to_itemList
-            Pair(R.id.fragment_locked, R.id.fragment_item_list) -> return R.id.action_locked_to_itemList
+            Pair(R.id.fragment_welcome, R.id.fragment_locked) -> R.id.action_to_locked
+            Pair(R.id.fragment_welcome, R.id.fragment_item_list) -> R.id.action_to_itemList
 
-            Pair(R.id.fragment_item_list, R.id.fragment_item_detail) -> return R.id.action_itemList_to_itemDetail
-            Pair(R.id.fragment_item_list, R.id.fragment_setting) -> return R.id.action_itemList_to_setting
-            Pair(R.id.fragment_item_list, R.id.fragment_account_setting) -> return R.id.action_itemList_to_accountSetting
-            Pair(R.id.fragment_item_list, R.id.fragment_locked) -> return R.id.action_itemList_to_locked
-            Pair(R.id.fragment_item_list, R.id.fragment_filter) -> return R.id.action_itemList_to_filter
+            Pair(R.id.fragment_fxa_login, R.id.fragment_item_list) -> R.id.action_fxaLogin_to_itemList
+            Pair(R.id.fragment_locked, R.id.fragment_item_list) -> R.id.action_locked_to_itemList
 
-            Pair(R.id.fragment_filter, R.id.fragment_item_detail) -> return R.id.action_filter_to_itemDetail
+            Pair(R.id.fragment_item_list, R.id.fragment_item_detail) -> R.id.action_itemList_to_itemDetail
+            Pair(R.id.fragment_item_list, R.id.fragment_setting) -> R.id.action_itemList_to_setting
+            Pair(R.id.fragment_item_list, R.id.fragment_account_setting) -> R.id.action_itemList_to_accountSetting
+            Pair(R.id.fragment_item_list, R.id.fragment_locked) -> R.id.action_itemList_to_locked
+            Pair(R.id.fragment_item_list, R.id.fragment_filter) -> R.id.action_itemList_to_filter
+
+            Pair(R.id.fragment_account_setting, R.id.fragment_welcome) -> R.id.action_to_welcome
+
+            Pair(R.id.fragment_filter, R.id.fragment_item_detail) -> R.id.action_filter_to_itemDetail
+
+            else -> null
         }
-
-        return null
     }
 
     private fun openWebsite(url: String) {

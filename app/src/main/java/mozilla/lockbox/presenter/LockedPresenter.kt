@@ -10,6 +10,7 @@ import io.reactivex.Observable
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.R
+import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Dispatcher
@@ -44,12 +45,9 @@ class LockedPresenter(
             .addTo(compositeDisposable)
 
         view.unlockConfirmed
+            .filter { it }
             .subscribe {
-                if (it) {
-                    dispatcher.dispatch(RouteAction.ItemList)
-                } else {
-                    dispatcher.dispatch(RouteAction.LockScreen)
-                }
+                unlock()
             }
             .addTo(compositeDisposable)
 
@@ -57,12 +55,16 @@ class LockedPresenter(
             .subscribe {
                 if (it is FingerprintAuthAction.OnAuthentication) {
                     when (it.authCallback) {
-                        is AuthCallback.OnAuth -> dispatcher.dispatch(RouteAction.ItemList)
+                        is AuthCallback.OnAuth -> unlock()
                         is AuthCallback.OnError -> unlockFallback()
                     }
                 }
             }
             .addTo(compositeDisposable)
+    }
+
+    private fun unlock() {
+        dispatcher.dispatch(DataStoreAction.Unlock)
     }
 
     private fun unlockFallback() {

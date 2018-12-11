@@ -6,6 +6,7 @@ import android.hardware.fingerprint.FingerprintManager
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
+import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.assertLastValue
@@ -108,7 +109,7 @@ class LockedPresenterTest {
     @Test
     fun `handle success authentication callback`() {
         lockedStore.onAuth.onNext(FingerprintAuthAction.OnAuthentication(AuthCallback.OnAuth))
-        dispatcherObserver.assertLastValue(RouteAction.ItemList)
+        dispatcherObserver.assertLastValue(DataStoreAction.Unlock)
     }
 
     @Test
@@ -121,12 +122,12 @@ class LockedPresenterTest {
     @Test
     fun `handle unlock confirmed true`() {
         view.unlockConfirmedStub.onNext(true)
-        dispatcherObserver.assertLastValue(RouteAction.ItemList)
+        dispatcherObserver.assertLastValue(DataStoreAction.Unlock)
     }
 
     @Test
     fun `handle unlock confirmed false`() {
         view.unlockConfirmedStub.onNext(false)
-        dispatcherObserver.assertLastValue(RouteAction.LockScreen)
+        Assert.assertEquals(0, dispatcherObserver.valueCount())
     }
 }
