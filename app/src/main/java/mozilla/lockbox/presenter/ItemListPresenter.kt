@@ -69,12 +69,8 @@ class ItemListPresenter(
             .distinctUntilChanged()
             .map { pair ->
                 when (pair.second) {
-                    Setting.ItemListSort.ALPHABETICALLY -> {
-                        pair.first.sortedBy { titleFromHostname(it.hostname) }
-                    }
-                    Setting.ItemListSort.RECENTLY_USED -> {
-                        pair.first.sortedBy { -it.timeLastUsed }
-                    }
+                    Setting.ItemListSort.ALPHABETICALLY -> pair.first.sortedBy { titleFromHostname(it.hostname) }
+                    Setting.ItemListSort.RECENTLY_USED -> pair.first.sortedBy { -it.timeLastUsed }
                 }
             }
             .mapToItemViewModelList()
@@ -130,7 +126,7 @@ class ItemListPresenter(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(view::updateAccountProfile, {
                 log.error("Lifecycle problem caused ${it.javaClass.simpleName} here", it)
-                }, {
+            }, {
                 log.info("onCompleted: ${javaClass.simpleName}")
             })
             .addTo(compositeDisposable)

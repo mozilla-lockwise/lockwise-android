@@ -132,7 +132,6 @@ open class ItemListPresenterTest {
         val listStub = PublishSubject.create<List<ServerPassword>>()
         val syncStateStub = PublishSubject.create<SyncState>()
 
-        val listStub = PublishSubject.create<List<ServerPassword>>()
         override val list: Observable<List<ServerPassword>>
             get() = listStub
         override val syncState: Observable<SyncState> get() = syncStateStub
