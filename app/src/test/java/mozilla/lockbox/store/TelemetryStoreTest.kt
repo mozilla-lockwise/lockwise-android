@@ -13,6 +13,8 @@ import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.ReplaySubject
 import mozilla.lockbox.DisposingTest
 import mozilla.lockbox.action.LifecycleAction
+import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.action.ClipboardAction
 import mozilla.lockbox.action.TelemetryAction
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.extensions.assertLastValueMatches
@@ -75,6 +77,17 @@ class TelemetryStoreTest : DisposingTest() {
             it.toJSON() == action.createEvent().toJSON()
         }
         action = LifecycleAction.Background
+        dispatcher.dispatch(action)
+        eventsObserver.assertLastValueMatches {
+            it.toJSON() == action.createEvent().toJSON()
+        }
+        action = RouteAction.ItemList
+        dispatcher.dispatch(action)
+        eventsObserver.assertLastValueMatches {
+            it.toJSON() == action.createEvent().toJSON()
+        }
+        val testUsername = "lockie"
+        action = ClipboardAction.CopyUsername(testUsername)
         dispatcher.dispatch(action)
         eventsObserver.assertLastValueMatches {
             it.toJSON() == action.createEvent().toJSON()

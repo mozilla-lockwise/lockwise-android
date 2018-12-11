@@ -9,29 +9,32 @@ package mozilla.lockbox.action
 import android.support.annotation.StringRes
 import mozilla.lockbox.flux.Action
 
-sealed class RouteAction : Action {
-    object Welcome : RouteAction()
-    object ItemList : RouteAction()
-    object Login : RouteAction()
-    object SettingList : RouteAction()
-    object AccountSetting : RouteAction()
-    object AutoLockSetting : RouteAction()
-    object Back : RouteAction()
-    object LockScreen : RouteAction()
-    object Filter : RouteAction()
-    data class ItemDetail(val id: String) : RouteAction()
-    data class OpenWebsite(val url: String) : RouteAction()
-    data class SystemSetting(val setting: SettingIntent) : RouteAction()
+sealed class RouteAction(
+    override val eventMethod: TelemetryEventMethod,
+    override val eventObject: TelemetryEventObject
+) : TelemetryAction {
+    object Welcome : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.login_welcome)
+    object ItemList : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.entry_list)
+    object Login : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.login_fxa)
+    object SettingList : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.settings_list)
+    object AccountSetting : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.settings_account)
+    object AutoLockSetting : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.settings_autolock)
+    object Back : RouteAction(TelemetryEventMethod.tap, TelemetryEventObject.back)
+    object LockScreen : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.lock_screen)
+    object Filter : RouteAction(TelemetryEventMethod.tap, TelemetryEventObject.filter)
+    data class ItemDetail(val id: String) : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.entry_detail)
+    data class OpenWebsite(val url: String) : RouteAction(TelemetryEventMethod.tap, TelemetryEventObject.open_in_browser)
+    data class SystemSetting(val setting: SettingIntent) : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.settings_system)
 
     sealed class Dialog(
         val positiveButtonAction: Action? = null,
         val negativeButtonAction: Action? = null
-    ) : RouteAction() {
+    ) : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.dialog) {
         object SecurityDisclaimer : Dialog(RouteAction.SystemSetting(SettingIntent.Security))
         object UnlinkDisclaimer : Dialog(LifecycleAction.UserReset)
     }
 
-    sealed class DialogFragment(@StringRes val dialogTitle: Int, @StringRes val dialogSubtitle: Int? = null) : RouteAction() {
+    sealed class DialogFragment(@StringRes val dialogTitle: Int, @StringRes val dialogSubtitle: Int? = null) : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.dialog) {
         class FingerprintDialog(@StringRes title: Int, @StringRes subtitle: Int? = null) :
             DialogFragment(dialogTitle = title, dialogSubtitle = subtitle)
     }
