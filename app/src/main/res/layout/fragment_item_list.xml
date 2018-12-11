@@ -18,11 +18,10 @@
         android:orientation="vertical">
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:theme="@style/ToolBar">
-
+                android:id="@+id/navToolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:theme="@style/ToolBar">
             <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"

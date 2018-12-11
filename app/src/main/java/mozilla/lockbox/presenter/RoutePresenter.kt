@@ -106,13 +106,14 @@ class RoutePresenter(
 
     private fun route(action: RouteAction) {
         when (action) {
-            is RouteAction.Welcome -> navigateToFragment(action, R.id.fragment_welcome)
-            is RouteAction.Login -> navigateToFragment(action, R.id.fragment_fxa_login)
+            is RouteAction.Welcome -> navigateToFragment(action, R.id.fragment_item_list)
+            is RouteAction.Login -> navigateToFragment(action, R.id.fragment_item_list)
             is RouteAction.ItemList -> navigateToFragment(action, R.id.fragment_item_list)
             is RouteAction.SettingList -> navigateToFragment(action, R.id.fragment_setting)
             is RouteAction.FaqList -> navigateToFragment(action, R.id.fragment_faq)
+            is RouteAction.SendFeedback -> navigateToFragment(action, R.id.fragment_faq)
             is RouteAction.AccountSetting -> navigateToFragment(action, R.id.fragment_account_setting)
-            is RouteAction.LockScreen -> navigateToFragment(action, R.id.fragment_locked)
+            is RouteAction.LockScreen -> navigateToFragment(action, R.id.fragment_item_list)
             is RouteAction.Filter -> navigateToFragment(action, R.id.fragment_filter)
             is RouteAction.ItemDetail -> navigateToFragment(action, R.id.fragment_item_detail, bundle(action))
             is RouteAction.OpenWebsite -> openWebsite(action.url)
@@ -253,13 +254,13 @@ class RoutePresenter(
         // If a RouteAction is called from a place the graph doesn't know about then
         // the app will log.error.
         return when (Pair(from, to)) {
-            Pair(R.id.fragment_welcome, R.id.fragment_fxa_login) -> R.id.action_welcome_to_fxaLogin
+            Pair(R.id.fragment_welcome, R.id.fragment_item_list) -> R.id.action_to_itemList
 
             Pair(R.id.fragment_welcome, R.id.fragment_locked) -> R.id.action_to_locked
             Pair(R.id.fragment_welcome, R.id.fragment_item_list) -> R.id.action_to_itemList
 
             Pair(R.id.fragment_fxa_login, R.id.fragment_item_list) -> R.id.action_fxaLogin_to_itemList
-            Pair(R.id.fragment_locked, R.id.fragment_item_list) -> R.id.action_locked_to_itemList
+            Pair(R.id.fragment_locked, R.id.fragment_item_list) -> R.id.action_to_itemList
 
             Pair(R.id.fragment_item_list, R.id.fragment_item_detail) -> R.id.action_itemList_to_itemDetail
             Pair(R.id.fragment_item_list, R.id.fragment_setting) -> R.id.action_itemList_to_setting
@@ -267,6 +268,7 @@ class RoutePresenter(
             Pair(R.id.fragment_item_list, R.id.fragment_locked) -> R.id.action_itemList_to_locked
             Pair(R.id.fragment_item_list, R.id.fragment_filter) -> R.id.action_itemList_to_filter
             Pair(R.id.fragment_item_list, R.id.fragment_faq) -> return R.id.action_itemList_to_faq
+            Pair(R.id.fragment_item_list, R.id.fragment_send_feedback) -> return R.id.action_itemList_to_feedback
 
             Pair(R.id.fragment_account_setting, R.id.fragment_welcome) -> R.id.action_to_welcome
 

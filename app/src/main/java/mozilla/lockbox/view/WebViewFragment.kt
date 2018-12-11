@@ -14,41 +14,36 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import com.jakewharton.rxbinding2.support.design.widget.itemSelections
+import io.reactivex.Observable
 import io.reactivex.functions.Consumer
-import kotlinx.android.synthetic.main.fragment_faq.*
-import kotlinx.android.synthetic.main.fragment_faq.view.webView
-import kotlinx.android.synthetic.main.include_backable.view.*
+import kotlinx.android.synthetic.main.fragment_item_list.view.*
+import kotlinx.android.synthetic.main.fragment_webview.*
 import mozilla.lockbox.R
-import mozilla.lockbox.presenter.FaqPresenter
-import mozilla.lockbox.presenter.FaqView
+import mozilla.lockbox.presenter.WebViewPresenter
+import mozilla.lockbox.presenter.NewWebView
 import mozilla.lockbox.support.Constant
 
 
-class FaqFragment : BackableFragment(), FaqView {
-    override var webViewObserver: Consumer<String?>? = null
-
+class WebViewFragment : BackableFragment(), NewWebView {
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        presenter = FaqPresenter(this)
-        return inflater.inflate(R.layout.fragment_faq, container, false)
+        presenter = WebViewPresenter(this)
+        return inflater.inflate(R.layout.fragment_webview, container, false)
     }
+
+    override val menuListener: Observable<Int>
+        get() {
+            val navView = view!!.navView
+            return navView.itemSelections().map { it.itemId }
+        }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        view.toolbar.setNavigationIcon(R.drawable.ic_close)
-    }
-
-    override fun loadUrl(url: String) {
-        webView.webViewClient = object : WebViewClient() {
-            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-                webViewObserver?.accept(url)
-                super.onPageStarted(view, url, favicon)
-            }
-        }
-        webView.loadUrl(Constant.Faq.uri)
+        view.navToolbar.setNavigationIcon(R.drawable.ic_close)
     }
 }

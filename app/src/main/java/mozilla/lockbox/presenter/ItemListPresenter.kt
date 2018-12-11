@@ -8,7 +8,9 @@ package mozilla.lockbox.presenter
 
 import android.support.annotation.IdRes
 import io.reactivex.Observable
+import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -133,11 +135,11 @@ class ItemListPresenter(
     }
 
     private fun onMenuItem(@IdRes item: Int) {
-
         val action = when (item) {
             R.id.setting_menu_item -> RouteAction.SettingList
             R.id.account_setting_menu_item -> RouteAction.AccountSetting
             R.id.faq_menu_item -> RouteAction.FaqList
+            R.id.feedback_menu_item -> RouteAction.SendFeedback
             else -> return log.error("Cannot route from item list menu")
         }
         dispatcher.dispatch(action)

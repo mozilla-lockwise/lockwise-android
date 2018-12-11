@@ -29,6 +29,10 @@ object Constant {
         const val uri = "https://mozilla-lockbox.github.io/lockbox-android/"
     }
 
+    object FeedbackLink {
+        const val uri = "https://www.surveygizmo.com/s3/4713557/Provide-feedback-for-Firefox-Lockbox-Android"
+    }
+
     object SettingDefault {
         val itemListSort = Setting.ItemListSort.ALPHABETICALLY
         val autoLockTime = Setting.AutoLockTime.FiveMinutes

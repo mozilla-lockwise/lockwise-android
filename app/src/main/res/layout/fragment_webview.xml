@@ -9,8 +9,8 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/fragment_faq"
-        tools:context=".view.FxALoginFragment">
+        android:id="@+id/fragment_webview"
+        tools:context=".view.WebViewFragment">
 
     <include layout="@layout/include_backable"/>
 

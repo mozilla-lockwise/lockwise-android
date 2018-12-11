@@ -54,6 +54,13 @@
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action
+            android:id="@+id/action_itemList_to_feedback"
+            app:destination="@id/fragment_send_feedback"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+        <action
             android:id="@+id/action_itemList_to_accountSetting"
             app:destination="@id/fragment_account_setting"
             app:enterAnim="@anim/slide_in_bottom"
@@ -93,8 +100,13 @@
 
     <fragment
         android:id="@+id/fragment_faq"
-        android:name="mozilla.lockbox.view.FaqFragment"
+        android:name="mozilla.lockbox.view.WebViewFragment"
         android:label="@string/nav_menu_faq"/>
+
+    <fragment
+        android:id="@+id/fragment_send_feedback"
+        android:name="mozilla.lockbox.view.WebViewFragment"
+        android:label="@string/nav_menu_feedback"/>
 
     <fragment
         android:id="@+id/fragment_account_setting"
