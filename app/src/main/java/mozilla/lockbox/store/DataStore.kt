@@ -48,7 +48,7 @@ open class DataStore(
     private val listSubject: BehaviorRelay<List<ServerPassword>> = BehaviorRelay.createDefault(emptyList())
 
     val state: Observable<State> get() = stateSubject
-    val syncState: Observable<SyncState> = PublishSubject.create()
+    open val syncState: Observable<SyncState> = PublishSubject.create()
     open val list: Observable<List<ServerPassword>> get() = listSubject
 
     private var backend: AsyncLoginsStorage

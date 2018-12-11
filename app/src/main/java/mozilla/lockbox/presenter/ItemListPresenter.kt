@@ -28,7 +28,6 @@ import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.SettingStore
-import java.util.concurrent.TimeUnit
 
 interface ItemListView {
     val itemSelection: Observable<ItemViewModel>
@@ -53,15 +52,31 @@ class ItemListPresenter(
 ) : Presenter() {
 
     override fun onViewReady() {
-        Observables.combineLatest(dataStore.list, settingStore.itemListSortOrder, Observable.timer(1000, TimeUnit.MILLISECONDS))
-                .filter { it.first.isNotEmpty() }
-                .distinctUntilChanged()
-                .map { pair ->
-                    when (pair.second) {
-                        Setting.ItemListSort.ALPHABETICALLY -> { pair.first.sortedBy { titleFromHostname(it.hostname) } }
-                        Setting.ItemListSort.RECENTLY_USED -> { pair.first.sortedBy { -it.timeLastUsed } }
+
+        dataStore.syncState
+            .observeOn(AndroidSchedulers.mainThread())
+            .map {
+                when (it) {
+                    DataStore.SyncState.Syncing -> true
+                    DataStore.SyncState.NotSyncing -> false
+                }
+            }
+            .subscribe(view::loading)
+            .addTo(compositeDisposable)
+
+        Observables.combineLatest(dataStore.list, settingStore.itemListSortOrder)
+            .filter { it.first.isNotEmpty() }
+            .distinctUntilChanged()
+            .map { pair ->
+                when (pair.second) {
+                    Setting.ItemListSort.ALPHABETICALLY -> {
+                        pair.first.sortedBy { titleFromHostname(it.hostname) }
+                    }
+                    Setting.ItemListSort.RECENTLY_USED -> {
+                        pair.first.sortedBy { -it.timeLastUsed }
                     }
                 }
+            }
             .mapToItemViewModelList()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(view::updateItems)
