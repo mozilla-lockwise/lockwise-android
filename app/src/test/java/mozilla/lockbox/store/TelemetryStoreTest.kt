@@ -88,21 +88,19 @@ class TelemetryStoreTest : DisposingTest() {
         eventsObserver.assertLastValueMatches {
             it.toJSON() == action.createEvent().toJSON()
         }
+    }
+
+    @Test
+    fun testNoLeaks () {
         val testUsername = "lockie"
-        action = ClipboardAction.CopyUsername(testUsername)
+        val testPassword = "lockie123"
+        var action: TelemetryAction = ClipboardAction.CopyUsername(testUsername)
         dispatcher.dispatch(action)
         var eventJSON = action.createEvent().toJSON()
-        eventsObserver.assertLastValueMatches {
-            it.toJSON() == eventJSON
-        }
         Assert.assertFalse("event does not contain the actual username", eventJSON.contains(testUsername))
-        val testPassword = "lockie123"
         action = ClipboardAction.CopyPassword(testPassword)
         dispatcher.dispatch(action)
         eventJSON = action.createEvent().toJSON()
-        eventsObserver.assertLastValueMatches {
-            it.toJSON() == eventJSON
-        }
         Assert.assertFalse("event does not contain the actual password", eventJSON.contains(testPassword))
     }
 }
