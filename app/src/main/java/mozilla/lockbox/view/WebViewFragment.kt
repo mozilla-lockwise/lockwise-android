@@ -8,6 +8,7 @@ package mozilla.lockbox.view
 
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -20,10 +21,17 @@ import kotlinx.android.synthetic.main.fragment_webview.*
 import mozilla.lockbox.R
 import mozilla.lockbox.presenter.WebViewPresenter
 import mozilla.lockbox.presenter.NewWebView
-
+import android.support.customtabs.CustomTabsIntent
+import mozilla.lockbox.support.Constant
+import java.util.Observable
 
 class WebViewFragment : BackableFragment(), NewWebView {
-    override var menuObserver: Consumer<String?>? = null
+    override var url: String? = null
+    override var menuObserver: Observable<Int>
+        get() {
+//            val navView = view!!.navView
+//            return navView.menu.map { it.itemId }
+        }
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreateView(
@@ -31,23 +39,12 @@ class WebViewFragment : BackableFragment(), NewWebView {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-//        val itemSelection = view!!.navView.itemSelections().map { it.itemId }.
         presenter = WebViewPresenter(this)
         return inflater.inflate(R.layout.fragment_webview, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-//        view.navToolbar.setNavigationIcon(R.drawable.ic_close)
-    }
-
     override fun loadUrl(url: String) {
-        webView.webViewClient = object : WebViewClient() {
-            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-                menuObserver?.accept(url)
-                super.onPageStarted(view, url, favicon)
-            }
-        }
-        webView.loadUrl(url)
+        val customTabsIntent = CustomTabsIntent.Builder().build()
+        customTabsIntent.launchUrl(this.activity, Uri.parse(url))
     }
 }

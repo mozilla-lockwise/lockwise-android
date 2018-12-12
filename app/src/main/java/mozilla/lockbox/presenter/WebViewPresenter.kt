@@ -7,19 +7,19 @@
 package mozilla.lockbox.presenter
 
 import android.support.annotation.IdRes
-import io.reactivex.Observable
-import io.reactivex.functions.Consumer
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.R
-import mozilla.lockbox.action.AccountAction
-import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
 import mozilla.lockbox.support.Constant
+import java.util.Observable
 
 interface NewWebView {
-    var menuObserver: Consumer<String?>?
+    var menuObserver: Observable<Int>
+    var url: String?
     fun loadUrl(url: String)
 }
 
@@ -29,16 +29,10 @@ class WebViewPresenter(
 ) : Presenter() {
 
     override fun onViewReady() {
-        view.menuObserver = Consumer { item ->
-            item?.let {
-                when {
-                    item.startsWith(Constant.Faq.uri) ->
-                        dispatcher.dispatch(RouteAction.OpenWebsite(Constant.Faq.uri))
-                    item.startsWith(Constant.FeedbackLink.uri) ->
-                        dispatcher.dispatch(RouteAction.OpenWebsite(Constant.FeedbackLink.uri))
-                    else -> log.error("Cannot route from list item.")
-                }
-            }
-        }
+//        view.menuObserver
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .subscribe(view::loadUrl)
+//            .addTo(compositeDisposable)
     }
+
 }

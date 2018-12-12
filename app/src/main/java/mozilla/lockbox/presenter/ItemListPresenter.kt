@@ -30,6 +30,9 @@ import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.SettingStore
+import mozilla.lockbox.support.Constant
+import mozilla.lockbox.support.asOptional
+import mozilla.lockbox.view.WebViewFragment
 
 interface ItemListView {
     val itemSelection: Observable<ItemViewModel>
@@ -135,6 +138,16 @@ class ItemListPresenter(
     }
 
     private fun onMenuItem(@IdRes item: Int) {
+        dispatcher.register
+            .subscribe { action ->
+                when (action) {
+                    is RouteAction.FaqList -> setFaqUrl()
+//                    is RouteAction.SendFeedback -> setSendFeedbackUrl()
+                }
+            }
+            .addTo(compositeDisposable)
+
+
         val action = when (item) {
             R.id.setting_menu_item -> RouteAction.SettingList
             R.id.account_setting_menu_item -> RouteAction.AccountSetting
@@ -143,5 +156,10 @@ class ItemListPresenter(
             else -> return log.error("Cannot route from item list menu")
         }
         dispatcher.dispatch(action)
+    }
+
+
+    private fun setFaqUrl(){
+        // tell WebViewFragment that we have an action
     }
 }

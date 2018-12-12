@@ -110,8 +110,8 @@ class RoutePresenter(
             is RouteAction.Login -> navigateToFragment(action, R.id.fragment_item_list)
             is RouteAction.ItemList -> navigateToFragment(action, R.id.fragment_item_list)
             is RouteAction.SettingList -> navigateToFragment(action, R.id.fragment_setting)
-            is RouteAction.FaqList -> navigateToFragment(action, R.id.fragment_faq)
-            is RouteAction.SendFeedback -> navigateToFragment(action, R.id.fragment_faq)
+            is RouteAction.FaqList -> navigateToFragment(action, R.id.fragment_webview)
+            is RouteAction.SendFeedback -> navigateToFragment(action, R.id.fragment_webview)
             is RouteAction.AccountSetting -> navigateToFragment(action, R.id.fragment_account_setting)
             is RouteAction.LockScreen -> navigateToFragment(action, R.id.fragment_item_list)
             is RouteAction.Filter -> navigateToFragment(action, R.id.fragment_filter)
@@ -267,8 +267,8 @@ class RoutePresenter(
             Pair(R.id.fragment_item_list, R.id.fragment_account_setting) -> R.id.action_itemList_to_accountSetting
             Pair(R.id.fragment_item_list, R.id.fragment_locked) -> R.id.action_itemList_to_locked
             Pair(R.id.fragment_item_list, R.id.fragment_filter) -> R.id.action_itemList_to_filter
-            Pair(R.id.fragment_item_list, R.id.fragment_faq) -> return R.id.action_itemList_to_faq
-            Pair(R.id.fragment_item_list, R.id.fragment_send_feedback) -> return R.id.action_itemList_to_feedback
+            Pair(R.id.fragment_item_list, R.id.fragment_faq) -> R.id.action_itemList_to_faq
+            Pair(R.id.fragment_item_list, R.id.fragment_send_feedback) -> R.id.action_itemList_to_feedback
 
             Pair(R.id.fragment_account_setting, R.id.fragment_welcome) -> R.id.action_to_welcome
 
