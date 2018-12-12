@@ -20,6 +20,7 @@ import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.extensions.assertLastValueMatches
 import mozilla.lockbox.flux.Dispatcher
 import org.junit.Test
+import org.junit.Assert
 import org.junit.runner.RunWith
 import org.mozilla.telemetry.event.TelemetryEvent
 import org.robolectric.RobolectricTestRunner
@@ -81,6 +82,7 @@ class TelemetryStoreTest : DisposingTest() {
         eventsObserver.assertLastValueMatches {
             it.toJSON() == action.createEvent().toJSON()
         }
+        uploadObserver.assertLastValue(1)
         action = RouteAction.ItemList
         dispatcher.dispatch(action)
         eventsObserver.assertLastValueMatches {
@@ -89,9 +91,18 @@ class TelemetryStoreTest : DisposingTest() {
         val testUsername = "lockie"
         action = ClipboardAction.CopyUsername(testUsername)
         dispatcher.dispatch(action)
+        var eventJSON = action.createEvent().toJSON()
         eventsObserver.assertLastValueMatches {
-            it.toJSON() == action.createEvent().toJSON()
+            it.toJSON() == eventJSON
         }
-        uploadObserver.assertLastValue(1)
+        Assert.assertFalse("event does not contain the actual username", eventJSON.contains(testUsername))
+        val testPassword = "lockie123"
+        action = ClipboardAction.CopyPassword(testPassword)
+        dispatcher.dispatch(action)
+        eventJSON = action.createEvent().toJSON()
+        eventsObserver.assertLastValueMatches {
+            it.toJSON() == eventJSON
+        }
+        Assert.assertFalse("event does not contain the actual password", eventJSON.contains(testPassword))
     }
 }
