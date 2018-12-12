@@ -11,8 +11,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.action.AccountAction
+import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
-import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.store.AccountStore
@@ -36,7 +36,7 @@ class FxALoginPresenter(
                     dispatcher.dispatch(AccountAction.OauthRedirect(url))
                     // TODO: remove following line when centralized routing is implemented via:
                     // https://github.com/mozilla-lockbox/lockbox-android/issues/144
-                    dispatcher.dispatch(RouteAction.ItemList)
+                    dispatcher.dispatch(DataStoreAction.Unlock)
                 }
             }
         }

@@ -11,23 +11,47 @@ import mozilla.lockbox.support.FxAOauthInfo
 
 private val emptyString = ""
 
-class SyncCredentials(
+interface SyncCredentials {
+    val isNew: Boolean
+
+    val tokenServerURL: String
+    // The following three properties should only be used when we have checked that the
+    // credentials are syntactically valid, by calling `isValid`.
+    val accessToken: String
+    val kid: String
+    val syncKey: String
+    val isValid: Boolean
+}
+
+class FixedSyncCredentials(
+    override val isNew: Boolean
+) : SyncCredentials {
+    override val accessToken: String = emptyString
+    override val kid: String = emptyString
+    override val syncKey: String = emptyString
+    override val tokenServerURL: String = emptyString
+
+    override val isValid: Boolean = true
+}
+
+class FxASyncCredentials(
     private val oauthInfo: FxAOauthInfo,
-    val tokenServerURL: String,
-    private val scope: String
-) {
+    override val tokenServerURL: String,
+    private val scope: String,
+    override val isNew: Boolean
+) : SyncCredentials {
     private val scopedKey: OAuthScopedKey? by lazy {
         oauthInfo.keys?.get(scope)
     }
 
     // The following three properties should only be used when we have checked that the
     // credentials are syntactically valid, by calling `isValid`.
-    val accessToken: String = oauthInfo.accessToken
-    val kid: String
+    override val accessToken: String = oauthInfo.accessToken
+    override val kid: String
         get() = scopedKey?.kid ?: emptyString
-    val syncKey: String
+    override val syncKey: String
         get() = scopedKey?.k ?: emptyString
 
-    val isValid: Boolean
+    override val isValid: Boolean
         get() = scopedKey != null
 }

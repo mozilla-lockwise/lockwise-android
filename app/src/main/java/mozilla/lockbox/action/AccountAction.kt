@@ -10,5 +10,6 @@ import mozilla.lockbox.flux.Action
 
 sealed class AccountAction : Action {
     object Reset : AccountAction()
+    object UseTestData : AccountAction()
     data class OauthRedirect(val url: String) : AccountAction()
 }

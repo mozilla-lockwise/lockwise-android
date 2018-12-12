@@ -22,8 +22,10 @@ import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.store.TelemetryStore
+import mozilla.lockbox.support.FixedDataStoreSupport
 import mozilla.lockbox.support.FxASyncDataStoreSupport
 import mozilla.lockbox.support.SecurePreferences
+import mozilla.lockbox.support.isTesting
 
 sealed class LogProvider {
     companion object {
@@ -51,7 +53,11 @@ class LockboxApplication : Application() {
         // this needs to be done after injectContext, as
         // SyncDataStoreSupport needs to find the database
         // path from the context
-        val support = FxASyncDataStoreSupport.shared
+        val support = if (isTesting()) {
+            FixedDataStoreSupport.shared
+        } else {
+            FxASyncDataStoreSupport.shared
+        }
         DataStore.shared.resetSupport(support)
     }
 

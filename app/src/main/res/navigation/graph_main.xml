@@ -26,7 +26,6 @@
         tools:layout="@layout/fragment_fxa_login">
         <action
             android:id="@+id/action_fxaLogin_to_itemList"
-            app:clearTask="true"
             app:destination="@id/fragment_item_list"
             app:launchSingleTop="true"
             app:popUpTo="@+id/fragment_item_list"
@@ -57,7 +56,6 @@
             app:popEnterAnim="@anim/none" />
         <action
             android:id="@+id/action_itemList_to_locked"
-            app:clearTask="true"
             app:destination="@+id/fragment_locked"
             app:enterAnim="@anim/slide_in_bottom"
             app:exitAnim="@anim/none"
@@ -108,10 +106,30 @@
         tools:layout="@layout/fragment_locked">
         <action
             android:id="@+id/action_locked_to_itemList"
-            app:clearTask="true"
             app:destination="@id/fragment_item_list"
             app:launchSingleTop="true"
             app:popUpTo="@+id/fragment_item_list"
             app:popUpToInclusive="true" />
     </fragment>
+
+    <action
+            android:id="@+id/action_to_locked"
+            app:destination="@+id/fragment_locked"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/fragment_locked"
+            app:popUpToInclusive="true" />
+
+    <action
+            android:id="@+id/action_to_itemList"
+            app:destination="@id/fragment_item_list"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/fragment_item_list"
+            app:popUpToInclusive="true" />
+
+    <action
+            android:id="@+id/action_to_welcome"
+            app:destination="@id/fragment_welcome"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/fragment_welcome"
+            app:popUpToInclusive="true" />
 </navigation>
