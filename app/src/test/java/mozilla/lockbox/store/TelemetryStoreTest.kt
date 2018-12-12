@@ -91,7 +91,7 @@ class TelemetryStoreTest : DisposingTest() {
     }
 
     @Test
-    fun testNoLeaks () {
+    fun testNoLeaks() {
         val testUsername = "lockie"
         val testPassword = "lockie123"
         var action: TelemetryAction = ClipboardAction.CopyUsername(testUsername)
