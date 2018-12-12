@@ -6,123 +6,123 @@
 
 package mozilla.lockbox.store
 
-import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import mozilla.appservices.logins.ServerPassword
 import mozilla.appservices.logins.SyncUnlockInfo
 import mozilla.components.service.fxa.OAuthScopedKey
 import mozilla.lockbox.DisposingTest
 import mozilla.lockbox.action.DataStoreAction
-import mozilla.lockbox.extensions.assertLastValue
+import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.mocks.MockDataStoreSupport
 import mozilla.lockbox.model.FxASyncCredentials
 import mozilla.lockbox.store.DataStore.State
 import mozilla.lockbox.support.FxAOauthInfo
 import org.junit.Assert
-import org.junit.Before
 import org.junit.Test
-import org.mockito.Mockito
-import java.lang.Thread.sleep
+import org.mockito.Mockito.clearInvocations
+import org.mockito.Mockito.verify
 
 @ExperimentalCoroutinesApi
 class DataStoreTest : DisposingTest() {
     private val support = MockDataStoreSupport()
-
-    private lateinit var dispatcher: Dispatcher
-    private lateinit var subject: DataStore
-
-    val stateObserver = createTestObserver<State>()
-    val listObserver = createTestObserver<List<ServerPassword>>()
-
-    @Before
-    fun setUp() {
-        // TODO: mock backend for testing ...
-        val dispatcher = Dispatcher()
-        this.dispatcher = dispatcher
-        subject = DataStore(dispatcher, support)
-
-        subject.state.subscribe(stateObserver)
-        subject.list.subscribe(listObserver)
-    }
-
-    @Test
-    fun testInitialState() {
-        Assert.assertSame(dispatcher, subject.dispatcher)
-        subject.list.subscribe {
-            Assert.assertTrue(it.isEmpty())
-        }.addTo(disposer)
-        subject.state.subscribe {
-            Assert.assertEquals(State.Unprepared, it)
-        }.addTo(disposer)
-    }
+    private val dispatcher = Dispatcher()
+    private val subject = DataStore(dispatcher, support)
 
     @Test
     fun testLockUnlock() {
+        val stateIterator = this.subject.state.blockingIterable().iterator()
+        val listIterator = this.subject.list.blockingIterable().iterator()
+        Assert.assertEquals(State.Unprepared, stateIterator.next())
+        Assert.assertEquals(0, listIterator.next().size)
+
         dispatcher.dispatch(DataStoreAction.Unlock)
-        sleep(100)
+        Assert.assertEquals(State.Unlocking, stateIterator.next())
+        Assert.assertEquals(State.Unlocked, stateIterator.next())
+        Assert.assertEquals(10, listIterator.next().size)
 
         dispatcher.dispatch(DataStoreAction.Lock)
-        sleep(100)
-
-        stateObserver.apply {
-            // TODO: figure out why the initialized state isn't here?
-            assertValues(State.Unprepared, State.Unlocking, State.Unlocked, State.Locked)
-        }
-        listObserver.apply {
-            val results = values()
-            Assert.assertEquals(3, results.size)
-            Assert.assertEquals(0, results[0].size)
-            Assert.assertEquals(10, results[1].size)
-            Assert.assertEquals(0, results[2].size)
-        }
+        Assert.assertEquals(State.Locked, stateIterator.next())
+        Assert.assertEquals(0, listIterator.next().size)
     }
 
     @Test
     fun testTouch() {
+        val stateIterator = this.subject.state.blockingIterable().iterator()
+        val listIterator = this.subject.list.blockingIterable().iterator()
+        Assert.assertEquals(State.Unprepared, stateIterator.next())
+        Assert.assertEquals(0, listIterator.next().size)
+
         dispatcher.dispatch(DataStoreAction.Unlock)
-        sleep(100)
-        Mockito.clearInvocations(support.storage)
+        Assert.assertEquals(State.Unlocking, stateIterator.next())
+        Assert.assertEquals(State.Unlocked, stateIterator.next())
+        Assert.assertEquals(10, listIterator.next().size)
+        clearInvocations(support.storage)
 
         val id = "lkjhkj"
         dispatcher.dispatch(DataStoreAction.Touch(id))
-        sleep(100)
-        Mockito.verify(support.storage).touch(id)
-        sleep(100)
-        Mockito.verify(support.storage).list()
+        listIterator.next()
+
+        verify(support.storage).touch(id)
+        verify(support.storage).list()
     }
 
     @Test
     fun testReset() {
+        val stateIterator = this.subject.state.blockingIterable().iterator()
+        val listIterator = this.subject.list.blockingIterable().iterator()
+        Assert.assertEquals(State.Unprepared, stateIterator.next())
+        Assert.assertEquals(0, listIterator.next().size)
+
         dispatcher.dispatch(DataStoreAction.Unlock)
-        sleep(100)
+        Assert.assertEquals(State.Unlocking, stateIterator.next())
+        Assert.assertEquals(State.Unlocked, stateIterator.next())
+        Assert.assertEquals(10, listIterator.next().size)
 
         dispatcher.dispatch(DataStoreAction.Reset)
-        sleep(100)
+        Assert.assertEquals(State.Unprepared, stateIterator.next())
+        Assert.assertEquals(0, listIterator.next().size)
 
-        Mockito.verify(support.storage).reset()
+        verify(support.storage).reset()
+    }
 
-        listObserver.assertLastValue(emptyList())
-        stateObserver.assertLastValue(DataStore.State.Unprepared)
+    @Test
+    fun testUserReset() {
+        val stateIterator = this.subject.state.blockingIterable().iterator()
+        val listIterator = this.subject.list.blockingIterable().iterator()
+        Assert.assertEquals(State.Unprepared, stateIterator.next())
+        Assert.assertEquals(0, listIterator.next().size)
+
+        dispatcher.dispatch(DataStoreAction.Unlock)
+        Assert.assertEquals(State.Unlocking, stateIterator.next())
+        Assert.assertEquals(10, listIterator.next().size)
+
+        dispatcher.dispatch(LifecycleAction.UserReset)
+
+        // leaving this for later
+//        stateIterator.next()
+//        Assert.assertEquals(0, listIterator.next().size)
+
+//        verify(support.storage).reset()
     }
 
     @Test
     fun testResetSupport() {
+        val stateIterator = this.subject.state.blockingIterable().iterator()
+
         val newSupport = MockDataStoreSupport()
-        Assert.assertNotSame("Support should be not the new one", newSupport, subject.support)
+        Assert.assertNotSame("Support should be not the new one", newSupport, this.subject.support)
 
-        stateObserver.assertLastValue(State.Unprepared)
-        subject.resetSupport(newSupport)
-        Assert.assertSame("Support should be the new one", newSupport, subject.support)
+        this.subject.resetSupport(newSupport)
+        Assert.assertSame("Support should be the new one", newSupport, this.subject.support)
 
-        stateObserver.assertLastValue(State.Unprepared)
+        Assert.assertEquals(State.Unprepared, stateIterator.next())
 
         dispatcher.dispatch(DataStoreAction.Unlock)
-        sleep(100)
+        Assert.assertEquals(State.Unlocking, stateIterator.next())
+        Assert.assertEquals(State.Unlocked, stateIterator.next())
 
-        stateObserver.assertLastValue(State.Unlocked)
-        subject.resetSupport(MockDataStoreSupport())
-        Mockito.verify(newSupport.storage).reset()
+        this.subject.resetSupport(MockDataStoreSupport())
+        verify(newSupport.storage).reset()
     }
 
     @Test
@@ -144,9 +144,11 @@ class DataStoreTest : DisposingTest() {
             scope,
             false
         )
-        dispatcher.dispatch(DataStoreAction.UpdateCredentials(
-            syncCredentials
-        ))
+        dispatcher.dispatch(
+            DataStoreAction.UpdateCredentials(
+                syncCredentials
+            )
+        )
 
         val expectedSyncUnlockInfo = SyncUnlockInfo(
             kid,
@@ -163,17 +165,10 @@ class DataStoreTest : DisposingTest() {
 
     @Test
     fun testSync() {
-        val syncStateObserver = createTestObserver<DataStore.SyncState>()
-
-        subject.syncState.subscribe(syncStateObserver)
+        val syncIterator = this.subject.syncState.blockingIterable().iterator()
 
         dispatcher.dispatch(DataStoreAction.Sync)
-        sleep(100)
-
-        syncStateObserver.apply {
-            assertValueCount(2)
-            assertValueAt(0, DataStore.SyncState.Syncing)
-            assertValueAt(1, DataStore.SyncState.NotSyncing)
-        }
+        Assert.assertEquals(DataStore.SyncState.Syncing, syncIterator.next())
+        Assert.assertEquals(DataStore.SyncState.NotSyncing, syncIterator.next())
     }
 }
