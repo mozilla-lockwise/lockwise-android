@@ -5,8 +5,6 @@
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name">Firefox Lockbox</string>
-    <string name="app_label">Lockbox</string>
     <string name="app_tagline">Take your passwords everywhere.</string>
 
     <string name="welcome_start_btn">Get Started</string>
@@ -33,7 +31,6 @@
     <string name="hint_password">Password</string>
     <string name="toast_username_copied">Username copied</string>
     <string name="toast_password_copied">Password copied</string>
-    <string name="telemetry_server_endpoint" translatable="false">https://incoming.telemetry.mozilla.org</string>
     <string name="learn_to_edit_entry">Learn how to edit this entry</string>
 
     <string name="configuration_title">Configuration</string>

@@ -1,0 +1,11 @@
+<!--
+  ~ This Source Code Form is subject to the terms of the Mozilla Public
+  ~ License, v. 2.0. If a copy of the MPL was not distributed with this
+  ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
+  -->
+
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name" translatable="false">Firefox Lockbox</string>
+    <string name="app_label" translatable="false">Lockbox</string>
+    <string name="telemetry_server_endpoint" translatable="false">https://incoming.telemetry.mozilla.org</string>
+</resources>
