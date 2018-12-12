@@ -9,5 +9,5 @@
     <dimen name="nessie_image_margin_top">89dp</dimen>
     <dimen name="section_first_title_top_margin">13dp</dimen>
     <dimen name="section_title_top_margin">30dp</dimen>
-    <dimen name="avatar_image_size">80dp</dimen>
+    <dimen name="avatar_image_size">100dp</dimen>
 </resources>

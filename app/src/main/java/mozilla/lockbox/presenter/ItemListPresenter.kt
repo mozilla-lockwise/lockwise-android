@@ -109,7 +109,7 @@ class ItemListPresenter(
             .filterNotNull()
             .map {
                 AccountViewModel(
-                    accountName = it.displayName ?: it.email,
+                    accountName = it.displayName,
                     displayEmailName = it.email,
                     avatarFromURL = it.avatar
                 )
