@@ -25,9 +25,11 @@ import android.widget.Button
 import android.widget.ListPopupWindow
 import com.jakewharton.rxbinding2.support.v7.widget.navigationClicks
 import com.jakewharton.rxbinding2.view.clicks
+import com.squareup.picasso.Picasso
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
+import jp.wasabeef.picasso.transformations.CropCircleTransformation
 import kotlinx.android.synthetic.main.fragment_item_list.view.*
 import mozilla.lockbox.R
 import mozilla.lockbox.adapter.ItemListAdapter
@@ -40,16 +42,16 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.adapter.ItemListSortAdapter
 import mozilla.lockbox.extensions.view.itemClicks
+import mozilla.lockbox.model.AccountViewModel
 import mozilla.lockbox.support.dpToPixels
 
 @ExperimentalCoroutinesApi
 class ItemListFragment : CommonFragment(), ItemListView {
     private val compositeDisposable = CompositeDisposable()
     private val adapter = ItemListAdapter()
-
     private lateinit var sortItemsMenu: ListPopupWindow
-    private lateinit var sortItemsAdapter: ItemListSortAdapter
 
+    private lateinit var sortItemsAdapter: ItemListSortAdapter
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -87,13 +89,17 @@ class ItemListFragment : CommonFragment(), ItemListView {
         toolbar.navigationIcon = resources.getDrawable(R.drawable.ic_menu, null)
         toolbar.setNavigationContentDescription(R.string.menu_description)
         toolbar.navigationClicks().subscribe { drawerLayout.openDrawer(GravityCompat.START) }
-                .addTo(compositeDisposable)
+            .addTo(compositeDisposable)
     }
 
     private fun setupItemListSortMenu(sortButton: Button) {
         val context = requireContext()
         sortItemsMenu = ListPopupWindow(context)
-        sortItemsAdapter = ItemListSortAdapter(context, R.layout.sort_menu_item, sortMenuOptions.map { context.getString(it.displayStringId) }.toTypedArray())
+        sortItemsAdapter = ItemListSortAdapter(
+            context,
+            R.layout.sort_menu_item,
+            sortMenuOptions.map { context.getString(it.displayStringId) }.toTypedArray()
+        )
         sortItemsAdapter.selectedBackgroundColor = R.color.menuItemSelected
         sortItemsMenu.setAdapter(sortItemsAdapter)
         sortItemsMenu.anchorView = sortButton
@@ -125,10 +131,6 @@ class ItemListFragment : CommonFragment(), ItemListView {
                 view!!.sortButton.setText(R.string.all_entries_recent)
             }
         }
-    }
-
-    override fun setDisplayName(text: String) {
-        view!!.navView.menuHeader.accountName.text = text
     }
 
     private fun scrollToTop() {
@@ -169,6 +171,25 @@ class ItemListFragment : CommonFragment(), ItemListView {
 
     override fun updateItems(itemList: List<ItemViewModel>) {
         adapter.updateItems(itemList)
+    }
+
+    override fun updateAccountProfile(profile: AccountViewModel) {
+
+        navView.menuHeader.displayName.text = profile.displayEmailName ?: resources.getString(R.string.firefox_account)
+        view!!.navView.menuHeader.accountName.text = profile.accountName ?: resources.getString(R.string.app_name)
+
+        var avatarUrl = profile.avatarFromURL
+        if (avatarUrl.isNullOrEmpty() || avatarUrl == resources.getString(R.string.default_avatar_url)) {
+            avatarUrl = null
+        }
+
+        Picasso.get()
+            .load(avatarUrl)
+            .placeholder(R.drawable.ic_default_avatar)
+            .transform(CropCircleTransformation())
+            .resizeDimen(R.dimen.avatar_image_size, R.dimen.avatar_image_size)
+            .centerCrop()
+            .into(view!!.profileImage)
     }
 
     override fun updateItemListSort(sort: Setting.ItemListSort) {

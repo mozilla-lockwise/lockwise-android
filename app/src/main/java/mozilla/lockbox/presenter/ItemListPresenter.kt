@@ -21,13 +21,13 @@ import mozilla.lockbox.extensions.mapToItemViewModelList
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
+import mozilla.lockbox.model.AccountViewModel
 import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.model.titleFromHostname
 import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.SettingStore
-import mozilla.lockbox.support.asOptional
 
 interface ItemListView {
     val itemSelection: Observable<ItemViewModel>
@@ -36,8 +36,8 @@ interface ItemListView {
     val lockNowClick: Observable<Unit>
     val sortItemSelection: Observable<Setting.ItemListSort>
     fun updateItems(itemList: List<ItemViewModel>)
+    fun updateAccountProfile(profile: AccountViewModel)
     fun updateItemListSort(sort: Setting.ItemListSort)
-    fun setDisplayName(text: String)
 }
 
 @ExperimentalCoroutinesApi
@@ -52,36 +52,40 @@ class ItemListPresenter(
 
     override fun onViewReady() {
         Observables.combineLatest(dataStore.list, settingStore.itemListSortOrder)
-                .filter { it.first.isNotEmpty() }
-                .distinctUntilChanged()
-                .map { pair ->
-                    when (pair.second) {
-                        Setting.ItemListSort.ALPHABETICALLY -> { pair.first.sortedBy { titleFromHostname(it.hostname) } }
-                        Setting.ItemListSort.RECENTLY_USED -> { pair.first.sortedBy { -it.timeLastUsed } }
+            .filter { it.first.isNotEmpty() }
+            .distinctUntilChanged()
+            .map { pair ->
+                when (pair.second) {
+                    Setting.ItemListSort.ALPHABETICALLY -> {
+                        pair.first.sortedBy { titleFromHostname(it.hostname) }
+                    }
+                    Setting.ItemListSort.RECENTLY_USED -> {
+                        pair.first.sortedBy { -it.timeLastUsed }
                     }
                 }
-                .mapToItemViewModelList()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(view::updateItems)
-                .addTo(compositeDisposable)
+            }
+            .mapToItemViewModelList()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(view::updateItems)
+            .addTo(compositeDisposable)
 
         settingStore.itemListSortOrder
-                .distinctUntilChanged()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(view::updateItemListSort)
-                .addTo(compositeDisposable)
+            .distinctUntilChanged()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(view::updateItemListSort)
+            .addTo(compositeDisposable)
 
         view.itemSelection
-                .subscribe { it ->
-                    dispatcher.dispatch(RouteAction.ItemDetail(it.guid))
-                }
-                .addTo(compositeDisposable)
+            .subscribe { it ->
+                dispatcher.dispatch(RouteAction.ItemDetail(it.guid))
+            }
+            .addTo(compositeDisposable)
 
         view.filterClicks
-                .subscribe {
-                    dispatcher.dispatch(RouteAction.Filter)
-                }
-                .addTo(compositeDisposable)
+            .subscribe {
+                dispatcher.dispatch(RouteAction.Filter)
+            }
+            .addTo(compositeDisposable)
 
         view.menuItemSelections
             .subscribe(this::onMenuItem)
@@ -97,19 +101,23 @@ class ItemListPresenter(
             .addTo(compositeDisposable)
 
         view.sortItemSelection
-                .subscribe { sortBy ->
-                    dispatcher.dispatch(SettingAction.ItemListSortOrder(sortBy))
-                }.addTo(compositeDisposable)
+            .subscribe { sortBy ->
+                dispatcher.dispatch(SettingAction.ItemListSortOrder(sortBy))
+            }.addTo(compositeDisposable)
 
         accountStore.profile
-            .map {
-                (it.value?.displayName ?: it.value?.email).asOptional()
-            }
             .filterNotNull()
+            .map {
+                AccountViewModel(
+                    accountName = it.displayName,
+                    displayEmailName = it.email,
+                    avatarFromURL = it.avatar
+                )
+            }
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(view::setDisplayName, {
+            .subscribe(view::updateAccountProfile, {
                 log.error("Lifecycle problem caused ${it.javaClass.simpleName} here", it)
-            }, {
+                }, {
                 log.info("onCompleted: ${javaClass.simpleName}")
             })
             .addTo(compositeDisposable)
