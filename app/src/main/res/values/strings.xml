@@ -77,6 +77,7 @@
     <string name="placeholder_skip_fxa">Use test data</string>
     <!--suppress CheckTagEmptyBody -->
     <string name="empty_string"></string>
+    <string name="default_avatar_url">https://firefoxusercontent.com/00000000000000000000000000000000</string>
 
     <!--Accessibility: content descriptions-->
     <string name="copy_username_content_description">Copy your username</string>
@@ -88,7 +89,6 @@
     <string name="sort_description">Sort entries</string>
     <string name="search_clear_content_description">Clear search bar text</string>
     <string name="profile_image_content_description">Firefox Account Profile Image</string>
-    <string name="app_version">Application version number</string>
     <string name="auto_lock_description">Auto lock setting</string>
     <string name="app_version_description">Application version number</string>
     <string name="autofill_description">Application autofill setting</string>

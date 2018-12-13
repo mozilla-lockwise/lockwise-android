@@ -18,6 +18,7 @@
     tools:ignore="UseCompoundDrawables">
 
     <ImageView
+        android:id="@+id/profileImage"
         android:contentDescription="@string/application_logo"
         android:layout_width="48dp"
         android:layout_height="48dp"

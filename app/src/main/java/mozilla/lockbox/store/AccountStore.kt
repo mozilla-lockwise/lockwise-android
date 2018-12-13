@@ -143,7 +143,6 @@ open class AccountStore(
                 generateLoginURL()
             }
             .addTo(compositeDisposable)
-
         (syncCredentials as Subject).onNext(Optional(null))
         (profile as Subject).onNext(Optional(null))
     }
