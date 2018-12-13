@@ -33,7 +33,7 @@ class Setting {
         TwentyFourHours(R.string.twenty_four_hours, 60 * 60 * 24),
         Never(R.string.never, 0);
 
-        val ms: Long by lazy { (this.seconds * 1000) }
+        val ms: Long = this.seconds * 1000
     }
 
     enum class ItemListSort(val displayStringId: Int) {

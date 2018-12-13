@@ -16,8 +16,10 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.ReplaySubject
 import io.reactivex.subjects.Subject
 import mozilla.lockbox.action.LifecycleAction
+import mozilla.lockbox.action.Setting
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.support.Constant
+import mozilla.lockbox.support.FileReader
 
 class AutoLockStore(
     val dispatcher: Dispatcher = Dispatcher.shared,
@@ -31,43 +33,64 @@ class AutoLockStore(
 
     private val compositeDisposable = CompositeDisposable()
     private lateinit var preferences: SharedPreferences
+    private lateinit var currentBootID: String
 
     val lockRequired: Observable<Boolean> = ReplaySubject.createWithSize(1)
 
     init {
         lifecycleStore.lifecycleFilter
             .filter { it == LifecycleAction.Foreground }
-            .subscribe {
-                checkElapsedTime()
-            }
-            .addTo(compositeDisposable)
+            .map { lockCurrentlyRequired() }
+            .subscribe(lockRequired as Subject)
 
         lifecycleStore.lifecycleFilter
             .filter { it == LifecycleAction.Background }
             .switchMap { settingStore.autoLockTime.take(1) }
-            .subscribe {
-                val currentSystemTime = SystemClock.elapsedRealtime()
-                preferences
-                    .edit()
-                    .putLong(Constant.Key.autoLockTimerDate, currentSystemTime + it.ms)
-                    .apply()
-            }
+            .subscribe(this::updateNextLockTime)
             .addTo(compositeDisposable)
     }
 
     override fun injectContext(context: Context) {
         preferences = PreferenceManager.getDefaultSharedPreferences(context)
+
+        currentBootID = FileReader().readContents(Constant.App.bootIDPath)
+
+        preferences
+            .edit()
+            .putString(Constant.Key.bootID, currentBootID)
+            .apply()
     }
 
-    private fun checkElapsedTime() {
+    private fun updateNextLockTime(autoLockTime: Setting.AutoLockTime) {
+        val currentSystemTime = SystemClock.elapsedRealtime()
+        preferences
+            .edit()
+            .putLong(Constant.Key.autoLockTimerDate, currentSystemTime + autoLockTime.ms)
+            .apply()
+    }
+
+    private fun lockCurrentlyRequired(): Boolean {
+        return if (onNewBoot()) {
+            true
+        } else {
+            autoLockTimePassed()
+        }
+    }
+
+    private fun onNewBoot(): Boolean {
+        preferences.getString(Constant.Key.bootID, null)?.let {
+            return it != currentBootID
+        }
+
+        return true
+    }
+
+    private fun autoLockTimePassed(): Boolean {
         val autoLockTimerDate = preferences.getLong(Constant.Key.autoLockTimerDate, -1)
         val currentSystemTime = SystemClock.elapsedRealtime()
 
-        // edge case: someone has backgrounded the app after the device has been running for x minutes.
-        // they reboot the device and leave it running for x minutes + some time less than autolocktime setting
-        // app will be unlocked :(
         val diff = autoLockTimerDate - currentSystemTime
 
-        (lockRequired as Subject).onNext(diff <= 0)
+        return diff <= 0
     }
 }
