@@ -19,7 +19,6 @@ sealed class RouteAction(
     object SettingList : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.settings_list)
     object AccountSetting : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.settings_account)
     object AutoLockSetting : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.settings_autolock)
-    object Back : RouteAction(TelemetryEventMethod.tap, TelemetryEventObject.back)
     object LockScreen : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.lock_screen)
     object Filter : RouteAction(TelemetryEventMethod.tap, TelemetryEventObject.filter)
     data class ItemDetail(val id: String) : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.entry_detail)
