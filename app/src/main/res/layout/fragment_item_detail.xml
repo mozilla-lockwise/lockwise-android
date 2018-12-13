@@ -148,6 +148,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="26dp"
+            android:background="@color/backgroundGrey"
             android:text="@string/learn_to_edit_entry"
             android:textAllCaps="true"
             android:textColor="@color/blue_60_percent"
@@ -158,6 +159,6 @@
             android:lineSpacingExtra="7.5sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" android:background="@color/backgroundGrey"/>
+            app:layout_constraintStart_toStartOf="parent"/>
 
 </android.support.constraint.ConstraintLayout>
