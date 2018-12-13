@@ -39,15 +39,15 @@ class FxALoginFragment : BackableFragment(), FxALoginView {
         view.webView.settings.domStorageEnabled = true
         view.webView.settings.javaScriptEnabled = true
         CookieManager.getInstance().setAcceptCookie(true)
-
-        if (!isDebug()) {
-            skipFxA.visibility = View.GONE
-        }
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if (!isDebug()) {
+            skipFxA.visibility = View.GONE
+        }
         view.toolbar.setNavigationIcon(R.drawable.ic_close)
     }
 
