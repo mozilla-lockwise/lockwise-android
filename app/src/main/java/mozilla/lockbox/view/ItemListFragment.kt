@@ -6,7 +6,6 @@
 
 package mozilla.lockbox.view
 
-import android.graphics.Canvas
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
@@ -31,7 +30,6 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import jp.wasabeef.picasso.transformations.CropCircleTransformation
-import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 import kotlinx.android.synthetic.main.fragment_item_list.view.*
 import mozilla.lockbox.R
 import mozilla.lockbox.adapter.ItemListAdapter
@@ -46,10 +44,6 @@ import mozilla.lockbox.adapter.ItemListSortAdapter
 import mozilla.lockbox.extensions.view.itemClicks
 import mozilla.lockbox.model.AccountViewModel
 import mozilla.lockbox.support.dpToPixels
-import android.graphics.BitmapShader
-import android.R.attr.bitmap
-import android.graphics.Paint
-import android.graphics.drawable.Drawable
 
 @ExperimentalCoroutinesApi
 class ItemListFragment : CommonFragment(), ItemListView {

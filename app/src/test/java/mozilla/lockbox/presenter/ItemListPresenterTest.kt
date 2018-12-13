@@ -110,7 +110,8 @@ open class ItemListPresenterTest {
             accountViewModel = AccountViewModel(
                 profile.accountName,
                 profile.displayEmailName,
-                profile.avatarFromURL)
+                profile.avatarFromURL
+            )
         }
 
         override fun updateItems(itemList: List<ItemViewModel>) {
@@ -156,7 +157,7 @@ open class ItemListPresenterTest {
     }
 
     @Test
-    fun accountViewModelMapping(){
+    fun accountViewModelMapping() {
         val profile = AccountViewModel(
             accountName = "DogLover Jones",
             displayEmailName = "ilovedogs@dogs.com",
