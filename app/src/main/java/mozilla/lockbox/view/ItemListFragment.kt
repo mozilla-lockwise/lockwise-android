@@ -6,6 +6,7 @@
 
 package mozilla.lockbox.view
 
+import android.graphics.Canvas
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
@@ -30,6 +31,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import jp.wasabeef.picasso.transformations.CropCircleTransformation
+import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 import kotlinx.android.synthetic.main.fragment_item_list.view.*
 import mozilla.lockbox.R
 import mozilla.lockbox.adapter.ItemListAdapter
@@ -44,6 +46,10 @@ import mozilla.lockbox.adapter.ItemListSortAdapter
 import mozilla.lockbox.extensions.view.itemClicks
 import mozilla.lockbox.model.AccountViewModel
 import mozilla.lockbox.support.dpToPixels
+import android.graphics.BitmapShader
+import android.R.attr.bitmap
+import android.graphics.Paint
+import android.graphics.drawable.Drawable
 
 @ExperimentalCoroutinesApi
 class ItemListFragment : CommonFragment(), ItemListView {
@@ -177,19 +183,19 @@ class ItemListFragment : CommonFragment(), ItemListView {
 
         navView.menuHeader.displayName.text = profile.displayEmailName ?: resources.getString(R.string.firefox_account)
         view!!.navView.menuHeader.accountName.text = profile.accountName ?: resources.getString(R.string.app_name)
-        if (profile.avatarFromURL.isNullOrEmpty() || profile.avatarFromURL == "https://firefoxusercontent.com/00000000000000000000000000000000") {
-            Picasso.get()
-                .load(R.drawable.ic_lockbox)
-                .fit()
-                .transform(CropCircleTransformation())
-                .into(view!!.profileImage)
-        } else {
-            Picasso.get()
-                .load(profile.avatarFromURL)
-                .resizeDimen(R.dimen.avatar_image_size, R.dimen.avatar_image_size)
-                .transform(CropCircleTransformation())
-                .into(view!!.profileImage)
+
+        var avatarUrl = profile.avatarFromURL
+        if (avatarUrl.isNullOrEmpty() || avatarUrl == resources.getString(R.string.default_avatar_url)) {
+            avatarUrl = null
         }
+
+        Picasso.get()
+            .load(avatarUrl)
+            .placeholder(R.drawable.ic_default_avatar)
+            .transform(CropCircleTransformation())
+            .resizeDimen(R.dimen.avatar_image_size, R.dimen.avatar_image_size)
+            .centerCrop()
+            .into(view!!.profileImage)
     }
 
     override fun updateItemListSort(sort: Setting.ItemListSort) {

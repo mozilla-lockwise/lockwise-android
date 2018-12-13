@@ -81,7 +81,7 @@ open class ItemListPresenterTest {
 
     class FakeView : ItemListView {
 
-        var setDisplayNameArgument: String? = null
+        var accountViewModel: AccountViewModel? = null
         var updateItemsArgument: List<ItemViewModel>? = null
         var itemListSort: Setting.ItemListSort? = null
         val menuItemSelectionStub = PublishSubject.create<Int>()
@@ -107,7 +107,10 @@ open class ItemListPresenterTest {
             get() = lockNowSelectionStub
 
         override fun updateAccountProfile(profile: AccountViewModel) {
-            setDisplayNameArgument = profile.displayEmailName
+            accountViewModel = AccountViewModel(
+                profile.accountName,
+                profile.displayEmailName,
+                profile.avatarFromURL)
         }
 
         override fun updateItems(itemList: List<ItemViewModel>) {
@@ -150,6 +153,19 @@ open class ItemListPresenterTest {
         dispatcher.register.subscribe(dispatcherObserver)
 
         subject.onViewReady()
+    }
+
+    @Test
+    fun accountViewModelMapping(){
+        val profile = AccountViewModel(
+            accountName = "DogLover Jones",
+            displayEmailName = "ilovedogs@dogs.com",
+            avatarFromURL = null
+        )
+        view.updateAccountProfile(profile)
+        Assert.assertEquals(profile.accountName, view.accountViewModel!!.accountName)
+        Assert.assertEquals(profile.displayEmailName, view.accountViewModel!!.displayEmailName)
+        Assert.assertEquals(profile.avatarFromURL, view.accountViewModel!!.avatarFromURL)
     }
 
     @Test
