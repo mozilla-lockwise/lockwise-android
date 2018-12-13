@@ -19,6 +19,7 @@ import mozilla.components.service.sync.logins.AsyncLoginsStorage
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.log
 import mozilla.lockbox.model.SyncCredentials
 import mozilla.lockbox.support.DataStoreSupport
 import mozilla.lockbox.support.FixedDataStoreSupport
@@ -58,13 +59,15 @@ open class DataStore(
         backend = support.createLoginsStorage()
 
         // handle state changes
-        state.subscribe { state ->
-            when (state) {
-                is State.Locked -> clearList()
-                is State.Unlocked -> updateList()
-                else -> Unit
+        state
+            .subscribe { state ->
+                when (state) {
+                    is State.Locked -> clearList()
+                    is State.Unlocked -> updateList()
+                    else -> Unit
+                }
             }
-        }.addTo(compositeDisposable)
+            .addTo(compositeDisposable)
 
         // register for actions
         dispatcher.register
@@ -190,18 +193,17 @@ open class DataStore(
             return
         }
 
-        fun initialSync() {
-            unlock()
-            sync()
-        }
-
         if (backend.isLocked()) {
+            stateSubject.accept(State.Unlocking)
             backend.unlock(support.encryptionKey)
                 .asSingle(Dispatchers.Default)
-                .subscribe { _, _ -> initialSync() }
+                .subscribe { _, _ ->
+                    stateSubject.accept(State.Unlocked)
+                    sync()
+                }
                 .addTo(compositeDisposable)
         } else {
-            initialSync()
+            sync()
         }
     }
 
@@ -212,6 +214,7 @@ open class DataStore(
             return
         }
         if (stateSubject.value != State.Unprepared) {
+            log.info("resetting when we shouldn't be!")
             backend.reset()
                 .asSingle(Dispatchers.Default)
                 .subscribe()

@@ -17,6 +17,7 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.RouteAction
@@ -44,6 +45,7 @@ import mozilla.lockbox.view.DialogFragment
 import mozilla.lockbox.view.FingerprintAuthDialogFragment
 import mozilla.lockbox.view.ItemDetailFragmentArgs
 
+@ExperimentalCoroutinesApi
 class RoutePresenter(
     private val activity: AppCompatActivity,
     private val dispatcher: Dispatcher = Dispatcher.shared,
@@ -79,7 +81,7 @@ class RoutePresenter(
 
     private fun dataStoreToRouteActions(storageState: State): Optional<RouteAction> {
         return when (storageState) {
-            is State.Unlocking -> null
+            is State.Unlocking -> RouteAction.ItemList
             is State.Unlocked -> RouteAction.ItemList
             is State.Locked -> RouteAction.LockScreen
             is State.Unprepared -> RouteAction.Welcome
