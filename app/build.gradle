@@ -102,8 +102,8 @@ dependencies {
     testImplementation "org.powermock:powermock-api-mockito2:2.0.0-beta.5"
     testImplementation "org.junit.jupiter:junit-jupiter-api:5.3.1"
     androidTestImplementation "org.junit.jupiter:junit-jupiter-api:5.3.1"
-    androidTestImplementation "androidx.test:core:1.0.0"
-    androidTestImplementation "androidx.test.ext:junit:1.0.0"
+    androidTestImplementation "androidx.test:core:1.1.0"
+    androidTestImplementation "androidx.test.ext:junit:1.1.0"
     androidTestImplementation 'org.mockito:mockito-android:2.22.0'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test:rules:1.0.2'

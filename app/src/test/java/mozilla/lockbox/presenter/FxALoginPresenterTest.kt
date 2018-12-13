@@ -10,12 +10,14 @@ import io.reactivex.Observable
 import io.reactivex.functions.Consumer
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.AccountAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.support.Constant
+import mozilla.lockbox.support.isDebug
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -26,6 +28,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest
 import org.robolectric.RobolectricTestRunner
 import org.mockito.Mockito.`when` as whenCalled
 
+@ExperimentalCoroutinesApi
 @RunWith(RobolectricTestRunner::class)
 @PrepareForTest(AccountStore::class)
 class FxALoginPresenterTest {
@@ -93,8 +96,10 @@ class FxALoginPresenterTest {
 
     @Test
     fun `onViewReady, when the skipFXA button is tapped`() {
-        (view.skipFxAClicks as PublishSubject).onNext(Unit)
+        if (isDebug()) {
+            (view.skipFxAClicks as PublishSubject).onNext(Unit)
 
-        dispatcherObserver.assertValue(LifecycleAction.UseTestData)
+            dispatcherObserver.assertValue(LifecycleAction.UseTestData)
+        }
     }
 }
