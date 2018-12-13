@@ -19,7 +19,6 @@ import mozilla.components.service.sync.logins.AsyncLoginsStorage
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
-import mozilla.lockbox.log
 import mozilla.lockbox.model.SyncCredentials
 import mozilla.lockbox.support.DataStoreSupport
 import mozilla.lockbox.support.FixedDataStoreSupport
@@ -214,7 +213,6 @@ open class DataStore(
             return
         }
         if (stateSubject.value != State.Unprepared) {
-            log.info("resetting when we shouldn't be!")
             backend.reset()
                 .asSingle(Dispatchers.Default)
                 .subscribe()
