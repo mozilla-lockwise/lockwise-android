@@ -147,7 +147,7 @@ class RoutePresenter(
                     .setUrl(Constant.SendFeedback.uri)
                     .build()
                     .toBundle()
-            else ->{
+            else -> {
                 log.error("Unable to route from item list.")
                 return Bundle.EMPTY
             }

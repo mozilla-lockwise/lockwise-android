@@ -24,5 +24,4 @@ class WebViewPresenter(
     override fun onViewReady() {
         view.loadURL(url!!)
     }
-
 }

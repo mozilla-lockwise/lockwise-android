@@ -9,7 +9,6 @@ package mozilla.lockbox.action
 import android.support.annotation.StringRes
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.support.Constant
-import mozilla.lockbox.view.WebViewFragment
 
 sealed class RouteAction(
     override val eventMethod: TelemetryEventMethod,

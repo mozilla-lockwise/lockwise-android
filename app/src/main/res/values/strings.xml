@@ -95,5 +95,4 @@
     <string name="autofill_description">Application autofill setting</string>
     <string name="fingerprint_description">Enable fingerprint setting</string>
     <string name="learn_more_description">Learn more about sending usage data</string>
-    <string name="route_failure">Cannot route from list item.</string>
 </resources>
