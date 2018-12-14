@@ -4,25 +4,6 @@
   ~ License, v. 2.0. If a copy of the MPL was not distributed with this
   ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
   -->
-<!--<LinearLayout-->
-        <!--xmlns:tools="http://schemas.android.com/tools"-->
-        <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:id="@+id/fragment_webview"-->
-        <!--tools:context=".view.WebViewFragment">-->
-
-    <!--<include layout="@layout/include_backable"/>-->
-
-    <!--<WebView-->
-            <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
-            <!--android:id="@+id/webView"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_marginTop="?attr/actionBarSize"-->
-            <!--android:layout_weight="1"-->
-    <!--/>-->
-<!--</LinearLayout>-->
 
 <android.support.constraint.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"

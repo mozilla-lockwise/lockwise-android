@@ -38,7 +38,6 @@ import mozilla.lockbox.store.DataStore.State
 import mozilla.lockbox.store.LifecycleStore
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.store.SettingStore
-import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.FixedDataStoreSupport
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.asOptional
@@ -108,12 +107,12 @@ class RoutePresenter(
 
     private fun route(action: RouteAction) {
         when (action) {
-            is RouteAction.Welcome -> navigateToFragment(action, R.id.fragment_item_list)
-            is RouteAction.Login -> navigateToFragment(action, R.id.fragment_item_list)
+            is RouteAction.Welcome -> navigateToFragment(action, R.id.fragment_welcome)
+            is RouteAction.Login -> navigateToFragment(action, R.id.fragment_fxa_login)
             is RouteAction.ItemList -> navigateToFragment(action, R.id.fragment_item_list)
             is RouteAction.SettingList -> navigateToFragment(action, R.id.fragment_setting)
             is RouteAction.AccountSetting -> navigateToFragment(action, R.id.fragment_account_setting)
-            is RouteAction.LockScreen -> navigateToFragment(action, R.id.fragment_item_list)
+            is RouteAction.LockScreen -> navigateToFragment(action, R.id.fragment_locked)
             is RouteAction.Filter -> navigateToFragment(action, R.id.fragment_filter)
             is RouteAction.ItemDetail -> navigateToFragment(action, R.id.fragment_item_detail, bundle(action))
             is RouteAction.OpenWebsite -> openWebsite(action.url)
@@ -121,37 +120,22 @@ class RoutePresenter(
             is RouteAction.AutoLockSetting -> showAutoLockSelections()
             is RouteAction.DialogFragment -> showDialogFragment(FingerprintAuthDialogFragment(), action)
             is RouteAction.Dialog -> showDialog(action)
-            is RouteAction.MenuItem.FaqList ->
-                navigateToFragment(action, R.id.fragment_faq, bundle(action))
-            is RouteAction.MenuItem.SendFeedback ->
-                navigateToFragment(action, R.id.fragment_send_feedback, bundle(action))
+            is RouteAction.AppWebPage -> navigateToFragment(action, R.id.fragment_webview, bundle(action))
         }
     }
 
-    private fun bundle(action: RouteAction): Bundle {
-        // Possibly overkill for passing a single id string,
-        // but it's typesafe™.
-        when (action) {
-            is RouteAction.ItemDetail ->
-                return ItemDetailFragmentArgs.Builder()
-                    .setItemId(action.id)
-                    .build()
-                    .toBundle()
-            is RouteAction.MenuItem.FaqList ->
-                return WebViewFragmentArgs.Builder()
-                    .setUrl(Constant.Faq.uri)
-                    .build()
-                    .toBundle()
-            is RouteAction.MenuItem.SendFeedback ->
-                return WebViewFragmentArgs.Builder()
-                    .setUrl(Constant.SendFeedback.uri)
-                    .build()
-                    .toBundle()
-            else -> {
-                log.error("Unable to route from item list.")
-                return Bundle.EMPTY
-            }
-        }
+    private fun bundle(action: RouteAction.AppWebPage): Bundle {
+        return WebViewFragmentArgs.Builder()
+            .setUrl(action.url!!)
+            .build()
+            .toBundle()
+    }
+
+    private fun bundle(action: RouteAction.ItemDetail): Bundle {
+        return ItemDetailFragmentArgs.Builder()
+            .setItemId(action.id)
+            .build()
+            .toBundle()
     }
 
     private fun showDialog(destination: RouteAction.Dialog) {
@@ -290,8 +274,8 @@ class RoutePresenter(
             Pair(R.id.fragment_item_list, R.id.fragment_locked) -> R.id.action_itemList_to_locked
             Pair(R.id.fragment_item_list, R.id.fragment_filter) -> R.id.action_itemList_to_filter
 
-            Pair(R.id.fragment_item_list, R.id.fragment_faq) -> R.id.action_itemList_to_faq
-            Pair(R.id.fragment_item_list, R.id.fragment_send_feedback) -> R.id.action_itemList_to_feedback
+            Pair(R.id.fragment_item_list, R.id.fragment_webview) -> R.id.action_itemList_to_webview
+//            Pair(R.id.fragment_item_list, R.id.fragment_send_feedback) -> R.id.action_itemList_to_feedback
 
             Pair(R.id.fragment_account_setting, R.id.fragment_welcome) -> R.id.action_to_welcome
 

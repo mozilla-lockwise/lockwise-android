@@ -10,13 +10,13 @@ import io.reactivex.functions.Consumer
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 
-interface NewWebView {
+interface WebPageView {
     var webViewObserver: Consumer<String>?
     fun loadURL(url: String)
 }
 
 class WebViewPresenter(
-    val view: NewWebView,
+    val view: WebPageView,
     val url: String?,
     private val dispatcher: Dispatcher = Dispatcher.shared
 ) : Presenter() {

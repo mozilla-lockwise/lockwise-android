@@ -26,6 +26,7 @@ import mozilla.lockbox.presenter.ItemDetailPresenter
 import mozilla.lockbox.presenter.ItemDetailView
 import mozilla.lockbox.support.assertOnUiThread
 
+@kotlinx.coroutines.ExperimentalCoroutinesApi
 class ItemDetailFragment : BackableFragment(), ItemDetailView {
     override fun onCreateView(
         inflater: LayoutInflater,

@@ -47,17 +47,8 @@
                 app:popExitAnim="@anim/slide_out_bottom"
                 app:popEnterAnim="@anim/none"/>
         <action
-                android:id="@+id/action_itemList_to_faq"
+                android:id="@+id/action_itemList_to_webview"
                 app:destination="@id/fragment_webview"
-                android:label="@string/nav_menu_faq"
-                app:enterAnim="@anim/slide_in_bottom"
-                app:exitAnim="@anim/none"
-                app:popExitAnim="@anim/slide_out_bottom"
-                app:popEnterAnim="@anim/none"/>
-        <action
-                android:id="@+id/action_itemList_to_feedback"
-                app:destination="@id/fragment_webview"
-                android:label="@string/nav_menu_feedback"
                 app:enterAnim="@anim/slide_in_bottom"
                 app:exitAnim="@anim/none"
                 app:popExitAnim="@anim/slide_out_bottom"
@@ -101,17 +92,7 @@
             tools:layout="@layout/fragment_setting"/>
 
     <fragment
-            android:id="@+id/fragment_faq"
-            android:name="mozilla.lockbox.view.WebViewFragment"
-            tools:layout="@layout/fragment_webview">
-        <argument
-                android:name="url"
-                android:defaultValue="MISSING_URL"
-                app:argType="string"/>
-    </fragment>
-
-    <fragment
-            android:id="@+id/fragment_send_feedback"
+            android:id="@+id/fragment_webview"
             android:name="mozilla.lockbox.view.WebViewFragment"
             tools:layout="@layout/fragment_webview">
         <argument

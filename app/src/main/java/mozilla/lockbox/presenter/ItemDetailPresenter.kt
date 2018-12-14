@@ -33,6 +33,7 @@ interface ItemDetailView {
     var isPasswordVisible: Boolean
 }
 
+@kotlinx.coroutines.ExperimentalCoroutinesApi
 class ItemDetailPresenter(
     private val view: ItemDetailView,
     val itemId: String?,

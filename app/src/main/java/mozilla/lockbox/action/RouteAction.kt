@@ -42,9 +42,9 @@ sealed class RouteAction(
             DialogFragment(dialogTitle = title, dialogSubtitle = subtitle)
     }
 
-    sealed class MenuItem(val url: String? = null) : RouteAction() {
-        object FaqList : MenuItem(Constant.Faq.uri)
-        object SendFeedback : MenuItem(Constant.SendFeedback.uri)
+    sealed class AppWebPage(val url: String? = null) : RouteAction() {
+        object FaqList : AppWebPage(Constant.Faq.uri)
+        object SendFeedback : AppWebPage(Constant.SendFeedback.uri)
     }
 }
 

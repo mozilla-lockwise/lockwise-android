@@ -136,8 +136,8 @@ class ItemListPresenter(
         val action = when (item) {
             R.id.setting_menu_item -> RouteAction.SettingList
             R.id.account_setting_menu_item -> RouteAction.AccountSetting
-            R.id.faq_menu_item -> RouteAction.MenuItem.FaqList
-            R.id.feedback_menu_item -> RouteAction.MenuItem.SendFeedback
+            R.id.faq_menu_item -> RouteAction.AppWebPage.FaqList
+            R.id.feedback_menu_item -> RouteAction.AppWebPage.SendFeedback
             else -> return log.error("Cannot route from item list menu")
         }
         dispatcher.dispatch(action)

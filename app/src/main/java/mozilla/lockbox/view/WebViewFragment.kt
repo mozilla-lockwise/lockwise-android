@@ -18,12 +18,10 @@ import android.webkit.WebViewClient
 import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.fragment_fxa_login.view.*
 import kotlinx.android.synthetic.main.fragment_webview.*
-import kotlinx.android.synthetic.main.include_backable.view.*
-import mozilla.lockbox.presenter.NewWebView
+import mozilla.lockbox.presenter.WebPageView
 import mozilla.lockbox.presenter.WebViewPresenter
-import mozilla.lockbox.support.Constant
 
-class WebViewFragment : BackableFragment(), NewWebView {
+class WebViewFragment : BackableFragment(), WebPageView {
     override var webViewObserver: Consumer<String>? = null
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -40,11 +38,11 @@ class WebViewFragment : BackableFragment(), NewWebView {
         var view = inflater.inflate(R.layout.fragment_webview, container, false)
         view.webView.settings.javaScriptEnabled = true
 
-        if (url.equals(Constant.Faq.uri)) {
-            view.toolbar.setTitle(R.string.nav_menu_faq)
-        } else {
-            view.toolbar.setTitle(R.string.nav_menu_feedback)
-        }
+//        if (url.equals(Constant.Faq.uri)) {
+//            view.toolbar.setTitle(R.string.nav_menu_faq)
+//        } else {
+//            view.toolbar.setTitle(R.string.nav_menu_feedback)
+//        }
 
         return view
     }
