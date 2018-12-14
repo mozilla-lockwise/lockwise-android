@@ -93,12 +93,16 @@
 
     <fragment
             android:id="@+id/fragment_webview"
-            android:name="mozilla.lockbox.view.WebViewFragment"
+            android:name="mozilla.lockbox.view.AppWebPageFragment"
             tools:layout="@layout/fragment_webview">
         <argument
                 android:name="url"
-                android:defaultValue="MISSING_URL"
+                android:defaultValue="@string/missing_url"
                 app:argType="string"/>
+        <argument
+                android:name="title"
+                android:defaultValue="0"
+                app:argType="integer"/>
     </fragment>
 
     <fragment

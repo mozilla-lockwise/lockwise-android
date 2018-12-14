@@ -44,7 +44,7 @@ import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.view.DialogFragment
 import mozilla.lockbox.view.FingerprintAuthDialogFragment
 import mozilla.lockbox.view.ItemDetailFragmentArgs
-import mozilla.lockbox.view.WebViewFragmentArgs
+import mozilla.lockbox.view.AppWebPageFragmentArgs
 
 @ExperimentalCoroutinesApi
 class RoutePresenter(
@@ -125,8 +125,9 @@ class RoutePresenter(
     }
 
     private fun bundle(action: RouteAction.AppWebPage): Bundle {
-        return WebViewFragmentArgs.Builder()
+        return AppWebPageFragmentArgs.Builder()
             .setUrl(action.url!!)
+            .setTitle(action.title!!)
             .build()
             .toBundle()
     }
@@ -275,7 +276,6 @@ class RoutePresenter(
             Pair(R.id.fragment_item_list, R.id.fragment_filter) -> R.id.action_itemList_to_filter
 
             Pair(R.id.fragment_item_list, R.id.fragment_webview) -> R.id.action_itemList_to_webview
-//            Pair(R.id.fragment_item_list, R.id.fragment_send_feedback) -> R.id.action_itemList_to_feedback
 
             Pair(R.id.fragment_account_setting, R.id.fragment_welcome) -> R.id.action_to_welcome
 

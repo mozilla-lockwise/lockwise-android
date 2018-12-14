@@ -15,7 +15,7 @@ interface WebPageView {
     fun loadURL(url: String)
 }
 
-class WebViewPresenter(
+class AppWebPagePresenter(
     val view: WebPageView,
     val url: String?,
     private val dispatcher: Dispatcher = Dispatcher.shared

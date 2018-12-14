@@ -9,6 +9,7 @@ package mozilla.lockbox.view
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.support.annotation.StringRes
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,11 +19,17 @@ import android.webkit.WebViewClient
 import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.fragment_fxa_login.view.*
 import kotlinx.android.synthetic.main.fragment_webview.*
+import kotlinx.android.synthetic.main.include_backable.view.*
 import mozilla.lockbox.presenter.WebPageView
-import mozilla.lockbox.presenter.WebViewPresenter
+import mozilla.lockbox.presenter.AppWebPagePresenter
 
-class WebViewFragment : BackableFragment(), WebPageView {
+class AppWebPageFragment : BackableFragment(), WebPageView {
     override var webViewObserver: Consumer<String>? = null
+
+    private var url: String? = null
+
+    @StringRes
+    private var toolbarTitle: Int? = null
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreateView(
@@ -31,18 +38,17 @@ class WebViewFragment : BackableFragment(), WebPageView {
         savedInstanceState: Bundle?
     ): View? {
 
-        val url = arguments?.let { WebViewFragmentArgs.fromBundle(it).url }
+        arguments?.let {
+            url = AppWebPageFragmentArgs.fromBundle(it).url
+            toolbarTitle = AppWebPageFragmentArgs.fromBundle(it).title
+        }
 
-        presenter = WebViewPresenter(this, url)
+        presenter = AppWebPagePresenter(this, url)
 
         var view = inflater.inflate(R.layout.fragment_webview, container, false)
         view.webView.settings.javaScriptEnabled = true
 
-//        if (url.equals(Constant.Faq.uri)) {
-//            view.toolbar.setTitle(R.string.nav_menu_faq)
-//        } else {
-//            view.toolbar.setTitle(R.string.nav_menu_feedback)
-//        }
+        view.toolbar.title = getString(toolbarTitle!!)
 
         return view
     }

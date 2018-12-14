@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:id="@+id/fragment_webview"
         android:orientation="vertical"
-        tools:context=".view.WebViewFragment">
+        tools:context=".view.AppWebPageFragment">
 
     <include layout="@layout/include_backable"/>
 

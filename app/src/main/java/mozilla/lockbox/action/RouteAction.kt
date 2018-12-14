@@ -7,6 +7,7 @@
 package mozilla.lockbox.action
 
 import android.support.annotation.StringRes
+import mozilla.lockbox.R
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.support.Constant
 
@@ -42,9 +43,12 @@ sealed class RouteAction(
             DialogFragment(dialogTitle = title, dialogSubtitle = subtitle)
     }
 
-    sealed class AppWebPage(val url: String? = null) : RouteAction() {
-        object FaqList : AppWebPage(Constant.Faq.uri)
-        object SendFeedback : AppWebPage(Constant.SendFeedback.uri)
+    sealed class AppWebPage(
+        val url: String? = null,
+        @StringRes val title: Int? = null
+    ) : RouteAction() {
+        object FaqList : AppWebPage(Constant.Faq.uri, R.string.nav_menu_faq)
+        object SendFeedback : AppWebPage(Constant.SendFeedback.uri, R.string.nav_menu_feedback)
     }
 }
 
