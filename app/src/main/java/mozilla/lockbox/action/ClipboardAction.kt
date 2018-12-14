@@ -6,9 +6,10 @@
 
 package mozilla.lockbox.action
 
-import mozilla.lockbox.flux.Action
-
-sealed class ClipboardAction : Action {
-    data class CopyUsername(val username: String) : ClipboardAction()
-    data class CopyPassword(val password: String) : ClipboardAction()
+sealed class ClipboardAction(
+    override val eventMethod: TelemetryEventMethod,
+    override val eventObject: TelemetryEventObject
+) : TelemetryAction {
+    data class CopyUsername(val username: String) : ClipboardAction(TelemetryEventMethod.tap, TelemetryEventObject.entry_copy_username_button)
+    data class CopyPassword(val password: String) : ClipboardAction(TelemetryEventMethod.tap, TelemetryEventObject.entry_copy_password_button)
 }

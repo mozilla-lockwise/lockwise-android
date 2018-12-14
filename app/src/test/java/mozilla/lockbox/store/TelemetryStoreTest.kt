@@ -13,11 +13,14 @@ import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.ReplaySubject
 import mozilla.lockbox.DisposingTest
 import mozilla.lockbox.action.LifecycleAction
+import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.action.ClipboardAction
 import mozilla.lockbox.action.TelemetryAction
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.extensions.assertLastValueMatches
 import mozilla.lockbox.flux.Dispatcher
 import org.junit.Test
+import org.junit.Assert
 import org.junit.runner.RunWith
 import org.mozilla.telemetry.event.TelemetryEvent
 import org.robolectric.RobolectricTestRunner
@@ -80,5 +83,24 @@ class TelemetryStoreTest : DisposingTest() {
             it.toJSON() == action.createEvent().toJSON()
         }
         uploadObserver.assertLastValue(1)
+        action = RouteAction.ItemList
+        dispatcher.dispatch(action)
+        eventsObserver.assertLastValueMatches {
+            it.toJSON() == action.createEvent().toJSON()
+        }
+    }
+
+    @Test
+    fun testNoLeaks() {
+        val testUsername = "lockie"
+        val testPassword = "lockie123"
+        var action: TelemetryAction = ClipboardAction.CopyUsername(testUsername)
+        dispatcher.dispatch(action)
+        var eventJSON = action.createEvent().toJSON()
+        Assert.assertFalse("event does not contain the actual username", eventJSON.contains(testUsername))
+        action = ClipboardAction.CopyPassword(testPassword)
+        dispatcher.dispatch(action)
+        eventJSON = action.createEvent().toJSON()
+        Assert.assertFalse("event does not contain the actual password", eventJSON.contains(testPassword))
     }
 }
