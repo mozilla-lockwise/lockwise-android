@@ -74,7 +74,6 @@ enum class TelemetryEventObject {
     lock_screen,
     open_in_browser,
     filter,
-    app_web_page,
     back,
     dialog
 }

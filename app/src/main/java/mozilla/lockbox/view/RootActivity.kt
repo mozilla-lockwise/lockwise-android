@@ -8,10 +8,11 @@ package mozilla.lockbox.view
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
 import mozilla.lockbox.presenter.RoutePresenter
 
-@kotlinx.coroutines.ExperimentalCoroutinesApi
+@ExperimentalCoroutinesApi
 class RootActivity : AppCompatActivity() {
     private var presenter: RoutePresenter = RoutePresenter(this)
 

@@ -12,6 +12,7 @@ import android.os.Build
 import com.squareup.leakcanary.LeakCanary
 import io.sentry.Sentry
 import io.sentry.android.AndroidSentryClientFactory
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.components.support.base.log.Log
 import mozilla.components.support.base.log.logger.Logger
 import mozilla.components.support.base.log.sink.AndroidLogSink
@@ -35,7 +36,7 @@ sealed class LogProvider {
 
 val log = LogProvider.log
 
-@kotlinx.coroutines.ExperimentalCoroutinesApi
+@ExperimentalCoroutinesApi
 class LockboxApplication : Application() {
 
     private lateinit var presenter: ApplicationPresenter

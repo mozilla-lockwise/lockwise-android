@@ -10,6 +10,7 @@ import android.support.annotation.StringRes
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.rxkotlin.addTo
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.R
 import mozilla.lockbox.action.ClipboardAction
@@ -33,7 +34,7 @@ interface ItemDetailView {
     var isPasswordVisible: Boolean
 }
 
-@kotlinx.coroutines.ExperimentalCoroutinesApi
+@ExperimentalCoroutinesApi
 class ItemDetailPresenter(
     private val view: ItemDetailView,
     val itemId: String?,
