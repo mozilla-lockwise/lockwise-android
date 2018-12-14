@@ -29,7 +29,7 @@ object Constant {
         const val uri = "https://mozilla-lockbox.github.io/lockbox-android/"
     }
 
-    object FeedbackLink {
+    object SendFeedback {
         const val uri = "https://www.surveygizmo.com/s3/4713557/Provide-feedback-for-Firefox-Lockbox-Android"
     }
 

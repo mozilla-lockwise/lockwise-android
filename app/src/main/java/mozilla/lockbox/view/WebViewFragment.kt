@@ -8,30 +8,23 @@ package mozilla.lockbox.view
 
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import mozilla.lockbox.R
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import io.reactivex.functions.Consumer
-import kotlinx.android.synthetic.main.fragment_item_list.view.*
+import kotlinx.android.synthetic.main.fragment_fxa_login.view.*
 import kotlinx.android.synthetic.main.fragment_webview.*
-import mozilla.lockbox.R
-import mozilla.lockbox.presenter.WebViewPresenter
+import kotlinx.android.synthetic.main.include_backable.view.*
 import mozilla.lockbox.presenter.NewWebView
-import android.support.customtabs.CustomTabsIntent
+import mozilla.lockbox.presenter.WebViewPresenter
 import mozilla.lockbox.support.Constant
-import java.util.Observable
 
 class WebViewFragment : BackableFragment(), NewWebView {
-    override var url: String? = null
-    override var menuObserver: Observable<Int>
-        get() {
-//            val navView = view!!.navView
-//            return navView.menu.map { it.itemId }
-        }
+    override var webViewObserver: Consumer<String>? = null
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreateView(
@@ -39,12 +32,30 @@ class WebViewFragment : BackableFragment(), NewWebView {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        presenter = WebViewPresenter(this)
-        return inflater.inflate(R.layout.fragment_webview, container, false)
+
+        val url = arguments?.let { WebViewFragmentArgs.fromBundle(it).url }
+
+        presenter = WebViewPresenter(this, url)
+
+        var view = inflater.inflate(R.layout.fragment_webview, container, false)
+        view.webView.settings.javaScriptEnabled = true
+
+        if (url.equals(Constant.Faq.uri)) {
+            view.toolbar.setTitle(R.string.nav_menu_faq)
+        } else {
+            view.toolbar.setTitle(R.string.nav_menu_feedback)
+        }
+
+        return view
     }
 
-    override fun loadUrl(url: String) {
-        val customTabsIntent = CustomTabsIntent.Builder().build()
-        customTabsIntent.launchUrl(this.activity, Uri.parse(url))
+    override fun loadURL(url: String) {
+        webView.webViewClient = object : WebViewClient() {
+            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                webViewObserver?.accept(url)
+                super.onPageStarted(view, url, favicon)
+            }
+        }
+        webView.loadUrl(url)
     }
 }

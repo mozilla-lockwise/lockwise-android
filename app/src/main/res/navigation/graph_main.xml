@@ -6,133 +6,145 @@
   -->
 
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/graph_main"
-    app:startDestination="@id/fragment_welcome">
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/graph_main"
+            app:startDestination="@id/fragment_welcome">
 
     <fragment
-        android:id="@+id/fragment_welcome"
-        android:name="mozilla.lockbox.view.WelcomeFragment"
-        tools:layout="@layout/fragment_welcome">
+            android:id="@+id/fragment_welcome"
+            android:name="mozilla.lockbox.view.WelcomeFragment"
+            tools:layout="@layout/fragment_welcome">
         <action
-            android:id="@+id/action_welcome_to_fxaLogin"
-            app:destination="@id/fragment_fxa_login" />
+                android:id="@+id/action_welcome_to_fxaLogin"
+                app:destination="@id/fragment_fxa_login"/>
     </fragment>
 
     <fragment
-        android:id="@+id/fragment_fxa_login"
-        android:name="mozilla.lockbox.view.FxALoginFragment"
-        tools:layout="@layout/fragment_fxa_login">
+            android:id="@+id/fragment_fxa_login"
+            android:name="mozilla.lockbox.view.FxALoginFragment"
+            tools:layout="@layout/fragment_fxa_login">
         <action
-            android:id="@+id/action_fxaLogin_to_itemList"
-            app:destination="@id/fragment_item_list"
-            app:launchSingleTop="true"
-            app:popUpTo="@+id/fragment_item_list"
-            app:popUpToInclusive="true" />
+                android:id="@+id/action_fxaLogin_to_itemList"
+                app:destination="@id/fragment_item_list"
+                app:launchSingleTop="true"
+                app:popUpTo="@+id/fragment_item_list"
+                app:popUpToInclusive="true"/>
     </fragment>
 
     <fragment
-        android:id="@+id/fragment_item_list"
-        android:name="mozilla.lockbox.view.ItemListFragment"
-        tools:layout="@layout/fragment_item_list">
+            android:id="@+id/fragment_item_list"
+            android:name="mozilla.lockbox.view.ItemListFragment"
+            tools:layout="@layout/fragment_item_list">
         <action
-            android:id="@+id/action_itemList_to_itemDetail"
-            app:destination="@id/fragment_item_detail" />
+                android:id="@+id/action_itemList_to_itemDetail"
+                app:destination="@id/fragment_item_detail"/>
         <action
-            android:id="@+id/action_itemList_to_setting"
-            app:destination="@id/fragment_setting"
-            app:enterAnim="@anim/slide_in_bottom"
-            app:exitAnim="@anim/none"
-            app:popExitAnim="@anim/slide_out_bottom"
-            app:popEnterAnim="@anim/none"/>
+                android:id="@+id/action_itemList_to_setting"
+                app:destination="@id/fragment_setting"
+                app:enterAnim="@anim/slide_in_bottom"
+                app:exitAnim="@anim/none"
+                app:popExitAnim="@anim/slide_out_bottom"
+                app:popEnterAnim="@anim/none"/>
         <action
-            android:id="@+id/action_itemList_to_faq"
-            app:destination="@id/fragment_webview"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+                android:id="@+id/action_itemList_to_faq"
+                app:destination="@id/fragment_webview"
+                android:label="@string/nav_menu_faq"
+                app:enterAnim="@anim/slide_in_bottom"
+                app:exitAnim="@anim/none"
+                app:popExitAnim="@anim/slide_out_bottom"
+                app:popEnterAnim="@anim/none"/>
         <action
-            android:id="@+id/action_itemList_to_feedback"
-            app:destination="@id/fragment_webview"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+                android:id="@+id/action_itemList_to_feedback"
+                app:destination="@id/fragment_webview"
+                android:label="@string/nav_menu_feedback"
+                app:enterAnim="@anim/slide_in_bottom"
+                app:exitAnim="@anim/none"
+                app:popExitAnim="@anim/slide_out_bottom"
+                app:popEnterAnim="@anim/none"/>
         <action
-            android:id="@+id/action_itemList_to_accountSetting"
-            app:destination="@id/fragment_account_setting"
-            app:enterAnim="@anim/slide_in_bottom"
-            app:exitAnim="@anim/none"
-            app:popExitAnim="@anim/slide_out_bottom"
-            app:popEnterAnim="@anim/none" />
+                android:id="@+id/action_itemList_to_accountSetting"
+                app:destination="@id/fragment_account_setting"
+                app:enterAnim="@anim/slide_in_bottom"
+                app:exitAnim="@anim/none"
+                app:popExitAnim="@anim/slide_out_bottom"
+                app:popEnterAnim="@anim/none"/>
         <action
-            android:id="@+id/action_itemList_to_locked"
-            app:destination="@+id/fragment_locked"
-            app:enterAnim="@anim/slide_in_bottom"
-            app:exitAnim="@anim/none"
-            app:popExitAnim="@anim/slide_out_bottom"
-            app:popEnterAnim="@anim/none"
-            app:launchSingleTop="true"
-            app:popUpTo="@+id/fragment_locked"
-            app:popUpToInclusive="true" />
+                android:id="@+id/action_itemList_to_locked"
+                app:destination="@+id/fragment_locked"
+                app:enterAnim="@anim/slide_in_bottom"
+                app:exitAnim="@anim/none"
+                app:popExitAnim="@anim/slide_out_bottom"
+                app:popEnterAnim="@anim/none"
+                app:launchSingleTop="true"
+                app:popUpTo="@+id/fragment_locked"
+                app:popUpToInclusive="true"/>
         <action
-            android:id="@+id/action_itemList_to_filter"
-            app:destination="@id/fragment_filter" />
+                android:id="@+id/action_itemList_to_filter"
+                app:destination="@id/fragment_filter"/>
     </fragment>
 
     <fragment
-        android:id="@+id/fragment_item_detail"
-        android:name="mozilla.lockbox.view.ItemDetailFragment"
-        tools:layout="@layout/fragment_item_detail">
+            android:id="@+id/fragment_item_detail"
+            android:name="mozilla.lockbox.view.ItemDetailFragment"
+            tools:layout="@layout/fragment_item_detail">
         <argument
-            android:name="itemId"
-            android:defaultValue="MISSING_ID"
-            app:argType="string" />
+                android:name="itemId"
+                android:defaultValue="MISSING_ID"
+                app:argType="string"/>
     </fragment>
 
     <fragment
-        android:id="@+id/fragment_setting"
-        android:name="mozilla.lockbox.view.SettingFragment"
-        android:label="@string/nav_menu_settings"
-        tools:layout="@layout/fragment_setting" />
+            android:id="@+id/fragment_setting"
+            android:name="mozilla.lockbox.view.SettingFragment"
+            android:label="@string/nav_menu_settings"
+            tools:layout="@layout/fragment_setting"/>
 
     <fragment
-        android:id="@+id/fragment_faq"
-        android:name="mozilla.lockbox.view.WebViewFragment"
-        android:label="@string/nav_menu_faq"/>
-
-    <fragment
-        android:id="@+id/fragment_send_feedback"
-        android:name="mozilla.lockbox.view.WebViewFragment"
-        android:label="@string/nav_menu_feedback"/>
-
-    <fragment
-        android:id="@+id/fragment_account_setting"
-        android:name="mozilla.lockbox.view.AccountSettingFragment"
-        android:label="@string/nav_menu_account"
-        tools:layout="@layout/fragment_account_setting" />
-
-    <fragment
-        android:id="@+id/fragment_filter"
-        android:name="mozilla.lockbox.view.FilterFragment"
-        tools:layout="@layout/fragment_filter">
-        <action
-            android:id="@+id/action_filter_to_itemDetail"
-            app:destination="@id/fragment_item_detail" />
+            android:id="@+id/fragment_faq"
+            android:name="mozilla.lockbox.view.WebViewFragment"
+            tools:layout="@layout/fragment_webview">
+        <argument
+                android:name="url"
+                android:defaultValue="MISSING_URL"
+                app:argType="string"/>
     </fragment>
 
     <fragment
-        android:id="@+id/fragment_locked"
-        android:name="mozilla.lockbox.view.LockedFragment"
-        tools:layout="@layout/fragment_locked">
+            android:id="@+id/fragment_send_feedback"
+            android:name="mozilla.lockbox.view.WebViewFragment"
+            tools:layout="@layout/fragment_webview">
+        <argument
+                android:name="url"
+                android:defaultValue="MISSING_URL"
+                app:argType="string"/>
+    </fragment>
+
+    <fragment
+            android:id="@+id/fragment_account_setting"
+            android:name="mozilla.lockbox.view.AccountSettingFragment"
+            android:label="@string/nav_menu_account"
+            tools:layout="@layout/fragment_account_setting"/>
+
+    <fragment
+            android:id="@+id/fragment_filter"
+            android:name="mozilla.lockbox.view.FilterFragment"
+            tools:layout="@layout/fragment_filter">
         <action
-            android:id="@+id/action_locked_to_itemList"
-            app:destination="@id/fragment_item_list"
-            app:launchSingleTop="true"
-            app:popUpTo="@+id/fragment_item_list"
-            app:popUpToInclusive="true" />
+                android:id="@+id/action_filter_to_itemDetail"
+                app:destination="@id/fragment_item_detail"/>
+    </fragment>
+
+    <fragment
+            android:id="@+id/fragment_locked"
+            android:name="mozilla.lockbox.view.LockedFragment"
+            tools:layout="@layout/fragment_locked">
+        <action
+                android:id="@+id/action_locked_to_itemList"
+                app:destination="@id/fragment_item_list"
+                app:launchSingleTop="true"
+                app:popUpTo="@+id/fragment_item_list"
+                app:popUpToInclusive="true"/>
     </fragment>
 
     <action
@@ -140,19 +152,19 @@
             app:destination="@+id/fragment_locked"
             app:launchSingleTop="true"
             app:popUpTo="@+id/fragment_locked"
-            app:popUpToInclusive="true" />
+            app:popUpToInclusive="true"/>
 
     <action
             android:id="@+id/action_to_itemList"
             app:destination="@id/fragment_item_list"
             app:launchSingleTop="true"
             app:popUpTo="@+id/fragment_item_list"
-            app:popUpToInclusive="true" />
+            app:popUpToInclusive="true"/>
 
     <action
             android:id="@+id/action_to_welcome"
             app:destination="@id/fragment_welcome"
             app:launchSingleTop="true"
             app:popUpTo="@+id/fragment_welcome"
-            app:popUpToInclusive="true" />
+            app:popUpToInclusive="true"/>
 </navigation>

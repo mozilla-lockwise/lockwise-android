@@ -35,6 +35,7 @@ sealed class LogProvider {
 
 val log = LogProvider.log
 
+@kotlinx.coroutines.ExperimentalCoroutinesApi
 class LockboxApplication : Application() {
 
     private lateinit var presenter: ApplicationPresenter

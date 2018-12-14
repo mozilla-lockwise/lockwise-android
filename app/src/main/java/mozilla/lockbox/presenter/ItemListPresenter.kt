@@ -8,9 +8,7 @@ package mozilla.lockbox.presenter
 
 import android.support.annotation.IdRes
 import io.reactivex.Observable
-import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -30,9 +28,7 @@ import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.SettingStore
-import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.asOptional
-import mozilla.lockbox.view.WebViewFragment
 
 interface ItemListView {
     val itemSelection: Observable<ItemViewModel>
@@ -138,21 +134,11 @@ class ItemListPresenter(
     }
 
     private fun onMenuItem(@IdRes item: Int) {
-        dispatcher.register
-            .subscribe { action ->
-                when (action) {
-                    is RouteAction.FaqList -> setFaqUrl()
-//                    is RouteAction.SendFeedback -> setSendFeedbackUrl()
-                }
-            }
-            .addTo(compositeDisposable)
-
-
         val action = when (item) {
             R.id.setting_menu_item -> RouteAction.SettingList
             R.id.account_setting_menu_item -> RouteAction.AccountSetting
-            R.id.faq_menu_item -> RouteAction.FaqList
-            R.id.feedback_menu_item -> RouteAction.SendFeedback
+            R.id.faq_menu_item -> RouteAction.MenuItem.FaqList
+            R.id.feedback_menu_item -> RouteAction.MenuItem.SendFeedback
             else -> return log.error("Cannot route from item list menu")
         }
         dispatcher.dispatch(action)

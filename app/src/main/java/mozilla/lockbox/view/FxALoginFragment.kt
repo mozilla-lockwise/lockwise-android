@@ -59,7 +59,6 @@ class FxALoginFragment : BackableFragment(), FxALoginView {
                 super.onPageStarted(view, url, favicon)
             }
         }
-
         webView.loadUrl(url)
     }
 
