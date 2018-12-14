@@ -46,7 +46,7 @@ sealed class RouteAction(
     sealed class AppWebPage(
         val url: String? = null,
         @StringRes val title: Int? = null
-    ) : RouteAction() {
+    ) : RouteAction(TelemetryEventMethod.tap, TelemetryEventObject.app_web_page) {
         object FaqList : AppWebPage(Constant.Faq.uri, R.string.nav_menu_faq)
         object SendFeedback : AppWebPage(Constant.SendFeedback.uri, R.string.nav_menu_feedback)
     }
