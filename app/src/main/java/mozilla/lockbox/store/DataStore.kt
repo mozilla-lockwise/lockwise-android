@@ -35,7 +35,6 @@ open class DataStore(
     sealed class State {
         object Unprepared : State()
         object Locked : State()
-        object Unlocking : State()
         object Unlocked : State()
         data class Errored(val error: Throwable) : State()
     }
@@ -102,7 +101,6 @@ open class DataStore(
     }
 
     private fun unlock() {
-        stateSubject.accept(State.Unlocking)
         if (backend.isLocked()) {
             backend.unlock(support.encryptionKey)
                 .asSingle(Dispatchers.Default)
@@ -193,7 +191,6 @@ open class DataStore(
         }
 
         if (backend.isLocked()) {
-            stateSubject.accept(State.Unlocking)
             backend.unlock(support.encryptionKey)
                 .asSingle(Dispatchers.Default)
                 .subscribe { _, _ ->
@@ -202,6 +199,7 @@ open class DataStore(
                 }
                 .addTo(compositeDisposable)
         } else {
+            stateSubject.accept(State.Unlocked)
             sync()
         }
     }
