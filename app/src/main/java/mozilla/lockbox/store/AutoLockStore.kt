@@ -18,6 +18,7 @@ import io.reactivex.subjects.Subject
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.log
 import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.FileReader
 
@@ -61,6 +62,14 @@ class AutoLockStore(
             .apply()
     }
 
+    private fun backdateNextLockTime() {
+        val currentSystemTime = SystemClock.elapsedRealtime()
+        preferences
+            .edit()
+            .putLong(Constant.Key.autoLockTimerDate, currentSystemTime - 1)
+            .apply()
+    }
+
     private fun updateNextLockTime(autoLockTime: Setting.AutoLockTime) {
         val currentSystemTime = SystemClock.elapsedRealtime()
         preferences
@@ -90,6 +99,8 @@ class AutoLockStore(
         val currentSystemTime = SystemClock.elapsedRealtime()
 
         val diff = autoLockTimerDate - currentSystemTime
+
+        log.info("current diff: $diff")
 
         return diff <= 0
     }

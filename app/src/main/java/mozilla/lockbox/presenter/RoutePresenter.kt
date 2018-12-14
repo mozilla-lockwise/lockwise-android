@@ -34,7 +34,6 @@ import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.AutoLockStore
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.DataStore.State
-import mozilla.lockbox.store.LifecycleStore
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.support.Optional
@@ -52,7 +51,6 @@ class RoutePresenter(
     private val settingStore: SettingStore = SettingStore.shared,
     private val dataStore: DataStore = DataStore.shared,
     private val accountStore: AccountStore = AccountStore.shared,
-    private val lifecycleStore: LifecycleStore = LifecycleStore.shared,
     private val autoLockStore: AutoLockStore = AutoLockStore.shared
 ) : Presenter() {
     private lateinit var navController: NavController
@@ -61,26 +59,27 @@ class RoutePresenter(
         navController = Navigation.findNavController(activity, R.id.fragment_nav_host)
 
         // Make the routing contingent on the state of the dataStore.
-        val dataStoreRoutes = dataStore.state
+        dataStore.state
             .map(this::dataStoreToRouteActions)
             .filterNotNull()
+            .subscribe(dispatcher::dispatch)
+            .addTo(compositeDisposable)
+
+        val lockObservable =
+            autoLockStore.lockRequired
+                .map { if (it) DataStoreAction.Lock else DataStoreAction.Unlock }
 
         // Moves credentials from the AccountStore, into the DataStore.
         accountStore.syncCredentials
             .map(this::accountToDataStoreActions)
             .filterNotNull()
+            .mergeWith(lockObservable)
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
 
         routeStore.routes
-            .mergeWith(dataStoreRoutes)
             .observeOn(mainThread())
             .subscribe(this::route)
-            .addTo(compositeDisposable)
-
-        autoLockStore.lockRequired
-            .map { if (it) DataStoreAction.Lock else DataStoreAction.Unlock }
-            .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
     }
 
