@@ -59,15 +59,13 @@ class RoutePresenter(
         navController = Navigation.findNavController(activity, R.id.fragment_nav_host)
 
         // Make the routing contingent on the state of the dataStore.
-        dataStore.state
+        val dataStoreRoutes = dataStore.state
             .map(this::dataStoreToRouteActions)
             .filterNotNull()
-            .subscribe(dispatcher::dispatch)
-            .addTo(compositeDisposable)
 
-        val lockObservable =
-            autoLockStore.lockRequired
-                .map { if (it) DataStoreAction.Lock else DataStoreAction.Unlock }
+        val lockObservable = autoLockStore.lockRequired
+            .filter { it }
+            .map { DataStoreAction.Lock }
 
         // Moves credentials from the AccountStore, into the DataStore.
         accountStore.syncCredentials
@@ -78,6 +76,7 @@ class RoutePresenter(
             .addTo(compositeDisposable)
 
         routeStore.routes
+            .mergeWith(dataStoreRoutes)
             .observeOn(mainThread())
             .subscribe(this::route)
             .addTo(compositeDisposable)

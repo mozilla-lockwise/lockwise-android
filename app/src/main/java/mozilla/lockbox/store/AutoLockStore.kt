@@ -15,10 +15,10 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.ReplaySubject
 import io.reactivex.subjects.Subject
+import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.flux.Dispatcher
-import mozilla.lockbox.log
 import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.FileReader
 
@@ -49,6 +49,13 @@ class AutoLockStore(
             .switchMap { settingStore.autoLockTime.take(1) }
             .subscribe(this::updateNextLockTime)
             .addTo(compositeDisposable)
+
+        dispatcher.register
+            .filter { it == DataStoreAction.Lock }
+            .subscribe {
+                this.backdateNextLockTime()
+            }
+            .addTo(compositeDisposable)
     }
 
     override fun injectContext(context: Context) {
@@ -63,19 +70,11 @@ class AutoLockStore(
     }
 
     private fun backdateNextLockTime() {
-        val currentSystemTime = SystemClock.elapsedRealtime()
-        preferences
-            .edit()
-            .putLong(Constant.Key.autoLockTimerDate, currentSystemTime - 1)
-            .apply()
+        storeAutoLockTimerDate(SystemClock.elapsedRealtime() - 1)
     }
 
     private fun updateNextLockTime(autoLockTime: Setting.AutoLockTime) {
-        val currentSystemTime = SystemClock.elapsedRealtime()
-        preferences
-            .edit()
-            .putLong(Constant.Key.autoLockTimerDate, currentSystemTime + autoLockTime.ms)
-            .apply()
+        storeAutoLockTimerDate(SystemClock.elapsedRealtime() + autoLockTime.ms)
     }
 
     private fun lockCurrentlyRequired(): Boolean {
@@ -100,8 +99,13 @@ class AutoLockStore(
 
         val diff = autoLockTimerDate - currentSystemTime
 
-        log.info("current diff: $diff")
-
         return diff <= 0
+    }
+
+    private fun storeAutoLockTimerDate(dateTime: Long) {
+        preferences
+            .edit()
+            .putLong(Constant.Key.autoLockTimerDate, dateTime)
+            .apply()
     }
 }

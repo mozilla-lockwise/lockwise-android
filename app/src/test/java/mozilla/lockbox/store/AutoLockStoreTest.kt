@@ -16,8 +16,10 @@ import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
+import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.Setting
+import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.FileReader
 import org.junit.Before
@@ -210,6 +212,26 @@ class AutoLockStoreTest {
         (lifecycleStore.lifecycleFilter as Subject).onNext(LifecycleAction.Foreground)
 
         lockRequiredObserver.assertValue(true)
+    }
+
+    @Test
+    fun `datastore locking actions force the autolocktimerdate to an older time`() {
+        clearInvocations(preferences)
+        clearInvocations(editor)
+        Dispatcher.shared.dispatch(DataStoreAction.Lock)
+
+        verify(preferences).edit()
+
+        val expectedNewTime = SystemClock.elapsedRealtime() - 1
+
+        verify(editor).putLong(
+            eq(Constant.Key.autoLockTimerDate),
+            longThat { longArg ->
+                abs(expectedNewTime - longArg) < 100
+            }
+        )
+
+        verify(editor).apply()
     }
 
     private fun mockSavedValues(
