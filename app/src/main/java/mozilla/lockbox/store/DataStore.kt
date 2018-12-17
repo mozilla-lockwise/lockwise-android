@@ -44,7 +44,7 @@ open class DataStore(
     }
 
     internal val compositeDisposable = CompositeDisposable()
-    private val stateSubject: BehaviorRelay<State> = BehaviorRelay.createDefault(State.Unprepared)
+    private val stateSubject = ReplaySubject.createWithSize<State>(1)
     private val listSubject: BehaviorRelay<List<ServerPassword>> = BehaviorRelay.createDefault(emptyList())
 
     val state: Observable<State> get() = stateSubject
@@ -61,7 +61,7 @@ open class DataStore(
             .subscribe { state ->
                 when (state) {
                     is State.Locked -> clearList()
-                    is State.Unlocked -> updateList()
+                    is State.Unlocked -> sync()
                     else -> Unit
                 }
             }
@@ -105,11 +105,11 @@ open class DataStore(
             backend.unlock(support.encryptionKey)
                 .asSingle(Dispatchers.Default)
                 .subscribe { _, _ ->
-                    stateSubject.accept(State.Unlocked)
+                    stateSubject.onNext(State.Unlocked)
                 }
                 .addTo(compositeDisposable)
         } else {
-            stateSubject.accept(State.Unlocked)
+            stateSubject.onNext(State.Unlocked)
         }
     }
 
@@ -118,7 +118,7 @@ open class DataStore(
             backend.lock()
                 .asSingle(Dispatchers.Default)
                 .subscribe { _, _ ->
-                    stateSubject.accept(State.Locked)
+                    stateSubject.onNext(State.Locked)
                 }
                 .addTo(compositeDisposable)
         }
@@ -127,7 +127,7 @@ open class DataStore(
     private fun sync() {
         val syncConfig = support.syncConfig ?: return {
             val throwable = IllegalStateException("syncConfig should already be defined")
-            stateSubject.accept(State.Errored(throwable))
+            stateSubject.onNext(State.Errored(throwable))
         }()
 
         (syncState as Subject).onNext(SyncState.Syncing)
@@ -165,7 +165,7 @@ open class DataStore(
         backend.reset()
             .asSingle(Dispatchers.Default)
             .subscribe { _, _ ->
-                this.stateSubject.accept(State.Unprepared)
+                this.stateSubject.onNext(State.Unprepared)
             }
             .addTo(compositeDisposable)
     }
@@ -186,7 +186,7 @@ open class DataStore(
                 unlock()
                 State.Unlocked
             }
-            stateSubject.accept(state)
+            stateSubject.onNext(state)
             return
         }
 
@@ -194,12 +194,12 @@ open class DataStore(
             backend.unlock(support.encryptionKey)
                 .asSingle(Dispatchers.Default)
                 .subscribe { _, _ ->
-                    stateSubject.accept(State.Unlocked)
+                    stateSubject.onNext(State.Unlocked)
                     sync()
                 }
                 .addTo(compositeDisposable)
         } else {
-            stateSubject.accept(State.Unlocked)
+            stateSubject.onNext(State.Unlocked)
             sync()
         }
     }
@@ -210,7 +210,8 @@ open class DataStore(
         if (support == this.support) {
             return
         }
-        if (stateSubject.value != State.Unprepared) {
+        if (stateSubject.value != State.Unprepared &&
+            stateSubject.value != null) {
             backend.reset()
                 .asSingle(Dispatchers.Default)
                 .subscribe()

@@ -32,7 +32,6 @@ class DataStoreTest : DisposingTest() {
     fun testLockUnlock() {
         val stateIterator = this.subject.state.blockingIterable().iterator()
         val listIterator = this.subject.list.blockingIterable().iterator()
-        Assert.assertEquals(State.Unprepared, stateIterator.next())
         Assert.assertEquals(0, listIterator.next().size)
 
         dispatcher.dispatch(DataStoreAction.Unlock)
@@ -48,7 +47,6 @@ class DataStoreTest : DisposingTest() {
     fun testTouch() {
         val stateIterator = this.subject.state.blockingIterable().iterator()
         val listIterator = this.subject.list.blockingIterable().iterator()
-        Assert.assertEquals(State.Unprepared, stateIterator.next())
         Assert.assertEquals(0, listIterator.next().size)
 
         dispatcher.dispatch(DataStoreAction.Unlock)
@@ -68,7 +66,6 @@ class DataStoreTest : DisposingTest() {
     fun testReset() {
         val stateIterator = this.subject.state.blockingIterable().iterator()
         val listIterator = this.subject.list.blockingIterable().iterator()
-        Assert.assertEquals(State.Unprepared, stateIterator.next())
         Assert.assertEquals(0, listIterator.next().size)
 
         dispatcher.dispatch(DataStoreAction.Unlock)
@@ -86,7 +83,6 @@ class DataStoreTest : DisposingTest() {
     fun testUserReset() {
         val stateIterator = this.subject.state.blockingIterable().iterator()
         val listIterator = this.subject.list.blockingIterable().iterator()
-        Assert.assertEquals(State.Unprepared, stateIterator.next())
         Assert.assertEquals(0, listIterator.next().size)
 
         dispatcher.dispatch(DataStoreAction.Unlock)
@@ -110,8 +106,6 @@ class DataStoreTest : DisposingTest() {
 
         this.subject.resetSupport(newSupport)
         Assert.assertSame("Support should be the new one", newSupport, this.subject.support)
-
-        Assert.assertEquals(State.Unprepared, stateIterator.next())
 
         dispatcher.dispatch(DataStoreAction.Unlock)
         Assert.assertEquals(State.Unlocked, stateIterator.next())
