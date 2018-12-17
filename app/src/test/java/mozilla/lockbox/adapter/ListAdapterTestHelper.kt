@@ -64,6 +64,7 @@ class ListAdapterTestHelper {
                 detailTextDriver = textDriverFake,
                 clickListener = textClicksConsumerFake
             ),
+            /* TODO: enable Autofill setting once it's actually implemented
             ToggleSettingConfiguration(
                 title = R.string.autofill,
                 subtitle = R.string.autofill_summary,
@@ -71,6 +72,7 @@ class ListAdapterTestHelper {
                 toggleDriver = toggleDriverFake,
                 toggleObserver = toggleConsumerFake
             ),
+            */
             ToggleSettingConfiguration(
                 title = R.string.send_usage_data,
                 subtitle = R.string.send_usage_data_summary,

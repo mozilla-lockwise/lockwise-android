@@ -6,7 +6,6 @@
 
 package mozilla.lockbox.presenter
 
-import io.reactivex.Observable
 import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
@@ -103,6 +102,7 @@ class SettingPresenter(
                 detailTextDriver = settingStore.autoLockTime.map { it.stringValue },
                 clickListener = autoLockTimeClickListener
             ),
+            /* TODO: enable Autofill setting once it's actually implemented
             ToggleSettingConfiguration(
                 title = R.string.autofill,
                 subtitle = R.string.autofill_summary,
@@ -110,6 +110,7 @@ class SettingPresenter(
                 toggleDriver = Observable.just(true),
                 toggleObserver = autoFillObserver
             ),
+            */
             ToggleSettingConfiguration(
                 title = R.string.send_usage_data,
                 subtitle = R.string.send_usage_data_summary,
