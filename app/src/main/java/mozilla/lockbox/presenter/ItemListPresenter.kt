@@ -124,11 +124,7 @@ class ItemListPresenter(
                 )
             }
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(view::updateAccountProfile, {
-                log.error("Lifecycle problem caused ${it.javaClass.simpleName} here", it)
-            }, {
-                log.info("onCompleted: ${javaClass.simpleName}")
-            })
+            .subscribe(view::updateAccountProfile)
             .addTo(compositeDisposable)
     }
 
