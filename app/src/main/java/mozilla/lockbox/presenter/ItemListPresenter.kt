@@ -38,6 +38,7 @@ interface ItemListView {
     fun updateItems(itemList: List<ItemViewModel>)
     fun updateAccountProfile(profile: AccountViewModel)
     fun updateItemListSort(sort: Setting.ItemListSort)
+    fun loading(isLoading: Boolean)
 }
 
 @ExperimentalCoroutinesApi
@@ -51,17 +52,25 @@ class ItemListPresenter(
 ) : Presenter() {
 
     override fun onViewReady() {
+
+        dataStore.syncState
+            .observeOn(AndroidSchedulers.mainThread())
+            .map {
+                when (it) {
+                    DataStore.SyncState.Syncing -> true
+                    DataStore.SyncState.NotSyncing -> false
+                }
+            }
+            .subscribe(view::loading)
+            .addTo(compositeDisposable)
+
         Observables.combineLatest(dataStore.list, settingStore.itemListSortOrder)
             .filter { it.first.isNotEmpty() }
             .distinctUntilChanged()
             .map { pair ->
                 when (pair.second) {
-                    Setting.ItemListSort.ALPHABETICALLY -> {
-                        pair.first.sortedBy { titleFromHostname(it.hostname) }
-                    }
-                    Setting.ItemListSort.RECENTLY_USED -> {
-                        pair.first.sortedBy { -it.timeLastUsed }
-                    }
+                    Setting.ItemListSort.ALPHABETICALLY -> pair.first.sortedBy { titleFromHostname(it.hostname) }
+                    Setting.ItemListSort.RECENTLY_USED -> pair.first.sortedBy { -it.timeLastUsed }
                 }
             }
             .mapToItemViewModelList()
@@ -117,7 +126,7 @@ class ItemListPresenter(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(view::updateAccountProfile, {
                 log.error("Lifecycle problem caused ${it.javaClass.simpleName} here", it)
-                }, {
+            }, {
                 log.info("onCompleted: ${javaClass.simpleName}")
             })
             .addTo(compositeDisposable)

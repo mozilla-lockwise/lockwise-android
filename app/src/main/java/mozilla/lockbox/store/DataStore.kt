@@ -8,7 +8,7 @@ import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
-import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.ReplaySubject
 import io.reactivex.subjects.Subject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -35,7 +35,6 @@ open class DataStore(
     sealed class State {
         object Unprepared : State()
         object Locked : State()
-        object Unlocking : State()
         object Unlocked : State()
         data class Errored(val error: Throwable) : State()
     }
@@ -49,7 +48,7 @@ open class DataStore(
     private val listSubject: BehaviorRelay<List<ServerPassword>> = BehaviorRelay.createDefault(emptyList())
 
     val state: Observable<State> get() = stateSubject
-    val syncState: Observable<SyncState> = PublishSubject.create()
+    open val syncState: Observable<SyncState> = ReplaySubject.create()
     open val list: Observable<List<ServerPassword>> get() = listSubject
 
     private var backend: AsyncLoginsStorage
@@ -58,13 +57,15 @@ open class DataStore(
         backend = support.createLoginsStorage()
 
         // handle state changes
-        state.subscribe { state ->
-            when (state) {
-                is State.Locked -> clearList()
-                is State.Unlocked -> updateList()
-                else -> Unit
+        state
+            .subscribe { state ->
+                when (state) {
+                    is State.Locked -> clearList()
+                    is State.Unlocked -> updateList()
+                    else -> Unit
+                }
             }
-        }.addTo(compositeDisposable)
+            .addTo(compositeDisposable)
 
         // register for actions
         dispatcher.register
@@ -100,7 +101,6 @@ open class DataStore(
     }
 
     private fun unlock() {
-        stateSubject.accept(State.Unlocking)
         if (backend.isLocked()) {
             backend.unlock(support.encryptionKey)
                 .asSingle(Dispatchers.Default)
@@ -190,18 +190,17 @@ open class DataStore(
             return
         }
 
-        fun initialSync() {
-            unlock()
-            sync()
-        }
-
         if (backend.isLocked()) {
             backend.unlock(support.encryptionKey)
                 .asSingle(Dispatchers.Default)
-                .subscribe { _, _ -> initialSync() }
+                .subscribe { _, _ ->
+                    stateSubject.accept(State.Unlocked)
+                    sync()
+                }
                 .addTo(compositeDisposable)
         } else {
-            initialSync()
+            stateSubject.accept(State.Unlocked)
+            sync()
         }
     }
 

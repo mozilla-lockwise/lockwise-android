@@ -36,7 +36,6 @@ class DataStoreTest : DisposingTest() {
         Assert.assertEquals(0, listIterator.next().size)
 
         dispatcher.dispatch(DataStoreAction.Unlock)
-        Assert.assertEquals(State.Unlocking, stateIterator.next())
         Assert.assertEquals(State.Unlocked, stateIterator.next())
         Assert.assertEquals(10, listIterator.next().size)
 
@@ -53,7 +52,6 @@ class DataStoreTest : DisposingTest() {
         Assert.assertEquals(0, listIterator.next().size)
 
         dispatcher.dispatch(DataStoreAction.Unlock)
-        Assert.assertEquals(State.Unlocking, stateIterator.next())
         Assert.assertEquals(State.Unlocked, stateIterator.next())
         Assert.assertEquals(10, listIterator.next().size)
         clearInvocations(support.storage)
@@ -74,7 +72,6 @@ class DataStoreTest : DisposingTest() {
         Assert.assertEquals(0, listIterator.next().size)
 
         dispatcher.dispatch(DataStoreAction.Unlock)
-        Assert.assertEquals(State.Unlocking, stateIterator.next())
         Assert.assertEquals(State.Unlocked, stateIterator.next())
         Assert.assertEquals(10, listIterator.next().size)
 
@@ -93,7 +90,6 @@ class DataStoreTest : DisposingTest() {
         Assert.assertEquals(0, listIterator.next().size)
 
         dispatcher.dispatch(DataStoreAction.Unlock)
-        Assert.assertEquals(State.Unlocking, stateIterator.next())
         Assert.assertEquals(10, listIterator.next().size)
 
         dispatcher.dispatch(LifecycleAction.UserReset)
@@ -118,7 +114,6 @@ class DataStoreTest : DisposingTest() {
         Assert.assertEquals(State.Unprepared, stateIterator.next())
 
         dispatcher.dispatch(DataStoreAction.Unlock)
-        Assert.assertEquals(State.Unlocking, stateIterator.next())
         Assert.assertEquals(State.Unlocked, stateIterator.next())
 
         this.subject.resetSupport(MockDataStoreSupport())

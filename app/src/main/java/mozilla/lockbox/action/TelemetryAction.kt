@@ -64,10 +64,16 @@ enum class TelemetryEventObject {
     settings_faq,
     settings_provide_feedback,
     settings_get_support,
+    settings_system,
     login_welcome,
     login_fxa,
     login_onboarding_confirmation,
     login_learn_more,
     autofill_onboarding,
-    autofill
+    autofill,
+    lock_screen,
+    open_in_browser,
+    filter,
+    back,
+    dialog
 }
