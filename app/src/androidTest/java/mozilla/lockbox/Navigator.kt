@@ -54,6 +54,7 @@ class Navigator {
         } else {
             Dispatcher.shared.dispatch(LifecycleAction.UseTestData)
         }
+        checkAtItemList()
     }
 
     fun checkAtItemList() {
