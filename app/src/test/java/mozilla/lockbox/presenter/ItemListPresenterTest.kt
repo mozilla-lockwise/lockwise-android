@@ -84,6 +84,7 @@ open class ItemListPresenterTest {
         var accountViewModel: AccountViewModel? = null
         var updateItemsArgument: List<ItemViewModel>? = null
         var itemListSort: Setting.ItemListSort? = null
+        var isLoading: Boolean? = null
         val menuItemSelectionStub = PublishSubject.create<Int>()
         val itemSelectedStub = PublishSubject.create<ItemViewModel>()
         val filterClickStub = PublishSubject.create<Unit>()
@@ -121,13 +122,19 @@ open class ItemListPresenterTest {
         override fun updateItemListSort(sort: Setting.ItemListSort) {
             itemListSort = sort
         }
+
+        override fun loading(isLoading: Boolean) {
+            this.isLoading = isLoading
+        }
     }
 
     class FakeDataStore : DataStore() {
-
         val listStub = PublishSubject.create<List<ServerPassword>>()
+        val syncStateStub = PublishSubject.create<SyncState>()
+
         override val list: Observable<List<ServerPassword>>
             get() = listStub
+        override val syncState: Observable<SyncState> get() = syncStateStub
     }
 
     class FakeSettingStore : SettingStore() {
@@ -180,8 +187,9 @@ open class ItemListPresenterTest {
     @Test
     fun receivingPasswordList_somePasswords() {
         val list = listOf(password1, password2, password3)
-        dataStore.listStub.onNext(list)
         val expectedList = listOf(password2, password3, password1).map { it.toViewModel() }
+
+        dataStore.listStub.onNext(list)
 
         Assert.assertEquals(expectedList, view.updateItemsArgument)
         Assert.assertEquals(Setting.ItemListSort.ALPHABETICALLY, view.itemListSort)
@@ -247,5 +255,17 @@ open class ItemListPresenterTest {
         whenCalled(fingerprintStore.isDeviceSecure).thenReturn(true)
         view.lockNowSelectionStub.onNext(Unit)
         dispatcherObserver.assertLastValue(RouteAction.LockScreen)
+    }
+
+    @Test
+    fun `show sync loading indicator`() {
+        dataStore.syncStateStub.onNext(DataStore.SyncState.Syncing)
+        Assert.assertEquals(true, view.isLoading)
+    }
+
+    @Test
+    fun `remove sync loading indicator`() {
+        dataStore.syncStateStub.onNext(DataStore.SyncState.NotSyncing)
+        Assert.assertEquals(false, view.isLoading)
     }
 }

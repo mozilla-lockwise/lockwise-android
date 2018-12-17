@@ -8,7 +8,7 @@ import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
-import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.ReplaySubject
 import io.reactivex.subjects.Subject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -48,7 +48,7 @@ open class DataStore(
     private val listSubject: BehaviorRelay<List<ServerPassword>> = BehaviorRelay.createDefault(emptyList())
 
     val state: Observable<State> get() = stateSubject
-    val syncState: Observable<SyncState> = PublishSubject.create()
+    open val syncState: Observable<SyncState> = ReplaySubject.create()
     open val list: Observable<List<ServerPassword>> get() = listSubject
 
     private var backend: AsyncLoginsStorage
