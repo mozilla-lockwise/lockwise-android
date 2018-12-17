@@ -38,10 +38,10 @@ import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.asOptional
+import mozilla.lockbox.view.AppWebPageFragmentArgs
 import mozilla.lockbox.view.DialogFragment
 import mozilla.lockbox.view.FingerprintAuthDialogFragment
 import mozilla.lockbox.view.ItemDetailFragmentArgs
-import mozilla.lockbox.view.AppWebPageFragmentArgs
 
 @ExperimentalCoroutinesApi
 class RoutePresenter(
@@ -58,22 +58,19 @@ class RoutePresenter(
     override fun onViewReady() {
         navController = Navigation.findNavController(activity, R.id.fragment_nav_host)
 
-        // Make the routing contingent on the state of the dataStore.
-        val dataStoreRoutes = dataStore.state
-            .map(this::dataStoreToRouteActions)
-            .filterNotNull()
-
         val lockObservable = autoLockStore.lockRequired
-            .filter { it }
-            .map { DataStoreAction.Lock }
+            .map { if (it) DataStoreAction.Lock else DataStoreAction.Unlock }
 
         // Moves credentials from the AccountStore, into the DataStore.
         accountStore.syncCredentials
             .map(this::accountToDataStoreActions)
-            .filterNotNull()
             .mergeWith(lockObservable)
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
+
+        // Make the routing contingent on the state of the dataStore.
+        val dataStoreRoutes = dataStore.state
+            .map(this::dataStoreToRouteActions)
 
         routeStore.routes
             .mergeWith(dataStoreRoutes)
@@ -82,21 +79,21 @@ class RoutePresenter(
             .addTo(compositeDisposable)
     }
 
-    private fun dataStoreToRouteActions(storageState: State): Optional<RouteAction> {
+    private fun dataStoreToRouteActions(storageState: State): RouteAction {
         return when (storageState) {
             is State.Unlocked -> RouteAction.ItemList
             is State.Locked -> RouteAction.LockScreen
             is State.Unprepared -> RouteAction.Welcome
             else -> RouteAction.LockScreen
-        }.asOptional()
+        }
     }
 
-    private fun accountToDataStoreActions(optCredentials: Optional<SyncCredentials>): Optional<DataStoreAction> {
+    private fun accountToDataStoreActions(optCredentials: Optional<SyncCredentials>): DataStoreAction {
         // we will get a null credentials object (and subsequently reset the datastore) on
         // both initial login and reset / logout.
-        val credentials = optCredentials.value ?: return DataStoreAction.Reset.asOptional()
+        val credentials = optCredentials.value ?: return DataStoreAction.Reset
 
-        return DataStoreAction.UpdateCredentials(credentials).asOptional()
+        return DataStoreAction.UpdateCredentials(credentials)
     }
 
     private fun route(action: RouteAction) {

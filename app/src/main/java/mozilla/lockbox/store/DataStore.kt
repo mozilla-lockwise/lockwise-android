@@ -47,7 +47,7 @@ open class DataStore(
     private val stateSubject = ReplaySubject.createWithSize<State>(1)
     private val listSubject: BehaviorRelay<List<ServerPassword>> = BehaviorRelay.createDefault(emptyList())
 
-    val state: Observable<State> get() = stateSubject
+    open val state: Observable<State> = stateSubject
     open val syncState: Observable<SyncState> = ReplaySubject.create()
     open val list: Observable<List<ServerPassword>> get() = listSubject
 
@@ -56,7 +56,7 @@ open class DataStore(
     init {
         backend = support.createLoginsStorage()
         // handle state changes
-        state
+        stateSubject
             .subscribe { state ->
                 when (state) {
                     is State.Locked -> clearList()
@@ -120,6 +120,8 @@ open class DataStore(
                     stateSubject.onNext(State.Locked)
                 }
                 .addTo(compositeDisposable)
+        } else {
+            stateSubject.onNext(State.Locked)
         }
     }
 
@@ -150,7 +152,9 @@ open class DataStore(
             backend.list()
                 .asSingle(Dispatchers.Default)
                 .subscribe { list, _ ->
-                    listSubject.accept(list)
+                    list?.let {
+                        listSubject.accept(it)
+                    }
                 }
                 .addTo(compositeDisposable)
         }
@@ -180,28 +184,17 @@ open class DataStore(
             support.syncConfig = SyncUnlockInfo(kid, accessToken, syncKey, tokenServerURL)
         }
 
-        if (!credentials.isNew) {
-            val state = if (backend.isLocked()) {
-                State.Locked
-            } else {
-                unlock()
-                State.Unlocked
-            }
-            stateSubject.onNext(state)
-            return
-        }
+        if (!credentials.isNew) return
 
         if (backend.isLocked()) {
             backend.unlock(support.encryptionKey)
                 .asSingle(Dispatchers.Default)
                 .subscribe { _, _ ->
                     stateSubject.onNext(State.Unlocked)
-                    sync()
                 }
                 .addTo(compositeDisposable)
         } else {
             stateSubject.onNext(State.Unlocked)
-            sync()
         }
     }
 

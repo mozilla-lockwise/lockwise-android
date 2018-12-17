@@ -21,7 +21,7 @@ import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.support.Constant
-import mozilla.lockbox.support.FileReader
+import mozilla.lockbox.support.SimpleFileReader
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -31,6 +31,7 @@ import org.mockito.ArgumentMatchers.eq
 import org.mockito.ArgumentMatchers.isNull
 import org.mockito.Mock
 import org.mockito.Mockito
+import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.clearInvocations
 import org.mockito.Mockito.longThat
 import org.mockito.Mockito.verify
@@ -42,7 +43,7 @@ import java.lang.Math.abs
 import org.mockito.Mockito.`when` as whenCalled
 
 @RunWith(PowerMockRunner::class)
-@PrepareForTest(PreferenceManager::class, FileReader::class, AutoLockStore::class)
+@PrepareForTest(PreferenceManager::class, SimpleFileReader::class, AutoLockStore::class)
 class AutoLockStoreTest {
     @Mock
     val editor: SharedPreferences.Editor = Mockito.mock(SharedPreferences.Editor::class.java)
@@ -54,7 +55,7 @@ class AutoLockStoreTest {
     val context: Context = Mockito.mock(Context::class.java)
 
     @Mock
-    private val fileReader = PowerMockito.mock(FileReader::class.java)
+    private val fileReader = PowerMockito.mock(SimpleFileReader::class.java)
 
     class FakeSettingStore : SettingStore() {
         override var autoLockTime: Observable<Setting.AutoLockTime> =
@@ -62,11 +63,16 @@ class AutoLockStoreTest {
     }
 
     class FakeLifecycleStore : LifecycleStore() {
-        override val lifecycleFilter: Observable<LifecycleAction> = PublishSubject.create()
+        override val lifecycleEvents: Observable<LifecycleAction> = PublishSubject.create()
+    }
+
+    class FakeDataStore : DataStore() {
+        override val state: Observable<DataStore.State> = PublishSubject.create()
     }
 
     private val settingStore = FakeSettingStore()
     private val lifecycleStore = FakeLifecycleStore()
+    private val dataStore = FakeDataStore()
 
     private var bootID = ";kl;jjkloi;kljhafshjkadfsmn"
 
@@ -74,7 +80,8 @@ class AutoLockStoreTest {
 
     val subject = AutoLockStore(
         settingStore = settingStore,
-        lifecycleStore = lifecycleStore
+        lifecycleStore = lifecycleStore,
+        dataStore = dataStore
     )
 
     @Before
@@ -87,25 +94,17 @@ class AutoLockStoreTest {
         whenCalled(PreferenceManager.getDefaultSharedPreferences(context)).thenReturn(preferences)
 
         whenCalled(fileReader.readContents(Constant.App.bootIDPath)).thenReturn(bootID)
-        PowerMockito.whenNew(FileReader::class.java).withAnyArguments().thenReturn(fileReader)
+        PowerMockito.whenNew(SimpleFileReader::class.java).withAnyArguments().thenReturn(fileReader)
 
         subject.injectContext(context)
         subject.lockRequired.subscribe(lockRequiredObserver)
     }
 
     @Test
-    fun `always stores bootID in preferences after injecting context`() {
-        verify(fileReader).readContents(Constant.App.bootIDPath)
-        verify(preferences).edit()
-        verify(editor).putString(Constant.Key.bootID, bootID)
-        verify(editor).apply()
-    }
-
-    @Test
     fun `receiving non-Background lifecycle actions does nothing`() {
         clearInvocations(preferences)
         clearInvocations(editor)
-        (lifecycleStore.lifecycleFilter as Subject).onNext(LifecycleAction.UserReset)
+        (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.UserReset)
 
         verifyZeroInteractions(preferences)
         verifyZeroInteractions(editor)
@@ -122,11 +121,12 @@ class AutoLockStoreTest {
     }
 
     @Test
-    fun `receiving Background lifecycle actions sets the autolocktime with the default`() {
+    fun `receiving Background lifecycle actions when the datastore isn't already locked sets the autolocktime with the default`() {
         clearInvocations(preferences)
         clearInvocations(editor)
         val defaultAutoLock = Constant.SettingDefault.autoLockTime
-        (lifecycleStore.lifecycleFilter as Subject).onNext(LifecycleAction.Background)
+        (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Background)
+        (dataStore.state as Subject).onNext(DataStore.State.Unlocked)
 
         verify(preferences).edit()
 
@@ -141,12 +141,13 @@ class AutoLockStoreTest {
     }
 
     @Test
-    fun `new autolocktime settings are reflected when backgrounding the app`() {
+    fun `new autolocktime settings are reflected when backgrounding the app when the datastore isn't already locked`() {
         clearInvocations(preferences)
         clearInvocations(editor)
         val newAutoLock = Setting.AutoLockTime.ThirtyMinutes
         (settingStore.autoLockTime as Relay).accept(newAutoLock)
-        (lifecycleStore.lifecycleFilter as Subject).onNext(LifecycleAction.Background)
+        (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Background)
+        (dataStore.state as Subject).onNext(DataStore.State.Unlocked)
 
         verify(preferences).edit()
 
@@ -161,57 +162,93 @@ class AutoLockStoreTest {
     }
 
     @Test
+    fun `receiving Background lifecycle actions when the datastore is locked does nothing`() {
+        clearInvocations(preferences)
+        clearInvocations(editor)
+        (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Background)
+        (dataStore.state as Subject).onNext(DataStore.State.Locked)
+
+        verifyZeroInteractions(preferences)
+        verifyZeroInteractions(editor)
+    }
+
+    @Test
+    fun `new autolocktime settings are not reflected when backgrounding the app when the datastore is locked`() {
+        clearInvocations(preferences)
+        clearInvocations(editor)
+        val newAutoLock = Setting.AutoLockTime.ThirtyMinutes
+        (settingStore.autoLockTime as Relay).accept(newAutoLock)
+        (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Background)
+        (dataStore.state as Subject).onNext(DataStore.State.Locked)
+
+        verifyZeroInteractions(preferences)
+        verifyZeroInteractions(editor)
+    }
+
+    @Test
     fun `foregrounding lifecycle actions on a new boot, when the saved autolocktimerdate is later than the current system time`() {
         mockSavedValues(SystemClock.elapsedRealtime() + 600000, bootID, null)
 
-        (lifecycleStore.lifecycleFilter as Subject).onNext(LifecycleAction.Foreground)
+        (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Foreground)
 
         lockRequiredObserver.assertValue(true)
+
+        readAndStoredCurrentBootID()
     }
 
     @Test
     fun `foregrounding lifecycle actions on a new boot, when the saved autolocktimerdate is earlier than the current system time`() {
         mockSavedValues(SystemClock.elapsedRealtime() - 600000, bootID, null)
 
-        (lifecycleStore.lifecycleFilter as Subject).onNext(LifecycleAction.Foreground)
+        (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Foreground)
 
         lockRequiredObserver.assertValue(true)
+
+        readAndStoredCurrentBootID()
     }
 
     @Test
     fun `foregrounding lifecycle actions on a boot not matching the stored boot, when the saved autolocktimerdate is later than the current system time`() {
         mockSavedValues(SystemClock.elapsedRealtime() + 600000, bootID, "jkuiuohhklj")
 
-        (lifecycleStore.lifecycleFilter as Subject).onNext(LifecycleAction.Foreground)
+        (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Foreground)
 
         lockRequiredObserver.assertValue(true)
+
+        readAndStoredCurrentBootID()
     }
 
     @Test
     fun `foregrounding lifecycle actions on a boot not matching the stored boot, when the saved autolocktimerdate is earlier than the current system time`() {
         mockSavedValues(SystemClock.elapsedRealtime() - 600000, bootID, "uyoihkljhkjuy")
 
-        (lifecycleStore.lifecycleFilter as Subject).onNext(LifecycleAction.Foreground)
+        (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Foreground)
 
         lockRequiredObserver.assertValue(true)
+
+        readAndStoredCurrentBootID()
     }
 
     @Test
     fun `foregrounding lifecycle actions on a boot matching the stored boot, when the saved autolocktimerdate is later than the current system time`() {
         mockSavedValues(SystemClock.elapsedRealtime() + 600000, bootID, bootID)
 
-        (lifecycleStore.lifecycleFilter as Subject).onNext(LifecycleAction.Foreground)
+        (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Foreground)
 
         lockRequiredObserver.assertValue(false)
+
+        readAndStoredCurrentBootID()
     }
 
     @Test
     fun `foregrounding lifecycle actions on a boot matching the stored boot, when the saved autolocktimerdate is earlier than the current system time`() {
         mockSavedValues(SystemClock.elapsedRealtime() - 600000, bootID, bootID)
 
-        (lifecycleStore.lifecycleFilter as Subject).onNext(LifecycleAction.Foreground)
+        (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Foreground)
 
         lockRequiredObserver.assertValue(true)
+
+        readAndStoredCurrentBootID()
     }
 
     @Test
@@ -243,12 +280,19 @@ class AutoLockStoreTest {
         whenCalled(preferences.getString(anyString(), isNull())).thenReturn(preferencesBootID)
         whenCalled(fileReader.readContents(Constant.App.bootIDPath)).thenReturn(systemBootID)
 
-        PowerMockito.mockStatic(FileReader::class.java)
-        PowerMockito.whenNew(FileReader::class.java).withAnyArguments().thenReturn(fileReader)
+        PowerMockito.mockStatic(SimpleFileReader::class.java)
+        PowerMockito.whenNew(SimpleFileReader::class.java).withAnyArguments().thenReturn(fileReader)
 
         PowerMockito.mockStatic(PreferenceManager::class.java)
         whenCalled(PreferenceManager.getDefaultSharedPreferences(context)).thenReturn(preferences)
 
         subject.injectContext(context)
+    }
+
+    private fun readAndStoredCurrentBootID() {
+        verify(fileReader, atLeastOnce()).readContents(Constant.App.bootIDPath)
+        verify(preferences).edit()
+        verify(editor).putString(Constant.Key.bootID, bootID)
+        verify(editor).apply()
     }
 }

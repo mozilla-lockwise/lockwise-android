@@ -18,7 +18,7 @@ open class LifecycleStore(
         val shared = LifecycleStore()
     }
 
-    open val lifecycleFilter: Observable<LifecycleAction> =
+    open val lifecycleEvents: Observable<LifecycleAction> =
         dispatcher.register
             .filterByType(LifecycleAction::class.java)
 }

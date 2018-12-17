@@ -12,20 +12,24 @@ import android.os.SystemClock
 import android.preference.PreferenceManager
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.ReplaySubject
 import io.reactivex.subjects.Subject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.support.Constant
-import mozilla.lockbox.support.FileReader
+import mozilla.lockbox.support.SimpleFileReader
 
+@ExperimentalCoroutinesApi
 class AutoLockStore(
     val dispatcher: Dispatcher = Dispatcher.shared,
     val settingStore: SettingStore = SettingStore.shared,
-    val lifecycleStore: LifecycleStore = LifecycleStore.shared
+    val lifecycleStore: LifecycleStore = LifecycleStore.shared,
+    val dataStore: DataStore = DataStore.shared
 ) : ContextStore {
 
     companion object {
@@ -34,18 +38,20 @@ class AutoLockStore(
 
     private val compositeDisposable = CompositeDisposable()
     private lateinit var preferences: SharedPreferences
-    private lateinit var currentBootID: String
+
+    private val currentBootID: String
+        get() = SimpleFileReader().readContents(Constant.App.bootIDPath)
 
     val lockRequired: Observable<Boolean> = ReplaySubject.createWithSize(1)
 
     init {
-        lifecycleStore.lifecycleFilter
+        lifecycleStore.lifecycleEvents
             .filter { it == LifecycleAction.Foreground }
             .map { lockCurrentlyRequired() }
             .subscribe(lockRequired as Subject)
 
-        lifecycleStore.lifecycleFilter
-            .filter { it == LifecycleAction.Background }
+        Observables.combineLatest(lifecycleStore.lifecycleEvents, dataStore.state)
+            .filter { it.first == LifecycleAction.Background && it.second != DataStore.State.Locked }
             .switchMap { settingStore.autoLockTime.take(1) }
             .subscribe(this::updateNextLockTime)
             .addTo(compositeDisposable)
@@ -56,17 +62,16 @@ class AutoLockStore(
                 this.backdateNextLockTime()
             }
             .addTo(compositeDisposable)
+
+        // wait to store the currentBootId until we can be sure that we've checked it once
+        lockRequired
+            .take(1)
+            .subscribe { storeCurrentBootId() }
+            .addTo(compositeDisposable)
     }
 
     override fun injectContext(context: Context) {
         preferences = PreferenceManager.getDefaultSharedPreferences(context)
-
-        currentBootID = FileReader().readContents(Constant.App.bootIDPath)
-
-        preferences
-            .edit()
-            .putString(Constant.Key.bootID, currentBootID)
-            .apply()
     }
 
     private fun backdateNextLockTime() {
@@ -78,34 +83,33 @@ class AutoLockStore(
     }
 
     private fun lockCurrentlyRequired(): Boolean {
-        return if (onNewBoot()) {
-            true
-        } else {
-            autoLockTimePassed()
-        }
+        return onNewBoot() || autoLockTimeElapsed()
     }
 
     private fun onNewBoot(): Boolean {
-        preferences.getString(Constant.Key.bootID, null)?.let {
-            return it != currentBootID
-        }
+        val stored = preferences.getString(Constant.Key.bootID, null) ?: return true
 
-        return true
+        return !stored.startsWith(currentBootID)
     }
 
-    private fun autoLockTimePassed(): Boolean {
+    private fun autoLockTimeElapsed(): Boolean {
         val autoLockTimerDate = preferences.getLong(Constant.Key.autoLockTimerDate, -1)
         val currentSystemTime = SystemClock.elapsedRealtime()
 
-        val diff = autoLockTimerDate - currentSystemTime
-
-        return diff <= 0
+        return autoLockTimerDate <= currentSystemTime
     }
 
     private fun storeAutoLockTimerDate(dateTime: Long) {
         preferences
             .edit()
             .putLong(Constant.Key.autoLockTimerDate, dateTime)
+            .apply()
+    }
+
+    private fun storeCurrentBootId() {
+        preferences
+            .edit()
+            .putString(Constant.Key.bootID, currentBootID)
             .apply()
     }
 }
