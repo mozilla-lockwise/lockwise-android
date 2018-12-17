@@ -89,6 +89,8 @@ class RoutePresenter(
     }
 
     private fun accountToDataStoreActions(optCredentials: Optional<SyncCredentials>): Optional<DataStoreAction> {
+        // we will get a null credentials object (and subsequently reset the datastore) on
+        // both initial login and reset / logout.
         val credentials = optCredentials.value ?: return DataStoreAction.Reset.asOptional()
 
         if (credentials is FixedSyncCredentials) {
