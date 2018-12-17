@@ -20,12 +20,14 @@ import io.reactivex.Observable
 import kotlinx.android.synthetic.main.fragment_item_detail.*
 import kotlinx.android.synthetic.main.fragment_item_detail.view.*
 import kotlinx.android.synthetic.main.include_backable.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.presenter.ItemDetailPresenter
 import mozilla.lockbox.presenter.ItemDetailView
 import mozilla.lockbox.support.assertOnUiThread
 
+@ExperimentalCoroutinesApi
 class ItemDetailFragment : BackableFragment(), ItemDetailView {
     override fun onCreateView(
         inflater: LayoutInflater,

@@ -6,7 +6,8 @@
   -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
-    android:layout_width="match_parent">
+    android:layout_width="match_parent"
+    android:id="@+id/navViewMenu">
 
     <group android:checkableBehavior="none"
            android:layout_height="match_parent"
@@ -18,7 +19,7 @@
         <item
             android:id="@+id/faq_menu_item"
             android:icon="@drawable/ic_faq"
-            android:title="@string/nav_menu_faq" />
+            android:title="@string/nav_menu_faq"/>
         <item
             android:id="@+id/feedback_menu_item"
             android:icon="@drawable/ic_feedback"

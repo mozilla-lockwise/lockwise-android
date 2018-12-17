@@ -9,59 +9,57 @@ package mozilla.lockbox.view
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.support.annotation.StringRes
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.CookieManager
+import mozilla.lockbox.R
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import com.jakewharton.rxbinding2.view.clicks
-import io.reactivex.Observable
 import io.reactivex.functions.Consumer
-import kotlinx.android.synthetic.main.fragment_fxa_login.*
 import kotlinx.android.synthetic.main.fragment_fxa_login.view.*
+import kotlinx.android.synthetic.main.fragment_webview.*
 import kotlinx.android.synthetic.main.include_backable.view.*
-import mozilla.lockbox.R
-import mozilla.lockbox.presenter.FxALoginPresenter
-import mozilla.lockbox.presenter.FxALoginView
-import mozilla.lockbox.support.isDebug
+import mozilla.lockbox.presenter.WebPageView
+import mozilla.lockbox.presenter.AppWebPagePresenter
 
-class FxALoginFragment : BackableFragment(), FxALoginView {
-    override var webViewObserver: Consumer<String?>? = null
+class AppWebPageFragment : BackableFragment(), WebPageView {
+    override var webViewObserver: Consumer<String>? = null
+
+    private var url: String? = null
+
+    @StringRes
+    private var toolbarTitle: Int? = null
+
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        presenter = FxALoginPresenter(this)
-        val view = inflater.inflate(R.layout.fragment_fxa_login, container, false)
-        view.webView.settings.domStorageEnabled = true
-        view.webView.settings.javaScriptEnabled = true
-        CookieManager.getInstance().setAcceptCookie(true)
-        return view
-    }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        if (!isDebug()) {
-            skipFxA.visibility = View.GONE
+        arguments?.let {
+            url = AppWebPageFragmentArgs.fromBundle(it).url
+            toolbarTitle = AppWebPageFragmentArgs.fromBundle(it).title
         }
-        view.toolbar.setNavigationIcon(R.drawable.ic_close)
+
+        presenter = AppWebPagePresenter(this, url)
+
+        var view = inflater.inflate(R.layout.fragment_webview, container, false)
+        view.webView.settings.javaScriptEnabled = true
+
+        view.toolbar.title = getString(toolbarTitle!!)
+
+        return view
     }
 
     override fun loadURL(url: String) {
         webView.webViewClient = object : WebViewClient() {
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 webViewObserver?.accept(url)
-
                 super.onPageStarted(view, url, favicon)
             }
         }
         webView.loadUrl(url)
     }
-
-    override val skipFxAClicks: Observable<Unit>?
-        get() = skipFxA?.clicks()
 }

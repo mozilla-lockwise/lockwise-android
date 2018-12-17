@@ -44,6 +44,7 @@ import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.view.DialogFragment
 import mozilla.lockbox.view.FingerprintAuthDialogFragment
 import mozilla.lockbox.view.ItemDetailFragmentArgs
+import mozilla.lockbox.view.AppWebPageFragmentArgs
 
 @ExperimentalCoroutinesApi
 class RoutePresenter(
@@ -116,15 +117,22 @@ class RoutePresenter(
             is RouteAction.ItemDetail -> navigateToFragment(action, R.id.fragment_item_detail, bundle(action))
             is RouteAction.OpenWebsite -> openWebsite(action.url)
             is RouteAction.SystemSetting -> openSetting(action)
+            is RouteAction.AutoLockSetting -> showAutoLockSelections()
             is RouteAction.DialogFragment -> showDialogFragment(FingerprintAuthDialogFragment(), action)
             is RouteAction.Dialog -> showDialog(action)
-            is RouteAction.AutoLockSetting -> showAutoLockSelections()
+            is RouteAction.AppWebPage -> navigateToFragment(action, R.id.fragment_webview, bundle(action))
         }
     }
 
+    private fun bundle(action: RouteAction.AppWebPage): Bundle {
+        return AppWebPageFragmentArgs.Builder()
+            .setUrl(action.url!!)
+            .setTitle(action.title!!)
+            .build()
+            .toBundle()
+    }
+
     private fun bundle(action: RouteAction.ItemDetail): Bundle {
-        // Possibly overkill for passing a single id string,
-        // but it's typesafe™.
         return ItemDetailFragmentArgs.Builder()
             .setItemId(action.id)
             .build()
@@ -227,7 +235,8 @@ class RoutePresenter(
             // it is too dangerous to RuntimeException.
             val from = activity.resources.getResourceName(srcId)
             val to = activity.resources.getResourceName(destinationId)
-            log.error("Cannot route from $from to $to. " +
+            log.error(
+                "Cannot route from $from to $to. " +
                     "This is a developer bug, fixable by adding an action to graph_main.xml"
             )
         } else {
@@ -252,19 +261,21 @@ class RoutePresenter(
         // If a RouteAction is called from a place the graph doesn't know about then
         // the app will log.error.
         return when (Pair(from, to)) {
-            Pair(R.id.fragment_welcome, R.id.fragment_fxa_login) -> R.id.action_welcome_to_fxaLogin
+            Pair(R.id.fragment_welcome, R.id.fragment_item_list) -> R.id.action_to_itemList
 
             Pair(R.id.fragment_welcome, R.id.fragment_locked) -> R.id.action_to_locked
             Pair(R.id.fragment_welcome, R.id.fragment_item_list) -> R.id.action_to_itemList
 
             Pair(R.id.fragment_fxa_login, R.id.fragment_item_list) -> R.id.action_fxaLogin_to_itemList
-            Pair(R.id.fragment_locked, R.id.fragment_item_list) -> R.id.action_locked_to_itemList
+            Pair(R.id.fragment_locked, R.id.fragment_item_list) -> R.id.action_to_itemList
 
             Pair(R.id.fragment_item_list, R.id.fragment_item_detail) -> R.id.action_itemList_to_itemDetail
             Pair(R.id.fragment_item_list, R.id.fragment_setting) -> R.id.action_itemList_to_setting
             Pair(R.id.fragment_item_list, R.id.fragment_account_setting) -> R.id.action_itemList_to_accountSetting
             Pair(R.id.fragment_item_list, R.id.fragment_locked) -> R.id.action_itemList_to_locked
             Pair(R.id.fragment_item_list, R.id.fragment_filter) -> R.id.action_itemList_to_filter
+
+            Pair(R.id.fragment_item_list, R.id.fragment_webview) -> R.id.action_itemList_to_webview
 
             Pair(R.id.fragment_account_setting, R.id.fragment_welcome) -> R.id.action_to_welcome
 

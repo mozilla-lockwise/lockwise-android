@@ -62,7 +62,7 @@ class ItemListFragment : CommonFragment(), ItemListView {
         val view = inflater.inflate(R.layout.fragment_item_list, container, false)
         val navController = requireActivity().findNavController(R.id.fragment_nav_host)
 
-        setupToolbar(view.toolbar, view.appDrawer)
+        setupToolbar(view.navToolbar, view.appDrawer)
         setupNavigationView(navController, view.navView)
         setupListView(view.entriesView)
         setupItemListSortMenu(view.sortButton)

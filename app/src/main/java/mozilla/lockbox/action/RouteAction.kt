@@ -7,7 +7,9 @@
 package mozilla.lockbox.action
 
 import android.support.annotation.StringRes
+import mozilla.lockbox.R
 import mozilla.lockbox.flux.Action
+import mozilla.lockbox.support.Constant
 
 sealed class RouteAction(
     override val eventMethod: TelemetryEventMethod,
@@ -33,9 +35,29 @@ sealed class RouteAction(
         object UnlinkDisclaimer : Dialog(LifecycleAction.UserReset)
     }
 
-    sealed class DialogFragment(@StringRes val dialogTitle: Int, @StringRes val dialogSubtitle: Int? = null) : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.dialog) {
+    sealed class DialogFragment(
+        @StringRes val dialogTitle: Int,
+        @StringRes val dialogSubtitle: Int? = null
+    ) : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.dialog) {
         class FingerprintDialog(@StringRes title: Int, @StringRes subtitle: Int? = null) :
             DialogFragment(dialogTitle = title, dialogSubtitle = subtitle)
+    }
+
+    sealed class AppWebPage(
+        val url: String? = null,
+        @StringRes val title: Int? = null,
+        eventObject: TelemetryEventObject
+    ) : RouteAction(TelemetryEventMethod.show, eventObject) {
+
+        object FaqList : AppWebPage(
+            Constant.Faq.uri,
+            R.string.nav_menu_faq,
+            TelemetryEventObject.settings_faq)
+
+        object SendFeedback : AppWebPage(
+            Constant.SendFeedback.uri,
+            R.string.nav_menu_feedback,
+            TelemetryEventObject.settings_provide_feedback)
     }
 }
 
