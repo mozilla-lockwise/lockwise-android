@@ -13,18 +13,19 @@
 
   <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
-  <link rel="stylesheet" href="../../css/highlight.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
   
   <script>
     // Current page data
     var mkdocs_page_name = "Flux Architecture";
     var mkdocs_page_input_path = "architecture/flux.md";
-    var mkdocs_page_url = "/architecture/flux/";
+    var mkdocs_page_url = null;
   </script>
   
-  <script src="../../js/jquery-2.1.1.min.js"></script>
-  <script src="../../js/modernizr-2.8.3.min.js"></script>
-  <script type="text/javascript" src="../../js/highlight.pack.js"></script> 
+  <script src="../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
   
 </head>
 
@@ -38,7 +39,7 @@
         <a href="../.." class="icon icon-home"> Firefox Lockbox for Android</a>
         <div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
   </form>
 </div>
       </div>
@@ -153,8 +154,8 @@
 <h3 id="viewpresenter">View/Presenter</h3>
 <p>All views are bound to a presenter. In this separation, the presenter is responsible for all business logic, and the view is abstracted to a simple interface. The view is responsible for UI-specific configuration and passing user input to its presenter for handling. This allows any complex view-related configuration to be abstracted when dealing with business logic changes, and vice versa.</p>
 <p>In the current implementation of LockFlux on Android, all <code>View</code>s are composed of Fragments, not Activities. Situations requiring an <code>Activity</code> to be added to the application will be reviewed on a case-to-case basis.</p>
-<h3 id="action">Action</h3>
-<p>Actions are tiny <code>enum</code>s or <code>sealed class</code>es that contain declarative language about either the triggering user action or the update request for a given <code>Store</code>.</p>
+<h3 id="actions">Actions</h3>
+<p>Actions are tiny <code>enum</code>s or <code>sealed class</code>es that contain declarative language about either the triggering user action or the update request for a given <code>Store</code>. Actions can also be used to pass objects (item IDs, string resources, Telemetry events) between fragments.</p>
 <h3 id="dispatcher">Dispatcher</h3>
 <p>The dispatcher class is the simplest in the application; it provides an <code>Action</code>-accepting method as a wrapper for the <code>PublishSubject&lt;Action&gt;</code> that publishes all dispatched actions to interested <code>Stores</code>:</p>
 <pre><code>class Dispatcher {
@@ -228,9 +229,8 @@
     </span>
 </div>
     <script>var base_url = '../..';</script>
-    <script src="../../js/theme.js"></script>
-      <script src="../../search/require.js"></script>
-      <script src="../../search/search.js"></script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="../../search/main.js" defer></script>
 
 </body>
 </html>

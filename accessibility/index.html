@@ -13,18 +13,19 @@
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
-  <link rel="stylesheet" href="../css/highlight.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
   
   <script>
     // Current page data
     var mkdocs_page_name = "Accessibility";
     var mkdocs_page_input_path = "accessibility.md";
-    var mkdocs_page_url = "/accessibility/";
+    var mkdocs_page_url = null;
   </script>
   
-  <script src="../js/jquery-2.1.1.min.js"></script>
-  <script src="../js/modernizr-2.8.3.min.js"></script>
-  <script type="text/javascript" src="../js/highlight.pack.js"></script> 
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
   
 </head>
 
@@ -38,7 +39,7 @@
         <a href=".." class="icon icon-home"> Firefox Lockbox for Android</a>
         <div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
   </form>
 </div>
       </div>
@@ -140,24 +141,26 @@
               
                 <h1 id="accessibility-on-lockbox-for-android">Accessibility on Lockbox for Android</h1>
 <p>On Lockbox for Android, we implement two forms of automatic testing and
-encourage developers and testers to use the recommended forms of manual testing
+encourage developers and testers to use the <a href="/test-plan.md#accessibility">recommended forms of manual testing</a>
 to ensure that our application is accessible to every possible user.</p>
-<h3 id="automatic-accessibility">Automatic Accessibility</h3>
-<h6 id="lint-checks">Lint Checks</h6>
+<h2 id="automatic-accessibility">Automatic Accessibility</h2>
+<h3 id="lint-checks">Lint Checks</h3>
 <p>These are fairly simple static analysis checks. You're probably familiar with warning pop-ups when you have small code style issues; in Lockbox for Android, the build will fail if you do not address these warnings!</p>
 <p>The most important accessibility warning is the <code>contentDescription</code> warning on images. This warning will appear when the <code>contentDescription</code> attribute-- the text description of the image --has not been set.</p>
-<h6 id="espresso-tests">Espresso Tests</h6>
+<h3 id="espresso-tests">Espresso Tests</h3>
 <p><code>AccessibilityChecks.enable()</code> -- This should be added in setup methods for your Espresso tests.</p>
 <p>When adding new Espresso tests, you may notice failures related to things like
 tap target size. The automated Espresso accessibility checks occur on every
 method call in the <a href="https://developer.android.com/reference/android/support/test/espresso/action/ViewActions"><code>ViewActions</code></a> class.</p>
-<h3 id="manual-accessibility-testing">Manual Accessibility Testing</h3>
-<h6 id="accessibilityscanner">AccessibilityScanner</h6>
+<h2 id="manual-accessibility-testing">Manual Accessibility Testing</h2>
+<h3 id="accessibilityscanner">AccessibilityScanner</h3>
 <p>The <a href="https://support.google.com/accessibility/android/answer/6376570?hl=en">Android Accessibility Scanner</a> is a tool used to scan your app's screen to identify potential areas of improvement.</p>
-<h6 id="talkback">TalkBack</h6>
-<p>TalkBack is a screen reader that is built into all (?) Android devices. This tool can be used to test your application by closing your eyes while attempting to navigate.</p>
-<p>Instructions on enabling TalkBack on your device: https://support.google.com/accessibility/android/answer/6283677?hl=en&amp;ref_topic=3529932</p>
-<h6 id="changing-text">Changing Text</h6>
+<p>If you are using an emulator, download the Accessibility Scanner <a href="https://apkpure.com/accessibility-scanner/com.google.android.apps.accessibility.auditor">APK package</a>. Once the APK is downloaded, drag and drop the file into your active emulator and follow onscreen instructions to use the Scanner on your app.</p>
+<p>If you are using an Android device, download the Android Accessibility Scanner from the Google Play Store on your phone.</p>
+<h3 id="talkback">TalkBack</h3>
+<p>TalkBack is a screen reader that is built into Android devices. This tool can be used to test your application by closing your eyes while attempting to navigate.</p>
+<p>Instructions on enabling TalkBack on your device: <a href="https://support.google.com/accessibility/android/answer/6283677?hl=en&amp;ref_topic=3529932">https://support.google.com/accessibility/android/answer/6283677?hl=en&amp;ref_topic=3529932</a></p>
+<h3 id="changing-text">Changing Text</h3>
 <p>A common accessibility problem arises with users who have changed their font size. Test your app by <a href="https://support.google.com/accessibility/android/answer/6006972?hl=en&amp;ref_topic=9079043">increasing your device's font size</a>.</p>
 <p>In addition to font size, be aware of text contrast, <a href="https://support.google.com/accessibility/android/answer/6151800?hl=en&amp;ref_topic=9079043">color inversion</a>, colorblindness, and color correction.</p>
               
@@ -202,9 +205,8 @@ method call in the <a href="https://developer.android.com/reference/android/supp
     </span>
 </div>
     <script>var base_url = '..';</script>
-    <script src="../js/theme.js"></script>
-      <script src="../search/require.js"></script>
-      <script src="../search/search.js"></script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
 
 </body>
 </html>

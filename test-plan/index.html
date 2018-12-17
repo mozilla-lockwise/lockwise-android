@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Test Plan - Firefox Lockbox for Android</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Test Plan";
+    var mkdocs_page_input_path = "test-plan.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Firefox Lockbox for Android</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Introduction</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../contributing/">Contributing</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../metrics/">Telemetry and Metrics</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Developer Guides</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../install/">Build and Install</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../architecture/flux/">Flux Architecture</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../architecture/sec-apis/">Using Keys and Biometrics</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../accessibility/">Accessibility</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Firefox Lockbox for Android</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Test Plan</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/mozilla-lockbox/lockbox-android/edit/master/docs/test-plan.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="test-plan">Test Plan</h1>
+<p><em>Test plan for <a href="https://github.com/mozilla-lockbox/lockbox-android">Firefox Lockbox for Android</a></em></p>
+<h2 id="overview">Overview</h2>
+<p>Firefox Lockbox for Android is a new mobile app developed with a pre-defined set of P1 "must have" requirements and a target release at the beginning of February 2019 in the Google Play Store.</p>
+<p>Mozilla Product Integrity provides embedded QA to work with the team throughout the bi-weekly sprints allowing for ongoing testing and feedback, issue triage, and continuous test plan development and end-to-end regression testing in order to accommodate a quick release schedule.</p>
+<h3 id="ownership">Ownership</h3>
+<ul>
+<li>Product Integrity: Andrei Bodea, Bogdan Surd</li>
+<li>Product Manager: Sandy Sage</li>
+<li>Engineering Manager: Devin Reams</li>
+<li>Engineering Leads: Sasha Heinen, James Hugman, Matt Miller, Elise Richards</li>
+</ul>
+<h3 id="entry-criteria">Entry Criteria</h3>
+<ul>
+<li>PI has access to all product documentation, designs, code</li>
+<li>The Android app code is available on GitHub and builds:</li>
+<li>locally via Android Studio (Branch and Release)</li>
+<li>on device via bitrise.io (Branch and Release)</li>
+<li>on device via Play Store (Release)</li>
+</ul>
+<h3 id="exit-criteria">Exit Criteria</h3>
+<ul>
+<li>All test suites against P1 "must have" features have performed</li>
+<li>All bugs related to the P1 "must have" features have been triaged</li>
+<li>All bugs resolved fixed have been verified</li>
+</ul>
+<h2 id="test-matrix">Test Matrix</h2>
+<ul>
+<li>Devices to be tested:</li>
+<li><strong>TBD</strong></li>
+<li>Major operating system versions to be tested:</li>
+<li>Minimum: API 23</li>
+<li>Target: API 28</li>
+</ul>
+<h2 id="test-suites">Test Suites</h2>
+<ul>
+<li>Documented in TestRail: <a href="https://testrail.stage.mozaws.net/index.php?/suites/view/3060&amp;group_by=cases:section_id&amp;group_order=asc">https://testrail.stage.mozaws.net/index.php?/suites/view/3060&amp;group_by=cases:section_id&amp;group_order=asc</a> (internal Mozilla tool)</li>
+<li>Performed twice-weekly</li>
+<li>Covers all <a href="https://docs.google.com/document/d/1FfyD7A0qB-WGT2dx3pA5CzS764DVQyfXLs9RVbEpw0s/edit#heading=h.nz3yfasvpfpu">P1 "must have" Requirements</a> (internal Mozilla document)</li>
+<li>01 Sign in to Sync</li>
+<li>02 Onboarding</li>
+<li>03 Access saved entries</li>
+<li>04 No entries support</li>
+<li>05 Biometrics to lock/unlock</li>
+<li>06 View entry</li>
+<li>07 Copy / paste retrieval</li>
+<li>08 View password</li>
+<li>09 Autofill</li>
+<li>10 Account management</li>
+<li>11 Browser setting</li>
+<li>12 Support</li>
+<li>13 Telemetry</li>
+</ul>
+<h2 id="accessibility">Accessibility</h2>
+<p>There are a number of best practices and accessibility features available to Android developers and we intend to build and test for.</p>
+<p>We've <a href="https://github.com/mozilla-lockbox/lockbox-android/blob/master/docs/accessibility.md">documented the tools and techniques available to test accessibility</a> and ask that every pull request consider these before merging so as to not accumulate "debt" during development but also test all of the following at certain intervals in the project:</p>
+<h2 id="1-talkback-support">1. TalkBack support</h2>
+<p>The reading of on-screen interface items and objects. Testing for:</p>
+<ul>
+<li>All on-screen navigation and button titles are read</li>
+<li>All on-screen alerts and popovers (interrupting the interface) are read</li>
+<li>All labels and text elements on screen are read</li>
+<li>Interaction elements like input boxes and filters have meaningful instructions</li>
+<li>Links to open websites are clearly indicated and read</li>
+<li>Swiping left/right to select next/previous elements works usefully</li>
+<li>Interface scrolling is available where needed</li>
+</ul>
+<h2 id="2-user-interface-design">2. User interface design</h2>
+<p>The interface is legible and tappable by designing and testing for:</p>
+<ul>
+<li>adequate color contrasts (e.g.: no light text on light background)</li>
+<li>button and input sizes (e.g.: large enough to tap into easily and consistently)</li>
+<li>text sizes follow system adjustment (i.e. respect "Larger Text" setting)</li>
+</ul>
+<h3 id="out-of-scope">Out of Scope</h3>
+<ol>
+<li>Internal metrics/analytics review and testing (see <a href="/metrics.md">metrics.md</a>)</li>
+<li>Internal security review (performed separately)</li>
+</ol>
+<hr />
+              
+            </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+          <a href="https://github.com/mozilla-lockbox/lockbox-android/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+      
+      
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+
+</body>
+</html>
