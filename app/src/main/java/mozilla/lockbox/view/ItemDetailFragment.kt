@@ -86,7 +86,11 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
 
     override fun showToastNotification(@StringRes strId: Int) {
         assertOnUiThread()
-        Toast.makeText(activity, getString(strId), Toast.LENGTH_SHORT).show()
+        val toast = Toast.makeText(activity, getString(strId), Toast.LENGTH_SHORT)
+        val v = toast.getView().findViewById(android.R.id.message) as TextView
+        v.setTextColor(getResources().getColor(R.color.text_white))
+        v.setBackgroundColor(getResources().getColor(R.color.dark_gray_background))
+        toast.show()
     }
 }
 
