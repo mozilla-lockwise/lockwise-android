@@ -15,7 +15,6 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
-import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
@@ -67,7 +66,7 @@ class RoutePresenter(
             .filterNotNull()
 
         // Moves credentials from the AccountStore, into the DataStore.
-        Observables.combineLatest(accountStore.syncCredentials, dataStore.state)
+        accountStore.syncCredentials
             .map(this::accountToDataStoreActions)
             .filterNotNull()
             .subscribe(dispatcher::dispatch)
@@ -89,14 +88,10 @@ class RoutePresenter(
         }.asOptional()
     }
 
-    private fun accountToDataStoreActions(it: Pair<Optional<SyncCredentials>, State>): Optional<DataStoreAction> {
-        val (opt, state) = it
-
-        val credentials = opt.value ?: return DataStoreAction.Reset.asOptional()
-
-        if (state != State.Unprepared) {
-            return Optional(null)
-        }
+    private fun accountToDataStoreActions(optCredentials: Optional<SyncCredentials>): Optional<DataStoreAction> {
+        // we will get a null credentials object (and subsequently reset the datastore) on
+        // both initial login and reset / logout.
+        val credentials = optCredentials.value ?: return DataStoreAction.Reset.asOptional()
 
         if (credentials is FixedSyncCredentials) {
             dataStore.resetSupport(FixedDataStoreSupport.shared)
