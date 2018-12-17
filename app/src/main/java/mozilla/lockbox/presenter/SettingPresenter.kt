@@ -102,7 +102,7 @@ class SettingPresenter(
                 detailTextDriver = settingStore.autoLockTime.map { it.stringValue },
                 clickListener = autoLockTimeClickListener
             ),
-            /* TODO: enable Autofill setting once it's actually implemented
+            /* TODO: enable Autofill setting and increase supportIndex once it's actually implemented
             ToggleSettingConfiguration(
                 title = R.string.autofill,
                 subtitle = R.string.autofill_summary,
@@ -125,7 +125,7 @@ class SettingPresenter(
             )
         )
 
-        var supportIndex = 2
+        var supportIndex = 1
 
         if (fingerprintStore.isFingerprintAuthAvailable) {
             settings = listOf(
