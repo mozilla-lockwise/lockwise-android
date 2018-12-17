@@ -9,12 +9,14 @@ package mozilla.lockbox.presenter
 import androidx.annotation.StringRes
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
+import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.R
 import mozilla.lockbox.action.ClipboardAction
 import mozilla.lockbox.action.DataStoreAction
+import mozilla.lockbox.action.NetworkAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.extensions.toDetailViewModel
@@ -22,6 +24,7 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.store.DataStore
+import mozilla.lockbox.store.NetworkStore
 
 interface ItemDetailView {
     fun updateItem(item: ItemDetailViewModel)
@@ -31,6 +34,8 @@ interface ItemDetailView {
     val passwordCopyClicks: Observable<Unit>
     val togglePasswordClicks: Observable<Unit>
     val hostnameClicks: Observable<Unit>
+    val retryNetworkConnectionClicks: Observable<Unit>
+    val networkErrorVisibility: Consumer<in Boolean>
 
     var isPasswordVisible: Boolean
 }
@@ -40,6 +45,7 @@ class ItemDetailPresenter(
     private val view: ItemDetailView,
     val itemId: String?,
     private val dispatcher: Dispatcher = Dispatcher.shared,
+    private val networkStore: NetworkStore = NetworkStore.shared,
     private val dataStore: DataStore = DataStore.shared
 ) : Presenter() {
 
@@ -87,12 +93,23 @@ class ItemDetailPresenter(
             .map { it.toDetailViewModel() }
             .subscribe(view::updateItem)
             .addTo(compositeDisposable)
+
+        dispatcher.dispatch(NetworkAction.CheckConnectivity)
+
+        networkStore.networkAvailable
+            .subscribe {
+                view.networkErrorVisibility.accept(it)
+            }.addTo(compositeDisposable)
+
+        view.retryNetworkConnectionClicks.subscribe {
+            dispatcher.dispatch(NetworkAction.CheckConnectivity)
+        }?.addTo(compositeDisposable)
     }
 
     private fun handleClicks(clicks: Observable<Unit>, withServerPassword: (ServerPassword) -> Unit) {
         clicks.subscribe {
-                this.credentials?.let { password -> withServerPassword(password) }
-            }
+            this.credentials?.let { password -> withServerPassword(password) }
+        }
             .addTo(compositeDisposable)
     }
 }

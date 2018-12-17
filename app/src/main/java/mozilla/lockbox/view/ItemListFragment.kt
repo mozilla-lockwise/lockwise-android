@@ -29,17 +29,19 @@ import com.jakewharton.rxbinding2.view.clicks
 import com.squareup.picasso.Picasso
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.PublishSubject
 import jp.wasabeef.picasso.transformations.CropCircleTransformation
+import kotlinx.android.synthetic.main.fragment_item_list.*
 import kotlinx.android.synthetic.main.fragment_item_list.view.*
+import kotlinx.android.synthetic.main.fragment_warning.view.*
+import kotlinx.android.synthetic.main.nav_header.view.*
 import mozilla.lockbox.R
 import mozilla.lockbox.adapter.ItemListAdapter
 import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.presenter.ItemListPresenter
 import mozilla.lockbox.presenter.ItemListView
-import kotlinx.android.synthetic.main.fragment_item_list.*
-import kotlinx.android.synthetic.main.nav_header.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.adapter.SortItemAdapter
@@ -50,12 +52,27 @@ import mozilla.lockbox.support.showAndRemove
 class ItemListFragment : Fragment(), ItemListView {
     private val compositeDisposable = CompositeDisposable()
     private val adapter = ItemListAdapter()
+    private val errorHelper = NetworkErrorHelper()
+
     private lateinit var spinner: Spinner
     private var _sortItemSelection = PublishSubject.create<Setting.ItemListSort>()
     private lateinit var sortItemsAdapter: SortItemAdapter
     private var userSelection = false
 
     override val sortItemSelection: Observable<Setting.ItemListSort> = _sortItemSelection
+
+    override val networkErrorVisibility: Consumer<in Boolean>
+        get() = Consumer { networkState ->
+            if (!networkState) {
+                errorHelper.showItemNetworkError(view!!)
+            } else {
+                // do we care if it was previously down? or should we always hide?
+                errorHelper.hideItemListNetworkError(view!!)
+            }
+        }
+
+    override val retryNetworkConnectionClicks: Observable<Unit>
+        get() = view!!.networkWarning.retryButton.clicks()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -68,6 +85,7 @@ class ItemListFragment : Fragment(), ItemListView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val navController = requireActivity().findNavController(R.id.fragment_nav_host)
+
         setupToolbar(view.navToolbar, view.appDrawer)
         setupNavigationView(navController, view.navView)
         setupListView(view.entriesView)

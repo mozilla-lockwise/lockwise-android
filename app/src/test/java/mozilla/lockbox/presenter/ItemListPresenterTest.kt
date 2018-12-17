@@ -7,6 +7,7 @@
 package mozilla.lockbox.presenter
 
 import io.reactivex.Observable
+import io.reactivex.functions.Consumer
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
@@ -15,6 +16,7 @@ import mozilla.appservices.logins.ServerPassword
 import mozilla.components.service.fxa.Profile
 import mozilla.lockbox.R
 import mozilla.lockbox.action.DataStoreAction
+import mozilla.lockbox.action.NetworkAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.action.SettingAction
@@ -28,6 +30,7 @@ import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.FingerprintStore
+import mozilla.lockbox.store.NetworkStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.support.Optional
 import org.junit.Assert
@@ -78,15 +81,17 @@ private val password3 = ServerPassword(
 @RunWith(RobolectricTestRunner::class)
 @PrepareForTest(AccountStore::class)
 open class ItemListPresenterTest {
-    @Mock
-    val fingerprintStore = PowerMockito.mock(FingerprintStore::class.java)
-
-    @Mock
-    val accountStore = PowerMockito.mock(AccountStore::class.java)
-
     class FakeView : ItemListView {
 
+        private val retryButtonStub = PublishSubject.create<Unit>()
+        override val retryNetworkConnectionClicks: Observable<Unit>
+            get() = retryButtonStub
+        var networkAvailable: Boolean = true
+
+        override val networkErrorVisibility: Consumer<in Boolean>
+            get() = Consumer { networkAvailable }
         var accountViewModel: AccountViewModel? = null
+
         var updateItemsArgument: List<ItemViewModel>? = null
         var itemListSort: Setting.ItemListSort? = null
         var isLoading: Boolean? = null
@@ -143,11 +148,12 @@ open class ItemListPresenterTest {
     }
 
     class FakeDataStore : DataStore() {
+
         val listStub = PublishSubject.create<List<ServerPassword>>()
         val syncStateStub = PublishSubject.create<SyncState>()
-
         override val list: Observable<List<ServerPassword>>
             get() = listStub
+
         override val syncState: Observable<SyncState> get() = syncStateStub
     }
 
@@ -157,13 +163,22 @@ open class ItemListPresenterTest {
         override var itemListSortOrder: Observable<Setting.ItemListSort> = itemListSortStub
     }
 
+    @Mock
+    val fingerprintStore = PowerMockito.mock(FingerprintStore::class.java)
+
+    @Mock
+    val accountStore = PowerMockito.mock(AccountStore::class.java)
+
+
+    private val networkStore = NetworkStore
     private val dataStore = FakeDataStore()
     private val settingStore = FakeSettingStore()
     private val profileStub = PublishSubject.create<Optional<Profile>>()
 
-    val view: FakeView = spy(FakeView())
+    val view: ItemListPresenterTest.FakeView = spy(ItemListPresenterTest.FakeView())
     val dispatcher = Dispatcher()
-    val subject = ItemListPresenter(view, dispatcher, dataStore, settingStore, fingerprintStore, accountStore)
+    val subject =
+        ItemListPresenter(view, dispatcher, dataStore, settingStore, fingerprintStore, networkStore.shared, accountStore)
 
     private val dispatcherObserver = TestObserver.create<Action>()!!
 
@@ -304,5 +319,14 @@ open class ItemListPresenterTest {
     fun `swipe down calls sync`() {
         view.refreshItemListStub.onNext(Unit)
         dispatcherObserver.assertLastValue(DataStoreAction.Sync)
+    }
+
+    @Test
+    fun `network error visibility is correctly being set`() {
+        view.networkAvailable = false
+        dispatcherObserver.assertValue(NetworkAction.CheckConnectivity)
+
+        view.networkAvailable = true
+        dispatcherObserver.assertValue(NetworkAction.CheckConnectivity)
     }
 }

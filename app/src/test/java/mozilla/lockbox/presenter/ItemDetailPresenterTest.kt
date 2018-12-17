@@ -8,18 +8,21 @@ package mozilla.lockbox.presenter
 
 import androidx.annotation.StringRes
 import io.reactivex.Observable
+import io.reactivex.functions.Consumer
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.R
 import mozilla.lockbox.action.ClipboardAction
 import mozilla.lockbox.action.DataStoreAction
+import mozilla.lockbox.action.NetworkAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.store.DataStore
+import mozilla.lockbox.store.NetworkStore
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.asOptional
 import org.junit.Assert
@@ -28,6 +31,8 @@ import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.powermock.api.mockito.PowerMockito
 import org.mockito.Mockito.clearInvocations
 import org.mockito.Mockito.spy
 import org.mockito.Mockito.verifyZeroInteractions
@@ -36,6 +41,14 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class ItemDetailPresenterTest {
     class FakeView : ItemDetailView {
+        val retryButtonStub = PublishSubject.create<Unit>()
+        override val retryNetworkConnectionClicks: Observable<Unit>
+            get() = retryButtonStub
+
+        var networkAvailable: Boolean = false
+        override val networkErrorVisibility: Consumer<in Boolean>
+            get() = Consumer { networkAvailable }
+
         var item: ItemDetailViewModel? = null
 
         var toastNotificationArgument: Int? = null
@@ -71,6 +84,8 @@ class ItemDetailPresenterTest {
     val dispatcher = Dispatcher()
     val dispatcherObserver = TestObserver.create<Action>()
 
+    private val networkStore = NetworkStore
+
     private val fakeCredential: ServerPassword by lazy {
             ServerPassword(
                 "id0",
@@ -84,7 +99,7 @@ class ItemDetailPresenterTest {
             )
     }
 
-    val subject = ItemDetailPresenter(view, fakeCredential.id, dispatcher, dataStore)
+    val subject = ItemDetailPresenter(view, fakeCredential.id, dispatcher, networkStore.shared, dataStore)
 
     @Before
     fun setUp() {
@@ -128,6 +143,7 @@ class ItemDetailPresenterTest {
         view.usernameCopyClicks.onNext(Unit)
 
         dispatcherObserver.assertValueSequence(listOf(
+            NetworkAction.CheckConnectivity,
             ClipboardAction.CopyUsername(fakeCredential.username!!),
             DataStoreAction.Touch(fakeCredential.id)
         ))
@@ -140,10 +156,20 @@ class ItemDetailPresenterTest {
         view.passwordCopyClicks.onNext(Unit)
 
         dispatcherObserver.assertValueSequence(listOf(
+            NetworkAction.CheckConnectivity,
             ClipboardAction.CopyPassword(fakeCredential.password),
             DataStoreAction.Touch(fakeCredential.id)
         ))
 
         Assert.assertEquals(R.string.toast_password_copied, view.toastNotificationArgument)
+    }
+
+    @Test
+    fun `network error visibility is correctly being set`() {
+        view.networkAvailable = false
+        dispatcherObserver.assertValue(NetworkAction.CheckConnectivity)
+
+        view.networkAvailable = true
+        dispatcherObserver.assertValue(NetworkAction.CheckConnectivity)
     }
 }

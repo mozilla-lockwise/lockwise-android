@@ -13,6 +13,12 @@
         android:layout_height="match_parent"
         android:background="@color/backgroundGrey">
     <include layout="@layout/include_backable"/>
+    <include layout="@layout/fragment_warning"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             app:layout_constraintTop_toBottomOf="@id/toolbar"
+             app:layout_constraintBottom_toTopOf="@id/card_view"
+             tools:text="@string/no_internet_connection"/>
 
     <androidx.cardview.widget.CardView
             xmlns:card_view="http://schemas.android.com/apk/res-auto"
@@ -20,7 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            card_view:layout_constraintTop_toBottomOf="@id/toolbar">
+            card_view:layout_constraintTop_toBottomOf="@id/networkWarning">
 
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"

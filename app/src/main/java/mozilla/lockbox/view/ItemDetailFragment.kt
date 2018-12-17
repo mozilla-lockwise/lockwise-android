@@ -18,8 +18,10 @@ import android.widget.TextView
 import android.widget.Toast
 import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
+import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.fragment_item_detail.*
 import kotlinx.android.synthetic.main.fragment_item_detail.view.*
+import kotlinx.android.synthetic.main.fragment_warning.view.*
 import kotlinx.android.synthetic.main.include_backable.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
@@ -30,6 +32,18 @@ import mozilla.lockbox.support.assertOnUiThread
 
 @ExperimentalCoroutinesApi
 class ItemDetailFragment : BackableFragment(), ItemDetailView {
+    override val networkErrorVisibility: Consumer<in Boolean>
+        get() = Consumer { networkState ->
+            if (!networkState) {
+                errorHelper.showItemNetworkError(view!!)
+            } else {
+                // do we care if it was previously down? or should we always hide?
+                errorHelper.hideItemDetailNetworkError(view!!)
+            }
+        }
+
+    private val errorHelper = NetworkErrorHelper()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -55,6 +69,9 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
 
     override val hostnameClicks: Observable<Unit>
         get() = view!!.inputHostname.clicks()
+
+    override val retryNetworkConnectionClicks: Observable<Unit>
+        get() = view!!.networkWarning.retryButton.clicks()
 
     override var isPasswordVisible: Boolean = false
         set(value) {
@@ -102,9 +119,9 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
 var EditText.readOnly: Boolean
     get() = this.isFocusable
     set(readOnly) {
-            this.isFocusable = !readOnly
-            this.isFocusableInTouchMode = !readOnly
-            this.isClickable = !readOnly
-            this.isLongClickable = !readOnly
-            this.isCursorVisible = !readOnly
-        }
+        this.isFocusable = !readOnly
+        this.isFocusableInTouchMode = !readOnly
+        this.isClickable = !readOnly
+        this.isLongClickable = !readOnly
+        this.isCursorVisible = !readOnly
+    }

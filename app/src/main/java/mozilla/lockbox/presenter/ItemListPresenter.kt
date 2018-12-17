@@ -9,11 +9,13 @@ package mozilla.lockbox.presenter
 import androidx.annotation.IdRes
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
 import mozilla.lockbox.action.DataStoreAction
+import mozilla.lockbox.action.NetworkAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.action.SettingAction
@@ -28,6 +30,7 @@ import mozilla.lockbox.model.titleFromHostname
 import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.FingerprintStore
+import mozilla.lockbox.store.NetworkStore
 import mozilla.lockbox.store.SettingStore
 
 interface ItemListView {
@@ -36,6 +39,8 @@ interface ItemListView {
     val menuItemSelections: Observable<Int>
     val lockNowClick: Observable<Unit>
     val sortItemSelection: Observable<Setting.ItemListSort>
+    val networkErrorVisibility: Consumer<in Boolean>
+    val retryNetworkConnectionClicks: Observable<Unit>
     fun updateItems(itemList: List<ItemViewModel>)
     fun updateAccountProfile(profile: AccountViewModel)
     fun updateItemListSort(sort: Setting.ItemListSort)
@@ -52,11 +57,11 @@ class ItemListPresenter(
     private val dataStore: DataStore = DataStore.shared,
     private val settingStore: SettingStore = SettingStore.shared,
     private val fingerprintStore: FingerprintStore = FingerprintStore.shared,
+    private val networkStore: NetworkStore = NetworkStore.shared,
     private val accountStore: AccountStore = AccountStore.shared
 ) : Presenter() {
 
     override fun onViewReady() {
-
         dataStore.syncState
             .observeOn(AndroidSchedulers.mainThread())
             .map {
@@ -142,6 +147,18 @@ class ItemListPresenter(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(view::updateAccountProfile)
             .addTo(compositeDisposable)
+
+        dispatcher.dispatch(NetworkAction.CheckConnectivity)
+
+        networkStore.networkAvailable
+            .subscribe {
+                view.networkErrorVisibility.accept(it)
+            }.addTo(compositeDisposable)
+
+        // TODO: make this more robust to retry loading the correct page again (call loadUrl?)
+        view.retryNetworkConnectionClicks.subscribe {
+            dispatcher.dispatch(NetworkAction.CheckConnectivity)
+        }?.addTo(compositeDisposable)
     }
 
     private fun onMenuItem(@IdRes item: Int) {
