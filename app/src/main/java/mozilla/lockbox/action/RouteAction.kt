@@ -47,7 +47,7 @@ sealed class RouteAction(
         val url: String? = null,
         @StringRes val title: Int? = null,
         eventObject: TelemetryEventObject
-    ) : RouteAction(TelemetryEventMethod.tap, eventObject) {
+    ) : RouteAction(TelemetryEventMethod.show, eventObject) {
 
         object FaqList : AppWebPage(
             Constant.Faq.uri,
