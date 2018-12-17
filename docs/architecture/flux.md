@@ -28,9 +28,9 @@ All views are bound to a presenter. In this separation, the presenter is respons
 
 In the current implementation of LockFlux on Android, all `View`s are composed of Fragments, not Activities. Situations requiring an `Activity` to be added to the application will be reviewed on a case-to-case basis.
 
-### Action
+### Actions
 
-Actions are tiny `enum`s or `sealed class`es that contain declarative language about either the triggering user action or the update request for a given `Store`.
+Actions are tiny `enum`s or `sealed class`es that contain declarative language about either the triggering user action or the update request for a given `Store`. Actions can also be used to pass objects (item IDs, string resources, Telemetry events) between fragments.
 
 ### Dispatcher
 
