@@ -29,7 +29,6 @@ import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
-import mozilla.lockbox.model.FixedSyncCredentials
 import mozilla.lockbox.model.SyncCredentials
 import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.DataStore
@@ -37,7 +36,6 @@ import mozilla.lockbox.store.DataStore.State
 import mozilla.lockbox.store.LifecycleStore
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.store.SettingStore
-import mozilla.lockbox.support.FixedDataStoreSupport
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.view.DialogFragment
@@ -92,10 +90,6 @@ class RoutePresenter(
         // we will get a null credentials object (and subsequently reset the datastore) on
         // both initial login and reset / logout.
         val credentials = optCredentials.value ?: return DataStoreAction.Reset.asOptional()
-
-        if (credentials is FixedSyncCredentials) {
-            dataStore.resetSupport(FixedDataStoreSupport.shared)
-        }
 
         return DataStoreAction.UpdateCredentials(credentials).asOptional()
     }

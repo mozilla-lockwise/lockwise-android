@@ -55,7 +55,6 @@ open class DataStore(
 
     init {
         backend = support.createLoginsStorage()
-
         // handle state changes
         state
             .subscribe { state ->
@@ -174,6 +173,8 @@ open class DataStore(
         if (!credentials.isValid) {
             return
         }
+
+        resetSupport(credentials.support)
 
         credentials.apply {
             support.syncConfig = SyncUnlockInfo(kid, accessToken, syncKey, tokenServerURL)

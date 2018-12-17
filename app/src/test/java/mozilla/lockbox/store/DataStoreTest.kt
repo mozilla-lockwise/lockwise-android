@@ -8,15 +8,13 @@ package mozilla.lockbox.store
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.SyncUnlockInfo
-import mozilla.components.service.fxa.OAuthScopedKey
 import mozilla.lockbox.DisposingTest
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.mocks.MockDataStoreSupport
-import mozilla.lockbox.model.FxASyncCredentials
+import mozilla.lockbox.model.FixedSyncCredentials
 import mozilla.lockbox.store.DataStore.State
-import mozilla.lockbox.support.FxAOauthInfo
 import org.junit.Assert
 import org.junit.Test
 import org.mockito.Mockito.clearInvocations
@@ -116,23 +114,19 @@ class DataStoreTest : DisposingTest() {
 
     @Test
     fun testUpdateCredentials() {
-        val scope = "oldsync"
         val tokenServerURL = "www.mozilla.org"
         val kid = "dfsdfsfads"
         val k = "lololololol"
-        val scopedKey = OAuthScopedKey(kid, k)
         val accessToken = "jlk;sfdkljdfsljk"
-        val oauthInfo = object : FxAOauthInfo {
-            override val accessToken: String = accessToken
-            override val keys: Map<String, OAuthScopedKey>? = mapOf(Pair(scope, scopedKey))
-            override val scopes: List<String> = listOf(scope)
-        }
-        val syncCredentials = FxASyncCredentials(
-            oauthInfo,
-            tokenServerURL,
-            scope,
-            false
+
+        val syncCredentials = FixedSyncCredentials(
+            accessToken = accessToken,
+            tokenServerURL = tokenServerURL,
+            kid = kid,
+            syncKey = k,
+            isNew = false
         )
+        val support = syncCredentials.support
         dispatcher.dispatch(
             DataStoreAction.UpdateCredentials(
                 syncCredentials

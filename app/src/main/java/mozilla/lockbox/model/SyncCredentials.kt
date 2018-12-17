@@ -7,7 +7,10 @@
 package mozilla.lockbox.model
 
 import mozilla.components.service.fxa.OAuthScopedKey
+import mozilla.lockbox.support.DataStoreSupport
+import mozilla.lockbox.support.FixedDataStoreSupport
 import mozilla.lockbox.support.FxAOauthInfo
+import mozilla.lockbox.support.FxASyncDataStoreSupport
 
 private val emptyString = ""
 
@@ -21,17 +24,21 @@ interface SyncCredentials {
     val kid: String
     val syncKey: String
     val isValid: Boolean
+
+    val support: DataStoreSupport
 }
 
 class FixedSyncCredentials(
-    override val isNew: Boolean
-) : SyncCredentials {
-    override val accessToken: String = emptyString
-    override val kid: String = emptyString
-    override val syncKey: String = emptyString
-    override val tokenServerURL: String = emptyString
+    override val isNew: Boolean,
 
+    override val accessToken: String = emptyString,
+    override val kid: String = emptyString,
+    override val syncKey: String = emptyString,
+    override val tokenServerURL: String = emptyString
+) : SyncCredentials {
     override val isValid: Boolean = true
+
+    override val support: DataStoreSupport = FixedDataStoreSupport.shared
 }
 
 class FxASyncCredentials(
@@ -54,4 +61,6 @@ class FxASyncCredentials(
 
     override val isValid: Boolean
         get() = scopedKey != null
+
+    override val support: DataStoreSupport = FxASyncDataStoreSupport.shared
 }
