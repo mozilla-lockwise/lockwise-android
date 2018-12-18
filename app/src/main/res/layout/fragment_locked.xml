@@ -41,7 +41,7 @@
             android:background="@drawable/rounded_corner_selector"
             android:letterSpacing="0.09"
             android:lineSpacingExtra="2sp"
-            android:text="@string/placeholder_unlock_button"
+            android:text="@string/unlock_button"
             android:textColor="@color/colorPrimary"
             android:textStyle="normal"
             app:layout_constraintBottom_toBottomOf="parent"
