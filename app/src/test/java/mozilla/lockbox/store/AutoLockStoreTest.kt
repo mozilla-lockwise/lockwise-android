@@ -16,11 +16,13 @@ import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.support.Constant
+import mozilla.lockbox.support.LockingSupport
 import mozilla.lockbox.support.SimpleFileReader
 import org.junit.Before
 import org.junit.Test
@@ -34,14 +36,22 @@ import org.mockito.Mockito
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.clearInvocations
 import org.mockito.Mockito.longThat
+import org.mockito.Mockito.spy
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.verifyZeroInteractions
 import org.powermock.api.mockito.PowerMockito
 import org.powermock.core.classloader.annotations.PrepareForTest
 import org.powermock.modules.junit4.PowerMockRunner
 import java.lang.Math.abs
+import java.util.UUID
 import org.mockito.Mockito.`when` as whenCalled
 
+class TestLockingSupport() : LockingSupport {
+    override var systemTimeElapsed: Long = 0L
+    override var currentBootId: String = UUID.randomUUID().toString()
+}
+
+@ExperimentalCoroutinesApi
 @RunWith(PowerMockRunner::class)
 @PrepareForTest(PreferenceManager::class, SimpleFileReader::class, AutoLockStore::class)
 class AutoLockStoreTest {
@@ -78,6 +88,8 @@ class AutoLockStoreTest {
 
     private val lockRequiredObserver: TestObserver<Boolean> = TestObserver.create()
 
+    private val lockingSupport = spy(TestLockingSupport())
+
     val subject = AutoLockStore(
         settingStore = settingStore,
         lifecycleStore = lifecycleStore,
@@ -98,6 +110,7 @@ class AutoLockStoreTest {
 
         subject.injectContext(context)
         subject.lockRequired.subscribe(lockRequiredObserver)
+        subject.lockingSupport = lockingSupport
     }
 
     @Test
@@ -278,10 +291,8 @@ class AutoLockStoreTest {
     ) {
         whenCalled(preferences.getLong(anyString(), anyLong())).thenReturn(autoLockTimerDate)
         whenCalled(preferences.getString(anyString(), isNull())).thenReturn(preferencesBootID)
-        whenCalled(fileReader.readContents(Constant.App.bootIDPath)).thenReturn(systemBootID)
 
-        PowerMockito.mockStatic(SimpleFileReader::class.java)
-        PowerMockito.whenNew(SimpleFileReader::class.java).withAnyArguments().thenReturn(fileReader)
+        lockingSupport.currentBootId = systemBootID
 
         PowerMockito.mockStatic(PreferenceManager::class.java)
         whenCalled(PreferenceManager.getDefaultSharedPreferences(context)).thenReturn(preferences)
@@ -290,7 +301,7 @@ class AutoLockStoreTest {
     }
 
     private fun readAndStoredCurrentBootID() {
-        verify(fileReader, atLeastOnce()).readContents(Constant.App.bootIDPath)
+        verify(lockingSupport, atLeastOnce()).currentBootId
         verify(preferences).edit()
         verify(editor).putString(Constant.Key.bootID, bootID)
         verify(editor).apply()
