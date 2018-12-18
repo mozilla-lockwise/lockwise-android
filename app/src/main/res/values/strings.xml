@@ -19,7 +19,7 @@
     <string name="sort_menu_az">Alphabetically</string>
     <string name="sort_menu_recent">Recently Used</string>
 
-    <string name="placeholder_unlock_button">Unlock Firefox Lockbox</string>
+    <string name="unlock_button">Unlock</string>
     <string name="lock_now">Lock Now</string>
     <string name="all_entries_a_z">All entries (A-Z)</string>
     <string name="all_entries_recent">All entries (Recent)</string>
@@ -95,5 +95,6 @@
     <string name="app_version_description">Application version number</string>
     <!-- <string name="autofill_description">Application autofill setting</string> -->
     <string name="fingerprint_description">Enable fingerprint setting</string>
+    <string name="lock_icon_description">Lock icon image</string>
     <string name="learn_more_description">Learn more about sending usage data</string>
 </resources>
