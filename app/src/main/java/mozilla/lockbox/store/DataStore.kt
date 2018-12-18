@@ -107,8 +107,6 @@ open class DataStore(
                     stateSubject.onNext(State.Unlocked)
                 }
                 .addTo(compositeDisposable)
-        } else {
-            stateSubject.onNext(State.Unlocked)
         }
     }
 

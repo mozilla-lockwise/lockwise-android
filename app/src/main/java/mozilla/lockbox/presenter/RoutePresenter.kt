@@ -58,7 +58,14 @@ class RoutePresenter(
     override fun onViewReady() {
         navController = Navigation.findNavController(activity, R.id.fragment_nav_host)
 
-        val lockObservable = autoLockStore.lockRequired
+        val lockObservable = accountStore.syncCredentials
+            .switchMap {
+                if (it.value != null) {
+                    autoLockStore.lockRequired
+                } else {
+                    Observable.empty<Boolean>()
+                }
+            }
             .map { if (it) DataStoreAction.Lock else DataStoreAction.Unlock }
 
         // Moves credentials from the AccountStore, into the DataStore.

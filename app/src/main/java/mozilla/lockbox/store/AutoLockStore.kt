@@ -8,12 +8,12 @@ package mozilla.lockbox.store
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.os.SystemClock
 import android.preference.PreferenceManager
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
+import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.ReplaySubject
 import io.reactivex.subjects.Subject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -22,7 +22,8 @@ import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.support.Constant
-import mozilla.lockbox.support.SimpleFileReader
+import mozilla.lockbox.support.LockingSupport
+import mozilla.lockbox.support.SystemLockingSupport
 
 @ExperimentalCoroutinesApi
 class AutoLockStore(
@@ -40,9 +41,11 @@ class AutoLockStore(
     private lateinit var preferences: SharedPreferences
 
     private val currentBootID: String
-        get() = SimpleFileReader().readContents(Constant.App.bootIDPath)
+        get() = lockingSupport.currentBootId
 
-    val lockRequired: Observable<Boolean> = ReplaySubject.createWithSize(1)
+    var lockingSupport: LockingSupport = SystemLockingSupport()
+
+    val lockRequired: Observable<Boolean> = PublishSubject.create()
 
     init {
         lifecycleStore.lifecycleEvents
@@ -75,11 +78,11 @@ class AutoLockStore(
     }
 
     private fun backdateNextLockTime() {
-        storeAutoLockTimerDate(SystemClock.elapsedRealtime() - 1)
+        storeAutoLockTimerDate(lockingSupport.systemTimeElapsed - 1)
     }
 
     private fun updateNextLockTime(autoLockTime: Setting.AutoLockTime) {
-        storeAutoLockTimerDate(SystemClock.elapsedRealtime() + autoLockTime.ms)
+        storeAutoLockTimerDate(lockingSupport.systemTimeElapsed + autoLockTime.ms)
     }
 
     private fun lockCurrentlyRequired(): Boolean {
@@ -89,12 +92,12 @@ class AutoLockStore(
     private fun onNewBoot(): Boolean {
         val stored = preferences.getString(Constant.Key.bootID, null) ?: return true
 
-        return !stored.startsWith(currentBootID)
+        return stored != currentBootID
     }
 
     private fun autoLockTimeElapsed(): Boolean {
         val autoLockTimerDate = preferences.getLong(Constant.Key.autoLockTimerDate, -1)
-        val currentSystemTime = SystemClock.elapsedRealtime()
+        val currentSystemTime = lockingSupport.systemTimeElapsed
 
         return autoLockTimerDate <= currentSystemTime
     }

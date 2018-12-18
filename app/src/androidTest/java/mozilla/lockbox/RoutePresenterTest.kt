@@ -8,9 +8,6 @@ package mozilla.lockbox
 
 import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
-import mozilla.lockbox.action.DataStoreAction
-import mozilla.lockbox.action.LifecycleAction
-import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.robots.disconnectDisclaimer
 import mozilla.lockbox.robots.filteredItemList
 import mozilla.lockbox.view.RootActivity
@@ -33,17 +30,14 @@ open class RoutePresenterTest {
 
     @Before
     fun setUp() {
-        Dispatcher.shared.dispatch(DataStoreAction.Unlock)
-        Thread.sleep(200L)
-        Dispatcher.shared.dispatch(LifecycleAction.UserReset)
-        Thread.sleep(200L)
+        navigator.resetApp()
     }
 
     @Test
     fun testFxALogin() {
         navigator.gotoFxALogin()
         navigator.back()
-        navigator.checkOnWelcome()
+        navigator.checkAtWelcome()
     }
 
     @Test
