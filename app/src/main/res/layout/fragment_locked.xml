@@ -16,9 +16,21 @@
         layout="@layout/include_nessie"
         tools:ignore="MissingConstraints" />
 
+    <ImageView
+            android:id="@+id/iconLock"
+            android:layout_width="32dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@android:color/transparent"
+            app:srcCompat="@drawable/ic_icon_lock"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/unlockButton"
+            android:layout_marginBottom="16dp"/>
     <Button
             android:id="@+id/unlockButton"
-            android:layout_width="match_constraint"
+            android:layout_width="0dp"
             android:layout_height="36dp"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="90dp"
@@ -34,6 +46,5 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
-
 
 </android.support.constraint.ConstraintLayout>
