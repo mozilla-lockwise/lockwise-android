@@ -36,8 +36,7 @@
     <string name="all_entries_recent">All entries (Recent)</string>
 
     <!-- This is the label for the button to unlock the application for use while on a lock screen -->
-    <string name="placeholder_unlock_button">Unlock Firefox Lockbox</string>
-
+    <string name="unlock_button">Unlock</string>
     <!-- This is the placeholder text to describe a text area is to be used to search all the entries seen in the list view -->
     <string name="search_your_entries">search your entries</string>
     <!-- This is shown when a user has entered search terms that have filtered the list of entries to find no results -->
@@ -157,5 +156,6 @@
     <string name="auto_lock_description">Auto lock setting</string>
     <string name="app_version_description">Application version number</string>
     <string name="fingerprint_description">Enable fingerprint setting</string>
+    <string name="lock_icon_description">Lock icon image</string>
     <string name="learn_more_description">Learn more about sending usage data</string>
 </resources>
