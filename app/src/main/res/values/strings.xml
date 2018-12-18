@@ -26,7 +26,9 @@
     <!-- This is the label for a button, primarily in the navigation drawer, that securely locks the application requiring the user to unlock it -->
     <string name="lock_now">Lock Now</string>
 
+    <!-- This is the label for the sorting option of the list of passwords to be in alphabetical order -->
     <string name="sort_menu_az">Alphabetically</string>
+    <!-- This is the label for the sorting option of the list of passwords to be in order of recency the item was accessed or used -->
     <string name="sort_menu_recent">Recently Used</string>
 
     <string name="placeholder_unlock_button">Unlock Firefox Lockbox</string>
