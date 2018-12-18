@@ -10,25 +10,43 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    style="@style/WelcomeScreen">
 
     <include android:id="@+id/include"
         layout="@layout/include_nessie"
         tools:ignore="MissingConstraints" />
 
+    <ImageView
+            android:id="@+id/iconLock"
+            android:layout_width="32dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@android:color/transparent"
+            app:srcCompat="@drawable/ic_icon_lock"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/unlockButton"
+            android:layout_marginBottom="16dp"
+            android:contentDescription="@string/lock_icon_description"/>
     <Button
-        android:id="@+id/unlockButton"
-        android:layout_width="86dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="100dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="20dp"
-        android:text="@string/placeholder_unlock_button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/include" />
-
+            android:id="@+id/unlockButton"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="90dp"
+            android:layout_marginStart="90dp"
+            android:layout_marginTop="225dp"
+            android:background="@drawable/rounded_corner_selector"
+            android:letterSpacing="0.09"
+            android:lineSpacingExtra="2sp"
+            android:text="@string/unlock_button"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="normal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
 </android.support.constraint.ConstraintLayout>
