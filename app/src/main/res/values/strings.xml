@@ -28,21 +28,36 @@
 
     <!-- This is the label for the sorting option of the list of passwords to be in alphabetical order -->
     <string name="sort_menu_az">Alphabetically</string>
+    <!-- This is a corresponding heading to describe the list view is showing all entries sorted alphabetically -->
+    <string name="all_entries_a_z">All entries (A-Z)</string>
     <!-- This is the label for the sorting option of the list of passwords to be in order of recency the item was accessed or used -->
     <string name="sort_menu_recent">Recently Used</string>
-
-    <string name="placeholder_unlock_button">Unlock Firefox Lockbox</string>
-    <string name="all_entries_a_z">All entries (A-Z)</string>
+    <!-- This is a corresponding heading to describe the list view is showing all entries sorted by recent use -->
     <string name="all_entries_recent">All entries (Recent)</string>
-    <string name="search_your_entries" tools:ignore="ExtraTranslation">search your entries</string>
+
+    <!-- This is the label for the button to unlock the application for use while on a lock screen -->
+    <string name="placeholder_unlock_button">Unlock Firefox Lockbox</string>
+    
+    <!-- This is the placeholder text to describe a text area is to be used to search all the entries seen in the list view -->
+    <string name="search_your_entries">search your entries</string>
+    <!-- This is shown when a user has entered search terms that have filtered the list of entries to find no results -->
     <string name="no_matching_entries">No matching entries.</string>
-    <string name="save_firefox_disclaimer">To see more entries here, you\'ll need to save them to Firefox.</string>
+    <!-- This explains that if no entries are found and were expected, to add new entries through the Firefox desktop browser -->
+    <string name="save_firefox_disclaimer">To see more entries here, you’ll need to save them to Firefox.</string>
+
+    <!-- This is a heading that appears above the URL in context of a detailed item entry view -->
     <string name="hint_hostname">Web address</string>
+    <!-- This is a heading that appears above the username in context of a detailed item entry view -->
     <string name="hint_username">Username</string>
+    <!-- This is a heading that appears above a password in context of a detailed item entry view -->
     <string name="hint_password">Password</string>
-    <string name="toast_username_copied">Username copied</string>
-    <string name="toast_password_copied">Password copied</string>
+    <!-- This message appears to link to a web page explaining how to make changes to the entry details -->
     <string name="learn_to_edit_entry">Learn how to edit this entry</string>
+
+    <!-- This message appears when the user taps to copy the username to their clipboard for pasting or use in another application -->
+    <string name="toast_username_copied">Username copied</string>
+    <!-- This message appears when the user taps to copy the password to their clipboard for pasting or use in another application -->
+    <string name="toast_password_copied">Password copied</string>
 
     <string name="configuration_title">Configuration</string>
     <string name="support_title">Support</string>
