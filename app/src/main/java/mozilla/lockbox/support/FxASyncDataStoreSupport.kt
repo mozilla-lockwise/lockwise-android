@@ -32,26 +32,23 @@ class FxASyncDataStoreSupport(
         }
 
         // val encryptionKey = randomUUID().toString()
-        val encryptionKey = generateRandomString(50)
+        val encryptionKey = generateRandomString(32)
         preferences.putString(Constant.Key.encryptionKey, encryptionKey)
 
         encryptionKey
     }
 
-    /*
-     * This serves as a placeholder, and should definitely not be considered secure.
-     * TODO make this cryptographically interesting; add method to KeyStore/DataProtect
-     */
     private fun generateRandomString(keyLength: Int): String {
-        val charPool = "0123456789ABCDEF".toCharArray()
-
-        val bytes = ByteArray(keyLength)
+        val bytes = ByteArray(keyLength * 2)
         val random = SecureRandom()
         random.nextBytes(bytes)
 
         return bytes
             .map {
-                charPool[(it.toInt() and 0xFF % charPool.size)]
+                val full = it.toInt()
+                val hi = (full and 0xf0) ushr 4
+                val lo = full and 0x0f
+                "%h%h".format(hi, lo)
             }
             .joinToString("")
     }
