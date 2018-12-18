@@ -54,10 +54,16 @@
     <!-- This message appears to link to a web page explaining how to make changes to the entry details -->
     <string name="learn_to_edit_entry">Learn how to edit this entry</string>
 
-    <!-- This message appears when the user taps to copy the username to their clipboard for pasting or use in another application -->
+    <!-- This describes an icon to screenreaders that the button tapped will copy the username to the device clipboard to paste and use in another application -->
+    <string name="copy_username_content_description">Copy your username</string>
+    <!-- This message appears when the user taps to copy the username to the device clipboard -->
     <string name="toast_username_copied">Username copied</string>
-    <!-- This message appears when the user taps to copy the password to their clipboard for pasting or use in another application -->
+    <!-- This describes an icon to screenreaders that the button tapped will copy the password to the device clipboard to paste and use in another application -->
+    <string name="copy_password_content_description">Copy your password</string>
+    <!-- This message appears when the user taps to copy the password to the device clipboard -->
     <string name="toast_password_copied">Password copied</string>
+    <!-- This describes an icon to screenreaders that the button tapped will display the password in plain text for immediate reading or use -->
+    <string name="display_password_content_description">Display your password in plain text</string>
 
     <string name="configuration_title">Configuration</string>
     <string name="support_title">Support</string>
@@ -108,9 +114,6 @@
     <string name="syncing_entries">Syncing your entries…</string>
 
     <!--Accessibility: content descriptions-->
-    <string name="copy_username_content_description">Copy your username</string>
-    <string name="copy_password_content_description">Copy your password</string>
-    <string name="display_password_content_description">Display your password in plain text</string>
     <string name="backable_description">Back</string>
     <string name="menu_description">Menu</string>
     <string name="search_description">Search entries</string>
