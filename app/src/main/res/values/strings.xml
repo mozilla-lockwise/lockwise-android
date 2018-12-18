@@ -11,7 +11,7 @@
     <!-- This is used as the label on a button on a first-run welcome screen to sign in and start using the application -->
     <string name="welcome_start_btn">Get Started</string>
     <!-- This provides context near a button on the first-run welcome screen to describe application requirements -->
-    <string name="welcome_instructions">To use Firefox Lockbox, you\'ll need a\nFirefox Account with saved logins.</string>
+    <string name="welcome_instructions">To use Firefox Lockbox, you’ll need a\nFirefox Account with saved logins.</string>
     <!-- This is the link on the first-run welcome screen to learn more about the requirements of the application -->
     <string name="welcome_learn_more_btn">Learn More</string>
     
