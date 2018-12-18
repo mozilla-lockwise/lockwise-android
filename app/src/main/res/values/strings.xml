@@ -95,5 +95,6 @@
     <string name="app_version_description">Application version number</string>
     <!-- <string name="autofill_description">Application autofill setting</string> -->
     <string name="fingerprint_description">Enable fingerprint setting</string>
+    <string name="lock_icon_description">Lock icon image</string>
     <string name="learn_more_description">Learn more about sending usage data</string>
 </resources>
