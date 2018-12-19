@@ -19,7 +19,7 @@
 
     <ImageView
         android:id="@+id/profileImage"
-        android:contentDescription="@string/application_logo"
+        android:contentDescription="@string/app_logo"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginTop="40dp"

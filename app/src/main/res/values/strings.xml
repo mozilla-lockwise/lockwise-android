@@ -5,8 +5,22 @@
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!--suppress CheckTagEmptyBody -->
+    <string name="empty_string"></string>
+    <!-- This is the message provided when the application opens a web view and a URL was not provided, this is not expected to be seen by users -->
+    <string name="missing_url">MISSING_URL</string>
+
     <!-- This string is a promotional or short descriptional sentence to describe the purpose of the application -->
     <string name="app_tagline">Take your passwords everywhere.</string>
+    <!-- This is used for screenreaders to know the application logo image is currently selected -->
+    <string name="app_logo">Firefox Lockbox Logo</string>
+    
+    <!-- This is the text on a button to cancel the current operation or request such as unlocking the application with a fingerprint -->
+    <string name="cancel">Cancel</string>
+    <!-- This is the title of a link for users to tap to open a web page to learn more about a related setting or feature -->
+    <string name="learn_more">Learn more</string>
+    <!-- This is the label a screenreader uses to inform the user they selected a link that will open a webpage to learn more about the feature or setting -->
+    <string name="learn_more_description">Open a link to Learn more</string>
 
     <!-- This is used as the label on a button on a first-run welcome screen to sign in and start using the application -->
     <string name="welcome_start_btn">Get Started</string>
@@ -14,6 +28,14 @@
     <string name="welcome_instructions">To use Firefox Lockbox, you’ll need a\nFirefox Account with saved logins.</string>
     <!-- This is the link on the first-run welcome screen to learn more about the requirements of the application -->
     <string name="welcome_learn_more_btn">Learn More</string>
+    
+    <!-- This is the label for a button only available on test builds to skip the authentication step and immediately use test data -->
+    <string name="placeholder_skip_fxa">Use test data</string>
+
+    <!-- This is the label used by screenreaders to inform the user the navigation button selected is to go backwards from where they came from -->
+    <string name="backable_description">Back</string>
+    <!-- This is the label used by screenreaders to inform the user the button selected is meant to open a navigation menu --> 
+    <string name="menu_description">Menu</string>
 
     <!-- This is the label for the navigation item that opens a Frequently Asked Questions web page -->
     <string name="nav_menu_faq">FAQ</string>
@@ -26,6 +48,16 @@
     <!-- This is the label for a button, primarily in the navigation drawer, that securely locks the application requiring the user to unlock it -->
     <string name="lock_now">Lock Now</string>
 
+    <!-- This label is used by screenreaders to inform the user they have selected an image of a lock -->
+    <string name="lock_icon_description">Lock icon image</string>
+    <!-- This is the label for the button to unlock the application for use while on a lock screen -->
+    <string name="unlock_button">Unlock</string>
+
+    <!-- This message appears in a toast informing the user it is currently downloading and syncing entry data -->
+    <string name="syncing_entries">Syncing your entries…</string>
+
+    <!-- This is the label used by screenreaders to inform the user the selected menu is for sorting the entries in the list -->
+    <string name="sort_description">Sort entries</string>
     <!-- This is the label for the sorting option of the list of passwords to be in alphabetical order -->
     <string name="sort_menu_az">Alphabetically</string>
     <!-- This is a corresponding heading to describe the list view is showing all entries sorted alphabetically -->
@@ -34,11 +66,12 @@
     <string name="sort_menu_recent">Recently Used</string>
     <!-- This is a corresponding heading to describe the list view is showing all entries sorted by recent use -->
     <string name="all_entries_recent">All entries (Recent)</string>
-
-    <!-- This is the label for the button to unlock the application for use while on a lock screen -->
-    <string name="unlock_button">Unlock</string>
-    <!-- This is the placeholder text to describe a text area is to be used to search all the entries seen in the list view -->
+    <!-- This is the label used by screenreaders to inform the user the selected text area is used to search the entries in the list -->
+    <string name="search_description">Search entries</string>
+    <!-- This is the placeholder text to visibly describe a text area is to be used to search all the entries seen in the list view -->
     <string name="search_your_entries">search your entries</string>
+    <!-- This is the label used by screenreaders to inform the user the selected button will clear the text currently input in the search area -->
+    <string name="search_clear_content_description">Clear search bar text</string>
     <!-- This is shown when a user has entered search terms that have filtered the list of entries to find no results -->
     <string name="no_matching_entries">No matching entries.</string>
     <!-- This explains that if no entries are found and were expected, to add new entries through the Firefox desktop browser -->
@@ -69,34 +102,56 @@
     <!-- This is a heading that appears above a group of application settings or links related to what is supported by the application -->
     <string name="support_title">Support</string>
 
-    <!-- This is the title of a setting that allows the user to change the duration before the application locks and requires unlocking -->
+    <!-- This is the title of a setting that allows the user to change the time duration before the application locks and requires unlocking -->
     <string name="auto_lock">Auto lock</string>
-    <!-- This is the title of a setting that allows the user to use the device fingerprint biometrics to unlock the application -->
-    <string name="unlock">Unlock with fingerprint</string>
-
+    <!-- This is the label a screenreader uses to inform the user they selected the auto lock setting toggle -->
+    <string name="auto_lock_description">Auto lock setting</string>
+    <!-- This is a time duration for the automatic application locking setting equal to 1 minute -->
+    <string name="one_minute">1 minute</string>
+    <!-- This is a time duration for the automatic application locking setting equal to 5 minutes -->
+    <string name="five_minutes">5 minutes</string>
+    <!-- This is a time duration for the automatic application locking setting equal to 15 minutes -->
+    <string name="fifteen_minutes">15 minutes</string>
+    <!-- This is a time duration for the automatic application locking setting equal to 30 minutes -->
+    <string name="thirty_minutes">30 minutes</string>
+    <!-- This is a time duration for the automatic application locking setting equal to 1 hour -->
+    <string name="one_hour">1 hour</string>
+    <!-- This is a time duration for the automatic application locking setting equal to 12 hours -->
+    <string name="twelve_hours">12 hours</string>
+    <!-- This is a time duration for the automatic application locking setting equal to 24 hours -->
+    <string name="twenty_four_hours">24 hours</string>
+    <!-- This is a time duration for the automatic application locking setting that means it will never automatically lock -->
+    <string name="never">Never</string>
+    
     <!-- This is the title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application -->
-    <!-- <string name="autofill">Autofill</string> -->
+    <string name="autofill">Autofill</string>
     <!-- This is the sub-title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application -->
-    <!-- <string name="autofill_summary">Let Firefox Lockbox fill in logins for you</string> -->
+    <string name="autofill_summary">Let Firefox Lockbox fill in logins for you</string>
     <!-- This is the label a screenreader uses to inform the user they selected the autofill setting toggle -->
-    <!-- <string name="autofill_description">Application autofill setting</string> -->
+    <string name="autofill_description">Application autofill setting</string>
 
     <!-- This is the title of a setting that allows the user to enable and disable the sending of telemetry usage data to Mozilla -->
     <string name="send_usage_data">Send usage data</string>
-      <!-- This is the sub-title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application -->
+    <!-- This is the sub-title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application -->
     <string name="send_usage_data_summary">Mozilla strives to only collect what we need to provide and improve Firefox for everyone. </string>
-    <!-- This is the title of a link for users to tap to open a web page to learn more about a related setting or feature -->
-    <string name="learn_more">Learn more</string>
 
+    <!-- This is the label a screenreader uses to inform the user they selected a label on the screen that includes the application version number -->
+    <string name="app_version_description">Application version number</string>
+
+    <!-- This is the title of a setting that allows the user to use the device fingerprint biometrics to unlock the application -->
+    <string name="unlock">Unlock with fingerprint</string>
+    <!-- This is the label a screenreader uses to inform the user they selected the fingerprint setting toggle -->
+    <string name="fingerprint_description">Enable fingerprint setting</string>
     <!-- This is the title of a dialog that pops up to unlock the application when the unlock with fingerprint setting is enabled -->
     <string name="fingerprint_dialog_title">Unlock Firefox Lockbox</string>
     <!-- This is the message displayed to the user to unlock the application -->
     <string name="unlock_fallback_title">Unlock Firefox Lockbox</string>
-
     <!-- This is an instructional message displayed to use the fingerprint sensor to unlock the application -->
     <string name="touch_fingerprint_sensor">Touch the fingerprint sensor.</string>
-    <!-- This is the text on a button to cancel the current operation or request such as unlocking the application with a fingerprint -->
-    <string name="cancel">Cancel</string>
+    <!-- This is the title of a dialog requesting permission for the application to unlock using the device fingerprint sensor -->
+    <string name="enable_fingerprint_dialog_title">Enable Fingerprint</string>
+    <!-- This is the message requesting permission for the application to unlock using the device fingerprint sensor -->
+    <string name="enable_fingerprint_dialog_subtitle">Give Lockbox permission to unlock this app with the fingerprint sensor.</string>
     <!-- This is the error displayed when attempting to unlock the application with a fingerprint and the device does not recognize it as a match -->
     <string name="fingerprint_not_recognized">Not recognized</string>
     <!-- This is the success message displayed after using the fingerprint sensor to unlock the application -->
@@ -115,6 +170,8 @@
     <!-- This is the message displayed on a button to open the device settings for the user to set up device-provided security protections -->
     <string name="set_up_security_button">Set up Now</string>
 
+    <!-- This is used for screenreaders to inform the user they have selected the account profile image -->
+    <string name="profile_image_content_description">Firefox Account Profile Image</string>
     <!-- This message is displayed to inform users how to change their Firefox Account profile details on a setting screen -->
     <string name="account_information">To make changes to your account, log in to your Firefox Account from any browser.</string>
     <!-- This is the text on a button to sign out and disconnect the account from the application -->
@@ -127,35 +184,4 @@
     <string name="disconnect_disclaimer_message">This will delete your Firefox Account information and all saved entries from Firefox Lockbox.</string>
     <!-- This is the text on a final confirmation button to sign out and disconnect the account from the application -->
     <string name="disconnect">Disconnect</string>
-
-    <string name="application_logo">Firefox Lockbox Logo</string>
-    <string name="enable_fingerprint_dialog_title">Enable Fingerprint</string>
-    <string name="enable_fingerprint_dialog_subtitle">Give Lockbox permission to unlock this app with the fingerprint sensor.</string>
-    <string name="one_minute">1 minute</string>
-    <string name="fifteen_minutes">15 minutes</string>
-    <string name="five_minutes">5 minutes</string>
-    <string name="thirty_minutes">30 minutes</string>
-    <string name="one_hour">1 hour</string>
-    <string name="twelve_hours">12 hours</string>
-    <string name="twenty_four_hours">24 hours</string>
-    <string name="never">Never</string>
-    <string name="placeholder_skip_fxa">Use test data</string>
-    <!--suppress CheckTagEmptyBody -->
-    <string name="empty_string"></string>
-    <string name="missing_url">MISSING_URL</string>
-    <string name="default_avatar_url">https://firefoxusercontent.com/00000000000000000000000000000000</string>
-    <string name="syncing_entries">Syncing your entries…</string>
-
-    <!--Accessibility: content descriptions-->
-    <string name="backable_description">Back</string>
-    <string name="menu_description">Menu</string>
-    <string name="search_description">Search entries</string>
-    <string name="sort_description">Sort entries</string>
-    <string name="search_clear_content_description">Clear search bar text</string>
-    <string name="profile_image_content_description">Firefox Account Profile Image</string>
-    <string name="auto_lock_description">Auto lock setting</string>
-    <string name="app_version_description">Application version number</string>
-    <string name="fingerprint_description">Enable fingerprint setting</string>
-    <string name="lock_icon_description">Lock icon image</string>
-    <string name="learn_more_description">Learn more about sending usage data</string>
 </resources>
