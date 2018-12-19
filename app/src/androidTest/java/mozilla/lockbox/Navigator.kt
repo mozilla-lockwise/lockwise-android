@@ -13,6 +13,7 @@ import android.support.test.espresso.NoActivityResumedException
 import android.support.test.espresso.intent.Intents
 import br.com.concretesolutions.kappuccino.custom.intent.IntentMatcherInteractions.sentIntent
 import br.com.concretesolutions.kappuccino.custom.intent.IntentMatcherInteractions.stubIntent
+import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Dispatcher
@@ -29,6 +30,14 @@ import mozilla.lockbox.robots.welcome
 import org.junit.Assert
 
 class Navigator {
+    fun resetApp() {
+        Dispatcher.shared.dispatch(DataStoreAction.Unlock)
+        Thread.sleep(200L)
+        Dispatcher.shared.dispatch(LifecycleAction.UserReset)
+        Thread.sleep(200L)
+        checkAtWelcome()
+    }
+
     fun gotoWelcome() {
         Dispatcher.shared.dispatch(RouteAction.Welcome)
     }
@@ -39,7 +48,7 @@ class Navigator {
         checkAtFxALogin()
     }
 
-    private fun checkAtFxALogin() {
+    fun checkAtFxALogin() {
         fxaLogin { exists() }
     }
 
@@ -143,7 +152,7 @@ class Navigator {
         checkAtLockScreen()
     }
 
-    private fun checkAtLockScreen() {
+    fun checkAtLockScreen() {
         lockScreen { exists() }
     }
 
@@ -159,10 +168,6 @@ class Navigator {
 
     private fun checkAtItemDetail() {
         itemDetail { exists() }
-    }
-
-    fun checkOnWelcome() {
-        welcome { exists() }
     }
 
     fun back(remainInApplication: Boolean = true) {
