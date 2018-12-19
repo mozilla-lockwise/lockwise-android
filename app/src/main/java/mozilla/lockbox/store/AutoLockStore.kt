@@ -13,7 +13,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
-import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.ReplaySubject
 import io.reactivex.subjects.Subject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.DataStoreAction
@@ -39,12 +39,9 @@ class AutoLockStore(
     private val compositeDisposable = CompositeDisposable()
     private lateinit var preferences: SharedPreferences
 
-    private val currentBootID: String
-        get() = lockingSupport.currentBootId
-
     var lockingSupport: LockingSupport = SystemLockingSupport()
 
-    val lockRequired: Observable<Boolean> = PublishSubject.create()
+    val lockRequired: Observable<Boolean> = ReplaySubject.create()
 
     init {
         lifecycleStore.lifecycleEvents
@@ -64,12 +61,6 @@ class AutoLockStore(
                 this.backdateNextLockTime()
             }
             .addTo(compositeDisposable)
-
-        // wait to store the currentBootId until we can be sure that we've checked it once
-        lockRequired
-            .take(1)
-            .subscribe { storeCurrentBootId() }
-            .addTo(compositeDisposable)
     }
 
     override fun injectContext(context: Context) {
@@ -85,13 +76,7 @@ class AutoLockStore(
     }
 
     private fun lockCurrentlyRequired(): Boolean {
-        return onNewBoot() || autoLockTimeElapsed()
-    }
-
-    private fun onNewBoot(): Boolean {
-        val stored = preferences.getString(Constant.Key.bootID, null) ?: return true
-
-        return stored != currentBootID
+        return autoLockTimeElapsed()
     }
 
     private fun autoLockTimeElapsed(): Boolean {
@@ -105,13 +90,6 @@ class AutoLockStore(
         preferences
             .edit()
             .putLong(Constant.Key.autoLockTimerDate, dateTime)
-            .apply()
-    }
-
-    private fun storeCurrentBootId() {
-        preferences
-            .edit()
-            .putString(Constant.Key.bootID, currentBootID)
             .apply()
     }
 }

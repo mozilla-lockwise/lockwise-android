@@ -60,7 +60,9 @@ class RoutePresenter(
 
         val lockObservable = accountStore.syncCredentials
             .switchMap {
-                if (it.value != null) {
+                if (it.value != null && it.value.isNew) {
+                    autoLockStore.lockRequired.skip(1)
+                } else if (it.value != null) {
                     autoLockStore.lockRequired
                 } else {
                     Observable.empty<Boolean>()

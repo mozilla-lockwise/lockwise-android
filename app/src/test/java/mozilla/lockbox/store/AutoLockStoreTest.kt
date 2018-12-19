@@ -30,10 +30,8 @@ import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers.anyLong
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.ArgumentMatchers.eq
-import org.mockito.ArgumentMatchers.isNull
 import org.mockito.Mock
 import org.mockito.Mockito
-import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.clearInvocations
 import org.mockito.Mockito.longThat
 import org.mockito.Mockito.spy
@@ -199,69 +197,21 @@ class AutoLockStoreTest {
     }
 
     @Test
-    fun `foregrounding lifecycle actions on a new boot, when the saved autolocktimerdate is later than the current system time`() {
-        mockSavedValues(SystemClock.elapsedRealtime() + 600000, bootID, null)
-
-        (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Foreground)
-
-        lockRequiredObserver.assertValue(true)
-
-        readAndStoredCurrentBootID()
-    }
-
-    @Test
-    fun `foregrounding lifecycle actions on a new boot, when the saved autolocktimerdate is earlier than the current system time`() {
-        mockSavedValues(SystemClock.elapsedRealtime() - 600000, bootID, null)
-
-        (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Foreground)
-
-        lockRequiredObserver.assertValue(true)
-
-        readAndStoredCurrentBootID()
-    }
-
-    @Test
-    fun `foregrounding lifecycle actions on a boot not matching the stored boot, when the saved autolocktimerdate is later than the current system time`() {
-        mockSavedValues(SystemClock.elapsedRealtime() + 600000, bootID, "jkuiuohhklj")
-
-        (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Foreground)
-
-        lockRequiredObserver.assertValue(true)
-
-        readAndStoredCurrentBootID()
-    }
-
-    @Test
-    fun `foregrounding lifecycle actions on a boot not matching the stored boot, when the saved autolocktimerdate is earlier than the current system time`() {
-        mockSavedValues(SystemClock.elapsedRealtime() - 600000, bootID, "uyoihkljhkjuy")
-
-        (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Foreground)
-
-        lockRequiredObserver.assertValue(true)
-
-        readAndStoredCurrentBootID()
-    }
-
-    @Test
-    fun `foregrounding lifecycle actions on a boot matching the stored boot, when the saved autolocktimerdate is later than the current system time`() {
-        mockSavedValues(SystemClock.elapsedRealtime() + 600000, bootID, bootID)
+    fun `foregrounding lifecycle actions when the saved autolocktimerdate is later than the current system time`() {
+        mockSavedValues(SystemClock.elapsedRealtime() + 600000)
 
         (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Foreground)
 
         lockRequiredObserver.assertValue(false)
-
-        readAndStoredCurrentBootID()
     }
 
     @Test
-    fun `foregrounding lifecycle actions on a boot matching the stored boot, when the saved autolocktimerdate is earlier than the current system time`() {
-        mockSavedValues(SystemClock.elapsedRealtime() - 600000, bootID, bootID)
+    fun `foregrounding lifecycle actions when the saved autolocktimerdate is earlier than the current system time`() {
+        mockSavedValues(SystemClock.elapsedRealtime() - 600000)
 
         (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Foreground)
 
         lockRequiredObserver.assertValue(true)
-
-        readAndStoredCurrentBootID()
     }
 
     @Test
@@ -285,25 +235,13 @@ class AutoLockStoreTest {
     }
 
     private fun mockSavedValues(
-        autoLockTimerDate: Long,
-        systemBootID: String,
-        preferencesBootID: String?
+        autoLockTimerDate: Long
     ) {
         whenCalled(preferences.getLong(anyString(), anyLong())).thenReturn(autoLockTimerDate)
-        whenCalled(preferences.getString(anyString(), isNull())).thenReturn(preferencesBootID)
-
-        lockingSupport.currentBootId = systemBootID
 
         PowerMockito.mockStatic(PreferenceManager::class.java)
         whenCalled(PreferenceManager.getDefaultSharedPreferences(context)).thenReturn(preferences)
 
         subject.injectContext(context)
-    }
-
-    private fun readAndStoredCurrentBootID() {
-        verify(lockingSupport, atLeastOnce()).currentBootId
-        verify(preferences).edit()
-        verify(editor).putString(Constant.Key.bootID, bootID)
-        verify(editor).apply()
     }
 }
