@@ -42,7 +42,13 @@ enum class TelemetryEventMethod {
     autofill_locked,
     autofill_unlocked,
     refresh,
-    autofill_clear
+    autofill_clear,
+    lock,
+    unlock,
+    reset,
+    sync,
+    touch,
+    update_credentials
 }
 
 enum class TelemetryEventObject {
@@ -75,5 +81,6 @@ enum class TelemetryEventObject {
     open_in_browser,
     filter,
     back,
-    dialog
+    dialog,
+    datastore
 }

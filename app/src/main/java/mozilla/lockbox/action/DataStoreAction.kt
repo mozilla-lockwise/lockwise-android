@@ -6,14 +6,16 @@
 
 package mozilla.lockbox.action
 
-import mozilla.lockbox.flux.Action
 import mozilla.lockbox.model.SyncCredentials
 
-sealed class DataStoreAction : Action {
-    object Lock : DataStoreAction()
-    object Unlock : DataStoreAction()
-    object Reset : DataStoreAction()
-    object Sync : DataStoreAction()
-    data class Touch(val id: String) : DataStoreAction()
-    data class UpdateCredentials(val syncCredentials: SyncCredentials) : DataStoreAction()
+sealed class DataStoreAction(
+    override val eventMethod: TelemetryEventMethod,
+    override val eventObject: TelemetryEventObject
+) : TelemetryAction {
+    object Lock : DataStoreAction(TelemetryEventMethod.lock, TelemetryEventObject.datastore)
+    object Unlock : DataStoreAction(TelemetryEventMethod.unlock, TelemetryEventObject.datastore)
+    object Reset : DataStoreAction(TelemetryEventMethod.reset, TelemetryEventObject.datastore)
+    object Sync : DataStoreAction(TelemetryEventMethod.sync, TelemetryEventObject.datastore)
+    data class Touch(val id: String) : DataStoreAction(TelemetryEventMethod.touch, TelemetryEventObject.datastore)
+    data class UpdateCredentials(val syncCredentials: SyncCredentials) : DataStoreAction(TelemetryEventMethod.update_credentials, TelemetryEventObject.datastore)
 }
