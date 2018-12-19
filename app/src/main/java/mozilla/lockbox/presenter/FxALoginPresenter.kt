@@ -35,7 +35,7 @@ class FxALoginPresenter(
     override fun onViewReady() {
         view.webViewObserver = Consumer { url ->
             url?.let {
-                if (url.startsWith(Constant.FxA.redirectUri)) {
+                if (isRedirectUri(it)) {
                     dispatcher.dispatch(AccountAction.OauthRedirect(url))
                 }
             }
