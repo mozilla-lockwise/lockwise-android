@@ -30,7 +30,7 @@ class FxALoginPresenter(
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val accountStore: AccountStore = AccountStore.shared
 ) : Presenter() {
-    fun isRedirectUri(uri: String?) : Boolean = uri?.startsWith(Constant.FxA.redirectUri) ?: false
+    fun isRedirectUri(uri: String?): Boolean = uri?.startsWith(Constant.FxA.redirectUri) ?: false
 
     override fun onViewReady() {
         view.webViewObserver = Consumer { url ->
