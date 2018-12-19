@@ -70,6 +70,16 @@ class FxALoginPresenterTest {
     }
 
     @Test
+    fun `isRedirectURI is working as expected`() {
+        var url: String? = null
+        Assert.assertFalse(subject.isRedirectUri(url))
+        url = "https://www.mozilla.org/"
+        Assert.assertFalse(subject.isRedirectUri(url))
+        url = Constant.FxA.redirectUri + "?moz_fake"
+        Assert.assertTrue(subject.isRedirectUri(url))
+    }
+
+    @Test
     fun `onViewReady, when the accountStore pushes a new loginURL`() {
         val url = "www.mozilla.org"
         loginURLSubject.onNext(url)
@@ -79,7 +89,7 @@ class FxALoginPresenterTest {
 
     @Test
     fun `onViewReady, when the webview redirects to a URL starting with the expected redirect`() {
-        val url = Constant.FxA.redirectUri + "/moz_fake"
+        val url = Constant.FxA.redirectUri + "?moz_fake"
         view.webViewRedirects.onNext(url)
 
         val redirectAction = dispatcherObserver.values().first() as AccountAction.OauthRedirect
