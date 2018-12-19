@@ -12,23 +12,16 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.util.UUID
 
 class TestLockingSupport() : LockingSupport {
     override var systemTimeElapsed: Long = 0L
-    override var currentBootId: String = UUID.randomUUID().toString()
 
     constructor(existing: LockingSupport) : this() {
         systemTimeElapsed = existing.systemTimeElapsed
-        currentBootId = existing.currentBootId
     }
 
     fun advance(time: Long = 1L) {
         systemTimeElapsed += time
-    }
-
-    fun reboot() {
-        currentBootId = UUID.randomUUID().toString()
     }
 }
 

@@ -41,12 +41,10 @@ import org.powermock.api.mockito.PowerMockito
 import org.powermock.core.classloader.annotations.PrepareForTest
 import org.powermock.modules.junit4.PowerMockRunner
 import java.lang.Math.abs
-import java.util.UUID
 import org.mockito.Mockito.`when` as whenCalled
 
 class TestLockingSupport() : LockingSupport {
     override var systemTimeElapsed: Long = 0L
-    override var currentBootId: String = UUID.randomUUID().toString()
 }
 
 @ExperimentalCoroutinesApi
