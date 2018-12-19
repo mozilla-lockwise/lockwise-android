@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.CookieManager
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.jakewharton.rxbinding2.view.clicks
@@ -53,10 +54,13 @@ class FxALoginFragment : BackableFragment(), FxALoginView {
 
     override fun loadURL(url: String) {
         webView.webViewClient = object : WebViewClient() {
-            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-                webViewObserver?.accept(url)
-
-                super.onPageStarted(view, url, favicon)
+            override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+                val url = request?.url.toString() ?: null
+                if ((presenter as FxALoginPresenter).isRedirectUri(url)) {
+                    webViewObserver?.accept(url)
+                    return true
+                }
+                return false
             }
         }
         webView.loadUrl(url)
