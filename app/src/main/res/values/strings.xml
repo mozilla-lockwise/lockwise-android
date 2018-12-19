@@ -12,7 +12,7 @@
 
     <!-- This string is a promotional or short descriptional sentence to describe the purpose of the application -->
     <string name="app_tagline">Take your passwords everywhere.</string>
-    <!-- This is used for screenreaders to know the application logo image is currently selected -->
+    <!-- This is used for screenreaders to know the application logo image is currently selected, not expected to translate Firefox Lockbox -->
     <string name="app_logo">Firefox Lockbox Logo</string>
     
     <!-- This is the text on a button to cancel the current operation or request such as unlocking the application with a fingerprint -->
@@ -24,7 +24,7 @@
 
     <!-- This is used as the label on a button on a first-run welcome screen to sign in and start using the application -->
     <string name="welcome_start_btn">Get Started</string>
-    <!-- This provides context near a button on the first-run welcome screen to describe application requirements -->
+    <!-- This provides context near a button on the first-run welcome screen to describe application requirements, not expected to translate Firefox Account nor Firefox Lockbox -->
     <string name="welcome_instructions">To use Firefox Lockbox, you’ll need a\nFirefox Account with saved logins.</string>
     <!-- This is the link on the first-run welcome screen to learn more about the requirements of the application -->
     <string name="welcome_learn_more_btn">Learn More</string>
@@ -125,7 +125,7 @@
     
     <!-- This is the title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application -->
     <string name="autofill">Autofill</string>
-    <!-- This is the sub-title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application -->
+    <!-- This is the sub-title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application, not expected to translate Firefox Lockbox -->
     <string name="autofill_summary">Let Firefox Lockbox fill in logins for you</string>
     <!-- This is the label a screenreader uses to inform the user they selected the autofill setting toggle -->
     <string name="autofill_description">Application autofill setting</string>
@@ -142,9 +142,9 @@
     <string name="unlock">Unlock with fingerprint</string>
     <!-- This is the label a screenreader uses to inform the user they selected the fingerprint setting toggle -->
     <string name="fingerprint_description">Enable fingerprint setting</string>
-    <!-- This is the title of a dialog that pops up to unlock the application when the unlock with fingerprint setting is enabled -->
+    <!-- This is the title of a dialog that pops up to unlock the application when the unlock with fingerprint setting is enabled, not expected to translate Firefox Lockbox -->
     <string name="fingerprint_dialog_title">Unlock Firefox Lockbox</string>
-    <!-- This is the message displayed to the user to unlock the application -->
+    <!-- This is the message displayed to the user to unlock the application, not expected to translate Firefox Lockbox -->
     <string name="unlock_fallback_title">Unlock Firefox Lockbox</string>
     <!-- This is an instructional message displayed to use the fingerprint sensor to unlock the application -->
     <string name="touch_fingerprint_sensor">Touch the fingerprint sensor.</string>
@@ -165,22 +165,22 @@
 
     <!-- This is the title of a dialog displayed to encourage the user to enable security to lock their device and the application -->
     <string name="no_device_security_title">Secure your device.</string>
-    <!-- This is a message displayed requiring the user to enable device-provided security to lock their device and the application -->
+    <!-- This is a message displayed requiring the user to enable device-provided security to lock their device and the application, not expected to translate Firefox Lockbox -->
     <string name="no_device_security_message">In order to lock Firefox Lockbox, a Pattern, PIN, or Password must be set up on your device. Without this, anyone who has your phone can access the information saved here.</string>
     <!-- This is the message displayed on a button to open the device settings for the user to set up device-provided security protections -->
     <string name="set_up_security_button">Set up Now</string>
 
-    <!-- This is used for screenreaders to inform the user they have selected the account profile image -->
+    <!-- This is used for screenreaders to inform the user they have selected the account profile image, not expected to translate Firefox Account -->
     <string name="profile_image_content_description">Firefox Account Profile Image</string>
-    <!-- This message is displayed to inform users how to change their Firefox Account profile details on a setting screen -->
+    <!-- This message is displayed to inform users how to change their Firefox Account profile details on a setting screen, not expected to translate Firefox Account -->
     <string name="account_information">To make changes to your account, log in to your Firefox Account from any browser.</string>
     <!-- This is the text on a button to sign out and disconnect the account from the application -->
     <string name="disconnect_button">Disconnect Firefox Lockbox</string>
-    <!-- This message is displayed near a button to sign out and disconnect the account from the application explaining this does not affect the data stored with Firefox -->
+    <!-- This message is displayed near a button to sign out and disconnect the account from the application explaining this does not affect the data stored with Firefox, not expected to translate Firefox Lockbox -->
     <string name="disconnect_disclaimer">This removes synced entries from Firefox Lockbox, but will not delete your entries from Firefox.</string>
     <!-- This is the text on an final confirmation button to sign out and disconnect the account from the application -->
     <string name="disconnect_disclaimer_title">Disconnect Firefox Lockbox?</string>
-    <!-- This message is displayed on a final confirmation dialog to sign out and disconnect their account from the application -->
+    <!-- This message is displayed on a final confirmation dialog to sign out and disconnect their account from the application, not expected to translate Firefox Lockbox nor Firefox Account -->
     <string name="disconnect_disclaimer_message">This will delete your Firefox Account information and all saved entries from Firefox Lockbox.</string>
     <!-- This is the text on a final confirmation button to sign out and disconnect the account from the application -->
     <string name="disconnect">Disconnect</string>
