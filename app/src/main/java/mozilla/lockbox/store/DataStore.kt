@@ -159,7 +159,8 @@ open class DataStore(
     }
 
     private fun reset() {
-        if (stateSubject.value == State.Unprepared) {
+        if (stateSubject.value == State.Unprepared ||
+            stateSubject.value == null) {
             return
         }
         clearList()
@@ -185,12 +186,7 @@ open class DataStore(
         if (!credentials.isNew) return
 
         if (backend.isLocked()) {
-            backend.unlock(support.encryptionKey)
-                .asSingle(Dispatchers.Default)
-                .subscribe { _, _ ->
-                    stateSubject.onNext(State.Unlocked)
-                }
-                .addTo(compositeDisposable)
+            unlock()
         } else {
             stateSubject.onNext(State.Unlocked)
         }
