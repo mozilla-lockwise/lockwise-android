@@ -94,6 +94,7 @@ open class ItemListPresenterTest {
         val sortItemSelectionStub = PublishSubject.create<Setting.ItemListSort>()
         val disclaimerActionStub = PublishSubject.create<AlertState>()
         val lockNowSelectionStub = PublishSubject.create<Unit>()
+        val refreshItemListStub = PublishSubject.create<Unit>()
 
         override val itemSelection: Observable<ItemViewModel>
             get() = itemSelectedStub
@@ -129,6 +130,9 @@ open class ItemListPresenterTest {
         override fun loading(isLoading: Boolean) {
             this.isLoading = isLoading
         }
+
+        override val refreshItemList: Observable<Unit>
+            get() = refreshItemListStub
     }
 
     class FakeDataStore : DataStore() {
@@ -280,5 +284,11 @@ open class ItemListPresenterTest {
     fun `remove sync loading indicator`() {
         dataStore.syncStateStub.onNext(DataStore.SyncState.NotSyncing)
         Assert.assertEquals(false, view.isLoading)
+    }
+
+    @Test
+    fun `swipe down calls sync`() {
+        view.refreshItemListStub.onNext(Unit)
+        dispatcherObserver.assertLastValue(DataStoreAction.Sync)
     }
 }

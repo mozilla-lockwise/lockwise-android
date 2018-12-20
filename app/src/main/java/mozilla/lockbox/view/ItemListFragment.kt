@@ -21,8 +21,9 @@ import android.widget.AdapterView
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
-import com.jakewharton.rxbinding2.support.design.widget.itemSelections
 import android.widget.Spinner
+import com.jakewharton.rxbinding2.support.design.widget.itemSelections
+import com.jakewharton.rxbinding2.support.v4.widget.refreshes
 import com.jakewharton.rxbinding2.support.v7.widget.navigationClicks
 import com.jakewharton.rxbinding2.view.clicks
 import com.squareup.picasso.Picasso
@@ -71,6 +72,7 @@ class ItemListFragment : CommonFragment(), ItemListView {
         setupNavigationView(navController, view.navView)
         setupListView(view.entriesView)
         setupSpinner(view)
+        view.refreshContainer.setColorSchemeResources(R.color.refresh_blue)
         super.onViewCreated(view, savedInstanceState)
     }
 
@@ -159,6 +161,9 @@ class ItemListFragment : CommonFragment(), ItemListView {
         get() = Setting.ItemListSort.values()
 
     override fun updateItems(itemList: List<ItemViewModel>) {
+        if (isRefreshing) {
+            view!!.refreshContainer.isRefreshing = false
+        }
         adapter.updateItems(itemList)
     }
 
@@ -188,7 +193,7 @@ class ItemListFragment : CommonFragment(), ItemListView {
     }
 
     override fun loading(isLoading: Boolean) {
-        if (isLoading) {
+        if (isLoading && !isRefreshing) {
             showAndRemove(view!!.loadingView, view!!.entriesView)
         } else {
             showAndRemove(view!!.entriesView, view!!.loadingView)
@@ -197,4 +202,7 @@ class ItemListFragment : CommonFragment(), ItemListView {
         view!!.filterButton.isEnabled = !isLoading
         view!!.sortButton.isClickable = !isLoading
     }
+
+    override val refreshItemList: Observable<Unit> get() = view!!.refreshContainer.refreshes()
+    private val isRefreshing: Boolean get() = view!!.refreshContainer.isRefreshing
 }

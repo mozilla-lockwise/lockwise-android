@@ -40,6 +40,7 @@ interface ItemListView {
     fun updateAccountProfile(profile: AccountViewModel)
     fun updateItemListSort(sort: Setting.ItemListSort)
     fun loading(isLoading: Boolean)
+    val refreshItemList: Observable<Unit>
 }
 
 @ExperimentalCoroutinesApi
@@ -67,7 +68,6 @@ class ItemListPresenter(
 
         Observables.combineLatest(dataStore.list, settingStore.itemListSortOrder)
             .filter { it.first.isNotEmpty() }
-            .distinctUntilChanged()
             .map { pair ->
                 when (pair.second) {
                     Setting.ItemListSort.ALPHABETICALLY -> pair.first.sortedBy { titleFromHostname(it.hostname) }
@@ -114,6 +114,10 @@ class ItemListPresenter(
             .subscribe { sortBy ->
                 dispatcher.dispatch(SettingAction.ItemListSortOrder(sortBy))
             }.addTo(compositeDisposable)
+
+        view.refreshItemList
+            .subscribe { dispatcher.dispatch(DataStoreAction.Sync) }
+            .addTo(compositeDisposable)
 
         accountStore.profile
             .filterNotNull()
