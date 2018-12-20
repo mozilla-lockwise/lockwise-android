@@ -14,6 +14,7 @@ import io.reactivex.subjects.ReplaySubject
 import mozilla.lockbox.DisposingTest
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.ClipboardAction
 import mozilla.lockbox.action.TelemetryAction
 import mozilla.lockbox.extensions.assertLastValue
@@ -84,6 +85,11 @@ class TelemetryStoreTest : DisposingTest() {
         }
         uploadObserver.assertLastValue(1)
         action = RouteAction.ItemList
+        dispatcher.dispatch(action)
+        eventsObserver.assertLastValueMatches {
+            it.toJSON() == action.createEvent().toJSON()
+        }
+        action = DataStoreAction.Lock
         dispatcher.dispatch(action)
         eventsObserver.assertLastValueMatches {
             it.toJSON() == action.createEvent().toJSON()
