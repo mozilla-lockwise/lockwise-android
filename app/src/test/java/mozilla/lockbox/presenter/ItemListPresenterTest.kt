@@ -12,6 +12,7 @@ import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.R
+import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.action.SettingAction
@@ -251,10 +252,10 @@ open class ItemListPresenterTest {
     }
 
     @Test
-    fun `tapping on the lock menu item when the user has device security routes to lock screen`() {
+    fun `tapping on the lock menu item when the user has device security locks the datastore`() {
         whenCalled(fingerprintStore.isDeviceSecure).thenReturn(true)
         view.lockNowSelectionStub.onNext(Unit)
-        dispatcherObserver.assertLastValue(RouteAction.LockScreen)
+        dispatcherObserver.assertLastValue(DataStoreAction.Lock)
     }
 
     @Test

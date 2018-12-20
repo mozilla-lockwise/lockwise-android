@@ -13,6 +13,7 @@ object Constant {
         const val keystoreLabel = "lockbox-keystore"
         const val dbFilename = "firefox-lockbox.db"
         const val testMarker = "TEST"
+        const val bootIDPath = "/proc/sys/kernel/random/boot_id"
     }
 
     object FxA {
@@ -43,5 +44,7 @@ object Constant {
     object Key {
         const val firefoxAccount = "firefox-account"
         const val encryptionKey = "database-encryption-key"
+        const val autoLockTimerDate = "auto-lock-timer-date"
+        const val bootID = "boot-id"
     }
 }

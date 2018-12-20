@@ -17,6 +17,7 @@ import mozilla.components.support.base.log.Log
 import mozilla.components.support.base.log.logger.Logger
 import mozilla.components.support.base.log.sink.AndroidLogSink
 import mozilla.lockbox.presenter.ApplicationPresenter
+import mozilla.lockbox.store.AutoLockStore
 import mozilla.lockbox.store.ClipboardStore
 import mozilla.lockbox.store.ContextStore
 import mozilla.lockbox.store.DataStore
@@ -70,6 +71,7 @@ class LockboxApplication : Application() {
             FxASyncDataStoreSupport.shared,
             ClipboardStore.shared,
             FingerprintStore.shared,
+            AutoLockStore.shared,
             TelemetryStore.shared
         )
 

@@ -18,7 +18,7 @@ class LifecycleStoreTest : DisposingTest() {
         val subject = LifecycleStore(dispatcher)
 
         val lifecycleObserver = createTestObserver<LifecycleAction>()
-        subject.lifecycleFilter.subscribe(lifecycleObserver)
+        subject.lifecycleEvents.subscribe(lifecycleObserver)
 
         dispatcher.dispatch(LifecycleAction.Startup)
         dispatcher.dispatch(LifecycleAction.Upgrade)
