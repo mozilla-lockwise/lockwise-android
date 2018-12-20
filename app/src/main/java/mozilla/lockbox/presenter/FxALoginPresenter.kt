@@ -6,9 +6,9 @@
 
 package mozilla.lockbox.presenter
 
+import android.net.Uri
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.AccountAction
@@ -19,7 +19,7 @@ import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.support.Constant
 
 interface FxALoginView {
-    var webViewObserver: Consumer<String?>?
+    var webViewRedirect: ((url: Uri?) -> Boolean)
     val skipFxAClicks: Observable<Unit>?
     fun loadURL(url: String)
 }
@@ -33,12 +33,13 @@ class FxALoginPresenter(
     fun isRedirectUri(uri: String?): Boolean = uri?.startsWith(Constant.FxA.redirectUri) ?: false
 
     override fun onViewReady() {
-        view.webViewObserver = Consumer { url ->
-            url?.let {
-                if (isRedirectUri(it)) {
-                    dispatcher.dispatch(AccountAction.OauthRedirect(url))
-                }
+        view.webViewRedirect = { url ->
+            val urlStr = url?.toString() ?: null
+            val result = isRedirectUri(urlStr)
+            if (result) {
+                dispatcher.dispatch(AccountAction.OauthRedirect(urlStr!!))
             }
+            result
         }
 
         accountStore.loginURL

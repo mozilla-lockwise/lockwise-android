@@ -7,6 +7,7 @@
 package mozilla.lockbox.view
 
 import android.annotation.SuppressLint
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +18,6 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
-import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.fragment_fxa_login.*
 import kotlinx.android.synthetic.main.fragment_fxa_login.view.*
 import kotlinx.android.synthetic.main.include_backable.view.*
@@ -27,7 +27,7 @@ import mozilla.lockbox.presenter.FxALoginView
 import mozilla.lockbox.support.isDebug
 
 class FxALoginFragment : BackableFragment(), FxALoginView {
-    override var webViewObserver: Consumer<String?>? = null
+    override var webViewRedirect: ((url: Uri?) -> Boolean) = { _ -> false }
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,14 +53,8 @@ class FxALoginFragment : BackableFragment(), FxALoginView {
 
     override fun loadURL(url: String) {
         webView.webViewClient = object : WebViewClient() {
-            override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
-                val url = request?.url.toString() ?: null
-                if ((presenter as FxALoginPresenter).isRedirectUri(url)) {
-                    webViewObserver?.accept(url)
-                    return true
-                }
-                return false
-            }
+            override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean =
+                webViewRedirect(request?.url)
         }
         webView.loadUrl(url)
     }
