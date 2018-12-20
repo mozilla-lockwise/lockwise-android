@@ -16,7 +16,6 @@ import br.com.concretesolutions.kappuccino.custom.intent.IntentMatcherInteractio
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
-import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.robots.accountSettingScreen
 import mozilla.lockbox.robots.disconnectDisclaimer
@@ -34,8 +33,7 @@ import org.junit.Assert
 @ExperimentalCoroutinesApi
 class Navigator {
     fun resetApp() {
-        Dispatcher.shared.dispatch(DataStoreAction.Lock)
-        DataStore.shared.state.blockingNext()
+        Dispatcher.shared.dispatch(LifecycleAction.UseTestData)
         Dispatcher.shared.dispatch(DataStoreAction.Unlock)
         DataStore.shared.state.blockingNext()
         Dispatcher.shared.dispatch(LifecycleAction.UserReset)
@@ -43,12 +41,7 @@ class Navigator {
         checkAtWelcome()
     }
 
-    fun gotoWelcome() {
-        Dispatcher.shared.dispatch(RouteAction.Welcome)
-    }
-
     fun gotoFxALogin() {
-        gotoWelcome()
         welcome { tapGetStarted() }
         checkAtFxALogin()
     }
