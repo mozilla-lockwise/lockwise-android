@@ -8,9 +8,7 @@ package mozilla.lockbox
 
 import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
-import mozilla.lockbox.action.DataStoreAction
-import mozilla.lockbox.action.LifecycleAction
-import mozilla.lockbox.flux.Dispatcher
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.robots.disconnectDisclaimer
 import mozilla.lockbox.robots.filteredItemList
 import mozilla.lockbox.view.RootActivity
@@ -24,6 +22,7 @@ import org.junit.runner.RunWith
  *
  * See [testing documentation](http://d.android.com/tools/testing).
  */
+@ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 open class RoutePresenterTest {
     private val navigator = Navigator()
@@ -33,17 +32,14 @@ open class RoutePresenterTest {
 
     @Before
     fun setUp() {
-        Dispatcher.shared.dispatch(DataStoreAction.Unlock)
-        Thread.sleep(200L)
-        Dispatcher.shared.dispatch(LifecycleAction.UserReset)
-        Thread.sleep(200L)
+        navigator.resetApp()
     }
 
     @Test
     fun testFxALogin() {
         navigator.gotoFxALogin()
         navigator.back()
-        navigator.checkOnWelcome()
+        navigator.checkAtWelcome()
     }
 
     @Test
@@ -92,7 +88,6 @@ open class RoutePresenterTest {
 
     @Test
     fun testDisconnecting() {
-        // note: this won't work until routing PR is merged
         navigator.gotoDisconnectDisclaimer()
         disconnectDisclaimer { tapDisconnect() }
         navigator.checkAtWelcome()
