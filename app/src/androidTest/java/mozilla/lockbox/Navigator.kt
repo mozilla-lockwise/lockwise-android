@@ -13,6 +13,7 @@ import android.support.test.espresso.NoActivityResumedException
 import android.support.test.espresso.intent.Intents
 import br.com.concretesolutions.kappuccino.custom.intent.IntentMatcherInteractions.sentIntent
 import br.com.concretesolutions.kappuccino.custom.intent.IntentMatcherInteractions.stubIntent
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.RouteAction
@@ -27,14 +28,18 @@ import mozilla.lockbox.robots.lockScreen
 import mozilla.lockbox.robots.securityDisclaimer
 import mozilla.lockbox.robots.settings
 import mozilla.lockbox.robots.welcome
+import mozilla.lockbox.store.DataStore
 import org.junit.Assert
 
+@ExperimentalCoroutinesApi
 class Navigator {
     fun resetApp() {
+        Dispatcher.shared.dispatch(DataStoreAction.Lock)
+        DataStore.shared.state.blockingNext()
         Dispatcher.shared.dispatch(DataStoreAction.Unlock)
-        Thread.sleep(200L)
+        DataStore.shared.state.blockingNext()
         Dispatcher.shared.dispatch(LifecycleAction.UserReset)
-        Thread.sleep(200L)
+        DataStore.shared.state.blockingNext()
         checkAtWelcome()
     }
 
@@ -62,6 +67,7 @@ class Navigator {
             fxaLogin { tapPlaceholderLogin() }
         } else {
             Dispatcher.shared.dispatch(LifecycleAction.UseTestData)
+            DataStore.shared.state.blockingNext()
         }
         checkAtItemList()
     }
