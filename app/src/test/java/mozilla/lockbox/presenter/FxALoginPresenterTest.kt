@@ -38,7 +38,7 @@ class FxALoginPresenterTest : DisposingTest() {
     class FakeFxALoginView(
         val compositeDisposable: CompositeDisposable
     ) : FxALoginView {
-        val webViewRedirects = PublishSubject.create<Uri>()
+        val webViewRedirectTo = PublishSubject.create<Uri>()
         val webViewOverride = PublishSubject.create<Boolean?>()
         var loadedURL: String? = null
         override var webViewRedirect: (url: Uri?) -> Boolean = { _ -> false }
@@ -49,7 +49,7 @@ class FxALoginPresenterTest : DisposingTest() {
         override var skipFxAClicks: Observable<Unit> = PublishSubject.create<Unit>()
 
         init {
-            webViewRedirects.subscribe {
+            webViewRedirectTo.subscribe {
                 webViewOverride.onNext(webViewRedirect(it))
             }.addTo(compositeDisposable)
         }
@@ -97,7 +97,7 @@ class FxALoginPresenterTest : DisposingTest() {
     @Test
     fun `onViewReady, when the webview redirects to a URL starting with the expected redirect`() {
         val url = Uri.parse(Constant.FxA.redirectUri + "?moz_fake")
-        view.webViewRedirects.onNext(url)
+        view.webViewRedirectTo.onNext(url)
 
         val redirectAction = dispatcherObserver.values().first() as AccountAction.OauthRedirect
         Assert.assertEquals(url.toString(), redirectAction.url)
@@ -106,7 +106,7 @@ class FxALoginPresenterTest : DisposingTest() {
     @Test
     fun `onViewReady, when the webview redirects to a URL not starting with the expected redirect`() {
         val url = Uri.parse("https://www.mozilla.org")
-        view.webViewRedirects.onNext(url)
+        view.webViewRedirectTo.onNext(url)
 
         dispatcherObserver.assertEmpty()
     }
