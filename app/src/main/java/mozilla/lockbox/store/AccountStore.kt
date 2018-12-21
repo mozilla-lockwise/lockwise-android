@@ -17,6 +17,7 @@ import io.reactivex.subjects.ReplaySubject
 import io.reactivex.subjects.Subject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.rx2.asMaybe
 import kotlinx.coroutines.rx2.asSingle
 import mozilla.components.service.fxa.Config
 import mozilla.components.service.fxa.FirefoxAccount
@@ -38,6 +39,7 @@ import mozilla.lockbox.support.SecurePreferences
 import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.support.toFxAOauthInfo
 import mozilla.lockbox.support.toFxAProfile
+import java.util.concurrent.TimeUnit
 
 @ExperimentalCoroutinesApi
 open class AccountStore(
@@ -115,7 +117,9 @@ open class AccountStore(
         fxa?.let { fxa ->
             securePreferences.putString(Constant.Key.firefoxAccount, fxa.toJSONString())
 
-            fxa.getProfile().asSingle(Dispatchers.Default)
+            fxa.getProfile()
+                .asSingle(Dispatchers.Default)
+                .delay(1L, TimeUnit.SECONDS)
                 .subscribe({ profile ->
                     profileSubject.onNext(profile.toFxAProfile().asOptional())
                 }, {
@@ -123,22 +127,16 @@ open class AccountStore(
                 })
                 .addTo(compositeDisposable)
 
-            // can't use asSingle here because the OAuthToken is optional :-/
-            Observable
-                .create<Optional<SyncCredentials>> { emitter ->
-                    val oauthDeferred = fxa.getCachedOAuthToken(Constant.FxA.scopes)
-                    oauthDeferred.invokeOnCompletion {
-                        it?.let {
-                            dispatcher.dispatch(RouteAction.Dialog.NoNetworkDisclaimer)
-                        }.run {
-                            val credentials = oauthDeferred.getCompleted()?.let { oauthInfo ->
-                                generateSyncCredentials(oauthInfo, isNew)
-                            }
-                            emitter.onNext(credentials.asOptional())
-                        }
-                    }
-                }
-                .subscribe(syncCredentialSubject)
+            fxa.getCachedOAuthToken(Constant.FxA.scopes)
+                .asMaybe(Dispatchers.Default)
+                .delay(1L, TimeUnit.SECONDS)
+                .subscribe({
+                    val syncCredentials = generateSyncCredentials(it, isNew)
+                    syncCredentialSubject.onNext(syncCredentials.asOptional())
+                }, {
+                    dispatcher.dispatch(RouteAction.Dialog.NoNetworkDisclaimer)
+                })
+                .addTo(compositeDisposable)
         }
     }
 
@@ -156,6 +154,7 @@ open class AccountStore(
     private fun generateNewFirefoxAccount() {
         Config.release()
             .asSingle(Dispatchers.Default)
+            .delay(1L, TimeUnit.SECONDS)
             .subscribe({ config ->
                 try {
                     fxa = FirefoxAccount(config, Constant.FxA.clientID, Constant.FxA.redirectUri)
