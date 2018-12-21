@@ -215,7 +215,7 @@ class RoutePresenter(
             activity,
             R.string.no_network,
             R.string.connect_to_internet,
-            R.string.OK
+            R.string.ok
         )
     }
 

@@ -172,29 +172,35 @@ open class AccountStore(
     }
 
     private fun generateLoginURL() {
-        try {
-            fxa?.beginOAuthFlow(Constant.FxA.scopes, true)?.asSingle(Dispatchers.Default)?.subscribe { url ->
+        val fxa = fxa ?: return
+
+        fxa.beginOAuthFlow(Constant.FxA.scopes, true)
+            .asSingle(Dispatchers.Default)
+            .subscribe({ url ->
                 (this.loginURL as Subject).onNext(url)
-            }?.addTo(compositeDisposable)
-        } catch (e: FxaException) {
-            dispatcher.dispatch(RouteAction.Dialog.NoNetworkDisclaimer)
-        }
+            }, {
+                dispatcher.dispatch(RouteAction.Dialog.NoNetworkDisclaimer)
+            })
+            .addTo(compositeDisposable)
     }
 
     private fun oauthLogin(url: String) {
+        val fxa = fxa ?: return
+
         val uri = Uri.parse(url)
         val codeQP = uri.getQueryParameter("code")
         val stateQP = uri.getQueryParameter("state")
 
         codeQP?.let { code ->
             stateQP?.let { state ->
-                try {
-                    fxa?.completeOAuthFlow(code, state)?.asSingle(Dispatchers.Default)?.subscribe { oauthInfo ->
+                fxa.completeOAuthFlow(code, state)
+                    .asSingle(Dispatchers.Default)
+                    .subscribe({ oauthInfo ->
                         this.populateAccountInformation(true)
-                    }?.addTo(compositeDisposable)
-                } catch (e: FxaException) {
-                    dispatcher.dispatch(RouteAction.Dialog.NoNetworkDisclaimer)
-                }
+                    }, {
+                        dispatcher.dispatch(RouteAction.Dialog.NoNetworkDisclaimer)
+                    })
+                    .addTo(compositeDisposable)
             }
         }
     }
