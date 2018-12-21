@@ -115,29 +115,27 @@ open class AccountStore(
         fxa?.let { fxa ->
             securePreferences.putString(Constant.Key.firefoxAccount, fxa.toJSONString())
 
-            try {
-                fxa.getProfile().asSingle(Dispatchers.Default)
-                    .subscribe { profile ->
-                        profileSubject.onNext(profile.toFxAProfile().asOptional())
-                    }
-                    .addTo(compositeDisposable)
-            } catch (e: FxaException) {
-                dispatcher.dispatch(RouteAction.Dialog.NoNetworkDisclaimer)
-            }
+            fxa.getProfile().asSingle(Dispatchers.Default)
+                .subscribe({ profile ->
+                    profileSubject.onNext(profile.toFxAProfile().asOptional())
+                }, {
+                    dispatcher.dispatch(RouteAction.Dialog.NoNetworkDisclaimer)
+                })
+                .addTo(compositeDisposable)
 
             // can't use asSingle here because the OAuthToken is optional :-/
             Observable
                 .create<Optional<SyncCredentials>> { emitter ->
-                    try {
-                        val oauthDeferred = fxa.getCachedOAuthToken(Constant.FxA.scopes)
-                        oauthDeferred.invokeOnCompletion {
+                    val oauthDeferred = fxa.getCachedOAuthToken(Constant.FxA.scopes)
+                    oauthDeferred.invokeOnCompletion {
+                        it?.let {
+                            dispatcher.dispatch(RouteAction.Dialog.NoNetworkDisclaimer)
+                        }.run {
                             val credentials = oauthDeferred.getCompleted()?.let { oauthInfo ->
                                 generateSyncCredentials(oauthInfo, isNew)
                             }
                             emitter.onNext(credentials.asOptional())
                         }
-                    } catch (e: FxaException) {
-                        dispatcher.dispatch(RouteAction.Dialog.NoNetworkDisclaimer)
                     }
                 }
                 .subscribe(syncCredentialSubject)
