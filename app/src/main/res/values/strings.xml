@@ -80,6 +80,9 @@
     <string name="missing_url">MISSING_URL</string>
     <string name="default_avatar_url">https://firefoxusercontent.com/00000000000000000000000000000000</string>
     <string name="syncing_entries">Syncing your entries…</string>
+    <string name="ok">OK</string>
+    <string name="no_network">No Network</string>
+    <string name="connect_to_internet">Please connect to the internet to use Firefox Lockbox</string>
 
     <!--Accessibility: content descriptions-->
     <string name="copy_username_content_description">Copy your username</string>

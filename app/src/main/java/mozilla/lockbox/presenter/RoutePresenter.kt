@@ -143,6 +143,7 @@ class RoutePresenter(
         val dialogStateObservable = when (destination) {
             is RouteAction.Dialog.SecurityDisclaimer -> showSecurityDisclaimerDialog()
             is RouteAction.Dialog.UnlinkDisclaimer -> showUnlinkDisclaimerDialog()
+            is RouteAction.Dialog.NoNetworkDisclaimer -> showNoNetworkDialog()
         }
 
         dialogStateObservable
@@ -206,6 +207,15 @@ class RoutePresenter(
             R.string.no_device_security_message,
             R.string.set_up_security_button,
             R.string.cancel
+        )
+    }
+
+    private fun showNoNetworkDialog(): Observable<AlertState> {
+        return AlertDialogHelper.showAlertDialog(
+            activity,
+            R.string.no_network,
+            R.string.connect_to_internet,
+            R.string.ok
         )
     }
 
