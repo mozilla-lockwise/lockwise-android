@@ -12,30 +12,31 @@
     android:background="@color/backgroundGrey">
 
     <TextView
-        android:layout_width="158dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:textAlignment="center"
-        android:textSize="17sp"
-        android:fontFamily="sans-serif"
-        android:textStyle="normal"
-        android:textColor="@color/textGrey"
-        android:lineSpacingExtra="8.5sp"
-        android:layout_marginTop="40dp"
-        android:text="@string/no_matching_entries" />
+            android:layout_width="178dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textAlignment="center"
+            android:textSize="17sp"
+            android:fontFamily="sans-serif"
+            android:textStyle="normal"
+            android:textColor="@color/textGrey"
+            android:background="@color/backgroundGrey"
+            android:lineSpacingExtra="8.5sp"
+            android:layout_marginTop="40dp"
+            android:text="@string/no_matching_entries" android:lineHeight="19.5sp"/>
 
     <TextView
-        android:layout_width="280dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:textAlignment="center"
-        android:textSize="13sp"
-        android:fontFamily="sans-serif"
-        android:textStyle="normal"
-        android:textColor="@color/textGrey"
-        android:lineSpacingExtra="6.5sp"
-        android:layout_marginTop="4dp"
-        android:text="@string/save_firefox_disclaimer" />
+            android:layout_width="220dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textAlignment="center"
+            android:textSize="13sp"
+            android:fontFamily="sans-serif"
+            android:textStyle="normal"
+            android:textColor="@color/textGrey"
+            android:background="@color/backgroundGrey"
+            android:layout_marginTop="4dp"
+            android:text="@string/save_firefox_disclaimer" android:lineHeight="19.5dp"/>
 
     <Button
         android:layout_width="wrap_content"
