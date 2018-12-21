@@ -17,7 +17,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "mozilla.lockbox"
-        minSdkVersion 23
+        minSdkVersion 24
         //noinspection OldTargetApi
         targetSdkVersion 26
         versionCode 1
