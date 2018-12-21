@@ -33,6 +33,7 @@ sealed class RouteAction(
     ) : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.dialog) {
         object SecurityDisclaimer : Dialog(RouteAction.SystemSetting(SettingIntent.Security))
         object UnlinkDisclaimer : Dialog(LifecycleAction.UserReset)
+        object NoNetworkDisclaimer : Dialog()
     }
 
     sealed class DialogFragment(
