@@ -32,7 +32,7 @@ open class RoutePresenterTest {
 
     @Before
     fun setUp() {
-        navigator.resetApp()
+        navigator.resetApp(activityRule)
     }
 
     @Test

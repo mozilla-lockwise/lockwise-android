@@ -183,7 +183,9 @@ open class DataStore(
             support.syncConfig = SyncUnlockInfo(kid, accessToken, syncKey, tokenServerURL)
         }
 
-        if (!credentials.isNew) return
+        if (!credentials.isNew) {
+            return
+        }
 
         if (backend.isLocked()) {
             unlock()

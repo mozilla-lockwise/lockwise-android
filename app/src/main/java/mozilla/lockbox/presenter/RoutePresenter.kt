@@ -58,7 +58,7 @@ class RoutePresenter(
     override fun onViewReady() {
         navController = Navigation.findNavController(activity, R.id.fragment_nav_host)
 
-        val lockObservable = accountStore.syncCredentials
+        val autoLockActions = accountStore.syncCredentials
             .switchMap {
                 if (it.value != null && it.value.isNew) {
                     autoLockStore.lockRequired.skip(1)
@@ -73,7 +73,7 @@ class RoutePresenter(
         // Moves credentials from the AccountStore, into the DataStore.
         accountStore.syncCredentials
             .map(this::accountToDataStoreActions)
-            .mergeWith(lockObservable)
+            .mergeWith(autoLockActions)
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
 
