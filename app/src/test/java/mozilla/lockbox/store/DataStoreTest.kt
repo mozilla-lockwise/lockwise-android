@@ -85,14 +85,13 @@ class DataStoreTest : DisposingTest() {
 
         dispatcher.dispatch(DataStoreAction.Unlock)
         Assert.assertEquals(10, listIterator.next().size)
+        clearInvocations(support.storage)
 
         dispatcher.dispatch(LifecycleAction.UserReset)
 
         // leaving this for later
 //        stateIterator.next()
 //        Assert.assertEquals(0, listIterator.next().size)
-
-//        verify(support.storage).reset()
     }
 
     @Test
@@ -153,5 +152,30 @@ class DataStoreTest : DisposingTest() {
         dispatcher.dispatch(DataStoreAction.Sync)
         Assert.assertEquals(DataStore.SyncState.Syncing, syncIterator.next())
         Assert.assertEquals(DataStore.SyncState.NotSyncing, syncIterator.next())
+    }
+
+    @Test
+    fun testGet() {
+        val stateIterator = this.subject.state.blockingIterable().iterator()
+        val listIterator = this.subject.list.blockingIterable().iterator()
+        Assert.assertEquals(0, listIterator.next().size)
+
+        dispatcher.dispatch(DataStoreAction.Unlock)
+        Assert.assertEquals(State.Unlocked, stateIterator.next())
+        val serverPassword = listIterator.next()[4]
+
+        val serverPasswordIterator = this.subject.get(serverPassword.id).blockingIterable().iterator()
+
+        Assert.assertEquals(serverPassword, serverPasswordIterator.next())
+    }
+
+    @Test
+    fun testLockWhenLocked() {
+        val stateIterator = this.subject.state.blockingIterable().iterator()
+        val listIterator = this.subject.list.blockingIterable().iterator()
+        Assert.assertEquals(0, listIterator.next().size)
+
+        dispatcher.dispatch(DataStoreAction.Lock)
+        Assert.assertEquals(State.Locked, stateIterator.next())
     }
 }
