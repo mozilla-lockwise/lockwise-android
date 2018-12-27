@@ -180,7 +180,7 @@ open class DataStore(
         resetSupport(credentials.support)
 
         credentials.apply {
-            support.syncConfig = SyncUnlockInfo(kid, accessToken, syncKey, tokenServerURL)
+            support.syncConfig = SyncUnlockInfo(kid, accessToken.token, syncKey, tokenServerURL)
         }
 
         if (!credentials.isNew) {
