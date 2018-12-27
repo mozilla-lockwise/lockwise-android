@@ -59,15 +59,16 @@ class ItemListFragment : CommonFragment(), ItemListView {
         savedInstanceState: Bundle?
     ): View? {
         presenter = ItemListPresenter(this)
-        val view = inflater.inflate(R.layout.fragment_item_list, container, false)
-        val navController = requireActivity().findNavController(R.id.fragment_nav_host)
+        return inflater.inflate(R.layout.fragment_item_list, container, false)
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val navController = requireActivity().findNavController(R.id.fragment_nav_host)
         setupToolbar(view.navToolbar, view.appDrawer)
         setupNavigationView(navController, view.navView)
         setupListView(view.entriesView)
         setupItemListSortMenu(view.sortButton)
-
-        return view
+        super.onViewCreated(view, savedInstanceState)
     }
 
     private fun setupNavigationView(navController: NavController, navView: NavigationView) {
@@ -175,9 +176,9 @@ class ItemListFragment : CommonFragment(), ItemListView {
     }
 
     override fun updateAccountProfile(profile: AccountViewModel) {
-
-        navView.menuHeader.displayName.text = profile.displayEmailName ?: resources.getString(R.string.firefox_account)
-        view!!.navView.menuHeader.accountName.text = profile.accountName ?: resources.getString(R.string.app_name)
+        val header = view!!.navView.getHeaderView(0)
+        header.menuHeader.displayName.text = profile.displayEmailName ?: resources.getString(R.string.firefox_account)
+        header.menuHeader.accountName.text = profile.accountName ?: resources.getString(R.string.app_name)
 
         var avatarUrl = profile.avatarFromURL
         if (avatarUrl.isNullOrEmpty() || avatarUrl == resources.getString(R.string.default_avatar_url)) {
@@ -190,7 +191,7 @@ class ItemListFragment : CommonFragment(), ItemListView {
             .transform(CropCircleTransformation())
             .resizeDimen(R.dimen.avatar_image_size, R.dimen.avatar_image_size)
             .centerCrop()
-            .into(view!!.profileImage)
+            .into(header.menuHeader.profileImage)
     }
 
     override fun updateItemListSort(sort: Setting.ItemListSort) {
