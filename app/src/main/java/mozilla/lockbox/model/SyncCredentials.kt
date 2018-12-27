@@ -6,10 +6,10 @@
 
 package mozilla.lockbox.model
 
+import mozilla.components.service.fxa.AccessTokenInfo
 import mozilla.components.service.fxa.OAuthScopedKey
 import mozilla.lockbox.support.DataStoreSupport
 import mozilla.lockbox.support.FixedDataStoreSupport
-import mozilla.lockbox.support.FxAOauthInfo
 import mozilla.lockbox.support.FxASyncDataStoreSupport
 
 private val emptyString = ""
@@ -20,7 +20,7 @@ interface SyncCredentials {
     val tokenServerURL: String
     // The following three properties should only be used when we have checked that the
     // credentials are syntactically valid, by calling `isValid`.
-    val accessToken: String
+    val accessToken: AccessTokenInfo
     val kid: String
     val syncKey: String
     val isValid: Boolean
@@ -31,7 +31,7 @@ interface SyncCredentials {
 class FixedSyncCredentials(
     override val isNew: Boolean,
 
-    override val accessToken: String = emptyString,
+    override val accessToken: AccessTokenInfo,
     override val kid: String = emptyString,
     override val syncKey: String = emptyString,
     override val tokenServerURL: String = emptyString
@@ -42,18 +42,16 @@ class FixedSyncCredentials(
 }
 
 class FxASyncCredentials(
-    private val oauthInfo: FxAOauthInfo,
+    override val accessToken: AccessTokenInfo,
     override val tokenServerURL: String,
-    private val scope: String,
     override val isNew: Boolean
 ) : SyncCredentials {
     private val scopedKey: OAuthScopedKey? by lazy {
-        oauthInfo.keys?.get(scope)
+        accessToken.key
     }
 
     // The following three properties should only be used when we have checked that the
     // credentials are syntactically valid, by calling `isValid`.
-    override val accessToken: String = oauthInfo.accessToken
     override val kid: String
         get() = scopedKey?.kid ?: emptyString
     override val syncKey: String
