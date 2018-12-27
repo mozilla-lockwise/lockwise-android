@@ -115,50 +115,6 @@
     </issue>
 
     <issue
-        id="IconLauncherShape"
-        message="Launcher icons should not fill every pixel of their square region; see the design guide for details">
-        <location
-            file="src/main/res/mipmap-mdpi/ic_launcher_background.png"/>
-    </issue>
-
-    <issue
-        id="IconLauncherShape"
-        message="Launcher icons should not fill every pixel of their square region; see the design guide for details">
-        <location
-            file="src/main/res/mipmap-xhdpi/ic_launcher_background.png"/>
-    </issue>
-
-    <issue
-        id="IconLauncherShape"
-        message="Launcher icons should not fill every pixel of their square region; see the design guide for details">
-        <location
-            file="src/main/res/mipmap-xxhdpi/ic_launcher_background.png"/>
-    </issue>
-
-    <issue
-        id="IconLauncherShape"
-        message="Launcher icons should not fill every pixel of their square region; see the design guide for details">
-        <location
-            file="src/main/res/mipmap-xxxhdpi/ic_launcher_background.png"/>
-    </issue>
-
-    <issue
-        id="GoogleAppIndexingWarning"
-        message="App is not indexable by Google Search; consider adding at least one Activity with an ACTION-VIEW intent filter. See issue explanation for more details.">
-        <location
-            file="src/debug/AndroidManifest.xml"
-            line="10"/>
-    </issue>
-
-    <issue
-        id="GoogleAppIndexingWarning"
-        message="App is not indexable by Google Search; consider adding at least one Activity with an ACTION-VIEW intent filter. See issue explanation for more details.">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="14"/>
-    </issue>
-
-    <issue
         id="RtlSymmetry"
         message="When you define `paddingStart` you should probably also define `paddingEnd` for right-to-left symmetry"
         errorLine1="                android:paddingStart=&quot;16dp&quot;"

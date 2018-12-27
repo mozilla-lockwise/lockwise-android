@@ -3,7 +3,6 @@ package mozilla.lockbox
 import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.flux.Dispatcher
