@@ -14,7 +14,7 @@ import mozilla.lockbox.presenter.RoutePresenter
 
 @ExperimentalCoroutinesApi
 class RootActivity : AppCompatActivity() {
-    internal var presenter: RoutePresenter = RoutePresenter(this)
+    private var presenter: RoutePresenter = RoutePresenter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
