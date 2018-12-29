@@ -92,9 +92,7 @@ open class DataStore(
         if (!backend.isLocked()) {
             backend.touch(id)
                 .asSingle(Dispatchers.Default)
-                .subscribe { _, _ ->
-                    updateList()
-                }
+                .subscribe(this::updateList, this::pushError)
                 .addTo(compositeDisposable)
         }
     }
@@ -103,9 +101,8 @@ open class DataStore(
         if (backend.isLocked()) {
             backend.unlock(support.encryptionKey)
                 .asSingle(Dispatchers.Default)
-                .subscribe { _, _ ->
-                    stateSubject.onNext(State.Unlocked)
-                }
+                .map { State.Unlocked }
+                .subscribe(stateSubject::onNext, this::pushError)
                 .addTo(compositeDisposable)
         }
     }
@@ -114,9 +111,8 @@ open class DataStore(
         if (!backend.isLocked()) {
             backend.lock()
                 .asSingle(Dispatchers.Default)
-                .subscribe { _, _ ->
-                    stateSubject.onNext(State.Locked)
-                }
+                .map { State.Locked }
+                .subscribe(stateSubject::onNext, this::pushError)
                 .addTo(compositeDisposable)
         } else {
             stateSubject.onNext(State.Locked)
@@ -133,10 +129,10 @@ open class DataStore(
 
         backend.sync(syncConfig)
             .asSingle(Dispatchers.Default)
-            .subscribe { _, _ ->
-                updateList()
+            .doOnEvent { _, _ ->
                 (syncState as Subject).onNext(SyncState.NotSyncing)
             }
+            .subscribe(this::updateList, this::pushError)
             .addTo(compositeDisposable)
     }
 
@@ -145,30 +141,27 @@ open class DataStore(
         this.listSubject.accept(emptyList())
     }
 
-    private fun updateList() {
+    // there's probably a slicker way to do this `Unit` thing...
+    private fun updateList(x: Unit) {
         if (!backend.isLocked()) {
             backend.list()
                 .asSingle(Dispatchers.Default)
-                .subscribe { list, _ ->
-                    list?.let {
-                        listSubject.accept(it)
-                    }
-                }
+                .subscribe(listSubject::accept, this::pushError)
                 .addTo(compositeDisposable)
         }
     }
 
     private fun reset() {
         if (stateSubject.value == State.Unprepared ||
-            stateSubject.value == null) {
+            stateSubject.value == null
+        ) {
             return
         }
         clearList()
         backend.reset()
             .asSingle(Dispatchers.Default)
-            .subscribe { _, _ ->
-                this.stateSubject.onNext(State.Unprepared)
-            }
+            .map { State.Unprepared }
+            .subscribe(stateSubject::onNext, this::pushError)
             .addTo(compositeDisposable)
     }
 
@@ -192,6 +185,10 @@ open class DataStore(
         }
     }
 
+    private fun pushError(e: Throwable) {
+        this.stateSubject.onNext(State.Errored(e))
+    }
+
     // Warning: this is testing code.
     // It's only called immediately after the user has pressed "Use Test Data".
     fun resetSupport(support: DataStoreSupport) {
@@ -199,7 +196,8 @@ open class DataStore(
             return
         }
         if (stateSubject.value != State.Unprepared &&
-            stateSubject.value != null) {
+            stateSubject.value != null
+        ) {
             backend.reset()
                 .asSingle(Dispatchers.Default)
                 .subscribe()
