@@ -80,6 +80,7 @@ class RoutePresenter(
         // Make the routing contingent on the state of the dataStore.
         val dataStoreRoutes = dataStore.state
             .map(this::dataStoreToRouteActions)
+            .filterNotNull()
 
         routeStore.routes
             .mergeWith(dataStoreRoutes)
@@ -88,13 +89,13 @@ class RoutePresenter(
             .addTo(compositeDisposable)
     }
 
-    private fun dataStoreToRouteActions(storageState: State): RouteAction {
+    private fun dataStoreToRouteActions(storageState: State): Optional<RouteAction> {
         return when (storageState) {
             is State.Unlocked -> RouteAction.ItemList
             is State.Locked -> RouteAction.LockScreen
             is State.Unprepared -> RouteAction.Welcome
-            else -> RouteAction.LockScreen
-        }
+            else -> null
+        }.asOptional()
     }
 
     private fun accountToDataStoreActions(optCredentials: Optional<SyncCredentials>): DataStoreAction {

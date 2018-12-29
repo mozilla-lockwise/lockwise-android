@@ -39,7 +39,6 @@ class Navigator {
             activityRule.activity.recreate()
         }
 
-        Dispatcher.shared.dispatch(LifecycleAction.UseTestData)
         Dispatcher.shared.dispatch(DataStoreAction.Unlock)
         DataStore.shared.state.blockingNext()
         Dispatcher.shared.dispatch(LifecycleAction.UserReset)
