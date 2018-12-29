@@ -22,6 +22,8 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.model.SyncCredentials
 import mozilla.lockbox.support.DataStoreSupport
 import mozilla.lockbox.support.FixedDataStoreSupport
+import mozilla.lockbox.support.Optional
+import mozilla.lockbox.support.asOptional
 
 @ExperimentalCoroutinesApi
 open class DataStore(
@@ -82,9 +84,9 @@ open class DataStore(
             .addTo(compositeDisposable)
     }
 
-    open fun get(id: String): Observable<ServerPassword?> {
+    open fun get(id: String): Observable<Optional<ServerPassword>> {
         return list.map { items ->
-            items.findLast { item -> item.id == id }
+            items.findLast { item -> item.id == id }.asOptional()
         }
     }
 

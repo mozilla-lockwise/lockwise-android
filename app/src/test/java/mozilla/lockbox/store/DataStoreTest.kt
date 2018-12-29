@@ -15,6 +15,7 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.mocks.MockDataStoreSupport
 import mozilla.lockbox.model.FixedSyncCredentials
 import mozilla.lockbox.store.DataStore.State
+import mozilla.lockbox.support.asOptional
 import org.junit.Assert
 import org.junit.Test
 import org.mockito.Mockito.clearInvocations
@@ -166,7 +167,7 @@ class DataStoreTest : DisposingTest() {
 
         val serverPasswordIterator = this.subject.get(serverPassword.id).blockingIterable().iterator()
 
-        Assert.assertEquals(serverPassword, serverPasswordIterator.next())
+        Assert.assertEquals(serverPassword.asOptional(), serverPasswordIterator.next())
     }
 
     @Test
