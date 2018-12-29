@@ -29,7 +29,6 @@ import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
-import mozilla.lockbox.model.FixedSyncCredentials
 import mozilla.lockbox.model.FxASyncCredentials
 import mozilla.lockbox.model.SyncCredentials
 import mozilla.lockbox.support.Constant
@@ -55,8 +54,8 @@ open class AccountStore(
     private var fxa: FirefoxAccount? = null
 
     open val loginURL: Observable<String> = ReplaySubject.createWithSize(1)
-    val syncCredentials: Observable<Optional<SyncCredentials>> = ReplaySubject.createWithSize(1)
-    val profile: Observable<Optional<Profile>> = ReplaySubject.createWithSize(1)
+    open val syncCredentials: Observable<Optional<SyncCredentials>> = ReplaySubject.createWithSize(1)
+    open val profile: Observable<Optional<Profile>> = ReplaySubject.createWithSize(1)
 
     init {
         val resetObservable = this.dispatcher.register

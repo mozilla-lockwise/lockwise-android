@@ -10,7 +10,9 @@ import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
+import mozilla.components.service.fxa.Profile
 import mozilla.lockbox.R
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.RouteAction
@@ -27,7 +29,6 @@ import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.SettingStore
-import mozilla.lockbox.support.FxAProfile
 import mozilla.lockbox.support.Optional
 import org.junit.Assert
 import org.junit.Before
@@ -71,6 +72,7 @@ private val password3 = ServerPassword(
     timePasswordChanged = 0L
 )
 
+@ExperimentalCoroutinesApi
 @RunWith(RobolectricTestRunner::class)
 @PrepareForTest(AccountStore::class)
 open class ItemListPresenterTest {
@@ -146,7 +148,7 @@ open class ItemListPresenterTest {
 
     private val dataStore = FakeDataStore()
     private val settingStore = FakeSettingStore()
-    private val profileStub = PublishSubject.create<Optional<FxAProfile>>()
+    private val profileStub = PublishSubject.create<Optional<Profile>>()
 
     val view = FakeView()
     val dispatcher = Dispatcher()

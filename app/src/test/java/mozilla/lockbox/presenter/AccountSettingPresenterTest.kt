@@ -10,12 +10,14 @@ import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import mozilla.components.service.fxa.Profile
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.AccountStore
-import mozilla.lockbox.support.FxAProfile
 import mozilla.lockbox.support.Optional
+import mozilla.lockbox.support.SecurePreferences
 import mozilla.lockbox.support.asOptional
 import org.junit.Assert
 import org.junit.Before
@@ -27,8 +29,9 @@ import org.powermock.core.classloader.annotations.PrepareForTest
 import org.robolectric.RobolectricTestRunner
 import org.powermock.api.mockito.PowerMockito.`when` as whenCalled
 
+@ExperimentalCoroutinesApi
 @RunWith(RobolectricTestRunner::class)
-@PrepareForTest(AccountStore::class)
+@PrepareForTest(SecurePreferences::class)
 class AccountSettingPresenterTest {
     class FakeAccountSettingView : AccountSettingView {
         var setDisplayNameArgument: String? = null
@@ -45,14 +48,14 @@ class AccountSettingPresenterTest {
         override val disconnectButtonClicks: Observable<Unit> = PublishSubject.create<Unit>()
     }
 
-    private val view = FakeAccountSettingView()
-
     @Mock
     val accountStore = PowerMockito.mock(AccountStore::class.java)
 
+    private val view = FakeAccountSettingView()
+
     lateinit var subject: AccountSettingPresenter
 
-    private val profileStub = PublishSubject.create<Optional<FxAProfile>>()
+    private val profileStub = PublishSubject.create<Optional<Profile>>()
     private val dispatcherObserver = TestObserver.create<Action>()
 
     @Before
@@ -71,12 +74,7 @@ class AccountSettingPresenterTest {
         val email = "sample@sample.com"
         val avatar = "www.mozilla.org/pix.png"
         profileStub.onNext(
-            object : FxAProfile {
-                override val uid: String? = "lkjkhjlfdshkjljkafds"
-                override val email: String? = email
-                override val displayName: String? = displayName
-                override val avatar: String? = avatar
-            }.asOptional()
+            Profile("lkjkhjlfdshkjljkafds", email, avatar, displayName).asOptional()
         )
 
         Assert.assertEquals(displayName, view.setDisplayNameArgument)
@@ -88,12 +86,7 @@ class AccountSettingPresenterTest {
         val email = null
         val avatar = "www.mozilla.org/pix.png"
         profileStub.onNext(
-            object : FxAProfile {
-                override val uid: String? = "lkjkhjlfdshkjljkafds"
-                override val email: String? = email
-                override val displayName: String? = displayName
-                override val avatar: String? = avatar
-            }.asOptional()
+            Profile("lkjkhjlfdshkjljkafds", email, avatar, displayName).asOptional()
         )
 
         Assert.assertEquals(displayName, view.setDisplayNameArgument)
@@ -105,12 +98,7 @@ class AccountSettingPresenterTest {
         val email = "sample@sample.com"
         val avatar = "www.mozilla.org/pix.png"
         profileStub.onNext(
-            object : FxAProfile {
-                override val uid: String? = "lkjkhjlfdshkjljkafds"
-                override val email: String? = email
-                override val displayName: String? = displayName
-                override val avatar: String? = avatar
-            }.asOptional()
+            Profile("lkjkhjlfdshkjljkafds", email, avatar, displayName).asOptional()
         )
 
         Assert.assertEquals(email, view.setDisplayNameArgument)
@@ -122,12 +110,7 @@ class AccountSettingPresenterTest {
         val email = null
         val avatar = "www.mozilla.org/pix.png"
         profileStub.onNext(
-            object : FxAProfile {
-                override val uid: String? = "lkjkhjlfdshkjljkafds"
-                override val email: String? = email
-                override val displayName: String? = displayName
-                override val avatar: String? = avatar
-            }.asOptional()
+            Profile("lkjkhjlfdshkjljkafds", email, avatar, displayName).asOptional()
         )
 
         Assert.assertNull(view.setDisplayNameArgument)
@@ -139,12 +122,7 @@ class AccountSettingPresenterTest {
         val email = "sample@sample.com"
         val avatar = "www.mozilla.org/pix.png"
         profileStub.onNext(
-            object : FxAProfile {
-                override val uid: String? = "lkjkhjlfdshkjljkafds"
-                override val email: String? = email
-                override val displayName: String? = displayName
-                override val avatar: String? = avatar
-            }.asOptional()
+            Profile("lkjkhjlfdshkjljkafds", email, avatar, displayName).asOptional()
         )
 
         Assert.assertEquals(avatar, view.setAvatarFromURLArgument)
@@ -156,12 +134,7 @@ class AccountSettingPresenterTest {
         val email = "sample@sample.com"
         val avatar = null
         profileStub.onNext(
-            object : FxAProfile {
-                override val uid: String? = "lkjkhjlfdshkjljkafds"
-                override val email: String? = email
-                override val displayName: String? = displayName
-                override val avatar: String? = avatar
-            }.asOptional()
+            Profile("lkjkhjlfdshkjljkafds", email, avatar, displayName).asOptional()
         )
 
         Assert.assertNull(view.setAvatarFromURLArgument)
