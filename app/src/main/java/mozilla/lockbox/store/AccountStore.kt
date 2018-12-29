@@ -29,6 +29,7 @@ import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.model.FixedSyncCredentials
 import mozilla.lockbox.model.FxASyncCredentials
 import mozilla.lockbox.model.SyncCredentials
 import mozilla.lockbox.support.Constant
@@ -47,6 +48,8 @@ open class AccountStore(
     }
 
     internal val compositeDisposable = CompositeDisposable()
+
+    val testProfile = Profile("test", "whovian@tardis.net", "Jodie Whittaker", "https://nerdist.com/wp-content/uploads/2017/11/The-Doctor-Jodie-Whittaker.jpg")
 
     private val storedAccountJSON: String?
         get() = securePreferences.getString(Constant.Key.firefoxAccount)
@@ -97,13 +100,13 @@ open class AccountStore(
     }
 
     private fun populateTestAccountInformation(isNew: Boolean) {
-//        val profileSubject = profile as Subject
-//        val syncCredentialSubject = syncCredentials as Subject
-//
-//        securePreferences.putString(Constant.Key.firefoxAccount, Constant.App.testMarker)
+        val profileSubject = profile as Subject
+        val syncCredentialSubject = syncCredentials as Subject
 
-//        profileSubject.onNext(FixedFxAProfile().asOptional())
-//        syncCredentialSubject.onNext(FixedSyncCredentials(isNew).asOptional())
+        securePreferences.putString(Constant.Key.firefoxAccount, Constant.App.testMarker)
+
+        profileSubject.onNext(testProfile.asOptional())
+        syncCredentialSubject.onNext(FixedSyncCredentials(isNew).asOptional())
     }
 
     private fun populateAccountInformation(isNew: Boolean) {

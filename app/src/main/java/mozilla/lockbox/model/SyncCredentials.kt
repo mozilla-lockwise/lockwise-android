@@ -30,8 +30,7 @@ interface SyncCredentials {
 
 class FixedSyncCredentials(
     override val isNew: Boolean,
-
-    override val accessToken: AccessTokenInfo,
+    override val accessToken: AccessTokenInfo = AccessTokenInfo(emptyString, null, 0L),
     override val kid: String = emptyString,
     override val syncKey: String = emptyString,
     override val tokenServerURL: String = emptyString
