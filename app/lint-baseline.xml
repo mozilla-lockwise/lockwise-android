@@ -3,50 +3,6 @@
 
     <issue
         id="GradleDependency"
-        message="A newer version of org.mozilla.components:service-sync-logins than 0.33.0 is available: 0.34.1"
-        errorLine1="    implementation &quot;org.mozilla.components:service-sync-logins:${rootProject.ext.android_components_version}&quot;"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="build.gradle"
-            line="80"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="GradleDependency"
-        message="A newer version of org.mozilla.components:service-firefox-accounts than 0.33.0 is available: 0.34.1"
-        errorLine1="    implementation &quot;org.mozilla.components:service-firefox-accounts:${rootProject.ext.android_components_version}&quot;"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="build.gradle"
-            line="81"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="GradleDependency"
-        message="A newer version of org.mozilla.components:service-telemetry than 0.33.0 is available: 0.34.1"
-        errorLine1="    implementation &quot;org.mozilla.components:service-telemetry:${rootProject.ext.android_components_version}&quot;"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="build.gradle"
-            line="82"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="GradleDependency"
-        message="A newer version of org.mozilla.components:lib-dataprotect than 0.33.0 is available: 0.34.1"
-        errorLine1="    implementation &quot;org.mozilla.components:lib-dataprotect:${rootProject.ext.android_components_version}&quot;"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="build.gradle"
-            line="83"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="GradleDependency"
         message="A newer version of org.mockito:mockito-core than 2.22.0 is available: 2.23.0"
         errorLine1="    testImplementation &apos;org.mockito:mockito-core:2.22.0&apos;"
         errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">

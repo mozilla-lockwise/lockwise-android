@@ -8,6 +8,7 @@ package mozilla.lockbox.store
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.SyncUnlockInfo
+import mozilla.components.service.fxa.AccessTokenInfo
 import mozilla.lockbox.DisposingTest
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
@@ -120,7 +121,7 @@ class DataStoreTest : DisposingTest() {
         val accessToken = "jlk;sfdkljdfsljk"
 
         val syncCredentials = FixedSyncCredentials(
-            accessToken = accessToken,
+            accessToken = AccessTokenInfo(accessToken, null, 0L),
             tokenServerURL = tokenServerURL,
             kid = kid,
             syncKey = k,

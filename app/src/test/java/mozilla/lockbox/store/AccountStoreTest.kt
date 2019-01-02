@@ -6,28 +6,52 @@
 
 package mozilla.lockbox.store
 
+import io.reactivex.observers.TestObserver
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import mozilla.components.service.fxa.Profile
+import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.model.SyncCredentials
+import mozilla.lockbox.support.Optional
+import mozilla.lockbox.support.SecurePreferences
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.powermock.api.mockito.PowerMockito
+import org.powermock.core.classloader.annotations.PrepareForTest
+import org.powermock.modules.junit4.PowerMockRunner
+
+@ExperimentalCoroutinesApi
+@RunWith(PowerMockRunner::class)
+@PrepareForTest(SecurePreferences::class)
 class AccountStoreTest {
-//    @Mock
-//    private val securePreferences = Mockito.mock(SecurePreferences::class.java)!!
+    @Mock
+    private val securePreferences = PowerMockito.mock(SecurePreferences::class.java)
+
+    private val dispatcher = Dispatcher()
+
+    private val oauthObserver = TestObserver<Optional<SyncCredentials>>()
+    private val profileObserver = TestObserver<Optional<Profile>>()
+
+    lateinit var subject: AccountStore
+
+    @Before
+    fun setUp() {
+        PowerMockito.whenNew(SecurePreferences::class.java).withAnyArguments().thenReturn(securePreferences)
+
+//        subject = AccountStore(dispatcher, securePreferences)
 //
-//    private val oauthObserver = TestObserver<Optional<OAuthInfo>>()
-//    private val profileObserver = TestObserver<Optional<Profile>>()
-//
-//    val subject = AccountStore(securePreferences = securePreferences)
-//
-//    @Before
-//    fun setUp() {
-//        subject.oauthInfo.subscribe(oauthObserver)
+//        subject.syncCredentials.subscribe(oauthObserver)
 //        subject.profile.subscribe(profileObserver)
-//    }
-//
-//    @Test
-//    fun `it pushes null when there is no saved fxa information`() {
+    }
+
+    @Test
+    fun `it pushes null when there is no saved fxa information`() {
 //        verify(securePreferences.getString("firefox-account"))
 //
-//        oauthObserver.assertValue(Optional<OAuthInfo>(null))
+//        oauthObserver.assertValue(Optional<SyncCredentials>(null))
 //        profileObserver.assertValue(Optional<Profile>(null))
-//    }
+    }
 
     // note: further FxA-related tests on hold until we can use x-compiled Rust code in unit specs
 }
