@@ -279,6 +279,7 @@ class RoutePresenter(
 
             Pair(R.id.fragment_fxa_login, R.id.fragment_item_list) -> R.id.action_fxaLogin_to_itemList
             Pair(R.id.fragment_locked, R.id.fragment_item_list) -> R.id.action_to_itemList
+            Pair(R.id.fragment_locked, R.id.fragment_welcome) -> R.id.action_locked_to_welcome
 
             Pair(R.id.fragment_item_list, R.id.fragment_item_detail) -> R.id.action_itemList_to_itemDetail
             Pair(R.id.fragment_item_list, R.id.fragment_setting) -> R.id.action_itemList_to_setting

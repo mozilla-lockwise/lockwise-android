@@ -19,11 +19,9 @@ import mozilla.components.service.sync.logins.AsyncLoginsStorage
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
-import mozilla.lockbox.log
 import mozilla.lockbox.model.SyncCredentials
 import mozilla.lockbox.support.DataStoreSupport
 import mozilla.lockbox.support.FixedDataStoreSupport
-import java.util.concurrent.TimeUnit
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.asOptional
 
@@ -192,18 +190,7 @@ open class DataStore(
     }
 
     private fun pushError(e: Throwable) {
-        log.info(e.localizedMessage)
-        log.info(printableStacktrace(e.stackTrace))
         this.stateSubject.onNext(State.Errored(e))
-    }
-
-    private fun printableStacktrace(s: Array<out StackTraceElement>): String {
-        var p = ""
-        for (t in s) {
-            p += "${t.methodName}:${t.lineNumber} in ${t.fileName}\n"
-        }
-
-        return p
     }
 
     // Warning: this is testing code.

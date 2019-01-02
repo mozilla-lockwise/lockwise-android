@@ -130,6 +130,10 @@
                 app:launchSingleTop="true"
                 app:popUpTo="@+id/fragment_item_list"
                 app:popUpToInclusive="true"/>
+        <action
+                android:id="@+id/action_locked_to_welcome"
+                app:destination="@id/fragment_welcome"
+                app:launchSingleTop="true"/>
     </fragment>
 
     <action
