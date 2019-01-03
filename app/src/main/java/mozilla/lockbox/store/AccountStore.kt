@@ -15,6 +15,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.ReplaySubject
 import io.reactivex.subjects.Subject
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.rx2.asMaybe
@@ -29,6 +30,7 @@ import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.log
 import mozilla.lockbox.model.FixedSyncCredentials
 import mozilla.lockbox.model.FxASyncCredentials
 import mozilla.lockbox.model.SyncCredentials
@@ -37,6 +39,7 @@ import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.SecurePreferences
 import mozilla.lockbox.support.asOptional
 import java.util.concurrent.TimeUnit
+import kotlin.coroutines.CoroutineContext
 
 @ExperimentalCoroutinesApi
 open class AccountStore(
@@ -49,7 +52,18 @@ open class AccountStore(
 
     internal val compositeDisposable = CompositeDisposable()
 
-    val testProfile = Profile("test", "whovian@tardis.net", "Jodie Whittaker", "https://nerdist.com/wp-content/uploads/2017/11/The-Doctor-Jodie-Whittaker.jpg")
+    private val exceptionHandler: CoroutineExceptionHandler
+        get() = CoroutineExceptionHandler { _, e ->
+                log.error(
+                    message = "Unexpected error occurred during Firefox Account authentication",
+                    throwable = e
+                )
+            }
+
+    private val coroutineContext: CoroutineContext
+        get() = Dispatchers.Default + exceptionHandler
+
+    private val testProfile = Profile("test", "whovian@tardis.net", "Jodie Whittaker", "https://nerdist.com/wp-content/uploads/2017/11/The-Doctor-Jodie-Whittaker.jpg")
 
     private val storedAccountJSON: String?
         get() = securePreferences.getString(Constant.Key.firefoxAccount)
@@ -116,14 +130,14 @@ open class AccountStore(
         securePreferences.putString(Constant.Key.firefoxAccount, fxa.toJSONString())
 
         fxa.getProfile()
-            .asSingle(Dispatchers.Default)
+            .asSingle(coroutineContext)
             .delay(1L, TimeUnit.SECONDS)
             .map { it.asOptional() }
             .subscribe(profileSubject::onNext, this::pushError)
             .addTo(compositeDisposable)
 
         fxa.getAccessToken(Constant.FxA.oldSyncScope)
-            .asMaybe(Dispatchers.Default)
+            .asMaybe(coroutineContext)
             .delay(1L, TimeUnit.SECONDS)
             .map {
                 generateSyncCredentials(it, isNew).asOptional()
@@ -154,7 +168,7 @@ open class AccountStore(
         val fxa = fxa ?: return
 
         fxa.beginOAuthFlow(Constant.FxA.scopes, true)
-            .asSingle(Dispatchers.Default)
+            .asSingle(coroutineContext)
             .subscribe((this.loginURL as Subject)::onNext, this::pushError)
             .addTo(compositeDisposable)
     }
@@ -169,7 +183,7 @@ open class AccountStore(
         codeQP?.let { code ->
             stateQP?.let { state ->
                 fxa.completeOAuthFlow(code, state)
-                    .asSingle(Dispatchers.Default)
+                    .asSingle(coroutineContext)
                     .map { true }
                     .subscribe(this::populateAccountInformation, this::pushError)
                     .addTo(compositeDisposable)

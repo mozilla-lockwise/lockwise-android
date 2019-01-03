@@ -10,6 +10,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.ReplaySubject
 import io.reactivex.subjects.Subject
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.rx2.asSingle
@@ -19,11 +20,13 @@ import mozilla.components.service.sync.logins.AsyncLoginsStorage
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.log
 import mozilla.lockbox.model.SyncCredentials
 import mozilla.lockbox.support.DataStoreSupport
 import mozilla.lockbox.support.FixedDataStoreSupport
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.asOptional
+import kotlin.coroutines.CoroutineContext
 
 @ExperimentalCoroutinesApi
 open class DataStore(
@@ -52,6 +55,17 @@ open class DataStore(
     open val state: Observable<State> = stateSubject
     open val syncState: Observable<SyncState> = ReplaySubject.create()
     open val list: Observable<List<ServerPassword>> get() = listSubject
+
+    private val exceptionHandler: CoroutineExceptionHandler
+        get() = CoroutineExceptionHandler { _, e ->
+            log.error(
+                message = "Unexpected error occurred during LoginsStorage usage",
+                throwable = e
+            )
+        }
+
+    private val coroutineContext: CoroutineContext
+        get() = Dispatchers.Default + exceptionHandler
 
     private var backend: AsyncLoginsStorage
 
@@ -93,7 +107,7 @@ open class DataStore(
     private fun touch(id: String) {
         if (!backend.isLocked()) {
             backend.touch(id)
-                .asSingle(Dispatchers.Default)
+                .asSingle(coroutineContext)
                 .subscribe(this::updateList, this::pushError)
                 .addTo(compositeDisposable)
         }
@@ -102,7 +116,7 @@ open class DataStore(
     private fun unlock() {
         if (backend.isLocked()) {
             backend.unlock(support.encryptionKey)
-                .asSingle(Dispatchers.Default)
+                .asSingle(coroutineContext)
                 .map { State.Unlocked }
                 .subscribe(stateSubject::onNext, this::pushError)
                 .addTo(compositeDisposable)
@@ -112,7 +126,7 @@ open class DataStore(
     private fun lock() {
         if (!backend.isLocked()) {
             backend.lock()
-                .asSingle(Dispatchers.Default)
+                .asSingle(coroutineContext)
                 .map { State.Locked }
                 .subscribe(stateSubject::onNext, this::pushError)
                 .addTo(compositeDisposable)
@@ -130,7 +144,7 @@ open class DataStore(
         (syncState as Subject).onNext(SyncState.Syncing)
 
         backend.sync(syncConfig)
-            .asSingle(Dispatchers.Default)
+            .asSingle(coroutineContext)
             .doOnEvent { _, _ ->
                 (syncState as Subject).onNext(SyncState.NotSyncing)
             }
@@ -147,7 +161,7 @@ open class DataStore(
     private fun updateList(x: Unit) {
         if (!backend.isLocked()) {
             backend.list()
-                .asSingle(Dispatchers.Default)
+                .asSingle(coroutineContext)
                 .subscribe(listSubject::accept, this::pushError)
                 .addTo(compositeDisposable)
         }
@@ -161,7 +175,7 @@ open class DataStore(
         }
         clearList()
         backend.reset()
-            .asSingle(Dispatchers.Default)
+            .asSingle(coroutineContext)
             .map { State.Unprepared }
             .subscribe(stateSubject::onNext, this::pushError)
             .addTo(compositeDisposable)
@@ -203,7 +217,7 @@ open class DataStore(
             stateSubject.value != null
         ) {
             backend.reset()
-                .asSingle(Dispatchers.Default)
+                .asSingle(coroutineContext)
                 .subscribe()
                 .addTo(compositeDisposable)
         }
