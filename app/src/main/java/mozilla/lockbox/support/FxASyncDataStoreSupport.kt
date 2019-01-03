@@ -14,6 +14,24 @@ import mozilla.components.service.sync.logins.AsyncLoginsStorageAdapter
 import mozilla.lockbox.store.ContextStore
 import java.security.SecureRandom
 
+/**
+ * @param keyStrength The strength ofthe generated key in bits
+ */
+internal fun generateEncryptionKey(keyStrength: Int): String {
+    val bytes = ByteArray(keyStrength / 8)
+    val random = SecureRandom()
+    random.nextBytes(bytes)
+
+    return bytes
+        .map {
+            val full = it.toInt()
+            val hi = (full and 0xf0) ushr 4
+            val lo = full and 0x0f
+            "%x%x".format(hi, lo)
+        }
+        .joinToString("")
+}
+
 class FxASyncDataStoreSupport(
     private val preferences: SecurePreferences = SecurePreferences.shared
 ) : DataStoreSupport, ContextStore {
@@ -35,24 +53,6 @@ class FxASyncDataStoreSupport(
         preferences.putString(Constant.Key.encryptionKey, encryptionKey)
 
         encryptionKey
-    }
-
-    /**
-     * @param keyStrength The strength ofthe generated key in bits
-     */
-    private fun generateEncryptionKey(keyStrength: Int): String {
-        val bytes = ByteArray(keyStrength / 8)
-        val random = SecureRandom()
-        random.nextBytes(bytes)
-
-        return bytes
-            .map {
-                val full = it.toInt()
-                val hi = (full and 0xf0) ushr 4
-                val lo = full and 0x0f
-                "%x%x".format(hi, lo)
-            }
-            .joinToString("")
     }
 
     override fun createLoginsStorage(): AsyncLoginsStorage = AsyncLoginsStorageAdapter(DatabaseLoginsStorage(dbFilePath))
