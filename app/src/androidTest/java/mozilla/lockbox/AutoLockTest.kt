@@ -4,8 +4,10 @@ import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.LifecycleAction
+import mozilla.lockbox.action.Setting
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.AutoLockStore
+import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.support.LockingSupport
 import mozilla.lockbox.view.RootActivity
 import org.junit.Before
@@ -38,75 +40,63 @@ open class AutoLockTest {
     @Before
     fun setUp() {
         AutoLockStore.shared.lockingSupport = testLockingSupport
+        navigator.resetApp(activityRule)
     }
 
     @Test
     fun basicLockTest() {
-//        navigator.resetApp()
-//        simulateAppStartup()
-//        navigator.gotoItemList()
-//        Dispatcher.shared.dispatch(LifecycleAction.Background)
-//
-//        testLockingSupport.advance(Setting.AutoLockTime.FiveMinutes.ms + 1000)
-//
-//        Dispatcher.shared.dispatch(LifecycleAction.Foreground)
-//
-//        navigator.checkAtLockScreen()
+        navigator.gotoItemList()
+        Dispatcher.shared.dispatch(LifecycleAction.Background)
+
+        testLockingSupport.advance(Setting.AutoLockTime.FiveMinutes.ms + 1000)
+
+        Dispatcher.shared.dispatch(LifecycleAction.Foreground)
+
+        navigator.checkAtLockScreen()
     }
 
     @Test
     fun basicDontLockTest() {
-//        navigator.resetApp()
-//        simulateAppStartup()
-//        navigator.gotoItemList()
-//        Dispatcher.shared.dispatch(LifecycleAction.Background)
-//
-//        testLockingSupport.advance(Setting.AutoLockTime.OneMinute.ms)
-//
-//        Dispatcher.shared.dispatch(LifecycleAction.Foreground)
-//
-//        navigator.checkAtItemList()
+        navigator.gotoItemList()
+        Dispatcher.shared.dispatch(LifecycleAction.Background)
+
+        testLockingSupport.advance(Setting.AutoLockTime.OneMinute.ms)
+
+        Dispatcher.shared.dispatch(LifecycleAction.Foreground)
+
+        navigator.checkAtItemList()
     }
 
     @Test
     fun firstTimeLoginFlowInterruptTest() {
-//        navigator.resetApp()
-//        simulateAppStartup()
-//        navigator.gotoFxALogin()
-//
-//        Dispatcher.shared.dispatch(LifecycleAction.Background)
-//
-//        testLockingSupport.advance(Setting.AutoLockTime.FiveMinutes.ms + 1000)
-//
-//        Dispatcher.shared.dispatch(LifecycleAction.Foreground)
-//
-//        navigator.checkAtFxALogin()
+        navigator.resetApp(activityRule)
+        navigator.gotoFxALogin()
+
+        Dispatcher.shared.dispatch(LifecycleAction.Background)
+
+        testLockingSupport.advance(Setting.AutoLockTime.FiveMinutes.ms + 1000)
+
+        Dispatcher.shared.dispatch(LifecycleAction.Foreground)
+
+        navigator.checkAtFxALogin()
     }
 
     @Test
     fun disconnectAndReLoginFlowInterruptTest() {
-//        navigator.resetApp()
-//        simulateAppStartup()
-//        navigator.gotoItemList()
-//
-//        Dispatcher.shared.dispatch(LifecycleAction.UserReset)
-//        Thread.sleep(200)
-//
-//        navigator.checkAtWelcome()
-//        navigator.gotoFxALogin()
-//
-//        Dispatcher.shared.dispatch(LifecycleAction.Background)
-//
-//        testLockingSupport.advance(Setting.AutoLockTime.FiveMinutes.ms + 1000)
-//
-//        Dispatcher.shared.dispatch(LifecycleAction.Foreground)
-//
-//        navigator.checkAtFxALogin()
-    }
+        navigator.gotoItemList()
 
-    private fun simulateAppStartup() {
-        activityRule.activity.presenter.compositeDisposable.clear()
-        activityRule.activity.presenter.onViewReady()
+        Dispatcher.shared.dispatch(LifecycleAction.UserReset)
+        DataStore.shared.state.blockingNext()
+
+        navigator.checkAtWelcome()
+        navigator.gotoFxALogin()
+
+        Dispatcher.shared.dispatch(LifecycleAction.Background)
+
+        testLockingSupport.advance(Setting.AutoLockTime.FiveMinutes.ms + 1000)
+
         Dispatcher.shared.dispatch(LifecycleAction.Foreground)
+
+        navigator.checkAtFxALogin()
     }
 }

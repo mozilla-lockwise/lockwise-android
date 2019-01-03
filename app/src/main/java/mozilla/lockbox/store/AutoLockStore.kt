@@ -41,7 +41,7 @@ class AutoLockStore(
 
     var lockingSupport: LockingSupport = SystemLockingSupport()
 
-    val lockRequired: Observable<Boolean> = ReplaySubject.create()
+    val lockRequired: Observable<Boolean> = ReplaySubject.createWithSize(1)
 
     init {
         lifecycleStore.lifecycleEvents

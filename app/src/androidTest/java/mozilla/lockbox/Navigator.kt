@@ -11,6 +11,7 @@ import android.support.test.espresso.Espresso.closeSoftKeyboard
 import android.support.test.espresso.Espresso.pressBack
 import android.support.test.espresso.NoActivityResumedException
 import android.support.test.espresso.intent.Intents
+import android.support.test.rule.ActivityTestRule
 import br.com.concretesolutions.kappuccino.custom.intent.IntentMatcherInteractions.sentIntent
 import br.com.concretesolutions.kappuccino.custom.intent.IntentMatcherInteractions.stubIntent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -28,12 +29,16 @@ import mozilla.lockbox.robots.securityDisclaimer
 import mozilla.lockbox.robots.settings
 import mozilla.lockbox.robots.welcome
 import mozilla.lockbox.store.DataStore
+import mozilla.lockbox.view.RootActivity
 import org.junit.Assert
 
 @ExperimentalCoroutinesApi
 class Navigator {
-    fun resetApp() {
-        Dispatcher.shared.dispatch(LifecycleAction.UseTestData)
+    fun resetApp(activityRule: ActivityTestRule<RootActivity>) {
+        activityRule.activity.runOnUiThread {
+            activityRule.activity.recreate()
+        }
+
         Dispatcher.shared.dispatch(DataStoreAction.Unlock)
         DataStore.shared.state.blockingNext()
         Dispatcher.shared.dispatch(LifecycleAction.UserReset)
