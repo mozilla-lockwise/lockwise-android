@@ -31,7 +31,6 @@ class FxASyncDataStoreSupport(
             return@lazy it
         }
 
-        // val encryptionKey = randomUUID().toString()
         val encryptionKey = generateEncryptionKey(256)
         preferences.putString(Constant.Key.encryptionKey, encryptionKey)
 
@@ -51,7 +50,7 @@ class FxASyncDataStoreSupport(
                 val full = it.toInt()
                 val hi = (full and 0xf0) ushr 4
                 val lo = full and 0x0f
-                "%h%h".format(hi, lo)
+                "%x%x".format(hi, lo)
             }
             .joinToString("")
     }
