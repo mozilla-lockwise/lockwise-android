@@ -21,18 +21,26 @@
                 android:id="@+id/navToolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
                 android:theme="@style/ToolBar">
             <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
-                <Button
+                <Spinner
                         android:id="@+id/sortButton"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:textAllCaps="false"
                         android:drawableEnd="@drawable/ic_down_caret"
                         android:contentDescription="@string/sort_description"
+                        android:overlapAnchor="false"
+                        android:popupElevation="8dp"
+                        android:dropDownWidth="128dp"
+                        android:dropDownSelector="@color/selection"
+                        android:spinnerMode="dropdown"
+                        android:gravity="start"
+                        android:popupBackground="@drawable/sort_menu_bg"
                         android:textSize="20sp"
                         style="@style/ToolbarButton"/>
                 <Button

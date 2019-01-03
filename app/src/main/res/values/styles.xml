@@ -12,6 +12,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="android:textColor">@color/text_white</item>
         <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:windowBackground">@null</item>
         <item name="android:colorControlActivated">@color/switch_activated</item>
         <item name="android:background">@color/backgroundWhite</item>
         <item name="actionMenuTextAppearance">@style/NavDrawerStyle</item>
@@ -22,15 +23,24 @@
     <style name="ToolBar" parent="ThemeOverlay.AppCompat.ActionBar">
         <item name="android:textColorPrimary">@android:color/white</item>
         <item name="android:textColorSecondary">@android:color/white</item>
-        <item name="android:background">@color/colorPrimary</item>
+        <item name="android:background">@android:color/transparent</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="android:titleTextAppearance">@style/TextAppearance.Widget.Event.Toolbar.Title</item>
+        <item name="android:titleTextAppearance">@style/TextAppearanceWidgetEventToolbarTitle</item>
     </style>
-    <style name="TextAppearance.Widget.Event.Toolbar.Title" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+    <style name="TextAppearanceWidgetEventToolbarTitle">
         <item name="android:letterSpacing">0.01</item>
         <item name="android:fontFamily">sans-serif</item>
         <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:background">@color/colorPrimary</item>
+    </style>
+    <style name="TextAppearanceSortMenuItem">
+        <item name="android:letterSpacing">0.02</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:lineSpacingExtra">6sp</item>
+        <item name="android:textColor">@color/black_87_percent</item>
     </style>
     <style name="ToolbarButton">
         <item name="android:tint">@android:color/white</item>
@@ -47,7 +57,7 @@
         <item name="android:lineSpacingExtra">8sp</item>
         <item name="android:backgroundTint">@color/white_E4</item>
     </style>
-   <style name="WelcomeScreen" parent="AppTheme" >
+    <style name="WelcomeScreen" parent="AppTheme">
         <item name="android:background">@color/backgroundGrey</item>
     </style>
     <style name="AlertDialogStyle" parent="Theme.AppCompat.Light.Dialog">
@@ -82,8 +92,5 @@
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowIsFloating">true</item>
         <item name="android:background">@android:color/transparent</item>
-    </style>
-    <style name="SortItemsPopupAnimation">
-        <item name="android:windowEnterAnimation">@anim/sort_items_menu_enter</item>
     </style>
 </resources>
