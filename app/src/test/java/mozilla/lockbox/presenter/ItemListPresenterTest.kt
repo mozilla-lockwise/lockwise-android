@@ -241,6 +241,16 @@ open class ItemListPresenterTest {
         dispatcherObserver.assertLastValue(RouteAction.SettingList)
         view.menuItemSelectionStub.onNext(R.id.account_setting_menu_item)
         dispatcherObserver.assertLastValue(RouteAction.AccountSetting)
+        view.menuItemSelectionStub.onNext(R.id.faq_menu_item)
+        dispatcherObserver.assertLastValue(RouteAction.AppWebPage.FaqList)
+        view.menuItemSelectionStub.onNext(R.id.feedback_menu_item)
+        dispatcherObserver.assertLastValue(RouteAction.AppWebPage.SendFeedback)
+    }
+
+    @Test
+    fun `filter clicks cause RouteAction Filter`() {
+        view.filterClickStub.onNext(Unit)
+        Assert.assertTrue(dispatcherObserver.values().last() is RouteAction.Filter)
     }
 
     @Test

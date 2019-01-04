@@ -93,4 +93,7 @@
         <item name="android:windowIsFloating">true</item>
         <item name="android:background">@android:color/transparent</item>
     </style>
+    <style name="PopupTheme" parent="@style/Widget.AppCompat.PopupWindow">
+        <item name="android:popupEnterTransition">@android:transition/slide_top</item>
+    </style>
 </resources>

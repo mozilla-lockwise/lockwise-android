@@ -81,7 +81,7 @@ class ItemListFragment : CommonFragment(), ItemListView {
 
         spinner = view.sortButton
         sortItemsAdapter = SortItemAdapter(context!!, android.R.layout.simple_spinner_item, sortList)
-        spinner.adapter = sortItemsAdapter // Set the custom adapter to the spinner
+        spinner.adapter = sortItemsAdapter
         spinner.setPopupBackgroundResource(R.drawable.sort_menu_bg)
 
         // added because different events can trigger onItemSelectedListener
