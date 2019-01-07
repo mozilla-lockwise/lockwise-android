@@ -11,6 +11,7 @@ plugins {
     id 'kotlin-android-extensions'
     id 'kotlin-android'
     id 'io.sentry.android.gradle'
+    id 'org.mozilla.appservices'
 }
 
 android {
@@ -118,6 +119,12 @@ dependencies {
     }
     androidTestImplementation 'br.com.concretesolutions:kappuccino:1.2.1'
     ktlint "com.github.shyiko:ktlint:0.28.0"
+}
+
+appservices {
+    defaultConfig {
+        megazord = 'lockbox'
+    }
 }
 
 def outputDir = "${project.buildDir}/reports/ktlint/"
