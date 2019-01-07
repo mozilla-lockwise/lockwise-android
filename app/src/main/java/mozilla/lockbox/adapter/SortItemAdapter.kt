@@ -23,8 +23,7 @@ class SortItemAdapter(
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val view = super.getView(position, convertView, parent)
-        val label = view as TextView
+        val label = super.getView(position, convertView, parent) as TextView
         label.setTextAppearance(R.style.TextAppearanceWidgetEventToolbarTitle)
         label.setTextColor(Color.WHITE)
         label.setBackgroundColor(label.resources.getColor(R.color.colorPrimary, null))
