@@ -63,7 +63,7 @@ open class AccountStore(
     private val coroutineContext: CoroutineContext
         get() = Dispatchers.Default + exceptionHandler
 
-    private val testProfile = Profile("test", "whovian@tardis.net", "Jodie Whittaker", "https://nerdist.com/wp-content/uploads/2017/11/The-Doctor-Jodie-Whittaker.jpg")
+    private val testProfile = Profile(uid = "test", email = "whovian@tardis.net", displayName = "Jodie Whittaker", avatar = "https://nerdist.com/wp-content/uploads/2017/11/The-Doctor-Jodie-Whittaker.jpg")
 
     private val storedAccountJSON: String?
         get() = securePreferences.getString(Constant.Key.firefoxAccount)
