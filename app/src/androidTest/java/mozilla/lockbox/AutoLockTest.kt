@@ -69,7 +69,6 @@ open class AutoLockTest {
 
     @Test
     fun firstTimeLoginFlowInterruptTest() {
-        navigator.resetApp(activityRule)
         navigator.gotoFxALogin()
 
         Dispatcher.shared.dispatch(LifecycleAction.Background)
@@ -85,10 +84,8 @@ open class AutoLockTest {
     fun disconnectAndReLoginFlowInterruptTest() {
         navigator.gotoItemList()
 
-        Dispatcher.shared.dispatch(LifecycleAction.UserReset)
-        DataStore.shared.state.blockingNext()
+        navigator.disconnectAccount()
 
-        navigator.checkAtWelcome()
         navigator.gotoFxALogin()
 
         Dispatcher.shared.dispatch(LifecycleAction.Background)

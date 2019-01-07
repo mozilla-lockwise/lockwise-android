@@ -14,6 +14,8 @@ import android.support.test.espresso.intent.Intents
 import android.support.test.rule.ActivityTestRule
 import br.com.concretesolutions.kappuccino.custom.intent.IntentMatcherInteractions.sentIntent
 import br.com.concretesolutions.kappuccino.custom.intent.IntentMatcherInteractions.stubIntent
+import io.reactivex.Observable
+import io.reactivex.subjects.ReplaySubject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
@@ -38,12 +40,40 @@ class Navigator {
         activityRule.activity.runOnUiThread {
             activityRule.activity.recreate()
         }
+    }
 
-        Dispatcher.shared.dispatch(DataStoreAction.Unlock)
-        DataStore.shared.state.blockingNext()
+    fun disconnectAccount() {
+        val subject = DataStore.shared.state as ReplaySubject<DataStore.State>
+        when (subject.value) {
+            is DataStore.State.Locked -> {
+                Dispatcher.shared.dispatch(DataStoreAction.Unlock)
+                blockUntil(DataStore.State.Unlocked)
+            }
+
+            is DataStore.State.Unprepared -> {
+                return
+            }
+
+            else -> {
+                // NOP
+            }
+        }
+
         Dispatcher.shared.dispatch(LifecycleAction.UserReset)
-        DataStore.shared.state.blockingNext()
+        blockUntil(DataStore.State.Unprepared)
         checkAtWelcome()
+    }
+
+    fun blockUntil(vararg states: DataStore.State) {
+        blockUntil(DataStore.shared.state, *states)
+    }
+
+    fun <T> blockUntil(observable: Observable<T>, vararg states: T) {
+        val stateSubject = observable as? ReplaySubject
+        if (stateSubject != null && states.contains(stateSubject.value)) {
+            return
+        }
+        observable.filter { states.contains(it) }.blockingNext().iterator().next()
     }
 
     fun gotoFxALogin() {
@@ -65,7 +95,7 @@ class Navigator {
             fxaLogin { tapPlaceholderLogin() }
         } else {
             Dispatcher.shared.dispatch(LifecycleAction.UseTestData)
-            DataStore.shared.state.blockingNext()
+            blockUntil(DataStore.State.Unlocked)
         }
         checkAtItemList()
     }
