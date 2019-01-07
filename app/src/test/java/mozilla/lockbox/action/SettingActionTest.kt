@@ -35,4 +35,16 @@ class SettingActionTest {
         Assert.assertEquals(86400000, Setting.AutoLockTime.TwentyFourHours.ms)
         Assert.assertEquals(0, Setting.AutoLockTime.Never.ms)
     }
+
+    @Test
+    fun itemListSort_titleId() {
+        Assert.assertEquals(R.string.all_entries_a_z, Setting.ItemListSort.ALPHABETICALLY.titleId)
+        Assert.assertEquals(R.string.all_entries_recent, Setting.ItemListSort.RECENTLY_USED.titleId)
+    }
+
+    @Test
+    fun itemListSort_valueId() {
+        Assert.assertEquals(R.string.sort_menu_az, Setting.ItemListSort.ALPHABETICALLY.valueId)
+        Assert.assertEquals(R.string.sort_menu_recent, Setting.ItemListSort.RECENTLY_USED.valueId)
+    }
 }

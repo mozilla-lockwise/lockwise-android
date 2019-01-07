@@ -19,7 +19,23 @@ import mozilla.lockbox.R
 class ItemListRobot : BaseTestRobot {
     override fun exists() = displayed {
         id(R.id.filterButton)
+        id(R.id.sortButton)
         id(R.id.appDrawer)
+    }
+
+    fun sortMenuIsDisplayed() = displayed {
+        text(R.string.sort_menu_az)
+        text(R.string.sort_menu_recent)
+    }
+
+    fun spinnerDisplaysFirstItemSelection() = displayed {
+        id(R.id.sortButton)
+        text(R.string.all_entries_a_z)
+    }
+
+    fun spinnerDisplaysSecondItemSelection() = displayed {
+        id(R.id.sortButton)
+        text(R.string.all_entries_recent)
     }
 
     fun openMenu(): ViewInteraction {
@@ -29,6 +45,12 @@ class ItemListRobot : BaseTestRobot {
     }
 
     private fun menuOption(item: Int) = openMenu().perform(navigateTo(item))
+
+    fun tapSortButton() = click { id(R.id.sortButton) }
+
+    fun selectFirstItemInSortMenu() = click { allOf { text(R.string.sort_menu_az) } }
+
+    fun selectSecondItemInSortMenu() = click { allOf { text(R.string.sort_menu_recent) } }
 
     fun tapFilterList() = click { id(R.id.filterButton) }
 
