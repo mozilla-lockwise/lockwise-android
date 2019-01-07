@@ -7,7 +7,6 @@ import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.AutoLockStore
-import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.support.LockingSupport
 import mozilla.lockbox.view.RootActivity
 import org.junit.Before
