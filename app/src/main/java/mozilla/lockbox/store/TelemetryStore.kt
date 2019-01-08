@@ -9,6 +9,7 @@ package mozilla.lockbox.store
 import android.content.Context
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
+import mozilla.components.lib.fetch.httpurlconnection.HttpURLConnectionClient
 import mozilla.lockbox.BuildConfig
 import mozilla.lockbox.R
 import mozilla.lockbox.action.LifecycleAction
@@ -19,7 +20,7 @@ import org.mozilla.telemetry.Telemetry
 import org.mozilla.telemetry.TelemetryHolder
 import org.mozilla.telemetry.config.TelemetryConfiguration
 import org.mozilla.telemetry.event.TelemetryEvent
-import org.mozilla.telemetry.net.HttpURLConnectionTelemetryClient
+import org.mozilla.telemetry.net.TelemetryClient
 import org.mozilla.telemetry.ping.TelemetryCorePingBuilder
 import org.mozilla.telemetry.ping.TelemetryMobileEventPingBuilder
 import org.mozilla.telemetry.schedule.jobscheduler.JobSchedulerTelemetryScheduler
@@ -41,7 +42,7 @@ open class TelemetryWrapper {
             .setCollectionEnabled(true)     // gather the data (so we get startup) ...
             .setUploadEnabled(false)        // ... but don't upload it
         val storage = FileTelemetryStorage(config, JSONPingSerializer())
-        val client = HttpURLConnectionTelemetryClient()
+        val client = TelemetryClient(HttpURLConnectionClient())
         val scheduler = JobSchedulerTelemetryScheduler()
 
         telemetry = Telemetry(config, storage, client, scheduler)
