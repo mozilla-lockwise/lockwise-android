@@ -14,3 +14,4 @@ pages:
   - 'Flux Architecture': 'architecture/flux.md'
   - 'Using Keys and Biometrics': 'architecture/sec-apis.md'
   - 'Accessibility': 'accessibility.md'
+  - 'Release Instructions': 'releases.md'
