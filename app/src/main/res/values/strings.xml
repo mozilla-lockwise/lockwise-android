@@ -50,7 +50,7 @@
     <!-- This is the label for the button to unlock the application for use while on a lock screen -->
     <string name="unlock_button">Unlock</string>
 
-    <!-- This message appears in a toast informing the user it is currently downloading and syncing entry data -->
+    <!-- This message appears in a toast informing the user it is currently downloading and syncing entry (a saved login "entry" is basically the URL, username and password) data -->
     <string name="syncing_entries">Syncing your entries…</string>
 
     <!-- This is the label used by screenreaders to inform the user the selected menu is for sorting the entries in the list -->
@@ -147,8 +147,8 @@
     <string name="touch_fingerprint_sensor">Touch the fingerprint sensor.</string>
     <!-- This is the title of a dialog requesting permission for the application to unlock using the device fingerprint sensor -->
     <string name="enable_fingerprint_dialog_title">Enable Fingerprint</string>
-    <!-- This is the message requesting permission for the application to unlock using the device fingerprint sensor -->
-    <string name="enable_fingerprint_dialog_subtitle">Give Lockbox permission to unlock this app with the fingerprint sensor.</string>
+    <!-- This is the message requesting permission for the application to unlock using the device fingerprint sensor, not expected to translate Firefox Lockbox -->
+    <string name="enable_fingerprint_dialog_subtitle">Give Firefox Lockbox permission to unlock this app with the fingerprint sensor.</string>
     <!-- This is the error displayed when attempting to unlock the application with a fingerprint and the device does not recognize it as a match -->
     <string name="fingerprint_not_recognized">Not recognized</string>
     <!-- This is the success message displayed after using the fingerprint sensor to unlock the application -->
@@ -171,11 +171,11 @@
     <string name="profile_image_content_description">Firefox Account Profile Image</string>
     <!-- This message is displayed to inform users how to change their Firefox Account profile details on a setting screen, not expected to translate Firefox Account -->
     <string name="account_information">To make changes to your account, log in to your Firefox Account from any browser.</string>
-    <!-- This is the text on a button to sign out and disconnect the account from the application -->
+    <!-- This is the text on a button to sign out and disconnect the account from the application, not expected to translate Firefox Lockbox  -->
     <string name="disconnect_button">Disconnect Firefox Lockbox</string>
     <!-- This message is displayed near a button to sign out and disconnect the account from the application explaining this does not affect the data stored with Firefox, not expected to translate Firefox Lockbox -->
     <string name="disconnect_disclaimer">This removes synced entries from Firefox Lockbox, but will not delete your entries from Firefox.</string>
-    <!-- This is the text on an final confirmation button to sign out and disconnect the account from the application -->
+    <!-- This is the text on a final confirmation button to sign out and disconnect the account from the application, not expected to translate Firefox Lockbox -->
     <string name="disconnect_disclaimer_title">Disconnect Firefox Lockbox?</string>
     <!-- This message is displayed on a final confirmation dialog to sign out and disconnect their account from the application, not expected to translate Firefox Lockbox nor Firefox Account -->
     <string name="disconnect_disclaimer_message">This will delete your Firefox Account information and all saved entries from Firefox Lockbox.</string>
