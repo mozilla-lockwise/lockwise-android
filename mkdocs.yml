@@ -6,12 +6,15 @@ repo_url: https://github.com/mozilla-lockbox/lockbox-android
 
 pages:
 - 'Introduction': 'index.md'
-- 'Contributing': 'contributing.md'
 - 'Release Notes': 'release-notes.md'
+- 'How to Contribute': 
+  - 'Contributing': 'contributing.md'
+  - 'Code of Conduct': 'code_of_conduct.md'
 - 'Telemetry and Metrics': 'metrics.md'
 - 'Developer Guides':
   - 'Build and Install': 'install.md'
   - 'Flux Architecture': 'architecture/flux.md'
   - 'Using Keys and Biometrics': 'architecture/sec-apis.md'
   - 'Accessibility': 'accessibility.md'
+  - 'Test Plan': 'test-plan.md'
   - 'Release Instructions': 'releases.md'
