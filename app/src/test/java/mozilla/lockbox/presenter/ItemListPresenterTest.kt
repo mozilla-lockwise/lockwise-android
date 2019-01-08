@@ -35,6 +35,8 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
+import org.mockito.Mockito.spy
+import org.mockito.Mockito.verify
 import org.powermock.api.mockito.PowerMockito
 import org.powermock.core.classloader.annotations.PrepareForTest
 import org.robolectric.RobolectricTestRunner
@@ -94,6 +96,7 @@ open class ItemListPresenterTest {
         val sortItemSelectionStub = PublishSubject.create<Setting.ItemListSort>()
         val disclaimerActionStub = PublishSubject.create<AlertState>()
         val lockNowSelectionStub = PublishSubject.create<Unit>()
+        val refreshItemListStub = PublishSubject.create<Unit>()
 
         override val itemSelection: Observable<ItemViewModel>
             get() = itemSelectedStub
@@ -129,6 +132,14 @@ open class ItemListPresenterTest {
         override fun loading(isLoading: Boolean) {
             this.isLoading = isLoading
         }
+
+        override val refreshItemList: Observable<Unit>
+            get() = refreshItemListStub
+
+        override val isRefreshing: Boolean = false
+
+        override fun stopRefreshing() {
+        }
     }
 
     class FakeDataStore : DataStore() {
@@ -150,7 +161,7 @@ open class ItemListPresenterTest {
     private val settingStore = FakeSettingStore()
     private val profileStub = PublishSubject.create<Optional<Profile>>()
 
-    val view = FakeView()
+    val view: FakeView = spy(FakeView())
     val dispatcher = Dispatcher()
     val subject = ItemListPresenter(view, dispatcher, dataStore, settingStore, fingerprintStore, accountStore)
 
@@ -280,5 +291,18 @@ open class ItemListPresenterTest {
     fun `remove sync loading indicator`() {
         dataStore.syncStateStub.onNext(DataStore.SyncState.NotSyncing)
         Assert.assertEquals(false, view.isLoading)
+    }
+
+    @Test
+    fun `stop refreshing when stop syncing after pull to refresh`() {
+        whenCalled(view.isRefreshing).thenReturn(true)
+        dataStore.syncStateStub.onNext(DataStore.SyncState.NotSyncing)
+        verify(view).stopRefreshing()
+    }
+
+    @Test
+    fun `swipe down calls sync`() {
+        view.refreshItemListStub.onNext(Unit)
+        dispatcherObserver.assertLastValue(DataStoreAction.Sync)
     }
 }
