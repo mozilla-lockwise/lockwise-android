@@ -78,5 +78,12 @@ _all builds must be manually uploaded from bitrise to Play Store Console as an a
 
 NOTE: _brand new_ apps may take 1 or more hours to appear in the Play Store whereas existing app (updates) can appear within minutes. Schedule accordingly!
 
+## Updating the version
+
+_Once a version has been merged or released, the major app version should be increased_
+
+- Update the `versionCode` and `versionName` values in `app/build.gradle`
+- Also update the value in the `list_cell_setting_appversion.xml` layout to _the exact same version_
+
 [1]: https://app.bitrise.io/app/20089a88380dd14d
 [2]: https://play.google.com/apps/publish/?account=7083182635971239206#ManageReleasesPlace:p=mozilla.lockbox&appid=4972100280256015711
