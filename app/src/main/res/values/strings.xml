@@ -5,11 +5,6 @@
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!--suppress CheckTagEmptyBody -->
-    <string name="empty_string"></string>
-    <!-- This is the message provided when the application opens a web view and a URL was not provided, this is not expected to be seen by users -->
-    <string name="missing_url">MISSING_URL</string>
-
     <!-- This string is a promotional or short descriptional sentence to describe the purpose of the application -->
     <string name="app_tagline">Take your passwords everywhere.</string>
     <!-- This is used for screenreaders to know the application logo image is currently selected, not expected to translate Firefox Lockbox -->
