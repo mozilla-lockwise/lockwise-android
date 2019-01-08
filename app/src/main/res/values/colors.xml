@@ -27,6 +27,5 @@
     <color name="green">#12bc00</color>
     <color name="dark_grey">#4a4a4f</color>
     <color name="selection">#14000000</color>
-    <color name="menuItemSelected">@color/white_60_percent</color>
     <color name="refresh_blue">#0e89c9</color>
 </resources>

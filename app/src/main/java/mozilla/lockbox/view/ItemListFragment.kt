@@ -161,9 +161,6 @@ class ItemListFragment : CommonFragment(), ItemListView {
         get() = Setting.ItemListSort.values()
 
     override fun updateItems(itemList: List<ItemViewModel>) {
-        if (isRefreshing) {
-            view!!.refreshContainer.isRefreshing = false
-        }
         adapter.updateItems(itemList)
     }
 
@@ -193,7 +190,7 @@ class ItemListFragment : CommonFragment(), ItemListView {
     }
 
     override fun loading(isLoading: Boolean) {
-        if (isLoading && !isRefreshing) {
+        if (isLoading) {
             showAndRemove(view!!.loadingView, view!!.entriesView)
         } else {
             showAndRemove(view!!.entriesView, view!!.loadingView)
@@ -204,5 +201,8 @@ class ItemListFragment : CommonFragment(), ItemListView {
     }
 
     override val refreshItemList: Observable<Unit> get() = view!!.refreshContainer.refreshes()
-    private val isRefreshing: Boolean get() = view!!.refreshContainer.isRefreshing
+    override val isRefreshing: Boolean get() = view!!.refreshContainer.isRefreshing
+    override fun stopRefreshing() {
+        view!!.refreshContainer.isRefreshing = false
+    }
 }
