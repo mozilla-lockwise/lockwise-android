@@ -8,6 +8,7 @@ package mozilla.lockbox
 
 import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.robots.disconnectDisclaimer
 import mozilla.lockbox.robots.filteredItemList
 import mozilla.lockbox.view.RootActivity
@@ -21,6 +22,7 @@ import org.junit.runner.RunWith
  *
  * See [testing documentation](http://d.android.com/tools/testing).
  */
+@ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 open class RoutePresenterTest {
     private val navigator = Navigator()
@@ -30,7 +32,7 @@ open class RoutePresenterTest {
 
     @Before
     fun setUp() {
-        navigator.resetApp()
+        navigator.resetApp(activityRule)
     }
 
     @Test

@@ -20,12 +20,17 @@ import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.store.DataStore
+import mozilla.lockbox.support.Optional
+import mozilla.lockbox.support.asOptional
 import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito.clearInvocations
+import org.mockito.Mockito.spy
+import org.mockito.Mockito.verifyZeroInteractions
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
@@ -53,15 +58,15 @@ class ItemDetailPresenterTest {
 
     class FakeDataStore : DataStore() {
         var idArg: String? = null
-        val getStub = PublishSubject.create<ServerPassword>()
+        val getStub = PublishSubject.create<Optional<ServerPassword>>()
 
-        override fun get(id: String): Observable<ServerPassword?> {
+        override fun get(id: String): Observable<Optional<ServerPassword>> {
             idArg = id
             return getStub
         }
     }
 
-    val view = FakeView()
+    val view = spy(FakeView())
     val dataStore = FakeDataStore()
     val dispatcher = Dispatcher()
     val dispatcherObserver = TestObserver.create<Action>()
@@ -86,7 +91,7 @@ class ItemDetailPresenterTest {
         dispatcher.register.subscribe(dispatcherObserver)
 
         subject.onViewReady()
-        dataStore.getStub.onNext(fakeCredential)
+        dataStore.getStub.onNext(fakeCredential.asOptional())
     }
 
     @Test
@@ -99,6 +104,15 @@ class ItemDetailPresenterTest {
         assertEquals(fakeCredential.username, obs.username)
         assertEquals(fakeCredential.password, obs.password)
         assertEquals(fakeCredential.id, obs.id)
+    }
+
+    @Test
+    fun `doesn't update UI when credential becomes null`() {
+        clearInvocations(view)
+
+        dataStore.getStub.onNext(Optional<ServerPassword>(null))
+
+        verifyZeroInteractions(view)
     }
 
     @Test

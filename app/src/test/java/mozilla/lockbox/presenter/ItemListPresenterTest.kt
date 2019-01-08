@@ -10,7 +10,9 @@ import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
+import mozilla.components.service.fxa.Profile
 import mozilla.lockbox.R
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.RouteAction
@@ -27,13 +29,14 @@ import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.SettingStore
-import mozilla.lockbox.support.FxAProfile
 import mozilla.lockbox.support.Optional
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
+import org.mockito.Mockito.spy
+import org.mockito.Mockito.verify
 import org.powermock.api.mockito.PowerMockito
 import org.powermock.core.classloader.annotations.PrepareForTest
 import org.robolectric.RobolectricTestRunner
@@ -71,6 +74,7 @@ private val password3 = ServerPassword(
     timePasswordChanged = 0L
 )
 
+@ExperimentalCoroutinesApi
 @RunWith(RobolectricTestRunner::class)
 @PrepareForTest(AccountStore::class)
 open class ItemListPresenterTest {
@@ -92,6 +96,7 @@ open class ItemListPresenterTest {
         val sortItemSelectionStub = PublishSubject.create<Setting.ItemListSort>()
         val disclaimerActionStub = PublishSubject.create<AlertState>()
         val lockNowSelectionStub = PublishSubject.create<Unit>()
+        val refreshItemListStub = PublishSubject.create<Unit>()
 
         override val itemSelection: Observable<ItemViewModel>
             get() = itemSelectedStub
@@ -127,6 +132,14 @@ open class ItemListPresenterTest {
         override fun loading(isLoading: Boolean) {
             this.isLoading = isLoading
         }
+
+        override val refreshItemList: Observable<Unit>
+            get() = refreshItemListStub
+
+        override val isRefreshing: Boolean = false
+
+        override fun stopRefreshing() {
+        }
     }
 
     class FakeDataStore : DataStore() {
@@ -146,9 +159,9 @@ open class ItemListPresenterTest {
 
     private val dataStore = FakeDataStore()
     private val settingStore = FakeSettingStore()
-    private val profileStub = PublishSubject.create<Optional<FxAProfile>>()
+    private val profileStub = PublishSubject.create<Optional<Profile>>()
 
-    val view = FakeView()
+    val view: FakeView = spy(FakeView())
     val dispatcher = Dispatcher()
     val subject = ItemListPresenter(view, dispatcher, dataStore, settingStore, fingerprintStore, accountStore)
 
@@ -239,6 +252,16 @@ open class ItemListPresenterTest {
         dispatcherObserver.assertLastValue(RouteAction.SettingList)
         view.menuItemSelectionStub.onNext(R.id.account_setting_menu_item)
         dispatcherObserver.assertLastValue(RouteAction.AccountSetting)
+        view.menuItemSelectionStub.onNext(R.id.faq_menu_item)
+        dispatcherObserver.assertLastValue(RouteAction.AppWebPage.FaqList)
+        view.menuItemSelectionStub.onNext(R.id.feedback_menu_item)
+        dispatcherObserver.assertLastValue(RouteAction.AppWebPage.SendFeedback)
+    }
+
+    @Test
+    fun `filter clicks cause RouteAction Filter`() {
+        view.filterClickStub.onNext(Unit)
+        Assert.assertTrue(dispatcherObserver.values().last() is RouteAction.Filter)
     }
 
     @Test
@@ -268,5 +291,18 @@ open class ItemListPresenterTest {
     fun `remove sync loading indicator`() {
         dataStore.syncStateStub.onNext(DataStore.SyncState.NotSyncing)
         Assert.assertEquals(false, view.isLoading)
+    }
+
+    @Test
+    fun `stop refreshing when stop syncing after pull to refresh`() {
+        whenCalled(view.isRefreshing).thenReturn(true)
+        dataStore.syncStateStub.onNext(DataStore.SyncState.NotSyncing)
+        verify(view).stopRefreshing()
+    }
+
+    @Test
+    fun `swipe down calls sync`() {
+        view.refreshItemListStub.onNext(Unit)
+        dispatcherObserver.assertLastValue(DataStoreAction.Sync)
     }
 }

@@ -71,7 +71,7 @@ class LockedPresenter(
         if (fingerprintStore.isKeyguardDeviceSecure) {
             view.unlockFallback()
         } else {
-            dispatcher.dispatch(RouteAction.LockScreen)
+            dispatcher.dispatch(DataStoreAction.Unlock)
         }
     }
 }

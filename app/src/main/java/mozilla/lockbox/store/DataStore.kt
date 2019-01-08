@@ -10,6 +10,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.ReplaySubject
 import io.reactivex.subjects.Subject
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.rx2.asSingle
@@ -19,9 +20,13 @@ import mozilla.components.service.sync.logins.AsyncLoginsStorage
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.log
 import mozilla.lockbox.model.SyncCredentials
 import mozilla.lockbox.support.DataStoreSupport
 import mozilla.lockbox.support.FixedDataStoreSupport
+import mozilla.lockbox.support.Optional
+import mozilla.lockbox.support.asOptional
+import kotlin.coroutines.CoroutineContext
 
 @ExperimentalCoroutinesApi
 open class DataStore(
@@ -50,6 +55,17 @@ open class DataStore(
     open val state: Observable<State> = stateSubject
     open val syncState: Observable<SyncState> = ReplaySubject.create()
     open val list: Observable<List<ServerPassword>> get() = listSubject
+
+    private val exceptionHandler: CoroutineExceptionHandler
+        get() = CoroutineExceptionHandler { _, e ->
+            log.error(
+                message = "Unexpected error occurred during LoginsStorage usage",
+                throwable = e
+            )
+        }
+
+    private val coroutineContext: CoroutineContext
+        get() = Dispatchers.Default + exceptionHandler
 
     private var backend: AsyncLoginsStorage
 
@@ -82,19 +98,17 @@ open class DataStore(
             .addTo(compositeDisposable)
     }
 
-    open fun get(id: String): Observable<ServerPassword?> {
+    open fun get(id: String): Observable<Optional<ServerPassword>> {
         return list.map { items ->
-            items.findLast { item -> item.id == id }
+            items.findLast { item -> item.id == id }.asOptional()
         }
     }
 
     private fun touch(id: String) {
         if (!backend.isLocked()) {
             backend.touch(id)
-                .asSingle(Dispatchers.Default)
-                .subscribe { _, _ ->
-                    updateList()
-                }
+                .asSingle(coroutineContext)
+                .subscribe(this::updateList, this::pushError)
                 .addTo(compositeDisposable)
         }
     }
@@ -102,10 +116,9 @@ open class DataStore(
     private fun unlock() {
         if (backend.isLocked()) {
             backend.unlock(support.encryptionKey)
-                .asSingle(Dispatchers.Default)
-                .subscribe { _, _ ->
-                    stateSubject.onNext(State.Unlocked)
-                }
+                .asSingle(coroutineContext)
+                .map { State.Unlocked }
+                .subscribe(stateSubject::onNext, this::pushError)
                 .addTo(compositeDisposable)
         }
     }
@@ -113,10 +126,9 @@ open class DataStore(
     private fun lock() {
         if (!backend.isLocked()) {
             backend.lock()
-                .asSingle(Dispatchers.Default)
-                .subscribe { _, _ ->
-                    stateSubject.onNext(State.Locked)
-                }
+                .asSingle(coroutineContext)
+                .map { State.Locked }
+                .subscribe(stateSubject::onNext, this::pushError)
                 .addTo(compositeDisposable)
         } else {
             stateSubject.onNext(State.Locked)
@@ -132,11 +144,11 @@ open class DataStore(
         (syncState as Subject).onNext(SyncState.Syncing)
 
         backend.sync(syncConfig)
-            .asSingle(Dispatchers.Default)
-            .subscribe { _, _ ->
-                updateList()
+            .asSingle(coroutineContext)
+            .doOnEvent { _, _ ->
                 (syncState as Subject).onNext(SyncState.NotSyncing)
             }
+            .subscribe(this::updateList, this::pushError)
             .addTo(compositeDisposable)
     }
 
@@ -145,29 +157,27 @@ open class DataStore(
         this.listSubject.accept(emptyList())
     }
 
-    private fun updateList() {
+    // there's probably a slicker way to do this `Unit` thing...
+    private fun updateList(x: Unit) {
         if (!backend.isLocked()) {
             backend.list()
-                .asSingle(Dispatchers.Default)
-                .subscribe { list, _ ->
-                    list?.let {
-                        listSubject.accept(it)
-                    }
-                }
+                .asSingle(coroutineContext)
+                .subscribe(listSubject::accept, this::pushError)
                 .addTo(compositeDisposable)
         }
     }
 
     private fun reset() {
-        if (stateSubject.value == State.Unprepared) {
+        if (stateSubject.value == State.Unprepared ||
+            stateSubject.value == null
+        ) {
             return
         }
         clearList()
         backend.reset()
-            .asSingle(Dispatchers.Default)
-            .subscribe { _, _ ->
-                this.stateSubject.onNext(State.Unprepared)
-            }
+            .asSingle(coroutineContext)
+            .map { State.Unprepared }
+            .subscribe(stateSubject::onNext, this::pushError)
             .addTo(compositeDisposable)
     }
 
@@ -179,21 +189,22 @@ open class DataStore(
         resetSupport(credentials.support)
 
         credentials.apply {
-            support.syncConfig = SyncUnlockInfo(kid, accessToken, syncKey, tokenServerURL)
+            support.syncConfig = SyncUnlockInfo(kid, accessToken.token, syncKey, tokenServerURL)
         }
 
-        if (!credentials.isNew) return
+        if (!credentials.isNew) {
+            return
+        }
 
         if (backend.isLocked()) {
-            backend.unlock(support.encryptionKey)
-                .asSingle(Dispatchers.Default)
-                .subscribe { _, _ ->
-                    stateSubject.onNext(State.Unlocked)
-                }
-                .addTo(compositeDisposable)
+            unlock()
         } else {
             stateSubject.onNext(State.Unlocked)
         }
+    }
+
+    private fun pushError(e: Throwable) {
+        this.stateSubject.onNext(State.Errored(e))
     }
 
     // Warning: this is testing code.
@@ -203,9 +214,10 @@ open class DataStore(
             return
         }
         if (stateSubject.value != State.Unprepared &&
-            stateSubject.value != null) {
+            stateSubject.value != null
+        ) {
             backend.reset()
-                .asSingle(Dispatchers.Default)
+                .asSingle(coroutineContext)
                 .subscribe()
                 .addTo(compositeDisposable)
         }

@@ -150,6 +150,24 @@ class AutoLockStoreTest {
     }
 
     @Test
+    fun `receiving Background lifecycle actions when the datastore isn't already locked with never as the autolocktime setting`() {
+        clearInvocations(preferences)
+        clearInvocations(editor)
+        (settingStore.autoLockTime as Relay).accept(Setting.AutoLockTime.Never)
+        (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Background)
+        (dataStore.state as Subject).onNext(DataStore.State.Unlocked)
+
+        verify(preferences).edit()
+
+        verify(editor).putLong(
+            Constant.Key.autoLockTimerDate,
+            Long.MAX_VALUE
+        )
+
+        verify(editor).apply()
+    }
+
+    @Test
     fun `new autolocktime settings are reflected when backgrounding the app when the datastore isn't already locked`() {
         clearInvocations(preferences)
         clearInvocations(editor)

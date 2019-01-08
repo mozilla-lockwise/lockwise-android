@@ -8,6 +8,7 @@ package mozilla.lockbox.store
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.SyncUnlockInfo
+import mozilla.components.service.fxa.AccessTokenInfo
 import mozilla.lockbox.DisposingTest
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
@@ -15,6 +16,7 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.mocks.MockDataStoreSupport
 import mozilla.lockbox.model.FixedSyncCredentials
 import mozilla.lockbox.store.DataStore.State
+import mozilla.lockbox.support.asOptional
 import org.junit.Assert
 import org.junit.Test
 import org.mockito.Mockito.clearInvocations
@@ -85,14 +87,13 @@ class DataStoreTest : DisposingTest() {
 
         dispatcher.dispatch(DataStoreAction.Unlock)
         Assert.assertEquals(10, listIterator.next().size)
+        clearInvocations(support.storage)
 
         dispatcher.dispatch(LifecycleAction.UserReset)
 
         // leaving this for later
 //        stateIterator.next()
 //        Assert.assertEquals(0, listIterator.next().size)
-
-//        verify(support.storage).reset()
     }
 
     @Test
@@ -120,7 +121,7 @@ class DataStoreTest : DisposingTest() {
         val accessToken = "jlk;sfdkljdfsljk"
 
         val syncCredentials = FixedSyncCredentials(
-            accessToken = accessToken,
+            accessToken = AccessTokenInfo(accessToken, null, 0L),
             tokenServerURL = tokenServerURL,
             kid = kid,
             syncKey = k,
@@ -153,5 +154,30 @@ class DataStoreTest : DisposingTest() {
         dispatcher.dispatch(DataStoreAction.Sync)
         Assert.assertEquals(DataStore.SyncState.Syncing, syncIterator.next())
         Assert.assertEquals(DataStore.SyncState.NotSyncing, syncIterator.next())
+    }
+
+    @Test
+    fun testGet() {
+        val stateIterator = this.subject.state.blockingIterable().iterator()
+        val listIterator = this.subject.list.blockingIterable().iterator()
+        Assert.assertEquals(0, listIterator.next().size)
+
+        dispatcher.dispatch(DataStoreAction.Unlock)
+        Assert.assertEquals(State.Unlocked, stateIterator.next())
+        val serverPassword = listIterator.next()[4]
+
+        val serverPasswordIterator = this.subject.get(serverPassword.id).blockingIterable().iterator()
+
+        Assert.assertEquals(serverPassword.asOptional(), serverPasswordIterator.next())
+    }
+
+    @Test
+    fun testLockWhenLocked() {
+        val stateIterator = this.subject.state.blockingIterable().iterator()
+        val listIterator = this.subject.list.blockingIterable().iterator()
+        Assert.assertEquals(0, listIterator.next().size)
+
+        dispatcher.dispatch(DataStoreAction.Lock)
+        Assert.assertEquals(State.Locked, stateIterator.next())
     }
 }

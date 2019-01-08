@@ -16,6 +16,7 @@ import mozilla.lockbox.R
 import mozilla.lockbox.action.ClipboardAction
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.extensions.toDetailViewModel
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
@@ -81,6 +82,7 @@ class ItemDetailPresenter(
 
         dataStore.get(itemId)
             .observeOn(mainThread())
+            .filterNotNull()
             .doOnNext { credentials = it }
             .map { it.toDetailViewModel() }
             .subscribe(view::updateItem)

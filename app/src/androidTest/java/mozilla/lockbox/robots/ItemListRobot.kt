@@ -13,13 +13,30 @@ import android.support.test.espresso.contrib.NavigationViewActions.navigateTo
 import android.support.test.espresso.matcher.ViewMatchers.withId
 import br.com.concretesolutions.kappuccino.actions.ClickActions.click
 import br.com.concretesolutions.kappuccino.assertions.VisibilityAssertions.displayed
+import kotlinx.android.synthetic.main.fragment_item_list.view.*
 import mozilla.lockbox.R
 
 // ItemList
 class ItemListRobot : BaseTestRobot {
     override fun exists() = displayed {
         id(R.id.filterButton)
+        id(R.id.sortButton)
         id(R.id.appDrawer)
+    }
+
+    fun sortMenuIsDisplayed() = displayed {
+        text(R.string.sort_menu_az)
+        text(R.string.sort_menu_recent)
+    }
+
+    fun spinnerDisplaysFirstItemSelection() = displayed {
+        id(R.id.sortButton)
+        text(R.string.all_entries_a_z)
+    }
+
+    fun spinnerDisplaysSecondItemSelection() = displayed {
+        id(R.id.sortButton)
+        text(R.string.all_entries_recent)
     }
 
     fun openMenu(): ViewInteraction {
@@ -30,6 +47,12 @@ class ItemListRobot : BaseTestRobot {
 
     private fun menuOption(item: Int) = openMenu().perform(navigateTo(item))
 
+    fun tapSortButton() = click { id(R.id.sortButton) }
+
+    fun selectFirstItemInSortMenu() = click { allOf { text(R.string.sort_menu_az) } }
+
+    fun selectSecondItemInSortMenu() = click { allOf { text(R.string.sort_menu_recent) } }
+
     fun tapFilterList() = click { id(R.id.filterButton) }
 
     fun tapSettings() = menuOption(R.id.setting_menu_item)
@@ -39,6 +62,8 @@ class ItemListRobot : BaseTestRobot {
     fun tapAccountSetting() = menuOption(R.id.account_setting_menu_item)
 
     fun selectItem(position: Int = 0) = clickListItem(R.id.entriesView, position)
+
+    fun pullToRefresh() = swipeDown(R.id.entriesView)
 }
 
 fun itemList(f: ItemListRobot.() -> Unit) = ItemListRobot().apply(f)

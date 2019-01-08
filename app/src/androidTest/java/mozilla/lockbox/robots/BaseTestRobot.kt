@@ -12,6 +12,7 @@ import android.support.test.espresso.NoActivityResumedException
 import android.support.test.espresso.ViewInteraction
 import android.support.test.espresso.action.ViewActions.closeSoftKeyboard
 import android.support.test.espresso.action.ViewActions.replaceText
+import android.support.test.espresso.action.ViewActions.swipeDown
 import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.ViewMatchers.withId
 import android.support.test.espresso.matcher.ViewMatchers.withText
@@ -36,6 +37,9 @@ interface BaseTestRobot {
             atPosition(position) { click() }
         }
     }
+
+    fun swipeDown(resId: Int): ViewInteraction =
+        onView(withId(resId)).perform(swipeDown())
 
     fun back(remainInApplication: Boolean = true) {
         Espresso.closeSoftKeyboard()

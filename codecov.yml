@@ -5,12 +5,8 @@ coverage:
   precision: 1
   status:
     project:
-      default:
-        threshold: 5
-      fxa: # declare a new status context for FxA
-        paths: "app/src/main/java/mozilla/lockbox/store/AccountStore.kt"
-        target: 0%
-      app: # declare a new status context without
+      default: false  # disable the default status that measures entire project
+      app: # declare a new status context without FxA
         paths: "!app/src/main/java/mozilla/lockbox/store/AccountStore.kt"
     patch:
         default:

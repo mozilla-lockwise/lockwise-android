@@ -14,6 +14,24 @@ import mozilla.components.service.sync.logins.AsyncLoginsStorageAdapter
 import mozilla.lockbox.store.ContextStore
 import java.security.SecureRandom
 
+/**
+ * @param keyStrength The strength ofthe generated key in bits
+ */
+internal fun generateEncryptionKey(keyStrength: Int): String {
+    val bytes = ByteArray(keyStrength / 8)
+    val random = SecureRandom()
+    random.nextBytes(bytes)
+
+    return bytes
+        .map {
+            val full = it.toInt()
+            val hi = (full and 0xf0) ushr 4
+            val lo = full and 0x0f
+            "%x%x".format(hi, lo)
+        }
+        .joinToString("")
+}
+
 class FxASyncDataStoreSupport(
     private val preferences: SecurePreferences = SecurePreferences.shared
 ) : DataStoreSupport, ContextStore {
@@ -31,29 +49,10 @@ class FxASyncDataStoreSupport(
             return@lazy it
         }
 
-        // val encryptionKey = randomUUID().toString()
-        val encryptionKey = generateRandomString(50)
+        val encryptionKey = generateEncryptionKey(256)
         preferences.putString(Constant.Key.encryptionKey, encryptionKey)
 
         encryptionKey
-    }
-
-    /*
-     * This serves as a placeholder, and should definitely not be considered secure.
-     * TODO make this cryptographically interesting; add method to KeyStore/DataProtect
-     */
-    private fun generateRandomString(keyLength: Int): String {
-        val charPool = "0123456789ABCDEF".toCharArray()
-
-        val bytes = ByteArray(keyLength)
-        val random = SecureRandom()
-        random.nextBytes(bytes)
-
-        return bytes
-            .map {
-                charPool[(it.toInt() and 0xFF % charPool.size)]
-            }
-            .joinToString("")
     }
 
     override fun createLoginsStorage(): AsyncLoginsStorage = AsyncLoginsStorageAdapter(DatabaseLoginsStorage(dbFilePath))

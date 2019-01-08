@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   ~ This Source Code Form is subject to the terms of the Mozilla Public
   ~ License, v. 2.0. If a copy of the MPL was not distributed with this
   ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -21,20 +22,29 @@
                 android:id="@+id/navToolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
                 android:theme="@style/ToolBar">
             <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
-                <Button
+                <Spinner
                         android:id="@+id/sortButton"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:textAllCaps="false"
                         android:drawableEnd="@drawable/ic_down_caret"
                         android:contentDescription="@string/sort_description"
+                        android:overlapAnchor="false"
+                        android:popupElevation="8dp"
+                        android:dropDownWidth="128dp"
+                        android:dropDownSelector="@color/selection"
+                        android:spinnerMode="dropdown"
+                        android:gravity="start"
+                        android:popupBackground="@drawable/sort_menu_bg"
                         android:textSize="20sp"
-                        style="@style/ToolbarButton"/>
+                        style="@style/PopupTheme"
+                        android:background="@null"/>
                 <Button
                         android:id="@+id/filterButton"
                         android:layout_width="fill_parent"
@@ -46,10 +56,17 @@
             </LinearLayout>
         </android.support.v7.widget.Toolbar>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/entriesView"
+        <android.support.v4.widget.SwipeRefreshLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/refreshContainer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/entriesView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </android.support.v4.widget.SwipeRefreshLayout>
 
         <RelativeLayout
             android:id="@+id/loadingView"

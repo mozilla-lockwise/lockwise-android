@@ -116,7 +116,7 @@ class LockedPresenterTest {
     fun `handle error authentication callback`() {
         `when`(fingerprintStore.isKeyguardDeviceSecure).thenReturn(false)
         lockedStore.onAuth.onNext(FingerprintAuthAction.OnAuthentication(AuthCallback.OnError))
-        dispatcherObserver.assertLastValue(RouteAction.LockScreen)
+        dispatcherObserver.assertLastValue(DataStoreAction.Unlock)
     }
 
     @Test

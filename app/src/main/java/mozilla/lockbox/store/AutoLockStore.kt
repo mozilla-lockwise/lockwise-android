@@ -41,7 +41,7 @@ class AutoLockStore(
 
     var lockingSupport: LockingSupport = SystemLockingSupport()
 
-    val lockRequired: Observable<Boolean> = ReplaySubject.create()
+    val lockRequired: Observable<Boolean> = ReplaySubject.createWithSize(1)
 
     init {
         lifecycleStore.lifecycleEvents
@@ -72,7 +72,11 @@ class AutoLockStore(
     }
 
     private fun updateNextLockTime(autoLockTime: Setting.AutoLockTime) {
-        storeAutoLockTimerDate(lockingSupport.systemTimeElapsed + autoLockTime.ms)
+        if (autoLockTime == Setting.AutoLockTime.Never) {
+            storeAutoLockTimerDate(Long.MAX_VALUE)
+        } else {
+            storeAutoLockTimerDate(lockingSupport.systemTimeElapsed + autoLockTime.ms)
+        }
     }
 
     private fun lockCurrentlyRequired(): Boolean {

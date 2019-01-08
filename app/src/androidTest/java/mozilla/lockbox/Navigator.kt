@@ -11,11 +11,12 @@ import android.support.test.espresso.Espresso.closeSoftKeyboard
 import android.support.test.espresso.Espresso.pressBack
 import android.support.test.espresso.NoActivityResumedException
 import android.support.test.espresso.intent.Intents
+import android.support.test.rule.ActivityTestRule
 import br.com.concretesolutions.kappuccino.custom.intent.IntentMatcherInteractions.sentIntent
 import br.com.concretesolutions.kappuccino.custom.intent.IntentMatcherInteractions.stubIntent
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
-import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.robots.accountSettingScreen
 import mozilla.lockbox.robots.disconnectDisclaimer
@@ -27,23 +28,25 @@ import mozilla.lockbox.robots.lockScreen
 import mozilla.lockbox.robots.securityDisclaimer
 import mozilla.lockbox.robots.settings
 import mozilla.lockbox.robots.welcome
+import mozilla.lockbox.store.DataStore
+import mozilla.lockbox.view.RootActivity
 import org.junit.Assert
 
+@ExperimentalCoroutinesApi
 class Navigator {
-    fun resetApp() {
+    fun resetApp(activityRule: ActivityTestRule<RootActivity>) {
+        activityRule.activity.runOnUiThread {
+            activityRule.activity.recreate()
+        }
+
         Dispatcher.shared.dispatch(DataStoreAction.Unlock)
-        Thread.sleep(200L)
+        DataStore.shared.state.blockingNext()
         Dispatcher.shared.dispatch(LifecycleAction.UserReset)
-        Thread.sleep(200L)
+        DataStore.shared.state.blockingNext()
         checkAtWelcome()
     }
 
-    fun gotoWelcome() {
-        Dispatcher.shared.dispatch(RouteAction.Welcome)
-    }
-
     fun gotoFxALogin() {
-        gotoWelcome()
         welcome { tapGetStarted() }
         checkAtFxALogin()
     }
@@ -62,6 +65,7 @@ class Navigator {
             fxaLogin { tapPlaceholderLogin() }
         } else {
             Dispatcher.shared.dispatch(LifecycleAction.UseTestData)
+            DataStore.shared.state.blockingNext()
         }
         checkAtItemList()
     }

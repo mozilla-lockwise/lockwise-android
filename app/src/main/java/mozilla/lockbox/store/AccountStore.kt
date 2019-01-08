@@ -15,27 +15,31 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.ReplaySubject
 import io.reactivex.subjects.Subject
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.rx2.asMaybe
 import kotlinx.coroutines.rx2.asSingle
+import mozilla.components.service.fxa.AccessTokenInfo
 import mozilla.components.service.fxa.Config
 import mozilla.components.service.fxa.FirefoxAccount
-import mozilla.components.service.fxa.OAuthInfo
+import mozilla.components.service.fxa.FxaException
+import mozilla.components.service.fxa.Profile
 import mozilla.lockbox.action.AccountAction
 import mozilla.lockbox.action.LifecycleAction
+import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.log
 import mozilla.lockbox.model.FixedSyncCredentials
 import mozilla.lockbox.model.FxASyncCredentials
 import mozilla.lockbox.model.SyncCredentials
 import mozilla.lockbox.support.Constant
-import mozilla.lockbox.support.FixedFxAProfile
-import mozilla.lockbox.support.FxAProfile
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.SecurePreferences
 import mozilla.lockbox.support.asOptional
-import mozilla.lockbox.support.toFxAOauthInfo
-import mozilla.lockbox.support.toFxAProfile
+import java.util.concurrent.TimeUnit
+import kotlin.coroutines.CoroutineContext
 
 @ExperimentalCoroutinesApi
 open class AccountStore(
@@ -48,14 +52,27 @@ open class AccountStore(
 
     internal val compositeDisposable = CompositeDisposable()
 
+    private val exceptionHandler: CoroutineExceptionHandler
+        get() = CoroutineExceptionHandler { _, e ->
+                log.error(
+                    message = "Unexpected error occurred during Firefox Account authentication",
+                    throwable = e
+                )
+            }
+
+    private val coroutineContext: CoroutineContext
+        get() = Dispatchers.Default + exceptionHandler
+
+    private val testProfile = Profile(uid = "test", email = "whovian@tardis.net", displayName = "Jodie Whittaker", avatar = "https://nerdist.com/wp-content/uploads/2017/11/The-Doctor-Jodie-Whittaker.jpg")
+
     private val storedAccountJSON: String?
         get() = securePreferences.getString(Constant.Key.firefoxAccount)
 
     private var fxa: FirefoxAccount? = null
 
     open val loginURL: Observable<String> = ReplaySubject.createWithSize(1)
-    val syncCredentials: Observable<Optional<SyncCredentials>> = ReplaySubject.createWithSize(1)
-    val profile: Observable<Optional<FxAProfile>> = ReplaySubject.createWithSize(1)
+    open val syncCredentials: Observable<Optional<SyncCredentials>> = ReplaySubject.createWithSize(1)
+    open val profile: Observable<Optional<Profile>> = ReplaySubject.createWithSize(1)
 
     init {
         val resetObservable = this.dispatcher.register
@@ -83,7 +100,11 @@ open class AccountStore(
             if (accountJSON == Constant.App.testMarker) {
                 populateTestAccountInformation(false)
             } else {
-                this.fxa = FirefoxAccount.fromJSONString(accountJSON)
+                try {
+                    this.fxa = FirefoxAccount.fromJSONString(accountJSON)
+                } catch (e: FxaException) {
+                    dispatcher.dispatch(RouteAction.Dialog.NoNetworkDisclaimer)
+                }
                 generateLoginURL()
                 populateAccountInformation(false)
             }
@@ -98,71 +119,74 @@ open class AccountStore(
 
         securePreferences.putString(Constant.Key.firefoxAccount, Constant.App.testMarker)
 
-        profileSubject.onNext(FixedFxAProfile().asOptional())
+        profileSubject.onNext(testProfile.asOptional())
         syncCredentialSubject.onNext(FixedSyncCredentials(isNew).asOptional())
     }
 
     private fun populateAccountInformation(isNew: Boolean) {
         val profileSubject = profile as Subject
         val syncCredentialSubject = syncCredentials as Subject
+        val fxa = fxa ?: return
+        securePreferences.putString(Constant.Key.firefoxAccount, fxa.toJSONString())
 
-        fxa?.let { fxa ->
-            securePreferences.putString(Constant.Key.firefoxAccount, fxa.toJSONString())
+        fxa.getProfile()
+            .asSingle(coroutineContext)
+            .delay(1L, TimeUnit.SECONDS)
+            .map { it.asOptional() }
+            .subscribe(profileSubject::onNext, this::pushError)
+            .addTo(compositeDisposable)
 
-            fxa.getProfile().asSingle(Dispatchers.Default)
-                .subscribe { profile ->
-                    profileSubject.onNext(profile.toFxAProfile().asOptional())
-                }
-                .addTo(compositeDisposable)
-
-            // can't use asSingle here because the OAuthToken is optional :-/
-            Observable
-                .create<Optional<SyncCredentials>> { emitter ->
-                    val oauthDeferred = fxa.getCachedOAuthToken(Constant.FxA.scopes)
-                    oauthDeferred.invokeOnCompletion {
-                        val credentials = oauthDeferred.getCompleted()?.let { oauthInfo ->
-                            generateSyncCredentials(oauthInfo, isNew)
-                        }
-                        emitter.onNext(credentials.asOptional())
-                    }
-                }
-                .subscribe(syncCredentialSubject)
-        }
+        fxa.getAccessToken(Constant.FxA.oldSyncScope)
+            .asMaybe(coroutineContext)
+            .delay(1L, TimeUnit.SECONDS)
+            .map {
+                generateSyncCredentials(it, isNew).asOptional()
+            }
+            .subscribe(syncCredentialSubject::onNext, this::pushError)
+            .addTo(compositeDisposable)
     }
 
-    private fun generateSyncCredentials(oauthInfo: OAuthInfo, isNew: Boolean): SyncCredentials? {
+    private fun generateSyncCredentials(oauthInfo: AccessTokenInfo, isNew: Boolean): SyncCredentials? {
         val fxa = fxa ?: return null
         val tokenServerURL = fxa.getTokenServerEndpointURL()
-        return FxASyncCredentials(oauthInfo.toFxAOauthInfo(), tokenServerURL, Constant.FxA.oldSyncScope, isNew)
+        return FxASyncCredentials(oauthInfo, tokenServerURL, isNew)
     }
 
     private fun generateNewFirefoxAccount() {
-        Config.release().asSingle(Dispatchers.Default)
-            .subscribe { config ->
-                fxa = FirefoxAccount(config, Constant.FxA.clientID, Constant.FxA.redirectUri)
-                generateLoginURL()
-            }
-            .addTo(compositeDisposable)
+        try {
+            val config = Config.release(Constant.FxA.clientID, Constant.FxA.redirectUri)
+            fxa = FirefoxAccount(config)
+            generateLoginURL()
+        } catch (e: FxaException) {
+            this.pushError(e)
+        }
         (syncCredentials as Subject).onNext(Optional(null))
         (profile as Subject).onNext(Optional(null))
     }
 
     private fun generateLoginURL() {
-        fxa?.beginOAuthFlow(Constant.FxA.scopes, true)?.asSingle(Dispatchers.Default)?.subscribe { url ->
-            (this.loginURL as Subject).onNext(url)
-        }?.addTo(compositeDisposable)
+        val fxa = fxa ?: return
+
+        fxa.beginOAuthFlow(Constant.FxA.scopes, true)
+            .asSingle(coroutineContext)
+            .subscribe((this.loginURL as Subject)::onNext, this::pushError)
+            .addTo(compositeDisposable)
     }
 
     private fun oauthLogin(url: String) {
+        val fxa = fxa ?: return
+
         val uri = Uri.parse(url)
         val codeQP = uri.getQueryParameter("code")
         val stateQP = uri.getQueryParameter("state")
 
         codeQP?.let { code ->
             stateQP?.let { state ->
-                fxa?.completeOAuthFlow(code, state)?.asSingle(Dispatchers.Default)?.subscribe { oauthInfo ->
-                    this.populateAccountInformation(true)
-                }?.addTo(compositeDisposable)
+                fxa.completeOAuthFlow(code, state)
+                    .asSingle(coroutineContext)
+                    .map { true }
+                    .subscribe(this::populateAccountInformation, this::pushError)
+                    .addTo(compositeDisposable)
             }
         }
     }
@@ -175,5 +199,9 @@ open class AccountStore(
 
         this.securePreferences.remove(Constant.Key.firefoxAccount)
         this.generateNewFirefoxAccount()
+    }
+
+    private fun pushError(it: Throwable) {
+        dispatcher.dispatch(RouteAction.Dialog.NoNetworkDisclaimer)
     }
 }

@@ -58,7 +58,7 @@ class RoutePresenter(
     override fun onViewReady() {
         navController = Navigation.findNavController(activity, R.id.fragment_nav_host)
 
-        val lockObservable = accountStore.syncCredentials
+        val autoLockActions = accountStore.syncCredentials
             .switchMap {
                 if (it.value != null && it.value.isNew) {
                     autoLockStore.lockRequired.skip(1)
@@ -73,13 +73,14 @@ class RoutePresenter(
         // Moves credentials from the AccountStore, into the DataStore.
         accountStore.syncCredentials
             .map(this::accountToDataStoreActions)
-            .mergeWith(lockObservable)
+            .mergeWith(autoLockActions)
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
 
         // Make the routing contingent on the state of the dataStore.
         val dataStoreRoutes = dataStore.state
             .map(this::dataStoreToRouteActions)
+            .filterNotNull()
 
         routeStore.routes
             .mergeWith(dataStoreRoutes)
@@ -88,13 +89,13 @@ class RoutePresenter(
             .addTo(compositeDisposable)
     }
 
-    private fun dataStoreToRouteActions(storageState: State): RouteAction {
+    private fun dataStoreToRouteActions(storageState: State): Optional<RouteAction> {
         return when (storageState) {
             is State.Unlocked -> RouteAction.ItemList
             is State.Locked -> RouteAction.LockScreen
             is State.Unprepared -> RouteAction.Welcome
-            else -> RouteAction.LockScreen
-        }
+            else -> null
+        }.asOptional()
     }
 
     private fun accountToDataStoreActions(optCredentials: Optional<SyncCredentials>): DataStoreAction {
@@ -143,6 +144,7 @@ class RoutePresenter(
         val dialogStateObservable = when (destination) {
             is RouteAction.Dialog.SecurityDisclaimer -> showSecurityDisclaimerDialog()
             is RouteAction.Dialog.UnlinkDisclaimer -> showUnlinkDisclaimerDialog()
+            is RouteAction.Dialog.NoNetworkDisclaimer -> showNoNetworkDialog()
         }
 
         dialogStateObservable
@@ -209,6 +211,15 @@ class RoutePresenter(
         )
     }
 
+    private fun showNoNetworkDialog(): Observable<AlertState> {
+        return AlertDialogHelper.showAlertDialog(
+            activity,
+            R.string.no_network,
+            R.string.connect_to_internet,
+            R.string.ok
+        )
+    }
+
     private fun showUnlinkDisclaimerDialog(): Observable<AlertState> {
         return AlertDialogHelper.showAlertDialog(
             activity,
@@ -268,6 +279,7 @@ class RoutePresenter(
 
             Pair(R.id.fragment_fxa_login, R.id.fragment_item_list) -> R.id.action_fxaLogin_to_itemList
             Pair(R.id.fragment_locked, R.id.fragment_item_list) -> R.id.action_to_itemList
+            Pair(R.id.fragment_locked, R.id.fragment_welcome) -> R.id.action_locked_to_welcome
 
             Pair(R.id.fragment_item_list, R.id.fragment_item_detail) -> R.id.action_itemList_to_itemDetail
             Pair(R.id.fragment_item_list, R.id.fragment_setting) -> R.id.action_itemList_to_setting
