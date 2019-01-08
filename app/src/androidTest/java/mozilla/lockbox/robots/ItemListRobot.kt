@@ -13,6 +13,7 @@ import android.support.test.espresso.contrib.NavigationViewActions.navigateTo
 import android.support.test.espresso.matcher.ViewMatchers.withId
 import br.com.concretesolutions.kappuccino.actions.ClickActions.click
 import br.com.concretesolutions.kappuccino.assertions.VisibilityAssertions.displayed
+import kotlinx.android.synthetic.main.fragment_item_list.view.*
 import mozilla.lockbox.R
 
 // ItemList
@@ -61,6 +62,8 @@ class ItemListRobot : BaseTestRobot {
     fun tapAccountSetting() = menuOption(R.id.account_setting_menu_item)
 
     fun selectItem(position: Int = 0) = clickListItem(R.id.entriesView, position)
+
+    fun pullToRefresh() = swipeDown(R.id.entriesView)
 }
 
 fun itemList(f: ItemListRobot.() -> Unit) = ItemListRobot().apply(f)

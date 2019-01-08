@@ -44,4 +44,11 @@ open class ItemListTest {
         itemList { selectFirstItemInSortMenu() }
         itemList { spinnerDisplaysFirstItemSelection() }
     }
+
+    @Test
+    fun testPullToRefresh() {
+        navigator.gotoItemList(false)
+        itemList { pullToRefresh() }
+        navigator.checkAtItemList()
+    }
 }

@@ -40,6 +40,9 @@ interface ItemListView {
     fun updateAccountProfile(profile: AccountViewModel)
     fun updateItemListSort(sort: Setting.ItemListSort)
     fun loading(isLoading: Boolean)
+    val refreshItemList: Observable<Unit>
+    val isRefreshing: Boolean
+    fun stopRefreshing()
 }
 
 @ExperimentalCoroutinesApi
@@ -62,7 +65,14 @@ class ItemListPresenter(
                     DataStore.SyncState.NotSyncing -> false
                 }
             }
-            .subscribe(view::loading)
+            .subscribe { syncing ->
+                when (view.isRefreshing) {
+                    true -> if (!syncing) {
+                        view.stopRefreshing()
+                    }
+                    false -> view.loading(syncing)
+                }
+            }
             .addTo(compositeDisposable)
 
         Observables.combineLatest(dataStore.list, settingStore.itemListSortOrder)
@@ -114,6 +124,11 @@ class ItemListPresenter(
             .subscribe { sortBy ->
                 dispatcher.dispatch(SettingAction.ItemListSortOrder(sortBy))
             }.addTo(compositeDisposable)
+
+        view.refreshItemList
+            .doOnDispose { view.stopRefreshing() }
+            .subscribe { dispatcher.dispatch(DataStoreAction.Sync) }
+            .addTo(compositeDisposable)
 
         accountStore.profile
             .filterNotNull()
