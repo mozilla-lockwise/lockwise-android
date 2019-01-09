@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Release Instructions - Firefox Lockbox for Android</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Release Instructions";
+    var mkdocs_page_input_path = "releases.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Firefox Lockbox for Android</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Introduction</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../release-notes/">Release Notes</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">How to Contribute</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../contributing/">Contributing</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../code_of_conduct/">Code of Conduct</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../metrics/">Telemetry and Metrics</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Developer Guides</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../install/">Build and Install</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../architecture/flux/">Flux Architecture</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../architecture/sec-apis/">Using Keys and Biometrics</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../accessibility/">Accessibility</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../test-plan/">Test Plan</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">Release Instructions</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#release-instructions">Release Instructions</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#distributing-builds-through-bitrise-primary-branch-deploy-master">Distributing Builds through bitrise (primary = branch, deploy = master)</a></li>
+        
+            <li><a class="toctree-l4" href="#preparing-a-release-for-internal-alpha-or-production-via-play-store">Preparing a Release (for Internal, Alpha, or Production via Play Store)</a></li>
+        
+            <li><a class="toctree-l4" href="#distributing-builds-through-play-store-internal-alpha">Distributing Builds through Play Store (Internal, Alpha)</a></li>
+        
+            <li><a class="toctree-l4" href="#distributing-through-the-app-store-production">Distributing through the App Store (Production)</a></li>
+        
+            <li><a class="toctree-l4" href="#updating-the-version">Updating the version</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Firefox Lockbox for Android</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Developer Guides &raquo;</li>
+        
+      
+    
+    <li>Release Instructions</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/mozilla-lockbox/lockbox-android/edit/master/docs/releases.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="release-instructions">Release Instructions</h1>
+<p>Some assumptions:</p>
+<ul>
+<li><code>master</code> is the default branch and is production-ready</li>
+<li>commits made to <code>master</code> are built and pass in <a href="https://app.bitrise.io/app/20089a88380dd14d">bitrise</a></li>
+<li>bitrise will test, build, and sign the APK for every build on every branch</li>
+<li><code>production</code> is our public release branch and may not match <code>master</code></li>
+<li>ideally, <code>production</code> will perfectly reproduce master</li>
+<li>but if <code>master</code> is in an un-releasable state, we cherry-pick commits to this branch</li>
+<li>this is an exception rather than the preferred maintenance method</li>
+<li>no automated uploads to Google Play Console occur, manual artifact uploads (from bitrise's signed artifacts) are required for internal, closed, open, and production releases</li>
+<li>Play Store has Internal (core team, email-restricted), Alpha (closed, email-restricted), and Production (everyone!) release channels configured</li>
+<li>currently, no plans exist for "external" testers nor "Open" release channels</li>
+<li>in the future we may create an open Beta testing channel to allow anyone outside of Mozilla to help us test in-progress work</li>
+</ul>
+<h2 id="distributing-builds-through-bitrise-primary-branch-deploy-master">Distributing Builds through bitrise (primary = branch, deploy = master)</h2>
+<p><em>all commits on all branches and pull requests are automatically built</em></p>
+<ol>
+<li>Push to the git branch available on GitHub.com and open a pull request</li>
+<li>Open <a href="https://app.bitrise.io/app/20089a88380dd14d">bitrise</a> from a mobile device and browse to the build</li>
+<li>bitrise access is currently private and email-restricted</li>
+</ol>
+<h2 id="preparing-a-release-for-internal-alpha-or-production-via-play-store">Preparing a Release (for Internal, Alpha, or Production via Play Store)</h2>
+<ol>
+<li>Update the release notes under <code>docs/release-notes.md</code></li>
+<li>create a pull request to collaborate and get approval</li>
+<li>determine the next build number and include it in release notes</li>
+<li>merge the release notes to <code>master</code> branch</li>
+<li>this will result in a release build matching the build number provided</li>
+<li>Create and merge a pull request <em>from</em> <code>master</code> <em>to</em> <code>production</code> so it tracks the release</li>
+<li>https://github.com/mozilla-lockbox/lockbox-android/compare/production...master</li>
+<li>Create a tag from <code>production</code> matching the format: <code>major.minor.patch.build</code></li>
+<li>for example: <code>1.2.1399</code> is major version 1.2, bitrise build 1399</li>
+<li>for example: <code>1.3.1.1624</code> is major version 1.3 with 1 patch release, (bitrise) build 1624</li>
+<li><code>git tag -a -s 1.3.1.1624 -m "1.3.1 (Build 1624)"</code></li>
+<li>push the tag to GitHub and create a corresponding "Release" on GitHub.com</li>
+<li>copy the release notes to the "Release" on GitHub</li>
+<li>download the <code>-signed.apk</code> from bitrise and attach it to the Release on GitHub</li>
+<li>Upload the <code>-signed.apk</code> (from bitrise) to the <a href="https://play.google.com/apps/publish/?account=7083182635971239206#ManageReleasesPlace:p=mozilla.lockbox&amp;appid=4972100280256015711">Play Console</a>:</li>
+<li>browse to "Release Management" &gt; "App Releases" &gt; "Internal test track" &gt; "Manage"</li>
+<li>"Create Release" and upload the signed APK, set the version to match the tag (for example: <code>1.2.1339</code>) then "Review" and the build will be immediately available to the core team</li>
+<li>Continue the "Distributing..." instructions</li>
+</ol>
+<h3 id="in-case-of-emergency-release">In Case of Emergency (Release)</h3>
+<p><em>similar to above, but requires explicit cherry-pick commits on <code>production</code> branch when <code>master</code> branch is not in a release-able state</em></p>
+<ol>
+<li>Merge the emergency changes or fixes or features to default <code>master</code> branch as usual</li>
+<li>Update the release notes</li>
+<li>Create and merge a pull request <em>up to and including</em> the last release-able commit on <code>master</code> to <code>production</code></li>
+<li>Then <code>git cherry-pick</code> each additional commit from <code>master</code> to be included in the release</li>
+<li>thus skipping or avoiding the non-release-able commits</li>
+<li>Push the resulting <code>production</code> branch to GitHub.com</li>
+<li>Create a tag from <code>production</code> matching the format: <code>major.minor.patch.build</code></li>
+<li>for example: <code>git tag -a -s 1.3.1.1624 -m "1.3.1 (Build 1624)"</code></li>
+<li>Push the tag to GitHub and create a corresponding "Release" on GitHub.com</li>
+<li>copy the release notes to the "Release" on GitHub</li>
+<li>Browse to bitrise and find the desired <code>production</code> branch build to distribute</li>
+<li>download the <code>.signed-apk</code> and attach it to the Release on GitHub</li>
+<li>Upload the <code>-signed.apk</code> (from bitrise) to the <a href="https://play.google.com/apps/publish/?account=7083182635971239206#ManageReleasesPlace:p=mozilla.lockbox&amp;appid=4972100280256015711">Play Console</a>:</li>
+<li>browse to "Release Management" &gt; "App Releases" &gt; "Internal test track" &gt; "Manage"</li>
+<li>"Create Release" and upload the signed APK, set the version to match the tag (for example: <code>1.2.1339</code>) then "Review" and the build will be immediately available to the core team</li>
+<li>Continue the "Distributing..." instructions</li>
+</ol>
+<h2 id="distributing-builds-through-play-store-internal-alpha">Distributing Builds through Play Store (Internal, Alpha)</h2>
+<p><em>all builds must be manually uploaded from bitrise to Play Store Console as an artifact aka "New Release" in the "Preparing" instructions above</em></p>
+<ol>
+<li>Browse to <a href="https://play.google.com/apps/publish/?account=7083182635971239206#ManageReleasesPlace:p=mozilla.lockbox&amp;appid=4972100280256015711">App Releases</a> in Play Console</li>
+<li>Browse to the "Internal test track" (this release should already be uploaded and available to the core Lockbox team)</li>
+<li>Promote the release to the (internal still) Alpha channel using the "Promote to Alpha" button, complete the questions</li>
+</ol>
+<h2 id="distributing-through-the-app-store-production">Distributing through the App Store (Production)</h2>
+<ol>
+<li>Contact release management...</li>
+</ol>
+<p>NOTE: <em>brand new</em> apps may take 1 or more hours to appear in the Play Store whereas existing app (updates) can appear within minutes. Schedule accordingly!</p>
+<h2 id="updating-the-version">Updating the version</h2>
+<p><em>Once a version has been merged or released, the major app version should be increased</em></p>
+<ul>
+<li>Update the <code>versionCode</code> and <code>versionName</code> values in <code>app/build.gradle</code></li>
+<li>Also update the value in the <code>list_cell_setting_appversion.xml</code> layout to <em>the exact same version</em></li>
+</ul>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="../test-plan/" class="btn btn-neutral" title="Test Plan"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+          <a href="https://github.com/mozilla-lockbox/lockbox-android/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+      
+      
+        <span><a href="../test-plan/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+
+</body>
+</html>
