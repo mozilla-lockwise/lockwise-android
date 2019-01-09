@@ -11,7 +11,6 @@ import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.ReplaySubject
 import io.reactivex.subjects.Subject
@@ -49,14 +48,18 @@ class AutoLockStore(
             .map { lockCurrentlyRequired() }
             .subscribe(lockRequired as Subject)
 
-        Observables.combineLatest(lifecycleStore.lifecycleEvents, dataStore.state)
-            .filter { it.first == LifecycleAction.Background && it.second != DataStore.State.Locked }
+        lifecycleStore.lifecycleEvents
+            .filter { it == LifecycleAction.Background }
+            .switchMap { dataStore.state.take(1) }
+            .filter { it != DataStore.State.Locked }
             .switchMap { settingStore.autoLockTime.take(1) }
             .subscribe(this::updateNextLockTime)
             .addTo(compositeDisposable)
 
         dispatcher.register
             .filter { it == DataStoreAction.Lock }
+            .switchMap { lockRequired.take(1) }
+            .filter { !it }
             .subscribe {
                 this.backdateNextLockTime()
             }
@@ -65,10 +68,11 @@ class AutoLockStore(
 
     override fun injectContext(context: Context) {
         preferences = PreferenceManager.getDefaultSharedPreferences(context)
+        (lockRequired as Subject).onNext(lockCurrentlyRequired())
     }
 
     private fun backdateNextLockTime() {
-        storeAutoLockTimerDate(lockingSupport.systemTimeElapsed - 1)
+        storeAutoLockTimerDate(0)
     }
 
     private fun updateNextLockTime(autoLockTime: Setting.AutoLockTime) {
@@ -84,7 +88,7 @@ class AutoLockStore(
     }
 
     private fun autoLockTimeElapsed(): Boolean {
-        val autoLockTimerDate = preferences.getLong(Constant.Key.autoLockTimerDate, -1)
+        val autoLockTimerDate = preferences.getLong(Constant.Key.autoLockTimerDate, Long.MAX_VALUE)
         val currentSystemTime = lockingSupport.systemTimeElapsed
 
         return autoLockTimerDate <= currentSystemTime
