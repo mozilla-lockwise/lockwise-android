@@ -20,6 +20,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.Setting
+import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.LockingSupport
@@ -43,7 +44,7 @@ import org.powermock.modules.junit4.PowerMockRunner
 import java.lang.Math.abs
 import org.mockito.Mockito.`when` as whenCalled
 
-class TestLockingSupport() : LockingSupport {
+class TestLockingSupport : LockingSupport {
     override var systemTimeElapsed: Long = 0L
 }
 
@@ -218,7 +219,7 @@ class AutoLockStoreTest {
 
         (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Foreground)
 
-        lockRequiredObserver.assertValue(false)
+        lockRequiredObserver.assertLastValue(false)
     }
 
     @Test
@@ -227,11 +228,15 @@ class AutoLockStoreTest {
 
         (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Foreground)
 
-        lockRequiredObserver.assertValue(true)
+        lockRequiredObserver.assertLastValue(true)
     }
 
     @Test
-    fun `datastore locking actions force the autolocktimerdate to an older time`() {
+    fun `datastore locking actions, when locking is not required by autolock, force the autolocktimerdate to an older time`() {
+        mockSavedValues(SystemClock.elapsedRealtime() + 600000)
+        (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Foreground)
+        lockRequiredObserver.assertLastValue(false)
+
         clearInvocations(preferences)
         clearInvocations(editor)
         Dispatcher.shared.dispatch(DataStoreAction.Lock)
@@ -248,6 +253,20 @@ class AutoLockStoreTest {
         )
 
         verify(editor).apply()
+    }
+
+    @Test
+    fun `datastore locking actions, when locking is required by autolock, do nothing`() {
+        mockSavedValues(SystemClock.elapsedRealtime() - 600000)
+        (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Foreground)
+        lockRequiredObserver.assertLastValue(true)
+
+        clearInvocations(preferences)
+        clearInvocations(editor)
+        Dispatcher.shared.dispatch(DataStoreAction.Lock)
+
+        verifyZeroInteractions(preferences)
+        verifyZeroInteractions(editor)
     }
 
     private fun mockSavedValues(
