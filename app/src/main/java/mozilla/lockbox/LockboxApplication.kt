@@ -13,6 +13,7 @@ import com.squareup.leakcanary.LeakCanary
 import io.sentry.Sentry
 import io.sentry.android.AndroidSentryClientFactory
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import mozilla.appservices.LockboxMegazord
 import mozilla.components.support.base.log.Log
 import mozilla.components.support.base.log.logger.Logger
 import mozilla.components.support.base.log.sink.AndroidLogSink
@@ -53,6 +54,8 @@ class LockboxApplication : Application() {
     }
 
     private fun setupDataStoreSupport() {
+        LockboxMegazord.init()
+
         // this needs to be done after injectContext, as
         // SyncDataStoreSupport needs to find the database
         // path from the context
