@@ -5,11 +5,13 @@
   ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
   -->
 
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools" package="mozilla.lockbox">
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+<manifest
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        package="mozilla.lockbox">
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.USE_FINGERPRINT"/>
 
     <application
             xmlns:tools="http://schemas.android.com/tools"
@@ -20,17 +22,18 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             android:name=".LockboxApplication"
-            tools:replace="android:allowBackup" tools:ignore="GoogleAppIndexingWarning">
+            tools:replace="android:allowBackup"
+            tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name=".view.RootActivity"
-            android:label="@string/app_label"
-            android:windowSoftInputMode="adjustResize"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait">
+                android:name=".view.RootActivity"
+                android:label="@string/app_label"
+                android:windowSoftInputMode="adjustResize"
+                android:configChanges="orientation|keyboardHidden"
+                android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
 
@@ -39,7 +42,7 @@
                 android:label="Lockbox"
                 android:permission="android.permission.BIND_AUTOFILL_SERVICE">
             <intent-filter>
-                <action android:name="android.service.autofill.AutofillService" />
+                <action android:name="android.service.autofill.AutofillService"/>
             </intent-filter>
         </service>
     </application>
