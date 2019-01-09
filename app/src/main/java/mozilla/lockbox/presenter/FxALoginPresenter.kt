@@ -9,7 +9,6 @@ package mozilla.lockbox.presenter
 import android.net.Uri
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.AccountAction
@@ -17,6 +16,7 @@ import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.NetworkAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
+import mozilla.lockbox.log
 import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.NetworkStore
 import mozilla.lockbox.support.Constant
@@ -24,7 +24,7 @@ import mozilla.lockbox.support.Constant
 interface FxALoginView {
     var webViewRedirect: ((url: Uri?) -> Boolean)
     val skipFxAClicks: Observable<Unit>?
-    val networkErrorVisibility: Consumer<in Boolean>
+    fun handleNetworkError(networkErrorVisibility: Boolean)
     val retryNetworkConnectionClicks: Observable<Unit>
     fun loadURL(url: String)
 }
@@ -63,10 +63,11 @@ class FxALoginPresenter(
 
         networkStore.networkAvailable
             .subscribe {
-                view.networkErrorVisibility.accept(it)
+                view.handleNetworkError(it)
             }.addTo(compositeDisposable)
 
         view.retryNetworkConnectionClicks.subscribe {
+            log.info("ELISE RETRY")
             dispatcher.dispatch(NetworkAction.CheckConnectivity)
         }?.addTo(compositeDisposable)
     }

@@ -27,21 +27,10 @@ import mozilla.lockbox.presenter.WebPageView
 import mozilla.lockbox.presenter.AppWebPagePresenter
 
 class AppWebPageFragment : BackableFragment(), WebPageView {
-    override val networkErrorVisibility: Consumer<in Boolean>
-        get() = Consumer { networkState ->
-            if (!networkState) {
-                errorHelper.showWebPageNetworkError(view!!)
-            } else {
-                errorHelper.hideWebPageNetworkError(view!!)
-            }
-        }
 
     override var webViewObserver: Consumer<String>? = null
     private var url: String? = null
     private val errorHelper = NetworkErrorHelper()
-
-    override val retryNetworkConnectionClicks: Observable<Unit>
-        get() = view!!.networkWarning.retryButton.clicks()
 
     @StringRes
     private var toolbarTitle: Int? = null
@@ -75,4 +64,15 @@ class AppWebPageFragment : BackableFragment(), WebPageView {
         }
         webView.loadUrl(url)
     }
+
+    override fun handleNetworkError(networkErrorVisibility: Boolean) {
+        if (!networkErrorVisibility) {
+            errorHelper.showWebPageNetworkError(view!!)
+        } else {
+            errorHelper.hideWebPageNetworkError(view!!)
+        }
+    }
+
+    override val retryNetworkConnectionClicks: Observable<Unit>
+        get() = view!!.networkWarning.retryButton.clicks()
 }

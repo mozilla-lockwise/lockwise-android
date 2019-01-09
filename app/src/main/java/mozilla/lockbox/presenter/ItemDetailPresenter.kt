@@ -27,17 +27,16 @@ import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.NetworkStore
 
 interface ItemDetailView {
-    fun updateItem(item: ItemDetailViewModel)
-    fun showToastNotification(@StringRes strId: Int)
-
     val usernameCopyClicks: Observable<Unit>
     val passwordCopyClicks: Observable<Unit>
     val togglePasswordClicks: Observable<Unit>
     val hostnameClicks: Observable<Unit>
-    val retryNetworkConnectionClicks: Observable<Unit>
-    val networkErrorVisibility: Consumer<in Boolean>
-
     var isPasswordVisible: Boolean
+    fun updateItem(item: ItemDetailViewModel)
+    fun showToastNotification(@StringRes strId: Int)
+
+    val retryNetworkConnectionClicks: Observable<Unit>
+    fun handleNetworkError(networkErrorVisibility: Boolean)
 }
 
 @ExperimentalCoroutinesApi
@@ -98,7 +97,7 @@ class ItemDetailPresenter(
 
         networkStore.networkAvailable
             .subscribe {
-                view.networkErrorVisibility.accept(it)
+                view.handleNetworkError(it)
             }.addTo(compositeDisposable)
 
         view.retryNetworkConnectionClicks.subscribe {

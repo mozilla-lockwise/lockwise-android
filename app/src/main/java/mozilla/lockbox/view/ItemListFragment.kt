@@ -29,7 +29,6 @@ import com.jakewharton.rxbinding2.view.clicks
 import com.squareup.picasso.Picasso
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.PublishSubject
 import jp.wasabeef.picasso.transformations.CropCircleTransformation
@@ -60,19 +59,6 @@ class ItemListFragment : Fragment(), ItemListView {
     private var userSelection = false
 
     override val sortItemSelection: Observable<Setting.ItemListSort> = _sortItemSelection
-
-    override val networkErrorVisibility: Consumer<in Boolean>
-        get() = Consumer { networkState ->
-            if (!networkState) {
-                errorHelper.showItemNetworkError(view!!)
-            } else {
-                // do we care if it was previously down? or should we always hide?
-                errorHelper.hideItemListNetworkError(view!!)
-            }
-        }
-
-    override val retryNetworkConnectionClicks: Observable<Unit>
-        get() = view!!.networkWarning.retryButton.clicks()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -219,8 +205,21 @@ class ItemListFragment : Fragment(), ItemListView {
     }
 
     override val refreshItemList: Observable<Unit> get() = view!!.refreshContainer.refreshes()
+
     override val isRefreshing: Boolean get() = view!!.refreshContainer.isRefreshing
+
     override fun stopRefreshing() {
         view!!.refreshContainer.isRefreshing = false
     }
+
+    override fun handleNetworkError(networkErrorVisibility: Boolean) {
+        if (!networkErrorVisibility) {
+            errorHelper.showItemNetworkError(view!!)
+        } else {
+            errorHelper.hideItemListNetworkError(view!!)
+        }
+    }
+
+    override val retryNetworkConnectionClicks: Observable<Unit>
+        get() = view!!.networkWarning.retryButton.clicks()
 }

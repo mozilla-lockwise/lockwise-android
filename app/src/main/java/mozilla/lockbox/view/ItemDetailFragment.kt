@@ -18,7 +18,6 @@ import android.widget.TextView
 import android.widget.Toast
 import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
-import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.fragment_item_detail.*
 import kotlinx.android.synthetic.main.fragment_item_detail.view.*
 import kotlinx.android.synthetic.main.fragment_warning.view.*
@@ -32,15 +31,6 @@ import mozilla.lockbox.support.assertOnUiThread
 
 @ExperimentalCoroutinesApi
 class ItemDetailFragment : BackableFragment(), ItemDetailView {
-    override val networkErrorVisibility: Consumer<in Boolean>
-        get() = Consumer { networkState ->
-            if (!networkState) {
-                errorHelper.showItemNetworkError(view!!)
-            } else {
-                // do we care if it was previously down? or should we always hide?
-                errorHelper.hideItemDetailNetworkError(view!!)
-            }
-        }
 
     private val errorHelper = NetworkErrorHelper()
 
@@ -69,9 +59,6 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
 
     override val hostnameClicks: Observable<Unit>
         get() = view!!.inputHostname.clicks()
-
-    override val retryNetworkConnectionClicks: Observable<Unit>
-        get() = view!!.networkWarning.retryButton.clicks()
 
     override var isPasswordVisible: Boolean = false
         set(value) {
@@ -114,6 +101,17 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         v.text = resources.getString(strId)
         toast.show()
     }
+
+    override fun handleNetworkError(networkErrorVisibility: Boolean) {
+        if (!networkErrorVisibility) {
+            errorHelper.showItemNetworkError(view!!)
+        } else {
+            errorHelper.hideItemDetailNetworkError(view!!)
+        }
+    }
+
+    override val retryNetworkConnectionClicks: Observable<Unit>
+        get() = view!!.networkWarning.retryButton.clicks()
 }
 
 var EditText.readOnly: Boolean

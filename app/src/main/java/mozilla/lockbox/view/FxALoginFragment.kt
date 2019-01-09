@@ -18,7 +18,6 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
-import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.fragment_fxa_login.*
 import kotlinx.android.synthetic.main.fragment_fxa_login.view.*
 import kotlinx.android.synthetic.main.fragment_warning.view.*
@@ -32,21 +31,9 @@ import mozilla.lockbox.support.isDebug
 @ExperimentalCoroutinesApi
 class FxALoginFragment : BackableFragment(), FxALoginView {
 
-    override var webViewRedirect: ((url: Uri?) -> Boolean) = { _ -> false }
-
-    override val networkErrorVisibility: Consumer<in Boolean>
-        get() = Consumer { networkState ->
-            if (!networkState) {
-                errorHelper.showNetworkError(view!!)
-            } else {
-                errorHelper.hideNetworkError(view!!)
-            }
-        }
-
     private var errorHelper = NetworkErrorHelper()
 
-    override val retryNetworkConnectionClicks: Observable<Unit>
-        get() = view!!.networkWarning.retryButton.clicks()
+    override var webViewRedirect: ((url: Uri?) -> Boolean) = { _ -> false }
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreateView(
@@ -78,6 +65,17 @@ class FxALoginFragment : BackableFragment(), FxALoginView {
         }
         webView.loadUrl(url)
     }
+
+    override fun handleNetworkError(networkErrorVisibility: Boolean) {
+        if (!networkErrorVisibility) {
+            errorHelper.showLoginNetworkError(view!!)
+        } else {
+            errorHelper.hideLoginNetworkError(view!!)
+        }
+    }
+
+    override val retryNetworkConnectionClicks: Observable<Unit>
+        get() = view!!.networkWarning.retryButton.clicks()
 
     override val skipFxAClicks: Observable<Unit>?
         get() = skipFxA?.clicks()

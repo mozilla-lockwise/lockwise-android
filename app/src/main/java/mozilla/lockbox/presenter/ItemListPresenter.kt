@@ -39,12 +39,12 @@ interface ItemListView {
     val menuItemSelections: Observable<Int>
     val lockNowClick: Observable<Unit>
     val sortItemSelection: Observable<Setting.ItemListSort>
-    val networkErrorVisibility: Consumer<in Boolean>
-    val retryNetworkConnectionClicks: Observable<Unit>
     fun updateItems(itemList: List<ItemViewModel>)
     fun updateAccountProfile(profile: AccountViewModel)
     fun updateItemListSort(sort: Setting.ItemListSort)
     fun loading(isLoading: Boolean)
+    fun handleNetworkError(networkErrorVisibility: Boolean)
+    val retryNetworkConnectionClicks: Observable<Unit>
     val refreshItemList: Observable<Unit>
     val isRefreshing: Boolean
     fun stopRefreshing()
@@ -152,10 +152,10 @@ class ItemListPresenter(
 
         networkStore.networkAvailable
             .subscribe {
-                view.networkErrorVisibility.accept(it)
+                view.handleNetworkError(it)
             }.addTo(compositeDisposable)
 
-        // TODO: make this more robust to retry loading the correct page again (call loadUrl?)
+        // TODO: make this more robust to retry loading the correct page again (loadUrl)
         view.retryNetworkConnectionClicks.subscribe {
             dispatcher.dispatch(NetworkAction.CheckConnectivity)
         }?.addTo(compositeDisposable)

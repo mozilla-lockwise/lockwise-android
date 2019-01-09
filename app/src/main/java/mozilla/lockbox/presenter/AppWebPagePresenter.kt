@@ -16,8 +16,8 @@ import mozilla.lockbox.store.NetworkStore
 
 interface WebPageView {
     var webViewObserver: Consumer<String>?
-    val networkErrorVisibility: Consumer<in Boolean>
     val retryNetworkConnectionClicks: Observable<Unit>
+    fun handleNetworkError(networkErrorVisibility: Boolean)
     fun loadURL(url: String)
 }
 
@@ -33,7 +33,7 @@ class AppWebPagePresenter(
 
         networkStore.networkAvailable
             .subscribe {
-                view.networkErrorVisibility.accept(it)
+                view.handleNetworkError(it)
             }.addTo(compositeDisposable)
 
         view.retryNetworkConnectionClicks.subscribe {
