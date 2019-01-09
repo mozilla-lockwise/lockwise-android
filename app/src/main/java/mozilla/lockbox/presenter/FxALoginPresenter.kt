@@ -67,7 +67,6 @@ class FxALoginPresenter(
             }.addTo(compositeDisposable)
 
         view.retryNetworkConnectionClicks.subscribe {
-            log.info("ELISE RETRY")
             dispatcher.dispatch(NetworkAction.CheckConnectivity)
         }?.addTo(compositeDisposable)
     }

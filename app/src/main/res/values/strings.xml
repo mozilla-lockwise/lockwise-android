@@ -189,10 +189,16 @@
     <!-- This is the hint value for an autofill box that appears when suggesting a value for a password field. It is interpolated with the user's account name. -->
     <string name="password_for">Password for %1$s</string>
 
+    <!-- This is the text displayed on the button of the network availability error message -->
     <string name="retry">Retry</string>
+    <!-- This is the text displayed on the button of the network availability error message -->
     <string name="retryButton">Retry connect to internet</string>
+    <!-- This label is used by screenreaders to inform the user that their device is not connected to the internet -->
     <string name="networkWarningMessage">Warning: device not connected to the internet.</string>
+    <!-- This label is used by screenreaders to inform the user that the message contains an image of a warning icon -->
     <string name="warningIcon">Warning icon</string>
+    <!-- This is used as the title for an alert message to inform the user that the app does not detect network connectivity -->
     <string name="no_internet_connection">No Internet Connection</string>
+    <!-- This is used in the app logs to inform that network connectivity has successfully been detected -->
     <string name="network_connection_success">Network connection successful.</string>
 </resources>
