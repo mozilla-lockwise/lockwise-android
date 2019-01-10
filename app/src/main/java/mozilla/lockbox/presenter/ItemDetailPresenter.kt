@@ -93,12 +93,10 @@ class ItemDetailPresenter(
             .subscribe(view::updateItem)
             .addTo(compositeDisposable)
 
-        dispatcher.dispatch(NetworkAction.CheckConnectivity)
-
         networkStore.networkAvailable
-            .subscribe {
-                view.handleNetworkError(it)
-            }.addTo(compositeDisposable)
+            .doOnSubscribe { dispatcher.dispatch(NetworkAction.CheckConnectivity) }
+            .subscribe(view::handleNetworkError)
+            .addTo(compositeDisposable)
 
         view.retryNetworkConnectionClicks.subscribe {
             dispatcher.dispatch(NetworkAction.CheckConnectivity)

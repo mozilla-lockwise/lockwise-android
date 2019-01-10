@@ -17,7 +17,7 @@ open class NetworkStore(
     open lateinit var connectivityManager: ConnectivityManager
     internal val compositeDisposable = CompositeDisposable()
 
-    open val stateSubject: ReplaySubject<Boolean> = ReplaySubject.createWithSize(1)
+    val stateSubject: ReplaySubject<Boolean> = ReplaySubject.createWithSize(1)
     open val networkAvailable: Observable<Boolean> get() = stateSubject
 
     open val networkConnectivityState: Boolean
@@ -38,10 +38,6 @@ open class NetworkStore(
                 }
             }
             .addTo(compositeDisposable)
-
-        stateSubject.subscribe { state ->
-            networkAvailable.doOnNext { state }
-        }.addTo(compositeDisposable)
     }
 
     override fun injectContext(context: Context) {

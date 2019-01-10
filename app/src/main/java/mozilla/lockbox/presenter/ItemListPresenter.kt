@@ -148,12 +148,10 @@ class ItemListPresenter(
             .subscribe(view::updateAccountProfile)
             .addTo(compositeDisposable)
 
-        dispatcher.dispatch(NetworkAction.CheckConnectivity)
-
         networkStore.networkAvailable
-            .subscribe {
-                view.handleNetworkError(it)
-            }.addTo(compositeDisposable)
+            .doOnSubscribe { dispatcher.dispatch(NetworkAction.CheckConnectivity) }
+            .subscribe(view::handleNetworkError)
+            .addTo(compositeDisposable)
 
         // TODO: make this more robust to retry loading the correct page again (loadUrl)
         view.retryNetworkConnectionClicks.subscribe {

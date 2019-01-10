@@ -86,12 +86,13 @@ open class ItemListPresenterTest {
         private val retryButtonStub = PublishSubject.create<Unit>()
         override val retryNetworkConnectionClicks: Observable<Unit>
             get() = retryButtonStub
-        var networkAvailable: Boolean = true
 
-        override val networkErrorVisibility: Consumer<in Boolean>
-            get() = Consumer { networkAvailable }
+        var networkAvailable: Boolean = false
+        override fun handleNetworkError(networkErrorVisibility: Boolean) {
+            networkAvailable = networkErrorVisibility
+        }
+
         var accountViewModel: AccountViewModel? = null
-
         var updateItemsArgument: List<ItemViewModel>? = null
         var itemListSort: Setting.ItemListSort? = null
         var isLoading: Boolean? = null
@@ -323,10 +324,6 @@ open class ItemListPresenterTest {
 
     @Test
     fun `network error visibility is correctly being set`() {
-        view.networkAvailable = false
-        dispatcherObserver.assertValue(NetworkAction.CheckConnectivity)
-
-        view.networkAvailable = true
-        dispatcherObserver.assertValue(NetworkAction.CheckConnectivity)
+        Assert.assertEquals(true, view.networkAvailable)
     }
 }

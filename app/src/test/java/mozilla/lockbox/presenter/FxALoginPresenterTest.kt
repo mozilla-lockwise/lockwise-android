@@ -10,7 +10,6 @@ import android.net.ConnectivityManager
 import android.net.Uri
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.functions.Consumer
 import io.reactivex.observers.TestObserver
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.PublishSubject
@@ -43,13 +42,14 @@ class FxALoginPresenterTest : DisposingTest() {
         val compositeDisposable: CompositeDisposable
     ) : FxALoginView {
 
-        val retryButtonStub = PublishSubject.create<Unit>()
+        private val retryButtonStub = PublishSubject.create<Unit>()
         override val retryNetworkConnectionClicks: Observable<Unit>
             get() = retryButtonStub
 
         var networkAvailable: Boolean = false
-        override val networkErrorVisibility: Consumer<in Boolean>
-            get() = Consumer { networkAvailable }
+        override fun handleNetworkError(networkErrorVisibility: Boolean) {
+            networkAvailable = networkErrorVisibility
+        }
 
         val webViewRedirectTo = PublishSubject.create<Uri>()
         val webViewOverride = PublishSubject.create<Boolean?>()
@@ -141,10 +141,6 @@ class FxALoginPresenterTest : DisposingTest() {
 
     @Test
     fun `network error visibility is correctly being set`() {
-        view.networkAvailable = false
-        dispatcherObserver.assertValue(NetworkAction.CheckConnectivity)
-
-        view.networkAvailable = true
-        dispatcherObserver.assertValue(NetworkAction.CheckConnectivity)
+        Assert.assertEquals(true, view.networkAvailable)
     }
 }

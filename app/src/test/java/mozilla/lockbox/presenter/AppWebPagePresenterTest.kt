@@ -10,6 +10,7 @@ import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.NetworkStore
 import mozilla.lockbox.support.Constant
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -21,13 +22,15 @@ import org.robolectric.RobolectricTestRunner
 class AppWebPagePresenterTest {
 
     class WebPageViewFake : WebPageView {
+
         val retryButtonStub = PublishSubject.create<Unit>()
         override val retryNetworkConnectionClicks: Observable<Unit>
             get() = retryButtonStub
 
         var networkAvailable: Boolean = false
-        override val networkErrorVisibility: Consumer<in Boolean>
-            get() = Consumer { networkAvailable }
+        override fun handleNetworkError(networkErrorVisibility: Boolean) {
+            networkAvailable = networkErrorVisibility
+        }
 
         open var loadedUrl: String? = null
         override var webViewObserver: Consumer<String>? = null
@@ -70,6 +73,6 @@ class AppWebPagePresenterTest {
     fun `network connection is being checked on view ready`() {
         val subject = AppWebPagePresenter(view, Mockito.anyString(), networkStore.shared, dispatcher)
         subject.onViewReady()
-        dispatcherObserver.assertValue(NetworkAction.CheckConnectivity)
+        Assert.assertEquals(true, view.networkAvailable)
     }
 }

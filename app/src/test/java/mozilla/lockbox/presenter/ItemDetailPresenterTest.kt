@@ -41,13 +41,14 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class ItemDetailPresenterTest {
     class FakeView : ItemDetailView {
-        val retryButtonStub = PublishSubject.create<Unit>()
+        private val retryButtonStub = PublishSubject.create<Unit>()
         override val retryNetworkConnectionClicks: Observable<Unit>
             get() = retryButtonStub
 
         var networkAvailable: Boolean = false
-        override val networkErrorVisibility: Consumer<in Boolean>
-            get() = Consumer { networkAvailable }
+        override fun handleNetworkError(networkErrorVisibility: Boolean) {
+            networkAvailable = networkErrorVisibility
+        }
 
         var item: ItemDetailViewModel? = null
 
@@ -166,10 +167,7 @@ class ItemDetailPresenterTest {
 
     @Test
     fun `network error visibility is correctly being set`() {
-        view.networkAvailable = false
-        dispatcherObserver.assertValue(NetworkAction.CheckConnectivity)
-
-        view.networkAvailable = true
-        dispatcherObserver.assertValue(NetworkAction.CheckConnectivity)
+//        dispatcherObserver.assertValue(NetworkAction.CheckConnectivity)
+        assertEquals(true, view.networkAvailable)
     }
 }

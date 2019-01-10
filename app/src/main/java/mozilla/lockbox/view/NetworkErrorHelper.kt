@@ -59,10 +59,7 @@ open class NetworkErrorHelper {
 
         // set margin of entriesView to show only toolbar
         val marginLayoutParams =  ViewGroup.MarginLayoutParams(view.refreshContainer.entriesView.layoutParams)
-        marginLayoutParams.leftMargin = 0
-        marginLayoutParams.topMargin = 0
-        marginLayoutParams.rightMargin = 0
-        marginLayoutParams.bottomMargin = 0
+        marginLayoutParams.setMargins(0,0,0,0)
 
         view.refreshContainer.entriesView.layoutParams = marginLayoutParams
     }
