@@ -11,7 +11,5 @@
     <dimen name="section_title_top_margin">30dp</dimen>
     <dimen name="avatar_image_size">100dp</dimen>
     <dimen name="hiddenNetworkError">0dp</dimen>
-    <dimen name="networkErrorMsg">100dp</dimen>
-    <dimen name="skipFxA">40dp</dimen>
     <dimen name="sort_item_padding">8dp</dimen>
 </resources>

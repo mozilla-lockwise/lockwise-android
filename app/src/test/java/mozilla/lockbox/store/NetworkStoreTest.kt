@@ -42,18 +42,18 @@ class NetworkStoreTest : DisposingTest() {
     @Test
     fun checkConnectivity_returnFalse() {
         var expectedNetworkValue = false
-        whenCalled(subject.networkConnectivityState).thenReturn(expectedNetworkValue)
+        whenCalled(subject.isConnectedState).thenReturn(expectedNetworkValue)
         dispatcher.dispatch(NetworkAction.CheckConnectivity)
 
-        assertEquals(expectedNetworkValue, subject.networkConnectivityState)
+        assertEquals(expectedNetworkValue, subject.isConnectedState)
     }
 
     @Test
     fun checkConnectivity_returnTrue() {
         var expectedNetworkValue = true
-        whenCalled(subject.networkConnectivityState).thenReturn(expectedNetworkValue)
+        whenCalled(subject.isConnectedState).thenReturn(expectedNetworkValue)
         dispatcher.dispatch(NetworkAction.CheckConnectivity)
 
-        assertEquals(expectedNetworkValue, subject.networkConnectivityState)
+        assertEquals(expectedNetworkValue, subject.isConnectedState)
     }
 }

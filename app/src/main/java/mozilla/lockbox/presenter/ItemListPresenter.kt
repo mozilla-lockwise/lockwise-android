@@ -9,7 +9,6 @@ package mozilla.lockbox.presenter
 import androidx.annotation.IdRes
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -148,7 +147,7 @@ class ItemListPresenter(
             .subscribe(view::updateAccountProfile)
             .addTo(compositeDisposable)
 
-        networkStore.networkAvailable
+        networkStore.isConnected
             .doOnSubscribe { dispatcher.dispatch(NetworkAction.CheckConnectivity) }
             .subscribe(view::handleNetworkError)
             .addTo(compositeDisposable)

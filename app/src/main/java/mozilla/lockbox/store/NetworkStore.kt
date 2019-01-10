@@ -14,13 +14,13 @@ open class NetworkStore(
     val dispatcher: Dispatcher = Dispatcher.shared
 ) : ContextStore {
 
-    open lateinit var connectivityManager: ConnectivityManager
+    lateinit var connectivityManager: ConnectivityManager
     internal val compositeDisposable = CompositeDisposable()
 
-    val stateSubject: ReplaySubject<Boolean> = ReplaySubject.createWithSize(1)
-    open val networkAvailable: Observable<Boolean> get() = stateSubject
+    val isConnectedSubject: ReplaySubject<Boolean> = ReplaySubject.createWithSize(1)
+    val isConnected: Observable<Boolean> get() = isConnectedSubject
 
-    open val networkConnectivityState: Boolean
+    val isConnectedState: Boolean
         get() = connectivityManager.activeNetworkInfo?.isConnectedOrConnecting == true
 
     companion object {
@@ -33,7 +33,7 @@ open class NetworkStore(
             .subscribe {
                 when (it) {
                     is NetworkAction.CheckConnectivity -> {
-                        stateSubject.onNext(networkConnectivityState)
+                        isConnectedSubject.onNext(isConnectedState)
                     }
                 }
             }

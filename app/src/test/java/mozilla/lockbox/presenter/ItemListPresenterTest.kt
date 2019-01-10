@@ -7,7 +7,6 @@
 package mozilla.lockbox.presenter
 
 import io.reactivex.Observable
-import io.reactivex.functions.Consumer
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
@@ -16,7 +15,6 @@ import mozilla.appservices.logins.ServerPassword
 import mozilla.components.service.fxa.Profile
 import mozilla.lockbox.R
 import mozilla.lockbox.action.DataStoreAction
-import mozilla.lockbox.action.NetworkAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.action.SettingAction
@@ -170,7 +168,6 @@ open class ItemListPresenterTest {
     @Mock
     val accountStore = PowerMockito.mock(AccountStore::class.java)
 
-
     private val networkStore = NetworkStore
     private val dataStore = FakeDataStore()
     private val settingStore = FakeSettingStore()
@@ -179,7 +176,15 @@ open class ItemListPresenterTest {
     val view: ItemListPresenterTest.FakeView = spy(ItemListPresenterTest.FakeView())
     val dispatcher = Dispatcher()
     val subject =
-        ItemListPresenter(view, dispatcher, dataStore, settingStore, fingerprintStore, networkStore.shared, accountStore)
+        ItemListPresenter(
+            view,
+            dispatcher,
+            dataStore,
+            settingStore,
+            fingerprintStore,
+            networkStore.shared,
+            accountStore
+        )
 
     private val dispatcherObserver = TestObserver.create<Action>()!!
 

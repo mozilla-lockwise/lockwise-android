@@ -29,7 +29,7 @@ class AppWebPagePresenter(
 ) : Presenter() {
 
     override fun onViewReady() {
-        networkStore.networkAvailable
+        networkStore.isConnected
             .doOnSubscribe { dispatcher.dispatch(NetworkAction.CheckConnectivity) }
             .subscribe(view::handleNetworkError)
             .addTo(compositeDisposable)

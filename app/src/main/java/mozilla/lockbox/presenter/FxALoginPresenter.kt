@@ -16,7 +16,6 @@ import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.NetworkAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
-import mozilla.lockbox.log
 import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.NetworkStore
 import mozilla.lockbox.support.Constant
@@ -59,7 +58,7 @@ class FxALoginPresenter(
             dispatcher.dispatch(LifecycleAction.UseTestData)
         }?.addTo(compositeDisposable)
 
-        networkStore.networkAvailable
+        networkStore.isConnected
             .doOnSubscribe { dispatcher.dispatch(NetworkAction.CheckConnectivity) }
             .subscribe(view::handleNetworkError)
             .addTo(compositeDisposable)

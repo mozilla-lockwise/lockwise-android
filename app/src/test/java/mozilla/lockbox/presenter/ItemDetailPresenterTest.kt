@@ -8,7 +8,6 @@ package mozilla.lockbox.presenter
 
 import androidx.annotation.StringRes
 import io.reactivex.Observable
-import io.reactivex.functions.Consumer
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import mozilla.appservices.logins.ServerPassword
@@ -31,8 +30,6 @@ import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.powermock.api.mockito.PowerMockito
 import org.mockito.Mockito.clearInvocations
 import org.mockito.Mockito.spy
 import org.mockito.Mockito.verifyZeroInteractions
@@ -88,16 +85,16 @@ class ItemDetailPresenterTest {
     private val networkStore = NetworkStore
 
     private val fakeCredential: ServerPassword by lazy {
-            ServerPassword(
-                "id0",
-                "https://www.mozilla.org",
-                "dogs@dogs.com",
-                "woof",
-                timesUsed = 0,
-                timeCreated = 0L,
-                timeLastUsed = 0L,
-                timePasswordChanged = 0L
-            )
+        ServerPassword(
+            "id0",
+            "https://www.mozilla.org",
+            "dogs@dogs.com",
+            "woof",
+            timesUsed = 0,
+            timeCreated = 0L,
+            timeLastUsed = 0L,
+            timePasswordChanged = 0L
+        )
     }
 
     val subject = ItemDetailPresenter(view, fakeCredential.id, dispatcher, networkStore.shared, dataStore)
@@ -143,11 +140,13 @@ class ItemDetailPresenterTest {
     fun `tapping on usernamecopy`() {
         view.usernameCopyClicks.onNext(Unit)
 
-        dispatcherObserver.assertValueSequence(listOf(
-            NetworkAction.CheckConnectivity,
-            ClipboardAction.CopyUsername(fakeCredential.username!!),
-            DataStoreAction.Touch(fakeCredential.id)
-        ))
+        dispatcherObserver.assertValueSequence(
+            listOf(
+                NetworkAction.CheckConnectivity,
+                ClipboardAction.CopyUsername(fakeCredential.username!!),
+                DataStoreAction.Touch(fakeCredential.id)
+            )
+        )
 
         Assert.assertEquals(R.string.toast_username_copied, view.toastNotificationArgument)
     }
@@ -156,18 +155,19 @@ class ItemDetailPresenterTest {
     fun `tapping on passwordcopy`() {
         view.passwordCopyClicks.onNext(Unit)
 
-        dispatcherObserver.assertValueSequence(listOf(
-            NetworkAction.CheckConnectivity,
-            ClipboardAction.CopyPassword(fakeCredential.password),
-            DataStoreAction.Touch(fakeCredential.id)
-        ))
+        dispatcherObserver.assertValueSequence(
+            listOf(
+                NetworkAction.CheckConnectivity,
+                ClipboardAction.CopyPassword(fakeCredential.password),
+                DataStoreAction.Touch(fakeCredential.id)
+            )
+        )
 
         Assert.assertEquals(R.string.toast_password_copied, view.toastNotificationArgument)
     }
 
     @Test
     fun `network error visibility is correctly being set`() {
-//        dispatcherObserver.assertValue(NetworkAction.CheckConnectivity)
         assertEquals(true, view.networkAvailable)
     }
 }

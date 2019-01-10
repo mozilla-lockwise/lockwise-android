@@ -10,7 +10,6 @@ import kotlinx.android.synthetic.main.fragment_warning.view.*
 import mozilla.lockbox.R
 import mozilla.lockbox.log
 
-
 /**
  * This class handles the visibility of network errors in the view fragments.
  *
@@ -46,7 +45,6 @@ open class NetworkErrorHelper {
 
     // START Item*Fragment
     open fun showItemNetworkError(view: View) {
-        log.info("ELISE SHOW ERROR")
         log.error(view.resources.getString(R.string.networkWarningMessage))
         view.networkWarning.visibility = View.VISIBLE
         view.warningMessage.text = view.resources.getString(R.string.no_internet_connection)
@@ -58,8 +56,8 @@ open class NetworkErrorHelper {
         view.networkWarning.layoutParams.height = R.dimen.hiddenNetworkError
 
         // set margin of entriesView to show only toolbar
-        val marginLayoutParams =  ViewGroup.MarginLayoutParams(view.refreshContainer.entriesView.layoutParams)
-        marginLayoutParams.setMargins(0,0,0,0)
+        val marginLayoutParams = ViewGroup.MarginLayoutParams(view.refreshContainer.entriesView.layoutParams)
+        marginLayoutParams.setMargins(0, 0, 0, 0)
 
         view.refreshContainer.entriesView.layoutParams = marginLayoutParams
     }
