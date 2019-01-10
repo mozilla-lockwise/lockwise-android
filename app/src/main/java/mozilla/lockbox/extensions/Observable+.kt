@@ -16,19 +16,19 @@ fun <T : Any, U : T> Observable<T>.filterByType(clazz: Class<out U>): Observable
     return this.filter { t -> clazz.isInstance(t) }.map { t -> clazz.cast(t) }
 }
 
-fun <T : Any> Observable<T>.debug(): Observable<T> {
+fun <T : Any> Observable<T>.debug(message: String = "observer"): Observable<T> {
     return this
         .doOnSubscribe {
-            LogProvider.log.info("subscribed")
+            LogProvider.log.info("$message: subscribed")
         }
         .doOnNext {
-            LogProvider.log.info("event: $it")
+            LogProvider.log.info("$message: event: $it")
         }
         .doOnError {
-            LogProvider.log.info("error: ${it.localizedMessage}")
+            LogProvider.log.info("$message: error: ${it.localizedMessage}")
         }
         .doOnDispose {
-            LogProvider.log.info("disposed")
+            LogProvider.log.info("$message: disposed")
         }
 }
 

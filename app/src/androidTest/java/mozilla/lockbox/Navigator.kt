@@ -19,6 +19,7 @@ import io.reactivex.subjects.ReplaySubject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
+import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.robots.accountSettingScreen
 import mozilla.lockbox.robots.disconnectDisclaimer
@@ -31,8 +32,10 @@ import mozilla.lockbox.robots.securityDisclaimer
 import mozilla.lockbox.robots.settings
 import mozilla.lockbox.robots.welcome
 import mozilla.lockbox.store.DataStore
+import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.view.RootActivity
 import org.junit.Assert
+import java.lang.Thread.sleep
 
 @ExperimentalCoroutinesApi
 class Navigator {
@@ -62,6 +65,10 @@ class Navigator {
         Dispatcher.shared.dispatch(LifecycleAction.UserReset)
         blockUntil(DataStore.State.Unprepared)
         checkAtWelcome()
+    }
+
+    fun blockUntil(vararg states: RouteAction) {
+        blockUntil(RouteStore.shared.routes, *states)
     }
 
     fun blockUntil(vararg states: DataStore.State) {
@@ -95,7 +102,8 @@ class Navigator {
             fxaLogin { tapPlaceholderLogin() }
         } else {
             Dispatcher.shared.dispatch(LifecycleAction.UseTestData)
-            blockUntil(DataStore.State.Unlocked)
+            log.info("blocking for the routes")
+            blockUntil(RouteStore.shared.routes, RouteAction.ItemList)
         }
         checkAtItemList()
     }

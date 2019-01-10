@@ -9,6 +9,7 @@ package mozilla.lockbox.presenter
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.support.annotation.IdRes
 import android.support.v7.app.AppCompatActivity
 import androidx.navigation.NavController
@@ -22,6 +23,7 @@ import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.action.SettingAction
+import mozilla.lockbox.extensions.debug
 import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.extensions.view.AlertDialogHelper
 import mozilla.lockbox.extensions.view.AlertState
@@ -58,17 +60,8 @@ class RoutePresenter(
     override fun onViewReady() {
         navController = Navigation.findNavController(activity, R.id.fragment_nav_host)
 
-        val autoLockActions = accountStore.syncCredentials
-            .switchMap {
-                if (it.value != null && it.value.isNew) {
-                    autoLockStore.lockRequired.skip(1)
-                } else if (it.value != null) {
-                    autoLockStore.lockRequired
-                } else {
-                    Observable.empty<Boolean>()
-                }
-            }
-            .map { if (it) DataStoreAction.Lock else DataStoreAction.Unlock }
+        val autoLockActions = autoLockStore.activateAutoLockMEGAZORD
+            .map { DataStoreAction.Lock }
 
         // Moves credentials from the AccountStore, into the DataStore.
         accountStore.syncCredentials
@@ -77,26 +70,13 @@ class RoutePresenter(
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
 
-        // Make the routing contingent on the state of the dataStore.
-        val dataStoreRoutes = dataStore.state
-            .map(this::dataStoreToRouteActions)
-            .filterNotNull()
-
         routeStore.routes
-            .mergeWith(dataStoreRoutes)
+            .debug("mapping to actual behavior from routeStore.routes")
             .observeOn(mainThread())
             .subscribe(this::route)
             .addTo(compositeDisposable)
     }
 
-    private fun dataStoreToRouteActions(storageState: State): Optional<RouteAction> {
-        return when (storageState) {
-            is State.Unlocked -> RouteAction.ItemList
-            is State.Locked -> RouteAction.LockScreen
-            is State.Unprepared -> RouteAction.Welcome
-            else -> null
-        }.asOptional()
-    }
 
     private fun accountToDataStoreActions(optCredentials: Optional<SyncCredentials>): DataStoreAction {
         // we will get a null credentials object (and subsequently reset the datastore) on
