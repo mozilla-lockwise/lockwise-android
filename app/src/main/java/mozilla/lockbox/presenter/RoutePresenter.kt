@@ -9,7 +9,6 @@ package mozilla.lockbox.presenter
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.ContactsContract
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
@@ -35,7 +34,6 @@ import mozilla.lockbox.model.SyncCredentials
 import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.AutoLockStore
 import mozilla.lockbox.store.DataStore
-import mozilla.lockbox.store.DataStore.State
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.support.Optional
@@ -76,7 +74,6 @@ class RoutePresenter(
             .subscribe(this::route)
             .addTo(compositeDisposable)
     }
-
 
     private fun accountToDataStoreActions(optCredentials: Optional<SyncCredentials>): DataStoreAction {
         // we will get a null credentials object (and subsequently reset the datastore) on

@@ -6,7 +6,6 @@
 
 package mozilla.lockbox.store
 import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.ReplaySubject
 import io.reactivex.subjects.Subject
 import kotlinx.coroutines.ExperimentalCoroutinesApi

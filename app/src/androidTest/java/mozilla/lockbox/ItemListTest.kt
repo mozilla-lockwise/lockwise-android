@@ -1,7 +1,7 @@
 package mozilla.lockbox
 
 import androidx.test.rule.ActivityTestRule
-import androidx.test.runner.AndroidJUnit4
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import mozilla.lockbox.robots.itemList
 import mozilla.lockbox.view.RootActivity
 import org.junit.Rule

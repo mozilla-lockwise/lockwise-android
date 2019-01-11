@@ -83,7 +83,7 @@ class AutoLockStoreTest {
 
     private var bootID = ";kl;jjkloi;kljhafshjkadfsmn"
 
-    private val lockRequiredObserver: TestObserver<Boolean> = TestObserver.create()
+    private val lockRequiredObserver: TestObserver<Unit> = TestObserver.create()
 
     private val lockingSupport = spy(TestLockingSupport())
 
@@ -106,7 +106,7 @@ class AutoLockStoreTest {
         PowerMockito.whenNew(SimpleFileReader::class.java).withAnyArguments().thenReturn(fileReader)
 
         subject.injectContext(context)
-        subject.timerExpired.subscribe(lockRequiredObserver)
+        subject.activateAutoLockMEGAZORD.subscribe(lockRequiredObserver)
         subject.lockingSupport = lockingSupport
     }
 
@@ -219,7 +219,7 @@ class AutoLockStoreTest {
 
         (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Foreground)
 
-        lockRequiredObserver.assertLastValue(false)
+        lockRequiredObserver.assertLastValue(Unit)
     }
 
     @Test
@@ -228,14 +228,14 @@ class AutoLockStoreTest {
 
         (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Foreground)
 
-        lockRequiredObserver.assertLastValue(true)
+        lockRequiredObserver.assertLastValue(Unit)
     }
 
     @Test
     fun `datastore locking actions, when locking is not required by autolock, force the autolocktimerdate to an older time`() {
         mockSavedValues(SystemClock.elapsedRealtime() + 600000)
         (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Foreground)
-        lockRequiredObserver.assertLastValue(false)
+        lockRequiredObserver.assertLastValue(Unit)
 
         clearInvocations(preferences)
         clearInvocations(editor)
@@ -259,7 +259,7 @@ class AutoLockStoreTest {
     fun `datastore locking actions, when locking is required by autolock, do nothing`() {
         mockSavedValues(SystemClock.elapsedRealtime() - 600000)
         (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Foreground)
-        lockRequiredObserver.assertLastValue(true)
+        lockRequiredObserver.assertLastValue(Unit)
 
         clearInvocations(preferences)
         clearInvocations(editor)

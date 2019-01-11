@@ -35,7 +35,6 @@ import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.view.RootActivity
 import org.junit.Assert
-import java.lang.Thread.sleep
 
 @ExperimentalCoroutinesApi
 class Navigator {

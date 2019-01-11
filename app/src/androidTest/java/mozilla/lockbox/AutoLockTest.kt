@@ -40,7 +40,6 @@ open class AutoLockTest {
     @Before
     fun setUp() {
         AutoLockStore.shared.lockingSupport = testLockingSupport
-        navigator.resetApp(activityRule)
     }
 
     @Test

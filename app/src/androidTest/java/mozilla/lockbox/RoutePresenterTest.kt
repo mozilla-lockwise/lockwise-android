@@ -7,12 +7,11 @@
 package mozilla.lockbox
 
 import androidx.test.rule.ActivityTestRule
-import androidx.test.runner.AndroidJUnit4
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.robots.disconnectDisclaimer
 import mozilla.lockbox.robots.filteredItemList
 import mozilla.lockbox.view.RootActivity
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -29,11 +28,6 @@ open class RoutePresenterTest {
 
     @Rule @JvmField
     val activityRule: ActivityTestRule<RootActivity> = ActivityTestRule(RootActivity::class.java)
-
-    @Before
-    fun setUp() {
-        navigator.resetApp(activityRule)
-    }
 
     @Test
     fun testFxALogin() {

@@ -74,7 +74,7 @@ class AutoLockStore(
                 Observable.empty<LifecycleAction>()
             } else {
                     Observable.empty<LifecycleAction>()
-                }}
+                } }
             .filter { it == LifecycleAction.Foreground }
             // push lockrequired if required
             .map { lockCurrentlyRequired() }
