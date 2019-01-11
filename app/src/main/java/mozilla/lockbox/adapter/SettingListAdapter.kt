@@ -6,7 +6,7 @@
 
 package mozilla.lockbox.adapter
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.jakewharton.rxbinding2.view.clicks
@@ -18,7 +18,7 @@ import mozilla.lockbox.view.SettingViewHolder
 import mozilla.lockbox.view.TextSettingViewHolder
 import mozilla.lockbox.view.ToggleSettingViewHolder
 
-class SettingListAdapter : RecyclerView.Adapter<SettingViewHolder>() {
+class SettingListAdapter : androidx.recyclerview.widget.RecyclerView.Adapter<SettingViewHolder>() {
     private var settingListConfig: List<SettingCellConfiguration> = emptyList()
     private val compositeDisposable = CompositeDisposable()
 
@@ -107,7 +107,7 @@ class SettingListAdapter : RecyclerView.Adapter<SettingViewHolder>() {
         notifyDataSetChanged()
     }
 
-    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+    override fun onDetachedFromRecyclerView(recyclerView: androidx.recyclerview.widget.RecyclerView) {
         compositeDisposable.clear()
     }
 }

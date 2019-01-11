@@ -7,7 +7,7 @@
 package mozilla.lockbox
 
 import android.app.Application
-import android.arch.lifecycle.ProcessLifecycleOwner
+import androidx.lifecycle.ProcessLifecycleOwner
 import android.os.Build
 import com.squareup.leakcanary.LeakCanary
 import io.sentry.Sentry

@@ -6,8 +6,8 @@
 
 package mozilla.lockbox.presenter
 
-import android.arch.lifecycle.DefaultLifecycleObserver
-import android.arch.lifecycle.LifecycleOwner
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.flux.Dispatcher
 

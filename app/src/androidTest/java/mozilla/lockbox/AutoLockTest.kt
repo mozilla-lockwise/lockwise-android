@@ -1,7 +1,8 @@
 package mozilla.lockbox
 
-import android.support.test.rule.ActivityTestRule
-import android.support.test.runner.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.LargeTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.Setting
@@ -28,12 +29,12 @@ class TestLockingSupport() : LockingSupport {
 
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
+@LargeTest
 open class AutoLockTest {
     private val navigator = Navigator()
     private val testLockingSupport = TestLockingSupport(AutoLockStore.shared.lockingSupport)
 
-    @Rule
-    @JvmField
+    @get:Rule
     val activityRule: ActivityTestRule<RootActivity> = ActivityTestRule(RootActivity::class.java)
 
     @Before

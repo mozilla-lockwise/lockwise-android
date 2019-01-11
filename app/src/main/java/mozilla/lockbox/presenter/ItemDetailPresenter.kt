@@ -6,7 +6,7 @@
 
 package mozilla.lockbox.presenter
 
-import android.support.annotation.StringRes
+import androidx.annotation.StringRes
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.rxkotlin.addTo

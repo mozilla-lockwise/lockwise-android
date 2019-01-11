@@ -7,13 +7,13 @@
 package mozilla.lockbox.view
 
 import android.os.Bundle
-import android.support.design.widget.NavigationView
-import android.support.v4.view.GravityCompat
-import android.support.v4.widget.DrawerLayout
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.Toolbar
+import com.google.android.material.navigation.NavigationView
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.appcompat.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -104,14 +104,14 @@ class ItemListFragment : CommonFragment(), ItemListView {
         }
     }
 
-    private fun setupNavigationView(navController: NavController, navView: NavigationView) {
+    private fun setupNavigationView(navController: NavController, navView: com.google.android.material.navigation.NavigationView) {
         navView.setupWithNavController(navController)
     }
 
-    private fun setupListView(listView: RecyclerView) {
+    private fun setupListView(listView: androidx.recyclerview.widget.RecyclerView) {
         val context = requireContext()
-        val layoutManager = LinearLayoutManager(context)
-        val decoration = DividerItemDecoration(context, layoutManager.orientation)
+        val layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
+        val decoration = androidx.recyclerview.widget.DividerItemDecoration(context, layoutManager.orientation)
         context.getDrawable(R.drawable.inset_divider)?.let {
             decoration.setDrawable(it)
             listView.addItemDecoration(decoration)
@@ -120,7 +120,7 @@ class ItemListFragment : CommonFragment(), ItemListView {
         listView.adapter = adapter
     }
 
-    private fun setupToolbar(toolbar: Toolbar, drawerLayout: DrawerLayout) {
+    private fun setupToolbar(toolbar: Toolbar, drawerLayout: androidx.drawerlayout.widget.DrawerLayout) {
         toolbar.navigationIcon = resources.getDrawable(R.drawable.ic_menu, null)
         toolbar.setNavigationContentDescription(R.string.menu_description)
         toolbar.navigationClicks().subscribe { drawerLayout.openDrawer(GravityCompat.START) }

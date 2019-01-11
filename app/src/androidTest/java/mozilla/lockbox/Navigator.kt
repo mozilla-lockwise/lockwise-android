@@ -7,11 +7,11 @@
 package mozilla.lockbox
 
 import android.provider.Settings
-import android.support.test.espresso.Espresso.closeSoftKeyboard
-import android.support.test.espresso.Espresso.pressBack
-import android.support.test.espresso.NoActivityResumedException
-import android.support.test.espresso.intent.Intents
-import android.support.test.rule.ActivityTestRule
+import androidx.test.espresso.Espresso.closeSoftKeyboard
+import androidx.test.espresso.Espresso.pressBack
+import androidx.test.espresso.NoActivityResumedException
+import androidx.test.espresso.intent.Intents
+import androidx.test.rule.ActivityTestRule
 import br.com.concretesolutions.kappuccino.custom.intent.IntentMatcherInteractions.sentIntent
 import br.com.concretesolutions.kappuccino.custom.intent.IntentMatcherInteractions.stubIntent
 import io.reactivex.Observable

@@ -18,7 +18,7 @@ The most important accessibility warning is the `contentDescription` warning on 
 
 When adding new Espresso tests, you may notice failures related to things like
 tap target size. The automated Espresso accessibility checks occur on every
-method call in the [`ViewActions`](https://developer.android.com/reference/android/support/test/espresso/action/ViewActions) class.
+method call in the [`ViewActions`](https://developer.android.com/reference/androidx.test/espresso/action/ViewActions) class.
 
 ## Manual Accessibility Testing
 

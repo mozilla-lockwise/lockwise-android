@@ -7,8 +7,8 @@
 package mozilla.lockbox.view
 
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,7 +31,7 @@ class SettingFragment : BackableFragment(), SettingView {
     private val sectionedAdapter = SectionedAdapter(
         R.layout.list_cell_setting_header,
         R.id.headerTitle,
-        adapter as RecyclerView.Adapter<RecyclerView.ViewHolder>
+        adapter as androidx.recyclerview.widget.RecyclerView.Adapter<androidx.recyclerview.widget.RecyclerView.ViewHolder>
     )
 
     override fun onCreateView(
@@ -45,7 +45,7 @@ class SettingFragment : BackableFragment(), SettingView {
         val view = inflater.inflate(R.layout.fragment_setting, container, false)
 
         view.settingList.adapter = sectionedAdapter
-        val layoutManager = LinearLayoutManager(context)
+        val layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
         view.settingList.layoutManager = layoutManager
 
         // Add one to account for viewType configuration in the SectionedAdapter

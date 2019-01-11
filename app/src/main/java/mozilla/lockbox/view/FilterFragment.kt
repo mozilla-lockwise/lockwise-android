@@ -8,8 +8,8 @@ package mozilla.lockbox.view
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,10 +38,10 @@ class FilterFragment : BackableFragment(), FilterView {
         presenter = FilterPresenter(this)
         val view = inflater.inflate(R.layout.fragment_filter, container, false)
 
-        val layoutManager = LinearLayoutManager(context)
+        val layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
         view.entriesView.layoutManager = layoutManager
         view.entriesView.adapter = adapter
-        val decoration = DividerItemDecoration(context, layoutManager.orientation)
+        val decoration = androidx.recyclerview.widget.DividerItemDecoration(context, layoutManager.orientation)
         val decorationDrawable = context?.getDrawable(R.drawable.inset_divider)
         decorationDrawable?.let { decoration.setDrawable(it) }
         view.entriesView.addItemDecoration(decoration)

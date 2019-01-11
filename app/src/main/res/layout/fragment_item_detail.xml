@@ -5,7 +5,7 @@
   ~  file, You can obtain one at http://mozilla.org/MPL/2.0/.
   -->
 
-<android.support.constraint.ConstraintLayout
+<androidx.constraintlayout.widget.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
@@ -14,7 +14,7 @@
         android:background="@color/backgroundGrey">
     <include layout="@layout/include_backable"/>
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
             xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:id="@+id/card_view"
             android:layout_width="match_parent"
@@ -22,7 +22,7 @@
             android:layout_gravity="center"
             card_view:layout_constraintTop_toBottomOf="@id/toolbar">
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingStart="16dp"
@@ -30,7 +30,7 @@
                 android:paddingEnd="16dp"
                 android:paddingBottom="26dp">
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/inputLayoutHostname"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -52,9 +52,9 @@
                         android:focusable="true"
                         tools:ignore="Autofill"/>
 
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/inputLayoutUsername"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -75,7 +75,7 @@
                         app:layout_constraintEnd_toEndOf="@+id/inputLayoutUsername"
                         app:layout_constraintTop_toTopOf="@+id/inputLayoutUsername"
                         tools:ignore="Autofill"/>
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <ImageButton
                     android:id="@+id/btnUsernameCopy"
@@ -91,7 +91,7 @@
                     tools:layout_editor_absoluteX="334dp"
                     tools:layout_editor_absoluteY="89dp"/>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/inputLayoutPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -112,7 +112,7 @@
                         android:singleLine="true"
                         android:lineSpacingExtra="8sp"
                         tools:ignore="Autofill"/>
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <ImageButton
                     android:id="@+id/btnPasswordCopy"
@@ -139,9 +139,9 @@
                     app:layout_constraintTop_toTopOf="@+id/inputLayoutPassword"
                     app:srcCompat="@drawable/ic_show"/>
 
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
     <TextView
             android:id="@+id/placeholder_learn"
@@ -161,4 +161,4 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

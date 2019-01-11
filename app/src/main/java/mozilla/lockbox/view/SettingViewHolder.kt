@@ -6,8 +6,8 @@
 
 package mozilla.lockbox.view
 
-import android.support.annotation.StringRes
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.StringRes
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.widget.Switch
 import com.jakewharton.rxbinding2.widget.checkedChanges
@@ -24,7 +24,7 @@ import kotlinx.android.synthetic.main.list_cell_setting_toggle.view.toggle
 import mozilla.lockbox.R
 
 abstract class SettingViewHolder(override val containerView: View) :
-    RecyclerView.ViewHolder(containerView),
+    androidx.recyclerview.widget.RecyclerView.ViewHolder(containerView),
     LayoutContainer {
     var disposable: Disposable? = null
     abstract var contentDescription: Int
