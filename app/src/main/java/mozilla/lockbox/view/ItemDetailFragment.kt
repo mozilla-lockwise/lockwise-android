@@ -104,9 +104,9 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
 
     override fun handleNetworkError(networkErrorVisibility: Boolean) {
         if (!networkErrorVisibility) {
-            errorHelper.showItemNetworkError(view!!)
+            errorHelper.showNetworkError(view!!)
         } else {
-            errorHelper.hideItemDetailNetworkError(view!!)
+            errorHelper.hideNetworkError(view!!, view!!.card_view, R.dimen.hidden_network_error)
         }
     }
 

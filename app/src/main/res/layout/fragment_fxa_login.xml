@@ -19,7 +19,7 @@
              app:layout_constraintVertical_chainStyle="packed"/>
     <include layout="@layout/fragment_warning"
              android:layout_width="match_parent"
-             android:layout_height="@dimen/hiddenNetworkError"
+             android:layout_height="@dimen/hidden_network_error"
              android:visibility="gone"
              app:layout_constraintTop_toBottomOf="@id/toolbar"
              app:layout_constraintBottom_toTopOf="@id/webView"

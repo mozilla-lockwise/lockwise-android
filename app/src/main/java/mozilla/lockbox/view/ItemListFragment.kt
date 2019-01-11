@@ -214,9 +214,9 @@ class ItemListFragment : Fragment(), ItemListView {
 
     override fun handleNetworkError(networkErrorVisibility: Boolean) {
         if (!networkErrorVisibility) {
-            errorHelper.showItemNetworkError(view!!)
+            errorHelper.showNetworkError(view!!)
         } else {
-            errorHelper.hideItemListNetworkError(view!!)
+            errorHelper.hideNetworkError(parent = view!!, child = view!!.refreshContainer.entriesView)
         }
     }
 

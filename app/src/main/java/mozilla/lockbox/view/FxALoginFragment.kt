@@ -68,9 +68,17 @@ class FxALoginFragment : BackableFragment(), FxALoginView {
 
     override fun handleNetworkError(networkErrorVisibility: Boolean) {
         if (!networkErrorVisibility) {
-            errorHelper.showLoginNetworkError(view!!)
+            errorHelper.showNetworkError(
+                parent = view!!,
+                child = view!!.webView,
+                topMarginId = R.dimen.network_error_with_toolbar
+            )
         } else {
-            errorHelper.hideLoginNetworkError(view!!)
+            errorHelper.hideNetworkError(
+                parent = view!!,
+                child = view!!.webView,
+                topMarginId = R.dimen.actionBarSize
+            )
         }
     }
 

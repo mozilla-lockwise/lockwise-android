@@ -67,9 +67,17 @@ class AppWebPageFragment : BackableFragment(), WebPageView {
 
     override fun handleNetworkError(networkErrorVisibility: Boolean) {
         if (!networkErrorVisibility) {
-            errorHelper.showWebPageNetworkError(view!!)
+            errorHelper.showNetworkError(
+                parent = view!!,
+                child = view!!.webView,
+                topMarginId = R.dimen.network_error
+            )
         } else {
-            errorHelper.hideWebPageNetworkError(view!!)
+            errorHelper.hideNetworkError(
+                parent = view!!,
+                child = view!!.webView,
+                topMarginId = R.dimen.hidden_network_error
+            )
         }
     }
 

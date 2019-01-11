@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <integer name="network_error_with_toolbar">200</integer>
-    <integer name="network_error">96</integer>
-    <integer name="actionBarSize">112</integer>
-</resources>
-

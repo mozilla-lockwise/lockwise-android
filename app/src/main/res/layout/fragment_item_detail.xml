@@ -11,6 +11,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:id="@+id/fragment_item_detail"
         android:background="@color/backgroundGrey">
     <include layout="@layout/include_backable"/>
     <include layout="@layout/fragment_warning"
