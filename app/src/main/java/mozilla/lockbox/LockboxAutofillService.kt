@@ -4,7 +4,6 @@ import android.R
 import android.annotation.TargetApi
 import android.app.assist.AssistStructure
 import android.app.assist.AssistStructure.ViewNode
-import android.app.assist.AssistStructure.WindowNode
 import android.os.Build
 import android.os.CancellationSignal
 import android.service.autofill.AutofillService
@@ -40,7 +39,7 @@ class LockboxAutofillService(
     val dispatcher: Dispatcher = Dispatcher.shared
 ) : AutofillService() {
 
-    var compositeDisposable = CompositeDisposable()
+    private var compositeDisposable = CompositeDisposable()
 
     override fun onDisconnected() {
         compositeDisposable.clear()
@@ -56,6 +55,11 @@ class LockboxAutofillService(
         val parsedStructure = parseStructure(structure)
         val requestingPackage = domainFromPackage(structure.activityComponent.packageName)
 
+        if (parsedStructure.passwordId == null && parsedStructure.usernameId == null) {
+            callback.onSuccess(null)
+            return
+        }
+
         dataStore.list
             .filter { !it.isEmpty() }
             .take(1)
@@ -70,8 +74,7 @@ class LockboxAutofillService(
     }
 
     private fun domainFromPackage(packageName: String): String {
-        // todo: parse domain from package name
-        // stupidly assume that the `x` from `w.x.y.z` is the domain?
+        // assume that the `x` from `w.x.y.z`-style package name is the domain
         return "twitter"
     }
 
@@ -99,7 +102,7 @@ class LockboxAutofillService(
             val usernamePresentation = RemoteViews(packageName, R.layout.simple_list_item_1)
             val passwordPresentation = RemoteViews(packageName, R.layout.simple_list_item_1)
             usernamePresentation.setTextViewText(R.id.text1, credential.username)
-            passwordPresentation.setTextViewText(R.id.text1, "Password for ${credential.password}")
+            passwordPresentation.setTextViewText(R.id.text1, "Password for ${credential.username}")
 
             parsedStructure.usernameId?.let {
                 builder.setValue(it, AutofillValue.forText(credential.username), usernamePresentation)
