@@ -53,17 +53,16 @@ class LockboxAutofillService(
 
     override fun onFillRequest(request: FillRequest, cancellationSignal: CancellationSignal, callback: FillCallback) {
         val structure = request.fillContexts.last().structure
-        val parsedStructure = traverseStructure(structure)
+        val parsedStructure = parseStructure(structure)
         val requestingPackage = domainFromPackage(structure.activityComponent.packageName)
-        log.info("requestingPackage: $requestingPackage")
 
         dataStore.list
+            .filter { !it.isEmpty() }
             .take(1)
             .subscribe { passwords ->
                 val possibleValues = passwords.filter {
                     titleFromHostname(it.hostname).startsWith(requestingPackage, true)
                 }
-
                 val response = buildFillResponse(possibleValues, parsedStructure)
                 callback.onSuccess(response)
             }
@@ -80,10 +79,9 @@ class LockboxAutofillService(
 
     private fun buildFillResponse(
         possibleValues: List<ServerPassword>,
-        parsedStructure: ParsedStructure?
-    ): FillResponse? {
-        val structure = parsedStructure ?: return null
-        val dataset = datasetForPossibleValues(possibleValues, structure)
+        parsedStructure: ParsedStructure
+    ): FillResponse {
+        val dataset = datasetForPossibleValues(possibleValues, parsedStructure)
         // future parts of this method include adding any authentication steps
 
         return FillResponse.Builder()
@@ -103,19 +101,19 @@ class LockboxAutofillService(
             usernamePresentation.setTextViewText(R.id.text1, credential.username)
             passwordPresentation.setTextViewText(R.id.text1, "Password for ${credential.password}")
 
-            parsedStructure.passwordId?.let {
-                builder.setValue(it, AutofillValue.forText(credential.password))
+            parsedStructure.usernameId?.let {
+                builder.setValue(it, AutofillValue.forText(credential.username), usernamePresentation)
             }
 
-            parsedStructure.usernameId?.let {
-                builder.setValue(it, AutofillValue.forText(credential.username))
+            parsedStructure.passwordId?.let {
+                builder.setValue(it, AutofillValue.forText(credential.password), passwordPresentation)
             }
         }
 
         return builder.build()
     }
 
-    private fun traverseStructure(structure: AssistStructure): ParsedStructure? {
+    private fun parseStructure(structure: AssistStructure): ParsedStructure {
         val usernameId = getUsernameId(structure)
         val passwordId = getPasswordId(structure)
 
@@ -131,30 +129,31 @@ class LockboxAutofillService(
     }
 
     private fun getAutofillIdForHint(hint: String, structure: AssistStructure): AutofillId? {
-        val windowNodes: List<WindowNode> =
-            structure.run {
-                (0 until windowNodeCount).map { getWindowNodeAt(it) }
-            }
-
-        return windowNodes
-            .map { windowNode: WindowNode ->
-                val viewNode: ViewNode? = windowNode.rootViewNode
-                traverseNode(hint, viewNode)
-            }
-            .first { it != null }
+        return try {
+            structure
+                .run { (0 until windowNodeCount).map { getWindowNodeAt(it) } }
+                .map { traverseNode(hint, it.rootViewNode) }
+                .first { it != null }
+        } catch (e: NoSuchElementException) {
+            null
+        }
     }
 
     private fun traverseNode(hint: String, viewNode: ViewNode?): AutofillId? {
-        viewNode?.autofillHints?.toList()?.let {
+        val viewNode = viewNode ?: return null
+        viewNode.autofillHints?.toList()?.let {
             if (it.contains(hint)) {
                 return viewNode.autofillId // we're done
             }
         }
 
-        return viewNode?.run {
-            (0 until childCount).map { getChildAt(it) }
-        }?.map {
-            traverseNode(hint , it)
-        }?.first { it != null }
+        return try {
+            viewNode
+                .run { (0 until childCount).map { getChildAt(it) } }
+                .map { traverseNode(hint, it) }
+                .first { it != null }
+        } catch (e: NoSuchElementException) {
+            null
+        }
     }
 }
