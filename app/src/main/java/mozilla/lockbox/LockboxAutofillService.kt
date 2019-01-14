@@ -23,7 +23,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.flux.Dispatcher
-import mozilla.lockbox.model.titleFromHostname
 import mozilla.lockbox.store.DataStore
 
 data class ParsedStructure(
@@ -53,6 +52,7 @@ class LockboxAutofillService(
         val structure = request.fillContexts.last().structure
         val parsedStructure = parseStructure(structure)
         val requestingPackage = domainFromPackage(structure.activityComponent.packageName)
+        log.info("requesting package: $requestingPackage")
 
         if (requestingPackage == null) {
             callback.onFailure("unexpected package name structure")
@@ -130,36 +130,43 @@ class LockboxAutofillService(
     }
 
     private fun getUsernameId(structure: AssistStructure): AutofillId? {
-        return getAutofillIdForHint(AUTOFILL_HINT_USERNAME, structure)
+        // how do we localize the "email" and "username"?
+        return getAutofillIdForKeywords(structure, listOf(AUTOFILL_HINT_USERNAME, "email", "username"))
     }
 
     private fun getPasswordId(structure: AssistStructure): AutofillId? {
-        return getAutofillIdForHint(AUTOFILL_HINT_PASSWORD, structure)
+        return getAutofillIdForKeywords(structure, listOf(AUTOFILL_HINT_PASSWORD, "password"))
     }
 
-    private fun getAutofillIdForHint(hint: String, structure: AssistStructure): AutofillId? {
+    private fun getAutofillIdForKeywords(structure: AssistStructure, keywords: List<String>): AutofillId? {
         return try {
             structure
                 .run { (0 until windowNodeCount).map { getWindowNodeAt(it) } }
-                .map { traverseNode(hint, it.rootViewNode) }
+                .map { traverseNode(it.rootViewNode, keywords) }
                 .first { it != null }
         } catch (e: NoSuchElementException) {
             null
         }
     }
 
-    private fun traverseNode(hint: String, viewNode: ViewNode?): AutofillId? {
-        val viewNode = viewNode ?: return null
-        viewNode.autofillHints?.toList()?.let {
-            if (it.contains(hint)) {
-                return viewNode.autofillId // we're done
+    private fun traverseNode(viewNode: ViewNode?, keywords: List<String>): AutofillId? {
+        val node = viewNode ?: return null
+
+        val autofillHints = node.autofillHints?.toList() ?: emptyList()
+        val hints = listOf(node.hint) + autofillHints
+
+        keywords.forEach { keyword ->
+            hints.forEach { hint ->
+                if (hint?.contains(keyword, true) == true) {
+                    return viewNode.autofillId
+                }
             }
         }
 
         return try {
-            viewNode
+            node
                 .run { (0 until childCount).map { getChildAt(it) } }
-                .map { traverseNode(hint, it) }
+                .map { traverseNode(it, keywords) }
                 .first { it != null }
         } catch (e: NoSuchElementException) {
             null
