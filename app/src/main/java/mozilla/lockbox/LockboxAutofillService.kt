@@ -1,6 +1,5 @@
 package mozilla.lockbox
 
-import android.R
 import android.annotation.TargetApi
 import android.app.assist.AssistStructure
 import android.app.assist.AssistStructure.ViewNode
@@ -55,6 +54,11 @@ class LockboxAutofillService(
         val parsedStructure = parseStructure(structure)
         val requestingPackage = domainFromPackage(structure.activityComponent.packageName)
 
+        if (requestingPackage == null) {
+            callback.onFailure("unexpected package name structure")
+            return
+        }
+
         if (parsedStructure.passwordId == null && parsedStructure.usernameId == null) {
             callback.onSuccess(null)
             return
@@ -73,9 +77,10 @@ class LockboxAutofillService(
             .addTo(compositeDisposable)
     }
 
-    private fun domainFromPackage(packageName: String): String {
-        // assume that the `x` from `w.x.y.z`-style package name is the domain
-        return "twitter"
+    private fun domainFromPackage(packageName: String): String? {
+        // assume that the `y` from `x.y.z`-style package name is the domain
+        val domainRegex = Regex("^\\w+\\.(\\w+)\\..+")
+        return domainRegex.find(packageName)?.groupValues?.get(1)
     }
 
     override fun onSaveRequest(request: SaveRequest, callback: SaveCallback) {}
@@ -99,10 +104,10 @@ class LockboxAutofillService(
         val builder = Dataset.Builder()
 
         possibleValues.forEach { credential ->
-            val usernamePresentation = RemoteViews(packageName, R.layout.simple_list_item_1)
-            val passwordPresentation = RemoteViews(packageName, R.layout.simple_list_item_1)
-            usernamePresentation.setTextViewText(R.id.text1, credential.username)
-            passwordPresentation.setTextViewText(R.id.text1, "Password for ${credential.username}")
+            val usernamePresentation = RemoteViews(packageName, android.R.layout.simple_list_item_1)
+            val passwordPresentation = RemoteViews(packageName, android.R.layout.simple_list_item_1)
+            usernamePresentation.setTextViewText(android.R.id.text1, credential.username)
+            passwordPresentation.setTextViewText(android.R.id.text1, "Password for ${credential.username}")
 
             parsedStructure.usernameId?.let {
                 builder.setValue(it, AutofillValue.forText(credential.username), usernamePresentation)

@@ -44,23 +44,33 @@ class LockboxAutofillServiceTest {
     }
 
     @Test
-    fun `receiving a fillrequest with username and password nodes`() {
+    fun fillRequestWithUsernameAndPassword() {
     }
 
     @Test
-    fun `receiving a fillrequest with only a username node`() {
+    fun fillRequestWithUsername() {
     }
 
     @Test
-    fun `receiving a fillrequest with only a password node`() {
+    fun fillRequestWithPassword() {
     }
 
     @Test
-    fun `receiving a fillrequest with neither username nor password nodes`() {
+    fun fillRequestWithNeither() {
         val assistStructure = AssistStructure()
 
         whenCalled(fillContext.structure).thenReturn(assistStructure)
         stubFillContext()
+    }
+
+    @Test
+    fun expectedPackageNameStructure() {
+
+    }
+
+    @Test
+    fun unexpectedPackageNameStructure() {
+
     }
 
     private fun stubFillContext() {
