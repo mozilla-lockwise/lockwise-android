@@ -35,11 +35,13 @@
         <item name="android:textColor">@android:color/white</item>
         <item name="android:background">@color/colorPrimary</item>
     </style>
-    <style name="TextAppearanceSortMenuItem">
+    <style name="TextAppearance">
         <item name="android:letterSpacing">0.02</item>
         <item name="android:fontFamily">sans-serif</item>
         <item name="android:textSize">14sp</item>
         <item name="android:lineSpacingExtra">6sp</item>
+    </style>
+    <style name="TextAppearanceSortMenuItem" parent="@style/TextAppearance">
         <item name="android:textColor">@color/black_87_percent</item>
     </style>
     <style name="ToolbarButton">
@@ -95,5 +97,11 @@
     </style>
     <style name="PopupTheme" parent="@style/Widget.AppCompat.PopupWindow">
         <item name="android:popupEnterTransition">@android:transition/slide_top</item>
+    </style>
+    <style name="ToastTextAppearance" parent="@style/TextAppearance">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:textColor">@color/text_white</item>
+        <item name="android:layout_marginStart">20dp</item>
+        <item name="android:layout_marginEnd">20dp</item>
     </style>
 </resources>
