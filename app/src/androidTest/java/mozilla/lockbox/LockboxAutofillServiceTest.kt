@@ -63,16 +63,6 @@ class LockboxAutofillServiceTest {
         stubFillContext()
     }
 
-    @Test
-    fun expectedPackageNameStructure() {
-
-    }
-
-    @Test
-    fun unexpectedPackageNameStructure() {
-
-    }
-
     private fun stubFillContext() {
         val fillContexts = arrayListOf(fillContext)
         whenCalled(fillRequest.fillContexts).thenReturn(fillContexts)

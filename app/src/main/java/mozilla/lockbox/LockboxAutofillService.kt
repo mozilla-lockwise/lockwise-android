@@ -69,7 +69,7 @@ class LockboxAutofillService(
             .take(1)
             .subscribe { passwords ->
                 val possibleValues = passwords.filter {
-                    titleFromHostname(it.hostname).startsWith(requestingPackage, true)
+                    it.hostname.contains(requestingPackage, true)
                 }
                 val response = buildFillResponse(possibleValues, parsedStructure)
                 callback.onSuccess(response)
@@ -78,7 +78,8 @@ class LockboxAutofillService(
     }
 
     private fun domainFromPackage(packageName: String): String? {
-        // assume that the `y` from `x.y.z`-style package name is the domain
+        // naively assume that the `y` from `x.y.z`-style package name is the domain
+        // untested as we will change this implementation with issue #375
         val domainRegex = Regex("^\\w+\\.(\\w+)\\..+")
         return domainRegex.find(packageName)?.groupValues?.get(1)
     }
