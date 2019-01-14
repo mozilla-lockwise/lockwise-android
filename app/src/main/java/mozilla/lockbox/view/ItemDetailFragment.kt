@@ -9,6 +9,7 @@ package mozilla.lockbox.view
 import android.os.Bundle
 import android.support.annotation.StringRes
 import android.text.method.PasswordTransformationMethod
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -88,10 +89,12 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
 
     override fun showToastNotification(@StringRes strId: Int) {
         assertOnUiThread()
-        val toast = Toast.makeText(activity, getString(strId), Toast.LENGTH_SHORT)
-        val v = toast.getView().findViewById(android.R.id.message) as TextView
-        v.setTextColor(getResources().getColor(R.color.text_white))
-        v.setBackgroundColor(getResources().getColor(R.color.dark_gray_background))
+        val toast = Toast(activity)
+        toast.duration = Toast.LENGTH_SHORT
+        toast.view = layoutInflater.inflate(R.layout.toast_view, this.view as ViewGroup, false)
+        toast.setGravity(Gravity.FILL_HORIZONTAL or Gravity.BOTTOM, 0, 0)
+        val v = toast.view.findViewById(R.id.message) as TextView
+        v.text = resources.getString(strId)
         toast.show()
     }
 }
