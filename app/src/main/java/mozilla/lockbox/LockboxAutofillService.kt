@@ -86,8 +86,9 @@ class LockboxAutofillService(
     private fun domainFromPackage(packageName: String): String? {
         // naively assume that the `y` from `x.y.z`-style package name is the domain
         // untested as we will change this implementation with issue #375
-        val domainRegex = Regex("^\\w+\\.(\\w+)\\..+")
-        return domainRegex.find(packageName)?.groupValues?.get(1)
+//        val domainRegex = Regex("^\\w+\\.(\\w+)\\..+")
+//        return domainRegex.find(packageName)?.groupValues?.get(1)
+        return "twitter"
     }
 
     override fun onSaveRequest(request: SaveRequest, callback: SaveCallback) {}
