@@ -36,7 +36,7 @@ class RouteStore(
         dataStore.state
             .map(this::dataStoreToRouteActions)
             .filterNotNull()
-            .debug("new datastore routeaction")
+            .debug("datastorestate to routes")
             .subscribe(routes)
     }
 

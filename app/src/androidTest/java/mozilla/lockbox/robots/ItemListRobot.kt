@@ -57,7 +57,10 @@ class ItemListRobot : BaseTestRobot {
 
     fun tapSettings() = menuOption(R.id.setting_menu_item)
 
-    fun tapLockNow() = click { id(R.id.lockNow) }
+    fun tapLockNow() {
+        openMenu()
+        click { id(R.id.lockNow) }
+    }
 
     fun tapAccountSetting() = menuOption(R.id.account_setting_menu_item)
 

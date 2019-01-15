@@ -1,12 +1,15 @@
 package mozilla.lockbox
 
+import android.content.Intent
 import androidx.test.rule.ActivityTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.LifecycleAction
+import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.robots.itemList
 import mozilla.lockbox.store.AutoLockStore
 import mozilla.lockbox.support.LockingSupport
 import mozilla.lockbox.view.RootActivity
@@ -50,7 +53,23 @@ open class AutoLockTest {
         testLockingSupport.advance(Setting.AutoLockTime.FiveMinutes.ms + 1000)
 
         Dispatcher.shared.dispatch(LifecycleAction.Foreground)
+        navigator.blockUntil(RouteAction.LockScreen)
+        navigator.checkAtLockScreen()
+    }
 
+    @Test
+    fun lockSurvivesBackButton() {
+        navigator.gotoItemList()
+        itemList {
+            tapLockNow()
+        }
+
+        navigator.checkAtLockScreen()
+
+        navigator.back(false)
+
+        activityRule.launchActivity(Intent(Intent.ACTION_MAIN))
+        navigator.blockUntil(RouteAction.LockScreen)
         navigator.checkAtLockScreen()
     }
 

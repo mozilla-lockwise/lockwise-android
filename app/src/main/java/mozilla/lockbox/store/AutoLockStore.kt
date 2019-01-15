@@ -70,11 +70,12 @@ class AutoLockStore(
             .switchMap {
                 if (it is DataStoreAction.UpdateCredentials) {
                 lifecycleStore.lifecycleEvents
-            } else if (it == DataStoreAction.Reset) {
-                Observable.empty<LifecycleAction>()
-            } else {
+                } else if (it == DataStoreAction.Reset) {
                     Observable.empty<LifecycleAction>()
-                } }
+                } else {
+                    Observable.empty<LifecycleAction>()
+                }
+            }
             .filter { it == LifecycleAction.Foreground }
             // push lockrequired if required
             .map { lockCurrentlyRequired() }

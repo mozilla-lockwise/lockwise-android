@@ -69,7 +69,7 @@ class RoutePresenter(
             .addTo(compositeDisposable)
 
         routeStore.routes
-            .debug("mapping to actual behavior from routeStore.routes")
+            .debug("routeStore.routes to routepresenter")
             .observeOn(mainThread())
             .subscribe(this::route)
             .addTo(compositeDisposable)
