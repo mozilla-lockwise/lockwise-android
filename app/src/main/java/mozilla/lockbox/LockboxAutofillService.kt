@@ -12,6 +12,7 @@ import android.service.autofill.FillRequest
 import android.service.autofill.FillResponse
 import android.service.autofill.SaveCallback
 import android.service.autofill.SaveRequest
+import android.view.View.AUTOFILL_HINT_EMAIL_ADDRESS
 import android.view.View.AUTOFILL_HINT_PASSWORD
 import android.view.View.AUTOFILL_HINT_USERNAME
 import android.view.autofill.AutofillId
@@ -53,6 +54,7 @@ class LockboxAutofillService(
         val parsedStructure = parseStructure(structure)
         val requestingPackage = domainFromPackage(structure.activityComponent.packageName)
         log.info("requesting package: $requestingPackage")
+        log.info("parsed structure: $parsedStructure")
 
         if (requestingPackage == null) {
             callback.onFailure("unexpected package name structure")
@@ -89,7 +91,11 @@ class LockboxAutofillService(
     private fun buildFillResponse(
         possibleValues: List<ServerPassword>,
         parsedStructure: ParsedStructure
-    ): FillResponse {
+    ): FillResponse? {
+        if (possibleValues.isEmpty()) {
+            return null
+        }
+
         val dataset = datasetForPossibleValues(possibleValues, parsedStructure)
         // future parts of this method include adding any authentication steps
 
@@ -131,10 +137,16 @@ class LockboxAutofillService(
 
     private fun getUsernameId(structure: AssistStructure): AutofillId? {
         // how do we localize the "email" and "username"?
-        return getAutofillIdForKeywords(structure, listOf(AUTOFILL_HINT_USERNAME, "email", "username"))
+        return getAutofillIdForKeywords(structure, listOf(
+            AUTOFILL_HINT_USERNAME,
+            AUTOFILL_HINT_EMAIL_ADDRESS,
+            "email",
+            "username"
+        ))
     }
 
     private fun getPasswordId(structure: AssistStructure): AutofillId? {
+        // similar l10n question for password
         return getAutofillIdForKeywords(structure, listOf(AUTOFILL_HINT_PASSWORD, "password"))
     }
 
@@ -150,26 +162,47 @@ class LockboxAutofillService(
     }
 
     private fun traverseNode(viewNode: ViewNode?, keywords: List<String>): AutofillId? {
+        // this method is getting less & less performant
         val node = viewNode ?: return null
 
-        val autofillHints = node.autofillHints?.toList() ?: emptyList()
-        val hints = listOf(node.hint) + autofillHints
+        if (containsKeywords(node, keywords) && node.autofillId != null) {
+            return node.autofillId
+        }
 
-        keywords.forEach { keyword ->
-            hints.forEach { hint ->
-                if (hint?.contains(keyword, true) == true) {
-                    return viewNode.autofillId
-                }
+        val childNodes = node
+            .run { (0 until childCount).map { getChildAt(it) } }
+
+        // check for consecutive views with keywords followed by possible fill locations
+        for (i in 1..(childNodes.size - 1)) {
+            val prevNode = childNodes[i - 1]
+            val currentNode = childNodes[i]
+            if (containsKeywords(prevNode, keywords) && currentNode.autofillId != null) {
+                return currentNode.autofillId
             }
         }
 
+        // if neither of the above succeeds, go deeper....
         return try {
-            node
-                .run { (0 until childCount).map { getChildAt(it) } }
+            childNodes
                 .map { traverseNode(it, keywords) }
                 .first { it != null }
         } catch (e: NoSuchElementException) {
             null
         }
+    }
+
+    private fun containsKeywords(node: ViewNode, keywords: List<String>): Boolean {
+        val autofillHints = node.autofillHints?.toList() ?: emptyList()
+        val hints = listOf(node.hint) + listOf(node.text) + autofillHints
+
+        keywords.forEach { keyword ->
+            hints.forEach { hint ->
+                if (hint?.contains(keyword, true) == true) {
+                    return true
+                }
+            }
+        }
+
+        return false
     }
 }
