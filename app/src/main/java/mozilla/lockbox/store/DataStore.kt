@@ -114,25 +114,19 @@ open class DataStore(
     }
 
     private fun unlock() {
-        if (backend.isLocked()) {
-            backend.unlock(support.encryptionKey)
-                .asSingle(coroutineContext)
-                .map { State.Unlocked }
-                .subscribe(stateSubject::onNext, this::pushError)
-                .addTo(compositeDisposable)
-        }
+        backend.ensureUnlocked(support.encryptionKey)
+            .asSingle(coroutineContext)
+            .map { State.Unlocked }
+            .subscribe(stateSubject::onNext, this::pushError)
+            .addTo(compositeDisposable)
     }
 
     private fun lock() {
-        if (!backend.isLocked()) {
-            backend.lock()
-                .asSingle(coroutineContext)
-                .map { State.Locked }
-                .subscribe(stateSubject::onNext, this::pushError)
-                .addTo(compositeDisposable)
-        } else {
-            stateSubject.onNext(State.Locked)
-        }
+        backend.ensureLocked()
+            .asSingle(coroutineContext)
+            .map { State.Locked }
+            .subscribe(stateSubject::onNext, this::pushError)
+            .addTo(compositeDisposable)
     }
 
     private fun sync() {
@@ -174,7 +168,7 @@ open class DataStore(
             return
         }
         clearList()
-        backend.reset()
+        backend.wipeLocal()
             .asSingle(coroutineContext)
             .map { State.Unprepared }
             .subscribe(stateSubject::onNext, this::pushError)
@@ -216,7 +210,7 @@ open class DataStore(
         if (stateSubject.value != State.Unprepared &&
             stateSubject.value != null
         ) {
-            backend.reset()
+            backend.wipeLocal()
                 .asSingle(coroutineContext)
                 .subscribe()
                 .addTo(compositeDisposable)
