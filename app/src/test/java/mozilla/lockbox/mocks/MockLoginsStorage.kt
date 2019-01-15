@@ -40,8 +40,21 @@ open class MockLoginsStorage : LoginsStorage {
     override fun lock() {
         this._locked = true
     }
+    override fun ensureLocked() {
+        this._locked = true
+    }
 
     override fun unlock(encryptionKey: String) {
+        this._locked = false
+    }
+    override fun unlock(encryptionKey: ByteArray) {
+        this._locked = false
+    }
+    override fun ensureUnlocked(encryptionKey: String) {
+        this._locked = false
+    }
+
+    override fun ensureUnlocked(encryptionKey: ByteArray) {
         this._locked = false
     }
 
@@ -52,6 +65,8 @@ open class MockLoginsStorage : LoginsStorage {
     override fun reset() {}
 
     override fun wipe() {}
+
+    override fun wipeLocal() {}
 }
 
 class MockDataStoreSupport : DataStoreSupport {

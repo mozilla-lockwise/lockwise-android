@@ -174,7 +174,7 @@ open class DataStore(
             return
         }
         clearList()
-        backend.reset()
+        backend.wipeLocal()
             .asSingle(coroutineContext)
             .map { State.Unprepared }
             .subscribe(stateSubject::onNext, this::pushError)
@@ -216,7 +216,7 @@ open class DataStore(
         if (stateSubject.value != State.Unprepared &&
             stateSubject.value != null
         ) {
-            backend.reset()
+            backend.wipeLocal()
                 .asSingle(coroutineContext)
                 .subscribe()
                 .addTo(compositeDisposable)

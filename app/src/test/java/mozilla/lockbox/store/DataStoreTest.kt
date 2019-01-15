@@ -76,7 +76,7 @@ class DataStoreTest : DisposingTest() {
         Assert.assertEquals(State.Unprepared, stateIterator.next())
         Assert.assertEquals(0, listIterator.next().size)
 
-        verify(support.storage).reset()
+        verify(support.storage).wipeLocal()
     }
 
     @Test
@@ -110,7 +110,7 @@ class DataStoreTest : DisposingTest() {
         Assert.assertEquals(State.Unlocked, stateIterator.next())
 
         this.subject.resetSupport(MockDataStoreSupport())
-        verify(newSupport.storage).reset()
+        verify(newSupport.storage).wipeLocal()
     }
 
     @Test
