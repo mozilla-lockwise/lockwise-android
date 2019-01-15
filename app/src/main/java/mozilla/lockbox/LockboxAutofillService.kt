@@ -56,13 +56,13 @@ class LockboxAutofillService(
         log.info("requesting package: $requestingPackage")
         log.info("parsed structure: $parsedStructure")
 
-        if (requestingPackage == null) {
-            callback.onFailure("unexpected package name structure")
+        if (parsedStructure.passwordId == null && parsedStructure.usernameId == null) {
+            callback.onFailure("couldn't find a username or password field")
             return
         }
 
-        if (parsedStructure.passwordId == null && parsedStructure.usernameId == null) {
-            callback.onFailure("couldn't find a username or password field")
+        if (requestingPackage == null) {
+            callback.onFailure("unexpected package name structure")
             return
         }
 
@@ -145,7 +145,8 @@ class LockboxAutofillService(
             AUTOFILL_HINT_USERNAME,
             AUTOFILL_HINT_EMAIL_ADDRESS,
             "email",
-            "username"
+            "username",
+            "user name"
         ))
     }
 
@@ -197,11 +198,13 @@ class LockboxAutofillService(
 
     private fun containsKeywords(node: ViewNode, keywords: List<String>): Boolean {
         val autofillHints = node.autofillHints?.toList() ?: emptyList()
-        val hints = listOf(node.hint) + listOf(node.text) + autofillHints
+        var hints = listOf(node.hint) + listOf(node.text) + autofillHints
+
+        hints = hints.filterNotNull()
 
         keywords.forEach { keyword ->
             hints.forEach { hint ->
-                if (hint?.contains(keyword, true) == true) {
+                if (hint.contains(keyword, true)) {
                     return true
                 }
             }
