@@ -62,7 +62,7 @@ class LockboxAutofillService(
         }
 
         if (parsedStructure.passwordId == null && parsedStructure.usernameId == null) {
-            callback.onSuccess(null)
+            callback.onFailure("couldn't find a username or password field")
             return
         }
 
@@ -74,7 +74,11 @@ class LockboxAutofillService(
                     it.hostname.contains(requestingPackage, true)
                 }
                 val response = buildFillResponse(possibleValues, parsedStructure)
-                callback.onSuccess(response)
+                if (response == null) {
+                    callback.onFailure("no logins found for this domain")
+                } else {
+                    callback.onSuccess(response)
+                }
             }
             .addTo(compositeDisposable)
     }
