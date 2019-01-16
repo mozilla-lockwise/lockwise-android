@@ -59,6 +59,7 @@ class RoutePresenter(
         navController = Navigation.findNavController(activity, R.id.fragment_nav_host)
 
         val autoLockActions = autoLockStore.activateAutoLockMEGAZORD
+            .filter { it }
             .map { DataStoreAction.Lock }
 
         // Moves credentials from the AccountStore, into the DataStore.

@@ -42,7 +42,7 @@ class AutoLockStore(
 
     var lockingSupport: LockingSupport = SystemLockingSupport()
 
-    val activateAutoLockMEGAZORD: Observable<Unit> = PublishSubject.create()
+    val activateAutoLockMEGAZORD: Observable<Boolean> = PublishSubject.create()
 
     init {
         // update the lock timer when backgrounding and the datastore is not locked
@@ -79,9 +79,6 @@ class AutoLockStore(
             .filter { it == LifecycleAction.Foreground }
             // push lockrequired if required
             .map { lockCurrentlyRequired() }
-            .debug("lockingCurrentlyRequired")
-            .filter { it }
-            .map { Unit }
             .subscribe(activateAutoLockMEGAZORD as Subject)
     }
 

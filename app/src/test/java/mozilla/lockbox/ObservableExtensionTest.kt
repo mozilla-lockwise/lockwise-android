@@ -62,19 +62,20 @@ class ObservableExtensionTest {
     @Test
     fun debug() {
         val subject = PublishSubject.create<String>()
-        subject.debug().subscribe({}, {})
+        val observer = "OBSERVER"
+        subject.debug(observer).subscribe({}, {})
 
-        verify(logger).info("subscribed")
+        verify(logger).info("$observer: subscribed")
 
         val eventMessage = "message"
         subject.onNext(eventMessage)
 
-        verify(logger).info("event: $eventMessage")
+        verify(logger).info("$observer: event: $eventMessage")
 
         val errorMessage = "error_message"
         val error = Throwable(message = errorMessage)
         subject.onError(error)
 
-        verify(logger).info("error: $errorMessage")
+        verify(logger).info("$observer: error: $errorMessage")
     }
 }

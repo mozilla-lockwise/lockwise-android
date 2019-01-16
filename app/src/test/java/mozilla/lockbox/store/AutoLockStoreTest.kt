@@ -22,6 +22,7 @@ import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.model.FixedSyncCredentials
 import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.LockingSupport
 import mozilla.lockbox.support.SimpleFileReader
@@ -80,17 +81,19 @@ class AutoLockStoreTest {
     private val settingStore = FakeSettingStore()
     private val lifecycleStore = FakeLifecycleStore()
     private val dataStore = FakeDataStore()
+    private val dispatcher = Dispatcher()
 
     private var bootID = ";kl;jjkloi;kljhafshjkadfsmn"
 
-    private val lockRequiredObserver: TestObserver<Unit> = TestObserver.create()
+    private val lockRequiredObserver: TestObserver<Boolean> = TestObserver.create()
 
     private val lockingSupport = spy(TestLockingSupport())
 
     val subject = AutoLockStore(
         settingStore = settingStore,
         lifecycleStore = lifecycleStore,
-        dataStore = dataStore
+        dataStore = dataStore,
+        dispatcher = dispatcher
     )
 
     @Before
@@ -215,27 +218,30 @@ class AutoLockStoreTest {
 
     @Test
     fun `foregrounding lifecycle actions when the saved autolocktimerdate is later than the current system time`() {
-        mockSavedValues(SystemClock.elapsedRealtime() + 600000)
+        dispatcher.dispatch(DataStoreAction.UpdateCredentials(FixedSyncCredentials(false)))
+        mockSavedValues(lockingSupport.systemTimeElapsed + 600000)
 
         (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Foreground)
 
-        lockRequiredObserver.assertLastValue(Unit)
+        lockRequiredObserver.assertLastValue(false)
     }
 
     @Test
     fun `foregrounding lifecycle actions when the saved autolocktimerdate is earlier than the current system time`() {
-        mockSavedValues(SystemClock.elapsedRealtime() - 600000)
+        dispatcher.dispatch(DataStoreAction.UpdateCredentials(FixedSyncCredentials(false)))
+        mockSavedValues(lockingSupport.systemTimeElapsed - 600000)
 
         (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Foreground)
 
-        lockRequiredObserver.assertLastValue(Unit)
+        lockRequiredObserver.assertLastValue(true)
     }
 
     @Test
     fun `datastore locking actions, when locking is not required by autolock, force the autolocktimerdate to an older time`() {
-        mockSavedValues(SystemClock.elapsedRealtime() + 600000)
+        dispatcher.dispatch(DataStoreAction.UpdateCredentials(FixedSyncCredentials(false)))
+        mockSavedValues(lockingSupport.systemTimeElapsed + 600000)
         (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Foreground)
-        lockRequiredObserver.assertLastValue(Unit)
+        lockRequiredObserver.assertLastValue(false)
 
         clearInvocations(preferences)
         clearInvocations(editor)
@@ -257,9 +263,10 @@ class AutoLockStoreTest {
 
     @Test
     fun `datastore locking actions, when locking is required by autolock, do nothing`() {
+        dispatcher.dispatch(DataStoreAction.UpdateCredentials(FixedSyncCredentials(false)))
         mockSavedValues(SystemClock.elapsedRealtime() - 600000)
         (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Foreground)
-        lockRequiredObserver.assertLastValue(Unit)
+        lockRequiredObserver.assertLastValue(true)
 
         clearInvocations(preferences)
         clearInvocations(editor)
