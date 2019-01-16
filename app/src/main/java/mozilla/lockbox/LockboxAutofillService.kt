@@ -121,6 +121,6 @@ class LockboxAutofillService(
         return datasetBuilder.build()
     }
 
-    // not implemented for now!
+    // to be implemented in issue #217
     override fun onSaveRequest(request: SaveRequest, callback: SaveCallback) {}
 }

@@ -52,7 +52,6 @@ class ParsedStructure(structure: AssistStructure) {
     }
 
     private fun searchBasicAutofillContent(viewNode: AssistStructure.ViewNode?, keywords: List<String>): AutofillId? {
-        // this method is getting less & less performant
         val node = viewNode ?: return null
 
         if (containsKeywords(node, keywords) &&
