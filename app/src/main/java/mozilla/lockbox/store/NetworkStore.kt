@@ -3,6 +3,7 @@ package mozilla.lockbox.store
 import android.content.Context
 import android.net.ConnectivityManager
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.action.NetworkAction
 import mozilla.lockbox.extensions.filterByType
@@ -17,8 +18,8 @@ open class NetworkStore(
     lateinit var connectivityManager: ConnectivityManager
     internal val compositeDisposable = CompositeDisposable()
 
-    val isConnectedSubject: ReplaySubject<Boolean> = ReplaySubject.createWithSize(1)
-    val isConnected: Observable<Boolean> get() = isConnectedSubject
+    private val isConnectedSubject: ReplaySubject<Boolean> = ReplaySubject.createWithSize(1)
+    val isConnected: Observable<Boolean>
 
     val isConnectedState: Boolean
         get() = connectivityManager.activeNetworkInfo?.isConnectedOrConnecting == true
@@ -38,10 +39,17 @@ open class NetworkStore(
                 }
             }
             .addTo(compositeDisposable)
+
+        isConnected = isConnectedSubject
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe { checkConnectivity() }
+    }
+
+    private fun checkConnectivity() {
+        isConnectedSubject.onNext(isConnectedState)
     }
 
     override fun injectContext(context: Context) {
-        connectivityManager =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     }
 }

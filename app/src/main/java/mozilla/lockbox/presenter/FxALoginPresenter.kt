@@ -59,7 +59,6 @@ class FxALoginPresenter(
         }?.addTo(compositeDisposable)
 
         networkStore.isConnected
-            .doOnSubscribe { dispatcher.dispatch(NetworkAction.CheckConnectivity) }
             .subscribe(view::handleNetworkError)
             .addTo(compositeDisposable)
 

@@ -26,7 +26,7 @@ open class NetworkErrorHelper {
         child.layoutParams = webParams
     }
 
-    private fun hideNetworkError(parent: View) {
+    fun hideNetworkError(parent: View) {
         log.info(parent.resources.getString(R.string.network_connection_success))
         parent.networkWarning.visibility = View.GONE
         parent.networkWarning.layoutParams.height = R.dimen.hidden_network_error

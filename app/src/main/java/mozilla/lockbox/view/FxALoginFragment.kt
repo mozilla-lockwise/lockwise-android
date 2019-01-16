@@ -74,11 +74,7 @@ class FxALoginFragment : BackableFragment(), FxALoginView {
                 topMarginId = R.dimen.network_error_with_toolbar
             )
         } else {
-            errorHelper.hideNetworkError(
-                parent = view!!,
-                child = view!!.webView,
-                topMarginId = R.dimen.actionBarSize
-            )
+            errorHelper.hideNetworkError(parent = view!!)
         }
     }
 
