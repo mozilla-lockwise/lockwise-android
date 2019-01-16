@@ -18,6 +18,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.model.titleFromHostname
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.support.ParsedStructure
 
@@ -74,9 +75,8 @@ class LockboxAutofillService(
     private fun domainFromPackage(packageName: String): String? {
         // naively assume that the `y` from `x.y.z`-style package name is the domain
         // untested as we will change this implementation with issue #375
-//        val domainRegex = Regex("^\\w+\\.(\\w+)\\..+")
-//        return domainRegex.find(packageName)?.groupValues?.get(1)
-        return "twitter"
+        val domainRegex = Regex("^\\w+\\.(\\w+)\\..+")
+        return domainRegex.find(packageName)?.groupValues?.get(1)
     }
 
     private fun buildFillResponse(
@@ -102,10 +102,12 @@ class LockboxAutofillService(
         val datasetBuilder = Dataset.Builder()
 
         possibleValues.forEach { credential ->
-            val usernamePresentation = RemoteViews(packageName, android.R.layout.simple_list_item_1)
-            val passwordPresentation = RemoteViews(packageName, android.R.layout.simple_list_item_1)
-            usernamePresentation.setTextViewText(android.R.id.text1, credential.username)
-            passwordPresentation.setTextViewText(android.R.id.text1, "Password for ${credential.username}")
+            val usernamePresentation = RemoteViews(packageName, android.R.layout.simple_list_item_2)
+            val passwordPresentation = RemoteViews(packageName, android.R.layout.simple_list_item_2)
+            usernamePresentation.setTextViewText(android.R.id.text1, titleFromHostname(credential.hostname))
+            usernamePresentation.setTextViewText(android.R.id.text2, credential.username)
+            passwordPresentation.setTextViewText(android.R.id.text1, titleFromHostname(credential.hostname))
+            passwordPresentation.setTextViewText(android.R.id.text2, getString(R.string.password_for, credential.username))
 
             parsedStructure.usernameId?.let {
                 datasetBuilder.setValue(it, AutofillValue.forText(credential.username), usernamePresentation)
@@ -119,5 +121,6 @@ class LockboxAutofillService(
         return datasetBuilder.build()
     }
 
+    // not implemented for now!
     override fun onSaveRequest(request: SaveRequest, callback: SaveCallback) {}
 }

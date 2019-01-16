@@ -186,5 +186,7 @@
     <string name="no_network">No Network</string>
     <!-- This is displayed in an alert message to provide information and instruction to connect to the internet to use the application, not expected to translate Firefox Lockbox -->
     <string name="connect_to_internet">Please connect to the internet to use Firefox Lockbox</string>
+    <!-- This is the hint value for an autofill box that appears when suggesting a value for a password field. It is interpolated with the user's account name. -->
+    <string name="password_for">Password for %1$s</string>
 
 </resources>
