@@ -53,7 +53,6 @@ class LockboxAutofillService(
         val structure = request.fillContexts.last().structure
         val parsedStructure = parseStructure(structure)
         val requestingPackage = domainFromPackage(structure.activityComponent.packageName)
-        log.info("requesting package: $requestingPackage")
         log.info("parsed structure: $parsedStructure")
 
         if (parsedStructure.passwordId == null && parsedStructure.usernameId == null) {
@@ -113,7 +112,7 @@ class LockboxAutofillService(
         possibleValues: List<ServerPassword>,
         parsedStructure: ParsedStructure
     ): Dataset {
-        val builder = Dataset.Builder()
+        val datasetBuilder = Dataset.Builder()
 
         possibleValues.forEach { credential ->
             val usernamePresentation = RemoteViews(packageName, android.R.layout.simple_list_item_1)
@@ -122,15 +121,15 @@ class LockboxAutofillService(
             passwordPresentation.setTextViewText(android.R.id.text1, "Password for ${credential.username}")
 
             parsedStructure.usernameId?.let {
-                builder.setValue(it, AutofillValue.forText(credential.username), usernamePresentation)
+                datasetBuilder.setValue(it, AutofillValue.forText(credential.username), usernamePresentation)
             }
 
             parsedStructure.passwordId?.let {
-                builder.setValue(it, AutofillValue.forText(credential.password), passwordPresentation)
+                datasetBuilder.setValue(it, AutofillValue.forText(credential.password), passwordPresentation)
             }
         }
 
-        return builder.build()
+        return datasetBuilder.build()
     }
 
     private fun parseStructure(structure: AssistStructure): ParsedStructure {
@@ -157,17 +156,25 @@ class LockboxAutofillService(
     }
 
     private fun getAutofillIdForKeywords(structure: AssistStructure, keywords: List<String>): AutofillId? {
+        val windowNodes = structure
+            .run { (0 until windowNodeCount).map { getWindowNodeAt(it) } }
+
+        var possibleAutofillIds = windowNodes
+            .map { searchBasicAutofillContent(it.rootViewNode, keywords) }
+
+        if (possibleAutofillIds.filterNotNull().isEmpty()) {
+            possibleAutofillIds += windowNodes
+                .map { checkForConsecutiveKeywordAndField(it.rootViewNode, keywords) }
+        }
+
         return try {
-            structure
-                .run { (0 until windowNodeCount).map { getWindowNodeAt(it) } }
-                .map { traverseNode(it.rootViewNode, keywords) }
-                .first { it != null }
+            possibleAutofillIds.first { it != null }
         } catch (e: NoSuchElementException) {
             null
         }
     }
 
-    private fun traverseNode(viewNode: ViewNode?, keywords: List<String>): AutofillId? {
+    private fun searchBasicAutofillContent(viewNode: ViewNode?, keywords: List<String>): AutofillId? {
         // this method is getting less & less performant
         val node = viewNode ?: return null
 
@@ -175,6 +182,16 @@ class LockboxAutofillService(
             return node.autofillId
         }
 
+        return try {
+            node.run { (0 until childCount).map { getChildAt(it) } }
+                .map { searchBasicAutofillContent(it, keywords) }
+                .first { it != null }
+        } catch (e: NoSuchElementException) {
+            null
+        }
+    }
+
+    private fun checkForConsecutiveKeywordAndField(node: ViewNode, keywords: List<String>): AutofillId? {
         val childNodes = node
             .run { (0 until childCount).map { getChildAt(it) } }
 
@@ -182,15 +199,16 @@ class LockboxAutofillService(
         for (i in 1..(childNodes.size - 1)) {
             val prevNode = childNodes[i - 1]
             val currentNode = childNodes[i]
-            if (containsKeywords(prevNode, keywords) && currentNode.autofillId != null) {
-                return currentNode.autofillId
+            currentNode.autofillId?.let {
+                if (containsKeywords(prevNode, keywords)) {
+                    return it
+                }
             }
         }
 
-        // if neither of the above succeeds, go deeper....
         return try {
             childNodes
-                .map { traverseNode(it, keywords) }
+                .map { checkForConsecutiveKeywordAndField(it, keywords) }
                 .first { it != null }
         } catch (e: NoSuchElementException) {
             null
