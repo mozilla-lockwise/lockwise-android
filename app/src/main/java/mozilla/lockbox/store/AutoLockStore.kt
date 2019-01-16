@@ -41,7 +41,10 @@ class AutoLockStore(
 
     var lockingSupport: LockingSupport = SystemLockingSupport()
 
-    val activateAutoLockMEGAZORD: Observable<Boolean> = PublishSubject.create()
+    // This fires `true` when the autolock the datastore should be locked.
+    // It is _not_ `Unit` to enable testing.
+    // It's absence, or `false` should mean that autolock is not yet been fired.
+    val autoLockActivated: Observable<Boolean> = PublishSubject.create()
 
     init {
         // update the lock timer when backgrounding and the datastore is not locked
@@ -76,7 +79,7 @@ class AutoLockStore(
             .filter { it == LifecycleAction.Foreground }
             // push lockrequired if required
             .map { lockCurrentlyRequired() }
-            .subscribe(activateAutoLockMEGAZORD as Subject)
+            .subscribe(autoLockActivated as Subject)
     }
 
     override fun injectContext(context: Context) {

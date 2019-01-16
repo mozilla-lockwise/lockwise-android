@@ -57,7 +57,7 @@ class RoutePresenter(
     override fun onViewReady() {
         navController = Navigation.findNavController(activity, R.id.fragment_nav_host)
 
-        val autoLockActions = autoLockStore.activateAutoLockMEGAZORD
+        val autoLockActions = autoLockStore.autoLockActivated
             .filter { it }
             .map { DataStoreAction.Lock }
 

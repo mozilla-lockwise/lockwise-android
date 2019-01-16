@@ -109,7 +109,7 @@ class AutoLockStoreTest {
         PowerMockito.whenNew(SimpleFileReader::class.java).withAnyArguments().thenReturn(fileReader)
 
         subject.injectContext(context)
-        subject.activateAutoLockMEGAZORD.subscribe(lockRequiredObserver)
+        subject.autoLockActivated.subscribe(lockRequiredObserver)
         subject.lockingSupport = lockingSupport
     }
 
