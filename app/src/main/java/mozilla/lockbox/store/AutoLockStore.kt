@@ -18,7 +18,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.Setting
-import mozilla.lockbox.extensions.debug
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.support.Constant

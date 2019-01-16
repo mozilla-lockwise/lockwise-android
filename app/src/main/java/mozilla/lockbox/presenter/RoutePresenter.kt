@@ -22,7 +22,6 @@ import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.action.SettingAction
-import mozilla.lockbox.extensions.debug
 import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.extensions.view.AlertDialogHelper
 import mozilla.lockbox.extensions.view.AlertState
@@ -70,7 +69,6 @@ class RoutePresenter(
             .addTo(compositeDisposable)
 
         routeStore.routes
-            .debug("routeStore.routes to routepresenter")
             .observeOn(mainThread())
             .subscribe(this::route)
             .addTo(compositeDisposable)

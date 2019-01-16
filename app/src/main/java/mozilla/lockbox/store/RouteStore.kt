@@ -10,7 +10,6 @@ import io.reactivex.subjects.ReplaySubject
 import io.reactivex.subjects.Subject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.RouteAction
-import mozilla.lockbox.extensions.debug
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.flux.Dispatcher
@@ -36,7 +35,6 @@ class RouteStore(
         dataStore.state
             .map(this::dataStoreToRouteActions)
             .filterNotNull()
-            .debug("datastorestate to routes")
             .subscribe(routes)
     }
 
