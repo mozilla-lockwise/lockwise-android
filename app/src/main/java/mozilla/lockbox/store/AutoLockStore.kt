@@ -68,12 +68,10 @@ class AutoLockStore(
             .filterByType(DataStoreAction::class.java)
             // begin listening for foreground events after login
             .switchMap {
-                if (it is DataStoreAction.UpdateCredentials) {
-                lifecycleStore.lifecycleEvents
-                } else if (it == DataStoreAction.Reset) {
-                    Observable.empty<LifecycleAction>()
-                } else {
-                    Observable.empty<LifecycleAction>()
+                when (it) {
+                    is DataStoreAction.UpdateCredentials -> lifecycleStore.lifecycleEvents
+                    is DataStoreAction.Unlock -> lifecycleStore.lifecycleEvents
+                    else -> Observable.empty<LifecycleAction>()
                 }
             }
             .filter { it == LifecycleAction.Foreground }

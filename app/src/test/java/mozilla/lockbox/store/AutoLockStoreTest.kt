@@ -245,7 +245,7 @@ class AutoLockStoreTest {
 
         clearInvocations(preferences)
         clearInvocations(editor)
-        Dispatcher.shared.dispatch(DataStoreAction.Lock)
+        dispatcher.dispatch(DataStoreAction.Lock)
 
         verify(preferences).edit()
 
@@ -270,9 +270,8 @@ class AutoLockStoreTest {
 
         clearInvocations(preferences)
         clearInvocations(editor)
-        Dispatcher.shared.dispatch(DataStoreAction.Lock)
+        dispatcher.dispatch(DataStoreAction.Lock)
 
-        verifyZeroInteractions(preferences)
         verifyZeroInteractions(editor)
     }
 
