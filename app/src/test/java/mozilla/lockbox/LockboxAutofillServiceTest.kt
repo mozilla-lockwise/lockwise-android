@@ -6,25 +6,18 @@ import android.os.CancellationSignal
 import android.service.autofill.FillCallback
 import android.service.autofill.FillContext
 import android.service.autofill.FillRequest
-import android.service.autofill.FillResponse
-import android.view.View
-import android.view.autofill.AutofillId
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.DataStore
 import org.junit.After
-import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
-import org.mockito.ArgumentCaptor
 import org.mockito.Mock
 import org.mockito.Mockito.clearInvocations
 import org.mockito.Mockito.mock
-import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when` as whenCalled
 
 @ExperimentalCoroutinesApi

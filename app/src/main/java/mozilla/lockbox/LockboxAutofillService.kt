@@ -1,8 +1,6 @@
 package mozilla.lockbox
 
 import android.annotation.TargetApi
-import android.app.assist.AssistStructure
-import android.app.assist.AssistStructure.ViewNode
 import android.os.Build
 import android.os.CancellationSignal
 import android.service.autofill.AutofillService
@@ -12,10 +10,6 @@ import android.service.autofill.FillRequest
 import android.service.autofill.FillResponse
 import android.service.autofill.SaveCallback
 import android.service.autofill.SaveRequest
-import android.view.View.AUTOFILL_HINT_EMAIL_ADDRESS
-import android.view.View.AUTOFILL_HINT_PASSWORD
-import android.view.View.AUTOFILL_HINT_USERNAME
-import android.view.autofill.AutofillId
 import android.view.autofill.AutofillValue
 import android.widget.RemoteViews
 import io.reactivex.disposables.CompositeDisposable
@@ -25,11 +19,7 @@ import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.DataStore
-
-data class ParsedStructure(
-    val usernameId: AutofillId?,
-    val passwordId: AutofillId?
-)
+import mozilla.lockbox.support.ParsedStructure
 
 @TargetApi(Build.VERSION_CODES.O)
 @ExperimentalCoroutinesApi
@@ -51,9 +41,8 @@ class LockboxAutofillService(
 
     override fun onFillRequest(request: FillRequest, cancellationSignal: CancellationSignal, callback: FillCallback) {
         val structure = request.fillContexts.last().structure
-        val parsedStructure = parseStructure(structure)
+        val parsedStructure = ParsedStructure(structure)
         val requestingPackage = domainFromPackage(structure.activityComponent.packageName)
-        log.info("parsed structure: $parsedStructure")
 
         if (parsedStructure.passwordId == null && parsedStructure.usernameId == null) {
             callback.onFailure("couldn't find a username or password field")
@@ -89,8 +78,6 @@ class LockboxAutofillService(
 //        return domainRegex.find(packageName)?.groupValues?.get(1)
         return "twitter"
     }
-
-    override fun onSaveRequest(request: SaveRequest, callback: SaveCallback) {}
 
     private fun buildFillResponse(
         possibleValues: List<ServerPassword>,
@@ -132,103 +119,5 @@ class LockboxAutofillService(
         return datasetBuilder.build()
     }
 
-    private fun parseStructure(structure: AssistStructure): ParsedStructure {
-        val usernameId = getUsernameId(structure)
-        val passwordId = getPasswordId(structure)
-
-        return ParsedStructure(usernameId, passwordId)
-    }
-
-    private fun getUsernameId(structure: AssistStructure): AutofillId? {
-        // how do we localize the "email" and "username"?
-        return getAutofillIdForKeywords(structure, listOf(
-            AUTOFILL_HINT_USERNAME,
-            AUTOFILL_HINT_EMAIL_ADDRESS,
-            "email",
-            "username",
-            "user name"
-        ))
-    }
-
-    private fun getPasswordId(structure: AssistStructure): AutofillId? {
-        // similar l10n question for password
-        return getAutofillIdForKeywords(structure, listOf(AUTOFILL_HINT_PASSWORD, "password"))
-    }
-
-    private fun getAutofillIdForKeywords(structure: AssistStructure, keywords: List<String>): AutofillId? {
-        val windowNodes = structure
-            .run { (0 until windowNodeCount).map { getWindowNodeAt(it) } }
-
-        var possibleAutofillIds = windowNodes
-            .map { searchBasicAutofillContent(it.rootViewNode, keywords) }
-
-        if (possibleAutofillIds.filterNotNull().isEmpty()) {
-            possibleAutofillIds += windowNodes
-                .map { checkForConsecutiveKeywordAndField(it.rootViewNode, keywords) }
-        }
-
-        return try {
-            possibleAutofillIds.first { it != null }
-        } catch (e: NoSuchElementException) {
-            null
-        }
-    }
-
-    private fun searchBasicAutofillContent(viewNode: ViewNode?, keywords: List<String>): AutofillId? {
-        // this method is getting less & less performant
-        val node = viewNode ?: return null
-
-        if (containsKeywords(node, keywords) && node.autofillId != null) {
-            return node.autofillId
-        }
-
-        return try {
-            node.run { (0 until childCount).map { getChildAt(it) } }
-                .map { searchBasicAutofillContent(it, keywords) }
-                .first { it != null }
-        } catch (e: NoSuchElementException) {
-            null
-        }
-    }
-
-    private fun checkForConsecutiveKeywordAndField(node: ViewNode, keywords: List<String>): AutofillId? {
-        val childNodes = node
-            .run { (0 until childCount).map { getChildAt(it) } }
-
-        // check for consecutive views with keywords followed by possible fill locations
-        for (i in 1..(childNodes.size - 1)) {
-            val prevNode = childNodes[i - 1]
-            val currentNode = childNodes[i]
-            currentNode.autofillId?.let {
-                if (containsKeywords(prevNode, keywords)) {
-                    return it
-                }
-            }
-        }
-
-        return try {
-            childNodes
-                .map { checkForConsecutiveKeywordAndField(it, keywords) }
-                .first { it != null }
-        } catch (e: NoSuchElementException) {
-            null
-        }
-    }
-
-    private fun containsKeywords(node: ViewNode, keywords: List<String>): Boolean {
-        val autofillHints = node.autofillHints?.toList() ?: emptyList()
-        var hints = listOf(node.hint) + listOf(node.text) + autofillHints
-
-        hints = hints.filterNotNull()
-
-        keywords.forEach { keyword ->
-            hints.forEach { hint ->
-                if (hint.contains(keyword, true)) {
-                    return true
-                }
-            }
-        }
-
-        return false
-    }
+    override fun onSaveRequest(request: SaveRequest, callback: SaveCallback) {}
 }
