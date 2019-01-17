@@ -11,6 +11,8 @@ package mozilla.lockbox.adapter
 
 import androidx.annotation.StringRes
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.Adapter
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
@@ -22,8 +24,8 @@ import mozilla.lockbox.R
 class SectionedAdapter(
     private val sectionLayoutId: Int,
     private val sectionTitleId: Int,
-    private val baseAdapter: androidx.recyclerview.widget.RecyclerView.Adapter<androidx.recyclerview.widget.RecyclerView.ViewHolder>
-) : androidx.recyclerview.widget.RecyclerView.Adapter<androidx.recyclerview.widget.RecyclerView.ViewHolder>() {
+    private val baseAdapter: Adapter<ViewHolder>
+) : Adapter<ViewHolder>() {
 
     private var valid = true
     private val sections = SparseArray<Section>()
@@ -32,11 +34,11 @@ class SectionedAdapter(
         const val SECTION_TYPE = 0
     }
 
-    class SectionViewHolder(view: View, titleResourceId: Int) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view) {
+    class SectionViewHolder(view: View, titleResourceId: Int) : ViewHolder(view) {
         var title: TextView = view.findViewById(titleResourceId)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, typeView: Int): androidx.recyclerview.widget.RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, typeView: Int): ViewHolder {
         return if (typeView == SECTION_TYPE) {
             val view = LayoutInflater.from(parent.context).inflate(sectionLayoutId, parent, false)
             SectionViewHolder(view, sectionTitleId)
@@ -45,7 +47,7 @@ class SectionedAdapter(
         }
     }
 
-    override fun onBindViewHolder(sectionViewHolder: androidx.recyclerview.widget.RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(sectionViewHolder: ViewHolder, position: Int) {
         if (isSectionHeaderPosition(position)) {
             val title = sectionViewHolder.itemView.context.getString(sections.get(position).title)
             (sectionViewHolder as SectionViewHolder).title.text = title
@@ -107,7 +109,7 @@ class SectionedAdapter(
 
     private fun sectionedPositionToPosition(sectionedPosition: Int): Int {
         if (isSectionHeaderPosition(sectionedPosition)) {
-            return androidx.recyclerview.widget.RecyclerView.NO_POSITION
+            return RecyclerView.NO_POSITION
         }
 
         var offset = 0

@@ -8,11 +8,11 @@ package mozilla.lockbox.view
 
 import android.os.Bundle
 import androidx.annotation.StringRes
-import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.DialogFragment as AndroidDialogFragment
 import android.view.View
 import mozilla.lockbox.flux.Presenter
 
-open class DialogFragment : androidx.fragment.app.DialogFragment() {
+open class DialogFragment : AndroidDialogFragment() {
     lateinit var presenter: Presenter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

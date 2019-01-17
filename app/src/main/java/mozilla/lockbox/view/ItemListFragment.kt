@@ -47,7 +47,7 @@ import mozilla.lockbox.model.AccountViewModel
 import mozilla.lockbox.support.showAndRemove
 
 @ExperimentalCoroutinesApi
-class ItemListFragment : CommonFragment(), ItemListView {
+class ItemListFragment : Fragment(), ItemListView {
     private val compositeDisposable = CompositeDisposable()
     private val adapter = ItemListAdapter()
     private lateinit var spinner: Spinner

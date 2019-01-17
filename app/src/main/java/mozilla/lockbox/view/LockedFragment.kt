@@ -23,7 +23,7 @@ import mozilla.lockbox.presenter.LockedPresenter
 import mozilla.lockbox.presenter.LockedView
 import java.lang.Exception
 
-class LockedFragment : CommonFragment(), LockedView {
+class LockedFragment : Fragment(), LockedView {
     private val _unlockConfirmed = PublishSubject.create<Boolean>()
 
     companion object {
