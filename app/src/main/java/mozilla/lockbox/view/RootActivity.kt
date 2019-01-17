@@ -12,6 +12,7 @@ import android.view.WindowManager
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
 import mozilla.lockbox.presenter.RoutePresenter
+import mozilla.lockbox.support.isDebug
 
 @ExperimentalCoroutinesApi
 class RootActivity : AppCompatActivity() {
@@ -20,7 +21,7 @@ class RootActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_root)
-        window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        if (!isDebug()) window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
 
         presenter.onViewReady()
     }
