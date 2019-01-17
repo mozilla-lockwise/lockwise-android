@@ -6,7 +6,7 @@
 
 package mozilla.lockbox.action
 
-import android.support.annotation.StringRes
+import androidx.annotation.StringRes
 import mozilla.lockbox.R
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.support.Constant

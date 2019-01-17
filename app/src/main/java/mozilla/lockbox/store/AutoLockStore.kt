@@ -12,12 +12,13 @@ import android.preference.PreferenceManager
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
-import io.reactivex.subjects.ReplaySubject
+import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.Setting
+import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.LockingSupport
@@ -40,14 +41,13 @@ class AutoLockStore(
 
     var lockingSupport: LockingSupport = SystemLockingSupport()
 
-    val lockRequired: Observable<Boolean> = ReplaySubject.createWithSize(1)
+    // This fires `true` when the autolock the datastore should be locked.
+    // It is _not_ `Unit` to enable testing.
+    // It's absence, or `false` should mean that autolock is not yet been fired.
+    val autoLockActivated: Observable<Boolean> = PublishSubject.create()
 
     init {
-        lifecycleStore.lifecycleEvents
-            .filter { it == LifecycleAction.Foreground }
-            .map { lockCurrentlyRequired() }
-            .subscribe(lockRequired as Subject)
-
+        // update the lock timer when backgrounding and the datastore is not locked
         lifecycleStore.lifecycleEvents
             .filter { it == LifecycleAction.Background }
             .switchMap { dataStore.state.take(1) }
@@ -56,19 +56,34 @@ class AutoLockStore(
             .subscribe(this::updateNextLockTime)
             .addTo(compositeDisposable)
 
+        // backdate the lock timer when receiving manual lock actions
         dispatcher.register
-            .filter { it == DataStoreAction.Lock }
-            .switchMap { lockRequired.take(1) }
-            .filter { !it }
+            // make sure that we are not driving the DataStoreAction.Lock
+            .filter { it == DataStoreAction.Lock && !lockCurrentlyRequired() }
             .subscribe {
                 this.backdateNextLockTime()
             }
             .addTo(compositeDisposable)
+
+        dispatcher.register
+            // getting a credential object means we've logged in
+            .filterByType(DataStoreAction::class.java)
+            // begin listening for foreground events after login
+            .switchMap {
+                when (it) {
+                    is DataStoreAction.UpdateCredentials -> lifecycleStore.lifecycleEvents
+                    is DataStoreAction.Unlock -> lifecycleStore.lifecycleEvents
+                    else -> Observable.empty<LifecycleAction>()
+                }
+            }
+            .filter { it == LifecycleAction.Foreground }
+            // push lockrequired if required
+            .map { lockCurrentlyRequired() }
+            .subscribe(autoLockActivated as Subject)
     }
 
     override fun injectContext(context: Context) {
         preferences = PreferenceManager.getDefaultSharedPreferences(context)
-        (lockRequired as Subject).onNext(lockCurrentlyRequired())
     }
 
     private fun backdateNextLockTime() {

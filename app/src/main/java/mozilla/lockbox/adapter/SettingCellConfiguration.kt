@@ -6,7 +6,7 @@
 
 package mozilla.lockbox.adapter
 
-import android.support.annotation.StringRes
+import androidx.annotation.StringRes
 import io.reactivex.Observable
 import io.reactivex.functions.Consumer
 

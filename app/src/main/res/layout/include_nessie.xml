@@ -12,7 +12,7 @@
     android:layout_height="match_parent"
     tools:showIn="@layout/fragment_welcome">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/nessie_constraint_layout"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -54,7 +54,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/logo" />
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageView
         android:id="@+id/nessie"
