@@ -8,6 +8,7 @@ package mozilla.lockbox.support
 
 import android.net.Uri
 import com.google.common.net.InternetDomainName
+import java.net.URI
 
 class HostnameSupport(idn: InternetDomainName?) {
     companion object {
@@ -25,7 +26,7 @@ class HostnameSupport(idn: InternetDomainName?) {
          * ("example.com").
          */
         fun fromUri(uriStr: String): HostnameSupport {
-            val domainName = Uri.parse(uriStr).host ?: ""
+            val domainName = URI.create(uriStr).host
             return fromDomainName(domainName)
         }
 
@@ -55,7 +56,7 @@ class HostnameSupport(idn: InternetDomainName?) {
     }
 
     fun matches(test: HostnameSupport): Boolean {
-        return this.topName == test.topName ||
-            this.topName.endsWith(".${test.topName}")
+        return test.fullName == this.topName ||
+            test.fullName.endsWith(".${this.topName}")
     }
 }
