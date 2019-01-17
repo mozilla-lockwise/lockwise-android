@@ -18,7 +18,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.flux.Dispatcher
-import mozilla.lockbox.model.titleFromHostname
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.support.ParsedStructure
 
@@ -102,12 +101,10 @@ class LockboxAutofillService(
         val datasetBuilder = Dataset.Builder()
 
         possibleValues.forEach { credential ->
-            val usernamePresentation = RemoteViews(packageName, android.R.layout.simple_list_item_2)
-            val passwordPresentation = RemoteViews(packageName, android.R.layout.simple_list_item_2)
-            usernamePresentation.setTextViewText(android.R.id.text1, titleFromHostname(credential.hostname))
-            usernamePresentation.setTextViewText(android.R.id.text2, credential.username)
-            passwordPresentation.setTextViewText(android.R.id.text1, titleFromHostname(credential.hostname))
-            passwordPresentation.setTextViewText(android.R.id.text2, getString(R.string.password_for, credential.username))
+            val usernamePresentation = RemoteViews(packageName, android.R.layout.simple_list_item_1)
+            val passwordPresentation = RemoteViews(packageName, android.R.layout.simple_list_item_1)
+            usernamePresentation.setTextViewText(android.R.id.text1, credential.username)
+            passwordPresentation.setTextViewText(android.R.id.text1, getString(R.string.password_for, credential.username))
 
             parsedStructure.usernameId?.let {
                 datasetBuilder.setValue(it, AutofillValue.forText(credential.username), usernamePresentation)
