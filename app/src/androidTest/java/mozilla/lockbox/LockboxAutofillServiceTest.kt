@@ -1,7 +1,7 @@
 package mozilla.lockbox
 
-import android.support.test.rule.ServiceTestRule
-import android.support.test.runner.AndroidJUnit4
+import androidx.test.rule.ServiceTestRule
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
