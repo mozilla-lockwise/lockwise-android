@@ -9,7 +9,7 @@ import mozilla.lockbox.R
 import mozilla.lockbox.presenter.BackablePresenter
 import mozilla.lockbox.presenter.BackableView
 
-open class BackableFragment : CommonFragment(), BackableView {
+open class BackableFragment : Fragment(), BackableView {
     private lateinit var backablePresenter: BackablePresenter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

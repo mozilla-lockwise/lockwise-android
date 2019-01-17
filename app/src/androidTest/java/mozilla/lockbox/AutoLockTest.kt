@@ -1,13 +1,16 @@
 package mozilla.lockbox
 
-import android.support.test.rule.ActivityTestRule
-import android.support.test.runner.AndroidJUnit4
+import android.content.Intent
+import androidx.test.rule.ActivityTestRule
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.LargeTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.LifecycleAction
+import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.robots.itemList
 import mozilla.lockbox.store.AutoLockStore
-import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.support.LockingSupport
 import mozilla.lockbox.view.RootActivity
 import org.junit.Before
@@ -29,18 +32,17 @@ class TestLockingSupport() : LockingSupport {
 
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
+@LargeTest
 open class AutoLockTest {
     private val navigator = Navigator()
     private val testLockingSupport = TestLockingSupport(AutoLockStore.shared.lockingSupport)
 
-    @Rule
-    @JvmField
+    @get:Rule
     val activityRule: ActivityTestRule<RootActivity> = ActivityTestRule(RootActivity::class.java)
 
     @Before
     fun setUp() {
         AutoLockStore.shared.lockingSupport = testLockingSupport
-        navigator.resetApp(activityRule)
     }
 
     @Test
@@ -51,7 +53,23 @@ open class AutoLockTest {
         testLockingSupport.advance(Setting.AutoLockTime.FiveMinutes.ms + 1000)
 
         Dispatcher.shared.dispatch(LifecycleAction.Foreground)
+        navigator.blockUntil(RouteAction.LockScreen)
+        navigator.checkAtLockScreen()
+    }
 
+    @Test
+    fun lockSurvivesBackButton() {
+        navigator.gotoItemList()
+        itemList {
+            tapLockNow()
+        }
+
+        navigator.checkAtLockScreen()
+
+        navigator.back(false)
+
+        activityRule.launchActivity(Intent(Intent.ACTION_MAIN))
+        navigator.blockUntil(RouteAction.LockScreen)
         navigator.checkAtLockScreen()
     }
 
@@ -69,7 +87,6 @@ open class AutoLockTest {
 
     @Test
     fun firstTimeLoginFlowInterruptTest() {
-        navigator.resetApp(activityRule)
         navigator.gotoFxALogin()
 
         Dispatcher.shared.dispatch(LifecycleAction.Background)
@@ -85,10 +102,8 @@ open class AutoLockTest {
     fun disconnectAndReLoginFlowInterruptTest() {
         navigator.gotoItemList()
 
-        Dispatcher.shared.dispatch(LifecycleAction.UserReset)
-        DataStore.shared.state.blockingNext()
+        navigator.disconnectAccount()
 
-        navigator.checkAtWelcome()
         navigator.gotoFxALogin()
 
         Dispatcher.shared.dispatch(LifecycleAction.Background)

@@ -7,7 +7,7 @@
 package mozilla.lockbox.view
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.view.WindowManager
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R

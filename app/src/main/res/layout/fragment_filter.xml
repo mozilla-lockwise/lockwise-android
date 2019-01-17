@@ -15,7 +15,7 @@
 
     <include layout="@layout/include_backable_filter"/>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/entriesView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

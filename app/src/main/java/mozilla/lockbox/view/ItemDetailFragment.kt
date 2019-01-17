@@ -7,7 +7,7 @@
 package mozilla.lockbox.view
 
 import android.os.Bundle
-import android.support.annotation.StringRes
+import androidx.annotation.StringRes
 import android.text.method.PasswordTransformationMethod
 import android.view.Gravity
 import android.view.LayoutInflater

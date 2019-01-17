@@ -7,8 +7,8 @@
 package mozilla.lockbox.adapter
 
 import android.content.Context
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.widget.LinearLayout
 import mozilla.lockbox.R
 import mozilla.lockbox.adapter.SectionedAdapter.Section

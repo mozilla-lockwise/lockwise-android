@@ -7,15 +7,15 @@
 package mozilla.lockbox.view
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.view.ViewCompat
+import androidx.fragment.app.Fragment as AndroidFragment
+import androidx.core.view.ViewCompat
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import mozilla.lockbox.R
 import mozilla.lockbox.flux.Presenter
 
-open class CommonFragment : Fragment() {
+open class Fragment : AndroidFragment() {
     lateinit var presenter: Presenter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

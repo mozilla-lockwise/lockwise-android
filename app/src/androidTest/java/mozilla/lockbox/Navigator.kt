@@ -7,16 +7,19 @@
 package mozilla.lockbox
 
 import android.provider.Settings
-import android.support.test.espresso.Espresso.closeSoftKeyboard
-import android.support.test.espresso.Espresso.pressBack
-import android.support.test.espresso.NoActivityResumedException
-import android.support.test.espresso.intent.Intents
-import android.support.test.rule.ActivityTestRule
+import androidx.test.espresso.Espresso.closeSoftKeyboard
+import androidx.test.espresso.Espresso.pressBack
+import androidx.test.espresso.NoActivityResumedException
+import androidx.test.espresso.intent.Intents
+import androidx.test.rule.ActivityTestRule
 import br.com.concretesolutions.kappuccino.custom.intent.IntentMatcherInteractions.sentIntent
 import br.com.concretesolutions.kappuccino.custom.intent.IntentMatcherInteractions.stubIntent
+import io.reactivex.Observable
+import io.reactivex.subjects.ReplaySubject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
+import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.robots.accountSettingScreen
 import mozilla.lockbox.robots.disconnectDisclaimer
@@ -29,6 +32,7 @@ import mozilla.lockbox.robots.securityDisclaimer
 import mozilla.lockbox.robots.settings
 import mozilla.lockbox.robots.welcome
 import mozilla.lockbox.store.DataStore
+import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.view.RootActivity
 import org.junit.Assert
 
@@ -38,12 +42,45 @@ class Navigator {
         activityRule.activity.runOnUiThread {
             activityRule.activity.recreate()
         }
+    }
 
-        Dispatcher.shared.dispatch(DataStoreAction.Unlock)
-        DataStore.shared.state.blockingNext()
+    fun disconnectAccount() {
+        val subject = DataStore.shared.state as ReplaySubject<DataStore.State>
+        when (subject.value) {
+            is DataStore.State.Locked -> {
+                Dispatcher.shared.dispatch(DataStoreAction.Unlock)
+                blockUntil(DataStore.State.Unlocked)
+            }
+
+            is DataStore.State.Unprepared -> {
+                // We're done already.
+                return
+            }
+
+            else -> {
+                // Nothing more needs to be done to prepare for the user reset.
+            }
+        }
+
         Dispatcher.shared.dispatch(LifecycleAction.UserReset)
-        DataStore.shared.state.blockingNext()
+        blockUntil(DataStore.State.Unprepared)
         checkAtWelcome()
+    }
+
+    fun blockUntil(vararg states: RouteAction) {
+        blockUntil(RouteStore.shared.routes, *states)
+    }
+
+    fun blockUntil(vararg states: DataStore.State) {
+        blockUntil(DataStore.shared.state, *states)
+    }
+
+    fun <T> blockUntil(observable: Observable<T>, vararg states: T) {
+        val stateSubject = observable as? ReplaySubject
+        if (stateSubject != null && states.contains(stateSubject.value)) {
+            return
+        }
+        observable.filter { states.contains(it) }.blockingNext().iterator().next()
     }
 
     fun gotoFxALogin() {
@@ -65,7 +102,8 @@ class Navigator {
             fxaLogin { tapPlaceholderLogin() }
         } else {
             Dispatcher.shared.dispatch(LifecycleAction.UseTestData)
-            DataStore.shared.state.blockingNext()
+            log.info("blocking for the routes")
+            blockUntil(RouteStore.shared.routes, RouteAction.ItemList)
         }
         checkAtItemList()
     }

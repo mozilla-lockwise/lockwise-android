@@ -8,9 +8,9 @@ package mozilla.lockbox.extensions.view
 
 import android.content.Context
 import android.content.DialogInterface
-import android.support.annotation.ColorRes
-import android.support.annotation.StringRes
-import android.support.v7.app.AlertDialog
+import androidx.annotation.ColorRes
+import androidx.annotation.StringRes
+import androidx.appcompat.app.AlertDialog
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
 import mozilla.lockbox.R

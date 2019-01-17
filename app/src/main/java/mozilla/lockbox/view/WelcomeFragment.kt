@@ -17,7 +17,7 @@ import mozilla.lockbox.R
 import mozilla.lockbox.presenter.WelcomePresenter
 import mozilla.lockbox.presenter.WelcomeView
 
-class WelcomeFragment : CommonFragment(), WelcomeView {
+class WelcomeFragment : Fragment(), WelcomeView {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
