@@ -18,7 +18,7 @@ import mozilla.lockbox.view.SettingViewHolder
 import mozilla.lockbox.view.TextSettingViewHolder
 import mozilla.lockbox.view.ToggleSettingViewHolder
 
-class SettingListAdapter : androidx.recyclerview.widget.RecyclerView.Adapter<SettingViewHolder>() {
+class SettingListAdapter : RecyclerView.Adapter<SettingViewHolder>() {
     private var settingListConfig: List<SettingCellConfiguration> = emptyList()
     private val compositeDisposable = CompositeDisposable()
 
@@ -107,7 +107,7 @@ class SettingListAdapter : androidx.recyclerview.widget.RecyclerView.Adapter<Set
         notifyDataSetChanged()
     }
 
-    override fun onDetachedFromRecyclerView(recyclerView: androidx.recyclerview.widget.RecyclerView) {
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
         compositeDisposable.clear()
     }
 }

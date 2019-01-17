@@ -24,7 +24,7 @@ import kotlinx.android.synthetic.main.list_cell_setting_toggle.view.toggle
 import mozilla.lockbox.R
 
 abstract class SettingViewHolder(override val containerView: View) :
-    androidx.recyclerview.widget.RecyclerView.ViewHolder(containerView),
+    RecyclerView.ViewHolder(containerView),
     LayoutContainer {
     var disposable: Disposable? = null
     abstract var contentDescription: Int

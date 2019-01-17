@@ -38,10 +38,10 @@ class FilterFragment : BackableFragment(), FilterView {
         presenter = FilterPresenter(this)
         val view = inflater.inflate(R.layout.fragment_filter, container, false)
 
-        val layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
+        val layoutManager = LinearLayoutManager(context)
         view.entriesView.layoutManager = layoutManager
         view.entriesView.adapter = adapter
-        val decoration = androidx.recyclerview.widget.DividerItemDecoration(context, layoutManager.orientation)
+        val decoration = DividerItemDecoration(context, layoutManager.orientation)
         val decorationDrawable = context?.getDrawable(R.drawable.inset_divider)
         decorationDrawable?.let { decoration.setDrawable(it) }
         view.entriesView.addItemDecoration(decoration)

@@ -53,11 +53,12 @@ class Navigator {
             }
 
             is DataStore.State.Unprepared -> {
+                // We're done already.
                 return
             }
 
             else -> {
-                // NOP
+                // Nothing more needs to be done to prepare for the user reset.
             }
         }
 

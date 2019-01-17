@@ -22,9 +22,9 @@ import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.view.ItemViewHolder
 
 open class ItemListCell(override val containerView: View)
-    : androidx.recyclerview.widget.RecyclerView.ViewHolder(containerView), LayoutContainer
+    : RecyclerView.ViewHolder(containerView), LayoutContainer
 
-class ItemListAdapter : androidx.recyclerview.widget.RecyclerView.Adapter<ItemListCell>() {
+class ItemListAdapter : RecyclerView.Adapter<ItemListCell>() {
 
     private var itemList: List<ItemViewModel>? = null
     private val _clicks = PublishSubject.create<ItemViewModel>()
