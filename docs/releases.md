@@ -38,6 +38,7 @@ _all commits on all branches and pull requests are automatically built_
 4. push the tag to GitHub and create a corresponding "Release" on GitHub.com
   - copy the release notes to the "Release" on GitHub
   - download the `-signed.apk` from bitrise and attach it to the Release on GitHub
+  - **open the `-signed.apk` and confirm release build does not allow screenshots and does not expose the contents of the app in the switcher**
 5. Upload the `-signed.apk` (from bitrise) to the [Play Console][2]:
   - browse to "Release Management" > "App Releases" > "Internal test track" > "Manage"
   - "Create Release" and upload the signed APK, set the version to match the tag (for example: `1.2.1339`) then "Review" and the build will be immediately available to the core team
@@ -59,6 +60,7 @@ _similar to above, but requires explicit cherry-pick commits on `production` bra
   - copy the release notes to the "Release" on GitHub
 8. Browse to bitrise and find the desired `production` branch build to distribute
   - download the `.signed-apk` and attach it to the Release on GitHub
+  - **open the `-signed.apk` and confirm release build does not allow screenshots and does not expose the contents of the app in the switcher**
 9. Upload the `-signed.apk` (from bitrise) to the [Play Console][2]:
   - browse to "Release Management" > "App Releases" > "Internal test track" > "Manage"
   - "Create Release" and upload the signed APK, set the version to match the tag (for example: `1.2.1339`) then "Review" and the build will be immediately available to the core team
