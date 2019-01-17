@@ -104,14 +104,14 @@ class ItemListFragment : Fragment(), ItemListView {
         }
     }
 
-    private fun setupNavigationView(navController: NavController, navView: com.google.android.material.navigation.NavigationView) {
+    private fun setupNavigationView(navController: NavController, navView: NavigationView) {
         navView.setupWithNavController(navController)
     }
 
-    private fun setupListView(listView: androidx.recyclerview.widget.RecyclerView) {
+    private fun setupListView(listView: RecyclerView) {
         val context = requireContext()
-        val layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
-        val decoration = androidx.recyclerview.widget.DividerItemDecoration(context, layoutManager.orientation)
+        val layoutManager = LinearLayoutManager(context)
+        val decoration = DividerItemDecoration(context, layoutManager.orientation)
         context.getDrawable(R.drawable.inset_divider)?.let {
             decoration.setDrawable(it)
             listView.addItemDecoration(decoration)
@@ -120,7 +120,7 @@ class ItemListFragment : Fragment(), ItemListView {
         listView.adapter = adapter
     }
 
-    private fun setupToolbar(toolbar: Toolbar, drawerLayout: androidx.drawerlayout.widget.DrawerLayout) {
+    private fun setupToolbar(toolbar: Toolbar, drawerLayout: DrawerLayout) {
         toolbar.navigationIcon = resources.getDrawable(R.drawable.ic_menu, null)
         toolbar.setNavigationContentDescription(R.string.menu_description)
         toolbar.navigationClicks().subscribe { drawerLayout.openDrawer(GravityCompat.START) }
