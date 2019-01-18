@@ -19,6 +19,7 @@ import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.DataStore
+import mozilla.lockbox.support.HostnameSupport
 import mozilla.lockbox.support.ParsedStructure
 
 @TargetApi(Build.VERSION_CODES.O)
@@ -42,14 +43,14 @@ class LockboxAutofillService(
     override fun onFillRequest(request: FillRequest, cancellationSignal: CancellationSignal, callback: FillCallback) {
         val structure = request.fillContexts.last().structure
         val parsedStructure = ParsedStructure(structure)
-        val requestingPackage = domainFromPackage(structure.activityComponent.packageName)
+        val requestingName = HostnameSupport.fromPackageName(structure.activityComponent.packageName)
 
         if (parsedStructure.passwordId == null && parsedStructure.usernameId == null) {
             callback.onFailure("couldn't find a username or password field")
             return
         }
 
-        if (requestingPackage == null) {
+        if (requestingName.fullName == "") {
             callback.onFailure("unexpected package name structure")
             return
         }
@@ -59,7 +60,7 @@ class LockboxAutofillService(
             .take(1)
             .subscribe { passwords ->
                 val possibleValues = passwords.filter {
-                    it.hostname.contains(requestingPackage, true)
+                    HostnameSupport.fromUri(it.hostname).matches(requestingName)
                 }
                 val response = buildFillResponse(possibleValues, parsedStructure)
                 if (response == null) {
