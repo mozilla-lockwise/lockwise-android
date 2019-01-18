@@ -72,13 +72,6 @@ class LockboxAutofillService(
             .addTo(compositeDisposable)
     }
 
-    private fun domainFromPackage(packageName: String): String? {
-        // naively assume that the `y` from `x.y.z`-style package name is the domain
-        // untested as we will change this implementation with issue #375
-        val domainRegex = Regex("^\\w+\\.(\\w+)\\..+")
-        return domainRegex.find(packageName)?.groupValues?.get(1)
-    }
-
     private fun buildFillResponse(
         possibleValues: List<ServerPassword>,
         parsedStructure: ParsedStructure
