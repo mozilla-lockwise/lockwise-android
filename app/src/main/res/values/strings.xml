@@ -208,4 +208,13 @@
     <string name="no_entries_description">Firefox Lockbox lets you access passwords you\'ve already saved to Firefox. To
         view your entries here, you\'ll need to sign in and sync in Firefox.
     </string>
+
+    <!-- This is the title for the biometric unlock onboarding screen. -->
+    <string name="onboarding_unlock_title">Unlock Firefox Lockbox with your fingerprint.</string>
+    <!-- This is the onboarding description for enabling biometric unlock with the fingerprint sensor. -->
+    <string name="onboarding_unlock_description">Give Firefox Lockbox permission to unlock this app with the fingerprint sensor.</string>
+    <!-- This is the description of the button to skip the onboarding for biometric unlock with the fingerprint sensor. -->
+    <string name="onboarding_skip">Skip for now</string>
+
+
 </resources>

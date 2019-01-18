@@ -9,7 +9,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/backgroundGrey">
+    android:background="@color/background_grey">
 
     <TextView
             android:layout_width="178dp"
@@ -19,8 +19,8 @@
             android:textSize="17sp"
             android:fontFamily="sans-serif"
             android:textStyle="normal"
-            android:textColor="@color/textGrey"
-            android:background="@color/backgroundGrey"
+            android:textColor="@color/text_grey"
+            android:background="@color/background_grey"
             android:lineSpacingExtra="8.5sp"
             android:layout_marginTop="40dp"
             android:text="@string/no_matching_entries"/>
@@ -33,8 +33,8 @@
             android:textSize="13sp"
             android:fontFamily="sans-serif"
             android:textStyle="normal"
-            android:textColor="@color/textGrey"
-            android:background="@color/backgroundGrey"
+            android:textColor="@color/text_grey"
+            android:background="@color/background_grey"
             android:layout_marginTop="4dp"
             android:text="@string/save_firefox_disclaimer"/>
 
