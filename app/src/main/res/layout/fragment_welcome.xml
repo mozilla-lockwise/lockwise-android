@@ -31,7 +31,7 @@
         android:letterSpacing="0.09"
         android:lineSpacingExtra="2sp"
         android:text="@string/welcome_start_btn"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/color_primary"
         android:textStyle="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
