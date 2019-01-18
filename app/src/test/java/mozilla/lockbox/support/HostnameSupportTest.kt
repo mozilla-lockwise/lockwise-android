@@ -125,5 +125,9 @@ class HostnameSupportTest {
         formHost = HostnameSupport.fromDomainName("app.example.com.co")
         Assert.assertFalse(credHost.matches(formHost))
         Assert.assertFalse(formHost.matches(credHost))
+
+        formHost = HostnameSupport.fromDomainName("")
+        Assert.assertFalse(credHost.matches(formHost))
+        Assert.assertFalse(formHost.matches(credHost))
     }
 }
