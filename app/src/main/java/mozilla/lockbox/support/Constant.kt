@@ -27,7 +27,7 @@ object Constant {
     }
 
     object Faq {
-        const val uri = "https://lockbox.firefox.com/faq.html"
+        const val uri = "https://lockbox.firefox.com/faq.html#top"
     }
 
     object SendFeedback {
