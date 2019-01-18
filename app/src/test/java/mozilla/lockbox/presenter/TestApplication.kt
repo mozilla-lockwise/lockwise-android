@@ -5,7 +5,7 @@ import mozilla.lockbox.LockboxApplication
 import mozilla.lockbox.log
 
 @ExperimentalCoroutinesApi
-class TestApplication() : LockboxApplication() {
+class TestApplication : LockboxApplication() {
 
     init {
         log.info("Using TestApplication")

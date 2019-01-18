@@ -7,7 +7,6 @@
 package mozilla.lockbox.presenter
 
 import android.net.ConnectivityManager
-import android.net.NetworkInfo
 import android.net.Uri
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -18,7 +17,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.DisposingTest
 import mozilla.lockbox.action.AccountAction
 import mozilla.lockbox.action.LifecycleAction
-import mozilla.lockbox.action.NetworkAction
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.AccountStore
@@ -30,7 +28,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.Mockito
 import org.powermock.api.mockito.PowerMockito
 import org.powermock.core.classloader.annotations.PrepareForTest
 import org.robolectric.RobolectricTestRunner
@@ -50,9 +47,9 @@ class FxALoginPresenterTest : DisposingTest() {
         override val retryNetworkConnectionClicks: Observable<Unit>
             get() = retryButtonStub
 
-        var networkAvailable: Boolean = false
+        var networkAvailable = PublishSubject.create<Boolean>()
         override fun handleNetworkError(networkErrorVisibility: Boolean) {
-            networkAvailable = networkErrorVisibility
+            networkAvailable.onNext(networkErrorVisibility)
         }
 
         val webViewRedirectTo = PublishSubject.create<Uri>()
@@ -75,7 +72,7 @@ class FxALoginPresenterTest : DisposingTest() {
     val view = FakeFxALoginView(disposer)
 
     @Mock
-    val accountStore = PowerMockito.mock(AccountStore::class.java)
+    val accountStore = PowerMockito.mock(AccountStore::class.java)!!
 
     private val loginURLSubject = PublishSubject.create<String>()
 
@@ -85,38 +82,31 @@ class FxALoginPresenterTest : DisposingTest() {
     @Mock
     val networkStore = PowerMockito.mock(NetworkStore::class.java)!!
 
-    var isConnected: Boolean = true
+    private var isConnected: Observable<Boolean> = PublishSubject.create()
+    var isConnectedObserver = TestObserver.create<Boolean>()
 
     @Mock
     private val connectivityManager = PowerMockito.mock(ConnectivityManager::class.java)
-
-    @Mock
-    val networkInfo = PowerMockito.mock(NetworkInfo::class.java)
 
     lateinit var subject: FxALoginPresenter
 
     @Before
     fun setUp() {
-//        Mockito.when( connectivityManager.getNetworkInfo( ConnectivityManager.TYPE_WIFI ))
-//        Mockito.when( networkInfo.isAvailable() ).thenReturn( true )
-//        Mockito.when( networkInfo.isConnected() ).thenReturn( true )
-
-//        networkStore.connectivityManager = connectivityManager
-//        whenCalled(networkStore.connectivityManager).thenReturn(connectivityManager)
-//        whenCalled(networkStore.isConnectedState).thenReturn(isConnected)
-//        whenCalled(accountStore.loginURL).thenReturn(loginURLSubject)
+        whenCalled(networkStore.isConnected).thenReturn(isConnected)
+        whenCalled(accountStore.loginURL).thenReturn(loginURLSubject)
 
         PowerMockito.whenNew(AccountStore::class.java).withAnyArguments().thenReturn(accountStore)
         dispatcher.register.subscribe(dispatcherObserver)
-        networkStore.connectivityManager = connectivityManager
 
+        networkStore.connectivityManager = connectivityManager
+        view.networkAvailable.subscribe(isConnectedObserver)
+
+        subject = FxALoginPresenter(view, dispatcher, networkStore, accountStore)
+        subject.onViewReady()
     }
 
     @Test
     fun `isRedirectURI is working as expected`() {
-        subject = FxALoginPresenter(view, dispatcher, networkStore, accountStore)
-        subject.onViewReady()
-
         var url: String? = null
         Assert.assertFalse(subject.isRedirectUri(url))
         url = "https://www.mozilla.org/"
@@ -127,9 +117,6 @@ class FxALoginPresenterTest : DisposingTest() {
 
     @Test
     fun `onViewReady, when the accountStore pushes a new loginURL`() {
-        subject = FxALoginPresenter(view, accountStore = accountStore, networkStore = networkStore)
-        subject.onViewReady()
-
         val url = "www.mozilla.org"
         loginURLSubject.onNext(url)
 
@@ -141,16 +128,16 @@ class FxALoginPresenterTest : DisposingTest() {
         val url = Uri.parse(Constant.FxA.redirectUri + "?moz_fake")
         view.webViewRedirectTo.onNext(url)
 
-        val redirectAction = dispatcherObserver.values()[1] as AccountAction.OauthRedirect
+        val redirectAction = dispatcherObserver.values()[0] as AccountAction.OauthRedirect
         Assert.assertEquals(url.toString(), redirectAction.url)
     }
 
     @Test
-    fun `onViewReady, when the webview redirects to a URL not starting with the expected redirect`() {
+    fun `onViewReady, when the webview redirects to a URL not starting with the expected redirect no dispatch happens`() {
         val url = Uri.parse("https://www.mozilla.org")
         view.webViewRedirectTo.onNext(url)
 
-        dispatcherObserver.assertValue(NetworkAction.CheckConnectivity)
+        dispatcherObserver.assertEmpty()
     }
 
     @Test
@@ -158,13 +145,15 @@ class FxALoginPresenterTest : DisposingTest() {
         if (isDebug()) {
             (view.skipFxAClicks as PublishSubject).onNext(Unit)
 
-            dispatcherObserver.assertValueAt(0, NetworkAction.CheckConnectivity)
-            dispatcherObserver.assertValueAt(1, LifecycleAction.UseTestData)
+            dispatcherObserver.assertValueAt(0, LifecycleAction.UseTestData)
         }
     }
 
-//    @Test
-//    fun `network error visibility is correctly being set`() {
-//        Assert.assertEquals(true, view.networkAvailable)
-//    }
+    @Test
+    fun `network error visibility is correctly being set`() {
+        val value = view.networkAvailable
+        value.onNext(true)
+
+        isConnectedObserver.assertValue(true)
+    }
 }

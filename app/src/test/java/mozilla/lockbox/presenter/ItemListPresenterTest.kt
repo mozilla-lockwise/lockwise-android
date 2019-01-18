@@ -6,6 +6,7 @@
 
 package mozilla.lockbox.presenter
 
+import android.net.ConnectivityManager
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.BehaviorSubject
@@ -41,6 +42,7 @@ import org.mockito.Mockito.verify
 import org.powermock.api.mockito.PowerMockito
 import org.powermock.core.classloader.annotations.PrepareForTest
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 import org.mockito.Mockito.`when` as whenCalled
 
 private val username = "dogs@dogs.com"
@@ -78,6 +80,7 @@ private val password3 = ServerPassword(
 @ExperimentalCoroutinesApi
 @RunWith(RobolectricTestRunner::class)
 @PrepareForTest(AccountStore::class)
+@Config(application = TestApplication::class)
 open class ItemListPresenterTest {
     class FakeView : ItemListView {
 
@@ -85,9 +88,9 @@ open class ItemListPresenterTest {
         override val retryNetworkConnectionClicks: Observable<Unit>
             get() = retryButtonStub
 
-        var networkAvailable: Boolean = false
+        var networkAvailable = PublishSubject.create<Boolean>()
         override fun handleNetworkError(networkErrorVisibility: Boolean) {
-            networkAvailable = networkErrorVisibility
+            networkAvailable.onNext(networkErrorVisibility)
         }
 
         var accountViewModel: AccountViewModel? = null
@@ -168,13 +171,24 @@ open class ItemListPresenterTest {
     @Mock
     val accountStore = PowerMockito.mock(AccountStore::class.java)
 
-    private val networkStore = NetworkStore
+    @Mock
+    val networkStore = PowerMockito.mock(NetworkStore::class.java)!!
+
+    private var isConnected: Observable<Boolean> = PublishSubject.create()
+    var isConnectedObserver = TestObserver.create<Boolean>()
+
+    @Mock
+    private val connectivityManager = PowerMockito.mock(ConnectivityManager::class.java)
+
     private val dataStore = FakeDataStore()
     private val settingStore = FakeSettingStore()
     private val profileStub = PublishSubject.create<Optional<Profile>>()
 
     val view: ItemListPresenterTest.FakeView = spy(ItemListPresenterTest.FakeView())
+
     val dispatcher = Dispatcher()
+    private val dispatcherObserver = TestObserver.create<Action>()!!
+
     val subject =
         ItemListPresenter(
             view,
@@ -182,18 +196,20 @@ open class ItemListPresenterTest {
             dataStore,
             settingStore,
             fingerprintStore,
-            networkStore.shared,
+            networkStore,
             accountStore
         )
 
-    private val dispatcherObserver = TestObserver.create<Action>()!!
-
     @Before
     fun setUp() {
+        whenCalled(networkStore.isConnected).thenReturn(isConnected)
 
         PowerMockito.`when`(accountStore.profile).thenReturn(profileStub)
         PowerMockito.whenNew(AccountStore::class.java).withAnyArguments().thenReturn(accountStore)
         dispatcher.register.subscribe(dispatcherObserver)
+
+        networkStore.connectivityManager = connectivityManager
+        view.networkAvailable.subscribe(isConnectedObserver)
 
         subject.onViewReady()
     }
@@ -329,6 +345,9 @@ open class ItemListPresenterTest {
 
     @Test
     fun `network error visibility is correctly being set`() {
-        Assert.assertEquals(true, view.networkAvailable)
+        val value = view.networkAvailable
+        value.onNext(true)
+
+        isConnectedObserver.assertValue(true)
     }
 }

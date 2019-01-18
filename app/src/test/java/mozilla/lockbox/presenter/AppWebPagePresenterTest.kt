@@ -1,5 +1,6 @@
 package mozilla.lockbox.presenter
 
+import android.net.ConnectivityManager
 import io.reactivex.Observable
 import io.reactivex.functions.Consumer
 import io.reactivex.observers.TestObserver
@@ -9,14 +10,17 @@ import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.NetworkStore
 import mozilla.lockbox.support.Constant
-import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mock
 import org.mockito.Mockito
+import org.powermock.api.mockito.PowerMockito
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
+@Config(application = TestApplication::class)
 class AppWebPagePresenterTest {
 
     class WebPageViewFake : WebPageView {
@@ -25,9 +29,9 @@ class AppWebPagePresenterTest {
         override val retryNetworkConnectionClicks: Observable<Unit>
             get() = retryButtonStub
 
-        var networkAvailable: Boolean = false
+        var networkAvailable = PublishSubject.create<Boolean>()
         override fun handleNetworkError(networkErrorVisibility: Boolean) {
-            networkAvailable = networkErrorVisibility
+            networkAvailable.onNext(networkErrorVisibility)
         }
 
         open var loadedUrl: String? = null
@@ -40,18 +44,30 @@ class AppWebPagePresenterTest {
     private var view = WebPageViewFake()
     private val dispatcher = Dispatcher()
     private val dispatcherObserver = TestObserver.create<Action>()!!
-    private var networkStore = NetworkStore
+
+    @Mock
+    val networkStore = PowerMockito.mock(NetworkStore::class.java)!!
+
+    private var isConnected: Observable<Boolean> = PublishSubject.create()
+    var isConnectedObserver = TestObserver.create<Boolean>()
+
+    @Mock
+    private val connectivityManager = PowerMockito.mock(ConnectivityManager::class.java)
 
     @Before
     fun setUp() {
         dispatcher.register.subscribe(dispatcherObserver)
+
+        Mockito.`when`(networkStore.isConnected).thenReturn(isConnected)
+        networkStore.connectivityManager = connectivityManager
+        view.networkAvailable.subscribe(isConnectedObserver)
     }
 
     @Test
     fun `load faq url when menu item is selected`() {
         val expectedFaqUrl = Constant.Faq.uri
 
-        val subject = AppWebPagePresenter(view, expectedFaqUrl, networkStore.shared, dispatcher)
+        val subject = AppWebPagePresenter(view, expectedFaqUrl, networkStore, dispatcher)
         subject.onViewReady()
 
         assertEquals(view.loadedUrl, expectedFaqUrl)
@@ -61,16 +77,22 @@ class AppWebPagePresenterTest {
     fun `load send feedback url when menu item is selected`() {
         val expectedFeedbackUrl = Constant.SendFeedback.uri
 
-        val subject = AppWebPagePresenter(view, expectedFeedbackUrl, networkStore.shared, dispatcher)
+        val subject = AppWebPagePresenter(view, expectedFeedbackUrl, networkStore, dispatcher)
         subject.onViewReady()
 
         assertEquals(view.loadedUrl, expectedFeedbackUrl)
     }
 
     @Test
-    fun `network connection is being checked on view ready`() {
-        val subject = AppWebPagePresenter(view, Mockito.anyString(), networkStore.shared, dispatcher)
+    fun `network error visibility is correctly being set`() {
+        val url = Constant.SendFeedback.uri
+
+        val subject = AppWebPagePresenter(view, url, networkStore, dispatcher)
         subject.onViewReady()
-        Assert.assertEquals(true, view.networkAvailable)
+
+        val value = view.networkAvailable
+        value.onNext(true)
+
+        isConnectedObserver.assertValue(true)
     }
 }

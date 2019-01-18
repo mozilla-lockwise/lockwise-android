@@ -6,6 +6,7 @@
 
 package mozilla.lockbox.presenter
 
+import android.net.ConnectivityManager
 import androidx.annotation.StringRes
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
@@ -14,7 +15,6 @@ import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.R
 import mozilla.lockbox.action.ClipboardAction
 import mozilla.lockbox.action.DataStoreAction
-import mozilla.lockbox.action.NetworkAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.flux.Action
@@ -30,21 +30,26 @@ import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.mockito.Mockito
 import org.mockito.Mockito.clearInvocations
 import org.mockito.Mockito.spy
 import org.mockito.Mockito.verifyZeroInteractions
+import org.powermock.api.mockito.PowerMockito
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
+@Config(application = TestApplication::class)
 class ItemDetailPresenterTest {
     class FakeView : ItemDetailView {
         private val retryButtonStub = PublishSubject.create<Unit>()
         override val retryNetworkConnectionClicks: Observable<Unit>
             get() = retryButtonStub
 
-        var networkAvailable: Boolean = false
+        var networkAvailable = PublishSubject.create<Boolean>()
         override fun handleNetworkError(networkErrorVisibility: Boolean) {
-            networkAvailable = networkErrorVisibility
+            networkAvailable.onNext(networkErrorVisibility)
         }
 
         var item: ItemDetailViewModel? = null
@@ -79,10 +84,18 @@ class ItemDetailPresenterTest {
 
     val view = spy(FakeView())
     val dataStore = FakeDataStore()
-    val dispatcher = Dispatcher()
-    val dispatcherObserver = TestObserver.create<Action>()
 
-    private val networkStore = NetworkStore
+    val dispatcher = Dispatcher()
+    val dispatcherObserver = TestObserver.create<Action>()!!
+
+    @Mock
+    val networkStore = PowerMockito.mock(NetworkStore::class.java)!!
+
+    private var isConnected: Observable<Boolean> = PublishSubject.create()
+    var isConnectedObserver = TestObserver.create<Boolean>()
+
+    @Mock
+    private val connectivityManager = PowerMockito.mock(ConnectivityManager::class.java)
 
     private val fakeCredential: ServerPassword by lazy {
         ServerPassword(
@@ -97,11 +110,15 @@ class ItemDetailPresenterTest {
         )
     }
 
-    val subject = ItemDetailPresenter(view, fakeCredential.id, dispatcher, networkStore.shared, dataStore)
+    val subject = ItemDetailPresenter(view, fakeCredential.id, dispatcher, networkStore, dataStore)
 
     @Before
     fun setUp() {
         dispatcher.register.subscribe(dispatcherObserver)
+
+        Mockito.`when`(networkStore.isConnected).thenReturn(isConnected)
+        networkStore.connectivityManager = connectivityManager
+        view.networkAvailable.subscribe(isConnectedObserver)
 
         subject.onViewReady()
         dataStore.getStub.onNext(fakeCredential.asOptional())
@@ -142,7 +159,6 @@ class ItemDetailPresenterTest {
 
         dispatcherObserver.assertValueSequence(
             listOf(
-                NetworkAction.CheckConnectivity,
                 ClipboardAction.CopyUsername(fakeCredential.username!!),
                 DataStoreAction.Touch(fakeCredential.id)
             )
@@ -157,7 +173,6 @@ class ItemDetailPresenterTest {
 
         dispatcherObserver.assertValueSequence(
             listOf(
-                NetworkAction.CheckConnectivity,
                 ClipboardAction.CopyPassword(fakeCredential.password),
                 DataStoreAction.Touch(fakeCredential.id)
             )
@@ -168,6 +183,9 @@ class ItemDetailPresenterTest {
 
     @Test
     fun `network error visibility is correctly being set`() {
-        assertEquals(true, view.networkAvailable)
+        val value = view.networkAvailable
+        value.onNext(true)
+
+        isConnectedObserver.assertValue(true)
     }
 }

@@ -1,11 +1,11 @@
 package mozilla.lockbox.view
 
-import android.support.annotation.DimenRes
-import android.support.constraint.ConstraintLayout
-import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
+import androidx.annotation.DimenRes
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_warning.view.*
 import mozilla.lockbox.R
 import mozilla.lockbox.log
