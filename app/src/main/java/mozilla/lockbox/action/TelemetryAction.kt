@@ -59,6 +59,7 @@ enum class TelemetryEventObject {
     reveal_password,
     entry_copy_username_button,
     entry_copy_password_button,
+    onboarding_biometric_unlock,
     settings_list,
     settings_autolock_time,
     settings_autolock,

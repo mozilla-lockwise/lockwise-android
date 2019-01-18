@@ -6,6 +6,8 @@
 
 package mozilla.lockbox.store
 import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.ReplaySubject
 import io.reactivex.subjects.Subject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -21,6 +23,11 @@ class RouteStore(
     dispatcher: Dispatcher = Dispatcher.shared,
     dataStore: DataStore = DataStore.shared
 ) {
+    internal val compositeDisposable = CompositeDisposable()
+
+    private val onboardingState: ReplaySubject<Boolean> = ReplaySubject.createWithSize(1)
+    val onboarding: Observable<Boolean> = onboardingState
+
     companion object {
         val shared = RouteStore()
     }
@@ -36,6 +43,12 @@ class RouteStore(
             .map(this::dataStoreToRouteActions)
             .filterNotNull()
             .subscribe(routes)
+
+        dispatcher.register
+            .filterByType(RouteAction.Onboarding::class.java)
+            .subscribe{
+                onboardingState
+            }.addTo(compositeDisposable)
     }
 
     private fun dataStoreToRouteActions(storageState: DataStore.State): Optional<RouteAction> {
