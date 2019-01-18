@@ -16,6 +16,7 @@ sealed class RouteAction(
     override val eventObject: TelemetryEventObject
 ) : TelemetryAction {
     object Welcome : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.login_welcome)
+    object Onboarding : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.onboarding_biometric_unlock)
     object ItemList : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.entry_list)
     object Login : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.login_fxa)
     object SettingList : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.settings_list)
