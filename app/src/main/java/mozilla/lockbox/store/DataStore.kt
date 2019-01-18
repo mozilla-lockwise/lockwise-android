@@ -165,6 +165,7 @@ open class DataStore(
         if (stateSubject.value == State.Unprepared ||
             stateSubject.value == null
         ) {
+            stateSubject.onNext(State.Unprepared)
             return
         }
         clearList()
