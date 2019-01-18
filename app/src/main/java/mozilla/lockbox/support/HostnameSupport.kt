@@ -6,7 +6,6 @@
 
 package mozilla.lockbox.support
 
-import android.net.Uri
 import com.google.common.net.InternetDomainName
 import java.net.URI
 
