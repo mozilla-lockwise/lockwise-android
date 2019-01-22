@@ -85,7 +85,7 @@ class RoutePresenter(
     private fun route(action: RouteAction) {
         when (action) {
             is RouteAction.Welcome -> navigateToFragment(action, R.id.fragment_welcome)
-            is RouteAction.Onboarding -> navigateToFragment(action, R.id.onboardingBiometricUnlock)
+            is RouteAction.Onboarding -> navigateToFragment(action, R.id.fragment_onboarding)
             is RouteAction.Login -> navigateToFragment(action, R.id.fragment_fxa_login)
             is RouteAction.ItemList -> navigateToFragment(action, R.id.fragment_item_list)
             is RouteAction.SettingList -> navigateToFragment(action, R.id.fragment_setting)
@@ -255,6 +255,10 @@ class RoutePresenter(
             Pair(R.id.fragment_welcome, R.id.fragment_item_list) -> R.id.action_to_itemList
 
             Pair(R.id.fragment_fxa_login, R.id.fragment_item_list) -> R.id.action_fxaLogin_to_itemList
+
+            Pair(R.id.fragment_fxa_login, R.id.fragment_onboarding) -> R.id.action_fxaLogin_to_onboarding
+            Pair(R.id.fragment_onboarding, R.id.fragment_item_list) -> R.id.action_onboarding_to_itemList
+
             Pair(R.id.fragment_locked, R.id.fragment_item_list) -> R.id.action_to_itemList
             Pair(R.id.fragment_locked, R.id.fragment_welcome) -> R.id.action_locked_to_welcome
 
