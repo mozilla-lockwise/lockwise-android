@@ -162,18 +162,21 @@ open class DataStore(
     }
 
     private fun reset() {
-        if (stateSubject.value == State.Unprepared ||
-            stateSubject.value == null
-        ) {
-            stateSubject.onNext(State.Unprepared)
-            return
+        when (stateSubject.value) {
+            null -> {
+                stateSubject.onNext(State.Unprepared)
+                return
+            }
+            State.Unprepared -> return
+            else -> {
+                clearList()
+                backend.wipeLocal()
+                    .asSingle(coroutineContext)
+                    .map { State.Unprepared }
+                    .subscribe(stateSubject::onNext, this::pushError)
+                    .addTo(compositeDisposable)
+            }
         }
-        clearList()
-        backend.wipeLocal()
-            .asSingle(coroutineContext)
-            .map { State.Unprepared }
-            .subscribe(stateSubject::onNext, this::pushError)
-            .addTo(compositeDisposable)
     }
 
     private fun updateCredentials(credentials: SyncCredentials) {
