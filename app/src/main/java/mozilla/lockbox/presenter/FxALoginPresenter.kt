@@ -13,6 +13,7 @@ import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.AccountAction
 import mozilla.lockbox.action.LifecycleAction
+import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.NetworkAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
@@ -43,6 +44,7 @@ class FxALoginPresenter(
             val result = isRedirectUri(urlStr)
             if (result) {
                 dispatcher.dispatch(AccountAction.OauthRedirect(urlStr!!))
+                dispatcher.dispatch(RouteAction.Onboarding)
             }
             result
         }
