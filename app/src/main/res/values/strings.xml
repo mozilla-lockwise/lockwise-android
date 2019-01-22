@@ -201,4 +201,11 @@
     <string name="no_internet_connection">No Internet Connection</string>
     <!-- This is used in the app logs to inform that network connectivity has successfully been detected -->
     <string name="network_connection_success">Network connection successful.</string>
+
+    <!-- This is used to inform the user that there are no entries in his list -->
+    <string name="no_entries_found">No Entries Found</string>
+    <!-- This explains the steps the user should take, if no saved entries are found: sign in and sync in Firefox -->
+    <string name="no_entries_description">Firefox Lockbox lets you access passwords you\'ve already saved to Firefox. To
+        view your entries here, you\'ll need to sign in and sync in Firefox.
+    </string>
 </resources>

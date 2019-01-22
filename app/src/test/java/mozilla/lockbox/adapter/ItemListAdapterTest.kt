@@ -28,9 +28,9 @@ class ItemListAdapterTest {
     private lateinit var parent: RecyclerView
 
     private val list = listOf<ItemViewModel>(
-            ItemViewModel("mozilla.org", "example@example.com", ""),
-            ItemViewModel("cats.org", "cats@cats.com", ""),
-            ItemViewModel("dogs.org", "woof@woof.com", "")
+        ItemViewModel("mozilla.org", "example@example.com", ""),
+        ItemViewModel("cats.org", "cats@cats.com", ""),
+        ItemViewModel("dogs.org", "woof@woof.com", "")
     )
 
     @Before
@@ -38,11 +38,12 @@ class ItemListAdapterTest {
         context = RuntimeEnvironment.application
         parent = RecyclerView(context)
         parent.layoutManager = LinearLayoutManager(context)
-        subject.updateItems(list)
+//        subject.updateItems(list)
     }
 
     @Test
     fun onBindViewHolder_populatedList() {
+        subject.updateItems(list)
         val viewHolder = subject.onCreateViewHolder(parent, 0) as ItemViewHolder
 
         subject.onBindViewHolder(viewHolder, 1)
@@ -53,6 +54,14 @@ class ItemListAdapterTest {
     @Test
     fun onBindViewHolder_emptyList() {
         subject.updateItems(emptyList())
+        val viewHolder = subject.onCreateViewHolder(parent, 2)
+
+        subject.onBindViewHolder(viewHolder, 0)
+    }
+
+    @Test
+    fun onBindViewHolder_emptyFilteringList() {
+        subject.updateItems(emptyList(), true)
         val viewHolder = subject.onCreateViewHolder(parent, 1)
 
         subject.onBindViewHolder(viewHolder, 0)
@@ -60,18 +69,27 @@ class ItemListAdapterTest {
 
     @Test
     fun getItemCount() {
+        subject.updateItems(list)
         Assert.assertEquals(3, subject.itemCount)
     }
 
     @Test
     fun getItemViewType_populatedList() {
+        subject.updateItems(list)
         Assert.assertEquals(subject.getItemViewType(0), 0)
+    }
+
+    @Test
+    fun getItemViewType_emptyFilteringList() {
+        subject.updateItems(emptyList(), true)
+
+        Assert.assertEquals(subject.getItemViewType(0), 1)
     }
 
     @Test
     fun getItemViewType_emptyList() {
         subject.updateItems(emptyList())
 
-        Assert.assertEquals(subject.getItemViewType(0), 1)
+        Assert.assertEquals(subject.getItemViewType(0), 2)
     }
 }

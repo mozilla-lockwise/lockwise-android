@@ -279,8 +279,7 @@ open class ItemListPresenterTest {
     @Test
     fun receivingPasswordList_empty() {
         dataStore.listStub.onNext(emptyList())
-
-        Assert.assertNull(view.updateItemsArgument)
+        Assert.assertEquals(emptyList<ItemViewModel>(), view.updateItemsArgument)
     }
 
     @Test
