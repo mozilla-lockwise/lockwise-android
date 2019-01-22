@@ -89,7 +89,7 @@ class FingerprintDialogPresenterTest {
     @Test
     fun `should start listening on resume`() {
         subject.onResume()
-        dispatcherObserver.assertLastValue(FingerprintSensorAction.Start)
+        dispatcherObserver.assertValue(FingerprintSensorAction.Start)
     }
 
     @Test

@@ -23,6 +23,7 @@ import mozilla.lockbox.store.ClipboardStore
 import mozilla.lockbox.store.ContextStore
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.FingerprintStore
+import mozilla.lockbox.store.NetworkStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.store.TelemetryStore
 import mozilla.lockbox.support.FixedDataStoreSupport
@@ -39,7 +40,9 @@ sealed class LogProvider {
 val log = LogProvider.log
 
 @ExperimentalCoroutinesApi
-class LockboxApplication : Application() {
+open class LockboxApplication : Application() {
+
+    open val unitTesting = false
 
     private lateinit var presenter: ApplicationPresenter
 
@@ -74,6 +77,7 @@ class LockboxApplication : Application() {
             FxASyncDataStoreSupport.shared,
             ClipboardStore.shared,
             FingerprintStore.shared,
+            NetworkStore.shared,
             AutoLockStore.shared,
             TelemetryStore.shared
         )
@@ -98,7 +102,9 @@ class LockboxApplication : Application() {
     }
 
     private fun leakCanary(): Boolean {
-        if (LeakCanary.isInAnalyzerProcess(this)) {
+        // disable LeakCanary when unitTesting
+        if (unitTesting) return false
+        else if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.
             // You should not init your app in this process.
             return true

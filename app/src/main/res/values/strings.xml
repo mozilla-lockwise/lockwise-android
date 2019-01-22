@@ -9,7 +9,7 @@
     <string name="app_tagline">Take your passwords everywhere.</string>
     <!-- This is used for screenreaders to know the application logo image is currently selected, not expected to translate Firefox Lockbox -->
     <string name="app_logo">Firefox Lockbox Logo</string>
-    
+
     <!-- This is the text on a button to cancel the current operation or request such as unlocking the application with a fingerprint -->
     <string name="cancel">Cancel</string>
     <!-- This is the text on a button to confirm or continue with the current operation -->
@@ -25,13 +25,13 @@
     <string name="welcome_instructions">To use Firefox Lockbox, you’ll need a\nFirefox Account with saved logins.</string>
     <!-- This is the link on the first-run welcome screen to learn more about the requirements of the application -->
     <string name="welcome_learn_more_btn">Learn More</string>
-    
+
     <!-- This is the label for a button only available on test builds to skip the authentication step and immediately use test data -->
     <string name="placeholder_skip_fxa">Use test data</string>
 
     <!-- This is the label used by screenreaders to inform the user the navigation button selected is to go backwards from where they came from -->
     <string name="backable_description">Back</string>
-    <!-- This is the label used by screenreaders to inform the user the button selected is meant to open a navigation menu --> 
+    <!-- This is the label used by screenreaders to inform the user the button selected is meant to open a navigation menu -->
     <string name="menu_description">Menu</string>
 
     <!-- This is the label for the navigation item that opens a Frequently Asked Questions web page -->
@@ -119,7 +119,7 @@
     <string name="twenty_four_hours">24 hours</string>
     <!-- This is a time duration for the automatic application locking setting that means it will never automatically lock -->
     <string name="never">Never</string>
-    
+
     <!-- This is the title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application -->
     <!-- <string name="autofill">Autofill</string> -->
     <!-- This is the sub-title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application, not expected to translate Firefox Lockbox -->
@@ -181,7 +181,7 @@
     <string name="disconnect_disclaimer_message">This will delete your Firefox Account information and all saved entries from Firefox Lockbox.</string>
     <!-- This is the text on a final confirmation button to sign out and disconnect the account from the application -->
     <string name="disconnect">Disconnect</string>
-    
+
     <!-- This is used as the title for an alert message to inform the user the app does not detect network connectivity -->
     <string name="no_network">No Network</string>
     <!-- This is displayed in an alert message to provide information and instruction to connect to the internet to use the application, not expected to translate Firefox Lockbox -->
@@ -189,4 +189,16 @@
     <!-- This is the hint value for an autofill box that appears when suggesting a value for a password field. It is interpolated with the user's account name. -->
     <string name="password_for">Password for %1$s</string>
 
+    <!-- This is the text displayed on the button of the network availability error message -->
+    <string name="retry">Retry</string>
+    <!-- This is the text displayed on the button of the network availability error message -->
+    <string name="retryButton">Retry connect to internet</string>
+    <!-- This label is used by screenreaders to inform the user that their device is not connected to the internet -->
+    <string name="networkWarningMessage">Warning: device not connected to the internet.</string>
+    <!-- This label is used by screenreaders to inform the user that the message contains an image of a warning icon -->
+    <string name="warningIcon">Warning icon</string>
+    <!-- This is used as the title for an alert message to inform the user that the app does not detect network connectivity -->
+    <string name="no_internet_connection">No Internet Connection</string>
+    <!-- This is used in the app logs to inform that network connectivity has successfully been detected -->
+    <string name="network_connection_success">Network connection successful.</string>
 </resources>

@@ -6,6 +6,7 @@
 
 package mozilla.lockbox.presenter
 
+import android.net.ConnectivityManager
 import androidx.annotation.StringRes
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
@@ -20,6 +21,7 @@ import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.store.DataStore
+import mozilla.lockbox.store.NetworkStore
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.asOptional
 import org.junit.Assert
@@ -28,14 +30,28 @@ import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.mockito.Mockito
 import org.mockito.Mockito.clearInvocations
 import org.mockito.Mockito.spy
 import org.mockito.Mockito.verifyZeroInteractions
+import org.powermock.api.mockito.PowerMockito
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
+@Config(application = TestApplication::class)
 class ItemDetailPresenterTest {
     class FakeView : ItemDetailView {
+        private val retryButtonStub = PublishSubject.create<Unit>()
+        override val retryNetworkConnectionClicks: Observable<Unit>
+            get() = retryButtonStub
+
+        var networkAvailable = PublishSubject.create<Boolean>()
+        override fun handleNetworkError(networkErrorVisibility: Boolean) {
+            networkAvailable.onNext(networkErrorVisibility)
+        }
+
         var item: ItemDetailViewModel? = null
 
         var toastNotificationArgument: Int? = null
@@ -68,27 +84,41 @@ class ItemDetailPresenterTest {
 
     val view = spy(FakeView())
     val dataStore = FakeDataStore()
+
     val dispatcher = Dispatcher()
-    val dispatcherObserver = TestObserver.create<Action>()
+    val dispatcherObserver = TestObserver.create<Action>()!!
+
+    @Mock
+    val networkStore = PowerMockito.mock(NetworkStore::class.java)!!
+
+    private var isConnected: Observable<Boolean> = PublishSubject.create()
+    var isConnectedObserver = TestObserver.create<Boolean>()
+
+    @Mock
+    private val connectivityManager = PowerMockito.mock(ConnectivityManager::class.java)
 
     private val fakeCredential: ServerPassword by lazy {
-            ServerPassword(
-                "id0",
-                "https://www.mozilla.org",
-                "dogs@dogs.com",
-                "woof",
-                timesUsed = 0,
-                timeCreated = 0L,
-                timeLastUsed = 0L,
-                timePasswordChanged = 0L
-            )
+        ServerPassword(
+            "id0",
+            "https://www.mozilla.org",
+            "dogs@dogs.com",
+            "woof",
+            timesUsed = 0,
+            timeCreated = 0L,
+            timeLastUsed = 0L,
+            timePasswordChanged = 0L
+        )
     }
 
-    val subject = ItemDetailPresenter(view, fakeCredential.id, dispatcher, dataStore)
+    val subject = ItemDetailPresenter(view, fakeCredential.id, dispatcher, networkStore, dataStore)
 
     @Before
     fun setUp() {
         dispatcher.register.subscribe(dispatcherObserver)
+
+        Mockito.`when`(networkStore.isConnected).thenReturn(isConnected)
+        networkStore.connectivityManager = connectivityManager
+        view.networkAvailable.subscribe(isConnectedObserver)
 
         subject.onViewReady()
         dataStore.getStub.onNext(fakeCredential.asOptional())
@@ -127,10 +157,12 @@ class ItemDetailPresenterTest {
     fun `tapping on usernamecopy`() {
         view.usernameCopyClicks.onNext(Unit)
 
-        dispatcherObserver.assertValueSequence(listOf(
-            ClipboardAction.CopyUsername(fakeCredential.username!!),
-            DataStoreAction.Touch(fakeCredential.id)
-        ))
+        dispatcherObserver.assertValueSequence(
+            listOf(
+                ClipboardAction.CopyUsername(fakeCredential.username!!),
+                DataStoreAction.Touch(fakeCredential.id)
+            )
+        )
 
         Assert.assertEquals(R.string.toast_username_copied, view.toastNotificationArgument)
     }
@@ -139,11 +171,21 @@ class ItemDetailPresenterTest {
     fun `tapping on passwordcopy`() {
         view.passwordCopyClicks.onNext(Unit)
 
-        dispatcherObserver.assertValueSequence(listOf(
-            ClipboardAction.CopyPassword(fakeCredential.password),
-            DataStoreAction.Touch(fakeCredential.id)
-        ))
+        dispatcherObserver.assertValueSequence(
+            listOf(
+                ClipboardAction.CopyPassword(fakeCredential.password),
+                DataStoreAction.Touch(fakeCredential.id)
+            )
+        )
 
         Assert.assertEquals(R.string.toast_password_copied, view.toastNotificationArgument)
+    }
+
+    @Test
+    fun `network error visibility is correctly being set`() {
+        val value = view.networkAvailable
+        value.onNext(true)
+
+        isConnectedObserver.assertValue(true)
     }
 }

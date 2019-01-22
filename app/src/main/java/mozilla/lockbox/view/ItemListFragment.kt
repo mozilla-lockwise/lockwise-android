@@ -32,14 +32,15 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.PublishSubject
 import jp.wasabeef.picasso.transformations.CropCircleTransformation
+import kotlinx.android.synthetic.main.fragment_item_list.*
 import kotlinx.android.synthetic.main.fragment_item_list.view.*
+import kotlinx.android.synthetic.main.fragment_warning.view.*
+import kotlinx.android.synthetic.main.nav_header.view.*
 import mozilla.lockbox.R
 import mozilla.lockbox.adapter.ItemListAdapter
 import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.presenter.ItemListPresenter
 import mozilla.lockbox.presenter.ItemListView
-import kotlinx.android.synthetic.main.fragment_item_list.*
-import kotlinx.android.synthetic.main.nav_header.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.adapter.SortItemAdapter
@@ -50,6 +51,8 @@ import mozilla.lockbox.support.showAndRemove
 class ItemListFragment : Fragment(), ItemListView {
     private val compositeDisposable = CompositeDisposable()
     private val adapter = ItemListAdapter()
+    private val errorHelper = NetworkErrorHelper()
+
     private lateinit var spinner: Spinner
     private var _sortItemSelection = PublishSubject.create<Setting.ItemListSort>()
     private lateinit var sortItemsAdapter: SortItemAdapter
@@ -68,6 +71,7 @@ class ItemListFragment : Fragment(), ItemListView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val navController = requireActivity().findNavController(R.id.fragment_nav_host)
+
         setupToolbar(view.navToolbar, view.appDrawer)
         setupNavigationView(navController, view.navView)
         setupListView(view.entriesView)
@@ -201,8 +205,21 @@ class ItemListFragment : Fragment(), ItemListView {
     }
 
     override val refreshItemList: Observable<Unit> get() = view!!.refreshContainer.refreshes()
+
     override val isRefreshing: Boolean get() = view!!.refreshContainer.isRefreshing
+
     override fun stopRefreshing() {
         view!!.refreshContainer.isRefreshing = false
     }
+
+    override fun handleNetworkError(networkErrorVisibility: Boolean) {
+        if (!networkErrorVisibility) {
+            errorHelper.showNetworkError(view!!)
+        } else {
+            errorHelper.hideNetworkError(parent = view!!, child = view!!.refreshContainer.entriesView)
+        }
+    }
+
+    override val retryNetworkConnectionClicks: Observable<Unit>
+        get() = view!!.networkWarning.retryButton.clicks()
 }

@@ -6,6 +6,7 @@
 
 package mozilla.lockbox.presenter
 
+import android.net.ConnectivityManager
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.BehaviorSubject
@@ -28,6 +29,7 @@ import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.FingerprintStore
+import mozilla.lockbox.store.NetworkStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.support.Optional
 import org.junit.Assert
@@ -40,6 +42,7 @@ import org.mockito.Mockito.verify
 import org.powermock.api.mockito.PowerMockito
 import org.powermock.core.classloader.annotations.PrepareForTest
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 import org.mockito.Mockito.`when` as whenCalled
 
 private val username = "dogs@dogs.com"
@@ -77,14 +80,18 @@ private val password3 = ServerPassword(
 @ExperimentalCoroutinesApi
 @RunWith(RobolectricTestRunner::class)
 @PrepareForTest(AccountStore::class)
+@Config(application = TestApplication::class)
 open class ItemListPresenterTest {
-    @Mock
-    val fingerprintStore = PowerMockito.mock(FingerprintStore::class.java)
-
-    @Mock
-    val accountStore = PowerMockito.mock(AccountStore::class.java)
-
     class FakeView : ItemListView {
+
+        private val retryButtonStub = PublishSubject.create<Unit>()
+        override val retryNetworkConnectionClicks: Observable<Unit>
+            get() = retryButtonStub
+
+        var networkAvailable = PublishSubject.create<Boolean>()
+        override fun handleNetworkError(networkErrorVisibility: Boolean) {
+            networkAvailable.onNext(networkErrorVisibility)
+        }
 
         var accountViewModel: AccountViewModel? = null
         var updateItemsArgument: List<ItemViewModel>? = null
@@ -143,11 +150,12 @@ open class ItemListPresenterTest {
     }
 
     class FakeDataStore : DataStore() {
+
         val listStub = PublishSubject.create<List<ServerPassword>>()
         val syncStateStub = PublishSubject.create<SyncState>()
-
         override val list: Observable<List<ServerPassword>>
             get() = listStub
+
         override val syncState: Observable<SyncState> get() = syncStateStub
     }
 
@@ -157,22 +165,51 @@ open class ItemListPresenterTest {
         override var itemListSortOrder: Observable<Setting.ItemListSort> = itemListSortStub
     }
 
+    @Mock
+    val fingerprintStore = PowerMockito.mock(FingerprintStore::class.java)
+
+    @Mock
+    val accountStore = PowerMockito.mock(AccountStore::class.java)
+
+    @Mock
+    val networkStore = PowerMockito.mock(NetworkStore::class.java)!!
+
+    private var isConnected: Observable<Boolean> = PublishSubject.create()
+    var isConnectedObserver = TestObserver.create<Boolean>()
+
+    @Mock
+    private val connectivityManager = PowerMockito.mock(ConnectivityManager::class.java)
+
     private val dataStore = FakeDataStore()
     private val settingStore = FakeSettingStore()
     private val profileStub = PublishSubject.create<Optional<Profile>>()
 
-    val view: FakeView = spy(FakeView())
-    val dispatcher = Dispatcher()
-    val subject = ItemListPresenter(view, dispatcher, dataStore, settingStore, fingerprintStore, accountStore)
+    val view: ItemListPresenterTest.FakeView = spy(ItemListPresenterTest.FakeView())
 
+    val dispatcher = Dispatcher()
     private val dispatcherObserver = TestObserver.create<Action>()!!
+
+    val subject =
+        ItemListPresenter(
+            view,
+            dispatcher,
+            dataStore,
+            settingStore,
+            fingerprintStore,
+            networkStore,
+            accountStore
+        )
 
     @Before
     fun setUp() {
+        whenCalled(networkStore.isConnected).thenReturn(isConnected)
 
         PowerMockito.`when`(accountStore.profile).thenReturn(profileStub)
         PowerMockito.whenNew(AccountStore::class.java).withAnyArguments().thenReturn(accountStore)
         dispatcher.register.subscribe(dispatcherObserver)
+
+        networkStore.connectivityManager = connectivityManager
+        view.networkAvailable.subscribe(isConnectedObserver)
 
         subject.onViewReady()
     }
@@ -304,5 +341,13 @@ open class ItemListPresenterTest {
     fun `swipe down calls sync`() {
         view.refreshItemListStub.onNext(Unit)
         dispatcherObserver.assertLastValue(DataStoreAction.Sync)
+    }
+
+    @Test
+    fun `network error visibility is correctly being set`() {
+        val value = view.networkAvailable
+        value.onNext(true)
+
+        isConnectedObserver.assertValue(true)
     }
 }
