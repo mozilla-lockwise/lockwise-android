@@ -16,17 +16,21 @@ import android.view.ViewGroup
 import mozilla.lockbox.R
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import com.jakewharton.rxbinding2.view.clicks
+import io.reactivex.Observable
 import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.fragment_fxa_login.view.*
+import kotlinx.android.synthetic.main.fragment_warning.view.*
 import kotlinx.android.synthetic.main.fragment_webview.*
 import kotlinx.android.synthetic.main.include_backable.view.*
 import mozilla.lockbox.presenter.WebPageView
 import mozilla.lockbox.presenter.AppWebPagePresenter
 
 class AppWebPageFragment : BackableFragment(), WebPageView {
-    override var webViewObserver: Consumer<String>? = null
 
+    override var webViewObserver: Consumer<String>? = null
     private var url: String? = null
+    private val errorHelper = NetworkErrorHelper()
 
     @StringRes
     private var toolbarTitle: Int? = null
@@ -37,7 +41,6 @@ class AppWebPageFragment : BackableFragment(), WebPageView {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         arguments?.let {
             url = AppWebPageFragmentArgs.fromBundle(it).url
             toolbarTitle = AppWebPageFragmentArgs.fromBundle(it).title
@@ -47,7 +50,6 @@ class AppWebPageFragment : BackableFragment(), WebPageView {
 
         var view = inflater.inflate(R.layout.fragment_webview, container, false)
         view.webView.settings.javaScriptEnabled = true
-
         view.toolbar.title = getString(toolbarTitle!!)
 
         return view
@@ -62,4 +64,23 @@ class AppWebPageFragment : BackableFragment(), WebPageView {
         }
         webView.loadUrl(url)
     }
+
+    override fun handleNetworkError(networkErrorVisibility: Boolean) {
+        if (!networkErrorVisibility) {
+            errorHelper.showNetworkError(
+                parent = view!!,
+                child = view!!.webView,
+                topMarginId = R.dimen.network_error
+            )
+        } else {
+            errorHelper.hideNetworkError(
+                parent = view!!,
+                child = view!!.webView,
+                topMarginId = R.dimen.hidden_network_error
+            )
+        }
+    }
+
+    override val retryNetworkConnectionClicks: Observable<Unit>
+        get() = view!!.networkWarning.retryButton.clicks()
 }

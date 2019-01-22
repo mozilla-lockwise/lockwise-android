@@ -13,14 +13,18 @@ import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.AccountAction
 import mozilla.lockbox.action.LifecycleAction
+import mozilla.lockbox.action.NetworkAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.store.AccountStore
+import mozilla.lockbox.store.NetworkStore
 import mozilla.lockbox.support.Constant
 
 interface FxALoginView {
     var webViewRedirect: ((url: Uri?) -> Boolean)
     val skipFxAClicks: Observable<Unit>?
+    fun handleNetworkError(networkErrorVisibility: Boolean)
+    val retryNetworkConnectionClicks: Observable<Unit>
     fun loadURL(url: String)
 }
 
@@ -28,6 +32,7 @@ interface FxALoginView {
 class FxALoginPresenter(
     private val view: FxALoginView,
     private val dispatcher: Dispatcher = Dispatcher.shared,
+    private val networkStore: NetworkStore = NetworkStore.shared,
     private val accountStore: AccountStore = AccountStore.shared
 ) : Presenter() {
     fun isRedirectUri(uri: String?): Boolean = uri?.startsWith(Constant.FxA.redirectUri) ?: false
@@ -50,7 +55,15 @@ class FxALoginPresenter(
             .addTo(compositeDisposable)
 
         view.skipFxAClicks?.subscribe {
-                dispatcher.dispatch(LifecycleAction.UseTestData)
-            }?.addTo(compositeDisposable)
+            dispatcher.dispatch(LifecycleAction.UseTestData)
+        }?.addTo(compositeDisposable)
+
+        networkStore.isConnected
+            .subscribe(view::handleNetworkError)
+            .addTo(compositeDisposable)
+
+        view.retryNetworkConnectionClicks.subscribe {
+            dispatcher.dispatch(NetworkAction.CheckConnectivity)
+        }?.addTo(compositeDisposable)
     }
 }
