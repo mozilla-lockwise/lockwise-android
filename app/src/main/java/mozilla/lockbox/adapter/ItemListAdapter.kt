@@ -21,17 +21,20 @@ import mozilla.lockbox.R
 import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.view.ItemViewHolder
 
-open class ItemListCell(override val containerView: View)
-    : RecyclerView.ViewHolder(containerView), LayoutContainer
+open class ItemListCell(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer
 
 class ItemListAdapter : RecyclerView.Adapter<ItemListCell>() {
 
     private var itemList: List<ItemViewModel>? = null
     private val _clicks = PublishSubject.create<ItemViewModel>()
     private val compositeDisposable = CompositeDisposable()
+    private var isFiltering: Boolean = false
 
-    private val ITEM_DISPLAY_CELL_TYPE = 0
-    private val NO_MATCHING_ENTRIES_CELL_TYPE = 1
+    companion object {
+        private const val ITEM_DISPLAY_CELL_TYPE = 0
+        private const val NO_MATCHING_ENTRIES_CELL_TYPE = 1
+        private const val NO_ENTRIES_CELL_TYPE = 2
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemListCell {
         val inflater = LayoutInflater.from(parent.context)
@@ -41,17 +44,19 @@ class ItemListAdapter : RecyclerView.Adapter<ItemListCell>() {
 
                 return ItemListCell(view)
             }
+            NO_ENTRIES_CELL_TYPE ->
+                return ItemListCell(inflater.inflate(R.layout.list_cell_no_entries, parent, false))
             else -> {
                 val view = inflater.inflate(R.layout.list_cell_item, parent, false)
 
                 val viewHolder = ItemViewHolder(view)
                 view
-                        .clicks()
-                        .takeUntil(parent.detaches())
-                        .subscribe {
-                            viewHolder.itemViewModel?.let(this._clicks::onNext)
-                        }
-                        .addTo(compositeDisposable)
+                    .clicks()
+                    .takeUntil(parent.detaches())
+                    .subscribe {
+                        viewHolder.itemViewModel?.let(this._clicks::onNext)
+                    }
+                    .addTo(compositeDisposable)
 
                 return viewHolder
             }
@@ -75,10 +80,14 @@ class ItemListAdapter : RecyclerView.Adapter<ItemListCell>() {
 
     override fun getItemViewType(position: Int): Int {
         val count = itemList?.count() ?: 0
-        return if (count > 0) ITEM_DISPLAY_CELL_TYPE else NO_MATCHING_ENTRIES_CELL_TYPE
+        return when (count) {
+            0 -> if (isFiltering) NO_MATCHING_ENTRIES_CELL_TYPE else NO_ENTRIES_CELL_TYPE
+            else -> ITEM_DISPLAY_CELL_TYPE
+        }
     }
 
-    fun updateItems(newItems: List<ItemViewModel>) {
+    fun updateItems(newItems: List<ItemViewModel>, isFiltering: Boolean = false) {
+        this.isFiltering = isFiltering
         itemList = newItems
         // note: this is not a performant way to do updates; we should think about using
         // diffutil here when implementing filtering / sorting

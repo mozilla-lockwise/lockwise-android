@@ -80,6 +80,6 @@ class FilterFragment : BackableFragment(), FilterView {
         get() = adapter.clicks()
 
     override fun updateItems(items: List<ItemViewModel>) {
-        adapter.updateItems(items)
+        adapter.updateItems(items, true)
     }
 }
