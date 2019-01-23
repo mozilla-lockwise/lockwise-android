@@ -14,11 +14,15 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.RouteStore
+import mozilla.lockbox.view.OnboardingFingerprintAuthFragment
 
 interface OnboardingFingerprintView {
-    fun showOnboarding()
-    fun bypassOnboarding()
+    fun onSucceeded()
+    fun onFailed(error: String?)
+    fun onError(error: String?)
+    val startOnboarding: Observable<Unit>
     val onDismiss: Observable<Unit>
+    val authCallback: Observable<OnboardingFingerprintAuthFragment.AuthCallback>
 }
 
 class OnboardingFingerprintAuthPresenter(
@@ -30,26 +34,26 @@ class OnboardingFingerprintAuthPresenter(
 
     override fun onViewReady() {
 
-        // check if fingerprint is available (do this before we get to the presenter?)
-        if(fingerprintStore.isFingerprintAuthAvailable){
-            try {
+        // check if fingerprint is available (do this before we get to the presenter? no)
+        if (fingerprintStore.isFingerprintAuthAvailable) {
+            routeStore.onboarding
+                .subscribe(this::triggerOnboarding)
+                .addTo(compositeDisposable)
 
-                // if(routeStore.onBoarding == true) dispatch(OnboardingAction.ShowOnboarding)
-                routeStore.onboarding
-                    .subscribe(this::updateState)
-                    .addTo(compositeDisposable)
+            view.onDismiss
+                .subscribe {
+                    dispatcher.dispatch(OnboardingAction.OnDismiss)
+                }.addTo(compositeDisposable)
 
-                view.onDismiss
-                    .subscribe {
-                        dispatcher.dispatch(OnboardingAction.OnDismiss)
-                    }.addTo(compositeDisposable)
+            view.startOnboarding
+                .subscribe {
+                    dispatcher.dispatch(OnboardingAction.ShowOnboarding)
+                }.addTo(compositeDisposable)
 
-            } catch(e: Exception){
-
-            }
+            view.authCallback
+                .subscribe { dispatcher.dispatch(OnboardingAction.OnAuthentication(it)) }
+                .addTo(compositeDisposable)
         }
-
-
     }
 
     override fun onResume() {
@@ -62,10 +66,11 @@ class OnboardingFingerprintAuthPresenter(
         dispatcher.dispatch(FingerprintSensorAction.Stop)
     }
 
-    private fun updateState(state: Boolean) {
-        when (state) {
-            true -> view.showOnboarding()
-            false -> view.bypassOnboarding()
+    private fun triggerOnboarding(state: Boolean) {
+        val action = when (state) {
+            true -> OnboardingAction.ShowOnboarding
+            false -> OnboardingAction.OnDismiss
         }
+        dispatcher.dispatch(action)
     }
 }
