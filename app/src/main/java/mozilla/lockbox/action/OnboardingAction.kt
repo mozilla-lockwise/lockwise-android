@@ -7,8 +7,10 @@
 package mozilla.lockbox.action
 
 import mozilla.lockbox.flux.Action
+import mozilla.lockbox.view.OnboardingFingerprintAuthFragment
 
 sealed class OnboardingAction : Action {
     object ShowOnboarding : OnboardingAction()
     object OnDismiss : OnboardingAction()
+    data class OnAuthentication(val authCallback: OnboardingFingerprintAuthFragment.AuthCallback) : OnboardingAction()
 }
