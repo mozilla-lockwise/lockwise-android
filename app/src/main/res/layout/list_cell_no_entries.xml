@@ -11,7 +11,7 @@
                android:adjustViewBounds="true"
                android:contentDescription="@null"
                android:scaleType="fitXY"
-               app:srcCompat="@drawable/ic_placeholder_no_entries"/>
+               app:srcCompat="@drawable/ic_no_entries"/>
 
     <TextView
             android:layout_width="wrap_content"

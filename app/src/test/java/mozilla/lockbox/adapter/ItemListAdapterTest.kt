@@ -38,12 +38,11 @@ class ItemListAdapterTest {
         context = RuntimeEnvironment.application
         parent = RecyclerView(context)
         parent.layoutManager = LinearLayoutManager(context)
-//        subject.updateItems(list)
+        subject.updateItems(list)
     }
 
     @Test
     fun onBindViewHolder_populatedList() {
-        subject.updateItems(list)
         val viewHolder = subject.onCreateViewHolder(parent, 0) as ItemViewHolder
 
         subject.onBindViewHolder(viewHolder, 1)
@@ -69,13 +68,11 @@ class ItemListAdapterTest {
 
     @Test
     fun getItemCount() {
-        subject.updateItems(list)
         Assert.assertEquals(3, subject.itemCount)
     }
 
     @Test
     fun getItemViewType_populatedList() {
-        subject.updateItems(list)
         Assert.assertEquals(subject.getItemViewType(0), 0)
     }
 
