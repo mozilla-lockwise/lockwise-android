@@ -19,6 +19,7 @@ import mozilla.lockbox.store.DataStore.State
 import mozilla.lockbox.support.asOptional
 import org.junit.Assert
 import org.junit.Test
+import org.mockito.Mockito
 import org.mockito.Mockito.clearInvocations
 import org.mockito.Mockito.verify
 
@@ -60,6 +61,14 @@ class DataStoreTest : DisposingTest() {
 
         verify(support.storage).touch(id)
         verify(support.storage).list()
+    }
+
+    @Test
+    fun testResetUnpreparedState() {
+        val stateIterator = this.subject.state.blockingIterable().iterator()
+        dispatcher.dispatch(DataStoreAction.Reset)
+        Assert.assertEquals(State.Unprepared, stateIterator.next())
+        Mockito.verifyNoMoreInteractions(support.storage)
     }
 
     @Test

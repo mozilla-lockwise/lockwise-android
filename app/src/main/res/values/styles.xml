@@ -20,6 +20,12 @@
         <item name="actionMenuTextColor">@style/NavDrawerStyle</item>
         <item name="android:titleTextAppearance">@style/NavDrawerStyle</item>
     </style>
+
+    <style name="AppTheme.Launcher" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@null</item>
+        <item name="android:background">@drawable/launch_screen</item>
+    </style>
+
     <style name="ToolBar" parent="ThemeOverlay.AppCompat.ActionBar">
         <item name="android:textColorPrimary">@android:color/white</item>
         <item name="android:textColorSecondary">@android:color/white</item>
@@ -28,6 +34,12 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="android:titleTextAppearance">@style/TextAppearanceWidgetEventToolbarTitle</item>
     </style>
+
+    <style name="BackableToolBar" parent="ToolBar">
+        <item name="android:background">@color/colorPrimary</item>
+    </style>
+
+
     <style name="TextAppearanceWidgetEventToolbarTitle">
         <item name="android:letterSpacing">0.01</item>
         <item name="android:fontFamily">sans-serif</item>
@@ -103,5 +115,8 @@
         <item name="android:textColor">@color/text_white</item>
         <item name="android:layout_marginStart">20dp</item>
         <item name="android:layout_marginEnd">20dp</item>
+    </style>
+    <style name="NoConnectivityWarning">
+        <item name="android:background">@color/gray_73_percent</item>
     </style>
 </resources>
