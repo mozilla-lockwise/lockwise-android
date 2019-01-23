@@ -116,4 +116,7 @@
         <item name="android:layout_marginStart">20dp</item>
         <item name="android:layout_marginEnd">20dp</item>
     </style>
+    <style name="NoConnectivityWarning">
+        <item name="android:background">@color/gray_73_percent</item>
+    </style>
 </resources>
