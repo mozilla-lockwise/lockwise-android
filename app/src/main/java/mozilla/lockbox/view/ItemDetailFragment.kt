@@ -7,6 +7,7 @@
 package mozilla.lockbox.view
 
 import android.os.Bundle
+import android.text.InputType
 import androidx.annotation.StringRes
 import android.text.method.PasswordTransformationMethod
 import android.view.Gravity
@@ -49,10 +50,10 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
     }
 
     override val usernameCopyClicks: Observable<Unit>
-        get() = view!!.btnUsernameCopy.clicks()
+        get() = view!!.inputUsername.clicks()
 
     override val passwordCopyClicks: Observable<Unit>
-        get() = view!!.btnPasswordCopy.clicks()
+        get() = view!!.inputPassword.clicks()
 
     override val togglePasswordClicks: Observable<Unit>
         get() = view!!.btnPasswordToggle.clicks()
@@ -84,8 +85,6 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         inputUsername.readOnly = true
         inputPassword.readOnly = true
         inputHostname.readOnly = true
-        inputHostname.isClickable = true
-        inputHostname.isFocusable = true
         btnHostnameLaunch.isClickable = false
 
         inputHostname.setText(item.hostname, TextView.BufferType.NORMAL)
@@ -119,9 +118,10 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
 var EditText.readOnly: Boolean
     get() = this.isFocusable
     set(readOnly) {
-        this.isFocusable = !readOnly
+        this.isFocusable = true
         this.isFocusableInTouchMode = !readOnly
-        this.isClickable = !readOnly
+        this.inputType = InputType.TYPE_NULL
+        this.isClickable = true
         this.isLongClickable = !readOnly
         this.isCursorVisible = !readOnly
     }

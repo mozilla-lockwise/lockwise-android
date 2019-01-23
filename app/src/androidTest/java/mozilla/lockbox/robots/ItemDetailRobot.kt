@@ -23,10 +23,8 @@ import org.hamcrest.Matchers.not
 class ItemDetailRobot : BaseTestRobot {
     override fun exists() = displayed {
         id(R.id.inputHostname)
-        id(R.id.btnUsernameCopy)
         id(R.id.inputUsername)
         id(R.id.inputPassword)
-        id(R.id.btnPasswordCopy)
     }
 
     fun tapCopyUsername() = ClickActions.click { id(R.id.btnUsernameCopy) }
