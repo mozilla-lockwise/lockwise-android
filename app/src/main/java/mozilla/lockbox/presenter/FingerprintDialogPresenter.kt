@@ -29,8 +29,7 @@ class FingerprintDialogPresenter(
     private val view: FingerprintDialogView,
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val fingerprintStore: FingerprintStore = FingerprintStore.shared
-) :
-    Presenter() {
+) : Presenter() {
 
     override fun onViewReady() {
         fingerprintStore.authState
