@@ -86,6 +86,7 @@ class RoutePresenter(
         when (action) {
             is RouteAction.Welcome -> navigateToFragment(action, R.id.fragment_welcome)
             is RouteAction.Onboarding -> navigateToFragment(action, R.id.fragment_onboarding)
+            is RouteAction.SkipOnboarding -> navigateToFragment(action, R.id.fragment_item_list)
             is RouteAction.Login -> navigateToFragment(action, R.id.fragment_fxa_login)
             is RouteAction.ItemList -> navigateToFragment(action, R.id.fragment_item_list)
             is RouteAction.SettingList -> navigateToFragment(action, R.id.fragment_setting)

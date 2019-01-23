@@ -1,30 +1,32 @@
 package mozilla.lockbox.presenter
 
+import android.hardware.fingerprint.FingerprintManager
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
-import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.PublishSubject.create
 import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.FingerprintSensorAction
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.FingerprintStore
-import mozilla.lockbox.store.FingerprintStore.AuthenticationState as AuthenticationState
-import mozilla.lockbox.view.FingerprintAuthDialogFragment
-import mozilla.lockbox.view.FingerprintAuthDialogFragment.AuthCallback as AuthCallback
+import mozilla.lockbox.store.RouteStore
 import org.junit.Before
 import org.junit.Test
+import mozilla.lockbox.view.OnboardingFingerprintAuthFragment.AuthCallback as AuthCallback
 import org.junit.runner.RunWith
-import org.mockito.Mockito.spy
-import org.mockito.Mockito.verify
+import org.mockito.Mock
+import org.mockito.Mockito
+import org.powermock.api.mockito.PowerMockito
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
 @Config(application = TestApplication::class)
-class FingerprintDialogPresenterTest {
+class OnboardingFingerprintAuthPresenterTest {
 
-    open class FakeView : FingerprintDialogView {
+
+    open class FakeView : OnboardingFingerprintView {
         override fun onSucceeded() {
         }
 
@@ -34,57 +36,65 @@ class FingerprintDialogPresenterTest {
         override fun onError(error: String?) {
         }
 
-        val authCallbackStub = PublishSubject.create<AuthCallback>()
+
+        override val onDismiss = create<Unit>()
+
+        val authCallbackStub = create<AuthCallback>()
         override val authCallback: Observable<AuthCallback>
             get() = authCallbackStub
 
-        override val onDismiss = PublishSubject.create<Unit>()
     }
 
     open class FakeFingerprintStore : FingerprintStore() {
-        val authStateStub = PublishSubject.create<AuthenticationState>()
-        override val authState: Observable<AuthenticationState>
+        val authStateStub = create<FingerprintStore.AuthenticationState>()
+        override val authState: Observable<FingerprintStore.AuthenticationState>
             get() = authStateStub
     }
 
+    @Mock
+    private val routeStore = PowerMockito.mock(RouteStore::class.java)
+
     val dispatcher = Dispatcher()
-    private val view = spy(FakeView())
-    private val fingerprintStore = spy(FakeFingerprintStore())
+    private val view = Mockito.spy(FakeView())
+    private val fingerprintStore = Mockito.spy(FakeFingerprintStore())
+
+    @Mock
+    private val fingerprintManager = PowerMockito.mock(FingerprintManager::class.java)
+
     private val dispatcherObserver = TestObserver.create<Action>()
-    val subject = FingerprintDialogPresenter(view, dispatcher, fingerprintStore)
+
+    val subject = OnboardingFingerprintAuthPresenter(view, dispatcher, routeStore, fingerprintStore)
 
     @Before
     fun setUp() {
+        fingerprintStore.fingerprintManager = fingerprintManager
         dispatcher.register.subscribe(dispatcherObserver)
         subject.onViewReady()
     }
 
+
     @Test
     fun `update on succeeded state`() {
-        fingerprintStore.authStateStub.onNext(AuthenticationState.Succeeded)
-        verify(view).onSucceeded()
+        fingerprintStore.authStateStub.onNext(FingerprintStore.AuthenticationState.Succeeded)
+        Mockito.verify(view).onSucceeded()
     }
 
     @Test
     fun `update on failed state`() {
-        fingerprintStore.authStateStub.onNext(AuthenticationState.Failed("error"))
-        verify(view).onFailed("error")
+        fingerprintStore.authStateStub.onNext(FingerprintStore.AuthenticationState.Failed("error"))
+        Mockito.verify(view).onFailed("error")
     }
+
 
     @Test
     fun `update on error state`() {
-        fingerprintStore.authStateStub.onNext(AuthenticationState.Error("error"))
-        verify(view).onError("error")
+        fingerprintStore.authStateStub.onNext(FingerprintStore.AuthenticationState.Error("error"))
+        Mockito.verify(view).onError("error")
     }
 
-    @Test
-    fun `dispatch authentication status for routing`() {
-        view.authCallbackStub.onNext(FingerprintAuthDialogFragment.AuthCallback.OnAuth)
-        dispatcherObserver.assertLastValue(FingerprintAuthAction.OnAuthentication(FingerprintAuthDialogFragment.AuthCallback.OnAuth))
-    }
 
     @Test
-    fun `dismiss dialog on cancel tapped`() {
+    fun `dismiss dialog when skip is tapped`() {
         view.onDismiss.onNext(Unit)
         dispatcherObserver.assertValue(FingerprintAuthAction.OnCancel)
     }
@@ -100,4 +110,5 @@ class FingerprintDialogPresenterTest {
         subject.onPause()
         dispatcherObserver.assertLastValue(FingerprintSensorAction.Stop)
     }
+
 }
