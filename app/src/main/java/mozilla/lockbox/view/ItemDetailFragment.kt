@@ -85,6 +85,8 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         inputPassword.readOnly = true
         inputHostname.readOnly = true
         inputHostname.isClickable = true
+        inputHostname.isFocusable = true
+        btnHostnameLaunch.isClickable = false
 
         inputHostname.setText(item.hostname, TextView.BufferType.NORMAL)
         inputUsername.setText(item.username, TextView.BufferType.NORMAL)
