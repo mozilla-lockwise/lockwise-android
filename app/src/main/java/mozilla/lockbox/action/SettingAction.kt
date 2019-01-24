@@ -8,21 +8,25 @@ package mozilla.lockbox.action
 
 import androidx.annotation.StringRes
 import mozilla.lockbox.R
-import mozilla.lockbox.flux.Action
 
-open class SettingAction : Action {
-    data class UnlockWithFingerprint(val unlockWithFingerprint: Boolean) : SettingAction()
-    data class UnlockWithFingerprintPendingAuth(val unlockWithFingerprintPendingAuth: Boolean) : SettingAction()
-    data class SendUsageData(val sendUsageData: Boolean) : SettingAction()
-    data class ItemListSortOrder(val sortOrder: Setting.ItemListSort) : SettingAction()
-    data class AutoLockTime(val time: Setting.AutoLockTime) : SettingAction()
-    object Reset : SettingAction()
+open class SettingAction(
+    override val eventMethod: TelemetryEventMethod,
+    override val eventObject: TelemetryEventObject,
+    override val value: String?
+) : TelemetryAction {
+
+    data class UnlockWithFingerprint(val unlockWithFingerprint: Boolean) : SettingAction(TelemetryEventMethod.setting_changed, TelemetryEventObject.settings_fingerprint, unlockWithFingerprint.toString())
+    data class UnlockWithFingerprintPendingAuth(val unlockWithFingerprintPendingAuth: Boolean) : SettingAction(TelemetryEventMethod.setting_changed, TelemetryEventObject.settings_fingerprint_pending_auth, unlockWithFingerprintPendingAuth.toString())
+    data class SendUsageData(val sendUsageData: Boolean): SettingAction(TelemetryEventMethod.setting_changed, TelemetryEventObject.settings_record_usage_data, null)
+    data class ItemListSortOrder(val sortOrder: Setting.ItemListSort): SettingAction(TelemetryEventMethod.setting_changed, TelemetryEventObject.settings_item_list_order, null)
+    data class AutoLockTime(val time: Setting.AutoLockTime) : SettingAction(TelemetryEventMethod.setting_changed, TelemetryEventObject.settings_autolock_time, time.seconds.toString())
+    object Reset: SettingAction(TelemetryEventMethod.setting_changed, TelemetryEventObject.settings_reset, null)
 }
 
 class Setting {
     enum class AutoLockTime(
         @StringRes val stringValue: Int,
-        private val seconds: Long
+        val seconds: Long
     ) {
         OneMinute(R.string.one_minute, 60),
         FiveMinutes(R.string.five_minutes, 60 * 5),
