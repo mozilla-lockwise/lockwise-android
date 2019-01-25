@@ -32,7 +32,7 @@ class ParsedStructure(structure: AssistStructure) {
         return getAutofillIdForKeywords(structure, listOf(View.AUTOFILL_HINT_PASSWORD, "password"))
     }
 
-    private fun getAutofillIdForKeywords(structure: AssistStructure, keywords: List<String>): AutofillId? {
+    private fun getAutofillIdForKeywords(structure: AssistStructure, keywords: Collection<String>): AutofillId? {
         val windowNodes = structure
             .run { (0 until windowNodeCount).map { getWindowNodeAt(it) } }
 
@@ -51,7 +51,7 @@ class ParsedStructure(structure: AssistStructure) {
         }
     }
 
-    private fun searchBasicAutofillContent(viewNode: AssistStructure.ViewNode?, keywords: List<String>): AutofillId? {
+    private fun searchBasicAutofillContent(viewNode: AssistStructure.ViewNode?, keywords: Collection<String>): AutofillId? {
         val node = viewNode ?: return null
 
         if (containsKeywords(node, keywords) &&
@@ -69,7 +69,7 @@ class ParsedStructure(structure: AssistStructure) {
         }
     }
 
-    private fun checkForConsecutiveKeywordAndField(node: AssistStructure.ViewNode, keywords: List<String>): AutofillId? {
+    private fun checkForConsecutiveKeywordAndField(node: AssistStructure.ViewNode, keywords: Collection<String>): AutofillId? {
         val childNodes = node
             .run { (0 until childCount).map { getChildAt(it) } }
 
@@ -94,7 +94,7 @@ class ParsedStructure(structure: AssistStructure) {
         }
     }
 
-    private fun containsKeywords(node: AssistStructure.ViewNode, keywords: List<String>): Boolean {
+    private fun containsKeywords(node: AssistStructure.ViewNode, keywords: Collection<String>): Boolean {
         val autofillHints = node.autofillHints?.toList() ?: emptyList()
         var hints = listOf(node.hint) + listOf(node.text) + autofillHints
 
