@@ -43,7 +43,7 @@ class ParsedStructureTest {
         whenCalled(assistStructure.windowNodeCount).thenReturn(1)
         whenCalled(assistStructure.getWindowNodeAt(0)).thenReturn(windowNode)
 
-        val subject = ParsedStructure(assistStructure)
+        val subject = ParsedStructureBuilder(assistStructure).build()
 
         Assert.assertEquals(usernameId, subject.usernameId)
         Assert.assertEquals(passwordId, subject.passwordId)
@@ -72,7 +72,7 @@ class ParsedStructureTest {
         whenCalled(assistStructure.windowNodeCount).thenReturn(1)
         whenCalled(assistStructure.getWindowNodeAt(0)).thenReturn(windowNode)
 
-        val subject = ParsedStructure(assistStructure)
+        val subject = ParsedStructureBuilder(assistStructure).build()
 
         Assert.assertNull(subject.usernameId)
         Assert.assertNull(subject.passwordId)
@@ -101,7 +101,7 @@ class ParsedStructureTest {
         whenCalled(assistStructure.windowNodeCount).thenReturn(1)
         whenCalled(assistStructure.getWindowNodeAt(0)).thenReturn(windowNode)
 
-        val subject = ParsedStructure(assistStructure)
+        val subject = ParsedStructureBuilder(assistStructure).build()
 
         Assert.assertEquals(usernameId, subject.usernameId)
         Assert.assertEquals(passwordId, subject.passwordId)
@@ -141,7 +141,7 @@ class ParsedStructureTest {
         whenCalled(assistStructure.windowNodeCount).thenReturn(1)
         whenCalled(assistStructure.getWindowNodeAt(0)).thenReturn(windowNode)
 
-        val subject = ParsedStructure(assistStructure)
+        val subject = ParsedStructureBuilder(assistStructure).build()
 
         Assert.assertEquals(usernameId, subject.usernameId)
         Assert.assertEquals(passwordId, subject.passwordId)

@@ -20,6 +20,7 @@ import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.support.ParsedStructure
+import mozilla.lockbox.support.ParsedStructureBuilder
 
 @TargetApi(Build.VERSION_CODES.O)
 @ExperimentalCoroutinesApi
@@ -41,8 +42,8 @@ class LockboxAutofillService(
 
     override fun onFillRequest(request: FillRequest, cancellationSignal: CancellationSignal, callback: FillCallback) {
         val structure = request.fillContexts.last().structure
-        val parsedStructure = ParsedStructure(structure)
         val requestingPackage = domainFromPackage(structure.activityComponent.packageName)
+        val parsedStructure = ParsedStructureBuilder(structure).build()
 
         if (parsedStructure.passwordId == null && parsedStructure.usernameId == null) {
             callback.onFailure("couldn't find a username or password field")

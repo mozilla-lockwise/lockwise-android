@@ -5,15 +5,24 @@ import android.app.assist.AssistStructure
 import android.os.Build
 import android.view.View
 import android.view.autofill.AutofillId
+import mozilla.lockbox.log
+
+data class ParsedStructure(
+    var usernameId: AutofillId? = null,
+    var passwordId: AutofillId? = null,
+    var webDomain: String? = null
+)
 
 @TargetApi(Build.VERSION_CODES.O)
-class ParsedStructure(structure: AssistStructure) {
-    var usernameId: AutofillId? = null
-    var passwordId: AutofillId? = null
+class ParsedStructureBuilder(
+    private val structure: AssistStructure
+) {
+    fun build(): ParsedStructure {
+        val usernameId = getUsernameId(structure)
+        val passwordId = getPasswordId(structure)
+        val webDomain = null
 
-    init {
-        usernameId = getUsernameId(structure)
-        passwordId = getPasswordId(structure)
+        return ParsedStructure(usernameId, passwordId, webDomain)
     }
 
     private fun getUsernameId(structure: AssistStructure): AutofillId? {
