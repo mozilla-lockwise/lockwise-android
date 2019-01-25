@@ -63,9 +63,7 @@ class ParsedStructureBuilder(
     private fun searchBasicAutofillContent(viewNode: AssistStructure.ViewNode?, keywords: Collection<String>): AutofillId? {
         val node = viewNode ?: return null
 
-        if (containsKeywords(node, keywords) &&
-            node.autofillId != null &&
-            node.className == "android.widget.EditText") {
+        if (isAutoFillableEditText(node, keywords) || isAutoFillableInputField(node, keywords)) {
             return node.autofillId
         }
 
@@ -78,6 +76,30 @@ class ParsedStructureBuilder(
         }
     }
 
+    private fun isAutoFillableEditText(
+        node: AssistStructure.ViewNode,
+        keywords: Collection<String>
+    ): Boolean {
+        return isEditText(node) &&
+            containsKeywords(node, keywords) &&
+            node.autofillId != null
+    }
+
+    private fun isEditText(node: AssistStructure.ViewNode) = node.className == "android.widget.EditText"
+
+    private fun isAutoFillableInputField(
+        node: AssistStructure.ViewNode,
+        keywords: Collection<String>
+    ): Boolean {
+        log.info("node.htmlInfo?.tag? = ${node.htmlInfo?.tag ?: "null"}")
+        return isHtmlInputField(node) &&
+            containsKeywords(node, keywords) &&
+            node.autofillId != null
+    }
+
+    private fun isHtmlInputField(node: AssistStructure.ViewNode) =
+        node.htmlInfo?.tag?.toLowerCase() == "input"
+
     private fun checkForConsecutiveKeywordAndField(node: AssistStructure.ViewNode, keywords: Collection<String>): AutofillId? {
         val childNodes = node
             .run { (0 until childCount).map { getChildAt(it) } }
@@ -86,10 +108,10 @@ class ParsedStructureBuilder(
         for (i in 1..(childNodes.size - 1)) {
             val prevNode = childNodes[i - 1]
             val currentNode = childNodes[i]
-            currentNode.autofillId?.let {
-                if (containsKeywords(prevNode, keywords) &&
-                    currentNode.className == "android.widget.EditText") {
-                    return it
+            val id = currentNode.autofillId ?: continue
+            if (isEditText(currentNode) || isHtmlInputField(currentNode)) {
+                if (containsKeywords(prevNode, keywords)) {
+                    return id
                 }
             }
         }
@@ -104,8 +126,19 @@ class ParsedStructureBuilder(
     }
 
     private fun containsKeywords(node: AssistStructure.ViewNode, keywords: Collection<String>): Boolean {
-        val autofillHints = node.autofillHints?.toList() ?: emptyList()
-        var hints = listOf(node.hint) + listOf(node.text) + autofillHints
+        var hints = listOf(node.hint, node.text)
+
+        node.autofillOptions?.let {
+            hints += it
+        }
+
+        node.autofillHints?.let {
+            hints += it
+        }
+
+        node.htmlInfo?.attributes?.let { attrs ->
+            hints += attrs.map { it.second }
+        }
 
         hints = hints.filterNotNull()
 

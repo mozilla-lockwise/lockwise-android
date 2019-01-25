@@ -42,15 +42,15 @@ class LockboxAutofillService(
 
     override fun onFillRequest(request: FillRequest, cancellationSignal: CancellationSignal, callback: FillCallback) {
         val structure = request.fillContexts.last().structure
-        val requestingPackage = domainFromPackage(structure.activityComponent.packageName)
         val parsedStructure = ParsedStructureBuilder(structure).build()
+        val webDomain = parsedStructure.webDomain ?: domainFromPackage(structure.activityComponent.packageName)
 
         if (parsedStructure.passwordId == null && parsedStructure.usernameId == null) {
             callback.onFailure("couldn't find a username or password field")
             return
         }
 
-        if (requestingPackage == null) {
+        if (webDomain == null) {
             callback.onFailure("unexpected package name structure")
             return
         }
@@ -60,7 +60,7 @@ class LockboxAutofillService(
             .take(1)
             .subscribe { passwords ->
                 val possibleValues = passwords.filter {
-                    it.hostname.contains(requestingPackage, true)
+                    it.hostname.contains(webDomain, true)
                 }
                 val response = buildFillResponse(possibleValues, parsedStructure)
                 if (response == null) {
