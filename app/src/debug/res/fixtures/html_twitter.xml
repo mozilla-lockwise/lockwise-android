@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FrameLayout>
+   <TextView idEntry="title" idPackage="android" idType="id" />
+   <LinearLayout idEntry="container" idPackage="org.chromium.webview_shell" idType="id">
+      <EditText idEntry="url_field" idPackage="org.chromium.webview_shell" idType="id" />
+      <form webDomain="mobile.twitter.com">
+         <input hint="Phone, email, or username" autofillHints="on" name="session[username_or_email]" type="text" label="Phone, email, or username" />
+         <input hint="Password" autofillHints="on" name="session[password]" type="password" label="Password" />
+      </form>
+   </LinearLayout>
+</FrameLayout>
