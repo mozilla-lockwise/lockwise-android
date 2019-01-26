@@ -3,12 +3,23 @@
 
     <issue
         id="GradleDependency"
-        message="A newer version of org.mockito:mockito-core than 2.22.0 is available: 2.23.0"
-        errorLine1="    testImplementation &apos;org.mockito:mockito-core:2.22.0&apos;"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        message="A newer version of android.arch.navigation:navigation-fragment than 1.0.0-alpha09 is available: 1.0.0-alpha10"
+        errorLine1="    implementation &quot;android.arch.navigation:navigation-fragment:$navigation_version&quot;"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="build.gradle"
-            line="99"
+            line="115"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of android.arch.navigation:navigation-ui-ktx than 1.0.0-alpha09 is available: 1.0.0-alpha10"
+        errorLine1="    implementation &quot;android.arch.navigation:navigation-ui-ktx:$navigation_version&quot;"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="build.gradle"
+            line="116"
             column="5"/>
     </issue>
 
@@ -165,7 +176,7 @@
         errorLine2="                ~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/fragment_item_list.xml"
-            line="129"
+            line="154"
             column="17"/>
     </issue>
 
