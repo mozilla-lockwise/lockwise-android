@@ -11,5 +11,4 @@ import mozilla.lockbox.view.OnboardingFingerprintAuthFragment
 
 sealed class OnboardingAction : Action {
     object OnDismiss : OnboardingAction()
-    data class OnAuthentication(val authCallback: OnboardingFingerprintAuthFragment.AuthCallback) : OnboardingAction()
 }

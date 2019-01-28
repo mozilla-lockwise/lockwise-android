@@ -6,25 +6,26 @@ import android.view.View
 import android.view.ViewGroup
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.functions.Consumer
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_fingerprint_dialog.view.*
 import kotlinx.android.synthetic.main.onboarding_biometric_unlock.view.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
-import mozilla.lockbox.log
 import mozilla.lockbox.presenter.OnboardingFingerprintAuthPresenter
 import mozilla.lockbox.presenter.OnboardingFingerprintView
-import mozilla.lockbox.store.RouteStore
+import mozilla.lockbox.model.FingerprintAuthCallback
+import mozilla.lockbox.view.OnboardingFingerprintAuthFragment.AuthCallback.*
 
+@ExperimentalCoroutinesApi
 class OnboardingFingerprintAuthFragment : Fragment(), OnboardingFingerprintView {
 
     private val compositeDisposable = CompositeDisposable()
 
-    private val _dismiss = PublishSubject.create<Unit>()
-    override val onDismiss: Observable<Unit> = _dismiss
-
     private val _authCallback = PublishSubject.create<AuthCallback>()
     override val authCallback: Observable<AuthCallback> get() = _authCallback
+
+    private val _dismiss = PublishSubject.create<Unit>()
+    override val onDismiss: Observable<Unit> = _dismiss
 
     private var isEnablingDismissed: Boolean = true
 
@@ -33,7 +34,7 @@ class OnboardingFingerprintAuthFragment : Fragment(), OnboardingFingerprintView 
         private const val SUCCESS_DELAY_MILLIS: Long = 1300
     }
 
-    sealed class AuthCallback {
+    sealed class AuthCallback : FingerprintAuthCallback {
         object OnAuth : AuthCallback()
         object OnError : AuthCallback()
     }
@@ -43,17 +44,11 @@ class OnboardingFingerprintAuthFragment : Fragment(), OnboardingFingerprintView 
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         presenter = OnboardingFingerprintAuthPresenter(this)
-
         return inflater.inflate(R.layout.onboarding_biometric_unlock, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    }
-
     override fun onDestroyView() {
-        log.info("Onboarding fingerprint biometric enablement dismissed.")
         if (isEnablingDismissed) {
             _dismiss.onNext(Unit)
         }
@@ -69,7 +64,7 @@ class OnboardingFingerprintAuthFragment : Fragment(), OnboardingFingerprintView 
 
         view!!.sensorDescription.removeCallbacks(resetErrorTextRunnable)
         view!!.iconFingerprint.postDelayed({
-            _authCallback.onNext(AuthCallback.OnAuth)
+            _authCallback.onNext(OnAuth)
             isEnablingDismissed = false
         }, SUCCESS_DELAY_MILLIS)
     }
@@ -81,7 +76,7 @@ class OnboardingFingerprintAuthFragment : Fragment(), OnboardingFingerprintView 
     override fun onError(error: String?) {
         showError(error ?: getString(R.string.fingerprint_sensor_error))
         view!!.postDelayed(
-            { _authCallback.onNext(AuthCallback.OnError) },
+            { _authCallback.onNext(OnError) },
             ERROR_TIMEOUT_MILLIS
         )
     }

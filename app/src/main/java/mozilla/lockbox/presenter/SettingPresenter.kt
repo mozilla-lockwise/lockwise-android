@@ -74,16 +74,20 @@ class SettingPresenter(
             .subscribe {
                 if (it is FingerprintAuthAction.OnAuthentication) {
                     when (it.authCallback) {
-                        is FingerprintAuthDialogFragment.AuthCallback.OnAuth -> dispatcher.dispatch(
-                            SettingAction.UnlockWithFingerprint(true)
-                        )
+                        is FingerprintAuthDialogFragment.AuthCallback.OnAuth ->
+                            dispatcher.dispatch(
+                                SettingAction.UnlockWithFingerprint(true)
+                            )
                         is FingerprintAuthDialogFragment.AuthCallback.OnError -> {
-                            dispatcher.dispatch(SettingAction.UnlockWithFingerprint(false))
+                            dispatcher.dispatch(
+                                SettingAction.UnlockWithFingerprint(false)
+                            )
                         }
                     }
                 } else {
                     dispatcher.dispatch(SettingAction.UnlockWithFingerprint(false))
                 }
+
                 dispatcher.dispatch(SettingAction.UnlockWithFingerprintPendingAuth(false))
             }
             .addTo(compositeDisposable)
