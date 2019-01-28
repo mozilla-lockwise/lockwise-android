@@ -18,6 +18,7 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_fingerprint_dialog.view.*
 import mozilla.lockbox.R
+import mozilla.lockbox.model.FingerprintAuthCallback
 import mozilla.lockbox.presenter.FingerprintDialogPresenter
 import mozilla.lockbox.presenter.FingerprintDialogView
 
@@ -127,7 +128,7 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
         private const val SUCCESS_DELAY_MILLIS: Long = 1300
     }
 
-    sealed class AuthCallback {
+    sealed class AuthCallback : FingerprintAuthCallback {
         object OnAuth : AuthCallback()
         object OnError : AuthCallback()
     }

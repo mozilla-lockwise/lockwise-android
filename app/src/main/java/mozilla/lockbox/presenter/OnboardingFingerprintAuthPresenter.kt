@@ -9,6 +9,7 @@ package mozilla.lockbox.presenter
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.FingerprintSensorAction
 import mozilla.lockbox.action.OnboardingAction
 import mozilla.lockbox.action.RouteAction
@@ -46,13 +47,18 @@ class OnboardingFingerprintAuthPresenter(
                 .subscribe(this::updateState)
                 .addTo(compositeDisposable)
 
+            // OnboardingAction.OnDismiss can be used in the next onboarding screens too
             view.onDismiss
                 .subscribe {
                     dispatcher.dispatch(OnboardingAction.OnDismiss)
                 }.addTo(compositeDisposable)
 
             view.authCallback
-                .subscribe { dispatcher.dispatch(OnboardingAction.OnAuthentication(it)) }
+                .subscribe {
+                    dispatcher.dispatch(
+                        FingerprintAuthAction.OnAuthentication(it)
+                    )
+                }
                 .addTo(compositeDisposable)
         } else {
             dispatcher.dispatch(RouteAction.SkipOnboarding)
