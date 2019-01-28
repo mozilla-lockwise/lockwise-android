@@ -6,7 +6,8 @@ import android.os.Build
 
 @TargetApi(Build.VERSION_CODES.O)
 fun AssistStructure.ViewNode.dump(): String {
-    return dumpNode().toString()
+    val sb = StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
+    return dumpNode(sb).toString()
 }
 
 @TargetApi(Build.VERSION_CODES.O)
@@ -51,9 +52,12 @@ private fun AssistStructure.ViewNode.dumpNode(sb: StringBuilder = StringBuilder(
     return sb
 }
 
+val AssistStructure.ViewNode.childNodes: List<AssistStructure.ViewNode>
+    get() = (0 until childCount).map { getChildAt(it) }
+
+@TargetApi(Build.VERSION_CODES.O)
 private fun AssistStructure.ViewNode.dumpChildren(sb: StringBuilder) {
-    (0 until childCount)
-        .map { getChildAt(it) }
+    childNodes
         .forEach {
             it.dumpNode(sb)
         }

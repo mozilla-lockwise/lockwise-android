@@ -5,6 +5,7 @@ import android.app.assist.AssistStructure
 import android.os.Build
 import android.view.View
 import android.view.autofill.AutofillId
+import mozilla.lockbox.extensions.childNodes
 import mozilla.lockbox.log
 
 @TargetApi(Build.VERSION_CODES.O)
@@ -12,16 +13,17 @@ class ParsedStructureBuilder(
     private val structure: AssistStructure
 ) {
     fun build(): ParsedStructure {
-        val usernameId = getUsernameId(structure)
-        val passwordId = getPasswordId(structure)
-        val webDomain = null
-
-        return ParsedStructure(usernameId, passwordId, webDomain)
+        return ParsedStructure(
+            getUsernameId(),
+            getPasswordId(),
+            getWebDomain(),
+            getPackageId()
+        )
     }
 
-    private fun getUsernameId(structure: AssistStructure): AutofillId? {
+    private fun getUsernameId(): AutofillId? {
         // how do we localize the "email" and "username"?
-        return getAutofillIdForKeywords(structure, listOf(
+        return getAutofillIdForKeywords(listOf(
             View.AUTOFILL_HINT_USERNAME,
             View.AUTOFILL_HINT_EMAIL_ADDRESS,
             "email",
@@ -30,43 +32,56 @@ class ParsedStructureBuilder(
         ))
     }
 
-    private fun getPasswordId(structure: AssistStructure): AutofillId? {
+    private fun getPasswordId(): AutofillId? {
         // similar l10n question for password
-        return getAutofillIdForKeywords(structure, listOf(View.AUTOFILL_HINT_PASSWORD, "password"))
+        return getAutofillIdForKeywords(listOf(View.AUTOFILL_HINT_PASSWORD, "password"))
     }
 
-    private fun getAutofillIdForKeywords(structure: AssistStructure, keywords: Collection<String>): AutofillId? {
-        val windowNodes = structure
-            .run { (0 until windowNodeCount).map { getWindowNodeAt(it) } }
+    private fun getAutofillIdForKeywords(keywords: Collection<String>): AutofillId? {
+        return searchBasicAutofillContent(keywords) ?: checkForConsecutiveKeywordAndField(keywords)
+    }
 
-        var possibleAutofillIds = windowNodes
-            .map { searchBasicAutofillContent(it.rootViewNode, keywords) }
-
-        if (possibleAutofillIds.filterNotNull().isEmpty()) {
-            possibleAutofillIds += windowNodes
-                .map { checkForConsecutiveKeywordAndField(it.rootViewNode, keywords) }
+    private fun searchBasicAutofillContent(
+        keywords: Collection<String>
+    ): AutofillId? {
+        return searchStructure(structure) { node ->
+            if (isAutoFillableEditText(node, keywords) || isAutoFillableInputField(node, keywords)) {
+                node.autofillId
+            } else {
+                null
+            }
         }
+    }
 
-        return try {
-            possibleAutofillIds.first { it != null }
-        } catch (e: NoSuchElementException) {
+    private fun checkForConsecutiveKeywordAndField(keywords: Collection<String>): AutofillId? {
+        return searchStructure(structure) { node ->
+            val childNodes = node
+                .run { (0 until childCount).map { getChildAt(it) } }
+
+            // check for consecutive views with keywords followed by possible fill locations
+            for (i in 1..(childNodes.size - 1)) {
+                val prevNode = childNodes[i - 1]
+                val currentNode = childNodes[i]
+                val id = currentNode.autofillId ?: continue
+                if (isEditText(currentNode) || isHtmlInputField(currentNode)) {
+                    if (containsKeywords(prevNode, keywords)) {
+                        return@searchStructure id
+                    }
+                }
+            }
             null
         }
     }
 
-    private fun searchBasicAutofillContent(viewNode: AssistStructure.ViewNode?, keywords: Collection<String>): AutofillId? {
-        val node = viewNode ?: return null
-
-        if (isAutoFillableEditText(node, keywords) || isAutoFillableInputField(node, keywords)) {
-            return node.autofillId
+    private fun getWebDomain(): String? {
+        return searchStructure(structure) {
+            it.webDomain
         }
+    }
 
-        return try {
-            node.run { (0 until childCount).map { getChildAt(it) } }
-                .map { searchBasicAutofillContent(it, keywords) }
-                .first { it != null }
-        } catch (e: NoSuchElementException) {
-            null
+    private fun getPackageId(): String? {
+        return searchStructure(structure) {
+            it.idPackage
         }
     }
 
@@ -85,7 +100,6 @@ class ParsedStructureBuilder(
         node: AssistStructure.ViewNode,
         keywords: Collection<String>
     ): Boolean {
-        log.info("node.htmlInfo?.tag? = ${node.htmlInfo?.tag ?: "null"}")
         return isHtmlInputField(node) &&
             containsKeywords(node, keywords) &&
             node.autofillId != null
@@ -94,29 +108,29 @@ class ParsedStructureBuilder(
     private fun isHtmlInputField(node: AssistStructure.ViewNode) =
         node.htmlInfo?.tag?.toLowerCase() == "input"
 
-    private fun checkForConsecutiveKeywordAndField(node: AssistStructure.ViewNode, keywords: Collection<String>): AutofillId? {
-        val childNodes = node
-            .run { (0 until childCount).map { getChildAt(it) } }
-
-        // check for consecutive views with keywords followed by possible fill locations
-        for (i in 1..(childNodes.size - 1)) {
-            val prevNode = childNodes[i - 1]
-            val currentNode = childNodes[i]
-            val id = currentNode.autofillId ?: continue
-            if (isEditText(currentNode) || isHtmlInputField(currentNode)) {
-                if (containsKeywords(prevNode, keywords)) {
-                    return id
+    private fun <T> searchStructure(structure: AssistStructure, transform: (AssistStructure.ViewNode) -> T?): T? {
+        structure
+            .run { (0 until windowNodeCount).map { getWindowNodeAt(it).rootViewNode } }
+            .forEach {node ->
+                searchNodes(node, transform)?.let { result ->
+                    return result
                 }
             }
+        return null
+    }
+
+    private fun <T> searchNodes(node: AssistStructure.ViewNode, transform: (AssistStructure.ViewNode) -> T?): T? {
+        transform(node)?.let {
+            return it
         }
 
-        return try {
-            childNodes
-                .map { checkForConsecutiveKeywordAndField(it, keywords) }
-                .first { it != null }
-        } catch (e: NoSuchElementException) {
-            null
-        }
+        node.childNodes
+            .forEach { child ->
+                searchNodes(child, transform)?.let { result ->
+                    return result
+                }
+            }
+        return null
     }
 
     private fun containsKeywords(node: AssistStructure.ViewNode, keywords: Collection<String>): Boolean {

@@ -5,7 +5,6 @@ import android.view.autofill.AutofillId
 data class ParsedStructure(
     var usernameId: AutofillId? = null,
     var passwordId: AutofillId? = null,
-    var webDomain: String? = null
+    var webDomain: String? = null,
+    var packageId: String? = null
 )
-
-
