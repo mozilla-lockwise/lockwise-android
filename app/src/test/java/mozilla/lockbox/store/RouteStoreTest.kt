@@ -9,19 +9,13 @@ package mozilla.lockbox.store
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.assertLastValue
-import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mock
-import org.mockito.Mockito
-import org.powermock.api.mockito.PowerMockito
-import org.mockito.Mockito.`when` as whenCalled
 
 @ExperimentalCoroutinesApi
 class RouteStoreTest {

@@ -4,8 +4,8 @@ import android.hardware.fingerprint.FingerprintManager
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
-import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.FingerprintSensorAction
+import mozilla.lockbox.action.OnboardingAction
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
@@ -26,7 +26,6 @@ import org.mockito.Mockito.`when` as whenCalled
 @RunWith(RobolectricTestRunner::class)
 @Config(application = TestApplication::class)
 class OnboardingFingerprintAuthPresenterTest {
-
 
     open class FakeView : OnboardingFingerprintView {
 
@@ -88,7 +87,6 @@ class OnboardingFingerprintAuthPresenterTest {
         subject.onViewReady()
     }
 
-
     @Test
     fun `update on succeeded state`() {
         fingerprintStore.authStateStub.onNext(FingerprintStore.AuthenticationState.Succeeded)
@@ -101,18 +99,16 @@ class OnboardingFingerprintAuthPresenterTest {
         Assert.assertEquals(true, view.failure)
     }
 
-
     @Test
     fun `update on error state`() {
         fingerprintStore.authStateStub.onNext(FingerprintStore.AuthenticationState.Error("error"))
         Assert.assertEquals(true, view.errors)
     }
 
-
     @Test
     fun `dismiss dialog when skip is tapped`() {
         view.onDismiss.onNext(Unit)
-        dispatcherObserver.assertValue(FingerprintAuthAction.OnCancel)
+        dispatcherObserver.assertValue(OnboardingAction.OnDismiss)
     }
 
     @Test
@@ -126,5 +122,4 @@ class OnboardingFingerprintAuthPresenterTest {
         subject.onPause()
         dispatcherObserver.assertLastValue(FingerprintSensorAction.Stop)
     }
-
 }

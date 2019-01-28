@@ -37,14 +37,29 @@ class OnboardingFingerprintAuthPresenter(
 ) : Presenter() {
 
     override fun onViewReady() {
-        if (fingerprintStore.isFingerprintAuthAvailable) {
+        var startOnboarding = false
 
-            routeStore.onboarding
-                .subscribe(this::startOnboarding)
-                .addTo(compositeDisposable)
+        routeStore.onboarding
+            .subscribe { onboarding ->
+                startOnboarding = onboarding
+            }
+            .addTo(compositeDisposable)
+
+
+        if (fingerprintStore.isFingerprintAuthAvailable && startOnboarding) {
 
             fingerprintStore.authState
                 .subscribe(this::updateState)
+                .addTo(compositeDisposable)
+
+            view.authCallback
+                .subscribe {
+                    dispatcher.dispatch(
+                        // use the fingerprint authentication here so it
+                        // follows the settings logic to enable unlock
+                        FingerprintAuthAction.OnAuthentication(it)
+                    )
+                }
                 .addTo(compositeDisposable)
 
             // OnboardingAction.OnDismiss can be used in the next onboarding screens too
@@ -52,15 +67,8 @@ class OnboardingFingerprintAuthPresenter(
                 .subscribe {
                     dispatcher.dispatch(OnboardingAction.OnDismiss)
                 }.addTo(compositeDisposable)
-
-            view.authCallback
-                .subscribe {
-                    dispatcher.dispatch(
-                        FingerprintAuthAction.OnAuthentication(it)
-                    )
-                }
-                .addTo(compositeDisposable)
         } else {
+            // just skip the route altogether, not follow Dismiss logic
             dispatcher.dispatch(RouteAction.SkipOnboarding)
         }
     }
@@ -80,13 +88,6 @@ class OnboardingFingerprintAuthPresenter(
             is AuthenticationState.Succeeded -> view.onSucceeded()
             is AuthenticationState.Failed -> view.onFailed(state.error)
             is AuthenticationState.Error -> view.onError(state.error)
-        }
-    }
-
-    private fun startOnboarding(state: Boolean) {
-        when (state) {
-            state -> onResume()
-            else -> dispatcher.dispatch(RouteAction.SkipOnboarding)
         }
     }
 }
