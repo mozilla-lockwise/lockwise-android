@@ -10,7 +10,7 @@
         android:id="@+id/networkWarning"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:background="@color/gray_73_percent"
+        android:theme="@style/NoConnectivityWarning"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         xmlns:tools="http://schemas.android.com/tools">

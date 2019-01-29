@@ -3,12 +3,23 @@
 
     <issue
         id="GradleDependency"
-        message="A newer version of org.mockito:mockito-core than 2.22.0 is available: 2.23.0"
-        errorLine1="    testImplementation &apos;org.mockito:mockito-core:2.22.0&apos;"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        message="A newer version of android.arch.navigation:navigation-fragment than 1.0.0-alpha09 is available: 1.0.0-alpha11"
+        errorLine1="    implementation &quot;android.arch.navigation:navigation-fragment:$navigation_version&quot;"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="build.gradle"
-            line="99"
+            line="115"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of android.arch.navigation:navigation-ui-ktx than 1.0.0-alpha09 is available: 1.0.0-alpha11"
+        errorLine1="    implementation &quot;android.arch.navigation:navigation-ui-ktx:$navigation_version&quot;"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="build.gradle"
+            line="116"
             column="5"/>
     </issue>
 
@@ -143,29 +154,13 @@
     </issue>
 
     <issue
-        id="GoogleAppIndexingWarning"
-        message="App is not indexable by Google Search; consider adding at least one Activity with an ACTION-VIEW intent filter. See issue explanation for more details.">
-        <location
-            file="src/debug/AndroidManifest.xml"
-            line="10"/>
-    </issue>
-
-    <issue
-        id="GoogleAppIndexingWarning"
-        message="App is not indexable by Google Search; consider adding at least one Activity with an ACTION-VIEW intent filter. See issue explanation for more details.">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="14"/>
-    </issue>
-
-    <issue
         id="RtlSymmetry"
         message="When you define `paddingStart` you should probably also define `paddingEnd` for right-to-left symmetry"
         errorLine1="                android:paddingStart=&quot;16dp&quot;"
         errorLine2="                ~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/fragment_item_list.xml"
-            line="129"
+            line="154"
             column="17"/>
     </issue>
 

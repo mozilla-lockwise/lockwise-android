@@ -80,7 +80,6 @@ class ItemListPresenter(
             .addTo(compositeDisposable)
 
         Observables.combineLatest(dataStore.list, settingStore.itemListSortOrder)
-            .filter { it.first.isNotEmpty() }
             .distinctUntilChanged()
             .map { pair ->
                 when (pair.second) {
