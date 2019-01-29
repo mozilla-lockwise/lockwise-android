@@ -45,18 +45,28 @@ class RouteStore(
             .filterNotNull()
             .subscribe(routes)
 
-        dispatcher.register
-            .filterByType(RouteAction.Onboarding::class.java)
-            .subscribe {
-                onboardingState
-            }.addTo(compositeDisposable)
+        // if there is no state in the datastore, we should onboard
+        // any other state should disregard it
+
+        // do we want to onboard if they disconnect their account and
+        // then re-login?
+        dataStore.state
+            .subscribe { state ->
+                when (state) {
+                    is DataStore.State.Unprepared -> onboardingState.onNext(true)
+                    else -> onboardingState.onNext(false)
+                }
+            }
+            .addTo(compositeDisposable)
     }
 
     private fun dataStoreToRouteActions(storageState: DataStore.State): Optional<RouteAction> {
         return when (storageState) {
             is DataStore.State.Unlocked -> RouteAction.ItemList
             is DataStore.State.Locked -> RouteAction.LockScreen
-            is DataStore.State.Unprepared -> RouteAction.Welcome
+            is DataStore.State.Unprepared -> {
+                RouteAction.Welcome
+            }
             else -> null
         }.asOptional()
     }

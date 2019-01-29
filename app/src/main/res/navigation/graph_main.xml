@@ -21,17 +21,6 @@
     </fragment>
 
     <fragment
-            android:id="@+id/fragment_onboarding"
-            android:name="mozilla.lockbox.view.OnboardingFingerprintAuthFragment"
-            tools:layout="@layout/onboarding_biometric_unlock">
-        <action
-                android:id="@+id/action_onboarding_to_itemList"
-                app:launchSingleTop="true"
-                app:destination="@id/fragment_item_list"
-                app:popUpToInclusive="true"/>
-    </fragment>
-
-    <fragment
             android:id="@+id/fragment_fxa_login"
             android:name="mozilla.lockbox.view.FxALoginFragment"
             tools:layout="@layout/fragment_fxa_login">
@@ -46,6 +35,17 @@
                 app:destination="@id/fragment_onboarding"
                 app:launchSingleTop="true"
                 app:popUpTo="@+id/fragment_onboarding"/>
+    </fragment>
+
+    <fragment
+            android:id="@+id/fragment_onboarding"
+            android:name="mozilla.lockbox.view.OnboardingFingerprintAuthFragment"
+            tools:layout="@layout/onboarding_biometric_unlock">
+        <action
+                android:id="@+id/action_onboarding_to_itemList"
+                app:launchSingleTop="true"
+                app:destination="@id/fragment_item_list"
+                app:popUpToInclusive="true"/>
     </fragment>
 
     <fragment
