@@ -38,7 +38,7 @@ private fun AssistStructure.ViewNode.dumpNode(sb: StringBuilder = StringBuilder(
     sb.append("<$name")
     if (!attrs.isEmpty()) {
         sb.append(" ")
-        attrs.joinTo(sb," ") { "${it.first}=\"${it.second}\"" }
+        attrs.joinTo(sb, " ") { "${it.first}=\"${it.second}\"" }
     }
 
     if (childCount > 0) {

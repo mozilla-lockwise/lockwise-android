@@ -6,7 +6,6 @@ import android.os.Build
 import android.view.View
 import android.view.autofill.AutofillId
 import mozilla.lockbox.extensions.childNodes
-import mozilla.lockbox.log
 
 @TargetApi(Build.VERSION_CODES.O)
 class ParsedStructureBuilder(
@@ -111,7 +110,7 @@ class ParsedStructureBuilder(
     private fun <T> searchStructure(structure: AssistStructure, transform: (AssistStructure.ViewNode) -> T?): T? {
         structure
             .run { (0 until windowNodeCount).map { getWindowNodeAt(it).rootViewNode } }
-            .forEach {node ->
+            .forEach { node ->
                 searchNodes(node, transform)?.let { result ->
                     return result
                 }
