@@ -45,7 +45,7 @@ class OnboardingFingerprintAuthPresenterTest {
             errors = true
         }
 
-        var authCallbackStub = PublishSubject.create<AuthCallback>()
+        private var authCallbackStub = PublishSubject.create<AuthCallback>()
         override val authCallback: Observable<AuthCallback>
             get() = authCallbackStub
 
