@@ -13,6 +13,6 @@ class OnboardingAutofillFragment : DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_onboarding, container, false)
+        return inflater.inflate(R.layout.onboarding_biometric_unlock, container, false)
     }
 }
