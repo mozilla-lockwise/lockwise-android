@@ -8,6 +8,7 @@ package mozilla.lockbox.store
 
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.ReplaySubject
 import io.reactivex.subjects.Subject
@@ -45,9 +46,6 @@ class RouteStore(
             .filterNotNull()
             .subscribe(routes)
 
-        // if there is no state in the datastore, we should onboard
-        // any other state should disregard it
-
         // do we want to onboard if they disconnect their account and
         // then re-login?
         dataStore.state
@@ -62,12 +60,25 @@ class RouteStore(
 
     private fun dataStoreToRouteActions(storageState: DataStore.State): Optional<RouteAction> {
         return when (storageState) {
-            is DataStore.State.Unlocked -> RouteAction.ItemList
-            is DataStore.State.Locked -> RouteAction.LockScreen
-            is DataStore.State.Unprepared -> {
-                RouteAction.Welcome
-            }
-            else -> null
-        }.asOptional()
+            is DataStore.State.Unlocked -> chooseRoute()//RouteAction.ItemList
+            is DataStore.State.Locked -> return RouteAction.LockScreen.asOptional()
+            is DataStore.State.Unprepared -> return RouteAction.Welcome.asOptional()
+            // bad. figure out how to make this work again
+            else -> null!!
+        }
+    }
+
+    private var triggerOnboarding: Boolean? = null
+    private val triggerOnboardingSubject: Consumer<Boolean>
+        get() = Consumer { onboarding ->
+            triggerOnboarding = onboarding
+        }
+
+    // how do I ensure that ItemList will be routed to after Onboarding completes?
+    private fun chooseRoute(): Optional<RouteAction>{
+        return when (triggerOnboarding) {
+            true -> RouteAction.Onboarding.asOptional()
+            else -> RouteAction.ItemList.asOptional()
+        }
     }
 }
