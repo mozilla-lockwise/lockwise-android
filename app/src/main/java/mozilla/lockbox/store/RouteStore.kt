@@ -41,6 +41,12 @@ class RouteStore(
             .filterByType(RouteAction::class.java)
             .subscribe(routes as Subject)
 
+        this.onboarding
+            .subscribe{ ob ->
+                triggerOnboarding = ob
+            }
+            .addTo(compositeDisposable)
+
         dataStore.state
             .map(this::dataStoreToRouteActions)
             .filterNotNull()
@@ -69,10 +75,10 @@ class RouteStore(
     }
 
     private var triggerOnboarding: Boolean? = null
-    private val triggerOnboardingSubject: Consumer<Boolean>
-        get() = Consumer { onboarding ->
-            triggerOnboarding = onboarding
-        }
+//    private val triggerOnboardingSubject: Consumer<Boolean>
+//        get() = Consumer { onboarding ->
+//            triggerOnboarding = onboarding
+//        }
 
     // how do I ensure that ItemList will be routed to after Onboarding completes?
     private fun chooseRoute(): Optional<RouteAction>{
