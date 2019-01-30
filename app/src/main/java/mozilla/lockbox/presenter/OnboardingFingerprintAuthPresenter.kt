@@ -37,16 +37,8 @@ class OnboardingFingerprintAuthPresenter(
 ) : Presenter() {
 
     override fun onViewReady() {
-        var startOnboarding = false
-
-        routeStore.onboarding
-            .subscribe { onboarding ->
-                startOnboarding = onboarding
-            }
-            .addTo(compositeDisposable)
-
-
-        if (fingerprintStore.isFingerprintAuthAvailable && startOnboarding) {
+        if (fingerprintStore.fingerprintManager.isHardwareDetected && !fingerprintStore.isDeviceSecure) {
+//        if (fingerprintStore.isFingerprintAuthAvailable && startOnboarding) {
 
             fingerprintStore.authState
                 .subscribe(this::updateState)
