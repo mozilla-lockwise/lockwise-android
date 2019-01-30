@@ -57,7 +57,6 @@ class LockboxAutofillService(
         }
 
         dataStore.list
-            .filter { !it.isEmpty() }
             .take(1)
             .subscribe { passwords ->
                 val possibleValues = passwords.filter {
@@ -92,7 +91,7 @@ class LockboxAutofillService(
 
         possibleValues
             .map { serverPasswordToDataset(parsedStructure, it) }
-            .map(builder::addDataset)
+            .forEach { builder.addDataset(it) }
 
         return builder.build()
     }
@@ -112,7 +111,6 @@ class LockboxAutofillService(
             datasetBuilder.setValue(it, AutofillValue.forText(credential.password), passwordPresentation)
         }
 
-        log.info("presentation for $packageName: user ${credential.username}")
         return datasetBuilder.build()
     }
 
