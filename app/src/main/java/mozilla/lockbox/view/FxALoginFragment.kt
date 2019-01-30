@@ -18,19 +18,20 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
+import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.fragment_fxa_login.*
 import kotlinx.android.synthetic.main.fragment_fxa_login.view.*
 import kotlinx.android.synthetic.main.fragment_warning.view.*
 import kotlinx.android.synthetic.main.include_backable.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
+import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.presenter.FxALoginPresenter
 import mozilla.lockbox.presenter.FxALoginView
 import mozilla.lockbox.support.isDebug
 
 @ExperimentalCoroutinesApi
 class FxALoginFragment : BackableFragment(), FxALoginView {
-
     private var errorHelper = NetworkErrorHelper()
 
     override var webViewRedirect: ((url: Uri?) -> Boolean) = { _ -> false }
@@ -83,4 +84,9 @@ class FxALoginFragment : BackableFragment(), FxALoginView {
 
     override val skipFxAClicks: Observable<Unit>?
         get() = skipFxA?.clicks()
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        presenter.onDestroy()
+    }
 }
