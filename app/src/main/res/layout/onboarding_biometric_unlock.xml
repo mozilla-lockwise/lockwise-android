@@ -37,6 +37,8 @@
             android:layout_gravity="center_vertical|center_horizontal"
             android:background="@color/background_white"
             app:layout_constraintTop_toBottomOf="@id/onboardingTop"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
     >
         <TextView
                 android:id="@+id/unlockWithFingerprintTitle"

@@ -13,6 +13,7 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.ReplaySubject
 import io.reactivex.subjects.Subject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import mozilla.lockbox.action.OnboardingAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.extensions.filterNotNull
@@ -29,6 +30,7 @@ class RouteStore(
 
     private val onboardingState: ReplaySubject<Boolean> = ReplaySubject.createWithSize(1)
     val onboarding: Observable<Boolean> = onboardingState
+    private var triggerOnboarding: Boolean? = null
 
     companion object {
         val shared = RouteStore()
@@ -46,6 +48,13 @@ class RouteStore(
                 triggerOnboarding = ob
             }
             .addTo(compositeDisposable)
+
+        dispatcher.register
+            .filterByType(OnboardingAction.OnDismiss::class.java)
+            .subscribe {
+                onboardingState.onNext(false)
+                chooseRoute()
+            }.addTo(compositeDisposable)
 
         dataStore.state
             .map(this::dataStoreToRouteActions)
@@ -74,11 +83,6 @@ class RouteStore(
         }
     }
 
-    private var triggerOnboarding: Boolean? = null
-//    private val triggerOnboardingSubject: Consumer<Boolean>
-//        get() = Consumer { onboarding ->
-//            triggerOnboarding = onboarding
-//        }
 
     // how do I ensure that ItemList will be routed to after Onboarding completes?
     private fun chooseRoute(): Optional<RouteAction>{

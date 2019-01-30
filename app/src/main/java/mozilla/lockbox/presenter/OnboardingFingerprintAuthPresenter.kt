@@ -15,6 +15,7 @@ import mozilla.lockbox.action.OnboardingAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
+import mozilla.lockbox.log
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.FingerprintStore.AuthenticationState as AuthenticationState
 import mozilla.lockbox.store.RouteStore
@@ -37,9 +38,7 @@ class OnboardingFingerprintAuthPresenter(
 ) : Presenter() {
 
     override fun onViewReady() {
-        if (fingerprintStore.fingerprintManager.isHardwareDetected && !fingerprintStore.isDeviceSecure) {
-//        if (fingerprintStore.isFingerprintAuthAvailable && startOnboarding) {
-
+        if (fingerprintStore.fingerprintManager.isHardwareDetected) {
             fingerprintStore.authState
                 .subscribe(this::updateState)
                 .addTo(compositeDisposable)
@@ -55,10 +54,11 @@ class OnboardingFingerprintAuthPresenter(
                 .addTo(compositeDisposable)
 
             // OnboardingAction.OnDismiss can be used in the next onboarding screens too
-            view.onDismiss
-                .subscribe {
-                    dispatcher.dispatch(OnboardingAction.OnDismiss)
-                }.addTo(compositeDisposable)
+            view.onDismiss.subscribe {
+                log.info("ELISE - dismiss")
+                dispatcher.dispatch(OnboardingAction.OnDismiss)
+                dispatcher.dispatch(RouteAction.SkipOnboarding)
+            }?.addTo(compositeDisposable)
         } else {
             // just skip the route altogether, not follow Dismiss logic
             dispatcher.dispatch(RouteAction.SkipOnboarding)
