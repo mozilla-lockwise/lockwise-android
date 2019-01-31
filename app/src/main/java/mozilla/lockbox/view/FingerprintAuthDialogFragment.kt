@@ -71,7 +71,7 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
                 _authCallback.onNext(AuthCallback.OnAuth)
                 isEnablingDismissed = false
                 dismiss()
-            }, Constant.Onboarding.SUCCESS_DELAY_MILLIS)
+            }, Constant.FingerprintTimeouts.SUCCESS_DELAY_MILLIS)
         }
     }
 
@@ -85,7 +85,7 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
         view!!.imageView.postDelayed({
             _authCallback.onNext(AuthCallback.OnError)
             dismiss()
-        }, Constant.Onboarding.ERROR_TIMEOUT_MILLIS)
+        }, Constant.FingerprintTimeouts.ERROR_TIMEOUT_MILLIS)
     }
 
     override fun onFailed(error: String?) {
@@ -98,7 +98,7 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
             text = error
             setTextColor(resources.getColor(R.color.red, null))
             removeCallbacks(resetErrorTextRunnable)
-            postDelayed(resetErrorTextRunnable, Constant.Onboarding.ERROR_TIMEOUT_MILLIS)
+            postDelayed(resetErrorTextRunnable, Constant.FingerprintTimeouts.ERROR_TIMEOUT_MILLIS)
         }
     }
 
