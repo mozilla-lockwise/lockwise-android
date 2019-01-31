@@ -13,6 +13,7 @@ import kotlinx.android.synthetic.main.fragment_fingerprint_dialog.view.*
 import kotlinx.android.synthetic.main.onboarding_biometric_unlock.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
+import mozilla.lockbox.log
 import mozilla.lockbox.presenter.OnboardingFingerprintAuthPresenter
 import mozilla.lockbox.presenter.OnboardingFingerprintView
 import mozilla.lockbox.model.FingerprintAuthCallback
@@ -62,15 +63,13 @@ class OnboardingFingerprintAuthFragment : Fragment(), OnboardingFingerprintView 
     private fun dismiss() {}
 
     override fun onDestroyView() {
-        if (isEnablingDismissed) {
-//            _dismiss.onNext(Unit)
-        }
         compositeDisposable.clear()
 
         super.onDestroyView()
     }
 
     override fun onSucceeded() {
+        log.info("ELISE - Fingerprint SUCCESS")
         view!!.sensorDescription.setTextColor(resources.getColor(R.color.green, null))
         view!!.sensorDescription.text = getString(R.string.fingerprint_success)
         view!!.iconFingerprint.setImageResource(R.drawable.ic_fingerprint_success)
@@ -83,10 +82,14 @@ class OnboardingFingerprintAuthFragment : Fragment(), OnboardingFingerprintView 
     }
 
     override fun onFailed(error: String?) {
+        log.info("ELISE - Fingerprint FAILURE")
+
         showError(error ?: getString(R.string.fingerprint_not_recognized))
     }
 
     override fun onError(error: String?) {
+        log.info("ELISE - Fingerprint ERROR")
+
         showError(error ?: getString(R.string.fingerprint_sensor_error))
         view!!.postDelayed(
             { _authCallback.onNext(OnError) },

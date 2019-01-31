@@ -45,6 +45,7 @@ class OnboardingFingerprintAuthPresenter(
 
             view.authCallback
                 .subscribe {
+                    log.info("ELISE - success and authentication")
                     dispatcher.dispatch(
                         // use the fingerprint authentication here so it
                         // follows the settings logic to enable unlock
@@ -60,17 +61,24 @@ class OnboardingFingerprintAuthPresenter(
                 dispatcher.dispatch(RouteAction.SkipOnboarding)
             }?.addTo(compositeDisposable)
         } else {
+            log.info("ELISE - no fingerprint hardware")
+
             // just skip the route altogether, not follow Dismiss logic
             dispatcher.dispatch(RouteAction.SkipOnboarding)
         }
     }
 
     override fun onResume() {
+        log.info("ELISE - on resume")
+        // hitting here
         super.onResume()
         dispatcher.dispatch(FingerprintSensorAction.Start)
+        log.info("ELISE - on resume")
     }
 
     override fun onPause() {
+        log.info("ELISE - on pause")
+
         super.onPause()
         dispatcher.dispatch(FingerprintSensorAction.Stop)
     }
