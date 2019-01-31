@@ -218,6 +218,11 @@
     <string name="onboarding_skip">Skip for now</string>
     <!-- This is the description of the fingerprint icon on the onboarding screen. -->
     <string name="fingerprint_icon_description">Fingerprint image. </string>
+    <string name="onboarding_autofill_title">Let Firefox Lockbox fill in your passwords for you.</string>
+    <string name="onboarding_autofill_description">Update your device\'s Autofill settings to allow Firefox Lockbox to
+        fill passwords.
+    </string>
+    <string name="go_to_settings">Go to settings</string>
 
     <!-- This is the title for the final onboarding screen. -->
     <string name="all_set">You\'re all set!</string>

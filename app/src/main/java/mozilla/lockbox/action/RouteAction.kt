@@ -95,6 +95,16 @@ sealed class RouteAction(
             R.string.nav_menu_feedback,
             TelemetryEventObject.settings_provide_feedback)
     }
+
+    sealed class Onboarding(
+        eventObject: TelemetryEventObject
+    ) : RouteAction(TelemetryEventMethod.show, eventObject) {
+
+        object StartOnboarding : Onboarding(TelemetryEventObject.onboarding_biometric_unlock)
+        object SkipOnboarding : Onboarding(TelemetryEventObject.onboarding_skip)
+        object ContinueOnboarding : Onboarding(TelemetryEventObject.onboarding_continue)
+
+    }
 }
 
 data class OnboardingStatusAction(val onboardingInProgress: Boolean) : Action
