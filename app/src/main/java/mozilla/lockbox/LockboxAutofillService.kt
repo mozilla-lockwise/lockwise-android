@@ -20,6 +20,7 @@ import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.support.ParsedStructure
+import mozilla.lockbox.support.ParsedStructureBuilder
 
 @TargetApi(Build.VERSION_CODES.O)
 @ExperimentalCoroutinesApi
@@ -41,25 +42,25 @@ class LockboxAutofillService(
 
     override fun onFillRequest(request: FillRequest, cancellationSignal: CancellationSignal, callback: FillCallback) {
         val structure = request.fillContexts.last().structure
-        val parsedStructure = ParsedStructure(structure)
-        val requestingPackage = domainFromPackage(structure.activityComponent.packageName)
+        val parsedStructure = ParsedStructureBuilder(structure).build()
+        val packageName = parsedStructure.packageId ?: structure.activityComponent.packageName
+        val webDomain = parsedStructure.webDomain ?: domainFromPackage(packageName)
 
         if (parsedStructure.passwordId == null && parsedStructure.usernameId == null) {
             callback.onFailure("couldn't find a username or password field")
             return
         }
 
-        if (requestingPackage == null) {
+        if (webDomain == null) {
             callback.onFailure("unexpected package name structure")
             return
         }
 
         dataStore.list
-            .filter { !it.isEmpty() }
             .take(1)
             .subscribe { passwords ->
                 val possibleValues = passwords.filter {
-                    it.hostname.contains(requestingPackage, true)
+                    it.hostname.contains(webDomain, true)
                 }
                 val response = buildFillResponse(possibleValues, parsedStructure)
                 if (response == null) {
@@ -86,33 +87,28 @@ class LockboxAutofillService(
             return null
         }
 
-        val dataset = datasetForPossibleValues(possibleValues, parsedStructure)
-        // future parts of this method include adding any authentication steps
+        val builder = FillResponse.Builder()
 
-        return FillResponse.Builder()
-            .addDataset(dataset)
-            .build()
+        possibleValues
+            .map { serverPasswordToDataset(parsedStructure, it) }
+            .forEach { builder.addDataset(it) }
+
+        return builder.build()
     }
 
-    private fun datasetForPossibleValues(
-        possibleValues: List<ServerPassword>,
-        parsedStructure: ParsedStructure
-    ): Dataset {
+    private fun serverPasswordToDataset(parsedStructure: ParsedStructure, credential: ServerPassword): Dataset {
         val datasetBuilder = Dataset.Builder()
+        val usernamePresentation = RemoteViews(packageName, R.layout.autofill_item)
+        val passwordPresentation = RemoteViews(packageName, R.layout.autofill_item)
+        usernamePresentation.setTextViewText(R.id.presentationText, credential.username)
+        passwordPresentation.setTextViewText(R.id.presentationText, getString(R.string.password_for, credential.username))
 
-        possibleValues.forEach { credential ->
-            val usernamePresentation = RemoteViews(packageName, android.R.layout.simple_list_item_1)
-            val passwordPresentation = RemoteViews(packageName, android.R.layout.simple_list_item_1)
-            usernamePresentation.setTextViewText(android.R.id.text1, credential.username)
-            passwordPresentation.setTextViewText(android.R.id.text1, getString(R.string.password_for, credential.username))
+        parsedStructure.usernameId?.let {
+            datasetBuilder.setValue(it, AutofillValue.forText(credential.username), usernamePresentation)
+        }
 
-            parsedStructure.usernameId?.let {
-                datasetBuilder.setValue(it, AutofillValue.forText(credential.username), usernamePresentation)
-            }
-
-            parsedStructure.passwordId?.let {
-                datasetBuilder.setValue(it, AutofillValue.forText(credential.password), passwordPresentation)
-            }
+        parsedStructure.passwordId?.let {
+            datasetBuilder.setValue(it, AutofillValue.forText(credential.password), passwordPresentation)
         }
 
         return datasetBuilder.build()
