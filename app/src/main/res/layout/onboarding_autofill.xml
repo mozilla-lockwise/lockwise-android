@@ -81,7 +81,7 @@
         />
 
         <Button
-                android:id="@+id/sensorDescription"
+                android:id="@+id/goToSettings"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/go_to_settings"

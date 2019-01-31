@@ -20,10 +20,11 @@ import mozilla.lockbox.support.Constant
 @ExperimentalCoroutinesApi
 class OnboardingAutofillFragment : Fragment(), OnboardingAutofillView {
 
-    private val compositeDisposable = CompositeDisposable()
-
     override val onDismiss: Observable<Unit>
         get() = view!!.skipOnboarding.clicks()
+
+    override val onEnable: Observable<Unit>
+        get() = view!!.goToSettings.clicks()
 
 
     override fun onCreateView(

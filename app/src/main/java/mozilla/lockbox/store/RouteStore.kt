@@ -12,7 +12,6 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.ReplaySubject
 import io.reactivex.subjects.Subject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import mozilla.lockbox.action.OnboardingAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.extensions.filterNotNull
@@ -50,7 +49,7 @@ class RouteStore(
             .addTo(compositeDisposable)
 
         dispatcher.register
-            .filterByType(OnboardingAction.OnDismiss::class.java)
+            .filterByType(RouteAction.Onboarding.SkipOnboarding::class.java)
             .subscribe {
                 onboardingState.onNext(false)
                 chooseRoute()

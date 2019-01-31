@@ -12,22 +12,25 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
-import mozilla.lockbox.store.RouteStore
 
 interface OnboardingAutofillView {
     val onDismiss: Observable<Unit>
+    val onEnable: Observable<Unit>
 }
 
 @ExperimentalCoroutinesApi
 class OnboardingAutofillPresenter(
     private val view: OnboardingAutofillView,
-    private val dispatcher: Dispatcher = Dispatcher.shared,
-    private val routeStore: RouteStore = RouteStore.shared
+    private val dispatcher: Dispatcher = Dispatcher.shared
 ) : Presenter() {
 
     override fun onViewReady() {
         view.onDismiss.subscribe {
-            dispatcher.dispatch(RouteAction.SkipOnboarding)
+            dispatcher.dispatch(RouteAction.Onboarding.SkipOnboarding)
+        }?.addTo(compositeDisposable)
+
+        view.onEnable.subscribe {
+            dispatcher.dispatch(RouteAction.SettingList)
         }?.addTo(compositeDisposable)
     }
 }
