@@ -16,8 +16,6 @@ sealed class RouteAction(
     override val eventObject: TelemetryEventObject
 ) : TelemetryAction {
     object Welcome : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.login_welcome)
-    object Onboarding : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.onboarding_biometric_unlock)
-    object SkipOnboarding : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.onboarding_skip)
     object ItemList : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.entry_list)
     object Login : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.login_fxa)
     object SettingList : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.settings_list)
@@ -61,6 +59,16 @@ sealed class RouteAction(
             Constant.SendFeedback.uri,
             R.string.nav_menu_feedback,
             TelemetryEventObject.settings_provide_feedback)
+    }
+
+    sealed class Onboarding(
+        eventObject: TelemetryEventObject
+    ) : RouteAction(TelemetryEventMethod.show, eventObject) {
+
+        object StartOnboarding : Onboarding(TelemetryEventObject.onboarding_biometric_unlock)
+        object SkipOnboarding : Onboarding(TelemetryEventObject.onboarding_skip)
+        object ContinueOnboarding : Onboarding(TelemetryEventObject.onboarding_continue)
+
     }
 }
 
