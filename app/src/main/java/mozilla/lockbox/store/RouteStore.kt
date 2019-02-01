@@ -8,7 +8,6 @@ package mozilla.lockbox.store
 
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.ReplaySubject
 import io.reactivex.subjects.Subject
@@ -44,7 +43,7 @@ class RouteStore(
             .subscribe(routes as Subject)
 
         this.onboarding
-            .subscribe{ ob ->
+            .subscribe { ob ->
                 triggerOnboarding = ob
             }
             .addTo(compositeDisposable)
@@ -61,8 +60,6 @@ class RouteStore(
             .filterNotNull()
             .subscribe(routes)
 
-        // do we want to onboard if they disconnect their account and
-        // then re-login?
         dataStore.state
             .subscribe { state ->
                 when (state) {
@@ -75,17 +72,14 @@ class RouteStore(
 
     private fun dataStoreToRouteActions(storageState: DataStore.State): Optional<RouteAction> {
         return when (storageState) {
-            is DataStore.State.Unlocked -> chooseRoute()//RouteAction.ItemList
+            is DataStore.State.Unlocked -> chooseRoute()
             is DataStore.State.Locked -> return RouteAction.LockScreen.asOptional()
             is DataStore.State.Unprepared -> return RouteAction.Welcome.asOptional()
-            // bad. figure out how to make this work again
             else -> null!!
         }
     }
 
-
-    // how do I ensure that ItemList will be routed to after Onboarding completes?
-    private fun chooseRoute(): Optional<RouteAction>{
+    private fun chooseRoute(): Optional<RouteAction> {
         return when (triggerOnboarding) {
             true -> RouteAction.Onboarding.asOptional()
             else -> RouteAction.ItemList.asOptional()

@@ -8,7 +8,6 @@ package mozilla.lockbox.presenter
 
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
-import io.reactivex.subjects.Subject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.FingerprintSensorAction
@@ -17,14 +16,8 @@ import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
-import mozilla.lockbox.log
-import mozilla.lockbox.model.FingerprintAuthCallback
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.FingerprintStore.AuthenticationState as AuthenticationState
-import mozilla.lockbox.store.RouteStore
-import mozilla.lockbox.store.SettingStore
-import mozilla.lockbox.view.FingerprintAuthDialogFragment
-import mozilla.lockbox.view.OnboardingFingerprintAuthFragment
 import mozilla.lockbox.view.OnboardingFingerprintAuthFragment.AuthCallback as AuthCallback
 
 interface OnboardingFingerprintView {
@@ -39,7 +32,6 @@ interface OnboardingFingerprintView {
 class OnboardingFingerprintAuthPresenter(
     private val view: OnboardingFingerprintView,
     private val dispatcher: Dispatcher = Dispatcher.shared,
-    private val settingStore: SettingStore = SettingStore.shared,
     private val fingerprintStore: FingerprintStore = FingerprintStore.shared
 ) : Presenter() {
 
@@ -51,48 +43,27 @@ class OnboardingFingerprintAuthPresenter(
 
             view.authCallback
                 .subscribe {
-                    log.info("ELISE - success and authentication")
                     dispatcher.dispatch(FingerprintAuthAction.OnAuthentication(it))
                     dispatcher.dispatch(SettingAction.UnlockWithFingerprint(true))
                     dispatcher.dispatch(RouteAction.ItemList)
-
-//                        // use the fingerprint authentication here so it
-//                        // follows the settings logic to enable unlock
-//                        FingerprintAuthAction.OnAuthentication(it)
-//
-//                        FingerprintAuthAction.OnAuthentication(
-//                            FingerprintAuthCallback.OnAuth
-//                        )
-//                    )
-
                 }
                 .addTo(compositeDisposable)
 
-            // OnboardingAction.OnDismiss can be used in the next onboarding screens too
             view.onDismiss.subscribe {
-                log.info("ELISE - dismiss")
                 dispatcher.dispatch(OnboardingAction.OnDismiss)
                 dispatcher.dispatch(RouteAction.SkipOnboarding)
             }?.addTo(compositeDisposable)
         } else {
-            log.info("ELISE - no fingerprint hardware")
-
-            // just skip the route altogether, not follow Dismiss logic
             dispatcher.dispatch(RouteAction.SkipOnboarding)
         }
     }
 
     override fun onResume() {
-        log.info("ELISE - on resume")
-        // hitting here
         super.onResume()
         dispatcher.dispatch(FingerprintSensorAction.Start)
-        log.info("ELISE - on resume")
     }
 
     override fun onPause() {
-        log.info("ELISE - on pause")
-
         super.onPause()
         dispatcher.dispatch(FingerprintSensorAction.Stop)
     }

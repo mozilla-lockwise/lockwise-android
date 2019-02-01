@@ -6,26 +6,20 @@ import android.view.View
 import android.view.ViewGroup
 import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
-import kotlinx.android.synthetic.main.fragment_fingerprint_dialog.view.*
 import kotlinx.android.synthetic.main.onboarding_biometric_unlock.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
-import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.log
 import mozilla.lockbox.presenter.OnboardingFingerprintAuthPresenter
 import mozilla.lockbox.presenter.OnboardingFingerprintView
 import mozilla.lockbox.model.FingerprintAuthCallback
 import mozilla.lockbox.support.Constant
-import mozilla.lockbox.view.OnboardingFingerprintAuthFragment.AuthCallback.*
+import mozilla.lockbox.view.OnboardingFingerprintAuthFragment.AuthCallback.OnAuth
+import mozilla.lockbox.view.OnboardingFingerprintAuthFragment.AuthCallback.OnError
 
 @ExperimentalCoroutinesApi
 class OnboardingFingerprintAuthFragment : Fragment(), OnboardingFingerprintView {
-
-    private val compositeDisposable = CompositeDisposable()
 
     private val _authCallback = PublishSubject.create<AuthCallback>()
     override val authCallback: Observable<AuthCallback> get() = _authCallback
@@ -60,8 +54,6 @@ class OnboardingFingerprintAuthFragment : Fragment(), OnboardingFingerprintView 
             _authCallback.onNext(OnAuth)
             isEnablingDismissed = false
         }, Constant.Onboarding.SUCCESS_DELAY_MILLIS)
-
-
     }
 
     override fun onFailed(error: String?) {
