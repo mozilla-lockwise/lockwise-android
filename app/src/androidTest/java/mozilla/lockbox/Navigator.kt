@@ -24,6 +24,7 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.robots.accountSettingScreen
 import mozilla.lockbox.robots.disconnectDisclaimer
 import mozilla.lockbox.robots.filteredItemList
+import mozilla.lockbox.robots.fingerprintOnboardingScreen
 import mozilla.lockbox.robots.fxaLogin
 import mozilla.lockbox.robots.itemDetail
 import mozilla.lockbox.robots.itemList
@@ -92,18 +93,31 @@ class Navigator {
         fxaLogin { exists() }
     }
 
+    fun gotoFingerprintOnboarding(goManually: Boolean = false) {
+        if (goManually) {
+            gotoFxALogin()
+            fxaLogin { tapPlaceholderLogin() }
+        } else {
+            Dispatcher.shared.dispatch(LifecycleAction.UseTestData)
+            log.info("blocking for the routes")
+        }
+        checkAtFingerprintOnboarding()
+    }
+
+    fun checkAtFingerprintOnboarding() {
+        fingerprintOnboardingScreen { exists() }
+    }
+
     fun checkAtWelcome() {
         welcome { exists() }
     }
 
     fun gotoItemList(goManually: Boolean = false) {
         if (goManually) {
-
             gotoFxALogin()
-
             fxaLogin { tapPlaceholderLogin() }
-            // onboarding
-            // tap skip
+            gotoFingerprintOnboarding()
+            fingerprintOnboardingScreen { tapSkip() }
         } else {
             Dispatcher.shared.dispatch(LifecycleAction.UseTestData)
             log.info("blocking for the routes")

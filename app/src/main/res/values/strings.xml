@@ -217,6 +217,8 @@
     <string name="onboarding_unlock_description">Give Firefox Lockbox permission to unlock this app with the fingerprint sensor.</string>
     <!-- This is the description of the button to skip the onboarding for biometric unlock with the fingerprint sensor. -->
     <string name="onboarding_skip">Skip for now</string>
+    <!-- This is the description of the fingerprint icon on the onboarding screen. -->
+    <string name="fingerprint_icon_description">Fingerprint image. </string>
 
 
 </resources>

@@ -53,13 +53,4 @@ class RouteStoreTest {
 
         routeObserver.assertEmpty()
     }
-
-    @Test
-    fun `trigger onboarding when first time login`() {
-        val action = RouteAction.Onboarding
-        dispatcher.dispatch(action)
-
-        dispatcherObserver.assertLastValue(RouteAction.Onboarding)
-//        onboardingObserver.assertValue(true)
-    }
 }
