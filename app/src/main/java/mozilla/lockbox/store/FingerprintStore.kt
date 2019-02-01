@@ -19,7 +19,6 @@ import mozilla.lockbox.R
 import mozilla.lockbox.action.FingerprintSensorAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
-import mozilla.lockbox.log
 import java.io.IOException
 import java.security.InvalidAlgorithmParameterException
 import java.security.InvalidKeyException
@@ -90,8 +89,6 @@ open class FingerprintStore(
     val isKeyguardDeviceSecure get() = keyguardManager.isDeviceSecure
 
     private fun initFingerprint() {
-        log.info("ELISE - init fingerprint")
-
         setupKeyStoreAndKeyGenerator()
         createKey(DEFAULT_KEY)
         val (defaultCipher: javax.crypto.Cipher, _: javax.crypto.Cipher) = setupCiphers()
@@ -101,8 +98,6 @@ open class FingerprintStore(
     }
 
     private fun startListening(cryptoObject: FingerprintManager.CryptoObject) {
-        log.info("ELISE - start listening")
-        log.info("ELISE - isFingerprintAuthAvailable: $isFingerprintAuthAvailable")
         if (!isFingerprintAuthAvailable) {
             return
         }
@@ -225,7 +220,6 @@ open class FingerprintStore(
 
         override fun onAuthenticationFailed() {
             super.onAuthenticationFailed()
-//            _state.onNext(AuthenticationState.Failed())
             _state.onNext(AuthenticationState.Failed(context.getString(R.string.fingerprint_not_recognized)))
         }
     }

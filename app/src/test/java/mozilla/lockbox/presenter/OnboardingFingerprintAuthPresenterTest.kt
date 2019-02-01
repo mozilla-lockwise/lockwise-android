@@ -6,6 +6,7 @@ import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import mozilla.lockbox.action.FingerprintSensorAction
 import mozilla.lockbox.action.OnboardingAction
+import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
@@ -68,8 +69,6 @@ class OnboardingFingerprintAuthPresenterTest {
     val dispatcher = Dispatcher()
     private val view = Mockito.spy(FakeView())
 
-//    private val fingerprintStore = Mockito.spy(FingerprintDialogPresenterTest.FakeFingerprintStore())
-
     private val fingerprintStore = FakeFingerprintStore()
 
     @Mock
@@ -77,7 +76,7 @@ class OnboardingFingerprintAuthPresenterTest {
 
     private val dispatcherObserver = TestObserver.create<Action>()
 
-    val subject = OnboardingFingerprintAuthPresenter(view, dispatcher, routeStore, fingerprintStore)
+    val subject = OnboardingFingerprintAuthPresenter(view, dispatcher, fingerprintStore)
 
     @Before
     fun setUp() {
@@ -108,7 +107,8 @@ class OnboardingFingerprintAuthPresenterTest {
     @Test
     fun `dismiss dialog when skip is tapped`() {
         view.onDismiss.onNext(Unit)
-        dispatcherObserver.assertValue(OnboardingAction.OnDismiss)
+        dispatcherObserver.assertValueAt(0, OnboardingAction.OnDismiss)
+        dispatcherObserver.assertValueAt(1, RouteAction.SkipOnboarding)
     }
 
     @Test
