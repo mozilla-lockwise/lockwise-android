@@ -21,6 +21,7 @@ import mozilla.lockbox.R
 import mozilla.lockbox.model.FingerprintAuthCallback
 import mozilla.lockbox.presenter.FingerprintDialogPresenter
 import mozilla.lockbox.presenter.FingerprintDialogView
+import mozilla.lockbox.support.Constant
 
 class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
     private val compositeDisposable = CompositeDisposable()
@@ -70,7 +71,7 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
                 _authCallback.onNext(AuthCallback.OnAuth)
                 isEnablingDismissed = false
                 dismiss()
-            }, SUCCESS_DELAY_MILLIS)
+            }, Constant.Onboarding.SUCCESS_DELAY_MILLIS)
         }
     }
 
@@ -84,7 +85,7 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
         view!!.imageView.postDelayed({
             _authCallback.onNext(AuthCallback.OnError)
             dismiss()
-        }, ERROR_TIMEOUT_MILLIS)
+        }, Constant.Onboarding.ERROR_TIMEOUT_MILLIS)
     }
 
     override fun onFailed(error: String?) {
@@ -97,7 +98,7 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
             text = error
             setTextColor(resources.getColor(R.color.red, null))
             removeCallbacks(resetErrorTextRunnable)
-            postDelayed(resetErrorTextRunnable, ERROR_TIMEOUT_MILLIS)
+            postDelayed(resetErrorTextRunnable, Constant.Onboarding.ERROR_TIMEOUT_MILLIS)
         }
     }
 
@@ -121,11 +122,6 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
             dialog.setDismissMessage(null)
         }
         super.onDestroyView()
-    }
-
-    companion object {
-        private const val ERROR_TIMEOUT_MILLIS: Long = 1600
-        private const val SUCCESS_DELAY_MILLIS: Long = 1300
     }
 
     sealed class AuthCallback : FingerprintAuthCallback {
