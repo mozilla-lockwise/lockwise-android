@@ -9,27 +9,22 @@ package mozilla.lockbox.presenter
 import android.net.Uri
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.addTo
-import io.reactivex.subjects.ReplaySubject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.AccountAction
 import mozilla.lockbox.action.LifecycleAction
-import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.NetworkAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.NetworkStore
-import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.support.Constant
 
 interface FxALoginView {
     var webViewRedirect: ((url: Uri?) -> Boolean)
     val skipFxAClicks: Observable<Unit>?
-    fun handleNetworkError(networkErrorVisibility: Boolean)
     val retryNetworkConnectionClicks: Observable<Unit>
-//    var triggerOnboarding: Consumer<Boolean>
+    fun handleNetworkError(networkErrorVisibility: Boolean)
     fun loadURL(url: String)
 }
 
@@ -38,31 +33,12 @@ class FxALoginPresenter(
     private val view: FxALoginView,
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val networkStore: NetworkStore = NetworkStore.shared,
-    private val accountStore: AccountStore = AccountStore.shared,
-    private val routeStore: RouteStore = RouteStore.shared
+    private val accountStore: AccountStore = AccountStore.shared
 ) : Presenter() {
 
     fun isRedirectUri(uri: String?): Boolean = uri?.startsWith(Constant.FxA.redirectUri) ?: false
 
-    private val triggerOnboarding: Consumer<Boolean>
-        get() = Consumer { onboarding ->
-            if(onboarding == true){
-                nextRouteSubject.onNext(RouteAction.Onboarding)
-            }
-            else {
-                // is this needed?
-                nextRouteSubject.onNext(RouteAction.SkipOnboarding)
-            }
-        }
-
-    private var nextRouteSubject = ReplaySubject.createWithSize<RouteAction>(1)
-    var nextRoute: Observable<RouteAction> = nextRouteSubject
-
     override fun onViewReady() {
-        routeStore.onboarding
-            .subscribe{ this::triggerOnboarding }
-            .addTo(compositeDisposable)
-
         view.webViewRedirect = { url ->
             val urlStr = url?.toString() ?: null
             val result = isRedirectUri(urlStr)
