@@ -19,6 +19,7 @@
             app:layout_constraintTop_toTopOf="parent">
         <ImageView
                 android:id="@+id/iconLock"
+                android:contentDescription="@string/lock_icon_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/color_primary"
@@ -80,6 +81,7 @@
 
         <ImageView
                 android:id="@+id/iconFingerprint"
+                android:contentDescription="@string/fingerprint_icon_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="25dp"

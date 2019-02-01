@@ -73,16 +73,17 @@ class RouteStore(
     private fun dataStoreToRouteActions(storageState: DataStore.State): Optional<RouteAction> {
         return when (storageState) {
             is DataStore.State.Unlocked -> chooseRoute()
-            is DataStore.State.Locked -> return RouteAction.LockScreen.asOptional()
-            is DataStore.State.Unprepared -> return RouteAction.Welcome.asOptional()
-            else -> null!!
-        }
+            is DataStore.State.Locked -> RouteAction.LockScreen
+            is DataStore.State.Unprepared -> RouteAction.Welcome
+            else -> null
+        }.asOptional()
     }
 
-    private fun chooseRoute(): Optional<RouteAction> {
-        return when (triggerOnboarding) {
-            true -> RouteAction.Onboarding.asOptional()
-            else -> RouteAction.ItemList.asOptional()
+    private fun chooseRoute(): RouteAction {
+        return if (triggerOnboarding!!) {
+            RouteAction.Onboarding
+        } else {
+            RouteAction.ItemList
         }
     }
 }
