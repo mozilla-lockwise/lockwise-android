@@ -47,4 +47,9 @@ object Constant {
         const val autoLockTimerDate = "auto-lock-timer-date"
         const val bootID = "boot-id"
     }
+
+    object Onboarding {
+        const val ERROR_TIMEOUT_MILLIS: Long = 1600
+        const val SUCCESS_DELAY_MILLIS: Long = 1300
+    }
 }

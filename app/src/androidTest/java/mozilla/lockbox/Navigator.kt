@@ -98,11 +98,17 @@ class Navigator {
 
     fun gotoItemList(goManually: Boolean = false) {
         if (goManually) {
+
             gotoFxALogin()
+
             fxaLogin { tapPlaceholderLogin() }
+            // onboarding
+            // tap skip
         } else {
             Dispatcher.shared.dispatch(LifecycleAction.UseTestData)
             log.info("blocking for the routes")
+            // block until onboarding
+            // tap skip
             blockUntil(RouteStore.shared.routes, RouteAction.ItemList)
         }
         checkAtItemList()

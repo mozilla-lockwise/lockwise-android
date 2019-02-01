@@ -49,20 +49,16 @@ class FxALoginPresenter(
             if(onboarding == true){
                 nextRouteSubject.onNext(RouteAction.Onboarding)
             }
-//            else {
-//                // is this needed?
-//                nextRouteSubject.onNext(RouteAction.SkipOnboarding)
-//            }
+            else {
+                // is this needed?
+                nextRouteSubject.onNext(RouteAction.SkipOnboarding)
+            }
         }
 
     private var nextRouteSubject = ReplaySubject.createWithSize<RouteAction>(1)
     var nextRoute: Observable<RouteAction> = nextRouteSubject
 
     override fun onViewReady() {
-
-        // the account store will have credentials once they log in, so we want to
-        // call onboarding when the login succeeds but has no previous state in the datastore
-
         routeStore.onboarding
             .subscribe{ this::triggerOnboarding }
             .addTo(compositeDisposable)

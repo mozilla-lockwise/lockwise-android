@@ -65,7 +65,7 @@ open class FingerprintStore(
     init {
         dispatcher.register.filterByType(FingerprintSensorAction::class.java)
             .doOnDispose { stopListening() }
-            .filter { isFingerprintAvailable }
+            .filter { isFingerprintAuthAvailable }
             .subscribe {
                 when (it) {
                     is FingerprintSensorAction.Start -> initFingerprint()
@@ -86,10 +86,6 @@ open class FingerprintStore(
 
     open val isFingerprintAuthAvailable: Boolean
         get() = fingerprintManager.isHardwareDetected && fingerprintManager.hasEnrolledFingerprints()
-
-    // java.lang.IllegalStateException: At least one fingerprint must be enrolled to create keys requiring user authentication for every use
-    open val isFingerprintAvailable: Boolean
-        get() = fingerprintManager.isHardwareDetected && !fingerprintManager.hasEnrolledFingerprints()
 
     val isKeyguardDeviceSecure get() = keyguardManager.isDeviceSecure
 
@@ -229,7 +225,8 @@ open class FingerprintStore(
 
         override fun onAuthenticationFailed() {
             super.onAuthenticationFailed()
-            _state.onNext(AuthenticationState.Failed())
+//            _state.onNext(AuthenticationState.Failed())
+            _state.onNext(AuthenticationState.Failed(context.getString(R.string.fingerprint_not_recognized)))
         }
     }
 }

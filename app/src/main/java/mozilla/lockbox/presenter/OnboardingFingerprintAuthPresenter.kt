@@ -8,17 +8,23 @@ package mozilla.lockbox.presenter
 
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
+import io.reactivex.subjects.Subject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.FingerprintSensorAction
 import mozilla.lockbox.action.OnboardingAction
 import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
+import mozilla.lockbox.model.FingerprintAuthCallback
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.FingerprintStore.AuthenticationState as AuthenticationState
 import mozilla.lockbox.store.RouteStore
+import mozilla.lockbox.store.SettingStore
+import mozilla.lockbox.view.FingerprintAuthDialogFragment
+import mozilla.lockbox.view.OnboardingFingerprintAuthFragment
 import mozilla.lockbox.view.OnboardingFingerprintAuthFragment.AuthCallback as AuthCallback
 
 interface OnboardingFingerprintView {
@@ -33,12 +39,12 @@ interface OnboardingFingerprintView {
 class OnboardingFingerprintAuthPresenter(
     private val view: OnboardingFingerprintView,
     private val dispatcher: Dispatcher = Dispatcher.shared,
-    private val routeStore: RouteStore = RouteStore.shared,
+    private val settingStore: SettingStore = SettingStore.shared,
     private val fingerprintStore: FingerprintStore = FingerprintStore.shared
 ) : Presenter() {
 
     override fun onViewReady() {
-        if (fingerprintStore.fingerprintManager.isHardwareDetected) {
+        if (fingerprintStore.isFingerprintAuthAvailable) {
             fingerprintStore.authState
                 .subscribe(this::updateState)
                 .addTo(compositeDisposable)
@@ -46,11 +52,19 @@ class OnboardingFingerprintAuthPresenter(
             view.authCallback
                 .subscribe {
                     log.info("ELISE - success and authentication")
-                    dispatcher.dispatch(
-                        // use the fingerprint authentication here so it
-                        // follows the settings logic to enable unlock
-                        FingerprintAuthAction.OnAuthentication(it)
-                    )
+                    dispatcher.dispatch(FingerprintAuthAction.OnAuthentication(it))
+                    dispatcher.dispatch(SettingAction.UnlockWithFingerprint(true))
+                    dispatcher.dispatch(RouteAction.ItemList)
+
+//                        // use the fingerprint authentication here so it
+//                        // follows the settings logic to enable unlock
+//                        FingerprintAuthAction.OnAuthentication(it)
+//
+//                        FingerprintAuthAction.OnAuthentication(
+//                            FingerprintAuthCallback.OnAuth
+//                        )
+//                    )
+
                 }
                 .addTo(compositeDisposable)
 
