@@ -11,7 +11,6 @@ import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.RouteAction
-import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import org.junit.Before
