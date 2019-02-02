@@ -47,6 +47,7 @@ class FingerprintOnboardingPresenter(
                     else -> false
                 }
                 dispatcher.dispatch(SettingAction.UnlockWithFingerprint(unlock))
+                dispatcher.dispatch(RouteAction.Onboarding.Autofill)
                 dispatcher.dispatch(RouteAction.OnboardingConfirmation)
             }
             .addTo(compositeDisposable)
@@ -54,12 +55,12 @@ class FingerprintOnboardingPresenter(
         view.onDismiss.subscribe {
             dispatcher.dispatch(RouteAction.OnboardingConfirmation)
             dispatcher.dispatch(SettingAction.UnlockWithFingerprint(false))
+            dispatcher.dispatch(RouteAction.Onboarding.Autofill)
         }?.addTo(compositeDisposable)
     }
 
     override fun onResume() {
         super.onResume()
-        // but not calling FingerprintSensorAction.Start
         dispatcher.dispatch(FingerprintSensorAction.Start)
     }
 

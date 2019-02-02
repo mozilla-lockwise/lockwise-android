@@ -19,7 +19,6 @@ sealed class RouteAction(
     override val eventObject: TelemetryEventObject
 ) : TelemetryAction {
     object Welcome : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.login_welcome)
-    object FingerprintOnboarding : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.onboarding_biometric_unlock)
     object OnboardingConfirmation : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.login_onboarding_confirmation)
     object ItemList : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.entry_list)
     object Login : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.login_fxa)
@@ -29,8 +28,11 @@ sealed class RouteAction(
     object LockScreen : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.lock_screen)
     object Filter : RouteAction(TelemetryEventMethod.tap, TelemetryEventObject.filter)
     data class ItemDetail(val id: String) : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.entry_detail)
-    data class OpenWebsite(val url: String) : RouteAction(TelemetryEventMethod.tap, TelemetryEventObject.open_in_browser)
-    data class SystemSetting(val setting: SettingIntent) : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.settings_system)
+    data class OpenWebsite(val url: String) :
+        RouteAction(TelemetryEventMethod.tap, TelemetryEventObject.open_in_browser)
+
+    data class SystemSetting(val setting: SettingIntent) :
+        RouteAction(TelemetryEventMethod.show, TelemetryEventObject.settings_system)
 
     sealed class Dialog(
         val positiveButtonAction: Action? = null,
@@ -58,7 +60,8 @@ sealed class RouteAction(
         object FaqList : AppWebPage(
             Constant.Faq.topUri,
             R.string.nav_menu_faq,
-            TelemetryEventObject.settings_faq)
+            TelemetryEventObject.settings_faq
+        )
 
         object FaqWelcome : AppWebPage(
             Constant.Faq.savedUri,
@@ -93,17 +96,15 @@ sealed class RouteAction(
         object SendFeedback : AppWebPage(
             Constant.SendFeedback.uri,
             R.string.nav_menu_feedback,
-            TelemetryEventObject.settings_provide_feedback)
+            TelemetryEventObject.settings_provide_feedback
+        )
     }
 
     sealed class Onboarding(
         eventObject: TelemetryEventObject
     ) : RouteAction(TelemetryEventMethod.show, eventObject) {
-
-        object StartOnboarding : Onboarding(TelemetryEventObject.onboarding_biometric_unlock)
-        object SkipOnboarding : Onboarding(TelemetryEventObject.onboarding_skip)
-        object ContinueOnboarding : Onboarding(TelemetryEventObject.onboarding_continue)
-
+        object FingerprintAuth : Onboarding(TelemetryEventObject.onboarding_fingerprint)
+        object Autofill : Onboarding(TelemetryEventObject.onboarding_autofill)
     }
 }
 

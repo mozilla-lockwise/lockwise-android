@@ -6,12 +6,20 @@
 
 package mozilla.lockbox.presenter
 
+import android.annotation.TargetApi
+import android.os.Build
+import androidx.annotation.RequiresApi
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import mozilla.lockbox.action.OnboardingStatusAction
 import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.action.SettingAction
+import mozilla.lockbox.action.SettingIntent
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
+import mozilla.lockbox.log
+import mozilla.lockbox.store.SettingStore
 
 interface OnboardingAutofillView {
     val onDismiss: Observable<Unit>
@@ -24,13 +32,27 @@ class OnboardingAutofillPresenter(
     private val dispatcher: Dispatcher = Dispatcher.shared
 ) : Presenter() {
 
+    @TargetApi(Build.VERSION_CODES.O)
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewReady() {
+
+        // if we can't autofill, just skip altogether
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            dispatcher.dispatch(OnboardingStatusAction(false))
+        }
+
         view.onDismiss.subscribe {
-            dispatcher.dispatch(RouteAction.Onboarding.SkipOnboarding)
+            dispatcher.dispatch(OnboardingStatusAction(false))
         }?.addTo(compositeDisposable)
 
         view.onEnable.subscribe {
-            dispatcher.dispatch(RouteAction.SettingList)
+            if(SettingStore.shared.autofillAvailable){
+                log.error("ELISE TRUE ")
+                dispatcher.dispatch(SettingAction.Autofill(true))
+                dispatcher.dispatch(RouteAction.SystemSetting(SettingIntent.Autofill))
+            }
+            log.error("ELISE FALSE ")
+            dispatcher.dispatch(OnboardingStatusAction(false))
         }?.addTo(compositeDisposable)
     }
 }

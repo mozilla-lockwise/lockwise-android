@@ -97,7 +97,7 @@ class FingerprintOnboardingPresenterTest {
     }
 
     @Test
-    fun `dismiss dialog when skip is tapped`() {
+    fun `move to next screen when skip is tapped`() {
         view.onDismiss.onNext(Unit)
         dispatcherObserver.assertValueAt(0, RouteAction.OnboardingConfirmation)
         dispatcherObserver.assertValueAt(1, SettingAction.UnlockWithFingerprint(false))

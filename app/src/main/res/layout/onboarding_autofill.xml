@@ -19,6 +19,7 @@
             app:layout_constraintTop_toTopOf="parent">
         <ImageView
                 android:id="@+id/iconAutofill"
+                android:contentDescription="@string/onboarding_autofill_image_description"
                 android:layout_width="0dp"
                 android:layout_weight="0.76"
                 android:layout_height="wrap_content"
@@ -71,9 +72,10 @@
                 android:textColor="@color/text_grey"
                 android:lineSpacingExtra="5sp"
                 android:gravity="center_horizontal"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="12dp"
                 android:layout_marginStart="25dp"
                 android:layout_marginEnd="25dp"
+
                 android:text="@string/onboarding_autofill_description"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -82,24 +84,30 @@
 
         <Button
                 android:id="@+id/goToSettings"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/go_to_settings"
                 android:textColor="@color/text_white"
                 android:backgroundTint="@color/color_primary"
-                android:layout_marginTop="98dp"
                 android:layout_marginBottom="31dp"
                 android:textSize="14sp"
                 android:fontFamily="sans-serif-medium"
                 android:textStyle="normal"
                 android:letterSpacing="0.09"
                 android:lineSpacingExtra="2sp"
-                android:gravity="center_horizontal"
+                android:gravity="center_horizontal|center_vertical"
+                android:background="@drawable/rounded_corner_selector"
                 android:textAllCaps="true"
                 android:elevation="1dp"
+                android:layout_marginTop="70dp"
+                android:layout_marginStart="90dp"
+                android:layout_marginEnd="90dp"
+                android:paddingEnd="18dp"
+                android:paddingStart="18dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/autofillDescription"
+                app:layout_constraintBottom_toTopOf="@id/skipOnboarding"
 
         />
 
@@ -107,6 +115,7 @@
                 android:id="@+id/skipOnboarding"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center_horizontal|center_vertical"
                 android:text="@string/onboarding_skip"
                 android:textAllCaps="true"
                 android:textSize="14sp"
@@ -119,11 +128,11 @@
                 android:shadowColor="@color/background_white"
                 android:backgroundTint="@color/background_white"
                 android:stateListAnimator="@null"
-                android:layout_marginTop="31dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginBottom="26dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/sensorDescription"
+                app:layout_constraintTop_toBottomOf="@id/goToSettings"
         />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
