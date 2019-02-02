@@ -81,7 +81,7 @@ class RouteStore(
 
     private fun chooseRoute(): RouteAction {
         return if (triggerOnboarding!!) {
-            RouteAction.Onboarding
+            RouteAction.Onboarding.StartOnboarding
         } else {
             RouteAction.ItemList
         }

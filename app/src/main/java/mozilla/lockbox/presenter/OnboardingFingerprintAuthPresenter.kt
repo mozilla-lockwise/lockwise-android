@@ -51,10 +51,10 @@ class OnboardingFingerprintAuthPresenter(
 
             view.onDismiss.subscribe {
                 dispatcher.dispatch(OnboardingAction.OnDismiss)
-                dispatcher.dispatch(RouteAction.SkipOnboarding)
+                dispatcher.dispatch(RouteAction.Onboarding.SkipOnboarding)
             }?.addTo(compositeDisposable)
         } else {
-            dispatcher.dispatch(RouteAction.SkipOnboarding)
+            dispatcher.dispatch(RouteAction.Onboarding.SkipOnboarding)
         }
     }
 
