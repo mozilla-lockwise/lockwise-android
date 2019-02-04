@@ -12,10 +12,10 @@ import android.service.autofill.SaveCallback
 import android.service.autofill.SaveRequest
 import android.view.autofill.AutofillValue
 import android.widget.RemoteViews
-import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
+import io.reactivex.rxkotlin.toObservable
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -33,7 +33,9 @@ import kotlin.coroutines.CoroutineContext
 data class FillablePassword(
     val domain: String,
     val entry: ServerPassword
-)
+) {
+    fun matches(expected: String): Boolean = domain.equals(expected, true)
+}
 
 @TargetApi(Build.VERSION_CODES.O)
 @ExperimentalCoroutinesApi
@@ -82,21 +84,20 @@ class LockboxAutofillService(
             .toSingle("")
             .toObservable()
 
-        // convert a list of ServerPasswords into a list of (psl+1, username, password)
+        // convert a list of ServerPasswords into a list of (psl+1, ServerPassword)
         val passwords = dataStore.list
             .take(1)
-            .flatMap {
-                Observable.merge(it.map {sp ->
-                    val host = URI.create(sp.hostname).host
-                    publicSuffixList.getPublicSuffixPlusOne(host)
-                        .asMaybe(coroutineContext)
-                        .toSingle("")
-                        .toObservable()
-                        .filter { !it.isEmpty() }
-                        .map { domain ->
-                            FillablePassword(domain, sp)
-                        }
-                })
+            .switchMap {
+                it.toObservable()
+                    .switchMap {sp ->
+                        val host = URI.create(sp.hostname).host
+                        publicSuffixList.getPublicSuffixPlusOne(host)
+                            .asMaybe(coroutineContext)
+                            .toSingle("")
+                            .filter { !it.isEmpty() }
+                            .toObservable()
+                            .map{ FillablePassword(it, sp) }
+                    }
             }
             .toList()
             .toObservable()
@@ -104,14 +105,14 @@ class LockboxAutofillService(
         Observables.combineLatest(domainObs, passwords)
             .subscribe {
                 val expected = it.first
-                if (it.first.isEmpty()) {
+                if (expected.isEmpty()) {
                     callback.onFailure("no web domain to match against")
                     return@subscribe
                 }
 
-                val possibleValues = it.second.filter {
-                    it.domain.equals(expected, true)
-                }.map { it.entry }
+                val possibleValues = it.second
+                    .filter { it.matches(expected) }
+                    .map { it.entry }
                 val response = buildFillResponse(possibleValues, parsedStructure)
                 if (response == null) {
                     callback.onFailure("no logins found for this domain")
