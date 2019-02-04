@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.onboarding_biometric_unlock.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -19,6 +20,7 @@ import mozilla.lockbox.view.OnboardingFingerprintAuthFragment.AuthCallback.OnErr
 
 @ExperimentalCoroutinesApi
 class OnboardingFingerprintAuthFragment : Fragment(), OnboardingFingerprintView {
+    private val compositeDisposable = CompositeDisposable()
 
     private val _authCallback = PublishSubject.create<AuthCallback>()
     override val authCallback: Observable<AuthCallback> get() = _authCallback
@@ -55,11 +57,11 @@ class OnboardingFingerprintAuthFragment : Fragment(), OnboardingFingerprintView 
     }
 
     override fun onFailed(error: String?) {
-        showError(getString(R.string.fingerprint_not_recognized))
+        showError(error ?: getString(R.string.fingerprint_not_recognized))
     }
 
     override fun onError(error: String?) {
-        showError(getString(R.string.fingerprint_sensor_error))
+        showError(error ?: getString(R.string.fingerprint_sensor_error))
         view!!.postDelayed(
             { _authCallback.onNext(OnError) },
             Constant.Onboarding.ERROR_TIMEOUT_MILLIS
@@ -68,11 +70,12 @@ class OnboardingFingerprintAuthFragment : Fragment(), OnboardingFingerprintView 
 
     private fun showError(error: CharSequence) {
         view!!.iconFingerprint.setImageResource(R.drawable.ic_fingerprint_fail)
-        view!!.sensorDescription.text = error
-        view!!.sensorDescription.setTextColor(resources.getColor(R.color.red, null))
-
-        view!!.removeCallbacks(resetErrorTextRunnable)
-        view!!.postDelayed(resetErrorTextRunnable, Constant.Onboarding.ERROR_TIMEOUT_MILLIS)
+        view!!.sensorDescription.run {
+            text = error
+            setTextColor(resources.getColor(R.color.red, null))
+            removeCallbacks(resetErrorTextRunnable)
+            postDelayed(resetErrorTextRunnable, Constant.Onboarding.ERROR_TIMEOUT_MILLIS)
+        }
     }
 
     private val resetErrorTextRunnable = Runnable {
