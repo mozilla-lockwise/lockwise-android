@@ -23,7 +23,8 @@ import mozilla.lockbox.support.asOptional
 @ExperimentalCoroutinesApi
 class RouteStore(
     dispatcher: Dispatcher = Dispatcher.shared,
-    dataStore: DataStore = DataStore.shared
+    dataStore: DataStore = DataStore.shared,
+    fingerprintStore: FingerprintStore = FingerprintStore.shared
 ) {
     internal val compositeDisposable = CompositeDisposable()
 
@@ -44,7 +45,7 @@ class RouteStore(
 
         this.onboarding
             .subscribe { ob ->
-                triggerOnboarding = ob
+                triggerOnboarding = ob && fingerprintStore.isFingerprintAuthAvailable
             }
             .addTo(compositeDisposable)
 
