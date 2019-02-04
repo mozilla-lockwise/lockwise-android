@@ -33,7 +33,7 @@ import mozilla.lockbox.support.isTesting
 
 sealed class LogProvider {
     companion object {
-        val log: Logger = Logger("Log")
+        val log: Logger = Logger("Lockbox")
     }
 }
 

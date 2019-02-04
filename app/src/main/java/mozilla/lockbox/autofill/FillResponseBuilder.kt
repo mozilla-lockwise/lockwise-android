@@ -11,30 +11,39 @@ import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.R
 import mozilla.lockbox.support.ParsedStructure
 import mozilla.lockbox.view.AuthActivity
+import java.net.URL
 
 @TargetApi(Build.VERSION_CODES.O)
 class FillResponseBuilder(
     private val parsedStructure: ParsedStructure,
-    private val webDomain: String
+    private val hostname: String
 ) {
     fun buildAuthenticationFillResponse(context: Context): FillResponse {
         val responseBuilder = FillResponse.Builder()
 
+        val authPresentation = RemoteViews(context.packageName, R.layout.autofill_item).apply {
+            val callToAction = context.resources.getString(R.string.autofill_authenticate_cta)
+            setTextViewText(R.id.presentationText, callToAction)
+        }
+
         val sender = AuthActivity.getAuthIntentSender(context, this)
         val autofillIds = arrayOf(parsedStructure.usernameId, parsedStructure.passwordId)
-
-        val authPresentation = RemoteViews(context.packageName, R.layout.autofill_item).apply {
-            setTextViewText(R.id.presentationText, "requires authentication")
-        }
 
         responseBuilder.setAuthentication(autofillIds, sender, authPresentation)
 
         return responseBuilder.build()
     }
 
+    fun buildFallbackFillResponse(context: Context): FillResponse {
+        return buildAuthenticationFillResponse(context)
+    }
+
     fun buildFilteredFillResponse(context: Context, passwords: List<ServerPassword>): FillResponse? {
+        val myURL = URL(hostname)
         val possibleValues = passwords.filter {
-            it.hostname.contains(webDomain, true)
+            val credential = URL(it.hostname)
+            credential.protocol == myURL.protocol &&
+                (credential.host.endsWith(myURL.host, true) || myURL.host.endsWith(credential.host, true))
         }
 
         if (possibleValues.isEmpty()) {
