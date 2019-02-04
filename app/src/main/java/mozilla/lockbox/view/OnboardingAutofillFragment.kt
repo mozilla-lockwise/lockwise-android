@@ -16,6 +16,10 @@ import mozilla.lockbox.log
 import mozilla.lockbox.presenter.OnboardingAutofillPresenter
 import mozilla.lockbox.presenter.OnboardingAutofillView
 import mozilla.lockbox.support.Constant
+import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+import androidx.core.view.accessibility.AccessibilityEventCompat.setAction
+import android.content.Intent
+import android.provider.Settings
 
 @ExperimentalCoroutinesApi
 class OnboardingAutofillFragment : Fragment(), OnboardingAutofillView {
@@ -32,6 +36,8 @@ class OnboardingAutofillFragment : Fragment(), OnboardingAutofillView {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+
         presenter = OnboardingAutofillPresenter(this)
         return inflater.inflate(R.layout.onboarding_autofill, container, false)
     }

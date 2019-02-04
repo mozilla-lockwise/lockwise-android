@@ -107,8 +107,7 @@ class OnboardingFingerprintAuthPresenterTest {
     @Test
     fun `dismiss dialog when skip is tapped`() {
         view.onDismiss.onNext(Unit)
-        dispatcherObserver.assertValueAt(0, OnboardingAction.OnDismiss)
-        dispatcherObserver.assertValueAt(1, RouteAction.Onboarding.SkipOnboarding)
+        dispatcherObserver.assertValueAt(0, RouteAction.Onboarding.SkipOnboarding)
     }
 
     @Test

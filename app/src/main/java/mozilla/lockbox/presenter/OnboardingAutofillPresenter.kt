@@ -10,6 +10,7 @@ import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.action.SettingIntent
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 
@@ -30,7 +31,7 @@ class OnboardingAutofillPresenter(
         }?.addTo(compositeDisposable)
 
         view.onEnable.subscribe {
-            dispatcher.dispatch(RouteAction.SettingList)
+            dispatcher.dispatch(RouteAction.SystemSetting(SettingIntent.Autofill))
         }?.addTo(compositeDisposable)
     }
 }

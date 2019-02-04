@@ -67,11 +67,12 @@ sealed class RouteAction(
 
         object StartOnboarding : Onboarding(TelemetryEventObject.onboarding_biometric_unlock)
         object SkipOnboarding : Onboarding(TelemetryEventObject.onboarding_skip)
-        object ContinueOnboarding : Onboarding(TelemetryEventObject.onboarding_continue)
+        object Autofill : Onboarding(TelemetryEventObject.onboarding_continue)
 
     }
 }
 
 enum class SettingIntent(val intentAction: String) {
-    Security(android.provider.Settings.ACTION_SECURITY_SETTINGS)
+    Security(android.provider.Settings.ACTION_SECURITY_SETTINGS),
+    Autofill(android.provider.Settings.ACTION_REQUEST_SET_AUTOFILL_SERVICE)
 }

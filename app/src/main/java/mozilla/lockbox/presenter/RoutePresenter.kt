@@ -88,7 +88,7 @@ class RoutePresenter(
             is RouteAction.Login -> navigateToFragment(action, R.id.fragment_fxa_login)
             is RouteAction.Onboarding.StartOnboarding -> navigateToFragment(action, R.id.fragment_fingerprint_onboarding)
             is RouteAction.Onboarding.SkipOnboarding -> navigateToFragment(action, R.id.fragment_item_list)
-            is RouteAction.Onboarding.ContinueOnboarding -> navigateToFragment(action, R.id.fragment_item_list)
+            is RouteAction.Onboarding.Autofill -> navigateToFragment(action, R.id.fragment_autofill_onboarding)
             is RouteAction.ItemList -> navigateToFragment(action, R.id.fragment_item_list)
             is RouteAction.SettingList -> navigateToFragment(action, R.id.fragment_setting)
             is RouteAction.AccountSetting -> navigateToFragment(action, R.id.fragment_account_setting)
