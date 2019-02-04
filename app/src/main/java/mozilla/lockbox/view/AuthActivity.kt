@@ -15,13 +15,11 @@ import androidx.appcompat.app.AppCompatActivity
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.R
+import mozilla.lockbox.autofill.FillResponseBuilder
 import mozilla.lockbox.log
 import mozilla.lockbox.presenter.AuthPresenter
 import mozilla.lockbox.presenter.AuthView
-import mozilla.lockbox.support.ParsedStructure
-import mozilla.lockbox.support.serverPasswordToDataset
 import java.lang.Exception
 
 @TargetApi(Build.VERSION_CODES.O)
@@ -30,13 +28,13 @@ class AuthActivity : AppCompatActivity(), AuthView {
     private lateinit var presenter: AuthPresenter
     private val _unlockConfirmed = PublishSubject.create<Boolean>()
 
-    companion object {
-        private lateinit var webDomain: String
-        private lateinit var parsedStructure: ParsedStructure
+    override val context: Context = this
 
-        fun getAuthIntentSender(context: Context, webDomain: String, parsedStructure: ParsedStructure): IntentSender {
-            this.webDomain = webDomain
-            this.parsedStructure = parsedStructure
+    companion object {
+        private lateinit var responseBuilder: FillResponseBuilder
+
+        fun getAuthIntentSender(context: Context, responseBuilder: FillResponseBuilder): IntentSender {
+            this.responseBuilder = responseBuilder
             val intent = Intent(context, AuthActivity::class.java)
             return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT).intentSender
         }
@@ -47,7 +45,7 @@ class AuthActivity : AppCompatActivity(), AuthView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        presenter = AuthPresenter(this, webDomain)
+        presenter = AuthPresenter(this, responseBuilder)
         presenter.onViewReady()
     }
 
@@ -56,19 +54,12 @@ class AuthActivity : AppCompatActivity(), AuthView {
         presenter.onDestroy()
     }
 
-    override fun setUnlockResult(possibleValues: List<ServerPassword>) {
-        if (possibleValues.isEmpty()) {
+    override fun setFillResponseAndFinish(fillResponse: FillResponse?) {
+        if (fillResponse == null) {
             setResult(Activity.RESULT_CANCELED)
-            finish()
+        } else {
+            setResult(Activity.RESULT_OK, Intent().putExtra(EXTRA_AUTHENTICATION_RESULT, fillResponse))
         }
-
-        val builder = FillResponse.Builder()
-
-        possibleValues
-            .map { serverPasswordToDataset(this, parsedStructure, it) }
-            .forEach { builder.addDataset(it) }
-
-        setResult(Activity.RESULT_OK, Intent().putExtra(EXTRA_AUTHENTICATION_RESULT, builder.build()))
         finish()
     }
 

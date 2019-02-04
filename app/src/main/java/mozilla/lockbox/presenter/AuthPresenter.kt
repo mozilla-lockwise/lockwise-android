@@ -1,12 +1,14 @@
 package mozilla.lockbox.presenter
 
+import android.content.Context
+import android.service.autofill.FillResponse
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.FingerprintAuthAction
+import mozilla.lockbox.autofill.FillResponseBuilder
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.store.DataStore
@@ -18,14 +20,15 @@ import mozilla.lockbox.view.FingerprintAuthDialogFragment
 interface AuthView {
     fun showAuthDialog()
     fun unlockFallback()
-    fun setUnlockResult(possibleValues: List<ServerPassword>)
+    fun setFillResponseAndFinish(fillResponse: FillResponse?)
     val unlockConfirmed: Observable<Boolean>
+    val context: Context
 }
 
 @ExperimentalCoroutinesApi
 class AuthPresenter(
     private val view: AuthView,
-    private val webDomain: String,
+    private val responseBuilder: FillResponseBuilder,
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val fingerprintStore: FingerprintStore = FingerprintStore.shared,
     private val settingStore: SettingStore = SettingStore.shared,
@@ -63,18 +66,12 @@ class AuthPresenter(
             }
             .addTo(compositeDisposable)
 
-        Observables.combineLatest(dataStore.state, dataStore.list)
-            .filter { pair -> pair.first == DataStore.State.Unlocked }
-            .map { pair -> pair.second }
+        dataStore.state
+            .filter { it == DataStore.State.Unlocked }
+            .switchMap { dataStore.list }
             .subscribe { passwords ->
-                if (passwords.isEmpty()) {
-
-                } else {
-                    val possibleValues = passwords.filter {
-                        it.hostname.contains(webDomain, true)
-                    }
-                    view.setUnlockResult(possibleValues)
-                }
+                val response = responseBuilder.buildFilteredFillResponse(view.context, passwords)
+                view.setFillResponseAndFinish(response)
             }
             .addTo(compositeDisposable)
     }
