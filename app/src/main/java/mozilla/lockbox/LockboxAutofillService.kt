@@ -12,7 +12,9 @@ import android.service.autofill.SaveCallback
 import android.service.autofill.SaveRequest
 import android.view.autofill.AutofillValue
 import android.widget.RemoteViews
+import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -25,7 +27,13 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.support.ParsedStructure
 import mozilla.lockbox.support.ParsedStructureBuilder
+import java.net.URI
 import kotlin.coroutines.CoroutineContext
+
+data class FillablePassword(
+    val domain: String,
+    val entry: ServerPassword
+)
 
 @TargetApi(Build.VERSION_CODES.O)
 @ExperimentalCoroutinesApi
@@ -69,20 +77,41 @@ class LockboxAutofillService(
             return
         }
 
-        if (webDomain == null) {
-            callback.onFailure("unexpected package name structure")
-            return
-        }
-
-        val expectedDomain = publicSuffixList.getPublicSuffixPlusOne(webDomain)
+        val domainObs = publicSuffixList.getPublicSuffixPlusOne(webDomain)
             .asMaybe(coroutineContext)
+            .toSingle("")
+            .toObservable()
 
-        dataStore.list
+        // convert a list of ServerPasswords into a list of (psl+1, username, password)
+        val passwords = dataStore.list
             .take(1)
-            .subscribe { passwords ->
-                val possibleValues = passwords.filter {
-                    it.hostname.contains(webDomain, true)
+            .flatMap {
+                Observable.merge(it.map {sp ->
+                    val host = URI.create(sp.hostname).host
+                    publicSuffixList.getPublicSuffixPlusOne(host)
+                        .asMaybe(coroutineContext)
+                        .toSingle("")
+                        .toObservable()
+                        .filter { !it.isEmpty() }
+                        .map { domain ->
+                            FillablePassword(domain, sp)
+                        }
+                })
+            }
+            .toList()
+            .toObservable()
+
+        Observables.combineLatest(domainObs, passwords)
+            .subscribe {
+                val expected = it.first
+                if (it.first.isEmpty()) {
+                    callback.onFailure("no web domain to match against")
+                    return@subscribe
                 }
+
+                val possibleValues = it.second.filter {
+                    it.domain.equals(expected, true)
+                }.map { it.entry }
                 val response = buildFillResponse(possibleValues, parsedStructure)
                 if (response == null) {
                     callback.onFailure("no logins found for this domain")
@@ -93,11 +122,9 @@ class LockboxAutofillService(
             .addTo(compositeDisposable)
     }
 
-    private fun domainFromPackage(packageName: String): String? {
-        // naively assume that the `y` from `x.y.z`-style package name is the domain
-        // untested as we will change this implementation with issue #375
-        val domainRegex = Regex("^\\w+\\.(\\w+)\\..+")
-        return domainRegex.find(packageName)?.groupValues?.get(1)
+    private fun domainFromPackage(packageName: String): String {
+        // naively assume package labels are split by `ASCII PERIOD (.)`
+        return packageName.split(".").asReversed().joinToString(".")
     }
 
     private fun buildFillResponse(
