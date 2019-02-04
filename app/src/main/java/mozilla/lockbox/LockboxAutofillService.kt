@@ -14,13 +14,18 @@ import android.view.autofill.AutofillValue
 import android.widget.RemoteViews
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.rx2.asMaybe
 import mozilla.appservices.logins.ServerPassword
+import mozilla.components.lib.publicsuffixlist.PublicSuffixList
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.support.ParsedStructure
 import mozilla.lockbox.support.ParsedStructureBuilder
+import kotlin.coroutines.CoroutineContext
 
 @TargetApi(Build.VERSION_CODES.O)
 @ExperimentalCoroutinesApi
@@ -30,6 +35,19 @@ class LockboxAutofillService(
 ) : AutofillService() {
 
     private var compositeDisposable = CompositeDisposable()
+    private val exceptionHandler: CoroutineExceptionHandler
+        get() = CoroutineExceptionHandler { _, e ->
+            log.error(
+                message = "Unexpected error occurred during PublicSuffixList usage",
+                throwable = e
+            )
+        }
+
+    private val coroutineContext: CoroutineContext
+        get() = Dispatchers.Default + exceptionHandler
+
+    private val publicSuffixList = PublicSuffixList(this)
+
 
     override fun onDisconnected() {
         compositeDisposable.clear()
@@ -55,6 +73,9 @@ class LockboxAutofillService(
             callback.onFailure("unexpected package name structure")
             return
         }
+
+        val expectedDomain = publicSuffixList.getPublicSuffixPlusOne(webDomain)
+            .asMaybe(coroutineContext)
 
         dataStore.list
             .take(1)
