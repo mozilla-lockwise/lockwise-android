@@ -103,7 +103,7 @@ open class LockboxApplication : Application() {
 
     private fun leakCanary(): Boolean {
         // disable LeakCanary when unitTesting
-        if (unitTesting) return false
+        if (isUnitTest()) return false
         else if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.
             // You should not init your app in this process.

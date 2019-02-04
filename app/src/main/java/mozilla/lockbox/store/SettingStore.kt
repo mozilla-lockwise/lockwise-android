@@ -8,7 +8,10 @@ package mozilla.lockbox.store
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.Build
 import android.preference.PreferenceManager
+import android.view.autofill.AutofillManager
+import androidx.annotation.RequiresApi
 import com.f2prateek.rx.preferences2.RxSharedPreferences
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -39,6 +42,8 @@ open class SettingStore(
     }
 
     private lateinit var preferences: SharedPreferences
+    @RequiresApi(Build.VERSION_CODES.O)
+    private lateinit var autofillManager: AutofillManager
     private val compositeDisposable = CompositeDisposable()
 
     open val sendUsageData: Observable<Boolean> = ReplaySubject.createWithSize(1)
@@ -50,6 +55,14 @@ open class SettingStore(
     open val onEnablingFingerprint: Observable<FingerprintAuthAction> =
         dispatcher.register
             .filterByType(FingerprintAuthAction::class.java)
+
+    open val autofillAvailable: Boolean
+        @RequiresApi(Build.VERSION_CODES.O)
+        get() = autofillManager.isAutofillSupported
+
+    open val isCurrentAutofillProvider: Boolean
+        @RequiresApi(Build.VERSION_CODES.O)
+        get() = autofillManager.hasEnabledAutofillServices()
 
     init {
         val resetObservable = dispatcher.register
@@ -118,5 +131,9 @@ open class SettingStore(
                 Setting.AutoLockTime.valueOf(it)
             }
             .subscribe(autoLockTime as Subject)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            autofillManager = context.getSystemService(AutofillManager::class.java)
+        }
     }
 }

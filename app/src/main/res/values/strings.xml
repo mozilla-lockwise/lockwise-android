@@ -210,4 +210,7 @@
     <string name="no_entries_description">Firefox Lockbox lets you access passwords you\'ve already saved to Firefox. To
         view your entries here, you\'ll need to sign in and sync in Firefox.
     </string>
+    <string name="autofill">Autofill</string>
+    <string name="autofill_description">Autofill Setting</string>
+    <string name="autofill_summary">Let Firefox Lockbox fill in logins for you</string>
 </resources>
