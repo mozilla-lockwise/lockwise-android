@@ -195,9 +195,9 @@ class ItemListFragment : Fragment(), ItemListView {
 
     override fun loading(isLoading: Boolean) {
         if (isLoading) {
-            showAndRemove(view!!.loadingView, view!!.entriesView)
+            showAndRemove(view!!.loadingView, view!!.refreshContainer)
         } else {
-            showAndRemove(view!!.entriesView, view!!.loadingView)
+            showAndRemove(view!!.refreshContainer, view!!.loadingView)
         }
         view!!.filterButton.isClickable = !isLoading
         view!!.filterButton.isEnabled = !isLoading
