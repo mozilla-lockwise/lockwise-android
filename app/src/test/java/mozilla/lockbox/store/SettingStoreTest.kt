@@ -8,7 +8,9 @@ package mozilla.lockbox.store
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.Build
 import android.preference.PreferenceManager
+import android.view.autofill.AutofillManager
 import io.reactivex.observers.TestObserver
 import mozilla.lockbox.DisposingTest
 import mozilla.lockbox.action.FingerprintAuthAction
@@ -28,6 +30,7 @@ import org.mockito.Mockito.verify
 import org.powermock.api.mockito.PowerMockito
 import org.powermock.core.classloader.annotations.PrepareForTest
 import org.powermock.modules.junit4.PowerMockRunner
+import org.robolectric.util.ReflectionHelpers
 import org.mockito.Mockito.`when` as whenCalled
 
 @RunWith(PowerMockRunner::class)
@@ -42,6 +45,9 @@ class SettingStoreTest : DisposingTest() {
     @Mock
     val editor: SharedPreferences.Editor = Mockito.mock(SharedPreferences.Editor::class.java)
 
+    @Mock
+    val autofillManager: AutofillManager = Mockito.mock(AutofillManager::class.java)
+
     val dispatcher = Dispatcher()
     val subject = SettingStore(dispatcher)
     private val sendUsageDataObserver = TestObserver<Boolean>()
@@ -49,13 +55,22 @@ class SettingStoreTest : DisposingTest() {
     private val unlockWithFingerprint = TestObserver<Boolean>()
     private val autoLockTime = TestObserver<Setting.AutoLockTime>()
 
+    val autofillAvailable = true
+    val isCurrentAutofillProvider = false
+
     @Before
     fun setUp() {
+        ReflectionHelpers.setStaticField(Build.VERSION::class.java, "SDK_INT", 28)
+
         whenCalled(editor.putBoolean(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(editor)
         whenCalled(sharedPreferences.edit()).thenReturn(editor)
 
         PowerMockito.mockStatic(PreferenceManager::class.java)
         whenCalled(PreferenceManager.getDefaultSharedPreferences(context)).thenReturn(sharedPreferences)
+
+        whenCalled(autofillManager.isAutofillSupported).thenReturn(autofillAvailable)
+        whenCalled(autofillManager.hasEnabledAutofillServices()).thenReturn(isCurrentAutofillProvider)
+        whenCalled(context.getSystemService(AutofillManager::class.java)).thenReturn(autofillManager)
 
         subject.injectContext(context)
         subject.sendUsageData.subscribe(sendUsageDataObserver)
@@ -182,5 +197,27 @@ class SettingStoreTest : DisposingTest() {
                 FingerprintAuthAction.OnCancel
             )
         )
+    }
+
+    @Test
+    fun `autofill available uses system setting`() {
+        assertEquals(autofillAvailable, subject.autofillAvailable)
+    }
+
+    @Test
+    fun `is current autofill provider uses system setting`() {
+        assertEquals(isCurrentAutofillProvider, subject.isCurrentAutofillProvider)
+    }
+
+    @Test
+    fun `disabling autofill setting disables the system setting for the app`() {
+        dispatcher.dispatch(SettingAction.Autofill(false))
+        verify(autofillManager).disableAutofillServices()
+    }
+
+    @Test
+    fun `enabling autofill setting disables the system setting for the app`() {
+        dispatcher.dispatch(SettingAction.Autofill(false))
+        verify(autofillManager).disableAutofillServices()
     }
 }

@@ -67,8 +67,12 @@ class SettingPresenter(
 
     private val autoFillObserver: Consumer<Boolean>
         @RequiresApi(Build.VERSION_CODES.O)
-        get() = Consumer {
-            dispatcher.dispatch(RouteAction.SystemSetting(SettingIntent.Autofill))
+        get() = Consumer { newValue ->
+            dispatcher.dispatch(SettingAction.Autofill(newValue))
+
+            if (newValue) {
+                dispatcher.dispatch(RouteAction.SystemSetting(SettingIntent.Autofill))
+            }
         }
 
     private val sendUsageDataObserver: Consumer<Boolean>

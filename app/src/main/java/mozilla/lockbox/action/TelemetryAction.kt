@@ -74,6 +74,7 @@ enum class TelemetryEventObject {
     settings_fingerprint,
     settings_fingerprint_pending_auth,
     settings_item_list_order,
+    settings_autofill,
     login_welcome,
     login_fxa,
     login_onboarding_confirmation,

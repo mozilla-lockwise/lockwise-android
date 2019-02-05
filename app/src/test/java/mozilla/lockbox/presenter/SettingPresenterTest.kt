@@ -290,7 +290,7 @@ class SettingPresenterTest {
     }
 
     @Test
-    fun `autofill provider update requested`() {
+    fun `autofill provider enabled`() {
         Mockito.`when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(false)
         settingStore.autofillAvailableStub = true
         subject.onResume()
@@ -298,5 +298,16 @@ class SettingPresenterTest {
         (view.settingItem!![1] as ToggleSettingConfiguration).toggleObserver.accept(true)
 
         dispatcherObserver.assertLastValue(RouteAction.SystemSetting(SettingIntent.Autofill))
+    }
+
+    @Test
+    fun `autofill provider disabled`() {
+        Mockito.`when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(false)
+        settingStore.autofillAvailableStub = true
+        subject.onResume()
+
+        (view.settingItem!![1] as ToggleSettingConfiguration).toggleObserver.accept(false)
+
+        dispatcherObserver.assertLastValue(SettingAction.Autofill(false))
     }
 }

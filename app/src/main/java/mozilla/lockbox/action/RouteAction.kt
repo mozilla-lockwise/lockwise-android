@@ -6,6 +6,7 @@
 
 package mozilla.lockbox.action
 
+import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
@@ -64,8 +65,8 @@ sealed class RouteAction(
     }
 }
 
-enum class SettingIntent(val intentAction: String) {
+enum class SettingIntent(val intentAction: String, val data: Uri? = null) {
     Security(android.provider.Settings.ACTION_SECURITY_SETTINGS),
     @RequiresApi(Build.VERSION_CODES.O)
-    Autofill(android.provider.Settings.ACTION_REQUEST_SET_AUTOFILL_SERVICE)
+    Autofill(android.provider.Settings.ACTION_REQUEST_SET_AUTOFILL_SERVICE, Uri.parse("package:com.mozilla.lockbox"))
 }
