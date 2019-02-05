@@ -11,7 +11,6 @@ import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.FingerprintSensorAction
-import mozilla.lockbox.action.OnboardingAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.flux.Dispatcher
@@ -50,7 +49,6 @@ class OnboardingFingerprintAuthPresenter(
                 .addTo(compositeDisposable)
 
             view.onDismiss.subscribe {
-//                dispatcher.dispatch(OnboardingAction.OnDismiss)
                 dispatcher.dispatch(RouteAction.Onboarding.Autofill)
             }?.addTo(compositeDisposable)
         } else {
@@ -60,7 +58,6 @@ class OnboardingFingerprintAuthPresenter(
 
     override fun onResume() {
         super.onResume()
-        // but not calling FingerprintSensorAction.Start
         dispatcher.dispatch(FingerprintSensorAction.Start)
     }
 

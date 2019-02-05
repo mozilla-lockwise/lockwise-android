@@ -2,7 +2,6 @@ package mozilla.lockbox.presenter
 
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
-import mozilla.lockbox.action.OnboardingAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
@@ -46,5 +45,4 @@ class OnboardingAutofillPresenterTest {
         view.onDismiss.onNext(Unit)
         dispatcherObserver.assertValueAt(0, RouteAction.SettingList)
     }
-
 }

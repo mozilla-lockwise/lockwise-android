@@ -7,7 +7,7 @@ import androidx.annotation.RequiresApi
 
 open class AutofillStore : ContextStore {
 
-    open lateinit var autofillManager : AutofillManager
+    open lateinit var autofillManager: AutofillManager
 
     companion object {
         val shared = AutofillStore()
@@ -20,5 +20,4 @@ open class AutofillStore : ContextStore {
     open val isAutofillEnabledAndSupported: Boolean
         @RequiresApi(Build.VERSION_CODES.O)
         get() = autofillManager.hasEnabledAutofillServices() && autofillManager.isAutofillSupported
-
 }
