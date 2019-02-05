@@ -23,13 +23,16 @@ import mozilla.lockbox.support.asOptional
 class RouteStore(
     dispatcher: Dispatcher = Dispatcher.shared,
     dataStore: DataStore = DataStore.shared,
-    fingerprintStore: FingerprintStore = FingerprintStore.shared
+    fingerprintStore: FingerprintStore = FingerprintStore.shared,
+    autofillStore: AutofillStore = AutofillStore.shared
 ) {
     internal val compositeDisposable = CompositeDisposable()
 
     private val onboardingState: ReplaySubject<Boolean> = ReplaySubject.createWithSize(1)
     val onboarding: Observable<Boolean> = onboardingState
-    private var triggerOnboarding: Boolean? = null
+
+    private var triggerFingerprintAuthOnboarding: Boolean = false
+    private var triggerAutofillOnboarding: Boolean = false
 
     companion object {
         val shared = RouteStore()
@@ -44,7 +47,8 @@ class RouteStore(
 
         this.onboarding
             .subscribe { ob ->
-                triggerOnboarding = ob && fingerprintStore.isFingerprintAuthAvailable
+                triggerFingerprintAuthOnboarding = ob && fingerprintStore.isFingerprintAuthAvailable
+                triggerAutofillOnboarding = ob && autofillStore.isAutofillEnabledAndSupported
             }
             .addTo(compositeDisposable)
 
@@ -80,10 +84,10 @@ class RouteStore(
     }
 
     private fun chooseRoute(): RouteAction {
-        return if (triggerOnboarding!!) {
-            RouteAction.Onboarding.StartOnboarding
-        } else {
-            RouteAction.ItemList
+        return when {
+            triggerFingerprintAuthOnboarding -> RouteAction.Onboarding.FingerprintAuth
+            triggerAutofillOnboarding -> RouteAction.Onboarding.Autofill
+            else -> RouteAction.ItemList
         }
     }
 }

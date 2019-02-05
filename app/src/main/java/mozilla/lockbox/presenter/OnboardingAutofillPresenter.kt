@@ -6,6 +6,10 @@
 
 package mozilla.lockbox.presenter
 
+import android.annotation.TargetApi
+import android.os.Build
+import android.view.autofill.AutofillManager
+import androidx.annotation.RequiresApi
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -25,7 +29,10 @@ class OnboardingAutofillPresenter(
     private val dispatcher: Dispatcher = Dispatcher.shared
 ) : Presenter() {
 
+    @TargetApi(Build.VERSION_CODES.O)
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewReady() {
+
         view.onDismiss.subscribe {
             dispatcher.dispatch(RouteAction.Onboarding.SkipOnboarding)
         }?.addTo(compositeDisposable)

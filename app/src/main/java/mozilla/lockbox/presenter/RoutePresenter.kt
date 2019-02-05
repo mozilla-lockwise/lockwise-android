@@ -8,9 +8,13 @@ package mozilla.lockbox.presenter
 
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import androidx.annotation.IdRes
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import io.reactivex.Observable
@@ -22,6 +26,7 @@ import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.action.SettingAction
+import mozilla.lockbox.action.SettingIntent
 import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.extensions.view.AlertDialogHelper
 import mozilla.lockbox.extensions.view.AlertState
@@ -35,6 +40,7 @@ import mozilla.lockbox.store.AutoLockStore
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.store.SettingStore
+import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.view.AppWebPageFragmentArgs
@@ -86,8 +92,11 @@ class RoutePresenter(
         when (action) {
             is RouteAction.Welcome -> navigateToFragment(action, R.id.fragment_welcome)
             is RouteAction.Login -> navigateToFragment(action, R.id.fragment_fxa_login)
-            is RouteAction.Onboarding.StartOnboarding -> navigateToFragment(action, R.id.fragment_fingerprint_onboarding)
             is RouteAction.Onboarding.SkipOnboarding -> navigateToFragment(action, R.id.fragment_item_list)
+            is RouteAction.Onboarding.FingerprintAuth -> navigateToFragment(
+                action,
+                R.id.fragment_fingerprint_onboarding
+            )
             is RouteAction.Onboarding.Autofill -> navigateToFragment(action, R.id.fragment_autofill_onboarding)
             is RouteAction.ItemList -> navigateToFragment(action, R.id.fragment_item_list)
             is RouteAction.SettingList -> navigateToFragment(action, R.id.fragment_setting)
@@ -255,9 +264,13 @@ class RoutePresenter(
             Pair(R.id.fragment_welcome, R.id.fragment_locked) -> R.id.action_to_locked
 
             Pair(R.id.fragment_fxa_login, R.id.fragment_item_list) -> R.id.action_fxaLogin_to_itemList
-            Pair(R.id.fragment_fxa_login, R.id.fragment_fingerprint_onboarding) -> R.id.action_fxaLogin_to_onboarding
 
-            Pair(R.id.fragment_fingerprint_onboarding, R.id.fragment_item_list) -> R.id.action_to_itemList
+            Pair(R.id.fragment_fxa_login, R.id.fragment_fingerprint_onboarding) -> R.id.action_fxaLogin_to_onboarding
+            Pair(
+                R.id.fragment_fingerprint_onboarding,
+                R.id.fragment_autofill_onboarding
+            ) -> R.id.action_onboarding_fingerprint_to_autofill
+            Pair(R.id.fragment_autofill_onboarding, R.id.fragment_item_list) -> R.id.action_to_itemList
 
             Pair(R.id.fragment_locked, R.id.fragment_item_list) -> R.id.action_to_itemList
             Pair(R.id.fragment_locked, R.id.fragment_welcome) -> R.id.action_locked_to_welcome
@@ -282,8 +295,24 @@ class RoutePresenter(
         activity.startActivity(browserIntent, null)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun openSetting(settingAction: RouteAction.SystemSetting) {
-        val settingIntent = Intent(settingAction.setting.intentAction)
-        activity.startActivity(settingIntent, null)
+        if (settingAction.setting == SettingIntent.Autofill) {
+            startEnableAutofill()
+        } else {
+            val settingIntent = Intent(settingAction.setting.intentAction)
+            activity.startActivity(settingIntent, null)
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun startEnableAutofill() {
+        var intent = Intent(Settings.ACTION_REQUEST_SET_AUTOFILL_SERVICE)
+        intent.setData(Uri.parse("package:com.example.android.autofill.service"))
+        try {
+            startActivityForResult(activity, intent, Constant.RequestCode.autofillSettingRequest, null)
+        } catch (e: Exception) {
+            log.error("Error opening Autofill settings. Exception: $e")
+        }
     }
 }

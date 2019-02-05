@@ -19,6 +19,7 @@ import mozilla.components.support.base.log.logger.Logger
 import mozilla.components.support.base.log.sink.AndroidLogSink
 import mozilla.lockbox.presenter.ApplicationPresenter
 import mozilla.lockbox.store.AutoLockStore
+import mozilla.lockbox.store.AutofillStore
 import mozilla.lockbox.store.ClipboardStore
 import mozilla.lockbox.store.ContextStore
 import mozilla.lockbox.store.DataStore
@@ -79,7 +80,8 @@ open class LockboxApplication : Application() {
             FingerprintStore.shared,
             NetworkStore.shared,
             AutoLockStore.shared,
-            TelemetryStore.shared
+            TelemetryStore.shared,
+            AutofillStore.shared
         )
 
         contextStoreList.forEach {

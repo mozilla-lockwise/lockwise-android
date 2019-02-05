@@ -42,11 +42,6 @@
             android:name="mozilla.lockbox.view.OnboardingFingerprintAuthFragment"
             tools:layout="@layout/onboarding_biometric_unlock">
         <action
-                android:id="@+id/action_onboarding_to_itemList"
-                app:launchSingleTop="true"
-                app:destination="@id/fragment_item_list"
-                app:popUpToInclusive="true"/>
-        <action
             android:id="@+id/action_onboarding_fingerprint_to_autofill"
             app:launchSingleTop="true"
             app:destination="@id/fragment_autofill_onboarding"
@@ -57,11 +52,6 @@
             android:id="@+id/fragment_autofill_onboarding"
             android:name="mozilla.lockbox.view.OnboardingAutofillFragment"
             tools:layout="@layout/onboarding_autofill">
-        <action
-                android:id="@+id/action_autofill_to_itemList"
-                app:launchSingleTop="true"
-                app:destination="@id/fragment_item_list"
-                app:popUpToInclusive="true"/>
     </fragment>
 
     <fragment

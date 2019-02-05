@@ -53,7 +53,7 @@ class OnboardingFingerprintAuthFragment : Fragment(), OnboardingFingerprintView 
         view!!.iconFingerprint.postDelayed({
             _authCallback.onNext(OnAuth)
             isEnablingDismissed = false
-        }, Constant.Onboarding.SUCCESS_DELAY_MILLIS)
+        }, Constant.FingerprintTimeouts.SUCCESS_DELAY_MILLIS)
     }
 
     override fun onFailed(error: String?) {
@@ -64,7 +64,7 @@ class OnboardingFingerprintAuthFragment : Fragment(), OnboardingFingerprintView 
         showError(error ?: getString(R.string.fingerprint_sensor_error))
         view!!.postDelayed(
             { _authCallback.onNext(OnError) },
-            Constant.Onboarding.ERROR_TIMEOUT_MILLIS
+            Constant.FingerprintTimeouts.ERROR_TIMEOUT_MILLIS
         )
     }
 
@@ -74,7 +74,7 @@ class OnboardingFingerprintAuthFragment : Fragment(), OnboardingFingerprintView 
             text = error
             setTextColor(resources.getColor(R.color.red, null))
             removeCallbacks(resetErrorTextRunnable)
-            postDelayed(resetErrorTextRunnable, Constant.Onboarding.ERROR_TIMEOUT_MILLIS)
+            postDelayed(resetErrorTextRunnable, Constant.FingerprintTimeouts.ERROR_TIMEOUT_MILLIS)
         }
     }
 
