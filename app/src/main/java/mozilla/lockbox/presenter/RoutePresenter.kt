@@ -308,7 +308,8 @@ class RoutePresenter(
     @RequiresApi(Build.VERSION_CODES.O)
     private fun startEnableAutofill() {
         var intent = Intent(Settings.ACTION_REQUEST_SET_AUTOFILL_SERVICE)
-        intent.data = Uri.parse("package:com.example.android.autofill.service")
+        intent.data = Uri.parse("package:android.service.autofill.AutofillService")
+//        intent.data = Uri.parse("package:com.example.android.autofill.service")
         try {
             startActivityForResult(activity, intent, Constant.RequestCode.autofillSettingRequest, null)
         } catch (e: Exception) {

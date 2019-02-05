@@ -7,7 +7,6 @@
 package mozilla.lockbox.store
 
 import io.reactivex.observers.TestObserver
-import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.RouteAction
@@ -21,19 +20,14 @@ class RouteStoreTest {
 
     val dispatcher = Dispatcher()
     private val dispatcherObserver = TestObserver.create<Action>()
-    private val actionStub = PublishSubject.create<Action>()
     private val routeObserver = TestObserver.create<RouteAction>()
-    private val onboardingObserver = TestObserver.create<Boolean>()
 
     lateinit var subject: RouteStore
 
     @Before
     fun setUp() {
         subject = RouteStore(dispatcher)
-
         subject.routes.subscribe(routeObserver)
-        subject.onboarding.subscribe(onboardingObserver)
-
         dispatcher.register.subscribe { dispatcherObserver }
     }
 

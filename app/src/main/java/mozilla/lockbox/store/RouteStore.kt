@@ -8,7 +8,6 @@ package mozilla.lockbox.store
 
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.ReplaySubject
 import io.reactivex.subjects.Subject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -22,21 +21,14 @@ import mozilla.lockbox.support.asOptional
 @ExperimentalCoroutinesApi
 class RouteStore(
     dispatcher: Dispatcher = Dispatcher.shared,
-    dataStore: DataStore = DataStore.shared,
-    fingerprintStore: FingerprintStore = FingerprintStore.shared,
-    autofillStore: AutofillStore = AutofillStore.shared
+    dataStore: DataStore = DataStore.shared
 ) {
     internal val compositeDisposable = CompositeDisposable()
-
-    private val onboardingState: ReplaySubject<Boolean> = ReplaySubject.createWithSize(1)
-    val onboarding: Observable<Boolean> = onboardingState
-
-    private var triggerFingerprintAuthOnboarding: Boolean = false
-    private var triggerAutofillOnboarding: Boolean = false
 
     companion object {
         val shared = RouteStore()
     }
+
 
     val routes: Observable<RouteAction> = ReplaySubject.createWithSize(1)
 
@@ -45,33 +37,10 @@ class RouteStore(
             .filterByType(RouteAction::class.java)
             .subscribe(routes as Subject)
 
-        this.onboarding
-            .subscribe { ob ->
-                triggerFingerprintAuthOnboarding = ob && fingerprintStore.isFingerprintAuthAvailable
-                triggerAutofillOnboarding = ob && autofillStore.isAutofillEnabledAndSupported
-            }
-            .addTo(compositeDisposable)
-
-        dispatcher.register
-            .filterByType(RouteAction.Onboarding.SkipOnboarding::class.java)
-            .subscribe {
-                onboardingState.onNext(false)
-                chooseRoute()
-            }.addTo(compositeDisposable)
-
         dataStore.state
             .map(this::dataStoreToRouteActions)
             .filterNotNull()
             .subscribe(routes)
-
-        dataStore.state
-            .subscribe { state ->
-                when (state) {
-                    is DataStore.State.Unprepared -> onboardingState.onNext(true)
-                    else -> onboardingState.onNext(false)
-                }
-            }
-            .addTo(compositeDisposable)
     }
 
     private fun dataStoreToRouteActions(storageState: DataStore.State): Optional<RouteAction> {
@@ -83,11 +52,15 @@ class RouteStore(
         }.asOptional()
     }
 
-    private fun chooseRoute(): RouteAction {
+    // this can be private if we don't need to call it in the onboarding store
+    fun chooseRoute(): RouteAction {
         return when {
-            triggerFingerprintAuthOnboarding -> RouteAction.Onboarding.FingerprintAuth
-            triggerAutofillOnboarding -> RouteAction.Onboarding.Autofill
-            else -> RouteAction.ItemList
+            OnboardingStore.shared.triggerFingerprintAuthOnboarding ->
+                RouteAction.Onboarding.FingerprintAuth
+            OnboardingStore.shared.triggerAutofillOnboarding ->
+                RouteAction.Onboarding.Autofill
+            else ->
+                RouteAction.ItemList
         }
     }
 }

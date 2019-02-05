@@ -25,6 +25,7 @@ import mozilla.lockbox.store.ContextStore
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.NetworkStore
+import mozilla.lockbox.store.OnboardingStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.store.TelemetryStore
 import mozilla.lockbox.support.FixedDataStoreSupport
