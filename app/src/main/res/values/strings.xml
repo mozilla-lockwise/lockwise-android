@@ -83,6 +83,8 @@
     <!-- This message appears to link to a web page explaining how to make changes to the entry details -->
     <string name="learn_to_edit_entry">Learn how to edit this entry</string>
 
+    <!-- This describes an icon to screenreaders that the button tapped will open the web address in a web browser -->
+    <string name="launch_hostname_content_description">Open web address in web browser</string>
     <!-- This describes an icon to screenreaders that the button tapped will copy the username to the device clipboard to paste and use in another application -->
     <string name="copy_username_content_description">Copy your username</string>
     <!-- This message appears when the user taps to copy the username to the device clipboard -->
