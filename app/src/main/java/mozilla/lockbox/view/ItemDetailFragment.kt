@@ -83,8 +83,17 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         inputLayoutPassword.isHintAnimationEnabled = false
 
         inputUsername.readOnly = true
+        inputUsername.isClickable = true
+        inputUsername.isFocusable = true
+
         inputPassword.readOnly = true
+        inputPassword.isClickable = true
+        inputPassword.isFocusable = true
+
         inputHostname.readOnly = true
+        inputHostname.isClickable = true
+        inputHostname.isFocusable = true
+
         btnHostnameLaunch.isClickable = false
 
         inputHostname.setText(item.hostname, TextView.BufferType.NORMAL)
@@ -118,10 +127,10 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
 var EditText.readOnly: Boolean
     get() = this.isFocusable
     set(readOnly) {
-        this.isFocusable = true
+        this.isFocusable = !readOnly
         this.isFocusableInTouchMode = !readOnly
-        this.inputType = InputType.TYPE_NULL
-        this.isClickable = true
+        this.isClickable = !readOnly
         this.isLongClickable = !readOnly
         this.isCursorVisible = !readOnly
+        this.inputType = InputType.TYPE_NULL
     }
