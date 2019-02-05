@@ -42,6 +42,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColorHint="@color/black_60_percent"
+                    android:contentDescription="@string/launch_hostname_content_description"
                     app:layout_constraintTop_toTopOf="parent"
                     card_view:layout_constraintStart_toStartOf="parent"
                     card_view:layout_constraintEnd_toEndOf="parent">
@@ -60,6 +61,18 @@
                         tools:ignore="Autofill"/>
 
             </com.google.android.material.textfield.TextInputLayout>
+
+            <ImageView
+                    android:id="@+id/btnHostnameLaunch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:background="@null"
+                    tools:ignore="ContentDescription"
+                    app:layout_constraintBottom_toBottomOf="@+id/inputLayoutHostname"
+                    app:layout_constraintRight_toRightOf="@+id/inputLayoutHostname"
+                    app:layout_constraintTop_toTopOf="@+id/inputLayoutHostname"
+                    app:srcCompat="@drawable/ic_launch"/>
 
             <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/inputLayoutUsername"
