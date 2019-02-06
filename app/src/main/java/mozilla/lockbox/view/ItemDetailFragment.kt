@@ -60,6 +60,9 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
     override val hostnameClicks: Observable<Unit>
         get() = view!!.inputHostname.clicks()
 
+    override val learnMoreClicks: Observable<Unit>
+        get() = view!!.detailLearnMore.clicks()
+
     override var isPasswordVisible: Boolean = false
         set(value) {
             assertOnUiThread()

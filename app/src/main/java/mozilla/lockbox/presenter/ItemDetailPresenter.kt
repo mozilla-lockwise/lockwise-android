@@ -30,6 +30,7 @@ interface ItemDetailView {
     val passwordCopyClicks: Observable<Unit>
     val togglePasswordClicks: Observable<Unit>
     val hostnameClicks: Observable<Unit>
+    val learnMoreClicks: Observable<Unit>
     var isPasswordVisible: Boolean
     fun updateItem(item: ItemDetailViewModel)
     fun showToastNotification(@StringRes strId: Int)
@@ -72,6 +73,13 @@ class ItemDetailPresenter(
                 dispatcher.dispatch(RouteAction.OpenWebsite(it.hostname))
             }
         }
+
+        this.view.learnMoreClicks
+            .subscribe {
+                // TODO: fix "Cannot route from mozilla.lockbox:id/fragment_item_detail to mozilla.lockbox:id/fragment_webview"
+                dispatcher.dispatch(RouteAction.AppWebPage.FaqList)
+            }
+            .addTo(compositeDisposable)
 
         this.view.togglePasswordClicks
             .subscribe {
