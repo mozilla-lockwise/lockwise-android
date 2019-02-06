@@ -77,7 +77,7 @@ class ItemDetailPresenter(
         this.view.learnMoreClicks
             .subscribe {
                 // TODO: fix "Cannot route from mozilla.lockbox:id/fragment_item_detail to mozilla.lockbox:id/fragment_webview"
-                dispatcher.dispatch(RouteAction.AppWebPage.FaqList)
+                dispatcher.dispatch(RouteAction.AppWebPage.FaqEdit)
             }
             .addTo(compositeDisposable)
 

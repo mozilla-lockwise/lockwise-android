@@ -27,7 +27,7 @@ class WelcomePresenter(
                 .addTo(compositeDisposable)
 
         view.learnMoreClicks
-            .subscribe { dispatcher.dispatch(RouteAction.AppWebPage.FaqList) }
+            .subscribe { dispatcher.dispatch(RouteAction.AppWebPage.FaqWelcome) }
             .addTo(compositeDisposable)
     }
 }

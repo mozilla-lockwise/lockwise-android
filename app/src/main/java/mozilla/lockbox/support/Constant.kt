@@ -27,7 +27,17 @@ object Constant {
     }
 
     object Faq {
-        const val uri = "https://lockbox.firefox.com/faq.html#top"
+        const val uri = "https://lockbox.firefox.com/faq.html"
+        const val topUri = uri + "#top"
+        const val savedUri = uri + "#how-do-i-get-my-saved-logins-into-firefox-lockbox"
+        const val securityUri = uri + "#what-security-technologies-does-firefox-lockbox-use"
+        const val syncUri = uri + "#how-do-i-enable-sync-on-firefox"
+        const val createUri = uri + "#how-do-i-create-new-entries"
+        const val editUri = uri + "#how-do-i-edit-existing-entries"
+    }
+
+    object Privacy {
+        const val uri = "https://lockbox.firefox.com/privacy.html"
     }
 
     object SendFeedback {

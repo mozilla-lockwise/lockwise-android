@@ -114,13 +114,13 @@ class ItemListPresenter(
 
         view.noEntriesClicks
             .subscribe {
-                dispatcher.dispatch(RouteAction.AppWebPage.FaqList)
+                dispatcher.dispatch(RouteAction.AppWebPage.FaqSync)
             }
             .addTo(compositeDisposable)
 
         view.noMatchingClicks
             .subscribe {
-                dispatcher.dispatch(RouteAction.AppWebPage.FaqList)
+                dispatcher.dispatch(RouteAction.AppWebPage.FaqCreate)
             }
             .addTo(compositeDisposable)
 
