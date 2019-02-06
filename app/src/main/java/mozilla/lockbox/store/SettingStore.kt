@@ -56,6 +56,7 @@ open class SettingStore(
         dispatcher.register
             .filterByType(FingerprintAuthAction::class.java)
 
+    // Accessing these properties in an environment with an Android SDK lower than V26 will result in app crashes!
     open val autofillAvailable: Boolean
         @RequiresApi(Build.VERSION_CODES.O)
         get() = autofillManager.isAutofillSupported
