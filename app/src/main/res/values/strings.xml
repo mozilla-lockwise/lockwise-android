@@ -237,4 +237,7 @@
     <string name="autofill_authenticate_cta">Tap to unlock</string>
     <!-- This is the error message when autofill is triggered but no domain is detected. This is unlikely. -->
     <string name="autofill_error_no_hostname">Unexpected hostname format</string>
+    <!-- This is the prompt when autofill is triggered, Lockbox is unlocked, and no passwords are detected. -->
+    <string name="autofill_search_cta">Tap to search</string>
+
 </resources>

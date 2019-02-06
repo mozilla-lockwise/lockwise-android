@@ -36,7 +36,22 @@ class FillResponseBuilder(
 
     fun buildFallbackFillResponse(context: Context): FillResponse? {
         // See https://github.com/mozilla-lockbox/lockbox-android/issues/421
-        return null
+        val builder = FillResponse.Builder()
+        addSearchFooter(context, builder)
+        return builder.build()
+    }
+
+    private fun addSearchFooter(context: Context, builder: FillResponse.Builder) {
+        val searchPresentation = RemoteViews(context.packageName, R.layout.autofill_item).apply {
+            val callToAction = context.resources.getString(R.string.autofill_search_cta)
+            setTextViewText(R.id.presentationText, callToAction)
+        }
+
+        // See https://github.com/mozilla-lockbox/lockbox-android/issues/421
+        val sender = AuthActivity.getAuthIntentSender(context, this)
+        val autofillIds = arrayOf(parsedStructure.usernameId, parsedStructure.passwordId)
+
+        builder.setAuthentication(autofillIds, sender, searchPresentation)
     }
 
     fun buildFilteredFillResponse(context: Context, passwords: List<ServerPassword>): FillResponse? {
@@ -56,6 +71,8 @@ class FillResponseBuilder(
         possibleValues
             .map { serverPasswordToDataset(context, it) }
             .forEach { builder.addDataset(it) }
+
+        addSearchFooter(context, builder)
 
         return builder.build()
     }
