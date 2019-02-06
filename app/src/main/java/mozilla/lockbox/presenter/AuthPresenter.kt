@@ -71,8 +71,8 @@ class AuthPresenter(
             .switchMap { dataStore.list }
             .subscribe { passwords ->
                 val response =
-                    responseBuilder.buildFilteredFillResponse(view.context, passwords) ?:
-                    responseBuilder.buildFallbackFillResponse(view.context)
+                    responseBuilder.buildFilteredFillResponse(view.context, passwords)
+                    ?: responseBuilder.buildFallbackFillResponse(view.context)
 
                 view.setFillResponseAndFinish(response)
             }

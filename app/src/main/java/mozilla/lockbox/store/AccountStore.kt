@@ -99,8 +99,8 @@ open class AccountStore(
 
         // Moves credentials from the AccountStore, into the DataStore.
         syncCredentials.map {
-                it.value?.let { credentials -> DataStoreAction.UpdateCredentials(credentials) } ?:
-                DataStoreAction.Reset
+                it.value?.let { credentials -> DataStoreAction.UpdateCredentials(credentials) }
+                ?: DataStoreAction.Reset
             }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)

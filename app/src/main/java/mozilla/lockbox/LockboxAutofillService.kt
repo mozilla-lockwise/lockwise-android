@@ -66,8 +66,8 @@ class LockboxAutofillService(
                 when (latest.first) {
                     DataStore.State.Locked -> builder.buildAuthenticationFillResponse(this)
                     DataStore.State.Unlocked -> {
-                        builder.buildFilteredFillResponse(this, latest.second) ?:
-                        builder.buildFallbackFillResponse(this)
+                        builder.buildFilteredFillResponse(this, latest.second)
+                        ?: builder.buildFallbackFillResponse(this)
                     }
                     DataStore.State.Unprepared -> null // we might consider onboarding here.
                     else -> null
@@ -93,4 +93,3 @@ class LockboxAutofillService(
     // to be implemented in issue #217
     override fun onSaveRequest(request: SaveRequest, callback: SaveCallback) {}
 }
-

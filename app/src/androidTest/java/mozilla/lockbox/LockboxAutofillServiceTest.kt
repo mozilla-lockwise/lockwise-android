@@ -1,6 +1,5 @@
 package mozilla.lockbox
 
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.rule.ServiceTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import io.reactivex.Observable
@@ -8,9 +7,7 @@ import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.flux.Dispatcher
-import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.DataStore
-import mozilla.lockbox.support.SecurePreferences
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
