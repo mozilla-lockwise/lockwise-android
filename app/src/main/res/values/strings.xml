@@ -210,7 +210,6 @@
     <string name="no_entries_description">Firefox Lockbox lets you access passwords you\'ve already saved to Firefox. To
         view your entries here, you\'ll need to sign in and sync in Firefox.
     </string>
-
     <!-- This is the title for the biometric unlock onboarding screen. -->
     <string name="onboarding_unlock_title">Unlock Firefox Lockbox with your fingerprint.</string>
     <!-- This is the onboarding description for enabling biometric unlock with the fingerprint sensor. -->
@@ -233,4 +232,9 @@
 
     <string name="autofill_authenticate_cta">requires authentication</string>
     <string name="autofill_error_no_hostname">unexpected hostname format</string>
+
+    <!-- This is the prompt when autofill is triggered, and Lockbox is locked. -->
+    <string name="autofill_authenticate_cta">Tap to unlock</string>
+    <!-- This is the error message when autofill is triggered but no domain is detected. This is unlikely. -->
+    <string name="autofill_error_no_hostname">Unexpected hostname format</string>
 </resources>

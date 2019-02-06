@@ -70,7 +70,10 @@ class AuthPresenter(
             .filter { it == DataStore.State.Unlocked }
             .switchMap { dataStore.list }
             .subscribe { passwords ->
-                val response = responseBuilder.buildFilteredFillResponse(view.context, passwords)
+                val response =
+                    responseBuilder.buildFilteredFillResponse(view.context, passwords) ?:
+                    responseBuilder.buildFallbackFillResponse(view.context)
+
                 view.setFillResponseAndFinish(response)
             }
             .addTo(compositeDisposable)

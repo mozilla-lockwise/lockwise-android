@@ -34,8 +34,9 @@ class FillResponseBuilder(
         return responseBuilder.build()
     }
 
-    fun buildFallbackFillResponse(context: Context): FillResponse {
-        return buildAuthenticationFillResponse(context)
+    fun buildFallbackFillResponse(context: Context): FillResponse? {
+        // See https://github.com/mozilla-lockbox/lockbox-android/issues/421
+        return null
     }
 
     fun buildFilteredFillResponse(context: Context, passwords: List<ServerPassword>): FillResponse? {
