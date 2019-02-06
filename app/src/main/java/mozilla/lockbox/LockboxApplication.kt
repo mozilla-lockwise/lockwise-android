@@ -18,6 +18,7 @@ import mozilla.components.support.base.log.Log
 import mozilla.components.support.base.log.logger.Logger
 import mozilla.components.support.base.log.sink.AndroidLogSink
 import mozilla.lockbox.presenter.ApplicationPresenter
+import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.AutoLockStore
 import mozilla.lockbox.store.ClipboardStore
 import mozilla.lockbox.store.ContextStore
@@ -59,15 +60,15 @@ open class LockboxApplication : Application() {
     private fun setupDataStoreSupport() {
         LockboxMegazord.init()
 
-        // this needs to be done after injectContext, as
-        // SyncDataStoreSupport needs to find the database
-        // path from the context
-        val support = if (isTesting()) {
-            FixedDataStoreSupport.shared
-        } else {
-            FxASyncDataStoreSupport.shared
+        // This list of stores need to be constructed
+        // in the given order. e.g. AccountStore dispatches DataStoreActions.
+        val orderedStores = listOf(
+            DataStore.shared,
+            AccountStore.shared
+        )
+        orderedStores.forEach {
+            log.info("${it.javaClass.simpleName} initialized")
         }
-        DataStore.shared.resetSupport(support)
     }
 
     private fun injectContext() {

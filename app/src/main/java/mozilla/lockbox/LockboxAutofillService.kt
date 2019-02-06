@@ -18,8 +18,6 @@ import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.autofill.FillResponseBuilder
 import mozilla.lockbox.flux.Dispatcher
-import mozilla.lockbox.support.AccountStoreSupport
-import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.support.ParsedStructureBuilder
 import mozilla.lockbox.support.asOptional
@@ -28,16 +26,10 @@ import mozilla.lockbox.support.asOptional
 @ExperimentalCoroutinesApi
 class LockboxAutofillService(
     val dataStore: DataStore = DataStore.shared,
-    val accountStore: AccountStore = AccountStore.shared,
     val dispatcher: Dispatcher = Dispatcher.shared
 ) : AutofillService() {
 
     private var compositeDisposable = CompositeDisposable()
-
-    override fun onConnected() {
-        super.onConnected()
-        AccountStoreSupport.prepareDataStoreActions(accountStore, null, dispatcher, compositeDisposable)
-    }
 
     override fun onDisconnected() {
         compositeDisposable.clear()

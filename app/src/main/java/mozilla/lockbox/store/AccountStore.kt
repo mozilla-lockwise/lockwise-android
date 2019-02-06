@@ -26,6 +26,7 @@ import mozilla.components.service.fxa.FirefoxAccount
 import mozilla.components.service.fxa.FxaException
 import mozilla.components.service.fxa.Profile
 import mozilla.lockbox.action.AccountAction
+import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.filterByType
@@ -96,6 +97,18 @@ open class AccountStore(
             }
             .addTo(compositeDisposable)
 
+        // Moves credentials from the AccountStore, into the DataStore.
+        syncCredentials.map {
+                it.value?.let { credentials -> DataStoreAction.UpdateCredentials(credentials) } ?:
+                DataStoreAction.Reset
+            }
+            .subscribe(dispatcher::dispatch)
+            .addTo(compositeDisposable)
+
+        detectAccount()
+    }
+
+    private fun detectAccount() {
         storedAccountJSON?.let { accountJSON ->
             if (accountJSON == Constant.App.testMarker) {
                 populateTestAccountInformation(false)

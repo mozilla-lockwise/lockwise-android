@@ -28,7 +28,6 @@ import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
-import mozilla.lockbox.support.AccountStoreSupport
 import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.AutoLockStore
 import mozilla.lockbox.store.DataStore
@@ -54,8 +53,6 @@ class RoutePresenter(
 
     override fun onViewReady() {
         navController = Navigation.findNavController(activity, R.id.fragment_nav_host)
-
-        AccountStoreSupport.prepareDataStoreActions(accountStore, autoLockStore, dispatcher, compositeDisposable)
 
         routeStore.routes
             .observeOn(mainThread())

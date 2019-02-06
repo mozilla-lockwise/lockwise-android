@@ -32,11 +32,7 @@ class LockboxAutofillServiceTest {
         override val list: Observable<List<ServerPassword>> = PublishSubject.create()
     }
 
-    class FakeAccountStore(dispatcher: Dispatcher, prefs: SecurePreferences) : AccountStore(dispatcher, prefs)
-
-    private val prefs = SecurePreferences()
     private val dataStore = FakeDataStore(dispatcher)
-    private val accountStore = FakeAccountStore(dispatcher, prefs)
 
     @get:Rule
     val serviceRule = ServiceTestRule()
@@ -45,8 +41,7 @@ class LockboxAutofillServiceTest {
 
     @Before
     fun setUp() {
-        prefs.injectContext(ApplicationProvider.getApplicationContext())
-        subject = LockboxAutofillService(dataStore, accountStore, dispatcher)
+        subject = LockboxAutofillService(dataStore, dispatcher)
         subject.onConnected()
     }
 
