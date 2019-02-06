@@ -3,7 +3,7 @@
 
     <issue
         id="GradleDependency"
-        message="A newer version of android.arch.navigation:navigation-fragment than 1.0.0-alpha09 is available: 1.0.0-alpha11"
+        message="A newer version of android.arch.navigation:navigation-fragment than 1.0.0-alpha11 is available: 1.0.0-beta01"
         errorLine1="    implementation &quot;android.arch.navigation:navigation-fragment:$navigation_version&quot;"
         errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
@@ -14,7 +14,7 @@
 
     <issue
         id="GradleDependency"
-        message="A newer version of android.arch.navigation:navigation-ui-ktx than 1.0.0-alpha09 is available: 1.0.0-alpha11"
+        message="A newer version of android.arch.navigation:navigation-ui-ktx than 1.0.0-alpha11 is available: 1.0.0-beta01"
         errorLine1="    implementation &quot;android.arch.navigation:navigation-ui-ktx:$navigation_version&quot;"
         errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
