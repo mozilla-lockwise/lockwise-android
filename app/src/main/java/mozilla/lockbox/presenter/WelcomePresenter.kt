@@ -14,6 +14,7 @@ import mozilla.lockbox.flux.Presenter
 
 interface WelcomeView {
     val getStartedClicks: Observable<Unit>
+    val learnMoreClicks: Observable<Unit>
 }
 
 class WelcomePresenter(
@@ -24,5 +25,9 @@ class WelcomePresenter(
         view.getStartedClicks
                 .subscribe { dispatcher.dispatch(RouteAction.Login) }
                 .addTo(compositeDisposable)
+
+        view.learnMoreClicks
+            .subscribe { dispatcher.dispatch(RouteAction.AppWebPage.FaqList) }
+            .addTo(compositeDisposable)
     }
 }
