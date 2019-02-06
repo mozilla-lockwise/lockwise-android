@@ -16,7 +16,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.rx2.asMaybe
 import mozilla.components.lib.publicsuffixlist.PublicSuffixList
 import mozilla.lockbox.log
-import java.net.IDN
 import java.net.URI
 import kotlin.coroutines.CoroutineContext
 
@@ -40,15 +39,20 @@ open class PublicSuffixSupport(
         return psl.getPublicSuffixPlusOne(fullDomain)
             .asMaybe(coroutineContext)
             .toSingle("")
-            .flatMapObservable { Observable.just(PublicSuffix(it, fullDomain)) }
+            .map { PublicSuffix(it, fullDomain) }
+            .toObservable()
     }
 
-    fun fromOrigin(origin: String): Observable<PublicSuffix> {
-        val domain = URI.create(origin).host
+    fun fromOrigin(origin: String?): Observable<PublicSuffix> {
+        val domain = try {
+            URI.create(origin).host
+        } catch (e: Exception) {
+            ""
+        }
         return fromWebDomain(domain)
     }
-    fun fromPackageName(pkg: String): Observable<PublicSuffix> {
-        val domain = pkg
+    fun fromPackageName(pkg: String?): Observable<PublicSuffix> {
+        val domain = (pkg ?: "")
             .split('.')
             .asReversed()
             .joinToString(".")
@@ -62,6 +66,6 @@ data class PublicSuffix(
 ) {
     fun isEmpty(): Boolean = topDomain.isEmpty()
     fun isNotEmpty(): Boolean = topDomain.isNotEmpty()
-    fun matches(expected: PublicSuffix): Boolean
-        = expected.topDomain.equals(expected.topDomain, true)
+    fun matches(expected: PublicSuffix): Boolean =
+        this.topDomain.equals(expected.topDomain, true)
 }
