@@ -56,24 +56,27 @@ class ListAdapterTestHelper {
         )
     }
 
-    fun createAccurateListOfSettings(isFingerprintAvailable: Boolean): List<SettingCellConfiguration> {
-        var settings = listOf(
+    fun createAccurateListOfSettings(isFingerprintAvailable: Boolean, isAutofillAvailable: Boolean): List<SettingCellConfiguration> {
+        var settings: List<SettingCellConfiguration> = listOf(
             TextSettingConfiguration(
                 title = R.string.auto_lock,
-                contentDescription = R.string.empty_string,
+                contentDescription = R.string.auto_lock_description,
                 detailTextDriver = textDriverFake,
                 clickListener = textClicksConsumerFake
-            ),
-            /* TODO: enable Autofill setting once it's actually implemented
-            ToggleSettingConfiguration(
+            )
+        )
+
+        if (isAutofillAvailable) {
+            settings += ToggleSettingConfiguration(
                 title = R.string.autofill,
                 subtitle = R.string.autofill_summary,
                 contentDescription = R.string.empty_string,
                 toggleDriver = toggleDriverFake,
                 toggleObserver = toggleConsumerFake
-            ),
-            */
-            ToggleSettingConfiguration(
+            )
+        }
+
+        settings += listOf(ToggleSettingConfiguration(
                 title = R.string.send_usage_data,
                 subtitle = R.string.send_usage_data_summary,
                 contentDescription = R.string.empty_string,
@@ -86,6 +89,7 @@ class ListAdapterTestHelper {
                 contentDescription = R.string.empty_string
             )
         )
+
         if (isFingerprintAvailable) {
             settings = listOf(
                 ToggleSettingConfiguration(
@@ -96,6 +100,7 @@ class ListAdapterTestHelper {
                 )
             ) + settings
         }
+
         return settings
     }
 }

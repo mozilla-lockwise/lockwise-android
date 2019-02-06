@@ -280,6 +280,7 @@ class RoutePresenter(
 
     private fun openSetting(settingAction: RouteAction.SystemSetting) {
         val settingIntent = Intent(settingAction.setting.intentAction)
+        settingIntent.data = settingAction.setting.data
         activity.startActivity(settingIntent, null)
     }
 }

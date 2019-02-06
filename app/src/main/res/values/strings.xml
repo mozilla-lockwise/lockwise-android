@@ -123,11 +123,11 @@
     <string name="never">Never</string>
 
     <!-- This is the title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application -->
-    <!-- <string name="autofill">Autofill</string> -->
+     <string name="autofill">Autofill</string>
     <!-- This is the sub-title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application, not expected to translate Firefox Lockbox -->
-    <!-- <string name="autofill_summary">Let Firefox Lockbox fill in logins for you</string> -->
+     <string name="autofill_summary">Let Firefox Lockbox fill in logins for you</string>
     <!-- This is the label a screenreader uses to inform the user they selected the autofill setting toggle -->
-    <!-- <string name="autofill_description">Application autofill setting</string> -->
+     <string name="autofill_description">Application autofill setting</string>
 
     <!-- This is the title of a setting that allows the user to enable and disable the sending of telemetry usage data to Mozilla -->
     <string name="send_usage_data">Send usage data</string>

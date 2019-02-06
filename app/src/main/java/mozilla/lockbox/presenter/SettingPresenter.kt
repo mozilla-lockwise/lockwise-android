@@ -6,6 +6,9 @@
 
 package mozilla.lockbox.presenter
 
+import android.os.Build
+import androidx.annotation.RequiresApi
+import io.reactivex.Observable
 import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
@@ -14,6 +17,7 @@ import mozilla.lockbox.R
 import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.SettingAction
+import mozilla.lockbox.action.SettingIntent
 import mozilla.lockbox.adapter.AppVersionSettingConfiguration
 import mozilla.lockbox.adapter.SectionedAdapter
 import mozilla.lockbox.adapter.SettingCellConfiguration
@@ -62,7 +66,14 @@ class SettingPresenter(
         }
 
     private val autoFillObserver: Consumer<Boolean>
-        get() = Consumer { }
+        @RequiresApi(Build.VERSION_CODES.O)
+        get() = Consumer { newValue ->
+            dispatcher.dispatch(SettingAction.Autofill(newValue))
+
+            if (newValue) {
+                dispatcher.dispatch(RouteAction.SystemSetting(SettingIntent.Autofill))
+            }
+        }
 
     private val sendUsageDataObserver: Consumer<Boolean>
         get() = Consumer { newValue ->
@@ -95,22 +106,40 @@ class SettingPresenter(
     }
 
     private fun updateSettings() {
-        var settings = listOf(
+        var configurationSettings: List<SettingCellConfiguration> = listOf(
             TextSettingConfiguration(
                 title = R.string.auto_lock,
                 contentDescription = R.string.auto_lock_description,
                 detailTextDriver = settingStore.autoLockTime.map { it.stringValue },
                 clickListener = autoLockTimeClickListener
-            ),
-            /* TODO: enable Autofill setting and increase supportIndex once it's actually implemented
-            ToggleSettingConfiguration(
+            ))
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && settingStore.autofillAvailable) {
+            configurationSettings += ToggleSettingConfiguration(
                 title = R.string.autofill,
                 subtitle = R.string.autofill_summary,
                 contentDescription = R.string.autofill_description,
-                toggleDriver = Observable.just(true),
+                toggleDriver = Observable.just(settingStore.isCurrentAutofillProvider),
                 toggleObserver = autoFillObserver
-            ),
-            */
+            )
+        }
+
+        if (fingerprintStore.isFingerprintAuthAvailable) {
+            configurationSettings = listOf(
+                ToggleSettingConfiguration(
+                    title = R.string.unlock,
+                    contentDescription = R.string.fingerprint_description,
+                    toggleDriver = Observables.combineLatest(
+                        settingStore.unlockWithFingerprintPendingAuth,
+                        settingStore.unlockWithFingerprint
+                    )
+                        .map { unlock -> unlock.first.takeIf { it } ?: unlock.second },
+                    toggleObserver = enableFingerprintObserver
+                )
+            ) + configurationSettings
+        }
+
+        val supportSettings = listOf(
             ToggleSettingConfiguration(
                 title = R.string.send_usage_data,
                 subtitle = R.string.send_usage_data_summary,
@@ -125,30 +154,11 @@ class SettingPresenter(
             )
         )
 
-        var supportIndex = 1
-
-        if (fingerprintStore.isFingerprintAuthAvailable) {
-            settings = listOf(
-                ToggleSettingConfiguration(
-                    title = R.string.unlock,
-                    contentDescription = R.string.fingerprint_description,
-                    toggleDriver = Observables.combineLatest(
-                        settingStore.unlockWithFingerprintPendingAuth,
-                        settingStore.unlockWithFingerprint
-                    )
-                        .map { unlock -> unlock.first.takeIf { it } ?: unlock.second },
-                    toggleObserver = enableFingerprintObserver
-                )
-            ) + settings
-
-            supportIndex += 1
-        }
-
         val sections = listOf(
             SectionedAdapter.Section(0, R.string.configuration_title),
-            SectionedAdapter.Section(supportIndex, R.string.support_title)
+            SectionedAdapter.Section(configurationSettings.size, R.string.support_title)
         )
 
-        view.updateSettingList(settings, sections)
+        view.updateSettingList(configurationSettings + supportSettings, sections)
     }
 }
