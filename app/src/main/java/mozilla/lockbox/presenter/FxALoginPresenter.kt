@@ -35,7 +35,6 @@ class FxALoginPresenter(
     private val networkStore: NetworkStore = NetworkStore.shared,
     private val accountStore: AccountStore = AccountStore.shared
 ) : Presenter() {
-
     fun isRedirectUri(uri: String?): Boolean = uri?.startsWith(Constant.FxA.redirectUri) ?: false
 
     override fun onViewReady() {

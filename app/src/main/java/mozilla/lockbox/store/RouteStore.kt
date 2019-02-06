@@ -26,15 +26,16 @@ class RouteStore(
     dataStore: DataStore = DataStore.shared,
     fingerprintStore: FingerprintStore = FingerprintStore.shared
 ) {
+    companion object {
+        val shared = RouteStore()
+    }
+
     internal val compositeDisposable = CompositeDisposable()
 
     private val onboardingState: ReplaySubject<Boolean> = ReplaySubject.createWithSize(1)
     val onboarding: Observable<Boolean> = onboardingState
-    private var triggerOnboarding: Boolean? = null
 
-    companion object {
-        val shared = RouteStore()
-    }
+    private var triggerOnboarding: Boolean? = null
 
     val routes: Observable<RouteAction> = ReplaySubject.createWithSize(1)
 

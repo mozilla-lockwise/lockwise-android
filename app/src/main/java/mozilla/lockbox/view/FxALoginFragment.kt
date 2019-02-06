@@ -82,9 +82,4 @@ class FxALoginFragment : BackableFragment(), FxALoginView {
 
     override val skipFxAClicks: Observable<Unit>?
         get() = skipFxA?.clicks()
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        presenter.onDestroy()
-    }
 }

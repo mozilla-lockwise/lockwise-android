@@ -36,26 +36,25 @@ class OnboardingFingerprintAuthPresenter(
 ) : Presenter() {
 
     override fun onViewReady() {
-        if (fingerprintStore.isFingerprintAuthAvailable) {
-            fingerprintStore.authState
-                .subscribe(this::updateState)
-                .addTo(compositeDisposable)
-
-            view.authCallback
-                .subscribe {
-                    dispatcher.dispatch(FingerprintAuthAction.OnAuthentication(it))
-                    dispatcher.dispatch(SettingAction.UnlockWithFingerprint(true))
-                    dispatcher.dispatch(RouteAction.ItemList)
-                }
-                .addTo(compositeDisposable)
-
-            view.onDismiss.subscribe {
-                dispatcher.dispatch(OnboardingAction.OnDismiss)
-                dispatcher.dispatch(RouteAction.SkipOnboarding)
-            }?.addTo(compositeDisposable)
-        } else {
+        if (!fingerprintStore.isFingerprintAuthAvailable) {
             dispatcher.dispatch(RouteAction.SkipOnboarding)
         }
+        fingerprintStore.authState
+            .subscribe(this::updateState)
+            .addTo(compositeDisposable)
+
+        view.authCallback
+            .subscribe {
+                dispatcher.dispatch(FingerprintAuthAction.OnAuthentication(it))
+                dispatcher.dispatch(SettingAction.UnlockWithFingerprint(true))
+                dispatcher.dispatch(RouteAction.ItemList)
+            }
+            .addTo(compositeDisposable)
+
+        view.onDismiss.subscribe {
+            dispatcher.dispatch(OnboardingAction.OnDismiss)
+            dispatcher.dispatch(RouteAction.SkipOnboarding)
+        }?.addTo(compositeDisposable)
     }
 
     override fun onResume() {
