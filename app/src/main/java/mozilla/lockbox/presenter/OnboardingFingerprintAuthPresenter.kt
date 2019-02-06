@@ -11,7 +11,7 @@ import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.FingerprintSensorAction
-import mozilla.lockbox.action.OnboardingAction
+import mozilla.lockbox.action.OnboardingStatusAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.flux.Dispatcher
@@ -36,10 +36,6 @@ class OnboardingFingerprintAuthPresenter(
 ) : Presenter() {
 
     override fun onViewReady() {
-        if (!fingerprintStore.isFingerprintAuthAvailable) {
-            dispatcher.dispatch(RouteAction.SkipOnboarding)
-        }
-
         fingerprintStore.authState
             .subscribe(this::updateState)
             .addTo(compositeDisposable)
@@ -52,14 +48,13 @@ class OnboardingFingerprintAuthPresenter(
                     is AuthCallback.OnError -> false
                 }
                 dispatcher.dispatch(SettingAction.UnlockWithFingerprint(unlock))
-                dispatcher.dispatch(RouteAction.ItemList)
+                dispatcher.dispatch(OnboardingStatusAction(false))
             }
             .addTo(compositeDisposable)
 
         view.onDismiss.subscribe {
-            dispatcher.dispatch(OnboardingAction.OnDismiss)
+            dispatcher.dispatch(OnboardingStatusAction(false))
             dispatcher.dispatch(SettingAction.UnlockWithFingerprint(false))
-            dispatcher.dispatch(RouteAction.SkipOnboarding)
         }?.addTo(compositeDisposable)
     }
 

@@ -6,14 +6,18 @@
 
 package mozilla.lockbox.store
 
+import com.jakewharton.rxrelay2.BehaviorRelay
+import com.jakewharton.rxrelay2.Relay
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.ReplaySubject
 import io.reactivex.subjects.Subject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import mozilla.lockbox.action.OnboardingAction
+import mozilla.lockbox.action.OnboardingStatusAction
 import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.extensions.debug
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.flux.Dispatcher
@@ -23,8 +27,7 @@ import mozilla.lockbox.support.asOptional
 @ExperimentalCoroutinesApi
 class RouteStore(
     dispatcher: Dispatcher = Dispatcher.shared,
-    dataStore: DataStore = DataStore.shared,
-    fingerprintStore: FingerprintStore = FingerprintStore.shared
+    dataStore: DataStore = DataStore.shared
 ) {
     companion object {
         val shared = RouteStore()
@@ -32,60 +35,37 @@ class RouteStore(
 
     internal val compositeDisposable = CompositeDisposable()
 
-    private val onboardingState: ReplaySubject<Boolean> = ReplaySubject.createWithSize(1)
-    val onboarding: Observable<Boolean> = onboardingState
-
-    private var triggerOnboarding: Boolean? = null
+    private val onboarding: Observable<Boolean> = BehaviorRelay.createDefault(false)
 
     val routes: Observable<RouteAction> = ReplaySubject.createWithSize(1)
 
     init {
         dispatcher.register
             .filterByType(RouteAction::class.java)
+            .debug("dispatched route actions")
             .subscribe(routes as Subject)
 
-        this.onboarding
-            .subscribe { ob ->
-                triggerOnboarding = ob && fingerprintStore.isFingerprintAuthAvailable
-            }
+        dispatcher.register
+            .filterByType(OnboardingStatusAction::class.java)
+            .debug("are we onboarding?")
+            .map { it.onboardingInProgress }
+            .subscribe(onboarding as Relay)
             .addTo(compositeDisposable)
 
-        dispatcher.register
-            .filterByType(OnboardingAction.OnDismiss::class.java)
-            .subscribe {
-                onboardingState.onNext(false)
-                chooseRoute()
-            }.addTo(compositeDisposable)
-
-        dataStore.state
-            .map(this::dataStoreToRouteActions)
+        Observables.combineLatest(dataStore.state, onboarding)
+            .debug("datastore route actions")
+            .filter { !it.second }
+            .map { dataStoreToRouteActions(it.first) }
             .filterNotNull()
             .subscribe(routes)
-
-        dataStore.state
-            .subscribe { state ->
-                when (state) {
-                    is DataStore.State.Unprepared -> onboardingState.onNext(true)
-                    else -> onboardingState.onNext(false)
-                }
-            }
-            .addTo(compositeDisposable)
     }
 
     private fun dataStoreToRouteActions(storageState: DataStore.State): Optional<RouteAction> {
         return when (storageState) {
-            is DataStore.State.Unlocked -> chooseRoute()
+            is DataStore.State.Unlocked -> RouteAction.ItemList
             is DataStore.State.Locked -> RouteAction.LockScreen
             is DataStore.State.Unprepared -> RouteAction.Welcome
             else -> null
         }.asOptional()
-    }
-
-    private fun chooseRoute(): RouteAction {
-        return if (triggerOnboarding!!) {
-            RouteAction.Onboarding
-        } else {
-            RouteAction.ItemList
-        }
     }
 }

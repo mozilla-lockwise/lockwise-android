@@ -86,8 +86,7 @@ class RoutePresenter(
         when (action) {
             is RouteAction.Welcome -> navigateToFragment(action, R.id.fragment_welcome)
             is RouteAction.Login -> navigateToFragment(action, R.id.fragment_fxa_login)
-            is RouteAction.Onboarding -> navigateToFragment(action, R.id.fragment_onboarding)
-            is RouteAction.SkipOnboarding -> navigateToFragment(action, R.id.fragment_item_list)
+            is RouteAction.FingerprintOnboarding -> navigateToFragment(action, R.id.fragment_fingerprint_onboarding)
             is RouteAction.ItemList -> navigateToFragment(action, R.id.fragment_item_list)
             is RouteAction.SettingList -> navigateToFragment(action, R.id.fragment_setting)
             is RouteAction.AccountSetting -> navigateToFragment(action, R.id.fragment_account_setting)
@@ -254,9 +253,9 @@ class RoutePresenter(
             Pair(R.id.fragment_welcome, R.id.fragment_locked) -> R.id.action_to_locked
 
             Pair(R.id.fragment_fxa_login, R.id.fragment_item_list) -> R.id.action_fxaLogin_to_itemList
-            Pair(R.id.fragment_fxa_login, R.id.fragment_onboarding) -> R.id.action_fxaLogin_to_onboarding
+            Pair(R.id.fragment_fxa_login, R.id.fragment_fingerprint_onboarding) -> R.id.action_fxaLogin_to_onboarding
 
-            Pair(R.id.fragment_onboarding, R.id.fragment_item_list) -> R.id.action_to_itemList
+            Pair(R.id.fragment_fingerprint_onboarding, R.id.fragment_item_list) -> R.id.action_to_itemList
 
             Pair(R.id.fragment_locked, R.id.fragment_item_list) -> R.id.action_to_itemList
             Pair(R.id.fragment_locked, R.id.fragment_welcome) -> R.id.action_locked_to_welcome

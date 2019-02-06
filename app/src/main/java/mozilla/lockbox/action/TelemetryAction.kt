@@ -60,7 +60,6 @@ enum class TelemetryEventObject {
     entry_copy_username_button,
     entry_copy_password_button,
     onboarding_biometric_unlock,
-    onboarding_skip,
     settings_list,
     settings_autolock_time,
     settings_autolock,

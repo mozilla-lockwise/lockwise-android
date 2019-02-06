@@ -32,13 +32,13 @@
 
         <action
                 android:id="@+id/action_fxaLogin_to_onboarding"
-                app:destination="@id/fragment_onboarding"
+                app:destination="@id/fragment_fingerprint_onboarding"
                 app:launchSingleTop="true"
-                app:popUpTo="@+id/fragment_onboarding"/>
+                app:popUpTo="@+id/fragment_fingerprint_onboarding"/>
     </fragment>
 
     <fragment
-            android:id="@+id/fragment_onboarding"
+            android:id="@+id/fragment_fingerprint_onboarding"
             android:name="mozilla.lockbox.view.OnboardingFingerprintAuthFragment"
             tools:layout="@layout/onboarding_biometric_unlock">
         <action
