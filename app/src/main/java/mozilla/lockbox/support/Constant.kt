@@ -48,8 +48,8 @@ object Constant {
         const val bootID = "boot-id"
     }
 
-    object Onboarding {
-        const val ERROR_TIMEOUT_MILLIS: Long = 1600
-        const val SUCCESS_DELAY_MILLIS: Long = 1300
+    object FingerprintTimeout {
+        const val errorTimeoutMillis: Long = 1600
+        const val successDelayMillis: Long = 1300
     }
 }

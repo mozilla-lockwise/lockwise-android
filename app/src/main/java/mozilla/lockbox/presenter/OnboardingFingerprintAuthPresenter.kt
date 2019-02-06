@@ -39,6 +39,7 @@ class OnboardingFingerprintAuthPresenter(
         if (!fingerprintStore.isFingerprintAuthAvailable) {
             dispatcher.dispatch(RouteAction.SkipOnboarding)
         }
+
         fingerprintStore.authState
             .subscribe(this::updateState)
             .addTo(compositeDisposable)
@@ -46,13 +47,18 @@ class OnboardingFingerprintAuthPresenter(
         view.authCallback
             .subscribe {
                 dispatcher.dispatch(FingerprintAuthAction.OnAuthentication(it))
-                dispatcher.dispatch(SettingAction.UnlockWithFingerprint(true))
+                val unlock = when (it) {
+                    is AuthCallback.OnAuth -> true
+                    is AuthCallback.OnError -> false
+                }
+                dispatcher.dispatch(SettingAction.UnlockWithFingerprint(unlock))
                 dispatcher.dispatch(RouteAction.ItemList)
             }
             .addTo(compositeDisposable)
 
         view.onDismiss.subscribe {
             dispatcher.dispatch(OnboardingAction.OnDismiss)
+            dispatcher.dispatch(SettingAction.UnlockWithFingerprint(false))
             dispatcher.dispatch(RouteAction.SkipOnboarding)
         }?.addTo(compositeDisposable)
     }
