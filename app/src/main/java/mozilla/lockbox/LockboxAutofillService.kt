@@ -79,7 +79,7 @@ class LockboxAutofillService(
         // convert a list of ServerPasswords into a list of (psl+1, ServerPassword)
         val passwords = dataStore.list
             .take(1)
-            .switchMap {serverPasswords ->
+            .switchMap { serverPasswords ->
                 val parsedPasswords = serverPasswords
                     .map { serverPwd ->
                         pslSupport.fromOrigin(serverPwd.hostname)
@@ -92,14 +92,13 @@ class LockboxAutofillService(
 
                 when (serverPasswords.size) {
                     0 -> Observable.just(emptyList<FillablePassword>())
-                    else ->Observable.zipIterable(
+                    else -> Observable.zipIterable(
                         parsedPasswords,
                         zipper,
                         false,
                         serverPasswords.size
                     )
                 }
-
             }
             .take(1)
 
@@ -131,11 +130,6 @@ class LockboxAutofillService(
         Observables.combineLatest(expectedDomain, passwords)
             .subscribe(doNext, doError)
             .addTo(compositeDisposable)
-    }
-
-    private fun domainFromPackage(packageName: String): String {
-        // naively assume package labels are split by `ASCII PERIOD (.)`
-        return packageName.split(".").asReversed().joinToString(".")
     }
 
     private fun buildFillResponse(
