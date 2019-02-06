@@ -35,6 +35,7 @@ import mozilla.lockbox.store.SettingStore
 interface ItemListView {
     val itemSelection: Observable<ItemViewModel>
     val filterClicks: Observable<Unit>
+    val noEntriesClicks: Observable<Unit>
     val menuItemSelections: Observable<Int>
     val lockNowClick: Observable<Unit>
     val sortItemSelection: Observable<Setting.ItemListSort>
@@ -107,6 +108,12 @@ class ItemListPresenter(
         view.filterClicks
             .subscribe {
                 dispatcher.dispatch(RouteAction.Filter)
+            }
+            .addTo(compositeDisposable)
+
+        view.noEntriesClicks
+            .subscribe {
+                dispatcher.dispatch(RouteAction.AppWebPage.FaqList)
             }
             .addTo(compositeDisposable)
 

@@ -35,6 +35,7 @@ import jp.wasabeef.picasso.transformations.CropCircleTransformation
 import kotlinx.android.synthetic.main.fragment_item_list.*
 import kotlinx.android.synthetic.main.fragment_item_list.view.*
 import kotlinx.android.synthetic.main.fragment_warning.view.*
+import kotlinx.android.synthetic.main.list_cell_no_entries.view.*
 import kotlinx.android.synthetic.main.nav_header.view.*
 import mozilla.lockbox.R
 import mozilla.lockbox.adapter.ItemListAdapter
@@ -143,6 +144,10 @@ class ItemListFragment : Fragment(), ItemListView {
     // Protocol implementations
     override val filterClicks: Observable<Unit>
         get() = view!!.filterButton.clicks()
+
+     override val noEntriesClicks: Observable<Unit>
+         // this will crash because view!!.noEntriesLearnMore must not be null
+        get() = view!!.noEntriesLearnMore.clicks()
 
     override val itemSelection: Observable<ItemViewModel>
         get() = adapter.clicks()
