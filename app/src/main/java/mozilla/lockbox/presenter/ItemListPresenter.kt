@@ -36,6 +36,7 @@ interface ItemListView {
     val itemSelection: Observable<ItemViewModel>
     val filterClicks: Observable<Unit>
     val noEntriesClicks: Observable<Unit>
+    val noMatchingClicks: Observable<Unit>
     val menuItemSelections: Observable<Int>
     val lockNowClick: Observable<Unit>
     val sortItemSelection: Observable<Setting.ItemListSort>
@@ -112,6 +113,12 @@ class ItemListPresenter(
             .addTo(compositeDisposable)
 
         view.noEntriesClicks
+            .subscribe {
+                dispatcher.dispatch(RouteAction.AppWebPage.FaqList)
+            }
+            .addTo(compositeDisposable)
+
+        view.noMatchingClicks
             .subscribe {
                 dispatcher.dispatch(RouteAction.AppWebPage.FaqList)
             }
