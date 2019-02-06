@@ -7,6 +7,7 @@ import io.reactivex.subjects.PublishSubject
 import mozilla.lockbox.action.FingerprintSensorAction
 import mozilla.lockbox.action.OnboardingAction
 import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
@@ -108,7 +109,8 @@ class OnboardingFingerprintAuthPresenterTest {
     fun `dismiss dialog when skip is tapped`() {
         view.onDismiss.onNext(Unit)
         dispatcherObserver.assertValueAt(0, OnboardingAction.OnDismiss)
-        dispatcherObserver.assertValueAt(1, RouteAction.SkipOnboarding)
+        dispatcherObserver.assertValueAt(1, SettingAction.UnlockWithFingerprint(false))
+        dispatcherObserver.assertValueAt(2, RouteAction.SkipOnboarding)
     }
 
     @Test
