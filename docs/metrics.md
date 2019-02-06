@@ -72,8 +72,6 @@ See [this](https://github.com/mozilla-mobile/focus-android/blob/master/app/src/m
 
 Every event must contain `category`, `method` and `object` fields, and may optionally contain `value` and `extra` fields as well.
 
-Events related to specific credentials should have an opaque `item_id` in the extra field where possible [**Note** This is not done yet].
-
 Finally, the `appName` metadata sent with each ping should always be `Lockbox`.
 
 See here for more information on event schemas:
