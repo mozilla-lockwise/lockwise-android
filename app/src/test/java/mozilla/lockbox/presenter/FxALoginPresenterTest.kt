@@ -17,6 +17,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.DisposingTest
 import mozilla.lockbox.action.AccountAction
 import mozilla.lockbox.action.LifecycleAction
+import mozilla.lockbox.action.OnboardingStatusAction
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.AccountStore
@@ -128,7 +129,7 @@ class FxALoginPresenterTest : DisposingTest() {
         val url = Uri.parse(Constant.FxA.redirectUri + "?moz_fake")
         view.webViewRedirectTo.onNext(url)
 
-        val redirectAction = dispatcherObserver.values()[0] as AccountAction.OauthRedirect
+        val redirectAction = dispatcherObserver.values()[1] as AccountAction.OauthRedirect
         Assert.assertEquals(url.toString(), redirectAction.url)
     }
 
@@ -145,7 +146,8 @@ class FxALoginPresenterTest : DisposingTest() {
         if (isDebug()) {
             (view.skipFxAClicks as PublishSubject).onNext(Unit)
 
-            dispatcherObserver.assertValueAt(0, LifecycleAction.UseTestData)
+            dispatcherObserver.assertValueAt(0, OnboardingStatusAction(true))
+            dispatcherObserver.assertValueAt(1, LifecycleAction.UseTestData)
         }
     }
 

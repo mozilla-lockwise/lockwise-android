@@ -6,13 +6,11 @@ import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import mozilla.lockbox.action.FingerprintSensorAction
 import mozilla.lockbox.action.OnboardingStatusAction
-import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.FingerprintStore
-import mozilla.lockbox.store.RouteStore
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -23,18 +21,15 @@ import org.mockito.Mockito
 import org.powermock.api.mockito.PowerMockito
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
-import org.mockito.Mockito.`when` as whenCalled
 
 @RunWith(RobolectricTestRunner::class)
 @Config(application = TestApplication::class)
 class OnboardingFingerprintAuthPresenterTest {
-
     open class FakeView : OnboardingFingerprintView {
-
         var success: Boolean = false
         var errors: Boolean = false
         var failure: Boolean = false
-        // probably a better way to do this...
+
         override fun onSucceeded() {
             success = true
         }
@@ -64,9 +59,6 @@ class OnboardingFingerprintAuthPresenterTest {
             get() = isFingerprintAuthAvailableStub
     }
 
-    @Mock
-    private val routeStore = PowerMockito.mock(RouteStore::class.java)
-    private var onboardingStub = Observable.just(true)
     val dispatcher = Dispatcher()
     private val view = Mockito.spy(FakeView())
 
@@ -82,7 +74,6 @@ class OnboardingFingerprintAuthPresenterTest {
     @Before
     fun setUp() {
         fingerprintStore.fingerprintManager = fingerprintManager
-        whenCalled(routeStore.onboarding).thenReturn(onboardingStub)
         dispatcher.register.subscribe(dispatcherObserver)
         subject.onViewReady()
     }
@@ -108,9 +99,8 @@ class OnboardingFingerprintAuthPresenterTest {
     @Test
     fun `dismiss dialog when skip is tapped`() {
         view.onDismiss.onNext(Unit)
-        dispatcherObserver.assertValueAt(0, OnboardingStatusAction.OnDismiss)
+        dispatcherObserver.assertValueAt(0, OnboardingStatusAction(false))
         dispatcherObserver.assertValueAt(1, SettingAction.UnlockWithFingerprint(false))
-        dispatcherObserver.assertValueAt(2, RouteAction.SkipOnboarding)
     }
 
     @Test

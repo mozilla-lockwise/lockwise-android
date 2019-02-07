@@ -23,17 +23,13 @@ class RouteStoreTest {
     private val dispatcherObserver = TestObserver.create<Action>()
     private val actionStub = PublishSubject.create<Action>()
     private val routeObserver = TestObserver.create<RouteAction>()
-    private val onboardingObserver = TestObserver.create<Boolean>()
 
     lateinit var subject: RouteStore
 
     @Before
     fun setUp() {
         subject = RouteStore(dispatcher)
-
         subject.routes.subscribe(routeObserver)
-        subject.onboarding.subscribe(onboardingObserver)
-
         dispatcher.register.subscribe { dispatcherObserver }
     }
 
