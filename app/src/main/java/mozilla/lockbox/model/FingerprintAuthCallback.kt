@@ -6,7 +6,7 @@
 
 package mozilla.lockbox.model
 
-interface FingerprintAuthCallback {
-    object OnAuth : FingerprintAuthCallback
-    object OnError : FingerprintAuthCallback
+open class FingerprintAuthCallback {
+    object OnAuth : FingerprintAuthCallback()
+    object OnError : FingerprintAuthCallback()
 }

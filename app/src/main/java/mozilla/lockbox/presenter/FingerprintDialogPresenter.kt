@@ -13,15 +13,15 @@ import mozilla.lockbox.action.FingerprintAuthAction.OnAuthentication
 import mozilla.lockbox.action.FingerprintSensorAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
+import mozilla.lockbox.model.FingerprintAuthCallback
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.FingerprintStore.AuthenticationState
-import mozilla.lockbox.view.FingerprintAuthDialogFragment.AuthCallback
 
 interface FingerprintDialogView {
     fun onSucceeded()
     fun onFailed(error: String?)
     fun onError(error: String?)
-    val authCallback: Observable<AuthCallback>
+    val authCallback: Observable<FingerprintAuthCallback>
     val onDismiss: Observable<Unit>
 }
 

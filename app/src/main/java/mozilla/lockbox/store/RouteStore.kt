@@ -17,7 +17,6 @@ import io.reactivex.subjects.Subject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.OnboardingStatusAction
 import mozilla.lockbox.action.RouteAction
-import mozilla.lockbox.extensions.debug
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.flux.Dispatcher
@@ -36,24 +35,20 @@ class RouteStore(
     internal val compositeDisposable = CompositeDisposable()
 
     private val onboarding: Observable<Boolean> = BehaviorRelay.createDefault(false)
-
     val routes: Observable<RouteAction> = ReplaySubject.createWithSize(1)
 
     init {
         dispatcher.register
             .filterByType(RouteAction::class.java)
-            .debug("dispatched route actions")
             .subscribe(routes as Subject)
 
         dispatcher.register
             .filterByType(OnboardingStatusAction::class.java)
-            .debug("are we onboarding?")
             .map { it.onboardingInProgress }
             .subscribe(onboarding as Relay)
             .addTo(compositeDisposable)
 
         Observables.combineLatest(dataStore.state, onboarding)
-            .debug("datastore route actions")
             .filter { !it.second }
             .map { dataStoreToRouteActions(it.first) }
             .filterNotNull()

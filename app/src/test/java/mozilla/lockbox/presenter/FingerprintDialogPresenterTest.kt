@@ -8,10 +8,9 @@ import mozilla.lockbox.action.FingerprintSensorAction
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.model.FingerprintAuthCallback
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.FingerprintStore.AuthenticationState as AuthenticationState
-import mozilla.lockbox.view.FingerprintAuthDialogFragment
-import mozilla.lockbox.view.FingerprintAuthDialogFragment.AuthCallback as AuthCallback
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -34,8 +33,8 @@ class FingerprintDialogPresenterTest {
         override fun onError(error: String?) {
         }
 
-        val authCallbackStub = PublishSubject.create<AuthCallback>()
-        override val authCallback: Observable<AuthCallback>
+        val authCallbackStub = PublishSubject.create<FingerprintAuthCallback>()
+        override val authCallback: Observable<FingerprintAuthCallback>
             get() = authCallbackStub
 
         override val onDismiss = PublishSubject.create<Unit>()
@@ -79,8 +78,8 @@ class FingerprintDialogPresenterTest {
 
     @Test
     fun `dispatch authentication status for routing`() {
-        view.authCallbackStub.onNext(FingerprintAuthDialogFragment.AuthCallback.OnAuth)
-        dispatcherObserver.assertLastValue(FingerprintAuthAction.OnAuthentication(FingerprintAuthDialogFragment.AuthCallback.OnAuth))
+        view.authCallbackStub.onNext(FingerprintAuthCallback.OnAuth)
+        dispatcherObserver.assertLastValue(FingerprintAuthAction.OnAuthentication(FingerprintAuthCallback.OnAuth))
     }
 
     @Test

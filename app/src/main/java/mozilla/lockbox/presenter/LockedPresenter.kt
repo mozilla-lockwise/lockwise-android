@@ -15,10 +15,10 @@ import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
+import mozilla.lockbox.model.FingerprintAuthCallback
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.LockedStore
 import mozilla.lockbox.store.SettingStore
-import mozilla.lockbox.view.FingerprintAuthDialogFragment.AuthCallback
 
 interface LockedView {
     val unlockButtonTaps: Observable<Unit>
@@ -55,8 +55,8 @@ class LockedPresenter(
             .subscribe {
                 if (it is FingerprintAuthAction.OnAuthentication) {
                     when (it.authCallback) {
-                        is AuthCallback.OnAuth -> unlock()
-                        is AuthCallback.OnError -> unlockFallback()
+                        is FingerprintAuthCallback.OnAuth -> unlock()
+                        is FingerprintAuthCallback.OnError -> unlockFallback()
                     }
                 }
             }

@@ -10,11 +10,11 @@ import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.model.FingerprintAuthCallback
 import mozilla.lockbox.store.FingerprintStore
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
-import mozilla.lockbox.view.OnboardingFingerprintAuthFragment.AuthCallback as AuthCallback
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
@@ -42,8 +42,8 @@ class OnboardingFingerprintAuthPresenterTest {
             errors = true
         }
 
-        private var authCallbackStub = PublishSubject.create<AuthCallback>()
-        override val authCallback: Observable<AuthCallback>
+        private var authCallbackStub = PublishSubject.create<FingerprintAuthCallback>()
+        override val authCallback: Observable<FingerprintAuthCallback>
             get() = authCallbackStub
 
         override val onDismiss = PublishSubject.create<Unit>()

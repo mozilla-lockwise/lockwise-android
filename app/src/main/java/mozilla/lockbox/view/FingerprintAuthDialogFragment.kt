@@ -25,8 +25,8 @@ import mozilla.lockbox.support.Constant
 
 class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
     private val compositeDisposable = CompositeDisposable()
-    private val _authCallback = PublishSubject.create<AuthCallback>()
-    override val authCallback: Observable<AuthCallback> get() = _authCallback
+    private val _authCallback = PublishSubject.create<FingerprintAuthCallback>()
+    override val authCallback: Observable<FingerprintAuthCallback> get() = _authCallback
     private val _dismiss = PublishSubject.create<Unit>()
     override val onDismiss: Observable<Unit> get() = _dismiss
     private var isEnablingDismissed: Boolean = true
@@ -68,7 +68,7 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
         view!!.imageView.run {
             setImageResource(R.drawable.ic_fingerprint_success)
             postDelayed({
-                _authCallback.onNext(AuthCallback.OnAuth)
+                _authCallback.onNext(FingerprintAuthCallback.OnAuth)
                 isEnablingDismissed = false
                 dismiss()
             }, Constant.FingerprintTimeout.successDelayMillis)
@@ -83,7 +83,7 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
     override fun onError(error: String?) {
         showError(error ?: getString(R.string.fingerprint_sensor_error))
         view!!.imageView.postDelayed({
-            _authCallback.onNext(AuthCallback.OnError)
+            _authCallback.onNext(FingerprintAuthCallback.OnError)
             dismiss()
         }, Constant.FingerprintTimeout.errorTimeoutMillis)
     }
@@ -122,10 +122,5 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
             dialog.setDismissMessage(null)
         }
         super.onDestroyView()
-    }
-
-    sealed class AuthCallback : FingerprintAuthCallback {
-        object OnAuth : AuthCallback()
-        object OnError : AuthCallback()
     }
 }
