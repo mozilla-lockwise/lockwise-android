@@ -24,9 +24,9 @@ import mozilla.lockbox.adapter.ToggleSettingConfiguration
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.model.FingerprintAuthCallback
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.SettingStore
-import mozilla.lockbox.view.FingerprintAuthDialogFragment
 import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -216,7 +216,7 @@ class SettingPresenterTest {
         subject.onResume()
         (settingStore.onEnablingFingerprint as Subject).onNext(
             FingerprintAuthAction.OnAuthentication(
-                FingerprintAuthDialogFragment.AuthCallback.OnAuth
+                FingerprintAuthCallback.OnAuth
             )
         )
         dispatcherObserver.assertValueSequence(
@@ -232,7 +232,7 @@ class SettingPresenterTest {
         subject.onResume()
         (settingStore.onEnablingFingerprint as Subject).onNext(
             FingerprintAuthAction.OnAuthentication(
-                FingerprintAuthDialogFragment.AuthCallback.OnError
+                FingerprintAuthCallback.OnError
             )
         )
         dispatcherObserver.assertValueSequence(

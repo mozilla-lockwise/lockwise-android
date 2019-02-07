@@ -12,15 +12,25 @@ import android.service.autofill.SaveCallback
 import android.service.autofill.SaveRequest
 import android.view.autofill.AutofillValue
 import android.widget.RemoteViews
+import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
+import mozilla.components.lib.publicsuffixlist.PublicSuffixList
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.support.ParsedStructure
 import mozilla.lockbox.support.ParsedStructureBuilder
+import mozilla.lockbox.support.PublicSuffix
+import mozilla.lockbox.support.PublicSuffixSupport
+
+data class FillablePassword(
+    val domain: PublicSuffix,
+    val entry: ServerPassword
+)
 
 @TargetApi(Build.VERSION_CODES.O)
 @ExperimentalCoroutinesApi
@@ -30,6 +40,9 @@ class LockboxAutofillService(
 ) : AutofillService() {
 
     private var compositeDisposable = CompositeDisposable()
+    private val pslSupport = PublicSuffixSupport(
+        PublicSuffixList(this)
+    )
 
     override fun onDisconnected() {
         compositeDisposable.clear()
@@ -42,41 +55,79 @@ class LockboxAutofillService(
 
     override fun onFillRequest(request: FillRequest, cancellationSignal: CancellationSignal, callback: FillCallback) {
         val structure = request.fillContexts.last().structure
-        val parsedStructure = ParsedStructureBuilder(structure).build()
-        val packageName = parsedStructure.packageId ?: structure.activityComponent.packageName
-        val webDomain = parsedStructure.webDomain ?: domainFromPackage(packageName)
+        val activityPackageName = structure.activityComponent.packageName
+        if (this.packageName == activityPackageName) {
+            callback.onSuccess(null)
+            return
+        }
 
+        val parsedStructure = ParsedStructureBuilder(structure).build()
         if (parsedStructure.passwordId == null && parsedStructure.usernameId == null) {
             callback.onFailure("couldn't find a username or password field")
             return
         }
 
-        if (webDomain == null) {
-            callback.onFailure("unexpected package name structure")
-            return
+        val packageName = parsedStructure.packageId ?: activityPackageName
+        val webDomain = parsedStructure.webDomain
+
+        // resolve the (webDomain || packageName) to a 1+publicsuffix
+        val expectedDomain = when (webDomain) {
+            null, "" -> pslSupport.fromPackageName(packageName)
+            else -> pslSupport.fromWebDomain(webDomain)
         }
 
-        dataStore.list
+        // convert a list of ServerPasswords into a list of (psl+1, ServerPassword)
+        val passwords = dataStore.list
             .take(1)
-            .subscribe { passwords ->
-                val possibleValues = passwords.filter {
-                    it.hostname.contains(webDomain, true)
+            .switchMap { serverPasswords ->
+                val parsedPasswords = serverPasswords
+                    .map { serverPwd ->
+                        pslSupport.fromOrigin(serverPwd.hostname)
+                            .map { FillablePassword(it, serverPwd) }
+                    }
+                val zipper: (Array<Any>) -> List<FillablePassword> = {
+                    it.filter { it is FillablePassword }
+                        .map { it as FillablePassword }
                 }
-                val response = buildFillResponse(possibleValues, parsedStructure)
-                if (response == null) {
-                    callback.onFailure("no logins found for this domain")
-                } else {
-                    callback.onSuccess(response)
+
+                when (serverPasswords.size) {
+                    0 -> Observable.just(emptyList<FillablePassword>())
+                    else -> Observable.zipIterable(
+                        parsedPasswords,
+                        zipper,
+                        false,
+                        serverPasswords.size
+                    )
                 }
             }
-            .addTo(compositeDisposable)
-    }
+            .take(1)
 
-    private fun domainFromPackage(packageName: String): String? {
-        // naively assume that the `y` from `x.y.z`-style package name is the domain
-        // untested as we will change this implementation with issue #375
-        val domainRegex = Regex("^\\w+\\.(\\w+)\\..+")
-        return domainRegex.find(packageName)?.groupValues?.get(1)
+        Observables.combineLatest(expectedDomain, passwords)
+            .subscribe(
+                {
+                    val expected = it.first
+                    if (expected.isEmpty()) {
+                        callback.onFailure("no web domain to match against")
+                    } else {
+                        val possibleValues = it.second
+                            .filter { fillable ->
+                                fillable.domain.isNotEmpty() && fillable.domain.matches(expected)
+                            }
+                            .map { fillable -> fillable.entry }
+                        val response = buildFillResponse(possibleValues, parsedStructure)
+                        if (response == null) {
+                            callback.onFailure("no logins found for this domain")
+                        } else {
+                            log.debug("autofill searching response")
+                            callback.onSuccess(response)
+                        }
+                    }
+                }, {
+                    val msg = "autofill searching unexpectedly failed"
+                    log.error(msg, it)
+                    callback.onFailure(msg)
+                })
+            .addTo(compositeDisposable)
     }
 
     private fun buildFillResponse(

@@ -18,8 +18,8 @@ import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.model.FingerprintAuthCallback
 import mozilla.lockbox.support.Constant
-import mozilla.lockbox.view.FingerprintAuthDialogFragment
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -215,14 +215,14 @@ class SettingStoreTest : DisposingTest() {
         val fingerprintAuthObserver = createTestObserver<FingerprintAuthAction>()
         subject.onEnablingFingerprint.subscribe(fingerprintAuthObserver)
 
-        dispatcher.dispatch(FingerprintAuthAction.OnAuthentication(FingerprintAuthDialogFragment.AuthCallback.OnAuth))
-        dispatcher.dispatch(FingerprintAuthAction.OnAuthentication(FingerprintAuthDialogFragment.AuthCallback.OnError))
+        dispatcher.dispatch(FingerprintAuthAction.OnAuthentication(FingerprintAuthCallback.OnAuth))
+        dispatcher.dispatch(FingerprintAuthAction.OnAuthentication(FingerprintAuthCallback.OnError))
         dispatcher.dispatch(FingerprintAuthAction.OnCancel)
 
         fingerprintAuthObserver.assertValueSequence(
             listOf(
-                FingerprintAuthAction.OnAuthentication(FingerprintAuthDialogFragment.AuthCallback.OnAuth),
-                FingerprintAuthAction.OnAuthentication(FingerprintAuthDialogFragment.AuthCallback.OnError),
+                FingerprintAuthAction.OnAuthentication(FingerprintAuthCallback.OnAuth),
+                FingerprintAuthAction.OnAuthentication(FingerprintAuthCallback.OnError),
                 FingerprintAuthAction.OnCancel
             )
         )
