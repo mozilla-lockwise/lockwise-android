@@ -70,7 +70,7 @@ class LockboxAutofillService(
         val packageName = parsedStructure.packageId ?: activityPackageName
         val webDomain = parsedStructure.webDomain
 
-        // resolve the (webDomain || packageName) to a psl+1
+        // resolve the (webDomain || packageName) to a 1+publicsuffix
         val expectedDomain = when (webDomain) {
             null, "" -> pslSupport.fromPackageName(packageName)
             else -> pslSupport.fromWebDomain(webDomain)
@@ -102,33 +102,31 @@ class LockboxAutofillService(
             }
             .take(1)
 
-        val doNext: (Pair<PublicSuffix, List<FillablePassword>>) -> Unit = {
-            val expected = it.first
-            if (expected.isEmpty()) {
-                callback.onFailure("no web domain to match against")
-            } else {
-                val possibleValues = it.second
-                    .filter { fillable ->
-                        fillable.domain.isNotEmpty() && fillable.domain.matches(expected)
-                    }
-                    .map { fillable -> fillable.entry }
-                val response = buildFillResponse(possibleValues, parsedStructure)
-                if (response == null) {
-                    callback.onFailure("no logins found for this domain")
-                } else {
-                    log.debug("autofill searching response")
-                    callback.onSuccess(response)
-                }
-            }
-        }
-        val doError: (Throwable) -> Unit = {
-            val msg = "autofill searching unexpectedly failed"
-            log.error(msg, it)
-            callback.onFailure(msg)
-        }
-
         Observables.combineLatest(expectedDomain, passwords)
-            .subscribe(doNext, doError)
+            .subscribe(
+                {
+                    val expected = it.first
+                    if (expected.isEmpty()) {
+                        callback.onFailure("no web domain to match against")
+                    } else {
+                        val possibleValues = it.second
+                            .filter { fillable ->
+                                fillable.domain.isNotEmpty() && fillable.domain.matches(expected)
+                            }
+                            .map { fillable -> fillable.entry }
+                        val response = buildFillResponse(possibleValues, parsedStructure)
+                        if (response == null) {
+                            callback.onFailure("no logins found for this domain")
+                        } else {
+                            log.debug("autofill searching response")
+                            callback.onSuccess(response)
+                        }
+                    }
+                }, {
+                    val msg = "autofill searching unexpectedly failed"
+                    log.error(msg, it)
+                    callback.onFailure(msg)
+                })
             .addTo(compositeDisposable)
     }
 
