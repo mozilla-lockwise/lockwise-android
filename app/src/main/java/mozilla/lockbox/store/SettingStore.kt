@@ -146,7 +146,7 @@ open class SettingStore(
             return
         }
 
-        if (!enable) {
+        if (!enable && isCurrentAutofillProvider) {
             autofillManager.disableAutofillServices()
         }
     }
