@@ -169,6 +169,7 @@ class SettingStoreTest : DisposingTest() {
         verify(editor).putBoolean(SettingStore.Keys.SEND_USAGE_DATA, Constant.SettingDefault.sendUsageData)
         verify(editor).putString(SettingStore.Keys.AUTO_LOCK_TIME, Constant.SettingDefault.autoLockTime.name)
         verify(editor).apply()
+        verify(autofillManager).disableAutofillServices()
     }
 
     @Test
@@ -179,6 +180,7 @@ class SettingStoreTest : DisposingTest() {
         verify(editor).putBoolean(SettingStore.Keys.SEND_USAGE_DATA, Constant.SettingDefault.sendUsageData)
         verify(editor).putString(SettingStore.Keys.AUTO_LOCK_TIME, Constant.SettingDefault.autoLockTime.name)
         verify(editor).apply()
+        verify(autofillManager).disableAutofillServices()
     }
 
     @Test
