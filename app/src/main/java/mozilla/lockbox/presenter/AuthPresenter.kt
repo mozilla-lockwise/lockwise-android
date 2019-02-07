@@ -75,6 +75,7 @@ class AuthPresenter(
                     ?: responseBuilder.buildFallbackFillResponse(view.context)
 
                 view.setFillResponseAndFinish(response)
+                dispatcher.dispatch(DataStoreAction.Lock)
             }
             .addTo(compositeDisposable)
     }

@@ -191,6 +191,12 @@ open class DataStore(
         }
 
         if (!credentials.isNew) {
+            val state = if (backend.isLocked()) {
+                State.Locked
+            } else {
+                State.Unlocked
+            }
+            stateSubject.onNext(state)
             return
         }
 

@@ -72,7 +72,7 @@ open class AccountStore(
     private var fxa: FirefoxAccount? = null
 
     open val loginURL: Observable<String> = ReplaySubject.createWithSize(1)
-    open val syncCredentials: Observable<Optional<SyncCredentials>> = ReplaySubject.createWithSize(1)
+    private val syncCredentials: Observable<Optional<SyncCredentials>> = ReplaySubject.createWithSize(1)
     open val profile: Observable<Optional<Profile>> = ReplaySubject.createWithSize(1)
 
     init {

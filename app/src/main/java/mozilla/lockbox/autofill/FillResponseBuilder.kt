@@ -55,11 +55,9 @@ class FillResponseBuilder(
     }
 
     fun buildFilteredFillResponse(context: Context, passwords: List<ServerPassword>): FillResponse? {
-        val myURL = URL(hostname)
         val possibleValues = passwords.filter {
             val credential = URL(it.hostname)
-            credential.protocol == myURL.protocol &&
-                (credential.host.endsWith(myURL.host, true) || myURL.host.endsWith(credential.host, true))
+            (credential.host.endsWith(hostname, true) || hostname.endsWith(credential.host, true))
         }
 
         if (possibleValues.isEmpty()) {
