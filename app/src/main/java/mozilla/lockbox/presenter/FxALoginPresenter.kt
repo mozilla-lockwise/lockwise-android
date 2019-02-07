@@ -14,17 +14,20 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.AccountAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.NetworkAction
+import mozilla.lockbox.action.OnboardingStatusAction
+import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.store.AccountStore
+import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.NetworkStore
 import mozilla.lockbox.support.Constant
 
 interface FxALoginView {
     var webViewRedirect: ((url: Uri?) -> Boolean)
     val skipFxAClicks: Observable<Unit>?
-    fun handleNetworkError(networkErrorVisibility: Boolean)
     val retryNetworkConnectionClicks: Observable<Unit>
+    fun handleNetworkError(networkErrorVisibility: Boolean)
     fun loadURL(url: String)
 }
 
@@ -33,7 +36,8 @@ class FxALoginPresenter(
     private val view: FxALoginView,
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val networkStore: NetworkStore = NetworkStore.shared,
-    private val accountStore: AccountStore = AccountStore.shared
+    private val accountStore: AccountStore = AccountStore.shared,
+    private val fingerprintStore: FingerprintStore = FingerprintStore.shared
 ) : Presenter() {
     fun isRedirectUri(uri: String?): Boolean = uri?.startsWith(Constant.FxA.redirectUri) ?: false
 
@@ -42,7 +46,9 @@ class FxALoginPresenter(
             val urlStr = url?.toString() ?: null
             val result = isRedirectUri(urlStr)
             if (result) {
+                dispatcher.dispatch(OnboardingStatusAction(true))
                 dispatcher.dispatch(AccountAction.OauthRedirect(urlStr!!))
+                triggerOnboarding()
             }
             result
         }
@@ -55,7 +61,9 @@ class FxALoginPresenter(
             .addTo(compositeDisposable)
 
         view.skipFxAClicks?.subscribe {
+            dispatcher.dispatch(OnboardingStatusAction(true))
             dispatcher.dispatch(LifecycleAction.UseTestData)
+            triggerOnboarding()
         }?.addTo(compositeDisposable)
 
         networkStore.isConnected
@@ -65,5 +73,13 @@ class FxALoginPresenter(
         view.retryNetworkConnectionClicks.subscribe {
             dispatcher.dispatch(NetworkAction.CheckConnectivity)
         }?.addTo(compositeDisposable)
+    }
+
+    private fun triggerOnboarding() {
+        if (fingerprintStore.isFingerprintAuthAvailable) {
+            dispatcher.dispatch(RouteAction.FingerprintOnboarding)
+        } else {
+            dispatcher.dispatch(OnboardingStatusAction(false))
+        }
     }
 }

@@ -30,7 +30,6 @@ import mozilla.lockbox.support.isDebug
 
 @ExperimentalCoroutinesApi
 class FxALoginFragment : BackableFragment(), FxALoginView {
-
     private var errorHelper = NetworkErrorHelper()
 
     override var webViewRedirect: ((url: Uri?) -> Boolean) = { _ -> false }

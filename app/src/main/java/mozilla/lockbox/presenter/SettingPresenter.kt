@@ -25,9 +25,9 @@ import mozilla.lockbox.adapter.TextSettingConfiguration
 import mozilla.lockbox.adapter.ToggleSettingConfiguration
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
+import mozilla.lockbox.model.FingerprintAuthCallback
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.SettingStore
-import mozilla.lockbox.view.FingerprintAuthDialogFragment
 
 interface SettingView {
     fun updateSettingList(
@@ -85,16 +85,20 @@ class SettingPresenter(
             .subscribe {
                 if (it is FingerprintAuthAction.OnAuthentication) {
                     when (it.authCallback) {
-                        is FingerprintAuthDialogFragment.AuthCallback.OnAuth -> dispatcher.dispatch(
-                            SettingAction.UnlockWithFingerprint(true)
-                        )
-                        is FingerprintAuthDialogFragment.AuthCallback.OnError -> {
-                            dispatcher.dispatch(SettingAction.UnlockWithFingerprint(false))
+                        is FingerprintAuthCallback.OnAuth ->
+                            dispatcher.dispatch(
+                                SettingAction.UnlockWithFingerprint(true)
+                            )
+                        is FingerprintAuthCallback.OnError -> {
+                            dispatcher.dispatch(
+                                SettingAction.UnlockWithFingerprint(false)
+                            )
                         }
                     }
                 } else {
                     dispatcher.dispatch(SettingAction.UnlockWithFingerprint(false))
                 }
+
                 dispatcher.dispatch(SettingAction.UnlockWithFingerprintPendingAuth(false))
             }
             .addTo(compositeDisposable)
@@ -112,7 +116,8 @@ class SettingPresenter(
                 contentDescription = R.string.auto_lock_description,
                 detailTextDriver = settingStore.autoLockTime.map { it.stringValue },
                 clickListener = autoLockTimeClickListener
-            ))
+            )
+        )
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && settingStore.autofillAvailable) {
             configurationSettings += ToggleSettingConfiguration(

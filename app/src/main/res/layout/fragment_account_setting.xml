@@ -52,7 +52,7 @@
             android:textSize="15sp"
             android:fontFamily="sans-serif"
             android:textStyle="normal"
-            android:textColor="@color/textGrey"
+            android:textColor="@color/text_grey"
             android:lineSpacingExtra="7.5sp"
             android:gravity="center_horizontal"
             android:text="@string/account_information"

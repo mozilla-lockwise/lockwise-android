@@ -8,25 +8,28 @@ package mozilla.lockbox.presenter
 
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.FingerprintAuthAction
-import mozilla.lockbox.action.FingerprintAuthAction.OnAuthentication
 import mozilla.lockbox.action.FingerprintSensorAction
+import mozilla.lockbox.action.OnboardingStatusAction
+import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.model.FingerprintAuthCallback
 import mozilla.lockbox.store.FingerprintStore
-import mozilla.lockbox.store.FingerprintStore.AuthenticationState
+import mozilla.lockbox.store.FingerprintStore.AuthenticationState as AuthenticationState
 
-interface FingerprintDialogView {
+interface OnboardingFingerprintView {
     fun onSucceeded()
     fun onFailed(error: String?)
     fun onError(error: String?)
-    val authCallback: Observable<FingerprintAuthCallback>
     val onDismiss: Observable<Unit>
+    val authCallback: Observable<FingerprintAuthCallback>
 }
 
-class FingerprintDialogPresenter(
-    private val view: FingerprintDialogView,
+@ExperimentalCoroutinesApi
+class OnboardingFingerprintAuthPresenter(
+    private val view: OnboardingFingerprintView,
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val fingerprintStore: FingerprintStore = FingerprintStore.shared
 ) : Presenter() {
@@ -37,12 +40,21 @@ class FingerprintDialogPresenter(
             .addTo(compositeDisposable)
 
         view.authCallback
-            .subscribe { dispatcher.dispatch(OnAuthentication(it)) }
+            .subscribe {
+                dispatcher.dispatch(FingerprintAuthAction.OnAuthentication(it))
+                val unlock = when (it) {
+                    is FingerprintAuthCallback.OnAuth -> true
+                    else -> false
+                }
+                dispatcher.dispatch(SettingAction.UnlockWithFingerprint(unlock))
+                dispatcher.dispatch(OnboardingStatusAction(false))
+            }
             .addTo(compositeDisposable)
 
-        view.onDismiss
-            .subscribe { dispatcher.dispatch(FingerprintAuthAction.OnCancel) }
-            .addTo(compositeDisposable)
+        view.onDismiss.subscribe {
+            dispatcher.dispatch(OnboardingStatusAction(false))
+            dispatcher.dispatch(SettingAction.UnlockWithFingerprint(false))
+        }?.addTo(compositeDisposable)
     }
 
     override fun onResume() {
@@ -55,7 +67,7 @@ class FingerprintDialogPresenter(
         dispatcher.dispatch(FingerprintSensorAction.Stop)
     }
 
-    private fun updateState(state: AuthenticationState) {
+    private fun updateState(state: FingerprintStore.AuthenticationState) {
         when (state) {
             is AuthenticationState.Succeeded -> view.onSucceeded()
             is AuthenticationState.Failed -> view.onFailed(state.error)

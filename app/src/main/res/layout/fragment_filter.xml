@@ -10,7 +10,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:backgroundTint="@color/backgroundGrey"
+    android:backgroundTint="@color/background_grey"
     tools:context=".view.FilterFragment">
 
     <include layout="@layout/include_backable_filter"/>

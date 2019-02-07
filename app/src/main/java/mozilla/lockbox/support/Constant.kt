@@ -47,4 +47,9 @@ object Constant {
         const val autoLockTimerDate = "auto-lock-timer-date"
         const val bootID = "boot-id"
     }
+
+    object FingerprintTimeout {
+        const val errorTimeoutMillis: Long = 1600
+        const val successDelayMillis: Long = 1300
+    }
 }
