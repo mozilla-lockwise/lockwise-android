@@ -17,10 +17,12 @@ import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.autofill.FillResponseBuilder
+import mozilla.components.lib.publicsuffixlist.PublicSuffixList
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.support.ParsedStructureBuilder
 import mozilla.lockbox.support.asOptional
+import mozilla.lockbox.support.PublicSuffixSupport
 
 @TargetApi(Build.VERSION_CODES.O)
 @ExperimentalCoroutinesApi
@@ -30,6 +32,9 @@ class LockboxAutofillService(
 ) : AutofillService() {
 
     private var compositeDisposable = CompositeDisposable()
+    private val pslSupport = PublicSuffixSupport(
+        PublicSuffixList(this)
+    )
 
     override fun onDisconnected() {
         compositeDisposable.clear()
@@ -48,19 +53,25 @@ class LockboxAutofillService(
             callback.onFailure(null)
             return
         }
-        
+
+        val packageName = parsedStructure.packageId ?: activityPackageName
         val webDomain = parsedStructure.webDomain
+
         if (webDomain == null) {
             callback.onFailure(getString(R.string.autofill_error_no_hostname))
             return
         }
 
-        val builder = FillResponseBuilder(parsedStructure, webDomain)
+        val builder = FillResponseBuilder(parsedStructure, webDomain, packageName)
+
+        // When locked, then the list will be empty.
+        // We have to do it as an observable, as looking up PSL is all async.
+        val filteredPasswords = builder.asyncFilter(pslSupport, dataStore.list)
 
         // If the data store is locked, then authenticate
         // If the data store is unlocked, with matching, then filtered response.
         // If the data store is unlocked with no matching, then send to list?
-        Observables.combineLatest(dataStore.state, dataStore.list)
+        Observables.combineLatest(dataStore.state, filteredPasswords)
             .take(1)
             .map { latest ->
                 when (latest.first) {
@@ -81,13 +92,6 @@ class LockboxAutofillService(
                 }
             }
             .addTo(compositeDisposable)
-    }
-
-    private fun domainFromPackage(packageName: String): String? {
-        // naively assume that the `y` from `x.y.z`-style package name is the domain
-        // untested as we will change this implementation with issue #375
-        val domainRegex = Regex("^\\w+\\.(\\w+)\\..+")
-        return domainRegex.find(packageName)?.groupValues?.get(1)
     }
 
     // to be implemented in issue #217

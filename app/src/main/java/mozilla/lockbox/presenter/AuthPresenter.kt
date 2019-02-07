@@ -6,15 +6,19 @@ import io.reactivex.Observable
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import mozilla.components.lib.publicsuffixlist.PublicSuffixList
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.autofill.FillResponseBuilder
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
+import mozilla.lockbox.model.FingerprintAuthCallback
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.LockedStore
 import mozilla.lockbox.store.SettingStore
+import mozilla.lockbox.support.PublicSuffixSupport
+import mozilla.lockbox.support.filter
 import mozilla.lockbox.view.FingerprintAuthDialogFragment
 
 interface AuthView {
@@ -36,6 +40,10 @@ class AuthPresenter(
     private val lockedStore: LockedStore = LockedStore.shared
 ) : Presenter() {
 
+    private val pslSupport: PublicSuffixSupport = PublicSuffixSupport(
+        PublicSuffixList(view.context)
+    )
+
     override fun onViewReady() {
         Observables.combineLatest(settingStore.unlockWithFingerprint, dataStore.state)
             .filter { pair -> pair.second == DataStore.State.Locked }
@@ -52,8 +60,8 @@ class AuthPresenter(
             .subscribe {
                 if (it is FingerprintAuthAction.OnAuthentication) {
                     when (it.authCallback) {
-                        is FingerprintAuthDialogFragment.AuthCallback.OnAuth -> unlock()
-                        is FingerprintAuthDialogFragment.AuthCallback.OnError -> view.unlockFallback()
+                        is FingerprintAuthCallback.OnAuth -> unlock()
+                        is FingerprintAuthCallback.OnError -> view.unlockFallback()
                     }
                 }
             }
@@ -68,7 +76,7 @@ class AuthPresenter(
 
         dataStore.state
             .filter { it == DataStore.State.Unlocked }
-            .switchMap { dataStore.list }
+            .switchMap { responseBuilder.asyncFilter(pslSupport, dataStore.list) }
             .subscribe { passwords ->
                 val response =
                     responseBuilder.buildFilteredFillResponse(view.context, passwords)

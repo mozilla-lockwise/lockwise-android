@@ -7,16 +7,19 @@ import android.service.autofill.Dataset
 import android.service.autofill.FillResponse
 import android.view.autofill.AutofillValue
 import android.widget.RemoteViews
+import io.reactivex.Observable
 import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.R
 import mozilla.lockbox.support.ParsedStructure
+import mozilla.lockbox.support.PublicSuffixSupport
+import mozilla.lockbox.support.filter
 import mozilla.lockbox.view.AuthActivity
-import java.net.URL
 
 @TargetApi(Build.VERSION_CODES.O)
 class FillResponseBuilder(
-    private val parsedStructure: ParsedStructure,
-    private val hostname: String
+    val parsedStructure: ParsedStructure,
+    val hostname: String,
+    val packageName: String
 ) {
     fun buildAuthenticationFillResponse(context: Context): FillResponse {
         val responseBuilder = FillResponse.Builder()
@@ -54,19 +57,15 @@ class FillResponseBuilder(
         builder.setAuthentication(autofillIds, sender, searchPresentation)
     }
 
-    fun buildFilteredFillResponse(context: Context, passwords: List<ServerPassword>): FillResponse? {
-        val possibleValues = passwords.filter {
-            val credential = URL(it.hostname)
-            (credential.host.endsWith(hostname, true) || hostname.endsWith(credential.host, true))
-        }
+    fun buildFilteredFillResponse(context: Context, filtererPasswords: List<ServerPassword>): FillResponse? {
 
-        if (possibleValues.isEmpty()) {
+        if (filtererPasswords.isEmpty()) {
             return null
         }
 
         val builder = FillResponse.Builder()
 
-        possibleValues
+        filtererPasswords
             .map { serverPasswordToDataset(context, it) }
             .forEach { builder.addDataset(it) }
 
@@ -100,4 +99,7 @@ class FillResponseBuilder(
 
         return datasetBuilder.build()
     }
+
+    fun asyncFilter(pslSupport: PublicSuffixSupport, list: Observable<List<ServerPassword>>) =
+        list.filter(pslSupport, hostname, packageName)
 }
