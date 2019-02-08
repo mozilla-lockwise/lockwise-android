@@ -220,5 +220,8 @@
     <!-- This is the description of the fingerprint icon on the onboarding screen. -->
     <string name="fingerprint_icon_description">Fingerprint image. </string>
 
+    <!-- This is the title for the final onboarding screen. -->
+    <string name="all_set">You\'re all set!</string>
+
 
 </resources>
