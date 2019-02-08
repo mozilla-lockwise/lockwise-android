@@ -95,6 +95,7 @@ open class SettingStore(
                         edit.putString(Keys.ITEM_LIST_SORT_ORDER, Constant.SettingDefault.itemListSort.name)
                         edit.putBoolean(Keys.UNLOCK_WITH_FINGERPRINT, Constant.SettingDefault.unlockWithFingerprint)
                         edit.putString(Keys.AUTO_LOCK_TIME, Constant.SettingDefault.autoLockTime.name)
+                        handleAutofill(false)
                     }
                 }
                 edit.apply()
@@ -141,7 +142,11 @@ open class SettingStore(
     }
 
     private fun handleAutofill(enable: Boolean) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !enable) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            return
+        }
+
+        if (!enable && isCurrentAutofillProvider) {
             autofillManager.disableAutofillServices()
         }
     }

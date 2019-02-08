@@ -26,6 +26,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
+import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
 import org.powermock.api.mockito.PowerMockito
 import org.powermock.core.classloader.annotations.PrepareForTest
@@ -162,23 +163,51 @@ class SettingStoreTest : DisposingTest() {
     }
 
     @Test
-    fun `reset actions restore default values`() {
+    fun `reset actions when app is credential provider restore default values`() {
+        setIsCurrentAutofillProvider(true)
         dispatcher.dispatch(SettingAction.Reset)
 
         verify(editor).putString(SettingStore.Keys.ITEM_LIST_SORT_ORDER, Constant.SettingDefault.itemListSort.name)
         verify(editor).putBoolean(SettingStore.Keys.SEND_USAGE_DATA, Constant.SettingDefault.sendUsageData)
         verify(editor).putString(SettingStore.Keys.AUTO_LOCK_TIME, Constant.SettingDefault.autoLockTime.name)
         verify(editor).apply()
+        verify(autofillManager).disableAutofillServices()
     }
 
     @Test
-    fun `userreset lifecycle actions restore default values`() {
+    fun `userreset lifecycle actions when app is credential provider restore default values`() {
+        setIsCurrentAutofillProvider(true)
         dispatcher.dispatch(LifecycleAction.UserReset)
 
         verify(editor).putString(SettingStore.Keys.ITEM_LIST_SORT_ORDER, Constant.SettingDefault.itemListSort.name)
         verify(editor).putBoolean(SettingStore.Keys.SEND_USAGE_DATA, Constant.SettingDefault.sendUsageData)
         verify(editor).putString(SettingStore.Keys.AUTO_LOCK_TIME, Constant.SettingDefault.autoLockTime.name)
         verify(editor).apply()
+        verify(autofillManager).disableAutofillServices()
+    }
+
+    @Test
+    fun `reset actions when app is not credential provider restore default values`() {
+        setIsCurrentAutofillProvider(false)
+        dispatcher.dispatch(SettingAction.Reset)
+
+        verify(editor).putString(SettingStore.Keys.ITEM_LIST_SORT_ORDER, Constant.SettingDefault.itemListSort.name)
+        verify(editor).putBoolean(SettingStore.Keys.SEND_USAGE_DATA, Constant.SettingDefault.sendUsageData)
+        verify(editor).putString(SettingStore.Keys.AUTO_LOCK_TIME, Constant.SettingDefault.autoLockTime.name)
+        verify(editor).apply()
+        verify(autofillManager, never()).disableAutofillServices()
+    }
+
+    @Test
+    fun `userreset lifecycle actions when app is not credential provider restore default values`() {
+        setIsCurrentAutofillProvider(false)
+        dispatcher.dispatch(LifecycleAction.UserReset)
+
+        verify(editor).putString(SettingStore.Keys.ITEM_LIST_SORT_ORDER, Constant.SettingDefault.itemListSort.name)
+        verify(editor).putBoolean(SettingStore.Keys.SEND_USAGE_DATA, Constant.SettingDefault.sendUsageData)
+        verify(editor).putString(SettingStore.Keys.AUTO_LOCK_TIME, Constant.SettingDefault.autoLockTime.name)
+        verify(editor).apply()
+        verify(autofillManager, never()).disableAutofillServices()
     }
 
     @Test
@@ -207,17 +236,28 @@ class SettingStoreTest : DisposingTest() {
     @Test
     fun `is current autofill provider uses system setting`() {
         assertEquals(isCurrentAutofillProvider, subject.isCurrentAutofillProvider)
+        setIsCurrentAutofillProvider(true)
+        assertEquals(true, subject.isCurrentAutofillProvider)
     }
 
     @Test
-    fun `disabling autofill setting disables the system setting for the app`() {
+    fun `disabling autofill setting when app is credential provider disables the system setting for the app`() {
+        setIsCurrentAutofillProvider(true)
         dispatcher.dispatch(SettingAction.Autofill(false))
         verify(autofillManager).disableAutofillServices()
     }
 
     @Test
-    fun `enabling autofill setting disables the system setting for the app`() {
+    fun `disabling autofill setting when app is not credential provider does nothing`() {
+        setIsCurrentAutofillProvider(false)
         dispatcher.dispatch(SettingAction.Autofill(false))
-        verify(autofillManager).disableAutofillServices()
+        verify(autofillManager, never()).disableAutofillServices()
+    }
+
+    private fun setIsCurrentAutofillProvider(value: Boolean) {
+        whenCalled(autofillManager.hasEnabledAutofillServices()).thenReturn(value)
+        whenCalled(context.getSystemService(AutofillManager::class.java)).thenReturn(autofillManager)
+
+        subject.injectContext(context)
     }
 }
