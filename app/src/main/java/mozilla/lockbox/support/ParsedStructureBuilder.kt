@@ -1,13 +1,14 @@
 package mozilla.lockbox.support
 
-import android.annotation.TargetApi
 import android.app.assist.AssistStructure
+import android.app.assist.AssistStructure.ViewNode
 import android.os.Build
 import android.view.View
 import android.view.autofill.AutofillId
+import androidx.annotation.RequiresApi
 import mozilla.lockbox.extensions.childNodes
 
-@TargetApi(Build.VERSION_CODES.O)
+@RequiresApi(Build.VERSION_CODES.O)
 class ParsedStructureBuilder(
     private val structure: AssistStructure
 ) {
@@ -40,10 +41,8 @@ class ParsedStructureBuilder(
         return searchBasicAutofillContent(keywords) ?: checkForConsecutiveKeywordAndField(keywords)
     }
 
-    private fun searchBasicAutofillContent(
-        keywords: Collection<String>
-    ): AutofillId? {
-        return searchStructure(structure) { node ->
+    private fun searchBasicAutofillContent(keywords: Collection<String>): AutofillId? {
+        return findFirst(structure) { node ->
             if (isAutoFillableEditText(node, keywords) || isAutoFillableInputField(node, keywords)) {
                 node.autofillId
             } else {
@@ -53,7 +52,7 @@ class ParsedStructureBuilder(
     }
 
     private fun checkForConsecutiveKeywordAndField(keywords: Collection<String>): AutofillId? {
-        return searchStructure(structure) { node ->
+        return findFirst(structure) { node ->
             val childNodes = node
                 .run { (0 until childCount).map { getChildAt(it) } }
 
@@ -64,7 +63,7 @@ class ParsedStructureBuilder(
                 val id = currentNode.autofillId ?: continue
                 if (isEditText(currentNode) || isHtmlInputField(currentNode)) {
                     if (containsKeywords(prevNode, keywords)) {
-                        return@searchStructure id
+                        return@findFirst id
                     }
                 }
             }
@@ -73,66 +72,67 @@ class ParsedStructureBuilder(
     }
 
     private fun getWebDomain(): String? {
-        return searchStructure(structure) {
+        return nearestFocusedNode {
             it.webDomain
         }
     }
 
     private fun getPackageId(): String? {
-        return searchStructure(structure) {
+        return nearestFocusedNode {
             it.idPackage
         }
     }
 
-    private fun isAutoFillableEditText(
-        node: AssistStructure.ViewNode,
-        keywords: Collection<String>
-    ): Boolean {
+    private fun <T> nearestFocusedNode(transform: (ViewNode) -> T?): T? {
+        val ancestors = findMatchedNodeAncestors(structure) {
+            it.isFocused
+        }
+        return ancestors?.map(transform)?.first { it != null }
+    }
+
+    private fun isAutoFillableEditText(node: ViewNode, keywords: Collection<String>): Boolean {
         return isEditText(node) &&
             containsKeywords(node, keywords) &&
             node.autofillId != null
     }
 
-    private fun isEditText(node: AssistStructure.ViewNode) = node.className == "android.widget.EditText"
+    private fun isEditText(node: ViewNode) = node.className == "android.widget.EditText"
 
-    private fun isAutoFillableInputField(
-        node: AssistStructure.ViewNode,
-        keywords: Collection<String>
-    ): Boolean {
+    private fun isAutoFillableInputField(node: ViewNode, keywords: Collection<String>): Boolean {
         return isHtmlInputField(node) &&
             containsKeywords(node, keywords) &&
             node.autofillId != null
     }
 
-    private fun isHtmlInputField(node: AssistStructure.ViewNode) =
+    private fun isHtmlInputField(node: ViewNode) =
         node.htmlInfo?.tag?.toLowerCase() == "input"
 
-    private fun <T> searchStructure(structure: AssistStructure, transform: (AssistStructure.ViewNode) -> T?): T? {
+    private fun <T> findFirst(structure: AssistStructure, transform: (ViewNode) -> T?): T? {
         structure
             .run { (0 until windowNodeCount).map { getWindowNodeAt(it).rootViewNode } }
             .forEach { node ->
-                searchNodes(node, transform)?.let { result ->
+                findFirst(node, transform)?.let { result ->
                     return result
                 }
             }
         return null
     }
 
-    private fun <T> searchNodes(node: AssistStructure.ViewNode, transform: (AssistStructure.ViewNode) -> T?): T? {
+    private fun <T> findFirst(node: ViewNode, transform: (ViewNode) -> T?): T? {
         transform(node)?.let {
             return it
         }
 
         node.childNodes
             .forEach { child ->
-                searchNodes(child, transform)?.let { result ->
+                findFirst(child, transform)?.let { result ->
                     return result
                 }
             }
         return null
     }
 
-    private fun containsKeywords(node: AssistStructure.ViewNode, keywords: Collection<String>): Boolean {
+    private fun containsKeywords(node: ViewNode, keywords: Collection<String>): Boolean {
         var hints = listOf(node.hint, node.text)
 
         node.autofillOptions?.let {
@@ -157,5 +157,42 @@ class ParsedStructureBuilder(
             }
         }
         return false
+    }
+
+    private fun findMatchedNodeAncestors(structure: AssistStructure, matcher: (ViewNode) -> Boolean):
+        Iterable<ViewNode>? {
+        structure
+            .run { (0 until windowNodeCount).map { getWindowNodeAt(it).rootViewNode } }
+            .forEach { node ->
+                findMatchedNodeAncestors(node, matcher)?.let { result ->
+                    return result
+                }
+            }
+        return null
+    }
+
+    /**
+     * Depth first search a ViewNode tree. Once a match is found, a list of ancestors all the way to the top is returned.
+     * The first node in the list is the matching node, the last is the root node.
+     * If no match is found, then <code>null</code> is returned.
+     *
+     * @param node the parent node.
+     * @param matcher a closure which returns <code>true</code> if and only if the node is matched.
+     * @return an ordered list of the matched node and all its ancestors starting at the matched node. 
+     */
+    private fun findMatchedNodeAncestors(node: ViewNode, matcher: (ViewNode) -> Boolean):
+        Iterable<ViewNode>? {
+
+        if (matcher(node)) {
+            return listOf(node)
+        }
+
+        node.childNodes
+            .forEach { child ->
+                findMatchedNodeAncestors(child, matcher)?.let { list ->
+                    return list + node
+                }
+            }
+        return null
     }
 }
