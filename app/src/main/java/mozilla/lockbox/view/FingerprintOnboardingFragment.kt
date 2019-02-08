@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
-import kotlinx.android.synthetic.main.onboarding_biometric_unlock.view.*
+import kotlinx.android.synthetic.main.fragment_fingerprint_onboarding.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
 import mozilla.lockbox.presenter.OnboardingFingerprintAuthPresenter
@@ -16,7 +16,7 @@ import mozilla.lockbox.model.FingerprintAuthCallback
 import mozilla.lockbox.support.Constant
 
 @ExperimentalCoroutinesApi
-class OnboardingFingerprintAuthFragment : Fragment(), OnboardingFingerprintView {
+class FingerprintOnboardingFragment : Fragment(), OnboardingFingerprintView {
     private val _authCallback = PublishSubject.create<FingerprintAuthCallback>()
     override val authCallback: Observable<FingerprintAuthCallback> get() = _authCallback
 
@@ -31,7 +31,7 @@ class OnboardingFingerprintAuthFragment : Fragment(), OnboardingFingerprintView 
         savedInstanceState: Bundle?
     ): View? {
         presenter = OnboardingFingerprintAuthPresenter(this)
-        return inflater.inflate(R.layout.onboarding_biometric_unlock, container, false)
+        return inflater.inflate(R.layout.fragment_fingerprint_onboarding, container, false)
     }
 
     override fun onSucceeded() {

@@ -31,7 +31,7 @@
                 app:popUpTo="@+id/fragment_item_list"/>
 
         <action
-                android:id="@+id/action_fxaLogin_to_onboarding"
+                android:id="@+id/action_fxaLogin_to_fingerprint_onboarding"
                 app:destination="@id/fragment_fingerprint_onboarding"
                 app:launchSingleTop="true"
                 app:popUpTo="@+id/fragment_fingerprint_onboarding"/>
@@ -39,8 +39,8 @@
 
     <fragment
             android:id="@+id/fragment_fingerprint_onboarding"
-            android:name="mozilla.lockbox.view.OnboardingFingerprintAuthFragment"
-            tools:layout="@layout/onboarding_biometric_unlock">
+            android:name="mozilla.lockbox.view.FingerprintOnboardingFragment"
+            tools:layout="@layout/fragment_fingerprint_onboarding">
         <action
                 android:id="@+id/action_onboarding_to_itemList"
                 app:launchSingleTop="true"
