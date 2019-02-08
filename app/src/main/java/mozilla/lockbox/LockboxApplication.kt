@@ -62,7 +62,8 @@ open class LockboxApplication : Application() {
         // in the given order. e.g. AccountStore dispatches DataStoreActions.
         val orderedStores = listOf(
             DataStore.shared,
-            AccountStore.shared
+            AccountStore.shared,
+            AutoLockStore.shared
         )
         orderedStores.forEach {
             log.info("${it.javaClass.simpleName} initialized")

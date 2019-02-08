@@ -73,6 +73,8 @@ class AuthPresenter(
                 val response =
                     responseBuilder.buildFilteredFillResponse(view.context, passwords)
                     ?: responseBuilder.buildFallbackFillResponse(view.context)
+                // This should send off to the searchable list
+                // https://github.com/mozilla-lockbox/lockbox-android/issues/421
 
                 view.setFillResponseAndFinish(response)
                 dispatcher.dispatch(DataStoreAction.Lock)
