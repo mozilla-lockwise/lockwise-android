@@ -23,7 +23,6 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.log
 import mozilla.lockbox.model.SyncCredentials
 import mozilla.lockbox.support.DataStoreSupport
-import mozilla.lockbox.support.FixedDataStoreSupport
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.asOptional
 import kotlin.coroutines.CoroutineContext

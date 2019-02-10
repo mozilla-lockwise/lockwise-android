@@ -178,7 +178,7 @@ class ParsedStructureBuilder(
      *
      * @param node the parent node.
      * @param matcher a closure which returns <code>true</code> if and only if the node is matched.
-     * @return an ordered list of the matched node and all its ancestors starting at the matched node. 
+     * @return an ordered list of the matched node and all its ancestors starting at the matched node.
      */
     private fun findMatchedNodeAncestors(node: ViewNode, matcher: (ViewNode) -> Boolean):
         Iterable<ViewNode>? {

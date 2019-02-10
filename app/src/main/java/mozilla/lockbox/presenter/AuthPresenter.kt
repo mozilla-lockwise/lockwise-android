@@ -19,7 +19,6 @@ import mozilla.lockbox.store.LockedStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.support.PublicSuffixSupport
 import mozilla.lockbox.support.filter
-import mozilla.lockbox.view.FingerprintAuthDialogFragment
 
 interface AuthView {
     fun showAuthDialog()
