@@ -10,13 +10,13 @@ import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_fingerprint_onboarding.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
-import mozilla.lockbox.presenter.OnboardingFingerprintAuthPresenter
-import mozilla.lockbox.presenter.OnboardingFingerprintView
+import mozilla.lockbox.presenter.FingerprintOnboardingPresenter
+import mozilla.lockbox.presenter.FingerprintOnboardingView
 import mozilla.lockbox.model.FingerprintAuthCallback
 import mozilla.lockbox.support.Constant
 
 @ExperimentalCoroutinesApi
-class FingerprintOnboardingFragment : Fragment(), OnboardingFingerprintView {
+class FingerprintFragmentOnboarding : Fragment(), FingerprintOnboardingView {
     private val _authCallback = PublishSubject.create<FingerprintAuthCallback>()
     override val authCallback: Observable<FingerprintAuthCallback> get() = _authCallback
 
@@ -30,7 +30,7 @@ class FingerprintOnboardingFragment : Fragment(), OnboardingFingerprintView {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        presenter = OnboardingFingerprintAuthPresenter(this)
+        presenter = FingerprintOnboardingPresenter(this)
         return inflater.inflate(R.layout.fragment_fingerprint_onboarding, container, false)
     }
 

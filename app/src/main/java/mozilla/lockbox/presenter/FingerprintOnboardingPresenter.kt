@@ -11,15 +11,15 @@ import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.FingerprintSensorAction
-import mozilla.lockbox.action.OnboardingStatusAction
+import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.model.FingerprintAuthCallback
 import mozilla.lockbox.store.FingerprintStore
-import mozilla.lockbox.store.FingerprintStore.AuthenticationState as AuthenticationState
+import mozilla.lockbox.store.FingerprintStore.AuthenticationState
 
-interface OnboardingFingerprintView {
+interface FingerprintOnboardingView {
     fun onSucceeded()
     fun onFailed(error: String?)
     fun onError(error: String?)
@@ -28,8 +28,8 @@ interface OnboardingFingerprintView {
 }
 
 @ExperimentalCoroutinesApi
-class OnboardingFingerprintAuthPresenter(
-    private val view: OnboardingFingerprintView,
+class FingerprintOnboardingPresenter(
+    private val view: FingerprintOnboardingView,
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val fingerprintStore: FingerprintStore = FingerprintStore.shared
 ) : Presenter() {
@@ -47,12 +47,12 @@ class OnboardingFingerprintAuthPresenter(
                     else -> false
                 }
                 dispatcher.dispatch(SettingAction.UnlockWithFingerprint(unlock))
-                dispatcher.dispatch(OnboardingStatusAction(false))
+                dispatcher.dispatch(RouteAction.OnboardingConfirmation)
             }
             .addTo(compositeDisposable)
 
         view.onDismiss.subscribe {
-            dispatcher.dispatch(OnboardingStatusAction(false))
+            dispatcher.dispatch(RouteAction.OnboardingConfirmation)
             dispatcher.dispatch(SettingAction.UnlockWithFingerprint(false))
         }?.addTo(compositeDisposable)
     }

@@ -87,6 +87,7 @@ class RoutePresenter(
             is RouteAction.Welcome -> navigateToFragment(action, R.id.fragment_welcome)
             is RouteAction.Login -> navigateToFragment(action, R.id.fragment_fxa_login)
             is RouteAction.FingerprintOnboarding -> navigateToFragment(action, R.id.fragment_fingerprint_onboarding)
+            is RouteAction.OnboardingConfirmation -> navigateToFragment(action, R.id.fragment_onboarding_confirmation)
             is RouteAction.ItemList -> navigateToFragment(action, R.id.fragment_item_list)
             is RouteAction.SettingList -> navigateToFragment(action, R.id.fragment_setting)
             is RouteAction.AccountSetting -> navigateToFragment(action, R.id.fragment_account_setting)
@@ -254,8 +255,8 @@ class RoutePresenter(
 
             Pair(R.id.fragment_fxa_login, R.id.fragment_item_list) -> R.id.action_fxaLogin_to_itemList
             Pair(R.id.fragment_fxa_login, R.id.fragment_fingerprint_onboarding) -> R.id.action_fxaLogin_to_fingerprint_onboarding
-            Pair(R.id.fragment_fingerprint_onboarding, R.id.fragment_onboarding_confirmation) -> R.id.action_fxaLogin_to_fingerprint_onboarding
-            Pair(R.id.fragment_fxa_login, R.id.fragment_onboarding_confirmation) -> R.id.action_fxaLogin_to_fingerprint_onboarding
+            Pair(R.id.fragment_fingerprint_onboarding, R.id.fragment_onboarding_confirmation) -> R.id.action_fingerprint_onboarding_to_confirmation
+            Pair(R.id.fragment_fxa_login, R.id.fragment_onboarding_confirmation) -> R.id.action_fxaLogin_to_onboarding_confirmation
 
             Pair(R.id.fragment_fingerprint_onboarding, R.id.fragment_item_list) -> R.id.action_to_itemList
             Pair(R.id.fragment_onboarding_confirmation, R.id.fragment_item_list) -> R.id.action_to_itemList

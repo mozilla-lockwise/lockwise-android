@@ -18,9 +18,11 @@ import mozilla.lockbox.DisposingTest
 import mozilla.lockbox.action.AccountAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.OnboardingStatusAction
+import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.AccountStore
+import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.NetworkStore
 import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.isDebug
@@ -70,7 +72,14 @@ class FxALoginPresenterTest : DisposingTest() {
         }
     }
 
+    class FakeFingerprintStore : FingerprintStore() {
+        var fingerprintAvailableStub = false
+        override val isFingerprintAuthAvailable: Boolean
+            get() = fingerprintAvailableStub
+    }
+
     val view = FakeFxALoginView(disposer)
+    val fingerprintStore = FakeFingerprintStore()
 
     @Mock
     val accountStore = PowerMockito.mock(AccountStore::class.java)!!
@@ -102,7 +111,7 @@ class FxALoginPresenterTest : DisposingTest() {
         networkStore.connectivityManager = connectivityManager
         view.networkAvailable.subscribe(isConnectedObserver)
 
-        subject = FxALoginPresenter(view, dispatcher, networkStore, accountStore)
+        subject = FxALoginPresenter(view, dispatcher, networkStore, accountStore, fingerprintStore)
         subject.onViewReady()
     }
 
@@ -125,12 +134,27 @@ class FxALoginPresenterTest : DisposingTest() {
     }
 
     @Test
-    fun `onViewReady, when the webview redirects to a URL starting with the expected redirect`() {
+    fun `onViewReady, when the webview redirects to a URL starting with the expected redirect and the device has fingerprints`() {
+        fingerprintStore.fingerprintAvailableStub = true
         val url = Uri.parse(Constant.FxA.redirectUri + "?moz_fake")
         view.webViewRedirectTo.onNext(url)
 
+        Assert.assertEquals(OnboardingStatusAction(true), dispatcherObserver.values()[0])
         val redirectAction = dispatcherObserver.values()[1] as AccountAction.OauthRedirect
         Assert.assertEquals(url.toString(), redirectAction.url)
+        Assert.assertEquals(RouteAction.FingerprintOnboarding, dispatcherObserver.values()[2])
+    }
+
+    @Test
+    fun `onViewReady, when the webview redirects to a URL starting with the expected redirect and the device has no fingerprints`() {
+        fingerprintStore.fingerprintAvailableStub = false
+        val url = Uri.parse(Constant.FxA.redirectUri + "?moz_fake")
+        view.webViewRedirectTo.onNext(url)
+
+        Assert.assertEquals(OnboardingStatusAction(true), dispatcherObserver.values()[0])
+        val redirectAction = dispatcherObserver.values()[1] as AccountAction.OauthRedirect
+        Assert.assertEquals(url.toString(), redirectAction.url)
+        Assert.assertEquals(RouteAction.OnboardingConfirmation, dispatcherObserver.values()[2])
     }
 
     @Test

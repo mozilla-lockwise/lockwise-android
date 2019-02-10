@@ -5,7 +5,7 @@ import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import mozilla.lockbox.action.FingerprintSensorAction
-import mozilla.lockbox.action.OnboardingStatusAction
+import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.flux.Action
@@ -24,8 +24,8 @@ import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
 @Config(application = TestApplication::class)
-class OnboardingFingerprintAuthPresenterTest {
-    open class FakeView : OnboardingFingerprintView {
+class FingerprintOnboardingPresenterTest {
+    open class FakeOnboardingView : FingerprintOnboardingView {
         var success: Boolean = false
         var errors: Boolean = false
         var failure: Boolean = false
@@ -60,7 +60,7 @@ class OnboardingFingerprintAuthPresenterTest {
     }
 
     val dispatcher = Dispatcher()
-    private val view = Mockito.spy(FakeView())
+    private val view = Mockito.spy(FakeOnboardingView())
 
     private val fingerprintStore = FakeFingerprintStore()
 
@@ -69,7 +69,7 @@ class OnboardingFingerprintAuthPresenterTest {
 
     private val dispatcherObserver = TestObserver.create<Action>()
 
-    val subject = OnboardingFingerprintAuthPresenter(view, dispatcher, fingerprintStore)
+    val subject = FingerprintOnboardingPresenter(view, dispatcher, fingerprintStore)
 
     @Before
     fun setUp() {
@@ -99,7 +99,7 @@ class OnboardingFingerprintAuthPresenterTest {
     @Test
     fun `dismiss dialog when skip is tapped`() {
         view.onDismiss.onNext(Unit)
-        dispatcherObserver.assertValueAt(0, OnboardingStatusAction(false))
+        dispatcherObserver.assertValueAt(0, RouteAction.OnboardingConfirmation)
         dispatcherObserver.assertValueAt(1, SettingAction.UnlockWithFingerprint(false))
     }
 
