@@ -57,11 +57,6 @@ class LockboxAutofillService(
         val packageName = parsedStructure.packageId ?: activityPackageName
         val webDomain = parsedStructure.webDomain
 
-        if (webDomain == null) {
-            callback.onFailure(getString(R.string.autofill_error_no_hostname))
-            return
-        }
-
         val builder = FillResponseBuilder(parsedStructure, webDomain, packageName)
 
         // When locked, then the list will be empty.

@@ -17,9 +17,9 @@ import mozilla.lockbox.view.AuthActivity
 
 @TargetApi(Build.VERSION_CODES.O)
 class FillResponseBuilder(
-    val parsedStructure: ParsedStructure,
-    val hostname: String,
-    val packageName: String
+    private val parsedStructure: ParsedStructure,
+    private val hostname: String?,
+    private val packageName: String
 ) {
     fun buildAuthenticationFillResponse(context: Context): FillResponse {
         val responseBuilder = FillResponse.Builder()
