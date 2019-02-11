@@ -9,6 +9,6 @@ class AutofillOnboardingRobot : BaseTestRobot {
 
     fun touchGoToSettings() = ClickActions.click { id(R.id.goToSettings) }
 
-    fun tapSkip() = ClickActions.click { id(R.id.skipOnboarding) }
+    fun tapSkip() = ClickActions.click { id(R.id.skipButton) }
 }
 fun autofillOnboardingScreen(f: AutofillOnboardingRobot.() -> Unit) = AutofillOnboardingRobot().apply(f)

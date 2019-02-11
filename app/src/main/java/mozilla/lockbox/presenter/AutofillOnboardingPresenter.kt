@@ -14,39 +14,34 @@ import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.OnboardingStatusAction
 import mozilla.lockbox.action.RouteAction
-import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.action.SettingIntent
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 
-interface OnboardingAutofillView {
-    val onDismiss: Observable<Unit>
-    val onEnable: Observable<Unit>
+interface AutofillOnboardingView {
+    val onSkipClick: Observable<Unit>
+    val onGoToSettingsClick: Observable<Unit>
 }
 
+@TargetApi(Build.VERSION_CODES.O)
+@RequiresApi(Build.VERSION_CODES.O)
 @ExperimentalCoroutinesApi
-class OnboardingAutofillPresenter(
-    private val view: OnboardingAutofillView,
+class AutofillOnboardingPresenter(
+    private val view: AutofillOnboardingView,
     private val dispatcher: Dispatcher = Dispatcher.shared
 ) : Presenter() {
 
-    @TargetApi(Build.VERSION_CODES.O)
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewReady() {
-
-        view.onDismiss.subscribe {
+        view.onSkipClick.subscribe {
             dispatcher.dispatch(OnboardingStatusAction(false))
-        }?.addTo(compositeDisposable)
+        }.addTo(compositeDisposable)
 
-        view.onEnable.subscribe {
-            dispatcher.dispatch(SettingAction.Autofill(true))
+        view.onGoToSettingsClick.subscribe {
             dispatcher.dispatch(RouteAction.SystemSetting(SettingIntent.Autofill))
             triggerNextOnboarding()
-        }?.addTo(compositeDisposable)
+        }.addTo(compositeDisposable)
     }
 
-    // Matching the fingerprint onboarding presenter.
-    // Once we add the next onboarding screen this method will change.
     private fun triggerNextOnboarding() {
         dispatcher.dispatch(OnboardingStatusAction(false))
     }

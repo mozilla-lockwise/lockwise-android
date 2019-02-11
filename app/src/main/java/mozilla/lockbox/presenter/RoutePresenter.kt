@@ -6,13 +6,10 @@
 
 package mozilla.lockbox.presenter
 
-import android.annotation.TargetApi
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import androidx.annotation.IdRes
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -65,10 +62,8 @@ class RoutePresenter(
         when (action) {
             is RouteAction.Welcome -> navigateToFragment(action, R.id.fragment_welcome)
             is RouteAction.Login -> navigateToFragment(action, R.id.fragment_fxa_login)
-            is RouteAction.Onboarding.FingerprintAuth -> navigateToFragment(
-                action,
-                R.id.fragment_fingerprint_onboarding
-            )
+            is RouteAction.Onboarding.FingerprintAuth ->
+                navigateToFragment(action, R.id.fragment_fingerprint_onboarding)
             is RouteAction.Onboarding.Autofill -> navigateToFragment(action, R.id.fragment_autofill_onboarding)
             is RouteAction.OnboardingConfirmation -> navigateToFragment(action, R.id.fragment_onboarding_confirmation)
             is RouteAction.ItemList -> navigateToFragment(action, R.id.fragment_item_list)
@@ -277,7 +272,6 @@ class RoutePresenter(
         activity.startActivity(browserIntent, null)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun openSetting(settingAction: RouteAction.SystemSetting) {
         val settingIntent = Intent(settingAction.setting.intentAction)
         settingIntent.data = settingAction.setting.data

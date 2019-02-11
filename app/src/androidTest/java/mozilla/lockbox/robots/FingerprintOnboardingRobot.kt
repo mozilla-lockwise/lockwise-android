@@ -11,6 +11,6 @@ class FingerprintOnboardingRobot : BaseTestRobot {
         Runtime.getRuntime().exec("adb -e emu finger $finger")
     }
 
-    fun tapSkip() = ClickActions.click { id(R.id.skipOnboarding) }
+    fun tapSkip() = ClickActions.click { id(R.id.skipButton) }
 }
 fun fingerprintOnboardingScreen(f: FingerprintOnboardingRobot.() -> Unit) = FingerprintOnboardingRobot().apply(f)

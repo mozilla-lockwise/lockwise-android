@@ -107,12 +107,12 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/autofillDescription"
-                app:layout_constraintBottom_toTopOf="@id/skipOnboarding"
+                app:layout_constraintBottom_toTopOf="@id/skipButton"
 
         />
 
         <Button
-                android:id="@+id/skipOnboarding"
+                android:id="@+id/skipButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal|center_vertical"

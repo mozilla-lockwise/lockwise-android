@@ -99,22 +99,17 @@ class Navigator {
     fun gotoFingerprintOnboarding() {
         gotoFxALogin()
         fxaLogin { tapPlaceholderLogin() }
+        checkAtFingerprintOnboarding()
     }
 
     fun checkAtFingerprintOnboarding() {
         fingerprintOnboardingScreen { exists() }
     }
 
-    fun gotoAutofillOnboarding(goManually: Boolean = false) {
-        if (goManually) {
-            gotoFxALogin()
-            fxaLogin { tapPlaceholderLogin() }
-            fingerprintOnboardingScreen { tapSkip() }
-        } else {
-            Dispatcher.shared.dispatch(LifecycleAction.UseTestData)
-            Dispatcher.shared.dispatch(RouteAction.Onboarding.Autofill)
-            log.info("blocking for the routes")
-        }
+    fun gotoAutofillOnboarding() {
+        gotoFxALogin()
+        fxaLogin { tapPlaceholderLogin() }
+        fingerprintOnboardingScreen { tapSkip() }
         checkAtAutofillOnboarding()
     }
 

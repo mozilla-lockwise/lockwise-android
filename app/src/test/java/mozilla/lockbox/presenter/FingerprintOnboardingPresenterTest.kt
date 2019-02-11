@@ -48,7 +48,7 @@ class FingerprintOnboardingPresenterTest {
         override val authCallback: Observable<FingerprintAuthCallback>
             get() = authCallbackStub
 
-        override val onDismiss = PublishSubject.create<Unit>()
+        override val onSkipClick = PublishSubject.create<Unit>()
     }
 
     open class FakeFingerprintStore : FingerprintStore() {
@@ -107,7 +107,7 @@ class FingerprintOnboardingPresenterTest {
 
     @Test
     fun `move to next screen when skip is tapped`() {
-        view.onDismiss.onNext(Unit)
+        view.onSkipClick.onNext(Unit)
         dispatcherObserver.assertValueAt(0, RouteAction.OnboardingConfirmation)
         dispatcherObserver.assertValueAt(1, SettingAction.UnlockWithFingerprint(false))
     }

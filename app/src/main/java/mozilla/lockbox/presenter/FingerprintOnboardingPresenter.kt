@@ -26,7 +26,7 @@ interface FingerprintOnboardingView {
     fun onSucceeded()
     fun onFailed(error: String?)
     fun onError(error: String?)
-    val onDismiss: Observable<Unit>
+    val onSkipClick: Observable<Unit>
     val authCallback: Observable<FingerprintAuthCallback>
 }
 
@@ -55,7 +55,7 @@ class FingerprintOnboardingPresenter(
             }
             .addTo(compositeDisposable)
 
-        view.onDismiss.subscribe {
+        view.onSkipClick.subscribe {
             dispatcher.dispatch(RouteAction.OnboardingConfirmation)
             dispatcher.dispatch(SettingAction.UnlockWithFingerprint(false))
             triggerNextOnboarding()

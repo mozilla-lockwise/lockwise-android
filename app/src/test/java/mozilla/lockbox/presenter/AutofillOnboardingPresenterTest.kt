@@ -4,7 +4,6 @@ import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import mozilla.lockbox.action.OnboardingStatusAction
 import mozilla.lockbox.action.RouteAction
-import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.action.SettingIntent
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
@@ -17,19 +16,19 @@ import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
 @Config(application = TestApplication::class)
-class OnboardingAutofillPresenterTest {
+class AutofillOnboardingPresenterTest {
 
-    open class FakeView : OnboardingAutofillView {
-        override val onEnable = PublishSubject.create<Unit>()
-        override val onDismiss = PublishSubject.create<Unit>()
+    open class FakeView : AutofillOnboardingView {
+        override val onGoToSettingsClick = PublishSubject.create<Unit>()
+        override val onSkipClick = PublishSubject.create<Unit>()
     }
 
     val dispatcher = Dispatcher()
     private val dispatcherObserver = TestObserver.create<Action>()
 
-    private val view = Mockito.spy(OnboardingAutofillPresenterTest.FakeView())
+    private val view = Mockito.spy(AutofillOnboardingPresenterTest.FakeView())
 
-    val subject = OnboardingAutofillPresenter(view, dispatcher)
+    val subject = AutofillOnboardingPresenter(view, dispatcher)
 
     @Before
     fun setUp() {
@@ -39,15 +38,14 @@ class OnboardingAutofillPresenterTest {
 
     @Test
     fun `move to next screen when skip is tapped`() {
-        view.onDismiss.onNext(Unit)
+        view.onSkipClick.onNext(Unit)
         dispatcherObserver.assertValue(OnboardingStatusAction(false))
     }
 
     @Test
     fun `navigate to settings when gotosettings button is tapped`() {
-        view.onEnable.onNext(Unit)
-        dispatcherObserver.assertValueAt(0, SettingAction.Autofill(true))
-        dispatcherObserver.assertValueAt(1, RouteAction.SystemSetting(SettingIntent.Autofill))
-        dispatcherObserver.assertValueAt(2, OnboardingStatusAction(false))
+        view.onGoToSettingsClick.onNext(Unit)
+        dispatcherObserver.assertValueAt(0, RouteAction.SystemSetting(SettingIntent.Autofill))
+        dispatcherObserver.assertValueAt(1, OnboardingStatusAction(false))
     }
 }

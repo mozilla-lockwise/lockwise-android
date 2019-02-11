@@ -41,16 +41,20 @@
 
     <fragment
             android:id="@+id/fragment_fingerprint_onboarding"
-            android:name="mozilla.lockbox.view.FingerprintFragmentOnboarding"
+            android:name="mozilla.lockbox.view.FingerprintOnboardingFragment"
             tools:layout="@layout/fragment_fingerprint_onboarding">
         <action
-                android:id="@+id/action_onboarding_fingerprint_to_autofill"
-                app:launchSingleTop="true"
-                app:destination="@id/fragment_autofill_onboarding"
-                app:popUpToInclusive="true"/>
+            android:id="@+id/action_onboarding_fingerprint_to_autofill"
+            app:destination="@id/fragment_autofill_onboarding"/>
         <action
                 android:id="@+id/action_fingerprint_onboarding_to_confirmation"
                 app:destination="@id/fragment_onboarding_confirmation"/>
+    </fragment>
+
+    <fragment
+            android:id="@+id/fragment_autofill_onboarding"
+            android:name="mozilla.lockbox.view.AutofillOnboardingFragment"
+            tools:layout="@layout/fragment_autofill_onboarding">
     </fragment>
 
     <fragment
@@ -62,12 +66,6 @@
                 app:launchSingleTop="true"
                 app:destination="@id/fragment_item_list"
                 app:popUpToInclusive="true"/>
-    </fragment>
-
-    <fragment
-            android:id="@+id/fragment_autofill_onboarding"
-            android:name="mozilla.lockbox.view.OnboardingAutofillFragment"
-            tools:layout="@layout/fragment_autofill_onboarding">
     </fragment>
 
     <fragment
