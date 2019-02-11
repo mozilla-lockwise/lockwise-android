@@ -124,7 +124,7 @@
             tools:layout="@layout/fragment_webview">
         <argument
                 android:name="url"
-                android:defaultValue="@string/missing_url"
+                android:defaultValue="missing"
                 app:argType="string"/>
         <argument
                 android:name="title"

@@ -145,6 +145,7 @@ dependencies {
 appservices {
     defaultConfig {
         megazord = 'lockbox'
+        unitTestingEnabled = false
     }
 }
 
