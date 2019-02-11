@@ -1,23 +1,23 @@
-package mozilla.lockbox.support
+package mozilla.lockbox.autofill
 
-import android.app.assist.AssistStructure
-import android.app.assist.AssistStructure.ViewNode
 import android.os.Build
 import android.view.View
-import android.view.autofill.AutofillId
 import androidx.annotation.RequiresApi
-import mozilla.lockbox.extensions.childNodes
 
 @RequiresApi(Build.VERSION_CODES.O)
-class ParsedStructureBuilder(
-    private val structure: AssistStructure
+class ParsedStructureBuilder<ViewNode, AutofillId>(
+    private val navigator: AutofillNodeNavigator<ViewNode, AutofillId>
 ) {
-    fun build(): ParsedStructure {
-        return ParsedStructure(
-            getUsernameId(),
-            getPasswordId(),
-            getWebDomain(),
-            getPackageId()
+    fun build(): ParsedStructureData<AutofillId> {
+        val usernameId = getUsernameId()
+        val passwordId = getPasswordId()
+        val interesting = usernameId ?: passwordId
+
+        return ParsedStructureData(
+            usernameId,
+            passwordId,
+            getWebDomain(interesting),
+            getPackageId(interesting) ?: navigator.activityPackageName
         )
     }
 
@@ -28,7 +28,8 @@ class ParsedStructureBuilder(
             View.AUTOFILL_HINT_EMAIL_ADDRESS,
             "email",
             "username",
-            "user name"
+            "user name",
+            "identifier"
         ))
     }
 
@@ -42,9 +43,9 @@ class ParsedStructureBuilder(
     }
 
     private fun searchBasicAutofillContent(keywords: Collection<String>): AutofillId? {
-        return findFirst(structure) { node ->
+        return findFirst { node ->
             if (isAutoFillableEditText(node, keywords) || isAutoFillableInputField(node, keywords)) {
-                node.autofillId
+                navigator.autofillId(node)
             } else {
                 null
             }
@@ -52,16 +53,14 @@ class ParsedStructureBuilder(
     }
 
     private fun checkForConsecutiveKeywordAndField(keywords: Collection<String>): AutofillId? {
-        return findFirst(structure) { node ->
-            val childNodes = node
-                .run { (0 until childCount).map { getChildAt(it) } }
-
+        return findFirst { node ->
+            val childNodes = navigator.childNodes(node)
             // check for consecutive views with keywords followed by possible fill locations
             for (i in 1..(childNodes.size - 1)) {
                 val prevNode = childNodes[i - 1]
                 val currentNode = childNodes[i]
-                val id = currentNode.autofillId ?: continue
-                if (isEditText(currentNode) || isHtmlInputField(currentNode)) {
+                val id = navigator.autofillId(currentNode) ?: continue
+                if (navigator.isEditText(currentNode) || navigator.isHtmlInputField(currentNode)) {
                     if (containsKeywords(prevNode, keywords)) {
                         return@findFirst id
                     }
@@ -71,45 +70,40 @@ class ParsedStructureBuilder(
         }
     }
 
-    private fun getWebDomain(): String? {
-        return nearestFocusedNode {
-            it.webDomain
+    private fun getWebDomain(nearby: AutofillId?): String? {
+        return nearestFocusedNode(nearby) {
+            navigator.webDomain(it)
         }
     }
 
-    private fun getPackageId(): String? {
-        return nearestFocusedNode {
-            it.idPackage
+    private fun getPackageId(nearby: AutofillId?): String? {
+        return nearestFocusedNode(nearby) {
+            navigator.packageId(it)
         }
     }
 
-    private fun <T> nearestFocusedNode(transform: (ViewNode) -> T?): T? {
-        val ancestors = findMatchedNodeAncestors(structure) {
-            it.isFocused
+    private fun <T> nearestFocusedNode(nearby: AutofillId?, transform: (ViewNode) -> T?): T? {
+        val id = nearby ?: return null
+        val ancestors = findMatchedNodeAncestors {
+            navigator.autofillId(it) == id
         }
-        return ancestors?.map(transform)?.first { it != null }
+        return ancestors?.map(transform)?.firstOrNull { it != null }
     }
 
     private fun isAutoFillableEditText(node: ViewNode, keywords: Collection<String>): Boolean {
-        return isEditText(node) &&
+        return navigator.isEditText(node) &&
             containsKeywords(node, keywords) &&
-            node.autofillId != null
+            navigator.autofillId(node) != null
     }
-
-    private fun isEditText(node: ViewNode) = node.className == "android.widget.EditText"
 
     private fun isAutoFillableInputField(node: ViewNode, keywords: Collection<String>): Boolean {
-        return isHtmlInputField(node) &&
+        return navigator.isHtmlInputField(node) &&
             containsKeywords(node, keywords) &&
-            node.autofillId != null
+            navigator.autofillId(node) != null
     }
 
-    private fun isHtmlInputField(node: ViewNode) =
-        node.htmlInfo?.tag?.toLowerCase() == "input"
-
-    private fun <T> findFirst(structure: AssistStructure, transform: (ViewNode) -> T?): T? {
-        structure
-            .run { (0 until windowNodeCount).map { getWindowNodeAt(it).rootViewNode } }
+    private fun <T> findFirst(transform: (ViewNode) -> T?): T? {
+        navigator.rootNodes
             .forEach { node ->
                 findFirst(node, transform)?.let { result ->
                     return result
@@ -123,7 +117,7 @@ class ParsedStructureBuilder(
             return it
         }
 
-        node.childNodes
+        navigator.childNodes(node)
             .forEach { child ->
                 findFirst(child, transform)?.let { result ->
                     return result
@@ -133,22 +127,7 @@ class ParsedStructureBuilder(
     }
 
     private fun containsKeywords(node: ViewNode, keywords: Collection<String>): Boolean {
-        var hints = listOf(node.hint, node.text)
-
-        node.autofillOptions?.let {
-            hints += it
-        }
-
-        node.autofillHints?.let {
-            hints += it
-        }
-
-        node.htmlInfo?.attributes?.let { attrs ->
-            hints += attrs.map { it.second }
-        }
-
-        hints = hints.filterNotNull()
-
+        val hints = navigator.clues(node)
         keywords.forEach { keyword ->
             hints.forEach { hint ->
                 if (hint.contains(keyword, true)) {
@@ -159,10 +138,8 @@ class ParsedStructureBuilder(
         return false
     }
 
-    private fun findMatchedNodeAncestors(structure: AssistStructure, matcher: (ViewNode) -> Boolean):
-        Iterable<ViewNode>? {
-        structure
-            .run { (0 until windowNodeCount).map { getWindowNodeAt(it).rootViewNode } }
+    private fun findMatchedNodeAncestors(matcher: (ViewNode) -> Boolean): Iterable<ViewNode>? {
+        navigator.rootNodes
             .forEach { node ->
                 findMatchedNodeAncestors(node, matcher)?.let { result ->
                     return result
@@ -187,7 +164,7 @@ class ParsedStructureBuilder(
             return listOf(node)
         }
 
-        node.childNodes
+        navigator.childNodes(node)
             .forEach { child ->
                 findMatchedNodeAncestors(child, matcher)?.let { list ->
                     return list + node

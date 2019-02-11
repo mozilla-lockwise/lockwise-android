@@ -4,7 +4,6 @@
 
 package mozilla.lockbox
 
-import android.annotation.TargetApi
 import android.os.Build
 import android.os.CancellationSignal
 import android.service.autofill.AutofillService
@@ -12,19 +11,27 @@ import android.service.autofill.FillCallback
 import android.service.autofill.FillRequest
 import android.service.autofill.SaveCallback
 import android.service.autofill.SaveRequest
+import android.view.autofill.AutofillId
+import androidx.annotation.RequiresApi
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.autofill.FillResponseBuilder
 import mozilla.components.lib.publicsuffixlist.PublicSuffixList
+import mozilla.lockbox.autofill.ViewNodeNavigator
+import mozilla.lockbox.extensions.dump
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.DataStore
-import mozilla.lockbox.support.ParsedStructureBuilder
+import mozilla.lockbox.autofill.ParsedStructureData
+import mozilla.lockbox.autofill.ParsedStructureBuilder
 import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.support.PublicSuffixSupport
+import mozilla.lockbox.support.isDebug
 
-@TargetApi(Build.VERSION_CODES.O)
+typealias ParsedStructure = ParsedStructureData<AutofillId>
+
+@RequiresApi(Build.VERSION_CODES.O)
 @ExperimentalCoroutinesApi
 class LockboxAutofillService(
     val dataStore: DataStore = DataStore.shared,
@@ -48,16 +55,19 @@ class LockboxAutofillService(
             return
         }
 
-        val parsedStructure = ParsedStructureBuilder(structure).build()
+        val nodeNavigator = ViewNodeNavigator(structure, activityPackageName)
+        val parsedStructure = ParsedStructureBuilder(nodeNavigator).build()
+
         if (parsedStructure.passwordId == null && parsedStructure.usernameId == null) {
+            if (isDebug()) {
+                val xml = structure.getWindowNodeAt(0).rootViewNode.dump()
+                log.debug("Autofilling failed for:\n$xml")
+            }
             callback.onFailure(null)
             return
         }
 
-        val packageName = parsedStructure.packageId ?: activityPackageName
-        val webDomain = parsedStructure.webDomain
-
-        val builder = FillResponseBuilder(parsedStructure, webDomain, packageName)
+        val builder = FillResponseBuilder(parsedStructure)
 
         // When locked, then the list will be empty.
         // We have to do it as an observable, as looking up PSL is all async.
