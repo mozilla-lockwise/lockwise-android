@@ -22,6 +22,7 @@ import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.robots.accountSettingScreen
+import mozilla.lockbox.robots.autofillOnboardingScreen
 import mozilla.lockbox.robots.disconnectDisclaimer
 import mozilla.lockbox.robots.filteredItemList
 import mozilla.lockbox.robots.fingerprintOnboardingScreen
@@ -102,6 +103,23 @@ class Navigator {
 
     fun checkAtFingerprintOnboarding() {
         fingerprintOnboardingScreen { exists() }
+    }
+
+    fun gotoAutofillOnboarding(goManually: Boolean = false) {
+        if (goManually) {
+            gotoFxALogin()
+            fxaLogin { tapPlaceholderLogin() }
+            fingerprintOnboardingScreen { tapSkip() }
+        } else {
+            Dispatcher.shared.dispatch(LifecycleAction.UseTestData)
+            Dispatcher.shared.dispatch(RouteAction.Onboarding.Autofill)
+            log.info("blocking for the routes")
+        }
+        checkAtAutofillOnboarding()
+    }
+
+    fun checkAtAutofillOnboarding() {
+        autofillOnboardingScreen { exists() }
     }
 
     fun gotoOnboardingConfirmation() {
@@ -207,6 +225,28 @@ class Navigator {
     private fun listenSystemSecuritySettingIntent() {
         sentIntent {
             action(Settings.ACTION_SECURITY_SETTINGS)
+        }
+    }
+
+    fun goToSystemAutofillSettings() {
+        Intents.init()
+        stubSystemAutofillSettingIntent()
+        listenSystemAutofillSettingIntent()
+        Intents.release()
+    }
+
+    private fun stubSystemAutofillSettingIntent() {
+        stubIntent {
+            action(Settings.ACTION_REQUEST_SET_AUTOFILL_SERVICE)
+            respondWith {
+                ok()
+            }
+        }
+    }
+
+    private fun listenSystemAutofillSettingIntent() {
+        sentIntent {
+            action(Settings.ACTION_REQUEST_SET_AUTOFILL_SERVICE)
         }
     }
 

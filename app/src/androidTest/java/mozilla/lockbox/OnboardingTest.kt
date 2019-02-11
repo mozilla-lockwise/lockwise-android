@@ -2,6 +2,7 @@ package mozilla.lockbox
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
+import mozilla.lockbox.robots.autofillOnboardingScreen
 import mozilla.lockbox.robots.fingerprintOnboardingScreen
 import mozilla.lockbox.view.RootActivity
 import org.junit.Rule
@@ -33,5 +34,21 @@ open class OnboardingTest {
             tapSkip()
         }
         navigator.checkAtItemList()
+    }
+
+    @Test
+    fun autofillSkipButtonNavigatesToItemList() {
+        navigator.gotoAutofillOnboarding()
+        autofillOnboardingScreen { tapSkip() }
+        navigator.checkAtItemList()
+    }
+
+    @Test
+    fun autofillGoToSettingsNavigatesToSystemSettings() {
+        navigator.gotoAutofillOnboarding()
+        autofillOnboardingScreen {
+            exists()
+            touchGoToSettings()
+        }
     }
 }
