@@ -279,31 +279,9 @@ class RoutePresenter(
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun openSetting(settingAction: RouteAction.SystemSetting) {
-//        val settingIntent = Intent(settingAction.setting.intentAction, settingAction.setting.data)
-//        if (settingStore.autofillAvailable) {
-//            val b = settingStore.autofillAvailable
-//        } else {
-            log.error("SETTINGS")
-//        }
-        if (settingStore.autofillAvailable) {
-            log.error("ELISE - autofill available")
-            val settingIntent = Intent(android.provider.Settings.ACTION_REQUEST_SET_AUTOFILL_SERVICE)
-            settingIntent.action = "android.provider.Settings.ACTION_REQUEST_SET_AUTOFILL_SERVICE"
-            settingIntent.data = Uri.parse("package:com.mozilla.lockbox")
-            activity.startActivity(settingIntent, null)
-        } else {
-            log.error("ELISE - autofill not available")
-
-        }
-
-//        startActivityForResult(activity, settingIntent, Constant.RequestCode.autofillSettingRequest, null)
-
-
-//        intent = Intent()
-//        intent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS")
-//        intent.setData(Uri.parse("package:com.plusub.diapersapp"))
-//        intent.setComponent(componetName)
-
+        val settingIntent = Intent(settingAction.setting.intentAction)
+        settingIntent.data = settingAction.setting.data
+        activity.startActivity(settingIntent, null)
     }
 
 }

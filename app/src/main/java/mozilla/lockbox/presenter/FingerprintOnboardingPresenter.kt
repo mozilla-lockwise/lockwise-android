@@ -11,11 +11,14 @@ import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.FingerprintSensorAction
+import mozilla.lockbox.action.OnboardingStatusAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
+import mozilla.lockbox.log
 import mozilla.lockbox.model.FingerprintAuthCallback
+import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.FingerprintStore.AuthenticationState
 
@@ -47,15 +50,15 @@ class FingerprintOnboardingPresenter(
                     else -> false
                 }
                 dispatcher.dispatch(SettingAction.UnlockWithFingerprint(unlock))
-                dispatcher.dispatch(RouteAction.Onboarding.Autofill)
                 dispatcher.dispatch(RouteAction.OnboardingConfirmation)
+                triggerNextOnboarding()
             }
             .addTo(compositeDisposable)
 
         view.onDismiss.subscribe {
             dispatcher.dispatch(RouteAction.OnboardingConfirmation)
             dispatcher.dispatch(SettingAction.UnlockWithFingerprint(false))
-            dispatcher.dispatch(RouteAction.Onboarding.Autofill)
+            triggerNextOnboarding()
         }?.addTo(compositeDisposable)
     }
 
@@ -74,6 +77,15 @@ class FingerprintOnboardingPresenter(
             is AuthenticationState.Succeeded -> view.onSucceeded()
             is AuthenticationState.Failed -> view.onFailed(state.error)
             is AuthenticationState.Error -> view.onError(state.error)
+        }
+    }
+
+    private fun triggerNextOnboarding() {
+        if (SettingStore.shared.autofillAvailable){
+            dispatcher.dispatch(RouteAction.Onboarding.Autofill)
+        } else {
+            log.info("Autofill not available.")
+            dispatcher.dispatch(OnboardingStatusAction(false))
         }
     }
 }
