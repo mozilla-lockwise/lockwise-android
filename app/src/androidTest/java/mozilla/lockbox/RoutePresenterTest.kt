@@ -11,6 +11,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.robots.disconnectDisclaimer
 import mozilla.lockbox.robots.filteredItemList
+import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.view.RootActivity
 import org.junit.Rule
 import org.junit.Test
@@ -34,6 +35,20 @@ open class RoutePresenterTest {
         navigator.gotoFxALogin()
         navigator.back()
         navigator.checkAtWelcome()
+    }
+
+    @Test
+    fun testFingerprintOnboarding() {
+        navigator.gotoFingerprintOnboarding()
+        if (FingerprintStore.shared.isFingerprintAuthAvailable) {
+            navigator.checkAtFingerprintOnboarding()
+        }
+    }
+
+    @Test
+    fun testOnboardingConfirmation() {
+        navigator.gotoOnboardingConfirmation()
+        navigator.checkAtOnboardingConfirmation()
     }
 
     @Test
