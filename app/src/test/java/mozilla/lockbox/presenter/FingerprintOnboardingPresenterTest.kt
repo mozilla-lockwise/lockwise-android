@@ -1,6 +1,7 @@
 package mozilla.lockbox.presenter
 
 import android.hardware.fingerprint.FingerprintManager
+import android.view.autofill.AutofillManager
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
@@ -21,6 +22,7 @@ import org.mockito.Mockito
 import org.powermock.api.mockito.PowerMockito
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
+import org.mockito.Mockito.`when` as whenCalled
 
 @RunWith(RobolectricTestRunner::class)
 @Config(application = TestApplication::class)
@@ -67,6 +69,11 @@ class FingerprintOnboardingPresenterTest {
     @Mock
     private val fingerprintManager = PowerMockito.mock(FingerprintManager::class.java)
 
+    @Mock
+    private val autofillManager = PowerMockito.mock(AutofillManager::class.java)
+    private val autofillAvailableStub: Boolean = true
+    private val hasEnabledAutofillServicesStub: Boolean = true
+
     private val dispatcherObserver = TestObserver.create<Action>()
 
     val subject = FingerprintOnboardingPresenter(view, dispatcher, fingerprintStore)
@@ -75,6 +82,8 @@ class FingerprintOnboardingPresenterTest {
     fun setUp() {
         fingerprintStore.fingerprintManager = fingerprintManager
         dispatcher.register.subscribe(dispatcherObserver)
+        whenCalled(autofillManager.isAutofillSupported).thenReturn(autofillAvailableStub)
+        whenCalled(autofillManager.hasEnabledAutofillServices()).thenReturn(hasEnabledAutofillServicesStub)
         subject.onViewReady()
     }
 

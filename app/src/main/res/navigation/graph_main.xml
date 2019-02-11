@@ -67,7 +67,7 @@
     <fragment
             android:id="@+id/fragment_autofill_onboarding"
             android:name="mozilla.lockbox.view.OnboardingAutofillFragment"
-            tools:layout="@layout/onboarding_autofill">
+            tools:layout="@layout/fragment_autofill_onboarding">
     </fragment>
 
     <fragment

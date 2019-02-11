@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
-import kotlinx.android.synthetic.main.onboarding_autofill.view.*
+import kotlinx.android.synthetic.main.fragment_autofill_onboarding.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
 import mozilla.lockbox.presenter.OnboardingAutofillPresenter
@@ -27,6 +27,6 @@ class OnboardingAutofillFragment : Fragment(), OnboardingAutofillView {
         savedInstanceState: Bundle?
     ): View? {
         presenter = OnboardingAutofillPresenter(this)
-        return inflater.inflate(R.layout.onboarding_autofill, container, false)
+        return inflater.inflate(R.layout.fragment_autofill_onboarding, container, false)
     }
 }

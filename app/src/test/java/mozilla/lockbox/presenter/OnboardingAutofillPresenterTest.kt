@@ -4,6 +4,7 @@ import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import mozilla.lockbox.action.OnboardingStatusAction
 import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.action.SettingIntent
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
@@ -45,6 +46,8 @@ class OnboardingAutofillPresenterTest {
     @Test
     fun `navigate to settings when gotosettings button is tapped`() {
         view.onEnable.onNext(Unit)
-        dispatcherObserver.assertValueAt(0, RouteAction.SystemSetting(SettingIntent.Autofill))
+        dispatcherObserver.assertValueAt(0, SettingAction.Autofill(true))
+        dispatcherObserver.assertValueAt(1, RouteAction.SystemSetting(SettingIntent.Autofill))
+        dispatcherObserver.assertValueAt(2, OnboardingStatusAction(false))
     }
 }

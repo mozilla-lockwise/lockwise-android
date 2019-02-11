@@ -11,11 +11,9 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
 import androidx.annotation.IdRes
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import io.reactivex.Observable
@@ -26,7 +24,6 @@ import mozilla.lockbox.R
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.action.SettingAction
-import mozilla.lockbox.action.SettingIntent
 import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.extensions.view.AlertDialogHelper
 import mozilla.lockbox.extensions.view.AlertState
@@ -43,8 +40,6 @@ import mozilla.lockbox.view.AppWebPageFragmentArgs
 import mozilla.lockbox.view.DialogFragment
 import mozilla.lockbox.view.FingerprintAuthDialogFragment
 import mozilla.lockbox.view.ItemDetailFragmentArgs
-
-
 
 @ExperimentalCoroutinesApi
 class RoutePresenter(
@@ -70,7 +65,10 @@ class RoutePresenter(
         when (action) {
             is RouteAction.Welcome -> navigateToFragment(action, R.id.fragment_welcome)
             is RouteAction.Login -> navigateToFragment(action, R.id.fragment_fxa_login)
-            is RouteAction.Onboarding.FingerprintAuth -> navigateToFragment(action, R.id.fragment_fingerprint_onboarding)
+            is RouteAction.Onboarding.FingerprintAuth -> navigateToFragment(
+                action,
+                R.id.fragment_fingerprint_onboarding
+            )
             is RouteAction.Onboarding.Autofill -> navigateToFragment(action, R.id.fragment_autofill_onboarding)
             is RouteAction.OnboardingConfirmation -> navigateToFragment(action, R.id.fragment_onboarding_confirmation)
             is RouteAction.ItemList -> navigateToFragment(action, R.id.fragment_item_list)
@@ -240,12 +238,14 @@ class RoutePresenter(
             Pair(R.id.fragment_welcome, R.id.fragment_locked) -> R.id.action_to_locked
 
             Pair(R.id.fragment_fxa_login, R.id.fragment_item_list) -> R.id.action_fxaLogin_to_itemList
-            Pair(R.id.fragment_fxa_login, R.id.fragment_fingerprint_onboarding) -> R.id.action_fxaLogin_to_fingerprint_onboarding
+            Pair(R.id.fragment_fxa_login, R.id.fragment_fingerprint_onboarding) ->
+                R.id.action_fxaLogin_to_fingerprint_onboarding
+
             Pair(R.id.fragment_fingerprint_onboarding, R.id.fragment_onboarding_confirmation) -> R.id.action_fingerprint_onboarding_to_confirmation
             Pair(R.id.fragment_fxa_login, R.id.fragment_onboarding_confirmation) -> R.id.action_fxaLogin_to_onboarding_confirmation
 
-            Pair(R.id.fragment_fxa_login, R.id.fragment_fingerprint_onboarding) -> R.id.action_fxaLogin_to_fingerprint_onboarding
-            Pair(R.id.fragment_fingerprint_onboarding,  R.id.fragment_autofill_onboarding) -> R.id.action_onboarding_fingerprint_to_autofill
+            Pair(R.id.fragment_fingerprint_onboarding, R.id.fragment_autofill_onboarding) ->
+                R.id.action_onboarding_fingerprint_to_autofill
             Pair(R.id.fragment_autofill_onboarding, R.id.fragment_item_list) -> R.id.action_to_itemList
             Pair(R.id.fragment_onboarding_confirmation, R.id.fragment_item_list) -> R.id.action_to_itemList
             Pair(R.id.fragment_onboarding_confirmation, R.id.fragment_webview) -> R.id.action_to_webview
@@ -283,5 +283,4 @@ class RoutePresenter(
         settingIntent.data = settingAction.setting.data
         activity.startActivity(settingIntent, null)
     }
-
 }

@@ -81,7 +81,7 @@ class FingerprintOnboardingPresenter(
     }
 
     private fun triggerNextOnboarding() {
-        if (SettingStore.shared.autofillAvailable){
+        if (SettingStore.shared.autofillAvailable) {
             dispatcher.dispatch(RouteAction.Onboarding.Autofill)
         } else {
             log.info("Autofill not available.")
