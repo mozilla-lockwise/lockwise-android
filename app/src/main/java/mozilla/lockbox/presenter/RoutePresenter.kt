@@ -229,6 +229,7 @@ class RoutePresenter(
         // the app will log.error.
         return when (Pair(from, to)) {
             Pair(R.id.fragment_welcome, R.id.fragment_item_list) -> R.id.action_to_itemList
+            Pair(R.id.fragment_welcome, R.id.fragment_item_list) -> R.id.action_welcome_to_webPage
             Pair(R.id.fragment_welcome, R.id.fragment_locked) -> R.id.action_to_locked
 
             Pair(R.id.fragment_fxa_login, R.id.fragment_item_list) -> R.id.action_fxaLogin_to_itemList

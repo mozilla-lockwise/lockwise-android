@@ -36,7 +36,6 @@ interface ItemListView {
     val itemSelection: Observable<ItemViewModel>
     val filterClicks: Observable<Unit>
     val noEntriesClicks: Observable<Unit>
-    val noMatchingClicks: Observable<Unit>
     val menuItemSelections: Observable<Int>
     val lockNowClick: Observable<Unit>
     val sortItemSelection: Observable<Setting.ItemListSort>
@@ -112,11 +111,6 @@ class ItemListPresenter(
 
         view.noEntriesClicks
             .map { RouteAction.AppWebPage.FaqSync }
-            .subscribe(dispatcher::dispatch)
-            .addTo(compositeDisposable)
-
-        view.noMatchingClicks
-            .map { RouteAction.AppWebPage.FaqCreate }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
 

@@ -18,6 +18,13 @@
         <action
                 android:id="@+id/action_welcome_to_fxaLogin"
                 app:destination="@id/fragment_fxa_login"/>
+        <action
+                android:id="@+id/action_welcome_to_webPage"
+                app:destination="@id/fragment_webview"
+                app:enterAnim="@anim/slide_in_bottom"
+                app:exitAnim="@anim/none"
+                app:popExitAnim="@anim/slide_out_bottom"
+                app:popEnterAnim="@anim/none"/>
     </fragment>
 
     <fragment

@@ -6,19 +6,21 @@
 
 package mozilla.lockbox.adapter
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding2.view.clicks
-import com.jakewharton.rxbinding2.view.detaches
 import io.reactivex.Observable
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.Subject
 import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.main.list_cell_no_entries.view.*
+import kotlinx.android.synthetic.main.list_cell_no_matching.view.*
 import mozilla.lockbox.R
+import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.model.ItemViewModel
+import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.view.ItemViewHolder
 
 open class ItemListCell(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer
@@ -26,9 +28,10 @@ open class ItemListCell(override val containerView: View) : RecyclerView.ViewHol
 class ItemListAdapter : RecyclerView.Adapter<ItemListCell>() {
 
     private var itemList: List<ItemViewModel>? = null
-    private val _clicks = PublishSubject.create<ItemViewModel>()
-    private val compositeDisposable = CompositeDisposable()
     private var isFiltering: Boolean = false
+    val itemClicks: Observable<ItemViewModel> = PublishSubject.create()
+    val noEntriesClicks: Observable<Unit> = PublishSubject.create()
+    val noMatchingEntriesClicks: Observable<Unit> = PublishSubject.create()
 
     companion object {
         private const val ITEM_DISPLAY_CELL_TYPE = 0
@@ -42,21 +45,30 @@ class ItemListAdapter : RecyclerView.Adapter<ItemListCell>() {
             NO_MATCHING_ENTRIES_CELL_TYPE -> {
                 val view = inflater.inflate(R.layout.list_cell_no_matching, parent, false)
 
+                view.noMatchingLearnMore
+                    .clicks()
+                    .subscribe(noMatchingEntriesClicks as PublishSubject)
+
                 return ItemListCell(view)
             }
-            NO_ENTRIES_CELL_TYPE ->
-                return ItemListCell(inflater.inflate(R.layout.list_cell_no_entries, parent, false))
+            NO_ENTRIES_CELL_TYPE -> {
+                val view = inflater.inflate(R.layout.list_cell_no_entries, parent, false)
+
+                view.noEntriesLearnMore
+                    .clicks()
+                    .subscribe(noEntriesClicks as Subject)
+
+                return ItemListCell(view)
+            }
             else -> {
                 val view = inflater.inflate(R.layout.list_cell_item, parent, false)
 
                 val viewHolder = ItemViewHolder(view)
-                view
-                    .clicks()
-                    .takeUntil(parent.detaches())
-                    .subscribe {
-                        viewHolder.itemViewModel?.let(this._clicks::onNext)
-                    }
-                    .addTo(compositeDisposable)
+
+                view.clicks()
+                    .map { viewHolder.itemViewModel.asOptional() }
+                    .filterNotNull()
+                    .subscribe(this.itemClicks as Subject)
 
                 return viewHolder
             }
@@ -92,9 +104,5 @@ class ItemListAdapter : RecyclerView.Adapter<ItemListCell>() {
         // note: this is not a performant way to do updates; we should think about using
         // diffutil here when implementing filtering / sorting
         notifyDataSetChanged()
-    }
-
-    fun clicks(): Observable<ItemViewModel> {
-        return this._clicks
     }
 }

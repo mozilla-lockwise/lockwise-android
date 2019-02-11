@@ -147,15 +147,10 @@ class ItemListFragment : Fragment(), ItemListView {
         get() = view!!.filterButton.clicks()
 
      override val noEntriesClicks: Observable<Unit>
-         // this will crash because view!!.noEntriesLearnMore must not be null
-        get() = view!!.noEntriesLearnMore.clicks()
-
-    override val noMatchingClicks: Observable<Unit>
-        // this will crash because view!!.noMatchingLearnMore must not be null
-        get() = view!!.noMatchingLearnMore.clicks()
+        get() = adapter.noEntriesClicks
 
     override val itemSelection: Observable<ItemViewModel>
-        get() = adapter.clicks()
+        get() = adapter.itemClicks
 
     override val menuItemSelections: Observable<Int>
         get() {
