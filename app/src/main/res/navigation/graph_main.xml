@@ -117,6 +117,13 @@
                 android:name="itemId"
                 android:defaultValue="MISSING_ID"
                 app:argType="string"/>
+        <action
+                android:id="@+id/action_itemDetail_to_webview"
+                app:destination="@id/fragment_webview"
+                app:enterAnim="@anim/slide_in_bottom"
+                app:exitAnim="@anim/none"
+                app:popExitAnim="@anim/slide_out_bottom"
+                app:popEnterAnim="@anim/none"/>
     </fragment>
 
     <fragment

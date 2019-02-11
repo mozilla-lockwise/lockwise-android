@@ -7,21 +7,21 @@
 package mozilla.lockbox.view
 
 import android.os.Bundle
-import com.google.android.material.navigation.NavigationView
-import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.appcompat.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.Spinner
+import androidx.appcompat.widget.Toolbar
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
-import android.widget.Spinner
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.navigation.NavigationView
 import com.jakewharton.rxbinding2.support.design.widget.itemSelections
 import com.jakewharton.rxbinding2.support.v4.widget.refreshes
 import com.jakewharton.rxbinding2.support.v7.widget.navigationClicks
@@ -35,18 +35,16 @@ import jp.wasabeef.picasso.transformations.CropCircleTransformation
 import kotlinx.android.synthetic.main.fragment_item_list.*
 import kotlinx.android.synthetic.main.fragment_item_list.view.*
 import kotlinx.android.synthetic.main.fragment_warning.view.*
-import kotlinx.android.synthetic.main.list_cell_no_entries.view.*
-import kotlinx.android.synthetic.main.list_cell_no_matching.view.*
 import kotlinx.android.synthetic.main.nav_header.view.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
+import mozilla.lockbox.action.Setting
 import mozilla.lockbox.adapter.ItemListAdapter
+import mozilla.lockbox.adapter.SortItemAdapter
+import mozilla.lockbox.model.AccountViewModel
 import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.presenter.ItemListPresenter
 import mozilla.lockbox.presenter.ItemListView
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import mozilla.lockbox.action.Setting
-import mozilla.lockbox.adapter.SortItemAdapter
-import mozilla.lockbox.model.AccountViewModel
 import mozilla.lockbox.support.showAndRemove
 
 @ExperimentalCoroutinesApi
@@ -146,7 +144,7 @@ class ItemListFragment : Fragment(), ItemListView {
     override val filterClicks: Observable<Unit>
         get() = view!!.filterButton.clicks()
 
-     override val noEntriesClicks: Observable<Unit>
+    override val noEntriesClicks: Observable<Unit>
         get() = adapter.noEntriesClicks
 
     override val itemSelection: Observable<ItemViewModel>
