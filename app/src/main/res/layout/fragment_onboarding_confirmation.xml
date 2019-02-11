@@ -86,6 +86,11 @@
             android:background="@drawable/rounded_corner_selector_primary"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="72dp"
+            android:textSize="14sp"
+            android:fontFamily="sans-serif-medium"
+            android:textStyle="normal"
+            android:letterSpacing="0.09"
+            android:lineSpacingExtra="2sp"
             android:textColor="@color/background_white"
             android:text="@string/finish"
     />
