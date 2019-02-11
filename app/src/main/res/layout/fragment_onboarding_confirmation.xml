@@ -83,7 +83,7 @@
             android:id="@+id/finishButton"
             android:layout_width="160dp"
             android:layout_height="36dp"
-            android:background="@color/color_primary"
+            android:background="@drawable/rounded_corner_selector_primary"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="72dp"
             android:textColor="@color/background_white"
