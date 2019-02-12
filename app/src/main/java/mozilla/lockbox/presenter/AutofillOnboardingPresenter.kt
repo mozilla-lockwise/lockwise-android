@@ -31,14 +31,18 @@ class AutofillOnboardingPresenter(
 ) : Presenter() {
 
     override fun onViewReady() {
-        view.onSkipClick.subscribe {
-            triggerNextOnboarding()
-        }.addTo(compositeDisposable)
+        view.onSkipClick
+            .subscribe {
+                triggerNextOnboarding()
+            }
+            .addTo(compositeDisposable)
 
-        view.onGoToSettingsClick.subscribe {
-            dispatcher.dispatch(RouteAction.SystemSetting(SettingIntent.Autofill))
-            triggerNextOnboarding()
-        }.addTo(compositeDisposable)
+        view.onGoToSettingsClick
+            .subscribe {
+                dispatcher.dispatch(RouteAction.SystemSetting(SettingIntent.Autofill))
+                triggerNextOnboarding()
+            }
+            .addTo(compositeDisposable)
     }
 
     private fun triggerNextOnboarding() {

@@ -37,6 +37,7 @@ import mozilla.lockbox.robots.welcome
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.RouteStore
+import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.view.RootActivity
 import org.junit.Assert
 
@@ -124,6 +125,8 @@ class Navigator {
         if (FingerprintStore.shared.isFingerprintAuthAvailable) {
             checkAtFingerprintOnboarding()
             fingerprintOnboardingScreen { tapSkip() }
+        }
+        if (SettingStore.shared.autofillAvailable) {
             checkAtAutofillOnboarding()
             autofillOnboardingScreen { tapSkip() }
         }
