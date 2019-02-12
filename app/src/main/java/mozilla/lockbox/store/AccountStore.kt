@@ -6,6 +6,7 @@
 
 package mozilla.lockbox.store
 
+import android.content.Context
 import android.net.Uri
 import android.os.Looper
 import android.webkit.CookieManager
@@ -46,7 +47,7 @@ import kotlin.coroutines.CoroutineContext
 open class AccountStore(
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val securePreferences: SecurePreferences = SecurePreferences.shared
-) {
+) : ContextStore {
     companion object {
         val shared by lazy { AccountStore() }
     }
@@ -104,7 +105,9 @@ open class AccountStore(
             }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
+    }
 
+    override fun injectContext(context: Context) {
         detectAccount()
     }
 

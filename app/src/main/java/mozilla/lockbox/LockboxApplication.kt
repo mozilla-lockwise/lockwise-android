@@ -50,8 +50,8 @@ open class LockboxApplication : Application() {
         super.onCreate()
         if (leakCanary()) return
         if (isUnitTest()) return
-        injectContext()
         setupDataStoreSupport()
+        injectContext()
         setupLifecycleListener()
         setupSentry()
     }
@@ -80,6 +80,7 @@ open class LockboxApplication : Application() {
             FingerprintStore.shared,
             NetworkStore.shared,
             AutoLockStore.shared,
+            AccountStore.shared,
             TelemetryStore.shared,
             PublicSuffixSupport.shared
         )
