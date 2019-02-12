@@ -168,7 +168,6 @@ open class DataStore(
     }
 
     private fun reset() {
-        val backend = this.backend ?: return notReady()
         when (stateSubject.value) {
             null -> {
                 stateSubject.onNext(State.Unprepared)
@@ -177,11 +176,14 @@ open class DataStore(
             State.Unprepared -> return
             else -> {
                 clearList()
-                backend.wipeLocal()
-                    .asSingle(coroutineContext)
-                    .map { State.Unprepared }
-                    .subscribe(stateSubject::onNext, this::pushError)
-                    .addTo(compositeDisposable)
+                backend?.let{ backend ->
+                    backend.wipeLocal()
+                        .asSingle(coroutineContext)
+                        .map { State.Unprepared }
+                        .subscribe(stateSubject::onNext, this::pushError)
+                        .addTo(compositeDisposable)
+                } ?: stateSubject.onNext(State.Unprepared)
+
             }
         }
     }
