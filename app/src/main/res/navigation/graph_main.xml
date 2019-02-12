@@ -130,7 +130,15 @@
             android:id="@+id/fragment_setting"
             android:name="mozilla.lockbox.view.SettingFragment"
             android:label="@string/nav_menu_settings"
-            tools:layout="@layout/fragment_setting"/>
+            tools:layout="@layout/fragment_setting">
+        <action
+                android:id="@+id/action_setting_to_webview"
+                app:destination="@id/fragment_webview"
+                app:enterAnim="@anim/slide_in_bottom"
+                app:exitAnim="@anim/none"
+                app:popExitAnim="@anim/slide_out_bottom"
+                app:popEnterAnim="@anim/none"/>
+    </fragment>
 
     <fragment
             android:id="@+id/fragment_webview"

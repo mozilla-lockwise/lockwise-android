@@ -85,6 +85,11 @@ sealed class RouteAction(
             R.string.nav_menu_faq,
             TelemetryEventObject.settings_faq)
 
+        object Privacy : AppWebPage(
+            Constant.Privacy.uri,
+            R.string.privacy,
+            TelemetryEventObject.settings_faq)
+
         object SendFeedback : AppWebPage(
             Constant.SendFeedback.uri,
             R.string.nav_menu_feedback,

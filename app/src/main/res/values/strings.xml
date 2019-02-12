@@ -229,6 +229,7 @@
     <string name="security_description">Sync between devices with secure 256-bit encryption</string>
     <!-- This description of the app convenience is shown on the final onboarding screen. -->
     <string name="convenience_description">Unlock the app with ease using your fingerprint</string>
+    <string name="privacy">Privacy</string>
 
     <!-- This is the prompt when autofill is triggered, and Lockbox is locked. -->
     <string name="autofill_authenticate_cta">Unlock Lockbox</string>

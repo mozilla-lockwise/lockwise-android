@@ -29,6 +29,7 @@ class ToggleSettingConfiguration(
     override val subtitle: Int? = null,
     @StringRes override val contentDescription: Int,
     @StringRes val buttonTitle: Int? = null,
+    val buttonObserver: Consumer<Unit>? = null,
     val toggleDriver: Observable<Boolean>,
     val toggleObserver: Consumer<Boolean>
 ) : SettingCellConfiguration(title = title, contentDescription = contentDescription)

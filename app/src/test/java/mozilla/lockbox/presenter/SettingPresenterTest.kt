@@ -280,6 +280,16 @@ class SettingPresenterTest {
     }
 
     @Test
+    fun `learn more button in sendUsageData tapped`() {
+        Mockito.`when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(false)
+        subject.onResume()
+
+        (view.settingItem!![1] as ToggleSettingConfiguration).buttonObserver!!.accept(Unit)
+
+        dispatcherObserver.assertLastValue(RouteAction.AppWebPage.Privacy)
+    }
+
+    @Test
     fun `autoLockTime update requested`() {
         Mockito.`when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(false)
         subject.onResume()

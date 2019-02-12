@@ -80,6 +80,11 @@ class SettingPresenter(
             dispatcher.dispatch(SettingAction.SendUsageData(newValue))
         }
 
+    private val learnMoreSendUsageDataObserver: Consumer<Unit>
+        get() = Consumer {
+            dispatcher.dispatch(RouteAction.AppWebPage.Privacy)
+        }
+
     override fun onViewReady() {
         settingStore.onEnablingFingerprint
             .subscribe {
@@ -150,6 +155,7 @@ class SettingPresenter(
                 subtitle = R.string.send_usage_data_summary,
                 contentDescription = R.string.send_usage_data,
                 buttonTitle = R.string.learn_more,
+                buttonObserver = learnMoreSendUsageDataObserver,
                 toggleDriver = settingStore.sendUsageData,
                 toggleObserver = sendUsageDataObserver
             ),

@@ -252,6 +252,8 @@ class RoutePresenter(
 
             Pair(R.id.fragment_item_detail, R.id.fragment_webview) -> R.id.action_itemDetail_to_webview
 
+            Pair(R.id.fragment_setting, R.id.fragment_webview) -> R.id.action_setting_to_webview
+
             Pair(R.id.fragment_account_setting, R.id.fragment_welcome) -> R.id.action_to_welcome
 
             Pair(R.id.fragment_filter, R.id.fragment_item_detail) -> R.id.action_filter_to_itemDetail
