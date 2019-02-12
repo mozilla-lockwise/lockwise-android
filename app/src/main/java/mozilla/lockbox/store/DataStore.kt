@@ -135,7 +135,7 @@ open class DataStore(
     private fun sync() {
         val syncConfig = support?.syncConfig ?: return {
             val throwable = IllegalStateException("syncConfig should already be defined")
-            stateSubject.onNext(State.Errored(throwable))
+            pushError(throwable)
         }()
 
         val backend = this.backend ?: return notReady()

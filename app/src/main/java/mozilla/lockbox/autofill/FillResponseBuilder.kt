@@ -101,5 +101,5 @@ class FillResponseBuilder(
     }
 
     fun asyncFilter(pslSupport: PublicSuffixSupport, list: Observable<List<ServerPassword>>) =
-        list.filter(pslSupport, parsedStructure.webDomain, parsedStructure.packageName)
+        list.take(1).filter(pslSupport, parsedStructure.webDomain, parsedStructure.packageName)
 }

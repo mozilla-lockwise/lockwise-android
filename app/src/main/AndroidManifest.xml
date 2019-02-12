@@ -38,6 +38,7 @@
         </activity>
         <activity android:name=".view.AuthActivity"
                   android:configChanges="orientation|keyboardHidden"
+                  android:taskAffinity=".view.AuthActivity"
                   android:screenOrientation="portrait"/>
 
         <service
