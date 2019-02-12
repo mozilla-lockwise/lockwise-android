@@ -7,7 +7,6 @@ import mozilla.lockbox.autofill.AutofillNodeNavigator
 import mozilla.lockbox.autofill.ParsedStructureBuilder
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -101,7 +100,7 @@ class DOMNavigator(
     }
 
     override fun autofillId(node: Element): String? {
-        return if (isEditText(node) || isHtmlInputField(node)) { clues(node).joinToString("|" ) } else { null }
+        return if (isEditText(node) || isHtmlInputField(node)) { clues(node).joinToString("|") } else { null }
     }
 
     override fun isEditText(node: Element): Boolean {
