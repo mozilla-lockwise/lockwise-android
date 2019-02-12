@@ -65,14 +65,18 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         set(value) {
             assertOnUiThread()
             field = value
-            if (value) {
-                inputPassword.transformationMethod = null
-                btnPasswordToggle.setImageResource(R.drawable.ic_hide)
-            } else {
-                inputPassword.transformationMethod = PasswordTransformationMethod.getInstance()
-                btnPasswordToggle.setImageResource(R.drawable.ic_show)
-            }
+            updatePasswordVisibility(value)
         }
+
+    private fun updatePasswordVisibility(visible: Boolean) {
+        if (visible) {
+            inputPassword.transformationMethod = null
+            btnPasswordToggle.setImageResource(R.drawable.ic_hide)
+        } else {
+            inputPassword.transformationMethod = PasswordTransformationMethod.getInstance()
+            btnPasswordToggle.setImageResource(R.drawable.ic_show)
+        }
+    }
 
     override fun updateItem(item: ItemDetailViewModel) {
         assertOnUiThread()
@@ -99,6 +103,9 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         inputHostname.setText(item.hostname, TextView.BufferType.NORMAL)
         inputUsername.setText(item.username, TextView.BufferType.NORMAL)
         inputPassword.setText(item.password, TextView.BufferType.NORMAL)
+
+        // effect password visibility state
+        updatePasswordVisibility(isPasswordVisible)
     }
 
     override fun showToastNotification(@StringRes strId: Int) {
