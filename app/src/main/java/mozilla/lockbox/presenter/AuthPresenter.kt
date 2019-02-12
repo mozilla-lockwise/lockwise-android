@@ -6,7 +6,6 @@ import io.reactivex.Observable
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import mozilla.components.lib.publicsuffixlist.PublicSuffixList
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.autofill.FillResponseBuilder
@@ -18,7 +17,6 @@ import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.LockedStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.support.PublicSuffixSupport
-import mozilla.lockbox.support.filter
 
 interface AuthView {
     fun showAuthDialog()
@@ -36,12 +34,9 @@ class AuthPresenter(
     private val fingerprintStore: FingerprintStore = FingerprintStore.shared,
     private val settingStore: SettingStore = SettingStore.shared,
     private val dataStore: DataStore = DataStore.shared,
-    private val lockedStore: LockedStore = LockedStore.shared
+    private val lockedStore: LockedStore = LockedStore.shared,
+    private val pslSupport: PublicSuffixSupport = PublicSuffixSupport.shared
 ) : Presenter() {
-
-    private val pslSupport: PublicSuffixSupport = PublicSuffixSupport(
-        PublicSuffixList(view.context)
-    )
 
     override fun onViewReady() {
         Observables.combineLatest(settingStore.unlockWithFingerprint, dataStore.state)

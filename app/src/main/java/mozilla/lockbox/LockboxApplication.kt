@@ -28,6 +28,7 @@ import mozilla.lockbox.store.NetworkStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.store.TelemetryStore
 import mozilla.lockbox.support.FxASyncDataStoreSupport
+import mozilla.lockbox.support.PublicSuffixSupport
 import mozilla.lockbox.support.SecurePreferences
 
 sealed class LogProvider {
@@ -79,7 +80,8 @@ open class LockboxApplication : Application() {
             FingerprintStore.shared,
             NetworkStore.shared,
             AutoLockStore.shared,
-            TelemetryStore.shared
+            TelemetryStore.shared,
+            PublicSuffixSupport.shared
         )
 
         contextStoreList.forEach {

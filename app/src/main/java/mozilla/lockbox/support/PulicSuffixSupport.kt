@@ -8,6 +8,7 @@
 
 package mozilla.lockbox.support
 
+import android.content.Context
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.Observables
 import kotlinx.coroutines.CoroutineDispatcher
@@ -18,14 +19,20 @@ import kotlinx.coroutines.rx2.asMaybe
 import mozilla.appservices.logins.ServerPassword
 import mozilla.components.lib.publicsuffixlist.PublicSuffixList
 import mozilla.lockbox.log
+import mozilla.lockbox.store.ContextStore
 import java.net.URI
 import kotlin.coroutines.CoroutineContext
 
 @ExperimentalCoroutinesApi
 open class PublicSuffixSupport(
-    private val psl: PublicSuffixList,
     private val dispatcher: CoroutineDispatcher = Dispatchers.Default
-) {
+) : ContextStore {
+    companion object {
+        val shared by lazy { PublicSuffixSupport() }
+    }
+
+    private lateinit var psl: PublicSuffixList
+
     private val exceptionHandler: CoroutineExceptionHandler
         get() = CoroutineExceptionHandler { _, e ->
             log.error(
@@ -35,6 +42,10 @@ open class PublicSuffixSupport(
         }
     private val coroutineContext: CoroutineContext
         get() = dispatcher + exceptionHandler
+
+    override fun injectContext(context: Context) {
+        psl = PublicSuffixList(context)
+    }
 
     fun fromWebDomain(domain: String?): Observable<PublicSuffix> {
         val fullDomain = domain ?: ""
