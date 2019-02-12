@@ -4,5 +4,5 @@ data class ParsedStructureData<AutofillId>(
     var usernameId: AutofillId? = null,
     var passwordId: AutofillId? = null,
     var webDomain: String? = null,
-    var packageId: String
+    var packageName: String
 )

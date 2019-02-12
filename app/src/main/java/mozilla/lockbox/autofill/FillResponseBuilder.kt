@@ -8,6 +8,7 @@ import android.service.autofill.FillResponse
 import android.view.autofill.AutofillValue
 import android.widget.RemoteViews
 import io.reactivex.Observable
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.ParsedStructure
 import mozilla.lockbox.R
@@ -16,6 +17,7 @@ import mozilla.lockbox.support.filter
 import mozilla.lockbox.view.AuthActivity
 
 @TargetApi(Build.VERSION_CODES.O)
+@ExperimentalCoroutinesApi
 class FillResponseBuilder(
     private val parsedStructure: ParsedStructure
 ) {
@@ -99,5 +101,5 @@ class FillResponseBuilder(
     }
 
     fun asyncFilter(pslSupport: PublicSuffixSupport, list: Observable<List<ServerPassword>>) =
-        list.filter(pslSupport, parsedStructure.webDomain, parsedStructure.packageId)
+        list.filter(pslSupport, parsedStructure.webDomain, parsedStructure.packageName)
 }

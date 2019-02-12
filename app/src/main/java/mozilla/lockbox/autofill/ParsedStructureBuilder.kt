@@ -17,7 +17,7 @@ class ParsedStructureBuilder<ViewNode, AutofillId>(
             usernameId,
             passwordId,
             getWebDomain(interesting),
-            getPackageId(interesting) ?: navigator.activityPackageName
+            getPackageName(interesting) ?: navigator.activityPackageName
         )
     }
 
@@ -76,9 +76,9 @@ class ParsedStructureBuilder<ViewNode, AutofillId>(
         }
     }
 
-    private fun getPackageId(nearby: AutofillId?): String? {
+    private fun getPackageName(nearby: AutofillId?): String? {
         return nearestFocusedNode(nearby) {
-            navigator.packageId(it)
+            navigator.packageName(it)
         }
     }
 

@@ -53,7 +53,7 @@ class AutofillTests {
             if (fixture.webDomain != null) {
                 assertEquals("${fixture.filename} webDomain detected", fixture.webDomain, subject.webDomain)
             } else {
-                assertEquals("${fixture.filename} packageId detected", fixture.packageId, subject.packageId)
+                assertEquals("${fixture.filename} packageName detected", fixture.packageName, subject.packageName)
             }
 
             assertNotNull(subject.passwordId, "${fixture.filename} password detected")
@@ -65,7 +65,7 @@ class AutofillTests {
 data class Fixture(
     val filename: String,
     val webDomain: String?,
-    val packageId: String?
+    val packageName: String?
 )
 
 class DOMNavigator(
@@ -111,7 +111,7 @@ class DOMNavigator(
         return node.tagName == "input"
     }
 
-    override fun packageId(node: Element): String? {
+    override fun packageName(node: Element): String? {
         return node.attributes.getNamedItem("idPackage")?.nodeValue
     }
 

@@ -322,10 +322,10 @@ class PublicSuffixSupportTest : DisposingTest() {
 
         val (example, firefox1, firefox2, mozilla) = passwords
 
-        fun testFiltering(webDomain: String?, packageId: String = "com.android.chrome", vararg expected: ServerPassword) {
+        fun testFiltering(webDomain: String?, packageName: String = "com.android.chrome", vararg expected: ServerPassword) {
             val matchObserver = createTestObserver<List<ServerPassword>>()
             Observable.just(passwords)
-                .filter(support, webDomain, packageId)
+                .filter(support, webDomain, packageName)
                 .subscribe(matchObserver)
 
             matchObserver.await()

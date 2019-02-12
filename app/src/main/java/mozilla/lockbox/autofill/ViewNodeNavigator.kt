@@ -14,7 +14,7 @@ interface AutofillNodeNavigator<T, U> {
     fun autofillId(node: T): U?
     fun isEditText(node: T): Boolean
     fun isHtmlInputField(node: T): Boolean
-    fun packageId(node: T): String?
+    fun packageName(node: T): String?
     fun webDomain(node: T): String?
 }
 
@@ -58,7 +58,7 @@ class ViewNodeNavigator(
         return node.htmlInfo?.tag?.toLowerCase() == "input"
     }
 
-    override fun packageId(node: ViewNode): String? = node.idPackage
+    override fun packageName(node: ViewNode): String? = node.idPackage
 
     override fun webDomain(node: ViewNode): String? = node.webDomain
 }
