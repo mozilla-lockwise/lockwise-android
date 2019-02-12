@@ -230,9 +230,6 @@
     <!-- This description of the app convenience is shown on the final onboarding screen. -->
     <string name="convenience_description">Unlock the app with ease using your fingerprint</string>
 
-    <string name="autofill_authenticate_cta">requires authentication</string>
-    <string name="autofill_error_no_hostname">unexpected hostname format</string>
-
     <!-- This is the prompt when autofill is triggered, and Lockbox is locked. -->
     <string name="autofill_authenticate_cta">Tap to unlock</string>
     <!-- This is the error message when autofill is triggered but no domain is detected. This is unlikely. -->
