@@ -9,13 +9,16 @@
 package mozilla.lockbox.support
 
 import android.content.Context
+import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.rxkotlin.Observables
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import mozilla.components.lib.publicsuffixlist.PublicSuffixList
+import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.DisposingTest
+import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.extensions.assertLastValueMatches
 import mozilla.lockbox.presenter.TestApplication
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -29,7 +32,12 @@ typealias PublicSuffixPair = Pair<PublicSuffix, PublicSuffix>
 @Config(application = TestApplication::class)
 class PublicSuffixSupportTest : DisposingTest() {
     private val appContext: Context = RuntimeEnvironment.application
-    private val support = PublicSuffixSupport(PublicSuffixList(appContext))
+    private val support = PublicSuffixSupport()
+
+    @Before
+    fun setUp() {
+        support.injectContext(appContext)
+    }
 
     @Test
     fun `test from web domain`() {
@@ -305,5 +313,27 @@ class PublicSuffixSupportTest : DisposingTest() {
         matchObserver.await()
             .assertLastValueMatches { it.first.matches(it.second) }
             .assertLastValueMatches { it.second.matches(it.first) }
+    }
+
+    @Test
+    fun `filtering of ServerPasswords with PSL support`() {
+        val domains = listOf("example.com", "firefox.com", "accounts.firefox.com", "mozilla.org")
+        val passwords = domains.map { ServerPassword(id = it, hostname = "https://$it", username = it, password = it) }
+
+        val (example, firefox1, firefox2, mozilla) = passwords
+
+        fun testFiltering(webDomain: String?, packageId: String = "com.android.chrome", vararg expected: ServerPassword) {
+            val matchObserver = createTestObserver<List<ServerPassword>>()
+            Observable.just(passwords)
+                .filter(support, webDomain, packageId)
+                .subscribe(matchObserver)
+
+            matchObserver.await()
+                .assertLastValue(expected.toList())
+        }
+
+        testFiltering("firefox.com", "com.android.chrome", firefox1, firefox2)
+        testFiltering(null, "com.example.android", example)
+        testFiltering("api.facebook.com", "com.android.chrome") // empty list
     }
 }
