@@ -42,6 +42,7 @@
     />
 
     <TextView
+            android:id="@+id/encryptionText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="15sp"
@@ -54,7 +55,7 @@
             android:maxWidth="250dp"
             android:drawablePadding="8dp"
             android:drawableStart="@drawable/ic_security"
-            android:text="@string/security_description"
+            android:contentDescription="@string/security_content_description"
     />
 
     <TextView

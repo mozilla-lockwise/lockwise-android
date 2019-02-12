@@ -239,6 +239,7 @@ class RoutePresenter(
 
             Pair(R.id.fragment_fingerprint_onboarding, R.id.fragment_item_list) -> R.id.action_to_itemList
             Pair(R.id.fragment_onboarding_confirmation, R.id.fragment_item_list) -> R.id.action_to_itemList
+            Pair(R.id.fragment_onboarding_confirmation, R.id.fragment_webview) -> R.id.action_onboarding_confirmation_to_webView
 
             Pair(R.id.fragment_locked, R.id.fragment_item_list) -> R.id.action_to_itemList
             Pair(R.id.fragment_locked, R.id.fragment_welcome) -> R.id.action_locked_to_welcome

@@ -75,9 +75,11 @@ class SettingListAdapter : RecyclerView.Adapter<SettingViewHolder>() {
                 holder.subtitle = configuration.subtitle ?: R.string.empty_string
                 holder.buttonTitle = configuration.buttonTitle ?: R.string.empty_string
                 holder.contentDescription = configuration.contentDescription
-                holder.buttonClicks
-                    .subscribe(configuration.buttonObserver)
-                    .addTo(compositeDisposable)
+                configuration.buttonObserver?.let {
+                    holder.buttonClicks
+                        .subscribe(it)
+                        .addTo(compositeDisposable)
+                }
                 configuration.toggleDriver
                     .subscribe {
                         holder.toggle.isChecked = it

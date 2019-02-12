@@ -9,11 +9,13 @@ package mozilla.lockbox.presenter
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.action.OnboardingStatusAction
+import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 
 interface OnboardingConfirmationView {
     val finishClicks: Observable<Unit>
+    val encryptionClicks: Observable<Unit>
 }
 
 class OnboardingConfirmationPresenter(
@@ -23,6 +25,11 @@ class OnboardingConfirmationPresenter(
     override fun onViewReady() {
         view.finishClicks
             .map { OnboardingStatusAction(false) }
+            .subscribe(dispatcher::dispatch)
+            .addTo(compositeDisposable)
+
+        view.encryptionClicks
+            .map { RouteAction.AppWebPage.FaqSecurity }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
     }

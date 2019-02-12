@@ -64,6 +64,13 @@
                 app:launchSingleTop="true"
                 app:destination="@id/fragment_item_list"
                 app:popUpToInclusive="true"/>
+        <action
+                android:id="@+id/action_onboarding_confirmation_to_webView"
+                app:destination="@id/fragment_webview"
+                app:enterAnim="@anim/slide_in_bottom"
+                app:exitAnim="@anim/none"
+                app:popExitAnim="@anim/slide_out_bottom"
+                app:popEnterAnim="@anim/none"/>
     </fragment>
 
     <fragment
