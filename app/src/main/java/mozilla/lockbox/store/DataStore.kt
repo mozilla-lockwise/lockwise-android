@@ -176,14 +176,13 @@ open class DataStore(
             State.Unprepared -> return
             else -> {
                 clearList()
-                backend?.let{ backend ->
+                backend?.let { backend ->
                     backend.wipeLocal()
                         .asSingle(coroutineContext)
                         .map { State.Unprepared }
                         .subscribe(stateSubject::onNext, this::pushError)
                         .addTo(compositeDisposable)
                 } ?: stateSubject.onNext(State.Unprepared)
-
             }
         }
     }
