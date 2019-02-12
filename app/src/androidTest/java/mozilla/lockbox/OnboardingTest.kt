@@ -4,6 +4,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import mozilla.lockbox.robots.autofillOnboardingScreen
 import mozilla.lockbox.robots.fingerprintOnboardingScreen
+import mozilla.lockbox.robots.fxaLogin
+import mozilla.lockbox.robots.onboardingConfirmationScreen
 import mozilla.lockbox.view.RootActivity
 import org.junit.Rule
 import org.junit.Test
@@ -40,7 +42,7 @@ open class OnboardingTest {
     fun autofillSkipButtonNavigatesToItemList() {
         navigator.gotoAutofillOnboarding()
         autofillOnboardingScreen { tapSkip() }
-        navigator.checkAtItemList()
+        navigator.checkAtOnboardingConfirmation()
     }
 
     @Test
@@ -50,5 +52,18 @@ open class OnboardingTest {
             exists()
             touchGoToSettings()
         }
+    }
+
+    @Test
+    fun fxaLoginToOnboardingToItemList() {
+        navigator.gotoFxALogin()
+        fxaLogin { tapPlaceholderLogin() }
+        navigator.checkAtFingerprintOnboarding()
+        fingerprintOnboardingScreen { tapSkip() }
+        navigator.checkAtAutofillOnboarding()
+        autofillOnboardingScreen { tapSkip() }
+        navigator.checkAtOnboardingConfirmation()
+        onboardingConfirmationScreen { clickFinish() }
+        navigator.checkAtItemList()
     }
 }

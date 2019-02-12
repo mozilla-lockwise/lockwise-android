@@ -109,6 +109,7 @@ class Navigator {
     fun gotoAutofillOnboarding() {
         gotoFxALogin()
         fxaLogin { tapPlaceholderLogin() }
+        checkAtFingerprintOnboarding()
         fingerprintOnboardingScreen { tapSkip() }
         checkAtAutofillOnboarding()
     }
@@ -123,6 +124,8 @@ class Navigator {
         if (FingerprintStore.shared.isFingerprintAuthAvailable) {
             checkAtFingerprintOnboarding()
             fingerprintOnboardingScreen { tapSkip() }
+            checkAtAutofillOnboarding()
+            autofillOnboardingScreen { tapSkip() }
         }
         checkAtOnboardingConfirmation()
     }

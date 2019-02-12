@@ -6,7 +6,6 @@ import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import mozilla.lockbox.action.FingerprintSensorAction
-import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.flux.Action
@@ -108,8 +107,7 @@ class FingerprintOnboardingPresenterTest {
     @Test
     fun `move to next screen when skip is tapped`() {
         view.onSkipClick.onNext(Unit)
-        dispatcherObserver.assertValueAt(0, RouteAction.OnboardingConfirmation)
-        dispatcherObserver.assertValueAt(1, SettingAction.UnlockWithFingerprint(false))
+        dispatcherObserver.assertValueAt(0, SettingAction.UnlockWithFingerprint(false))
     }
 
     @Test

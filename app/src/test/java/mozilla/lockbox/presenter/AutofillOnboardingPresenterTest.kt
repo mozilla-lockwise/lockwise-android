@@ -2,7 +2,6 @@ package mozilla.lockbox.presenter
 
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
-import mozilla.lockbox.action.OnboardingStatusAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.SettingIntent
 import mozilla.lockbox.flux.Action
@@ -39,13 +38,13 @@ class AutofillOnboardingPresenterTest {
     @Test
     fun `move to next screen when skip is tapped`() {
         view.onSkipClick.onNext(Unit)
-        dispatcherObserver.assertValue(OnboardingStatusAction(false))
+        dispatcherObserver.assertValue(RouteAction.Onboarding.Confirmation)
     }
 
     @Test
     fun `navigate to settings when gotosettings button is tapped`() {
         view.onGoToSettingsClick.onNext(Unit)
         dispatcherObserver.assertValueAt(0, RouteAction.SystemSetting(SettingIntent.Autofill))
-        dispatcherObserver.assertValueAt(1, OnboardingStatusAction(false))
+        dispatcherObserver.assertValueAt(1, RouteAction.Onboarding.Confirmation)
     }
 }

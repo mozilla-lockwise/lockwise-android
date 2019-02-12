@@ -19,7 +19,6 @@ sealed class RouteAction(
     override val eventObject: TelemetryEventObject
 ) : TelemetryAction {
     object Welcome : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.login_welcome)
-    object OnboardingConfirmation : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.login_onboarding_confirmation)
     object ItemList : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.entry_list)
     object Login : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.login_fxa)
     object SettingList : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.settings_list)
@@ -105,6 +104,7 @@ sealed class RouteAction(
     ) : RouteAction(TelemetryEventMethod.show, eventObject) {
         object FingerprintAuth : Onboarding(TelemetryEventObject.onboarding_fingerprint)
         object Autofill : Onboarding(TelemetryEventObject.onboarding_autofill)
+        object Confirmation : Onboarding(TelemetryEventObject.login_onboarding_confirmation)
     }
 }
 

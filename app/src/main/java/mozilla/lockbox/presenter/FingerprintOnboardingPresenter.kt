@@ -6,12 +6,12 @@
 
 package mozilla.lockbox.presenter
 
+import android.os.Build
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.FingerprintSensorAction
-import mozilla.lockbox.action.OnboardingStatusAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.flux.Dispatcher
@@ -50,13 +50,11 @@ class FingerprintOnboardingPresenter(
                     else -> false
                 }
                 dispatcher.dispatch(SettingAction.UnlockWithFingerprint(unlock))
-                dispatcher.dispatch(RouteAction.OnboardingConfirmation)
                 triggerNextOnboarding()
             }
             .addTo(compositeDisposable)
 
         view.onSkipClick.subscribe {
-            dispatcher.dispatch(RouteAction.OnboardingConfirmation)
             dispatcher.dispatch(SettingAction.UnlockWithFingerprint(false))
             triggerNextOnboarding()
         }?.addTo(compositeDisposable)
@@ -81,11 +79,13 @@ class FingerprintOnboardingPresenter(
     }
 
     private fun triggerNextOnboarding() {
-        if (SettingStore.shared.autofillAvailable) {
-            dispatcher.dispatch(RouteAction.Onboarding.Autofill)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (SettingStore.shared.autofillAvailable) {
+                dispatcher.dispatch(RouteAction.Onboarding.Autofill)
+            }
         } else {
             log.info("Autofill not available.")
-            dispatcher.dispatch(OnboardingStatusAction(false))
+            dispatcher.dispatch(RouteAction.Onboarding.Confirmation)
         }
     }
 }

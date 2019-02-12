@@ -12,7 +12,6 @@ import androidx.annotation.RequiresApi
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import mozilla.lockbox.action.OnboardingStatusAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.SettingIntent
 import mozilla.lockbox.flux.Dispatcher
@@ -33,7 +32,7 @@ class AutofillOnboardingPresenter(
 
     override fun onViewReady() {
         view.onSkipClick.subscribe {
-            dispatcher.dispatch(OnboardingStatusAction(false))
+            triggerNextOnboarding()
         }.addTo(compositeDisposable)
 
         view.onGoToSettingsClick.subscribe {
@@ -43,6 +42,6 @@ class AutofillOnboardingPresenter(
     }
 
     private fun triggerNextOnboarding() {
-        dispatcher.dispatch(OnboardingStatusAction(false))
+        dispatcher.dispatch(RouteAction.Onboarding.Confirmation)
     }
 }
