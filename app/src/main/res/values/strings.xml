@@ -226,9 +226,7 @@
     <!-- This description of the app functionality is shown on the final onboarding screen. -->
     <string name="access_description">Access logins saved to Firefox from your phone</string>
     <!-- This is an accessible content description for the security information link text. -->
-    <string name="security_content_description">This is a link to a description of security practices in Mozilla
-        Lockbox.
-    </string>
+    <string name="security_content_description">This is a link to a description of security practices in Firefox Lockbox.</string>
     <!-- This description of the app security is shown on the final onboarding screen. -->
     <string name="security_description">Sync between devices with secure %s</string>
     <!-- This text is displayed as a link in the security description. -->
@@ -239,11 +237,11 @@
     <!-- This header appears above the Privacy page of the mozilla-lockbox website. -->
     <string name="privacy">Privacy</string>
 
-    <!-- This is the prompt when autofill is triggered, and Lockbox is locked. -->
-    <string name="autofill_authenticate_cta">Unlock Lockbox</string>
+    <!-- This is the prompt when autofill is triggered, and Firefox Lockbox is locked. -->
+    <string name="autofill_authenticate_cta">Unlock Firefox Lockbox</string>
     <!-- This is the error message when autofill is triggered but no domain is detected. This is unlikely. -->
     <string name="autofill_error_no_hostname">Unexpected hostname format</string>
     <!-- This is the prompt when autofill is triggered, Lockbox is unlocked, and no passwords are detected. -->
-    <string name="autofill_search_cta">Search Lockbox</string>
+    <string name="autofill_search_cta">Search Firefox Lockbox</string>
 
 </resources>
