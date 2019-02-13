@@ -7,6 +7,9 @@
 package mozilla.lockbox.view
 
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,13 +21,35 @@ import mozilla.lockbox.presenter.OnboardingConfirmationPresenter
 import mozilla.lockbox.presenter.OnboardingConfirmationView
 
 class OnboardingConfirmationFragment : Fragment(), OnboardingConfirmationView {
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         presenter = OnboardingConfirmationPresenter(this)
 
         return inflater.inflate(R.layout.fragment_onboarding_confirmation, container, false)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val linkColor = resources.getColor(R.color.blue_60_percent, null)
+        val securityLink = getString(R.string.security_link)
+        val securityText = String.format(getString(R.string.security_description), securityLink)
+        val spannableSecurityText = SpannableString(securityText)
+
+        val securityLinkStart = securityText.indexOf(securityLink)
+
+        spannableSecurityText.setSpan(
+            ForegroundColorSpan(linkColor),
+            securityLinkStart,
+            securityLinkStart + securityLink.length,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        view.encryptionText.text = spannableSecurityText
+    }
+
     override val finishClicks: Observable<Unit>
         get() = view!!.finishButton.clicks()
+
+    override val encryptionClicks: Observable<Unit>
+        get() = view!!.encryptionText.clicks()
 }

@@ -25,6 +25,7 @@ interface FilterView {
     val cancelButtonClicks: Observable<Unit>
     val cancelButtonVisibility: Consumer<in Boolean>
     val itemSelection: Observable<ItemViewModel>
+    val noMatchingClicks: Observable<Unit>
     fun updateItems(items: List<ItemViewModel>)
 }
 
@@ -43,6 +44,11 @@ class FilterPresenter(
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(view::updateItems)
                 .addTo(compositeDisposable)
+
+        view.noMatchingClicks
+            .map { RouteAction.AppWebPage.FaqCreate }
+            .subscribe(dispatcher::dispatch)
+            .addTo(compositeDisposable)
 
         view.filterTextEntered
                 .map { it.isNotEmpty() }

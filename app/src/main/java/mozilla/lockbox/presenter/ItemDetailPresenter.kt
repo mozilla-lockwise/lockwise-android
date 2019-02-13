@@ -30,6 +30,7 @@ interface ItemDetailView {
     val passwordCopyClicks: Observable<Unit>
     val togglePasswordClicks: Observable<Unit>
     val hostnameClicks: Observable<Unit>
+    val learnMoreClicks: Observable<Unit>
     var isPasswordVisible: Boolean
     fun updateItem(item: ItemDetailViewModel)
     fun showToastNotification(@StringRes strId: Int)
@@ -72,6 +73,11 @@ class ItemDetailPresenter(
                 dispatcher.dispatch(RouteAction.OpenWebsite(it.hostname))
             }
         }
+
+        this.view.learnMoreClicks
+            .map { RouteAction.AppWebPage.FaqEdit }
+            .subscribe(dispatcher::dispatch)
+            .addTo(compositeDisposable)
 
         this.view.togglePasswordClicks
             .subscribe {

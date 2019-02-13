@@ -74,13 +74,6 @@
                 app:popExitAnim="@anim/slide_out_bottom"
                 app:popEnterAnim="@anim/none"/>
         <action
-                android:id="@+id/action_itemList_to_webview"
-                app:destination="@id/fragment_webview"
-                app:enterAnim="@anim/slide_in_bottom"
-                app:exitAnim="@anim/none"
-                app:popExitAnim="@anim/slide_out_bottom"
-                app:popEnterAnim="@anim/none"/>
-        <action
                 android:id="@+id/action_itemList_to_accountSetting"
                 app:destination="@id/fragment_account_setting"
                 app:enterAnim="@anim/slide_in_bottom"
@@ -116,7 +109,8 @@
             android:id="@+id/fragment_setting"
             android:name="mozilla.lockbox.view.SettingFragment"
             android:label="@string/nav_menu_settings"
-            tools:layout="@layout/fragment_setting"/>
+            tools:layout="@layout/fragment_setting">
+    </fragment>
 
     <fragment
             android:id="@+id/fragment_webview"
@@ -183,4 +177,12 @@
             app:launchSingleTop="true"
             app:popUpTo="@+id/fragment_welcome"
             app:popUpToInclusive="true"/>
+
+    <action
+            android:id="@+id/action_to_webview"
+            app:destination="@id/fragment_webview"
+            app:enterAnim="@anim/slide_in_bottom"
+            app:exitAnim="@anim/none"
+            app:popExitAnim="@anim/slide_out_bottom"
+            app:popEnterAnim="@anim/none"/>
 </navigation>

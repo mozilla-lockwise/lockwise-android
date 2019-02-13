@@ -43,6 +43,10 @@ import org.robolectric.annotation.Config
 @Config(application = TestApplication::class)
 class ItemDetailPresenterTest {
     class FakeView : ItemDetailView {
+        val learnMoreClickStub = PublishSubject.create<Unit>()
+        override val learnMoreClicks: Observable<Unit>
+            get() = learnMoreClickStub
+
         private val retryButtonStub = PublishSubject.create<Unit>()
         override val retryNetworkConnectionClicks: Observable<Unit>
             get() = retryButtonStub
@@ -187,5 +191,11 @@ class ItemDetailPresenterTest {
         value.onNext(true)
 
         isConnectedObserver.assertValue(true)
+    }
+
+    @Test
+    fun `learn more clicks`() {
+        view.learnMoreClickStub.onNext(Unit)
+        dispatcherObserver.assertLastValue(RouteAction.AppWebPage.FaqEdit)
     }
 }

@@ -229,6 +229,7 @@ class RoutePresenter(
         // the app will log.error.
         return when (Pair(from, to)) {
             Pair(R.id.fragment_welcome, R.id.fragment_item_list) -> R.id.action_to_itemList
+            Pair(R.id.fragment_welcome, R.id.fragment_item_list) -> R.id.action_to_webview
             Pair(R.id.fragment_welcome, R.id.fragment_locked) -> R.id.action_to_locked
 
             Pair(R.id.fragment_fxa_login, R.id.fragment_item_list) -> R.id.action_fxaLogin_to_itemList
@@ -238,6 +239,7 @@ class RoutePresenter(
 
             Pair(R.id.fragment_fingerprint_onboarding, R.id.fragment_item_list) -> R.id.action_to_itemList
             Pair(R.id.fragment_onboarding_confirmation, R.id.fragment_item_list) -> R.id.action_to_itemList
+            Pair(R.id.fragment_onboarding_confirmation, R.id.fragment_webview) -> R.id.action_to_webview
 
             Pair(R.id.fragment_locked, R.id.fragment_item_list) -> R.id.action_to_itemList
             Pair(R.id.fragment_locked, R.id.fragment_welcome) -> R.id.action_locked_to_welcome
@@ -247,7 +249,11 @@ class RoutePresenter(
             Pair(R.id.fragment_item_list, R.id.fragment_account_setting) -> R.id.action_itemList_to_accountSetting
             Pair(R.id.fragment_item_list, R.id.fragment_locked) -> R.id.action_itemList_to_locked
             Pair(R.id.fragment_item_list, R.id.fragment_filter) -> R.id.action_itemList_to_filter
-            Pair(R.id.fragment_item_list, R.id.fragment_webview) -> R.id.action_itemList_to_webview
+            Pair(R.id.fragment_item_list, R.id.fragment_webview) -> R.id.action_to_webview
+
+            Pair(R.id.fragment_item_detail, R.id.fragment_webview) -> R.id.action_to_webview
+
+            Pair(R.id.fragment_setting, R.id.fragment_webview) -> R.id.action_to_webview
 
             Pair(R.id.fragment_account_setting, R.id.fragment_welcome) -> R.id.action_to_welcome
 
