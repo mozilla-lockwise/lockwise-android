@@ -47,7 +47,7 @@ class ItemListAdapter : RecyclerView.Adapter<ItemListCell>() {
 
                 view.noMatchingLearnMore
                     .clicks()
-                    .subscribe(noMatchingEntriesClicks as PublishSubject)
+                    .subscribe(noMatchingEntriesClicks as Subject)
 
                 return ItemListCell(view)
             }
