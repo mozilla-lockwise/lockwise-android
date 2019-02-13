@@ -33,7 +33,9 @@ import kotlin.coroutines.CoroutineContext
 @ExperimentalCoroutinesApi
 open class DataStore(
     val dispatcher: Dispatcher = Dispatcher.shared,
-    var support: DataStoreSupport? = null
+    var support: DataStoreSupport? = null,
+    val autoLockSupport: AutoLockSupport = AutoLockSupport.shared,
+    val lifecycleStore: LifecycleStore = LifecycleStore.shared
 ) {
     companion object {
         val shared = DataStore()
@@ -97,6 +99,7 @@ open class DataStore(
                     is DataStoreAction.Reset -> reset()
                     is DataStoreAction.UpdateCredentials -> updateCredentials(action.syncCredentials)
                 }
+
             }
             .addTo(compositeDisposable)
 
@@ -104,25 +107,25 @@ open class DataStore(
     }
 
     private fun setupAutoLock() {
-        LifecycleStore.shared.lifecycleEvents
+        lifecycleStore.lifecycleEvents
             .filter { it == LifecycleAction.Background && stateSubject.value == State.Unlocked }
             .subscribe {
-                AutoLockSupport.shared.storeNextAutoLockTime()
+                autoLockSupport.storeNextAutoLockTime()
             }
             .addTo(compositeDisposable)
 
         // backdate the lock timer when receiving manual lock actions
         dispatcher.register
             // make sure that we are not driving the DataStoreAction.Lock
-            .filter { it == DataStoreAction.Lock && !AutoLockSupport.shared.shouldLock }
+            .filter { it == DataStoreAction.Lock && !autoLockSupport.shouldLock }
             .subscribe {
-                AutoLockSupport.shared.backdateNextLockTime()
+                autoLockSupport.backdateNextLockTime()
             }
             .addTo(compositeDisposable)
 
-        LifecycleStore.shared.lifecycleEvents
+        lifecycleStore.lifecycleEvents
             .filter { it == LifecycleAction.Foreground }
-            .map { AutoLockSupport.shared.shouldLock }
+            .map { autoLockSupport.shouldLock }
             .filter { it }
             .subscribe { lock() }
             .addTo(compositeDisposable)
