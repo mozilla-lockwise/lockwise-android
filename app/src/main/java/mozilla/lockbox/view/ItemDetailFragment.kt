@@ -7,6 +7,7 @@
 package mozilla.lockbox.view
 
 import android.os.Bundle
+import android.text.InputType
 import androidx.annotation.StringRes
 import android.text.method.PasswordTransformationMethod
 import android.view.Gravity
@@ -49,10 +50,10 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
     }
 
     override val usernameCopyClicks: Observable<Unit>
-        get() = view!!.btnUsernameCopy.clicks()
+        get() = view!!.inputUsername.clicks()
 
     override val passwordCopyClicks: Observable<Unit>
-        get() = view!!.btnPasswordCopy.clicks()
+        get() = view!!.inputPassword.clicks()
 
     override val togglePasswordClicks: Observable<Unit>
         get() = view!!.btnPasswordToggle.clicks()
@@ -64,14 +65,18 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         set(value) {
             assertOnUiThread()
             field = value
-            if (value) {
-                inputPassword.transformationMethod = null
-                btnPasswordToggle.setImageResource(R.drawable.ic_hide)
-            } else {
-                inputPassword.transformationMethod = PasswordTransformationMethod.getInstance()
-                btnPasswordToggle.setImageResource(R.drawable.ic_show)
-            }
+            updatePasswordVisibility(value)
         }
+
+    private fun updatePasswordVisibility(visible: Boolean) {
+        if (visible) {
+            inputPassword.transformationMethod = null
+            btnPasswordToggle.setImageResource(R.drawable.ic_hide)
+        } else {
+            inputPassword.transformationMethod = PasswordTransformationMethod.getInstance()
+            btnPasswordToggle.setImageResource(R.drawable.ic_show)
+        }
+    }
 
     override fun updateItem(item: ItemDetailViewModel) {
         assertOnUiThread()
@@ -82,15 +87,25 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         inputLayoutPassword.isHintAnimationEnabled = false
 
         inputUsername.readOnly = true
+        inputUsername.isClickable = true
+        inputUsername.isFocusable = true
+
         inputPassword.readOnly = true
+        inputPassword.isClickable = true
+        inputPassword.isFocusable = true
+
         inputHostname.readOnly = true
         inputHostname.isClickable = true
         inputHostname.isFocusable = true
+
         btnHostnameLaunch.isClickable = false
 
         inputHostname.setText(item.hostname, TextView.BufferType.NORMAL)
         inputUsername.setText(item.username, TextView.BufferType.NORMAL)
         inputPassword.setText(item.password, TextView.BufferType.NORMAL)
+
+        // effect password visibility state
+        updatePasswordVisibility(isPasswordVisible)
     }
 
     override fun showToastNotification(@StringRes strId: Int) {
@@ -124,4 +139,5 @@ var EditText.readOnly: Boolean
         this.isClickable = !readOnly
         this.isLongClickable = !readOnly
         this.isCursorVisible = !readOnly
+        this.inputType = InputType.TYPE_NULL
     }
