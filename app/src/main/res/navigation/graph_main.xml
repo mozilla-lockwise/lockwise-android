@@ -18,13 +18,6 @@
         <action
                 android:id="@+id/action_welcome_to_fxaLogin"
                 app:destination="@id/fragment_fxa_login"/>
-        <action
-                android:id="@+id/action_welcome_to_webPage"
-                app:destination="@id/fragment_webview"
-                app:enterAnim="@anim/slide_in_bottom"
-                app:exitAnim="@anim/none"
-                app:popExitAnim="@anim/slide_out_bottom"
-                app:popEnterAnim="@anim/none"/>
     </fragment>
 
     <fragment
@@ -64,13 +57,6 @@
                 app:launchSingleTop="true"
                 app:destination="@id/fragment_item_list"
                 app:popUpToInclusive="true"/>
-        <action
-                android:id="@+id/action_onboarding_confirmation_to_webView"
-                app:destination="@id/fragment_webview"
-                app:enterAnim="@anim/slide_in_bottom"
-                app:exitAnim="@anim/none"
-                app:popExitAnim="@anim/slide_out_bottom"
-                app:popEnterAnim="@anim/none"/>
     </fragment>
 
     <fragment
@@ -83,13 +69,6 @@
         <action
                 android:id="@+id/action_itemList_to_setting"
                 app:destination="@id/fragment_setting"
-                app:enterAnim="@anim/slide_in_bottom"
-                app:exitAnim="@anim/none"
-                app:popExitAnim="@anim/slide_out_bottom"
-                app:popEnterAnim="@anim/none"/>
-        <action
-                android:id="@+id/action_itemList_to_webview"
-                app:destination="@id/fragment_webview"
                 app:enterAnim="@anim/slide_in_bottom"
                 app:exitAnim="@anim/none"
                 app:popExitAnim="@anim/slide_out_bottom"
@@ -124,13 +103,6 @@
                 android:name="itemId"
                 android:defaultValue="MISSING_ID"
                 app:argType="string"/>
-        <action
-                android:id="@+id/action_itemDetail_to_webview"
-                app:destination="@id/fragment_webview"
-                app:enterAnim="@anim/slide_in_bottom"
-                app:exitAnim="@anim/none"
-                app:popExitAnim="@anim/slide_out_bottom"
-                app:popEnterAnim="@anim/none"/>
     </fragment>
 
     <fragment
@@ -138,13 +110,6 @@
             android:name="mozilla.lockbox.view.SettingFragment"
             android:label="@string/nav_menu_settings"
             tools:layout="@layout/fragment_setting">
-        <action
-                android:id="@+id/action_setting_to_webview"
-                app:destination="@id/fragment_webview"
-                app:enterAnim="@anim/slide_in_bottom"
-                app:exitAnim="@anim/none"
-                app:popExitAnim="@anim/slide_out_bottom"
-                app:popEnterAnim="@anim/none"/>
     </fragment>
 
     <fragment
@@ -212,4 +177,12 @@
             app:launchSingleTop="true"
             app:popUpTo="@+id/fragment_welcome"
             app:popUpToInclusive="true"/>
+
+    <action
+            android:id="@+id/action_to_webview"
+            app:destination="@id/fragment_webview"
+            app:enterAnim="@anim/slide_in_bottom"
+            app:exitAnim="@anim/none"
+            app:popExitAnim="@anim/slide_out_bottom"
+            app:popEnterAnim="@anim/none"/>
 </navigation>
