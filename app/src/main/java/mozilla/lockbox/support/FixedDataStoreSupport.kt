@@ -19,7 +19,7 @@ import java.util.UUID
 class FixedDataStoreSupport(
     values: List<ServerPassword>? = null
 ) : DataStoreSupport {
-    var size = getRandomInRange(10, 20)
+    var size = getRandomInRange(40, 50)
     private val logins = MemoryLoginsStorage(
         values ?: List(size) { createDummyItem(it) })
 
@@ -76,29 +76,24 @@ internal fun createHostname(): String {
         "https://www.",
         "http://www.",
         "https://",
-        "https://accounts."
+        "https://accounts.",
+        "https://mobile."
     )
-    val domainChoices = listOf(
-        ".com",
-        ".net",
-        ".org",
-        ".co.uk"
+    val hostnameChoices = listOf(
+        "google.com",
+        "twitter.com",
+        "facebook.com",
+        "tumblr.com",
+        "firefox.com",
+        "yahoo.co.uk",
+        "baidu.cn",
+        "yandex.ru"
     )
-    var protocol = protocolChoices[Random().nextInt(protocolChoices.size)]
-    var domain = domainChoices[Random().nextInt(domainChoices.size)]
+    val prng = Random()
+    var protocol = protocolChoices[prng.nextInt(protocolChoices.size)]
+    val hostname = hostnameChoices[prng.nextInt(hostnameChoices.size)]
 
-    var hostnameLength = getRandomInRange(8, 20)
-    val hostname =
-        sequence {
-            val r = Random(); while (true) yield(r.nextInt(26))
-        }
-            .take(hostnameLength)
-            .map {
-                (it + 97).toChar()
-            }
-            .joinToString("")
-
-    return protocol + hostname + domain
+    return protocol + hostname
 }
 
 internal fun createUserId(): String {

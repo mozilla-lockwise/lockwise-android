@@ -23,7 +23,6 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.log
 import mozilla.lockbox.model.SyncCredentials
 import mozilla.lockbox.support.DataStoreSupport
-import mozilla.lockbox.support.FixedDataStoreSupport
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.asOptional
 import kotlin.coroutines.CoroutineContext
@@ -31,7 +30,7 @@ import kotlin.coroutines.CoroutineContext
 @ExperimentalCoroutinesApi
 open class DataStore(
     val dispatcher: Dispatcher = Dispatcher.shared,
-    var support: DataStoreSupport = FixedDataStoreSupport.shared
+    var support: DataStoreSupport? = null
 ) {
     companion object {
         val shared = DataStore()
@@ -67,10 +66,10 @@ open class DataStore(
     private val coroutineContext: CoroutineContext
         get() = Dispatchers.Default + exceptionHandler
 
-    private var backend: AsyncLoginsStorage
+    private var backend: AsyncLoginsStorage?
 
     init {
-        backend = support.createLoginsStorage()
+        backend = support?.createLoginsStorage()
         // handle state changes
         stateSubject
             .subscribe { state ->
@@ -105,6 +104,7 @@ open class DataStore(
     }
 
     private fun touch(id: String) {
+        val backend = this.backend ?: return notReady()
         if (!backend.isLocked()) {
             backend.touch(id)
                 .asSingle(coroutineContext)
@@ -114,7 +114,9 @@ open class DataStore(
     }
 
     private fun unlock() {
-        backend.ensureUnlocked(support.encryptionKey)
+        val backend = this.backend ?: return notReady()
+        val encryptionKey = support?.encryptionKey ?: return notReady()
+        backend.ensureUnlocked(encryptionKey)
             .asSingle(coroutineContext)
             .map { State.Unlocked }
             .subscribe(stateSubject::onNext, this::pushError)
@@ -122,6 +124,7 @@ open class DataStore(
     }
 
     private fun lock() {
+        val backend = this.backend ?: return notReady()
         backend.ensureLocked()
             .asSingle(coroutineContext)
             .map { State.Locked }
@@ -130,10 +133,12 @@ open class DataStore(
     }
 
     private fun sync() {
-        val syncConfig = support.syncConfig ?: return {
+        val syncConfig = support?.syncConfig ?: return {
             val throwable = IllegalStateException("syncConfig should already be defined")
-            stateSubject.onNext(State.Errored(throwable))
+            pushError(throwable)
         }()
+
+        val backend = this.backend ?: return notReady()
 
         (syncState as Subject).onNext(SyncState.Syncing)
 
@@ -153,6 +158,7 @@ open class DataStore(
 
     // there's probably a slicker way to do this `Unit` thing...
     private fun updateList(x: Unit) {
+        val backend = this.backend ?: return notReady()
         if (!backend.isLocked()) {
             backend.list()
                 .asSingle(coroutineContext)
@@ -170,11 +176,13 @@ open class DataStore(
             State.Unprepared -> return
             else -> {
                 clearList()
-                backend.wipeLocal()
-                    .asSingle(coroutineContext)
-                    .map { State.Unprepared }
-                    .subscribe(stateSubject::onNext, this::pushError)
-                    .addTo(compositeDisposable)
+                backend?.let { backend ->
+                    backend.wipeLocal()
+                        .asSingle(coroutineContext)
+                        .map { State.Unprepared }
+                        .subscribe(stateSubject::onNext, this::pushError)
+                        .addTo(compositeDisposable)
+                } ?: stateSubject.onNext(State.Unprepared)
             }
         }
     }
@@ -185,12 +193,19 @@ open class DataStore(
         }
 
         resetSupport(credentials.support)
+        val backend = this.backend ?: return notReady()
 
         credentials.apply {
             support.syncConfig = SyncUnlockInfo(kid, accessToken.token, syncKey, tokenServerURL)
         }
 
         if (!credentials.isNew) {
+            val state = if (backend.isLocked()) {
+                State.Locked
+            } else {
+                State.Unlocked
+            }
+            stateSubject.onNext(state)
             return
         }
 
@@ -199,6 +214,10 @@ open class DataStore(
         } else {
             stateSubject.onNext(State.Unlocked)
         }
+    }
+
+    private fun notReady() {
+        pushError(IllegalStateException("DataStore backend is not set"))
     }
 
     private fun pushError(e: Throwable) {
@@ -211,13 +230,16 @@ open class DataStore(
         if (support == this.support) {
             return
         }
+
         if (stateSubject.value != State.Unprepared &&
             stateSubject.value != null
         ) {
-            backend.wipeLocal()
-                .asSingle(coroutineContext)
-                .subscribe()
-                .addTo(compositeDisposable)
+            backend?.run {
+                wipeLocal()
+                    .asSingle(coroutineContext)
+                    .subscribe()
+                    .addTo(compositeDisposable)
+            }
         }
         this.support = support
         this.backend = support.createLoginsStorage()

@@ -36,6 +36,10 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity android:name=".view.AuthActivity"
+                  android:configChanges="orientation|keyboardHidden"
+                  android:taskAffinity=".view.AuthActivity"
+                  android:screenOrientation="portrait"/>
 
         <service
                 android:name=".LockboxAutofillService"

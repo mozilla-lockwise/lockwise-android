@@ -18,7 +18,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
-import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.action.SettingAction
@@ -29,13 +28,11 @@ import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
-import mozilla.lockbox.model.SyncCredentials
 import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.AutoLockStore
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.store.SettingStore
-import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.view.AppWebPageFragmentArgs
 import mozilla.lockbox.view.DialogFragment
@@ -57,29 +54,10 @@ class RoutePresenter(
     override fun onViewReady() {
         navController = Navigation.findNavController(activity, R.id.fragment_nav_host)
 
-        val autoLockActions = autoLockStore.autoLockActivated
-            .filter { it }
-            .map { DataStoreAction.Lock }
-
-        // Moves credentials from the AccountStore, into the DataStore.
-        accountStore.syncCredentials
-            .map(this::accountToDataStoreActions)
-            .mergeWith(autoLockActions)
-            .subscribe(dispatcher::dispatch)
-            .addTo(compositeDisposable)
-
         routeStore.routes
             .observeOn(mainThread())
             .subscribe(this::route)
             .addTo(compositeDisposable)
-    }
-
-    private fun accountToDataStoreActions(optCredentials: Optional<SyncCredentials>): DataStoreAction {
-        // we will get a null credentials object (and subsequently reset the datastore) on
-        // both initial login and reset / logout.
-        val credentials = optCredentials.value ?: return DataStoreAction.Reset
-
-        return DataStoreAction.UpdateCredentials(credentials)
     }
 
     private fun route(action: RouteAction) {

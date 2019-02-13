@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FrameLayout>
+    <form>
+        <input autofillHints="username"/>
+        <input autofillHints="password"/>
+    </form>
+</FrameLayout>

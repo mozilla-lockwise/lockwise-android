@@ -80,6 +80,12 @@ class AutoLockStore(
             // push lockrequired if required
             .map { lockCurrentlyRequired() }
             .subscribe(autoLockActivated as Subject)
+
+        autoLockActivated
+            .filter { it }
+            .map { DataStoreAction.Lock }
+            .subscribe(dispatcher::dispatch)
+            .addTo(compositeDisposable)
     }
 
     override fun injectContext(context: Context) {

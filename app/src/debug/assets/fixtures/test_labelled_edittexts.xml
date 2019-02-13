@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FrameLayout>
+    <TextView autofillHints="username"/>
+    <EditText id="u"/>
+    <TextView autofillHints="password"/>
+    <EditText id="p"/>
+</FrameLayout>

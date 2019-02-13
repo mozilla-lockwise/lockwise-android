@@ -18,6 +18,7 @@ import mozilla.components.support.base.log.Log
 import mozilla.components.support.base.log.logger.Logger
 import mozilla.components.support.base.log.sink.AndroidLogSink
 import mozilla.lockbox.presenter.ApplicationPresenter
+import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.AutoLockStore
 import mozilla.lockbox.store.ClipboardStore
 import mozilla.lockbox.store.ContextStore
@@ -26,14 +27,13 @@ import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.NetworkStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.store.TelemetryStore
-import mozilla.lockbox.support.FixedDataStoreSupport
 import mozilla.lockbox.support.FxASyncDataStoreSupport
+import mozilla.lockbox.support.PublicSuffixSupport
 import mozilla.lockbox.support.SecurePreferences
-import mozilla.lockbox.support.isTesting
 
 sealed class LogProvider {
     companion object {
-        val log: Logger = Logger("Log")
+        val log: Logger = Logger("Lockbox")
     }
 }
 
@@ -50,8 +50,8 @@ open class LockboxApplication : Application() {
         super.onCreate()
         if (leakCanary()) return
         if (isUnitTest()) return
-        injectContext()
         setupDataStoreSupport()
+        injectContext()
         setupLifecycleListener()
         setupSentry()
     }
@@ -59,15 +59,16 @@ open class LockboxApplication : Application() {
     private fun setupDataStoreSupport() {
         LockboxMegazord.init()
 
-        // this needs to be done after injectContext, as
-        // SyncDataStoreSupport needs to find the database
-        // path from the context
-        val support = if (isTesting()) {
-            FixedDataStoreSupport.shared
-        } else {
-            FxASyncDataStoreSupport.shared
+        // This list of stores need to be constructed
+        // in the given order. e.g. AccountStore dispatches DataStoreActions.
+        val orderedStores = listOf(
+            DataStore.shared,
+            AccountStore.shared,
+            AutoLockStore.shared
+        )
+        orderedStores.forEach {
+            log.info("${it.javaClass.simpleName} initialized")
         }
-        DataStore.shared.resetSupport(support)
     }
 
     private fun injectContext() {
@@ -79,7 +80,9 @@ open class LockboxApplication : Application() {
             FingerprintStore.shared,
             NetworkStore.shared,
             AutoLockStore.shared,
-            TelemetryStore.shared
+            AccountStore.shared,
+            TelemetryStore.shared,
+            PublicSuffixSupport.shared
         )
 
         contextStoreList.forEach {
