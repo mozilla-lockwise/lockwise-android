@@ -6,6 +6,7 @@
 
 package mozilla.lockbox.store
 
+import android.content.Context
 import android.net.Uri
 import android.os.Looper
 import android.webkit.CookieManager
@@ -26,6 +27,7 @@ import mozilla.components.service.fxa.FirefoxAccount
 import mozilla.components.service.fxa.FxaException
 import mozilla.components.service.fxa.Profile
 import mozilla.lockbox.action.AccountAction
+import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.filterByType
@@ -45,7 +47,7 @@ import kotlin.coroutines.CoroutineContext
 open class AccountStore(
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val securePreferences: SecurePreferences = SecurePreferences.shared
-) {
+) : ContextStore {
     companion object {
         val shared by lazy { AccountStore() }
     }
@@ -71,7 +73,7 @@ open class AccountStore(
     private var fxa: FirefoxAccount? = null
 
     open val loginURL: Observable<String> = ReplaySubject.createWithSize(1)
-    open val syncCredentials: Observable<Optional<SyncCredentials>> = ReplaySubject.createWithSize(1)
+    private val syncCredentials: Observable<Optional<SyncCredentials>> = ReplaySubject.createWithSize(1)
     open val profile: Observable<Optional<Profile>> = ReplaySubject.createWithSize(1)
 
     init {
@@ -96,6 +98,20 @@ open class AccountStore(
             }
             .addTo(compositeDisposable)
 
+        // Moves credentials from the AccountStore, into the DataStore.
+        syncCredentials.map {
+                it.value?.let { credentials -> DataStoreAction.UpdateCredentials(credentials) }
+                ?: DataStoreAction.Reset
+            }
+            .subscribe(dispatcher::dispatch)
+            .addTo(compositeDisposable)
+    }
+
+    override fun injectContext(context: Context) {
+        detectAccount()
+    }
+
+    private fun detectAccount() {
         storedAccountJSON?.let { accountJSON ->
             if (accountJSON == Constant.App.testMarker) {
                 populateTestAccountInformation(false)

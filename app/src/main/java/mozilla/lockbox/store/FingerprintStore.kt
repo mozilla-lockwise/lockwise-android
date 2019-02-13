@@ -220,7 +220,7 @@ open class FingerprintStore(
 
         override fun onAuthenticationFailed() {
             super.onAuthenticationFailed()
-            _state.onNext(AuthenticationState.Failed())
+            _state.onNext(AuthenticationState.Failed(context.getString(R.string.fingerprint_not_recognized)))
         }
     }
 }

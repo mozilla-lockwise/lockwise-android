@@ -11,6 +11,5 @@
     <!--suppress CheckTagEmptyBody -->
     <string name="empty_string"></string>
     <string name="firefox_account" translatable="false">Firefox Account</string>
-    <string name="missing_url">MISSING_URL</string>
     <string name="telemetry_server_endpoint" translatable="false">https://incoming.telemetry.mozilla.org</string>
 </resources>

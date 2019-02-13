@@ -23,20 +23,22 @@ class LockboxAutofillServiceTest {
         "dawgzone"
     )
 
-    class FakeDataStore : DataStore() {
+    private val dispatcher = Dispatcher()
+
+    class FakeDataStore(dispatcher: Dispatcher) : DataStore(dispatcher = dispatcher) {
         override val list: Observable<List<ServerPassword>> = PublishSubject.create()
     }
 
-    private val dispatcher = Dispatcher()
-    private val dataStore = FakeDataStore()
+    private val dataStore = FakeDataStore(dispatcher)
 
     @get:Rule
     val serviceRule = ServiceTestRule()
 
-    val subject = LockboxAutofillService(dataStore, dispatcher)
+    lateinit var subject: LockboxAutofillService
 
     @Before
     fun setUp() {
+        subject = LockboxAutofillService(dataStore, dispatcher)
         subject.onConnected()
     }
 

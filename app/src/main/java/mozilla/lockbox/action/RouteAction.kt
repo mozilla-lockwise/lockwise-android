@@ -6,6 +6,9 @@
 
 package mozilla.lockbox.action
 
+import android.net.Uri
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import mozilla.lockbox.R
 import mozilla.lockbox.flux.Action
@@ -16,6 +19,8 @@ sealed class RouteAction(
     override val eventObject: TelemetryEventObject
 ) : TelemetryAction {
     object Welcome : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.login_welcome)
+    object FingerprintOnboarding : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.onboarding_biometric_unlock)
+    object OnboardingConfirmation : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.login_onboarding_confirmation)
     object ItemList : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.entry_list)
     object Login : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.login_fxa)
     object SettingList : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.settings_list)
@@ -62,6 +67,10 @@ sealed class RouteAction(
     }
 }
 
-enum class SettingIntent(val intentAction: String) {
-    Security(android.provider.Settings.ACTION_SECURITY_SETTINGS)
+data class OnboardingStatusAction(val onboardingInProgress: Boolean) : Action
+
+enum class SettingIntent(val intentAction: String, val data: Uri? = null) {
+    Security(android.provider.Settings.ACTION_SECURITY_SETTINGS),
+    @RequiresApi(Build.VERSION_CODES.O)
+    Autofill(android.provider.Settings.ACTION_REQUEST_SET_AUTOFILL_SERVICE, Uri.parse("package:com.mozilla.lockbox"))
 }

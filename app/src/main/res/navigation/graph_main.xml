@@ -29,6 +29,34 @@
                 app:destination="@id/fragment_item_list"
                 app:launchSingleTop="true"
                 app:popUpTo="@+id/fragment_item_list"/>
+
+        <action
+                android:id="@+id/action_fxaLogin_to_fingerprint_onboarding"
+                app:destination="@id/fragment_fingerprint_onboarding"/>
+
+        <action
+                android:id="@+id/action_fxaLogin_to_onboarding_confirmation"
+                app:destination="@id/fragment_onboarding_confirmation"/>
+    </fragment>
+
+    <fragment
+            android:id="@+id/fragment_fingerprint_onboarding"
+            android:name="mozilla.lockbox.view.FingerprintFragmentOnboarding"
+            tools:layout="@layout/fragment_fingerprint_onboarding">
+        <action
+                android:id="@+id/action_fingerprint_onboarding_to_confirmation"
+                app:destination="@id/fragment_onboarding_confirmation"/>
+    </fragment>
+
+    <fragment
+            android:id="@+id/fragment_onboarding_confirmation"
+            android:name="mozilla.lockbox.view.OnboardingConfirmationFragment"
+            tools:layout="@layout/fragment_onboarding_confirmation">
+        <action
+                android:id="@+id/action_onboarding_confirmation_to_itemList"
+                app:launchSingleTop="true"
+                app:destination="@id/fragment_item_list"
+                app:popUpToInclusive="true"/>
     </fragment>
 
     <fragment
@@ -96,7 +124,7 @@
             tools:layout="@layout/fragment_webview">
         <argument
                 android:name="url"
-                android:defaultValue="@string/missing_url"
+                android:defaultValue="missing"
                 app:argType="string"/>
         <argument
                 android:name="title"

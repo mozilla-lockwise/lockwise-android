@@ -3,6 +3,8 @@ package mozilla.lockbox.support
 import android.app.assist.AssistStructure
 import android.view.View
 import android.view.autofill.AutofillId
+import mozilla.lockbox.autofill.ParsedStructureBuilder
+import mozilla.lockbox.autofill.ViewNodeNavigator
 import org.junit.Assert
 import org.junit.Test
 import org.mockito.Mock
@@ -43,7 +45,8 @@ class ParsedStructureTest {
         whenCalled(assistStructure.windowNodeCount).thenReturn(1)
         whenCalled(assistStructure.getWindowNodeAt(0)).thenReturn(windowNode)
 
-        val subject = ParsedStructureBuilder(assistStructure).build()
+        val navigator = ViewNodeNavigator(assistStructure, "caller-package-name")
+        val subject = ParsedStructureBuilder(navigator).build()
 
         Assert.assertEquals(usernameId, subject.usernameId)
         Assert.assertEquals(passwordId, subject.passwordId)
@@ -72,7 +75,8 @@ class ParsedStructureTest {
         whenCalled(assistStructure.windowNodeCount).thenReturn(1)
         whenCalled(assistStructure.getWindowNodeAt(0)).thenReturn(windowNode)
 
-        val subject = ParsedStructureBuilder(assistStructure).build()
+        val navigator = ViewNodeNavigator(assistStructure, "caller-package-name")
+        val subject = ParsedStructureBuilder(navigator).build()
 
         Assert.assertNull(subject.usernameId)
         Assert.assertNull(subject.passwordId)
@@ -101,7 +105,8 @@ class ParsedStructureTest {
         whenCalled(assistStructure.windowNodeCount).thenReturn(1)
         whenCalled(assistStructure.getWindowNodeAt(0)).thenReturn(windowNode)
 
-        val subject = ParsedStructureBuilder(assistStructure).build()
+        val navigator = ViewNodeNavigator(assistStructure, "caller-package-name")
+        val subject = ParsedStructureBuilder(navigator).build()
 
         Assert.assertEquals(usernameId, subject.usernameId)
         Assert.assertEquals(passwordId, subject.passwordId)
@@ -141,7 +146,8 @@ class ParsedStructureTest {
         whenCalled(assistStructure.windowNodeCount).thenReturn(1)
         whenCalled(assistStructure.getWindowNodeAt(0)).thenReturn(windowNode)
 
-        val subject = ParsedStructureBuilder(assistStructure).build()
+        val navigator = ViewNodeNavigator(assistStructure, "caller-package-name")
+        val subject = ParsedStructureBuilder(navigator).build()
 
         Assert.assertEquals(usernameId, subject.usernameId)
         Assert.assertEquals(passwordId, subject.passwordId)

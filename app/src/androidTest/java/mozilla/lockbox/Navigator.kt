@@ -24,14 +24,17 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.robots.accountSettingScreen
 import mozilla.lockbox.robots.disconnectDisclaimer
 import mozilla.lockbox.robots.filteredItemList
+import mozilla.lockbox.robots.fingerprintOnboardingScreen
 import mozilla.lockbox.robots.fxaLogin
 import mozilla.lockbox.robots.itemDetail
 import mozilla.lockbox.robots.itemList
 import mozilla.lockbox.robots.lockScreen
+import mozilla.lockbox.robots.onboardingConfirmationScreen
 import mozilla.lockbox.robots.securityDisclaimer
 import mozilla.lockbox.robots.settings
 import mozilla.lockbox.robots.welcome
 import mozilla.lockbox.store.DataStore
+import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.view.RootActivity
 import org.junit.Assert
@@ -92,6 +95,29 @@ class Navigator {
         fxaLogin { exists() }
     }
 
+    fun gotoFingerprintOnboarding() {
+        gotoFxALogin()
+        fxaLogin { tapPlaceholderLogin() }
+    }
+
+    fun checkAtFingerprintOnboarding() {
+        fingerprintOnboardingScreen { exists() }
+    }
+
+    fun gotoOnboardingConfirmation() {
+        gotoFxALogin()
+        fxaLogin { tapPlaceholderLogin() }
+        if (FingerprintStore.shared.isFingerprintAuthAvailable) {
+            checkAtFingerprintOnboarding()
+            fingerprintOnboardingScreen { tapSkip() }
+        }
+        checkAtOnboardingConfirmation()
+    }
+
+    fun checkAtOnboardingConfirmation() {
+        onboardingConfirmationScreen { exists() }
+    }
+
     fun checkAtWelcome() {
         welcome { exists() }
     }
@@ -100,12 +126,20 @@ class Navigator {
         if (goManually) {
             gotoFxALogin()
             fxaLogin { tapPlaceholderLogin() }
+            bypassOnboarding()
         } else {
             Dispatcher.shared.dispatch(LifecycleAction.UseTestData)
             log.info("blocking for the routes")
+            // block until onboarding
+            // tap skip
             blockUntil(RouteStore.shared.routes, RouteAction.ItemList)
         }
         checkAtItemList()
+    }
+
+    private fun bypassOnboarding() {
+        gotoOnboardingConfirmation()
+        onboardingConfirmationScreen { clickFinish() }
     }
 
     fun checkAtItemList() {
