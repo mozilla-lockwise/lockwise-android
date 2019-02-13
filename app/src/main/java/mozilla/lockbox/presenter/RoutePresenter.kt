@@ -29,7 +29,8 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
 import mozilla.lockbox.store.AccountStore
-import mozilla.lockbox.store.AutoLockStore
+import mozilla.lockbox.support.AutoLockSupport
+import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.support.asOptional
@@ -45,7 +46,7 @@ class RoutePresenter(
     private val routeStore: RouteStore = RouteStore.shared,
     private val settingStore: SettingStore = SettingStore.shared,
     private val accountStore: AccountStore = AccountStore.shared,
-    private val autoLockStore: AutoLockStore = AutoLockStore.shared
+    private val autoLockStore: AutoLockSupport = AutoLockSupport.shared
 ) : Presenter() {
     private lateinit var navController: NavController
 

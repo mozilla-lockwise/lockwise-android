@@ -30,6 +30,7 @@ import mozilla.lockbox.action.AccountAction
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.extensions.debug
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.log
@@ -99,10 +100,12 @@ open class AccountStore(
             .addTo(compositeDisposable)
 
         // Moves credentials from the AccountStore, into the DataStore.
-        syncCredentials.map {
+        syncCredentials
+            .map {
                 it.value?.let { credentials -> DataStoreAction.UpdateCredentials(credentials) }
                 ?: DataStoreAction.Reset
             }
+            .debug("accountstore -> datastoreaction")
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
     }

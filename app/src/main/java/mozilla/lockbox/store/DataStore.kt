@@ -18,10 +18,13 @@ import mozilla.appservices.logins.ServerPassword
 import mozilla.appservices.logins.SyncUnlockInfo
 import mozilla.components.service.sync.logins.AsyncLoginsStorage
 import mozilla.lockbox.action.DataStoreAction
+import mozilla.lockbox.action.LifecycleAction
+import mozilla.lockbox.extensions.debug
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.log
 import mozilla.lockbox.model.SyncCredentials
+import mozilla.lockbox.support.AutoLockSupport
 import mozilla.lockbox.support.DataStoreSupport
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.asOptional
@@ -84,6 +87,7 @@ open class DataStore(
         // register for actions
         dispatcher.register
             .filterByType(DataStoreAction::class.java)
+            .debug("datastore actions from dispatcher")
             .subscribe { action ->
                 when (action) {
                     is DataStoreAction.Lock -> lock()
@@ -94,6 +98,33 @@ open class DataStore(
                     is DataStoreAction.UpdateCredentials -> updateCredentials(action.syncCredentials)
                 }
             }
+            .addTo(compositeDisposable)
+
+        setupAutoLock()
+    }
+
+    private fun setupAutoLock() {
+        LifecycleStore.shared.lifecycleEvents
+            .filter { it == LifecycleAction.Background && stateSubject.value == State.Unlocked }
+            .subscribe {
+                AutoLockSupport.shared.storeNextAutoLockTime()
+            }
+            .addTo(compositeDisposable)
+
+        // backdate the lock timer when receiving manual lock actions
+        dispatcher.register
+            // make sure that we are not driving the DataStoreAction.Lock
+            .filter { it == DataStoreAction.Lock && !AutoLockSupport.shared.shouldLock }
+            .subscribe {
+                AutoLockSupport.shared.backdateNextLockTime()
+            }
+            .addTo(compositeDisposable)
+
+        LifecycleStore.shared.lifecycleEvents
+            .filter { it == LifecycleAction.Foreground }
+            .map { AutoLockSupport.shared.shouldLock }
+            .filter { it }
+            .subscribe { lock() }
             .addTo(compositeDisposable)
     }
 
@@ -200,12 +231,11 @@ open class DataStore(
         }
 
         if (!credentials.isNew) {
-            val state = if (backend.isLocked()) {
-                State.Locked
+            if (AutoLockSupport.shared.shouldLock) {
+                lock()
             } else {
-                State.Unlocked
+                unlock()
             }
-            stateSubject.onNext(state)
             return
         }
 

@@ -23,6 +23,7 @@ import mozilla.lockbox.action.Setting
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.model.FixedSyncCredentials
+import mozilla.lockbox.support.AutoLockSupport
 import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.LockingSupport
 import mozilla.lockbox.support.SimpleFileReader
@@ -51,7 +52,7 @@ class TestLockingSupport : LockingSupport {
 
 @ExperimentalCoroutinesApi
 @RunWith(PowerMockRunner::class)
-@PrepareForTest(PreferenceManager::class, SimpleFileReader::class, AutoLockStore::class)
+@PrepareForTest(PreferenceManager::class, SimpleFileReader::class, AutoLockSupport::class)
 class AutoLockStoreTest {
     @Mock
     val editor: SharedPreferences.Editor = Mockito.mock(SharedPreferences.Editor::class.java)
@@ -89,11 +90,8 @@ class AutoLockStoreTest {
 
     private val lockingSupport = spy(TestLockingSupport())
 
-    val subject = AutoLockStore(
-        settingStore = settingStore,
-        lifecycleStore = lifecycleStore,
-        dataStore = dataStore,
-        dispatcher = dispatcher
+    val subject = AutoLockSupport(
+        settingStore = settingStore
     )
 
     @Before
