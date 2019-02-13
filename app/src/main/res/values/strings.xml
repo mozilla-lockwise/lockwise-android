@@ -231,10 +231,10 @@
     <string name="convenience_description">Unlock the app with ease using your fingerprint</string>
 
     <!-- This is the prompt when autofill is triggered, and Lockbox is locked. -->
-    <string name="autofill_authenticate_cta">Tap to unlock</string>
+    <string name="autofill_authenticate_cta">Unlock Lockbox</string>
     <!-- This is the error message when autofill is triggered but no domain is detected. This is unlikely. -->
     <string name="autofill_error_no_hostname">Unexpected hostname format</string>
     <!-- This is the prompt when autofill is triggered, Lockbox is unlocked, and no passwords are detected. -->
-    <string name="autofill_search_cta">Tap to search</string>
+    <string name="autofill_search_cta">Search Lockbox</string>
 
 </resources>
