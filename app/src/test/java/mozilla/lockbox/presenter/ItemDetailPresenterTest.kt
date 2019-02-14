@@ -15,6 +15,7 @@ import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.R
 import mozilla.lockbox.action.ClipboardAction
 import mozilla.lockbox.action.DataStoreAction
+import mozilla.lockbox.action.ItemDetailAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.flux.Action
@@ -183,6 +184,22 @@ class ItemDetailPresenterTest {
         )
 
         Assert.assertEquals(R.string.toast_password_copied, view.toastNotificationArgument)
+    }
+
+    @Test
+    fun `tapping on togglepassword`() {
+        view.togglePasswordClicks.onNext(Unit)
+
+        dispatcherObserver.assertValueSequence(
+            listOf(ItemDetailAction.RevealPassword)
+        )
+        Assert.assertTrue(view.isPasswordVisible)
+
+        dispatcherObserver.values().clear()
+        view.togglePasswordClicks.onNext(Unit)
+
+        dispatcherObserver.assertValueSequence(emptyList())
+        Assert.assertFalse(view.isPasswordVisible)
     }
 
     @Test

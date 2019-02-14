@@ -15,6 +15,7 @@ import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.R
 import mozilla.lockbox.action.ClipboardAction
 import mozilla.lockbox.action.DataStoreAction
+import mozilla.lockbox.action.ItemDetailAction
 import mozilla.lockbox.action.NetworkAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.filterNotNull
@@ -81,7 +82,11 @@ class ItemDetailPresenter(
 
         this.view.togglePasswordClicks
             .subscribe {
-                view.isPasswordVisible = view.isPasswordVisible.not()
+                val visible = view.isPasswordVisible.not()
+                view.isPasswordVisible = visible
+                if (visible) {
+                    dispatcher.dispatch(ItemDetailAction.RevealPassword)
+                }
             }
             .addTo(compositeDisposable)
 
