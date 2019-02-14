@@ -12,5 +12,6 @@ sealed class ItemDetailAction(
     override val eventMethod: TelemetryEventMethod,
     override val eventObject: TelemetryEventObject
 ) : TelemetryAction {
-    object RevealPassword : ItemDetailAction(TelemetryEventMethod.tap, TelemetryEventObject.reveal_password)
+    data class TogglePassword(val displayed: Boolean)
+        : ItemDetailAction(TelemetryEventMethod.tap, TelemetryEventObject.reveal_password)
 }

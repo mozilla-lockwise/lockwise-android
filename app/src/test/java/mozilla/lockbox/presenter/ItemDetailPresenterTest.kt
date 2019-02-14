@@ -22,6 +22,7 @@ import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.store.DataStore
+import mozilla.lockbox.store.ItemDetailStore
 import mozilla.lockbox.store.NetworkStore
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.asOptional
@@ -87,11 +88,12 @@ class ItemDetailPresenterTest {
         }
     }
 
-    val view = spy(FakeView())
-    val dataStore = FakeDataStore()
-
     val dispatcher = Dispatcher()
     val dispatcherObserver = TestObserver.create<Action>()!!
+
+    val view = spy(FakeView())
+    val dataStore = FakeDataStore()
+    val itemDetailStore = ItemDetailStore(dispatcher)
 
     @Mock
     val networkStore = PowerMockito.mock(NetworkStore::class.java)!!
@@ -115,7 +117,7 @@ class ItemDetailPresenterTest {
         )
     }
 
-    val subject = ItemDetailPresenter(view, fakeCredential.id, dispatcher, networkStore, dataStore)
+    val subject = ItemDetailPresenter(view, fakeCredential.id, dispatcher, networkStore, dataStore, itemDetailStore)
 
     @Before
     fun setUp() {
@@ -191,14 +193,16 @@ class ItemDetailPresenterTest {
         view.togglePasswordClicks.onNext(Unit)
 
         dispatcherObserver.assertValueSequence(
-            listOf(ItemDetailAction.RevealPassword)
+            listOf(ItemDetailAction.TogglePassword(true))
         )
         Assert.assertTrue(view.isPasswordVisible)
 
         dispatcherObserver.values().clear()
         view.togglePasswordClicks.onNext(Unit)
 
-        dispatcherObserver.assertValueSequence(emptyList())
+        dispatcherObserver.assertValueSequence(
+            listOf(ItemDetailAction.TogglePassword(false))
+        )
         Assert.assertFalse(view.isPasswordVisible)
     }
 

@@ -24,6 +24,7 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.store.DataStore
+import mozilla.lockbox.store.ItemDetailStore
 import mozilla.lockbox.store.NetworkStore
 
 interface ItemDetailView {
@@ -46,7 +47,8 @@ class ItemDetailPresenter(
     val itemId: String?,
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val networkStore: NetworkStore = NetworkStore.shared,
-    private val dataStore: DataStore = DataStore.shared
+    private val dataStore: DataStore = DataStore.shared,
+    private val itemDetailStore: ItemDetailStore = ItemDetailStore.shared
 ) : Presenter() {
 
     private var credentials: ServerPassword? = null
@@ -81,13 +83,7 @@ class ItemDetailPresenter(
             .addTo(compositeDisposable)
 
         this.view.togglePasswordClicks
-            .subscribe {
-                val visible = view.isPasswordVisible.not()
-                view.isPasswordVisible = visible
-                if (visible) {
-                    dispatcher.dispatch(ItemDetailAction.RevealPassword)
-                }
-            }
+            .subscribe { dispatcher.dispatch(ItemDetailAction.TogglePassword(view.isPasswordVisible.not())) }
             .addTo(compositeDisposable)
 
         view.isPasswordVisible = false
@@ -105,6 +101,10 @@ class ItemDetailPresenter(
 
         networkStore.isConnected
             .subscribe(view::handleNetworkError)
+            .addTo(compositeDisposable)
+
+        itemDetailStore.isPasswordVisible
+            .subscribe { view.isPasswordVisible = it }
             .addTo(compositeDisposable)
 
         view.retryNetworkConnectionClicks.subscribe {
