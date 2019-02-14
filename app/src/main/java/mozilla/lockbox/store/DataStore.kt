@@ -112,20 +112,11 @@ open class DataStore(
             }
             .addTo(compositeDisposable)
 
-        // backdate the lock timer when receiving manual lock actions
-        dispatcher.register
-            // make sure that we are not driving the DataStoreAction.Lock
-            .filter { it == DataStoreAction.Lock && !autoLockSupport.shouldLock }
-            .subscribe {
-                autoLockSupport.backdateNextLockTime()
-            }
-            .addTo(compositeDisposable)
-
         lifecycleStore.lifecycleEvents
             .filter { it == LifecycleAction.Foreground }
             .map { autoLockSupport.shouldLock }
             .filter { it }
-            .subscribe { lock() }
+            .subscribe { lockInternal() }
             .addTo(compositeDisposable)
     }
 
@@ -163,6 +154,11 @@ open class DataStore(
     }
 
     private fun lock() {
+        lockInternal()
+        autoLockSupport.backdateNextLockTime()
+    }
+
+    private fun lockInternal() {
         val backend = this.backend ?: return notReady()
         backend.ensureLocked()
             .asSingle(coroutineContext)
@@ -240,7 +236,7 @@ open class DataStore(
 
         if (!credentials.isNew) {
             if (autoLockSupport.shouldLock) {
-                lock()
+                lockInternal()
             } else {
                 unlockInternal()
             }
