@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-package mozilla.lockbox.store
+package mozilla.lockbox.support
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -14,19 +14,13 @@ import com.jakewharton.rxrelay2.BehaviorRelay
 import com.jakewharton.rxrelay2.Relay
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.DataStoreAction
-import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.Setting
-import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.model.FixedSyncCredentials
-import mozilla.lockbox.support.AutoLockSupport
-import mozilla.lockbox.support.Constant
-import mozilla.lockbox.support.LockingSupport
-import mozilla.lockbox.support.SimpleFileReader
+import mozilla.lockbox.store.SettingStore
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -53,7 +47,7 @@ class TestLockingSupport : LockingSupport {
 @ExperimentalCoroutinesApi
 @RunWith(PowerMockRunner::class)
 @PrepareForTest(PreferenceManager::class, SimpleFileReader::class, AutoLockSupport::class)
-class AutoLockStoreTest {
+class AutoLockSupportTest {
     @Mock
     val editor: SharedPreferences.Editor = Mockito.mock(SharedPreferences.Editor::class.java)
 
@@ -71,17 +65,7 @@ class AutoLockStoreTest {
             BehaviorRelay.createDefault(Constant.SettingDefault.autoLockTime)
     }
 
-    class FakeLifecycleStore : LifecycleStore() {
-        override val lifecycleEvents: Observable<LifecycleAction> = PublishSubject.create()
-    }
-
-    class FakeDataStore : DataStore() {
-        override val state: Observable<DataStore.State> = PublishSubject.create()
-    }
-
     private val settingStore = FakeSettingStore()
-    private val lifecycleStore = FakeLifecycleStore()
-    private val dataStore = FakeDataStore()
     private val dispatcher = Dispatcher()
 
     private var bootID = ";kl;jjkloi;kljhafshjkadfsmn"
@@ -107,18 +91,7 @@ class AutoLockStoreTest {
         PowerMockito.whenNew(SimpleFileReader::class.java).withAnyArguments().thenReturn(fileReader)
 
         subject.injectContext(context)
-        subject.autoLockActivated.subscribe(lockRequiredObserver)
         subject.lockingSupport = lockingSupport
-    }
-
-    @Test
-    fun `receiving non-Background lifecycle actions does nothing`() {
-        clearInvocations(preferences)
-        clearInvocations(editor)
-        (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.UserReset)
-
-        verifyZeroInteractions(preferences)
-        verifyZeroInteractions(editor)
     }
 
     @Test
@@ -132,12 +105,11 @@ class AutoLockStoreTest {
     }
 
     @Test
-    fun `receiving Background lifecycle actions when the datastore isn't already locked sets the autolocktime with the default`() {
+    fun `storenextautolocktime sets the autolocktime with the default`() {
         clearInvocations(preferences)
         clearInvocations(editor)
         val defaultAutoLock = Constant.SettingDefault.autoLockTime
-        (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Background)
-        (dataStore.state as Subject).onNext(DataStore.State.Unlocked)
+        subject.storeNextAutoLockTime()
 
         verify(preferences).edit()
 
@@ -152,12 +124,11 @@ class AutoLockStoreTest {
     }
 
     @Test
-    fun `receiving Background lifecycle actions when the datastore isn't already locked with never as the autolocktime setting`() {
+    fun `storenextautolocktime with never as the autolocktime setting`() {
         clearInvocations(preferences)
         clearInvocations(editor)
         (settingStore.autoLockTime as Relay).accept(Setting.AutoLockTime.Never)
-        (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Background)
-        (dataStore.state as Subject).onNext(DataStore.State.Unlocked)
+        subject.storeNextAutoLockTime()
 
         verify(preferences).edit()
 
@@ -170,13 +141,12 @@ class AutoLockStoreTest {
     }
 
     @Test
-    fun `new autolocktime settings are reflected when backgrounding the app when the datastore isn't already locked`() {
+    fun `new autolocktime settings are reflected when calling storenextautolocktime`() {
         clearInvocations(preferences)
         clearInvocations(editor)
         val newAutoLock = Setting.AutoLockTime.ThirtyMinutes
         (settingStore.autoLockTime as Relay).accept(newAutoLock)
-        (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Background)
-        (dataStore.state as Subject).onNext(DataStore.State.Unlocked)
+        subject.storeNextAutoLockTime()
 
         verify(preferences).edit()
 
@@ -191,37 +161,11 @@ class AutoLockStoreTest {
     }
 
     @Test
-    fun `receiving Background lifecycle actions when the datastore is locked does nothing`() {
-        clearInvocations(preferences)
-        clearInvocations(editor)
-        (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Background)
-        (dataStore.state as Subject).onNext(DataStore.State.Locked)
-
-        verifyZeroInteractions(preferences)
-        verifyZeroInteractions(editor)
-    }
-
-    @Test
-    fun `new autolocktime settings are not reflected when backgrounding the app when the datastore is locked`() {
-        clearInvocations(preferences)
-        clearInvocations(editor)
-        val newAutoLock = Setting.AutoLockTime.ThirtyMinutes
-        (settingStore.autoLockTime as Relay).accept(newAutoLock)
-        (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Background)
-        (dataStore.state as Subject).onNext(DataStore.State.Locked)
-
-        verifyZeroInteractions(preferences)
-        verifyZeroInteractions(editor)
-    }
-
-    @Test
-    fun `foregrounding lifecycle actions when the saved autolocktimerdate is later than the current system time`() {
+    fun `when the saved autolocktimerdate is later than the current system time`() {
         dispatcher.dispatch(DataStoreAction.UpdateCredentials(FixedSyncCredentials(false)))
         mockSavedValues(lockingSupport.systemTimeElapsed + 600000)
 
-        (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Foreground)
-
-        lockRequiredObserver.assertLastValue(false)
+        Assert.assertFalse(subject.shouldLock)
     }
 
     @Test
@@ -229,48 +173,25 @@ class AutoLockStoreTest {
         dispatcher.dispatch(DataStoreAction.UpdateCredentials(FixedSyncCredentials(false)))
         mockSavedValues(lockingSupport.systemTimeElapsed - 600000)
 
-        (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Foreground)
-
-        lockRequiredObserver.assertLastValue(true)
+        Assert.assertTrue(subject.shouldLock)
     }
 
     @Test
-    fun `datastore locking actions, when locking is not required by autolock, force the autolocktimerdate to an older time`() {
-        dispatcher.dispatch(DataStoreAction.UpdateCredentials(FixedSyncCredentials(false)))
-        mockSavedValues(lockingSupport.systemTimeElapsed + 600000)
-        (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Foreground)
-        lockRequiredObserver.assertLastValue(false)
-
-        clearInvocations(preferences)
-        clearInvocations(editor)
-        dispatcher.dispatch(DataStoreAction.Lock)
+    fun `backdate next lock time`() {
+        subject.backdateNextLockTime()
 
         verify(preferences).edit()
-
-        val expectedNewTime = SystemClock.elapsedRealtime() - 1
-
-        verify(editor).putLong(
-            eq(Constant.Key.autoLockTimerDate),
-            longThat { longArg ->
-                abs(expectedNewTime - longArg) < 100
-            }
-        )
-
+        verify(editor).putLong(Constant.Key.autoLockTimerDate, 0)
         verify(editor).apply()
     }
 
     @Test
-    fun `datastore locking actions, when locking is required by autolock, do nothing`() {
-        dispatcher.dispatch(DataStoreAction.UpdateCredentials(FixedSyncCredentials(false)))
-        mockSavedValues(SystemClock.elapsedRealtime() - 600000)
-        (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Foreground)
-        lockRequiredObserver.assertLastValue(true)
+    fun `forward date next lock time`() {
+        subject.forwardDateNextLockTime()
 
-        clearInvocations(preferences)
-        clearInvocations(editor)
-        dispatcher.dispatch(DataStoreAction.Lock)
-
-        verifyZeroInteractions(editor)
+        verify(preferences).edit()
+        verify(editor).putLong(Constant.Key.autoLockTimerDate, Long.MAX_VALUE)
+        verify(editor).apply()
     }
 
     private fun mockSavedValues(

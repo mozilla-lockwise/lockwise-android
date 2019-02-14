@@ -91,12 +91,7 @@ open class DataStore(
             .subscribe { action ->
                 when (action) {
                     is DataStoreAction.Lock -> lock()
-                    is DataStoreAction.Unlock -> {
-                        // when we receive an external unlock action, assume it's not coming from autolock
-                        // and adjust our next autolocktime to avoid race condition with foregrounding / unlocking
-                        unlock()
-                        autoLockSupport.forwardDateNextLockTime()
-                    }
+                    is DataStoreAction.Unlock -> unlock()
                     is DataStoreAction.Sync -> sync()
                     is DataStoreAction.Touch -> touch(action.id)
                     is DataStoreAction.Reset -> reset()
@@ -151,6 +146,13 @@ open class DataStore(
     }
 
     private fun unlock() {
+        // when we receive an external unlock action, assume it's not coming from autolock
+        // and adjust our next autolocktime to avoid race condition with foregrounding / unlocking
+        unlockInternal()
+        autoLockSupport.forwardDateNextLockTime()
+    }
+
+    private fun unlockInternal() {
         val backend = this.backend ?: return notReady()
         val encryptionKey = support?.encryptionKey ?: return notReady()
         backend.ensureUnlocked(encryptionKey)
@@ -240,13 +242,13 @@ open class DataStore(
             if (autoLockSupport.shouldLock) {
                 lock()
             } else {
-                unlock()
+                unlockInternal()
             }
             return
         }
 
         if (backend.isLocked()) {
-            unlock()
+            unlockInternal()
         } else {
             stateSubject.onNext(State.Unlocked)
         }
