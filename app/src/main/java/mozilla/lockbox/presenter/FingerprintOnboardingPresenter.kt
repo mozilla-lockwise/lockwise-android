@@ -6,6 +6,7 @@
 
 package mozilla.lockbox.presenter
 
+import android.os.Build
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -15,7 +16,9 @@ import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
+import mozilla.lockbox.log
 import mozilla.lockbox.model.FingerprintAuthCallback
+import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.FingerprintStore.AuthenticationState
 
@@ -23,7 +26,7 @@ interface FingerprintOnboardingView {
     fun onSucceeded()
     fun onFailed(error: String?)
     fun onError(error: String?)
-    val onDismiss: Observable<Unit>
+    val onSkipClick: Observable<Unit>
     val authCallback: Observable<FingerprintAuthCallback>
 }
 
@@ -47,13 +50,13 @@ class FingerprintOnboardingPresenter(
                     else -> false
                 }
                 dispatcher.dispatch(SettingAction.UnlockWithFingerprint(unlock))
-                dispatcher.dispatch(RouteAction.OnboardingConfirmation)
+                triggerNextOnboarding()
             }
             .addTo(compositeDisposable)
 
-        view.onDismiss.subscribe {
-            dispatcher.dispatch(RouteAction.OnboardingConfirmation)
+        view.onSkipClick.subscribe {
             dispatcher.dispatch(SettingAction.UnlockWithFingerprint(false))
+            triggerNextOnboarding()
         }?.addTo(compositeDisposable)
     }
 
@@ -72,6 +75,17 @@ class FingerprintOnboardingPresenter(
             is AuthenticationState.Succeeded -> view.onSucceeded()
             is AuthenticationState.Failed -> view.onFailed(state.error)
             is AuthenticationState.Error -> view.onError(state.error)
+        }
+    }
+
+    private fun triggerNextOnboarding() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (SettingStore.shared.autofillAvailable) {
+                dispatcher.dispatch(RouteAction.Onboarding.Autofill)
+            }
+        } else {
+            log.info("Autofill not available.")
+            dispatcher.dispatch(RouteAction.Onboarding.Confirmation)
         }
     }
 }

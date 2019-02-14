@@ -142,7 +142,7 @@ class FxALoginPresenterTest : DisposingTest() {
         Assert.assertEquals(OnboardingStatusAction(true), dispatcherObserver.values()[0])
         val redirectAction = dispatcherObserver.values()[1] as AccountAction.OauthRedirect
         Assert.assertEquals(url.toString(), redirectAction.url)
-        Assert.assertEquals(RouteAction.FingerprintOnboarding, dispatcherObserver.values()[2])
+        Assert.assertEquals(RouteAction.Onboarding.FingerprintAuth, dispatcherObserver.values()[2])
     }
 
     @Test
@@ -154,7 +154,7 @@ class FxALoginPresenterTest : DisposingTest() {
         Assert.assertEquals(OnboardingStatusAction(true), dispatcherObserver.values()[0])
         val redirectAction = dispatcherObserver.values()[1] as AccountAction.OauthRedirect
         Assert.assertEquals(url.toString(), redirectAction.url)
-        Assert.assertEquals(RouteAction.OnboardingConfirmation, dispatcherObserver.values()[2])
+        Assert.assertEquals(RouteAction.Onboarding.Confirmation, dispatcherObserver.values()[2])
     }
 
     @Test

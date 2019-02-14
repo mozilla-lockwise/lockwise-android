@@ -2,7 +2,12 @@ package mozilla.lockbox
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
+import mozilla.lockbox.robots.autofillOnboardingScreen
 import mozilla.lockbox.robots.fingerprintOnboardingScreen
+import mozilla.lockbox.robots.fxaLogin
+import mozilla.lockbox.robots.onboardingConfirmationScreen
+import mozilla.lockbox.store.FingerprintStore
+import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.view.RootActivity
 import org.junit.Rule
 import org.junit.Test
@@ -32,6 +37,39 @@ open class OnboardingTest {
             // touchFingerprint() doesn't work, see FingerprintDialogTest.kt
             tapSkip()
         }
+        navigator.checkAtItemList()
+    }
+
+    @Test
+    fun autofillSkipButtonNavigatesToItemList() {
+        navigator.gotoAutofillOnboarding()
+        autofillOnboardingScreen { tapSkip() }
+        navigator.checkAtOnboardingConfirmation()
+    }
+
+    @Test
+    fun autofillGoToSettingsNavigatesToSystemSettings() {
+        navigator.gotoAutofillOnboarding()
+        autofillOnboardingScreen {
+            exists()
+            touchGoToSettings()
+        }
+    }
+
+    @Test
+    fun fxaLoginToOnboardingToItemList() {
+        navigator.gotoFxALogin()
+        fxaLogin { tapPlaceholderLogin() }
+        if (FingerprintStore.shared.isFingerprintAuthAvailable) {
+            navigator.checkAtFingerprintOnboarding()
+            fingerprintOnboardingScreen { tapSkip() }
+        }
+        if (SettingStore.shared.autofillAvailable) {
+            navigator.checkAtAutofillOnboarding()
+            autofillOnboardingScreen { tapSkip() }
+        }
+        navigator.checkAtOnboardingConfirmation()
+        onboardingConfirmationScreen { clickFinish() }
         navigator.checkAtItemList()
     }
 }

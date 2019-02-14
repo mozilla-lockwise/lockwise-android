@@ -77,9 +77,9 @@ class FxALoginPresenter(
 
     private fun triggerOnboarding() {
         if (fingerprintStore.isFingerprintAuthAvailable) {
-            dispatcher.dispatch(RouteAction.FingerprintOnboarding)
+            dispatcher.dispatch(RouteAction.Onboarding.FingerprintAuth)
         } else {
-            dispatcher.dispatch(RouteAction.OnboardingConfirmation)
+            dispatcher.dispatch(RouteAction.Onboarding.Confirmation)
         }
     }
 }

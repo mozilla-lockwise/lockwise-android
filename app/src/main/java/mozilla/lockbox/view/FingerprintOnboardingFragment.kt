@@ -16,12 +16,12 @@ import mozilla.lockbox.model.FingerprintAuthCallback
 import mozilla.lockbox.support.Constant
 
 @ExperimentalCoroutinesApi
-class FingerprintFragmentOnboarding : Fragment(), FingerprintOnboardingView {
+class FingerprintOnboardingFragment : Fragment(), FingerprintOnboardingView {
     private val _authCallback = PublishSubject.create<FingerprintAuthCallback>()
     override val authCallback: Observable<FingerprintAuthCallback> get() = _authCallback
 
-    override val onDismiss: Observable<Unit>
-        get() = view!!.skipOnboarding.clicks()
+    override val onSkipClick: Observable<Unit>
+        get() = view!!.skipButton.clicks()
 
     private var isEnablingDismissed: Boolean = true
 

@@ -30,7 +30,6 @@ import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
 import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.AutoLockStore
-import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.support.asOptional
@@ -45,7 +44,6 @@ class RoutePresenter(
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val routeStore: RouteStore = RouteStore.shared,
     private val settingStore: SettingStore = SettingStore.shared,
-    private val dataStore: DataStore = DataStore.shared,
     private val accountStore: AccountStore = AccountStore.shared,
     private val autoLockStore: AutoLockStore = AutoLockStore.shared
 ) : Presenter() {
@@ -64,8 +62,10 @@ class RoutePresenter(
         when (action) {
             is RouteAction.Welcome -> navigateToFragment(action, R.id.fragment_welcome)
             is RouteAction.Login -> navigateToFragment(action, R.id.fragment_fxa_login)
-            is RouteAction.FingerprintOnboarding -> navigateToFragment(action, R.id.fragment_fingerprint_onboarding)
-            is RouteAction.OnboardingConfirmation -> navigateToFragment(action, R.id.fragment_onboarding_confirmation)
+            is RouteAction.Onboarding.FingerprintAuth ->
+                navigateToFragment(action, R.id.fragment_fingerprint_onboarding)
+            is RouteAction.Onboarding.Autofill -> navigateToFragment(action, R.id.fragment_autofill_onboarding)
+            is RouteAction.Onboarding.Confirmation -> navigateToFragment(action, R.id.fragment_onboarding_confirmation)
             is RouteAction.ItemList -> navigateToFragment(action, R.id.fragment_item_list)
             is RouteAction.SettingList -> navigateToFragment(action, R.id.fragment_setting)
             is RouteAction.AccountSetting -> navigateToFragment(action, R.id.fragment_account_setting)
@@ -233,11 +233,18 @@ class RoutePresenter(
             Pair(R.id.fragment_welcome, R.id.fragment_locked) -> R.id.action_to_locked
 
             Pair(R.id.fragment_fxa_login, R.id.fragment_item_list) -> R.id.action_fxaLogin_to_itemList
-            Pair(R.id.fragment_fxa_login, R.id.fragment_fingerprint_onboarding) -> R.id.action_fxaLogin_to_fingerprint_onboarding
-            Pair(R.id.fragment_fingerprint_onboarding, R.id.fragment_onboarding_confirmation) -> R.id.action_fingerprint_onboarding_to_confirmation
-            Pair(R.id.fragment_fxa_login, R.id.fragment_onboarding_confirmation) -> R.id.action_fxaLogin_to_onboarding_confirmation
+            Pair(R.id.fragment_fxa_login, R.id.fragment_fingerprint_onboarding) ->
+                R.id.action_fxaLogin_to_fingerprint_onboarding
+            Pair(R.id.fragment_fxa_login, R.id.fragment_onboarding_confirmation) ->
+                R.id.action_fxaLogin_to_onboarding_confirmation
 
-            Pair(R.id.fragment_fingerprint_onboarding, R.id.fragment_item_list) -> R.id.action_to_itemList
+            Pair(R.id.fragment_fingerprint_onboarding, R.id.fragment_onboarding_confirmation) ->
+                R.id.action_fingerprint_onboarding_to_confirmation
+            Pair(R.id.fragment_fingerprint_onboarding, R.id.fragment_autofill_onboarding) ->
+                R.id.action_onboarding_fingerprint_to_autofill
+
+            Pair(R.id.fragment_autofill_onboarding, R.id.fragment_item_list) -> R.id.action_to_itemList
+
             Pair(R.id.fragment_onboarding_confirmation, R.id.fragment_item_list) -> R.id.action_to_itemList
             Pair(R.id.fragment_onboarding_confirmation, R.id.fragment_webview) -> R.id.action_to_webview
 
