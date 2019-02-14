@@ -92,11 +92,10 @@ open class DataStore(
                 when (action) {
                     is DataStoreAction.Lock -> lock()
                     is DataStoreAction.Unlock -> {
-                        // when we receive an external unlock action, update the next lock time
-                        // this won't work when we have a Lock Immediately option, but will with
-                        // our current set of autolock times
+                        // when we receive an external unlock action, assume it's not coming from autolock
+                        // and adjust our next autolocktime to avoid race condition with foregrounding / unlocking
                         unlock()
-                        autoLockSupport.storeNextAutoLockTime()
+                        autoLockSupport.forwardDateNextLockTime()
                     }
                     is DataStoreAction.Sync -> sync()
                     is DataStoreAction.Touch -> touch(action.id)

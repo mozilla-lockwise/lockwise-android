@@ -48,6 +48,10 @@ class AutoLockSupport(
         storeAutoLockTimerDate(0)
     }
 
+    fun forwardDateNextLockTime() {
+        storeAutoLockTimerDate(Long.MAX_VALUE)
+    }
+
     private fun updateNextLockTime(autoLockTime: Setting.AutoLockTime) {
         if (autoLockTime == Setting.AutoLockTime.Never) {
             storeAutoLockTimerDate(Long.MAX_VALUE)
