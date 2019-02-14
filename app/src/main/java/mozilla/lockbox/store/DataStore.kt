@@ -19,7 +19,6 @@ import mozilla.appservices.logins.SyncUnlockInfo
 import mozilla.components.service.sync.logins.AsyncLoginsStorage
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
-import mozilla.lockbox.extensions.debug
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.log
@@ -89,11 +88,16 @@ open class DataStore(
         // register for actions
         dispatcher.register
             .filterByType(DataStoreAction::class.java)
-            .debug("datastore actions from dispatcher")
             .subscribe { action ->
                 when (action) {
                     is DataStoreAction.Lock -> lock()
-                    is DataStoreAction.Unlock -> unlock()
+                    is DataStoreAction.Unlock -> {
+                        // when we receive an external unlock action, update the next lock time
+                        // this won't work when we have a Lock Immediately option, but will with
+                        // our current set of autolock times
+                        unlock()
+                        autoLockSupport.storeNextAutoLockTime()
+                    }
                     is DataStoreAction.Sync -> sync()
                     is DataStoreAction.Touch -> touch(action.id)
                     is DataStoreAction.Reset -> reset()
@@ -234,7 +238,7 @@ open class DataStore(
         }
 
         if (!credentials.isNew) {
-            if (AutoLockSupport.shared.shouldLock) {
+            if (autoLockSupport.shouldLock) {
                 lock()
             } else {
                 unlock()
