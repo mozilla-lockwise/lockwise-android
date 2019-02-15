@@ -45,6 +45,7 @@ import kotlin.coroutines.CoroutineContext
 
 @ExperimentalCoroutinesApi
 open class AccountStore(
+    private val lifecycleStore: LifecycleStore = LifecycleStore.shared,
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val securePreferences: SecurePreferences = SecurePreferences.shared
 ) : ContextStore {
@@ -77,11 +78,11 @@ open class AccountStore(
     open val profile: Observable<Optional<Profile>> = ReplaySubject.createWithSize(1)
 
     init {
-        val resetObservable = this.dispatcher.register
+        val resetObservable = lifecycleStore.lifecycleEvents
             .filter { it == LifecycleAction.UserReset }
             .map { AccountAction.Reset }
 
-        val useTestData = this.dispatcher.register
+        val useTestData = lifecycleStore.lifecycleEvents
             .filter { it == LifecycleAction.UseTestData }
             .map { AccountAction.UseTestData }
 
