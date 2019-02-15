@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ This Source Code Form is subject to the terms of the Mozilla Public
+  ~ License, v. 2.0. If a copy of the MPL was not distributed with this
+  ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
+  -->
+
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+    android:background="@drawable/rounded_corner_bg_white"
+
+    app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="MissingConstraints"
+    android:paddingBottom="8dp"
+    >
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/dialogText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:paddingEnd="24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="parent"
+        >
+
+        <TextView
+            android:id="@+id/dialogTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:layout_gravity="center_vertical"
+            android:textSize="20sp"
+            android:textStyle="normal"
+            android:letterSpacing="0.01"
+            android:textColor="@color/black_87_percent"
+            android:text="@string/secure_your_device"
+            android:layout_marginTop="23dp"
+            android:paddingStart="24dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+        />
+
+        <TextView
+            android:id="@+id/dialogSubtitle"
+            android:layout_gravity="center_vertical"
+            android:layout_width="228dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:textSize="16sp"
+            android:fontFamily="sans-serif"
+            android:textStyle="normal"
+            android:textColor="@color/black_60_percent"
+            android:letterSpacing="0.01"
+            android:lineSpacingExtra="8sp"
+            android:text="@string/device_security_description"
+            app:layout_constraintTop_toBottomOf="@id/dialogTitle"
+            app:layout_constraintStart_toStartOf="parent"
+        />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <Button
+            android:id="@+id/skipButton"
+            android:layout_width="96dp"
+            android:layout_height="36dp"
+            android:textSize="14sp"
+            android:fontFamily="sans-serif-medium"
+            android:textStyle="normal"
+            android:textColor="@color/color_primary"
+            android:textAllCaps="true"
+            android:letterSpacing="0.09"
+            android:layout_marginBottom="18dp"
+            android:layout_marginTop="18dp"
+            android:lineSpacingExtra="2sp"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="@string/skip_button"
+            android:shadowColor="@color/background_white"
+            android:backgroundTint="@color/background_white"
+            android:stateListAnimator="@null"
+            app:layout_constraintEnd_toStartOf="@id/setUpNowButton"
+            app:layout_constraintTop_toBottomOf="@id/dialogText"
+         />
+
+    <Button
+            android:id="@+id/setUpNowButton"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:textSize="14sp"
+            android:fontFamily="sans-serif-medium"
+            android:textStyle="normal"
+            android:textColor="@color/color_primary"
+            android:textAllCaps="true"
+            android:letterSpacing="0.09"
+            android:lineSpacingExtra="2sp"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="@string/set_up_now"
+            android:layout_marginTop="18dp"
+            android:shadowColor="@color/background_white"
+        android:backgroundTint="@color/background_white"
+        android:stateListAnimator="@null"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dialogText"
+android:paddingStart="8dp"
+android:paddingEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="18dp"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>

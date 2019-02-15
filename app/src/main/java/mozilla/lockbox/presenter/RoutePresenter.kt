@@ -34,9 +34,10 @@ import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.support.AutoLockSupport
 import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.view.AppWebPageFragmentArgs
-import mozilla.lockbox.view.DialogFragment
 import mozilla.lockbox.view.FingerprintAuthDialogFragment
 import mozilla.lockbox.view.ItemDetailFragmentArgs
+import mozilla.lockbox.view.OnboardingSecurityDialogFragment
+import mozilla.lockbox.view.DialogFragment
 
 @ExperimentalCoroutinesApi
 class RoutePresenter(
@@ -75,7 +76,8 @@ class RoutePresenter(
             is RouteAction.OpenWebsite -> openWebsite(action.url)
             is RouteAction.SystemSetting -> openSetting(action)
             is RouteAction.AutoLockSetting -> showAutoLockSelections()
-            is RouteAction.DialogFragment -> showDialogFragment(FingerprintAuthDialogFragment(), action)
+            is RouteAction.DialogFragment.FingerprintDialog -> showDialogFragment(FingerprintAuthDialogFragment(), action)
+            is RouteAction.DialogFragment.OnboardingSecurityDialog -> showDialogFragment(OnboardingSecurityDialogFragment(), action)
             is RouteAction.Dialog -> showDialog(action)
             is RouteAction.AppWebPage -> navigateToFragment(action, R.id.fragment_webview, bundle(action))
         }

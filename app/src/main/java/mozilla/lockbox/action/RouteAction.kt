@@ -48,6 +48,8 @@ sealed class RouteAction(
     ) : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.dialog) {
         class FingerprintDialog(@StringRes title: Int, @StringRes subtitle: Int? = null) :
             DialogFragment(dialogTitle = title, dialogSubtitle = subtitle)
+        class OnboardingSecurityDialog(@StringRes title: Int, @StringRes subtitle: Int? = null) :
+            DialogFragment(dialogTitle = title, dialogSubtitle = subtitle)
     }
 
     sealed class AppWebPage(
