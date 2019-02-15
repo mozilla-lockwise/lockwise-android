@@ -16,6 +16,7 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.mocks.MockDataStoreSupport
 import mozilla.lockbox.model.FixedSyncCredentials
 import mozilla.lockbox.store.DataStore.State
+import mozilla.lockbox.support.AutoLockSupport
 import mozilla.lockbox.support.asOptional
 import org.junit.Assert
 import org.junit.Test
@@ -25,9 +26,34 @@ import org.mockito.Mockito.verify
 
 @ExperimentalCoroutinesApi
 class DataStoreTest : DisposingTest() {
+    class FakeLifecycleStore : LifecycleStore()
+
+    class FakeAutolockSupport : AutoLockSupport() {
+        var storeNextLockDateCalled = false
+        var backdateNextLockDateCalled = false
+        var forewardDateNextLockDateCalled = false
+
+        var shouldLockStub: Boolean = false
+        override val shouldLock = shouldLockStub
+
+        override fun storeNextAutoLockTime() {
+            storeNextLockDateCalled = true
+        }
+
+        override fun backdateNextLockTime() {
+            backdateNextLockDateCalled = true
+        }
+
+        override fun forwardDateNextLockTime() {
+            forewardDateNextLockDateCalled = true
+        }
+    }
+
     private val support = MockDataStoreSupport()
     private val dispatcher = Dispatcher()
-    private val subject = DataStore(dispatcher, support)
+    private val autoLockSupport = FakeAutolockSupport()
+    private val lifecycleStore = FakeLifecycleStore()
+    private val subject = DataStore(dispatcher, support, autoLockSupport, lifecycleStore)
 
     @Test
     fun testLockUnlock() {

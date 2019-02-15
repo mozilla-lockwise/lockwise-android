@@ -17,7 +17,7 @@ import mozilla.lockbox.store.ContextStore
 import mozilla.lockbox.store.SettingStore
 
 @ExperimentalCoroutinesApi
-class AutoLockSupport(
+open class AutoLockSupport(
     val settingStore: SettingStore = SettingStore.shared
 ) : ContextStore {
 
@@ -30,25 +30,25 @@ class AutoLockSupport(
 
     var lockingSupport: LockingSupport = SystemLockingSupport()
 
-    val shouldLock: Boolean
+    open val shouldLock: Boolean
         get() = lockCurrentlyRequired()
 
     override fun injectContext(context: Context) {
         preferences = PreferenceManager.getDefaultSharedPreferences(context)
     }
 
-    fun storeNextAutoLockTime() {
+    open fun storeNextAutoLockTime() {
         settingStore.autoLockTime
             .take(1)
             .subscribe(this::updateNextLockTime)
             .addTo(compositeDisposable)
     }
 
-    fun backdateNextLockTime() {
+    open fun backdateNextLockTime() {
         storeAutoLockTimerDate(0)
     }
 
-    fun forwardDateNextLockTime() {
+    open fun forwardDateNextLockTime() {
         storeAutoLockTimerDate(Long.MAX_VALUE)
     }
 

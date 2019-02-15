@@ -33,8 +33,8 @@ import kotlin.coroutines.CoroutineContext
 open class DataStore(
     val dispatcher: Dispatcher = Dispatcher.shared,
     var support: DataStoreSupport? = null,
-    val autoLockSupport: AutoLockSupport = AutoLockSupport.shared,
-    val lifecycleStore: LifecycleStore = LifecycleStore.shared
+    private val autoLockSupport: AutoLockSupport = AutoLockSupport.shared,
+    private val lifecycleStore: LifecycleStore = LifecycleStore.shared
 ) {
     companion object {
         val shared = DataStore()
@@ -97,7 +97,6 @@ open class DataStore(
                     is DataStoreAction.Reset -> reset()
                     is DataStoreAction.UpdateCredentials -> updateCredentials(action.syncCredentials)
                 }
-
             }
             .addTo(compositeDisposable)
 
