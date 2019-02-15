@@ -18,10 +18,12 @@ import mozilla.appservices.logins.ServerPassword
 import mozilla.appservices.logins.SyncUnlockInfo
 import mozilla.components.service.sync.logins.AsyncLoginsStorage
 import mozilla.lockbox.action.DataStoreAction
+import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.log
 import mozilla.lockbox.model.SyncCredentials
+import mozilla.lockbox.support.AutoLockSupport
 import mozilla.lockbox.support.DataStoreSupport
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.asOptional
@@ -30,7 +32,9 @@ import kotlin.coroutines.CoroutineContext
 @ExperimentalCoroutinesApi
 open class DataStore(
     val dispatcher: Dispatcher = Dispatcher.shared,
-    var support: DataStoreSupport? = null
+    var support: DataStoreSupport? = null,
+    private val autoLockSupport: AutoLockSupport = AutoLockSupport.shared,
+    private val lifecycleStore: LifecycleStore = LifecycleStore.shared
 ) {
     companion object {
         val shared = DataStore()
@@ -95,6 +99,27 @@ open class DataStore(
                 }
             }
             .addTo(compositeDisposable)
+
+        setupAutoLock()
+    }
+
+    private fun setupAutoLock() {
+        val foreground = arrayOf(LifecycleAction.Foreground, LifecycleAction.AutofillStart)
+        val background = arrayOf(LifecycleAction.Background, LifecycleAction.AutofillEnd)
+
+        lifecycleStore.lifecycleEvents
+            .filter { background.contains(it) && stateSubject.value == State.Unlocked }
+            .subscribe {
+                autoLockSupport.storeNextAutoLockTime()
+            }
+            .addTo(compositeDisposable)
+
+        lifecycleStore.lifecycleEvents
+            .filter { foreground.contains(it) }
+            .map { autoLockSupport.shouldLock }
+            .filter { it }
+            .subscribe { lockInternal() }
+            .addTo(compositeDisposable)
     }
 
     open fun get(id: String): Observable<Optional<ServerPassword>> {
@@ -114,6 +139,13 @@ open class DataStore(
     }
 
     private fun unlock() {
+        // when we receive an external unlock action, assume it's not coming from autolock
+        // and adjust our next autolocktime to avoid race condition with foregrounding / unlocking
+        unlockInternal()
+        autoLockSupport.forwardDateNextLockTime()
+    }
+
+    private fun unlockInternal() {
         val backend = this.backend ?: return notReady()
         val encryptionKey = support?.encryptionKey ?: return notReady()
         backend.ensureUnlocked(encryptionKey)
@@ -124,6 +156,11 @@ open class DataStore(
     }
 
     private fun lock() {
+        lockInternal()
+        autoLockSupport.backdateNextLockTime()
+    }
+
+    private fun lockInternal() {
         val backend = this.backend ?: return notReady()
         backend.ensureLocked()
             .asSingle(coroutineContext)
@@ -200,17 +237,16 @@ open class DataStore(
         }
 
         if (!credentials.isNew) {
-            val state = if (backend.isLocked()) {
-                State.Locked
+            if (autoLockSupport.shouldLock) {
+                lockInternal()
             } else {
-                State.Unlocked
+                unlockInternal()
             }
-            stateSubject.onNext(state)
             return
         }
 
         if (backend.isLocked()) {
-            unlock()
+            unlockInternal()
         } else {
             stateSubject.onNext(State.Unlocked)
         }

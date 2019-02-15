@@ -29,9 +29,9 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
 import mozilla.lockbox.store.AccountStore
-import mozilla.lockbox.store.AutoLockStore
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.store.SettingStore
+import mozilla.lockbox.support.AutoLockSupport
 import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.view.AppWebPageFragmentArgs
 import mozilla.lockbox.view.DialogFragment
@@ -45,7 +45,7 @@ class RoutePresenter(
     private val routeStore: RouteStore = RouteStore.shared,
     private val settingStore: SettingStore = SettingStore.shared,
     private val accountStore: AccountStore = AccountStore.shared,
-    private val autoLockStore: AutoLockStore = AutoLockStore.shared
+    private val autoLockStore: AutoLockSupport = AutoLockSupport.shared
 ) : Presenter() {
     private lateinit var navController: NavController
 
@@ -254,7 +254,7 @@ class RoutePresenter(
             Pair(R.id.fragment_item_list, R.id.fragment_item_detail) -> R.id.action_itemList_to_itemDetail
             Pair(R.id.fragment_item_list, R.id.fragment_setting) -> R.id.action_itemList_to_setting
             Pair(R.id.fragment_item_list, R.id.fragment_account_setting) -> R.id.action_itemList_to_accountSetting
-            Pair(R.id.fragment_item_list, R.id.fragment_locked) -> R.id.action_itemList_to_locked
+            Pair(R.id.fragment_item_list, R.id.fragment_locked) -> R.id.action_to_locked
             Pair(R.id.fragment_item_list, R.id.fragment_filter) -> R.id.action_itemList_to_filter
             Pair(R.id.fragment_item_list, R.id.fragment_webview) -> R.id.action_to_webview
 

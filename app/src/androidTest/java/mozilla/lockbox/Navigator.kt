@@ -6,6 +6,7 @@
 
 package mozilla.lockbox
 
+import android.os.Build
 import android.provider.Settings
 import androidx.test.espresso.Espresso.closeSoftKeyboard
 import androidx.test.espresso.Espresso.pressBack
@@ -120,13 +121,12 @@ class Navigator {
     }
 
     fun gotoOnboardingConfirmation() {
-        gotoFxALogin()
         fxaLogin { tapPlaceholderLogin() }
         if (FingerprintStore.shared.isFingerprintAuthAvailable) {
             checkAtFingerprintOnboarding()
             fingerprintOnboardingScreen { tapSkip() }
         }
-        if (SettingStore.shared.autofillAvailable) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && SettingStore.shared.autofillAvailable) {
             checkAtAutofillOnboarding()
             autofillOnboardingScreen { tapSkip() }
         }
@@ -144,7 +144,6 @@ class Navigator {
     fun gotoItemList(goManually: Boolean = false) {
         if (goManually) {
             gotoFxALogin()
-            fxaLogin { tapPlaceholderLogin() }
             bypassOnboarding()
         } else {
             Dispatcher.shared.dispatch(LifecycleAction.UseTestData)

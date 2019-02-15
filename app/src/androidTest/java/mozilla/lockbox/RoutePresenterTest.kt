@@ -39,14 +39,15 @@ open class RoutePresenterTest {
 
     @Test
     fun testFingerprintOnboarding() {
-        navigator.gotoFingerprintOnboarding()
         if (FingerprintStore.shared.isFingerprintAuthAvailable) {
+            navigator.gotoFingerprintOnboarding()
             navigator.checkAtFingerprintOnboarding()
         }
     }
 
     @Test
     fun testOnboardingConfirmation() {
+        navigator.gotoFxALogin()
         navigator.gotoOnboardingConfirmation()
         navigator.checkAtOnboardingConfirmation()
     }
