@@ -52,11 +52,14 @@ class AuthPresenter(
 
         lockedStore.onAuthentication
             .subscribe {
-                if (it is FingerprintAuthAction.OnAuthentication) {
-                    when (it.authCallback) {
-                        is FingerprintAuthCallback.OnAuth -> unlock()
-                        is FingerprintAuthCallback.OnError -> view.unlockFallback()
+                when (it) {
+                    is FingerprintAuthAction.OnAuthentication -> {
+                        when (it.authCallback) {
+                            is FingerprintAuthCallback.OnAuth -> unlock()
+                            is FingerprintAuthCallback.OnError -> view.unlockFallback()
+                        }
                     }
+                    is FingerprintAuthAction.OnCancel -> view.setFillResponseAndFinish(null)
                 }
             }
             .addTo(compositeDisposable)
