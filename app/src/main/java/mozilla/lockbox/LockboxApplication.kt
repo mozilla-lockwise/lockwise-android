@@ -19,7 +19,7 @@ import mozilla.components.support.base.log.logger.Logger
 import mozilla.components.support.base.log.sink.AndroidLogSink
 import mozilla.lockbox.presenter.ApplicationPresenter
 import mozilla.lockbox.store.AccountStore
-import mozilla.lockbox.store.AutoLockStore
+import mozilla.lockbox.support.AutoLockSupport
 import mozilla.lockbox.store.ClipboardStore
 import mozilla.lockbox.store.ContextStore
 import mozilla.lockbox.store.DataStore
@@ -64,7 +64,7 @@ open class LockboxApplication : Application() {
         val orderedStores = listOf(
             DataStore.shared,
             AccountStore.shared,
-            AutoLockStore.shared
+            AutoLockSupport.shared
         )
         orderedStores.forEach {
             log.info("${it.javaClass.simpleName} initialized")
@@ -79,7 +79,7 @@ open class LockboxApplication : Application() {
             ClipboardStore.shared,
             FingerprintStore.shared,
             NetworkStore.shared,
-            AutoLockStore.shared,
+            AutoLockSupport.shared,
             AccountStore.shared,
             TelemetryStore.shared,
             PublicSuffixSupport.shared
