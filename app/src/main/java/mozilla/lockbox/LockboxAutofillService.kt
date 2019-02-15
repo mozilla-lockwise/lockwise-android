@@ -17,6 +17,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.autofill.FillResponseBuilder
 import mozilla.lockbox.autofill.ViewNodeNavigator
 import mozilla.lockbox.extensions.dump
@@ -40,7 +41,12 @@ class LockboxAutofillService(
     private var compositeDisposable = CompositeDisposable()
     private val pslSupport = PublicSuffixSupport.shared
 
+    override fun onConnected() {
+        dispatcher.dispatch(LifecycleAction.AutofillStart)
+    }
+
     override fun onDisconnected() {
+        dispatcher.dispatch(LifecycleAction.AutofillEnd)
         compositeDisposable.clear()
     }
 

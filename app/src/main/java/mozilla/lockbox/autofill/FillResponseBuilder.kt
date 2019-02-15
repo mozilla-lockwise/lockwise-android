@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Build
 import android.service.autofill.Dataset
 import android.service.autofill.FillResponse
+import android.view.autofill.AutofillId
 import android.view.autofill.AutofillValue
 import android.widget.RemoteViews
 import io.reactivex.Observable
@@ -30,46 +31,48 @@ class FillResponseBuilder(
         }
 
         val sender = AuthActivity.getAuthIntentSender(context, this)
-        val autofillIds = arrayOf(parsedStructure.usernameId, parsedStructure.passwordId)
-
-        responseBuilder.setAuthentication(autofillIds, sender, authPresentation)
+        responseBuilder.setAuthentication(autofillIds(), sender, authPresentation)
 
         return responseBuilder.build()
+    }
+
+    private fun autofillIds(): Array<AutofillId> {
+        return arrayOf(parsedStructure.usernameId, parsedStructure.passwordId)
+            .filter { it != null }
+            .map { it!! }
+            .toTypedArray()
     }
 
     fun buildFallbackFillResponse(context: Context): FillResponse? {
         // See https://github.com/mozilla-lockbox/lockbox-android/issues/421
         val builder = FillResponse.Builder()
-        addSearchFooter(context, builder)
+        addSearchFallback(context, builder)
         return builder.build()
     }
 
-    private fun addSearchFooter(context: Context, builder: FillResponse.Builder) {
+    private fun addSearchFallback(context: Context, builder: FillResponse.Builder) {
         val searchPresentation = RemoteViews(context.packageName, R.layout.autofill_item).apply {
             val callToAction = context.resources.getString(R.string.autofill_search_cta)
             setTextViewText(R.id.presentationText, callToAction)
         }
-
         // See https://github.com/mozilla-lockbox/lockbox-android/issues/421
         val sender = AuthActivity.getAuthIntentSender(context, this)
-        val autofillIds = arrayOf(parsedStructure.usernameId, parsedStructure.passwordId)
-
-        builder.setAuthentication(autofillIds, sender, searchPresentation)
+        builder.setAuthentication(autofillIds(), sender, searchPresentation)
     }
 
-    fun buildFilteredFillResponse(context: Context, filtererPasswords: List<ServerPassword>): FillResponse? {
+    fun buildFilteredFillResponse(context: Context, filteredPasswords: List<ServerPassword>): FillResponse? {
 
-        if (filtererPasswords.isEmpty()) {
+        if (filteredPasswords.isEmpty()) {
             return null
         }
 
         val builder = FillResponse.Builder()
 
-        filtererPasswords
+        filteredPasswords
             .map { serverPasswordToDataset(context, it) }
             .forEach { builder.addDataset(it) }
 
-        addSearchFooter(context, builder)
+        // no clickable footer is possible.
 
         return builder.build()
     }

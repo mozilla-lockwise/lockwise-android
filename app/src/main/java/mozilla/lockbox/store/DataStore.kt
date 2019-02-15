@@ -104,15 +104,18 @@ open class DataStore(
     }
 
     private fun setupAutoLock() {
+        val foreground = arrayOf(LifecycleAction.Foreground, LifecycleAction.AutofillStart)
+        val background = arrayOf(LifecycleAction.Background, LifecycleAction.AutofillEnd)
+
         lifecycleStore.lifecycleEvents
-            .filter { it == LifecycleAction.Background && stateSubject.value == State.Unlocked }
+            .filter { background.contains(it) && stateSubject.value == State.Unlocked }
             .subscribe {
                 autoLockSupport.storeNextAutoLockTime()
             }
             .addTo(compositeDisposable)
 
         lifecycleStore.lifecycleEvents
-            .filter { it == LifecycleAction.Foreground }
+            .filter { foreground.contains(it) }
             .map { autoLockSupport.shouldLock }
             .filter { it }
             .subscribe { lockInternal() }
