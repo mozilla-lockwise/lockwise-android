@@ -121,6 +121,7 @@ class Navigator {
     }
 
     fun gotoOnboardingConfirmation() {
+        gotoFxALogin()
         fxaLogin { tapPlaceholderLogin() }
         if (FingerprintStore.shared.isFingerprintAuthAvailable) {
             checkAtFingerprintOnboarding()

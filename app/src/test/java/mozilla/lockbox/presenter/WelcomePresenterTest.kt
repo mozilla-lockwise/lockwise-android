@@ -52,7 +52,7 @@ class WelcomePresenterTest {
         view.getStartedStub.onNext(Unit)
 
         val routeAction = dispatcherObserver.values().first() as RouteAction
-        Assert.assertTrue(routeAction is RouteAction.DialogFragment.OnboardingSecurityDialog)
+        Assert.assertTrue(routeAction is RouteAction.Dialog.OnboardingSecurityDialog)
     }
 
     @Test

@@ -34,12 +34,17 @@ sealed class RouteAction(
         RouteAction(TelemetryEventMethod.show, TelemetryEventObject.settings_system)
 
     sealed class Dialog(
-        val positiveButtonAction: Action? = null,
-        val negativeButtonAction: Action? = null
+        val positiveButtonAction: List<Action> = emptyList(),
+        val negativeButtonAction: List<Action> = emptyList()
     ) : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.dialog) {
-        object SecurityDisclaimer : Dialog(RouteAction.SystemSetting(SettingIntent.Security))
-        object UnlinkDisclaimer : Dialog(LifecycleAction.UserReset)
+        object SecurityDisclaimer : Dialog(listOf(RouteAction.SystemSetting(SettingIntent.Security)))
+        object UnlinkDisclaimer : Dialog(listOf(LifecycleAction.UserReset))
         object NoNetworkDisclaimer : Dialog()
+        object OnboardingSecurityDialog :
+            Dialog(
+                listOf(RouteAction.SystemSetting(SettingIntent.Security), RouteAction.Login),
+                listOf(RouteAction.Login)
+            )
     }
 
     sealed class DialogFragment(
@@ -47,8 +52,6 @@ sealed class RouteAction(
         @StringRes val dialogSubtitle: Int? = null
     ) : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.dialog) {
         class FingerprintDialog(@StringRes title: Int, @StringRes subtitle: Int? = null) :
-            DialogFragment(dialogTitle = title, dialogSubtitle = subtitle)
-        class OnboardingSecurityDialog(@StringRes title: Int, @StringRes subtitle: Int? = null) :
             DialogFragment(dialogTitle = title, dialogSubtitle = subtitle)
     }
 
@@ -61,8 +64,7 @@ sealed class RouteAction(
         object FaqList : AppWebPage(
             Constant.Faq.topUri,
             R.string.nav_menu_faq,
-            TelemetryEventObject.settings_faq
-        )
+            TelemetryEventObject.settings_faq)
 
         object FaqWelcome : AppWebPage(
             Constant.Faq.savedUri,
@@ -97,8 +99,7 @@ sealed class RouteAction(
         object SendFeedback : AppWebPage(
             Constant.SendFeedback.uri,
             R.string.nav_menu_feedback,
-            TelemetryEventObject.settings_provide_feedback
-        )
+            TelemetryEventObject.settings_provide_feedback)
     }
 
     sealed class Onboarding(

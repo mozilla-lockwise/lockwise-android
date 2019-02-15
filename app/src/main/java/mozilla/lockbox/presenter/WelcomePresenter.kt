@@ -8,7 +8,6 @@ package mozilla.lockbox.presenter
 
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
-import mozilla.lockbox.R
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
@@ -25,20 +24,14 @@ class WelcomePresenter(
     private val fingerprintStore: FingerprintStore = FingerprintStore.shared
 ) : Presenter() {
     override fun onViewReady() {
-        val isDeviceSecure: Boolean = fingerprintStore.isKeyguardDeviceSecure
-
         view.getStartedClicks
             .map {
-                if (isDeviceSecure)
+                if (fingerprintStore.isKeyguardDeviceSecure)
                     RouteAction.Login
                 else {
-                    RouteAction.DialogFragment.OnboardingSecurityDialog(
-                        R.string.secure_your_device,
-                        R.string.device_security_description
-                    )
+                    RouteAction.Dialog.OnboardingSecurityDialog
                 }
-            }
-            .subscribe(dispatcher::dispatch)
+            }.subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
 
         view.learnMoreClicks
