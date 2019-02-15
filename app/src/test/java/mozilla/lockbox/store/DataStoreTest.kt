@@ -6,6 +6,9 @@
 
 package mozilla.lockbox.store
 
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.Subject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.SyncUnlockInfo
 import mozilla.components.service.fxa.AccessTokenInfo
@@ -22,36 +25,34 @@ import org.junit.Assert
 import org.junit.Test
 import org.mockito.Mockito
 import org.mockito.Mockito.clearInvocations
+import org.mockito.Mockito.never
+import org.mockito.Mockito.spy
 import org.mockito.Mockito.verify
 
 @ExperimentalCoroutinesApi
 class DataStoreTest : DisposingTest() {
-    class FakeLifecycleStore : LifecycleStore()
+    class FakeLifecycleStore : LifecycleStore() {
+        override val lifecycleEvents: Observable<LifecycleAction> = PublishSubject.create()
+    }
 
     class FakeAutolockSupport : AutoLockSupport() {
-        var storeNextLockDateCalled = false
-        var backdateNextLockDateCalled = false
-        var forewardDateNextLockDateCalled = false
-
         var shouldLockStub: Boolean = false
-        override val shouldLock = shouldLockStub
+        override val shouldLock
+            get() = shouldLockStub
 
         override fun storeNextAutoLockTime() {
-            storeNextLockDateCalled = true
         }
 
         override fun backdateNextLockTime() {
-            backdateNextLockDateCalled = true
         }
 
         override fun forwardDateNextLockTime() {
-            forewardDateNextLockDateCalled = true
         }
     }
 
     private val support = MockDataStoreSupport()
     private val dispatcher = Dispatcher()
-    private val autoLockSupport = FakeAutolockSupport()
+    private val autoLockSupport = spy(FakeAutolockSupport())
     private val lifecycleStore = FakeLifecycleStore()
     private val subject = DataStore(dispatcher, support, autoLockSupport, lifecycleStore)
 
@@ -116,7 +117,7 @@ class DataStoreTest : DisposingTest() {
 
     @Test
     fun testUserReset() {
-        val stateIterator = this.subject.state.blockingIterable().iterator()
+//        val stateIterator = this.subject.state.blockingIterable().iterator()
         val listIterator = this.subject.list.blockingIterable().iterator()
         Assert.assertEquals(0, listIterator.next().size)
 
@@ -214,5 +215,63 @@ class DataStoreTest : DisposingTest() {
 
         dispatcher.dispatch(DataStoreAction.Lock)
         Assert.assertEquals(State.Locked, stateIterator.next())
+    }
+
+    @Test
+    fun `receiving background actions when unlocked`() {
+        val stateIterator = this.subject.state.blockingIterable().iterator()
+        val listIterator = this.subject.list.blockingIterable().iterator()
+        Assert.assertEquals(0, listIterator.next().size)
+
+        dispatcher.dispatch(DataStoreAction.Unlock)
+        Assert.assertEquals(State.Unlocked, stateIterator.next())
+        verify(autoLockSupport).forwardDateNextLockTime()
+
+        (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Background)
+        verify(autoLockSupport).storeNextAutoLockTime()
+    }
+
+    @Test
+    fun `receiving background actions when locked`() {
+        val stateIterator = this.subject.state.blockingIterable().iterator()
+        val listIterator = this.subject.list.blockingIterable().iterator()
+        Assert.assertEquals(0, listIterator.next().size)
+
+        dispatcher.dispatch(DataStoreAction.Unlock)
+        Assert.assertEquals(State.Unlocked, stateIterator.next())
+        verify(autoLockSupport).forwardDateNextLockTime()
+
+        dispatcher.dispatch(DataStoreAction.Lock)
+        verify(autoLockSupport).backdateNextLockTime()
+
+        (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Background)
+        verify(autoLockSupport, never()).storeNextAutoLockTime()
+    }
+
+    @Test
+    fun `receiving foreground actions when should lock`() {
+        val stateIterator = this.subject.state.blockingIterable().iterator()
+        val listIterator = this.subject.list.blockingIterable().iterator()
+        Assert.assertEquals(0, listIterator.next().size)
+
+        dispatcher.dispatch(DataStoreAction.Unlock)
+        Assert.assertEquals(State.Unlocked, stateIterator.next())
+        autoLockSupport.shouldLockStub = true
+
+        (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Foreground)
+
+        Assert.assertEquals(State.Locked, stateIterator.next())
+    }
+
+    @Test
+    fun `receiving foreground actions when should not lock`() {
+        val stateIterator = this.subject.state.blockingIterable().iterator()
+        val listIterator = this.subject.list.blockingIterable().iterator()
+        Assert.assertEquals(0, listIterator.next().size)
+
+        dispatcher.dispatch(DataStoreAction.Unlock)
+        Assert.assertEquals(State.Unlocked, stateIterator.next())
+        autoLockSupport.shouldLockStub = false
+        (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Foreground)
     }
 }
