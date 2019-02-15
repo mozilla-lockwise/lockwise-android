@@ -274,4 +274,62 @@ class DataStoreTest : DisposingTest() {
         autoLockSupport.shouldLockStub = false
         (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Foreground)
     }
+
+    @Test
+    fun `receiving autofill end actions when unlocked`() {
+        val stateIterator = this.subject.state.blockingIterable().iterator()
+        val listIterator = this.subject.list.blockingIterable().iterator()
+        Assert.assertEquals(0, listIterator.next().size)
+
+        dispatcher.dispatch(DataStoreAction.Unlock)
+        Assert.assertEquals(State.Unlocked, stateIterator.next())
+        verify(autoLockSupport).forwardDateNextLockTime()
+
+        (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.AutofillEnd)
+        verify(autoLockSupport).storeNextAutoLockTime()
+    }
+
+    @Test
+    fun `receiving autofill end actions when locked`() {
+        val stateIterator = this.subject.state.blockingIterable().iterator()
+        val listIterator = this.subject.list.blockingIterable().iterator()
+        Assert.assertEquals(0, listIterator.next().size)
+
+        dispatcher.dispatch(DataStoreAction.Unlock)
+        Assert.assertEquals(State.Unlocked, stateIterator.next())
+        verify(autoLockSupport).forwardDateNextLockTime()
+
+        dispatcher.dispatch(DataStoreAction.Lock)
+        verify(autoLockSupport).backdateNextLockTime()
+
+        (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.AutofillEnd)
+        verify(autoLockSupport, never()).storeNextAutoLockTime()
+    }
+
+    @Test
+    fun `receiving autofill start actions when should lock`() {
+        val stateIterator = this.subject.state.blockingIterable().iterator()
+        val listIterator = this.subject.list.blockingIterable().iterator()
+        Assert.assertEquals(0, listIterator.next().size)
+
+        dispatcher.dispatch(DataStoreAction.Unlock)
+        Assert.assertEquals(State.Unlocked, stateIterator.next())
+        autoLockSupport.shouldLockStub = true
+
+        (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.AutofillStart)
+
+        Assert.assertEquals(State.Locked, stateIterator.next())
+    }
+
+    @Test
+    fun `receiving autofill start actions when should not lock`() {
+        val stateIterator = this.subject.state.blockingIterable().iterator()
+        val listIterator = this.subject.list.blockingIterable().iterator()
+        Assert.assertEquals(0, listIterator.next().size)
+
+        dispatcher.dispatch(DataStoreAction.Unlock)
+        Assert.assertEquals(State.Unlocked, stateIterator.next())
+        autoLockSupport.shouldLockStub = false
+        (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.AutofillStart)
+    }
 }
