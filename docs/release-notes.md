@@ -1,5 +1,23 @@
 # Release Notes
 
+## 1.0 (Build 2599)
+
+_Date: 2019-02-19_
+
+Third internal Alpha release on Play Store. Changes include:
+
+- added autofill support to webpages (#404)
+- added launch hint icon next to hostname (#399)
+- added support to enable autofill from settings screen (#417)
+- added the public suffix list to be less permissive on fill matching (#425)
+- added biometric unlock onboarding flow (#396)
+- added confirmation screen during onboarding (#432)
+- added authentication during autofill when app is locked (#413)
+- made entire username and password rows tappable to copy (#400)
+- added FAQ links and instructions (#423)
+- added onboarding screen to enable autofill (#429)
+- improved initialization, autolock, and autofill states (#437, #446)
+
 ## 1.0 (Build 2247)
 
 _Date: 2019-01-26_
