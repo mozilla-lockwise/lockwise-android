@@ -25,7 +25,6 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.autofill.ParsedStructureData
 import mozilla.lockbox.autofill.ParsedStructureBuilder
-import mozilla.lockbox.store.LifecycleStore
 import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.support.PublicSuffixSupport
 import mozilla.lockbox.support.isDebug
