@@ -15,6 +15,7 @@ import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.R
 import mozilla.lockbox.action.ClipboardAction
 import mozilla.lockbox.action.DataStoreAction
+import mozilla.lockbox.action.ItemDetailAction
 import mozilla.lockbox.action.NetworkAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.filterNotNull
@@ -23,6 +24,7 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.store.DataStore
+import mozilla.lockbox.store.ItemDetailStore
 import mozilla.lockbox.store.NetworkStore
 
 interface ItemDetailView {
@@ -45,7 +47,8 @@ class ItemDetailPresenter(
     val itemId: String?,
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val networkStore: NetworkStore = NetworkStore.shared,
-    private val dataStore: DataStore = DataStore.shared
+    private val dataStore: DataStore = DataStore.shared,
+    private val itemDetailStore: ItemDetailStore = ItemDetailStore.shared
 ) : Presenter() {
 
     private var credentials: ServerPassword? = null
@@ -80,9 +83,7 @@ class ItemDetailPresenter(
             .addTo(compositeDisposable)
 
         this.view.togglePasswordClicks
-            .subscribe {
-                view.isPasswordVisible = view.isPasswordVisible.not()
-            }
+            .subscribe { dispatcher.dispatch(ItemDetailAction.TogglePassword(view.isPasswordVisible.not())) }
             .addTo(compositeDisposable)
 
         view.isPasswordVisible = false
@@ -100,6 +101,10 @@ class ItemDetailPresenter(
 
         networkStore.isConnected
             .subscribe(view::handleNetworkError)
+            .addTo(compositeDisposable)
+
+        itemDetailStore.isPasswordVisible
+            .subscribe { view.isPasswordVisible = it }
             .addTo(compositeDisposable)
 
         view.retryNetworkConnectionClicks.subscribe {
