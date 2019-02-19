@@ -8,4 +8,4 @@ package mozilla.lockbox.action
 
 import mozilla.lockbox.flux.Action
 
-class Unlocking(val currently: Boolean) : Action
+class UnlockingAction(val currently: Boolean) : Action

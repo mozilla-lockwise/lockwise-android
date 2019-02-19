@@ -72,15 +72,15 @@ class LockedPresenterTest {
     private val lockedStore = FakeLockedStore()
     private val settingStore = FakeSettingStore()
     private val lifecycleStore = FakeLifecycleStore()
+    private val dispatcher = Dispatcher()
     private val dispatcherObserver = TestObserver.create<Action>()
     private lateinit var context: Context
     val subject = LockedPresenter(
         view,
-        Dispatcher.shared,
+        dispatcher,
         fingerprintStore,
         lockedStore,
-        settingStore,
-        lifecycleStore
+        settingStore
     )
 
     @Before
@@ -138,7 +138,7 @@ class LockedPresenterTest {
     fun `foreground action fallback on fingerprint error`() {
         `when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(true)
         `when`(fingerprintStore.isKeyguardDeviceSecure).thenReturn(true)
-        lockedStore.onAuth.onNext(FingerprintAuthAction.OnAuthentication(AuthCallback.OnError))
+        lockedStore.onAuth.onNext(FingerprintAuthAction.OnAuthentication(FingerprintAuthCallback.OnError))
         verify(view).unlockFallback()
     }
 

@@ -8,12 +8,11 @@ package mozilla.lockbox.store
 
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
-import io.reactivex.subjects.ReplaySubject
 import io.reactivex.subjects.Subject
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.LifecycleAction
-import mozilla.lockbox.action.Unlocking
+import mozilla.lockbox.action.UnlockingAction
 import mozilla.lockbox.extensions.debug
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
@@ -45,7 +44,7 @@ open class LockedStore(
             .subscribe(forceLock as Subject)
 
         dispatcher.register
-            .filterByType(Unlocking::class.java)
+            .filterByType(UnlockingAction::class.java)
             .map { it.currently }
             .debug("new unlocking status")
             .subscribe(unlocking as Subject)

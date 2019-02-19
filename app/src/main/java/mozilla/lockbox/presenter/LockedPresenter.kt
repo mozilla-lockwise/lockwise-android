@@ -13,7 +13,7 @@ import mozilla.lockbox.R
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.RouteAction
-import mozilla.lockbox.action.Unlocking
+import mozilla.lockbox.action.UnlockingAction
 import mozilla.lockbox.extensions.debug
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
@@ -64,7 +64,7 @@ class LockedPresenter(
 
     private fun unlock() {
         dispatcher.dispatch(DataStoreAction.Unlock)
-        dispatcher.dispatch(Unlocking(false))
+        dispatcher.dispatch(UnlockingAction(false))
     }
 
     private fun unlockFallback() {
@@ -83,7 +83,7 @@ class LockedPresenter(
             .filter { !it.first && !it.second }
             .switchMap { settingStore.unlockWithFingerprint.take(1) }
             .doOnNext {
-                dispatcher.dispatch(Unlocking(true))
+                dispatcher.dispatch(UnlockingAction(true))
             }
             .subscribe {
                 if (fingerprintStore.isFingerprintAuthAvailable && it) {
@@ -99,7 +99,7 @@ class LockedPresenter(
         events
             .switchMap { settingStore.unlockWithFingerprint.take(1) }
             .doOnNext {
-                dispatcher.dispatch(Unlocking(true))
+                dispatcher.dispatch(UnlockingAction(true))
             }
             .subscribe {
                 if (fingerprintStore.isFingerprintAuthAvailable && it) {
