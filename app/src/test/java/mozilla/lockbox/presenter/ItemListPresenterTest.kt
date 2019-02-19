@@ -70,7 +70,7 @@ private val item2 = ServerPassword(
 private val item3 = ServerPassword(
     "ioupiouiuy",
     "www.dogs.org",
-    username = "",
+    username = null,
     password = "baaaaa",
     timesUsed = 0,
     timeCreated = 0L,

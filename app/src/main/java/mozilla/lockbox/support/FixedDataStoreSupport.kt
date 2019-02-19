@@ -90,15 +90,19 @@ internal fun createHostname(): String {
         "yandex.ru"
     )
     val prng = Random()
-    var protocol = protocolChoices[prng.nextInt(protocolChoices.size)]
+    val protocol = protocolChoices[prng.nextInt(protocolChoices.size)]
     val hostname = hostnameChoices[prng.nextInt(hostnameChoices.size)]
 
     return protocol + hostname
 }
 
-internal fun createUserId(): String {
-    var pos = getRandomInRange(1, 27)
-    return "fakeTester$pos"
+internal fun createUserId(): String? {
+    val pos = getRandomInRange(1, 27)
+    return if (pos % 7 == 0 || pos % 27 == 0) {
+        null
+    } else {
+        "fakeTester$pos"
+    }
 }
 
 internal fun getRandomInRange(lower: Int, upper: Int): Int {

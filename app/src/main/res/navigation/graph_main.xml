@@ -114,7 +114,7 @@
                 app:argType="string"/>
         <argument
                 android:name="itemUsername"
-                android:defaultValue="@string/no_username"
+                android:defaultValue="(no username)"
                 app:argType="string"/>
     </fragment>
 

@@ -121,7 +121,7 @@ class ItemDetailPresenterTest {
         ServerPassword(
             "id0",
             "https://www.mozilla.org",
-            "",
+            null,
             "woof",
             timesUsed = 0,
             timeCreated = 0L,
@@ -165,7 +165,7 @@ class ItemDetailPresenterTest {
         // test the results that the view gets.
         val obs = view.item ?: return fail("Expected an item")
         assertEquals(fakeCredentialNoUsername.hostname, obs.hostname)
-        assertEquals("", obs.username)
+        assertEquals(fakeCredentialNoUsername.username, obs.username)
         assertEquals(fakeCredentialNoUsername.password, obs.password)
         assertEquals(fakeCredentialNoUsername.id, obs.id)
     }
