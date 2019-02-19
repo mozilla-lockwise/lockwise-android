@@ -117,6 +117,19 @@ class ItemDetailPresenterTest {
         )
     }
 
+    private val fakeCredentialNoUsername: ServerPassword by lazy {
+        ServerPassword(
+            "id0",
+            "https://www.mozilla.org",
+            "",
+            "woof",
+            timesUsed = 0,
+            timeCreated = 0L,
+            timeLastUsed = 0L,
+            timePasswordChanged = 0L
+        )
+    }
+
     val subject = ItemDetailPresenter(view, fakeCredential.id, dispatcher, networkStore, dataStore, itemDetailStore)
 
     @Before
@@ -141,6 +154,20 @@ class ItemDetailPresenterTest {
         assertEquals(fakeCredential.username, obs.username)
         assertEquals(fakeCredential.password, obs.password)
         assertEquals(fakeCredential.id, obs.id)
+    }
+
+    @Test
+    fun `sends a detail view model to view with null username`() {
+        dataStore.getStub.onNext(fakeCredentialNoUsername.asOptional())
+
+        Assert.assertEquals(fakeCredential.id, dataStore.idArg)
+
+        // test the results that the view gets.
+        val obs = view.item ?: return fail("Expected an item")
+        assertEquals(fakeCredentialNoUsername.hostname, obs.hostname)
+        assertEquals("", obs.username)
+        assertEquals(fakeCredentialNoUsername.password, obs.password)
+        assertEquals(fakeCredentialNoUsername.id, obs.id)
     }
 
     @Test
@@ -172,6 +199,13 @@ class ItemDetailPresenterTest {
         )
 
         Assert.assertEquals(R.string.toast_username_copied, view.toastNotificationArgument)
+    }
+
+    @Test
+    fun `cannot copy username when null`() {
+
+
+
     }
 
     @Test

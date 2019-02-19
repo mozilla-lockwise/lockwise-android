@@ -89,8 +89,11 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         inputLayoutPassword.isHintAnimationEnabled = false
 
         inputUsername.readOnly = true
-        inputUsername.isClickable = true
-        inputUsername.isFocusable = true
+        if (inputUsername.text == null || inputUsername.text.toString() == getString(R.string.empty_string)) {
+            inputUsername.isClickable = true
+            inputUsername.isFocusable = true
+            inputUsername.setText(item.username, TextView.BufferType.NORMAL)
+        }
 
         inputPassword.readOnly = true
         inputPassword.isClickable = true
@@ -103,7 +106,6 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         btnHostnameLaunch.isClickable = false
 
         inputHostname.setText(item.hostname, TextView.BufferType.NORMAL)
-        inputUsername.setText(item.username, TextView.BufferType.NORMAL)
         inputPassword.setText(item.password, TextView.BufferType.NORMAL)
 
         // effect password visibility state

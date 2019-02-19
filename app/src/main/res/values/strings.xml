@@ -262,4 +262,7 @@
     <!-- This is the error message when autofill is triggered and Lockbox is in an error state. %s refers to the localized error message -->
     <string name="autofill_error_toast">Firefox Lockbox encountered an error: %s</string>
 
+    <!-- This is the placeholder text for an empty or null username. -->
+    <string name="no_username">(no username)</string>
+
 </resources>

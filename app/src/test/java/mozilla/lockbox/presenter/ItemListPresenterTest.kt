@@ -31,6 +31,7 @@ import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.NetworkStore
 import mozilla.lockbox.store.SettingStore
+import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.Optional
 import org.junit.Assert
 import org.junit.Before
@@ -46,7 +47,7 @@ import org.robolectric.annotation.Config
 import org.mockito.Mockito.`when` as whenCalled
 
 private val username = "dogs@dogs.com"
-private val password1 = ServerPassword(
+private val item1 = ServerPassword(
     "fdsfda",
     "https://www.mozilla.org",
     username,
@@ -56,7 +57,7 @@ private val password1 = ServerPassword(
     timeLastUsed = 1L,
     timePasswordChanged = 0L
 )
-private val password2 = ServerPassword(
+private val item2 = ServerPassword(
     "ghfdhg",
     "https://www.cats.org",
     username,
@@ -66,7 +67,7 @@ private val password2 = ServerPassword(
     timeLastUsed = 2L,
     timePasswordChanged = 0L
 )
-private val password3 = ServerPassword(
+private val item3 = ServerPassword(
     "ioupiouiuy",
     "www.dogs.org",
     username = "",
@@ -240,9 +241,21 @@ open class ItemListPresenterTest {
     }
 
     @Test
+    fun `empty username is mapped to no username placeholder`() {
+        // where item3 contains an empty username ""
+        val list = listOf(item1, item2, item3)
+        val expectedList = listOf(item2, item3, item1).map { it.toViewModel() }
+
+        dataStore.listStub.onNext(list)
+
+        Assert.assertEquals(expectedList, view.updateItemsArgument)
+        Assert.assertEquals(Constant.ServerPassword.noUsername, view.updateItemsArgument!![1].subtitle)
+    }
+
+    @Test
     fun receivingPasswordList_somePasswords() {
-        val list = listOf(password1, password2, password3)
-        val expectedList = listOf(password2, password3, password1).map { it.toViewModel() }
+        val list = listOf(item1, item2, item3)
+        val expectedList = listOf(item2, item3, item1).map { it.toViewModel() }
 
         dataStore.listStub.onNext(list)
 
@@ -252,10 +265,10 @@ open class ItemListPresenterTest {
 
     @Test
     fun `updates sort order of list when item sort order menu changes`() {
-        val list = listOf(password1, password2, password3)
+        val list = listOf(item1, item2, item3)
         dataStore.listStub.onNext(list)
-        val alphabetically = listOf(password2, password3, password1).map { it.toViewModel() }
-        val lastUsed = listOf(password3, password2, password1).map { it.toViewModel() }
+        val alphabetically = listOf(item2, item3, item1).map { it.toViewModel() }
+        val lastUsed = listOf(item3, item2, item1).map { it.toViewModel() }
 
         // default
         Assert.assertEquals(alphabetically, view.updateItemsArgument)

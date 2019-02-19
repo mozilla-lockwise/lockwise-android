@@ -79,6 +79,7 @@ class ItemListPresenter(
             }
             .addTo(compositeDisposable)
 
+        // .mapToItemViewModelList() handles the no username situation
         Observables.combineLatest(dataStore.list, settingStore.itemListSortOrder)
             .distinctUntilChanged()
             .map { pair ->
@@ -91,6 +92,7 @@ class ItemListPresenter(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(view::updateItems)
             .addTo(compositeDisposable)
+
 
         settingStore.itemListSortOrder
             .distinctUntilChanged()

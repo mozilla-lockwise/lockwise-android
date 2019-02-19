@@ -9,11 +9,18 @@ package mozilla.lockbox.extensions
 import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.model.ItemViewModel
+import mozilla.lockbox.support.Constant
 
 fun ServerPassword.toViewModel(): ItemViewModel {
-    val username = this.username ?: ""
+    val username =
+        if (this.username != null && this.username != "") {
+            this.username
+        }
+        else {
+            Constant.ServerPassword.noUsername
+        }
     val hostname = titleFromHostname(this.hostname)
-    return ItemViewModel(hostname, username, this.id)
+    return ItemViewModel(hostname, username!!, this.id)
 }
 
 fun ServerPassword.toDetailViewModel(): ItemDetailViewModel {
@@ -22,7 +29,8 @@ fun ServerPassword.toDetailViewModel(): ItemDetailViewModel {
 
 private fun titleFromHostname(hostname: String): String {
     return hostname
-            .replace(Regex("^http://"), "")
-            .replace(Regex("^https://"), "")
-            .replace(Regex("^www\\d*\\."), "")
+        .replace(Regex("^http://"), "")
+        .replace(Regex("^https://"), "")
+        .replace(Regex("^www\\d*\\."), "")
 }
+
