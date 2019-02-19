@@ -180,7 +180,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="236"
+            line="260"
             column="13"/>
     </issue>
 
@@ -211,5 +211,4 @@
             line="154"
             column="17"/>
     </issue>
-
 </issues>

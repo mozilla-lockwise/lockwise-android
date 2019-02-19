@@ -10,11 +10,15 @@ import io.reactivex.subjects.PublishSubject
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.store.FingerprintStore
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
+import org.mockito.Mock
+import org.mockito.Mockito
 
 class WelcomePresenterTest {
-    class FakeView : WelcomeView {
+    class FakeWelcomeView : WelcomeView {
         val learnMoreStub = PublishSubject.create<Unit>()
         override val learnMoreClicks: Observable<Unit> = learnMoreStub
 
@@ -23,30 +27,37 @@ class WelcomePresenterTest {
             get() = getStartedStub
     }
 
-    val view = FakeView()
-    val dispatcher = Dispatcher()
+    @Mock
+    val fingerprintStore = Mockito.mock(FingerprintStore::class.java)
+    var isDeviceSecureStub: Boolean = false
 
+    val view = FakeWelcomeView()
+
+    val dispatcher = Dispatcher()
     val dispatcherObserver = TestObserver.create<Action>()
 
-    val subject = WelcomePresenter(view, dispatcher)
+    val subject = WelcomePresenter(view, dispatcher, fingerprintStore)
 
     @Before
     fun setUp() {
         dispatcher.register.subscribe(dispatcherObserver)
+        Mockito.`when`(fingerprintStore.isKeyguardDeviceSecure).thenReturn(isDeviceSecureStub)
+
         subject.onViewReady()
     }
 
     @Test
-    fun `get started clicks`() {
+    fun `get started clicks checks device security`() {
+        isDeviceSecureStub = true
         view.getStartedStub.onNext(Unit)
 
-        dispatcherObserver.assertValue(RouteAction.Login)
+        val routeAction = dispatcherObserver.values().first() as RouteAction
+        Assert.assertTrue(routeAction is RouteAction.Dialog.OnboardingSecurityDialog)
     }
 
     @Test
     fun `learn more clicks`() {
         view.learnMoreStub.onNext(Unit)
-
         dispatcherObserver.assertValue(RouteAction.AppWebPage.FaqWelcome)
     }
 }

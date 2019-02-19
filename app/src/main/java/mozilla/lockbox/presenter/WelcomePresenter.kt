@@ -11,6 +11,7 @@ import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
+import mozilla.lockbox.store.FingerprintStore
 
 interface WelcomeView {
     val getStartedClicks: Observable<Unit>
@@ -19,15 +20,25 @@ interface WelcomeView {
 
 class WelcomePresenter(
     private val view: WelcomeView,
-    private val dispatcher: Dispatcher = Dispatcher.shared
+    private val dispatcher: Dispatcher = Dispatcher.shared,
+    private val fingerprintStore: FingerprintStore = FingerprintStore.shared
 ) : Presenter() {
     override fun onViewReady() {
         view.getStartedClicks
-                .subscribe { dispatcher.dispatch(RouteAction.Login) }
-                .addTo(compositeDisposable)
+            .map {
+                if (fingerprintStore.isKeyguardDeviceSecure)
+                    RouteAction.Login
+                else {
+                    RouteAction.Dialog.OnboardingSecurityDialog
+                }
+            }
+            .subscribe(dispatcher::dispatch)
+            .addTo(compositeDisposable)
 
         view.learnMoreClicks
-            .subscribe { dispatcher.dispatch(RouteAction.AppWebPage.FaqWelcome) }
+            .subscribe {
+                dispatcher.dispatch(RouteAction.AppWebPage.FaqWelcome)
+            }
             .addTo(compositeDisposable)
     }
 }

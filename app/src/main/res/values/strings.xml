@@ -241,6 +241,16 @@
     <!-- This description of the app convenience is shown on the final onboarding screen. -->
     <string name="convenience_description">Unlock the app with ease using your fingerprint</string>
 
+    <!-- This is the title of the device security dialog box. -->
+    <string name="secure_your_device">Secure your device.</string>
+    <!-- This is the description explaining the device security requirements. -->
+    <string name="device_security_description">You should use a Pattern, PIN, or Password to lock your phone. Without this, anyone who has your phone can access the information saved here. </string>
+    <!-- This is the skip button description on the device security dialog box. -->
+    <string name="skip_button">Skip</string>
+    <!-- This is the the button description on the device security dialog box which routes to system security settings. -->
+    <string name="set_up_now">Set Up Now</string>
+
+
     <!-- This header appears above the Privacy page of the mozilla-lockbox website. -->
     <string name="privacy">Privacy</string>
 

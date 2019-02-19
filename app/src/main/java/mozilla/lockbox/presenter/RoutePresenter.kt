@@ -21,10 +21,8 @@ import mozilla.lockbox.R
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.action.SettingAction
-import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.extensions.view.AlertDialogHelper
 import mozilla.lockbox.extensions.view.AlertState
-import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
@@ -32,11 +30,10 @@ import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.support.AutoLockSupport
-import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.view.AppWebPageFragmentArgs
-import mozilla.lockbox.view.DialogFragment
 import mozilla.lockbox.view.FingerprintAuthDialogFragment
 import mozilla.lockbox.view.ItemDetailFragmentArgs
+import mozilla.lockbox.view.DialogFragment
 
 @ExperimentalCoroutinesApi
 class RoutePresenter(
@@ -75,7 +72,8 @@ class RoutePresenter(
             is RouteAction.OpenWebsite -> openWebsite(action.url)
             is RouteAction.SystemSetting -> openSetting(action)
             is RouteAction.AutoLockSetting -> showAutoLockSelections()
-            is RouteAction.DialogFragment -> showDialogFragment(FingerprintAuthDialogFragment(), action)
+            is RouteAction.DialogFragment.FingerprintDialog ->
+                showDialogFragment(FingerprintAuthDialogFragment(), action)
             is RouteAction.Dialog -> showDialog(action)
             is RouteAction.AppWebPage -> navigateToFragment(action, R.id.fragment_webview, bundle(action))
         }
@@ -101,11 +99,12 @@ class RoutePresenter(
             is RouteAction.Dialog.SecurityDisclaimer -> showSecurityDisclaimerDialog()
             is RouteAction.Dialog.UnlinkDisclaimer -> showUnlinkDisclaimerDialog()
             is RouteAction.Dialog.NoNetworkDisclaimer -> showNoNetworkDialog()
+            is RouteAction.Dialog.OnboardingSecurityDialog -> showOnboardingSecurityDialog()
         }
 
         dialogStateObservable
             .map { alertState ->
-                val action: Action? = when (alertState) {
+                when (alertState) {
                     AlertState.BUTTON_POSITIVE -> {
                         destination.positiveButtonAction
                     }
@@ -113,12 +112,27 @@ class RoutePresenter(
                         destination.negativeButtonAction
                     }
                 }
-
-                action.asOptional()
             }
-            .filterNotNull()
+            .flatMapIterable { it }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
+
+//        dialogStateObservable
+//            .subscribe { alertState ->
+//                when (alertState) {
+//                    AlertState.BUTTON_POSITIVE -> {
+//                        destination.positiveButtonAction.forEach {
+//                            dispatcher.dispatch(it)
+//                        }
+//                    }
+//                    AlertState.BUTTON_NEGATIVE -> {
+//                        destination.negativeButtonAction.forEach {
+//                            dispatcher.dispatch(it)
+//                        }
+//                    }
+//                }
+//            }
+//            .addTo(compositeDisposable)
     }
 
     private fun showAutoLockSelections() {
@@ -164,6 +178,16 @@ class RoutePresenter(
             R.string.no_device_security_message,
             R.string.set_up_security_button,
             R.string.cancel
+        )
+    }
+
+    private fun showOnboardingSecurityDialog(): Observable<AlertState> {
+        return AlertDialogHelper.showAlertDialog(
+            activity,
+            R.string.secure_your_device,
+            R.string.device_security_description,
+            R.string.set_up_now,
+            R.string.skip_button
         )
     }
 
