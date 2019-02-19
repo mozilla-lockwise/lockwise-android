@@ -103,21 +103,36 @@ class RoutePresenter(
         }
 
         dialogStateObservable
-            .subscribe { alertState ->
+            .map { alertState ->
                 when (alertState) {
                     AlertState.BUTTON_POSITIVE -> {
-                        destination.positiveButtonAction.forEach {
-                            dispatcher.dispatch(it)
-                        }
+                        destination.positiveButtonAction
                     }
                     AlertState.BUTTON_NEGATIVE -> {
-                        destination.negativeButtonAction.forEach {
-                            dispatcher.dispatch(it)
-                        }
+                        destination.negativeButtonAction
                     }
                 }
             }
+            .flatMapIterable { it }
+            .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
+
+//        dialogStateObservable
+//            .subscribe { alertState ->
+//                when (alertState) {
+//                    AlertState.BUTTON_POSITIVE -> {
+//                        destination.positiveButtonAction.forEach {
+//                            dispatcher.dispatch(it)
+//                        }
+//                    }
+//                    AlertState.BUTTON_NEGATIVE -> {
+//                        destination.negativeButtonAction.forEach {
+//                            dispatcher.dispatch(it)
+//                        }
+//                    }
+//                }
+//            }
+//            .addTo(compositeDisposable)
     }
 
     private fun showAutoLockSelections() {

@@ -31,11 +31,14 @@ class WelcomePresenter(
                 else {
                     RouteAction.Dialog.OnboardingSecurityDialog
                 }
-            }.subscribe(dispatcher::dispatch)
+            }
+            .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
 
         view.learnMoreClicks
-            .subscribe { dispatcher.dispatch(RouteAction.AppWebPage.FaqWelcome) }
+            .subscribe {
+                dispatcher.dispatch(RouteAction.AppWebPage.FaqWelcome)
+            }
             .addTo(compositeDisposable)
     }
 }
