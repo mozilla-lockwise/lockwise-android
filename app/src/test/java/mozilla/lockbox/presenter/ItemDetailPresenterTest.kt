@@ -24,6 +24,7 @@ import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.ItemDetailStore
 import mozilla.lockbox.store.NetworkStore
+import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.asOptional
 import org.junit.Assert
@@ -119,9 +120,9 @@ class ItemDetailPresenterTest {
 
     private val fakeCredentialNoUsername: ServerPassword by lazy {
         ServerPassword(
-            "id0",
+            "id1",
             "https://www.mozilla.org",
-            null,
+            "",
             "woof",
             timesUsed = 0,
             timeCreated = 0L,
@@ -131,21 +132,23 @@ class ItemDetailPresenterTest {
     }
 
     val subject = ItemDetailPresenter(view, fakeCredential.id, dispatcher, networkStore, dataStore, itemDetailStore)
-
+    var wasUsernameCopied = false
     @Before
     fun setUp() {
         dispatcher.register.subscribe(dispatcherObserver)
 
         Mockito.`when`(networkStore.isConnected).thenReturn(isConnected)
+
         networkStore.connectivityManager = connectivityManager
         view.networkAvailable.subscribe(isConnectedObserver)
 
         subject.onViewReady()
-        dataStore.getStub.onNext(fakeCredential.asOptional())
     }
 
     @Test
     fun `sends a detail view model to view`() {
+        dataStore.getStub.onNext(fakeCredential.asOptional())
+
         Assert.assertEquals(fakeCredential.id, dataStore.idArg)
 
         // test the results that the view gets.
@@ -160,9 +163,6 @@ class ItemDetailPresenterTest {
     fun `sends a detail view model to view with null username`() {
         dataStore.getStub.onNext(fakeCredentialNoUsername.asOptional())
 
-        Assert.assertEquals(fakeCredential.id, dataStore.idArg)
-
-        // test the results that the view gets.
         val obs = view.item ?: return fail("Expected an item")
         assertEquals(fakeCredentialNoUsername.hostname, obs.hostname)
         assertEquals(fakeCredentialNoUsername.username, obs.username)
@@ -181,6 +181,8 @@ class ItemDetailPresenterTest {
 
     @Test
     fun `opens a browser when tapping on the hostname`() {
+        dataStore.getStub.onNext(fakeCredential.asOptional())
+
         val clicks = view.hostnameClicks
         clicks.onNext(Unit)
 
@@ -189,6 +191,8 @@ class ItemDetailPresenterTest {
 
     @Test
     fun `tapping on usernamecopy`() {
+        dataStore.getStub.onNext(fakeCredential.asOptional())
+
         view.usernameCopyClicks.onNext(Unit)
 
         dispatcherObserver.assertValueSequence(
@@ -203,13 +207,36 @@ class ItemDetailPresenterTest {
 
     @Test
     fun `cannot copy username when null`() {
+        dataStore.getStub.onNext(fakeCredentialNoUsername.asOptional())
+        val obs = view.item ?: return fail("Expected an item")
+        assertEquals("", obs.username)
 
+        var wasUsernameCopied = false
+        view.usernameCopyClicks
+            .map {
+                wasUsernameCopied = tryTapUsernameCopy(view.item!!)
+            }
+        view.usernameCopyClicks.onNext(Unit)
 
+        Assert.assertEquals(null, view.toastNotificationArgument)
+        Assert.assertEquals(false, wasUsernameCopied)
+    }
 
+    private fun tryTapUsernameCopy(item: ItemDetailViewModel) : Boolean {
+
+        if (item.username != null && item.username != Constant.ServerPassword.noUsername) {
+            dispatcher.dispatch(ClipboardAction.CopyUsername(item.username.toString()))
+            dispatcher.dispatch(DataStoreAction.Touch(item.id))
+            view.showToastNotification(R.string.toast_username_copied)
+            return true
+        }
+        return false
     }
 
     @Test
     fun `tapping on passwordcopy`() {
+        dataStore.getStub.onNext(fakeCredential.asOptional())
+
         view.passwordCopyClicks.onNext(Unit)
 
         dispatcherObserver.assertValueSequence(

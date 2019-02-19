@@ -25,6 +25,7 @@ import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.ItemDetailStore
 import mozilla.lockbox.store.NetworkStore
+import mozilla.lockbox.support.Constant
 
 interface ItemDetailView {
     val usernameCopyClicks: Observable<Unit>
@@ -53,9 +54,8 @@ class ItemDetailPresenter(
 
     override fun onViewReady() {
         handleClicks(view.usernameCopyClicks) {
-            val username = it.username ?: ""
-            if (username.isNotEmpty()) {
-                dispatcher.dispatch(ClipboardAction.CopyUsername(username))
+            if (it.username != null && it.username != Constant.ServerPassword.noUsername) {
+                dispatcher.dispatch(ClipboardAction.CopyUsername(it.username.toString()))
                 dispatcher.dispatch(DataStoreAction.Touch(it.id))
                 view.showToastNotification(R.string.toast_username_copied)
             }

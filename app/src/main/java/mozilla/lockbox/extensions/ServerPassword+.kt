@@ -18,6 +18,7 @@ fun ServerPassword.toViewModel(): ItemViewModel {
 }
 
 fun ServerPassword.toDetailViewModel(): ItemDetailViewModel {
+    val username = this.username ?: " "
     return ItemDetailViewModel(id, titleFromHostname(hostname), hostname, username, password)
 }
 

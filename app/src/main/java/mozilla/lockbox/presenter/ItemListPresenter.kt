@@ -93,7 +93,6 @@ class ItemListPresenter(
             .subscribe(view::updateItems)
             .addTo(compositeDisposable)
 
-
         settingStore.itemListSortOrder
             .distinctUntilChanged()
             .observeOn(AndroidSchedulers.mainThread())
