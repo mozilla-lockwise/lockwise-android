@@ -112,10 +112,6 @@
                 android:name="itemId"
                 android:defaultValue="MISSING_ID"
                 app:argType="string"/>
-        <argument
-                android:name="itemUsername"
-                android:defaultValue="(no username)"
-                app:argType="string"/>
     </fragment>
 
     <fragment

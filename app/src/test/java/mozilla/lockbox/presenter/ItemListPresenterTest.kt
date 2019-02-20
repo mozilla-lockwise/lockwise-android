@@ -32,7 +32,6 @@ import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.NetworkStore
 import mozilla.lockbox.store.SettingStore
-import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.Optional
 import org.junit.Assert
 import org.junit.Before
@@ -199,7 +198,6 @@ open class ItemListPresenterTest {
     @Mock
     val context: Context = Mockito.mock(Context::class.java)
 
-
     val subject =
         ItemListPresenter(
             view,
@@ -244,18 +242,6 @@ open class ItemListPresenterTest {
         view.itemSelectedStub.onNext(ItemViewModel("title", "subtitle", id))
 
         dispatcherObserver.assertLastValue(RouteAction.ItemDetail(id))
-    }
-
-    @Test
-    fun `empty username is mapped to no username placeholder`() {
-        // where item3 contains an empty username ""
-        val list = listOf(item1, item2, item3)
-        val expectedList = listOf(item2, item3, item1).map { it.toViewModel() }
-
-        dataStore.listStub.onNext(list)
-
-        Assert.assertEquals(expectedList, view.updateItemsArgument)
-        Assert.assertEquals(context.resources.getString(R.string.no_username), view.updateItemsArgument!![1].subtitle)
     }
 
     @Test

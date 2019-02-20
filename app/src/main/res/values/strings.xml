@@ -264,7 +264,4 @@
 
     <!-- This is the placeholder text for an empty or null username. -->
     <string name="no_username">(no username)</string>
-    <!-- This is the placeholder empty string for an empty or null username. -->
-    <string name="placeholder_blank_username">  </string>
-
 </resources>

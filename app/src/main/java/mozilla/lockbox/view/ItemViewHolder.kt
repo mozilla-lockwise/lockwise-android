@@ -23,8 +23,8 @@ class ItemViewHolder(override val containerView: View) : ItemListCell(containerV
             }
         }
 
-    private fun setSubtitlePlaceholderText(subtitle: String?) : CharSequence {
-        return if(subtitle!!.isEmpty()) {
+    private fun setSubtitlePlaceholderText(subtitle: String?): CharSequence {
+        return if (subtitle!!.isEmpty()) {
             containerView.resources.getString(R.string.no_username)
         } else {
             subtitle
