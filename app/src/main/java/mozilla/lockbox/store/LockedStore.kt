@@ -7,8 +7,8 @@
 package mozilla.lockbox.store
 
 import io.reactivex.Observable
+import io.reactivex.rxkotlin.Observables
 import io.reactivex.subjects.BehaviorSubject
-import io.reactivex.subjects.Subject
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.LifecycleAction
@@ -29,25 +29,29 @@ open class LockedStore(
         dispatcher.register
             .filterByType(FingerprintAuthAction::class.java)
 
-    val unlocking: Observable<Boolean> = BehaviorSubject.createDefault(false)
-    val forceLock: Observable<Boolean> = BehaviorSubject.createDefault(false)
+    private val unlocking = BehaviorSubject.createDefault(false)
+    private val forceLock = BehaviorSubject.createDefault(false)
+
+    open val canLaunchAuthenticationOnForeground: Observable<Boolean>
+        get() = Observables.combineLatest(unlocking, forceLock)
+            .map { !it.first && !it.second }
 
     init {
         dispatcher.register
             .filterByType(DataStoreAction::class.java)
             // the DataStoreAction.Lock is only dispatched when tapping "Lock Now"
             .map { it == DataStoreAction.Lock }
-            .subscribe(forceLock as Subject)
+            .subscribe(forceLock)
 
         lifecycleStore.lifecycleEvents
             .filter { it == LifecycleAction.Background }
             .map { false }
-            .subscribe(forceLock as Subject)
+            .subscribe(forceLock)
 
         dispatcher.register
             .filterByType(UnlockingAction::class.java)
             .map { it.currently }
             .debug("new unlocking status")
-            .subscribe(unlocking as Subject)
+            .subscribe(unlocking)
     }
 }

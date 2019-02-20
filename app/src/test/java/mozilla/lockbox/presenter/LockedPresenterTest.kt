@@ -12,15 +12,12 @@ import junit.framework.Assert.assertFalse
 import junit.framework.Assert.assertTrue
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.FingerprintAuthAction
-import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.UnlockingAction
-import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.model.FingerprintAuthCallback
 import mozilla.lockbox.store.FingerprintStore
-import mozilla.lockbox.store.LifecycleStore
 import mozilla.lockbox.store.LockedStore
 import mozilla.lockbox.store.SettingStore
 import org.junit.Assert
@@ -59,6 +56,8 @@ class LockedPresenterTest {
         val onAuth = PublishSubject.create<FingerprintAuthAction>()
         override val onAuthentication: Observable<FingerprintAuthAction>
             get() = onAuth
+
+        override val canLaunchAuthenticationOnForeground: Observable<Boolean> = PublishSubject.create()
     }
 
     class FakeSettingStore : SettingStore() {
@@ -85,12 +84,11 @@ class LockedPresenterTest {
     fun setUp() {
         context = RuntimeEnvironment.application.applicationContext
         dispatcher.register.subscribe(dispatcherObserver)
+        subject.onViewReady()
     }
 
     @Test
     fun `unlock button tap shows fingerprint dialog`() {
-        subject.onViewReady()
-
         `when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(true)
         view.unlockButtonTaps.onNext(Unit)
         assertTrue((dispatcherObserver.values().first() as UnlockingAction).currently)
@@ -101,8 +99,6 @@ class LockedPresenterTest {
 
     @Test
     fun `unlock button tap fallback if no fingerprint`() {
-        subject.onViewReady()
-
         `when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(false)
         `when`(fingerprintStore.isKeyguardDeviceSecure).thenReturn(true)
         view.unlockButtonTaps.onNext(Unit)
@@ -112,8 +108,6 @@ class LockedPresenterTest {
 
     @Test
     fun `unlock button tap fallback on fingerprint error`() {
-        subject.onViewReady()
-
         `when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(true)
         `when`(fingerprintStore.isKeyguardDeviceSecure).thenReturn(true)
         lockedStore.onAuth.onNext(FingerprintAuthAction.OnAuthentication(FingerprintAuthCallback.OnError))
@@ -121,14 +115,8 @@ class LockedPresenterTest {
     }
 
     @Test
-    fun `onviewready when not forcelocked and not already started unlocking shows fingerprint dialog`() {
-        subject.onViewReady()
-
-        (lockedStore.unlocking as Subject).onNext(false)
-        (lockedStore.forceLock as Subject).onNext(false)
-
-        Thread.sleep(110)
-
+    fun `onviewready when can launch authentication shows fingerprint dialog`() {
+        (lockedStore.canLaunchAuthenticationOnForeground as Subject).onNext(true)
         `when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(true)
         settingStore.unlock.onNext(true)
         val routeAction = dispatcherObserver.values().last() as RouteAction.DialogFragment
@@ -136,13 +124,8 @@ class LockedPresenterTest {
     }
 
     @Test
-    fun `onviewready when not forcelocked and not already started unlocking if no fingerprint`() {
-        subject.onViewReady()
-
-        (lockedStore.unlocking as Subject).onNext(false)
-        (lockedStore.forceLock as Subject).onNext(false)
-
-        Thread.sleep(110)
+    fun `onviewready when can launch authentication if no fingerprint`() {
+        (lockedStore.canLaunchAuthenticationOnForeground as Subject).onNext(true)
 
         `when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(false)
         `when`(fingerprintStore.isKeyguardDeviceSecure).thenReturn(true)
@@ -152,8 +135,6 @@ class LockedPresenterTest {
 
     @Test
     fun `foreground action fallback on fingerprint error`() {
-        subject.onViewReady()
-
         `when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(true)
         `when`(fingerprintStore.isKeyguardDeviceSecure).thenReturn(true)
         lockedStore.onAuth.onNext(FingerprintAuthAction.OnAuthentication(FingerprintAuthCallback.OnError))
@@ -162,8 +143,6 @@ class LockedPresenterTest {
 
     @Test
     fun `handle success authentication callback`() {
-        subject.onViewReady()
-
         lockedStore.onAuth.onNext(FingerprintAuthAction.OnAuthentication(FingerprintAuthCallback.OnAuth))
 
         assertEquals(2, dispatcherObserver.valueCount())
@@ -173,8 +152,6 @@ class LockedPresenterTest {
 
     @Test
     fun `handle error authentication callback`() {
-        subject.onViewReady()
-
         `when`(fingerprintStore.isKeyguardDeviceSecure).thenReturn(false)
         lockedStore.onAuth.onNext(FingerprintAuthAction.OnAuthentication(FingerprintAuthCallback.OnError))
 
@@ -185,8 +162,6 @@ class LockedPresenterTest {
 
     @Test
     fun `handle unlock confirmed true`() {
-        subject.onViewReady()
-
         view.unlockConfirmedStub.onNext(true)
 
         assertEquals(2, dispatcherObserver.valueCount())
@@ -196,8 +171,6 @@ class LockedPresenterTest {
 
     @Test
     fun `handle unlock confirmed false`() {
-        subject.onViewReady()
-
         view.unlockConfirmedStub.onNext(false)
         Assert.assertEquals(0, dispatcherObserver.valueCount())
     }

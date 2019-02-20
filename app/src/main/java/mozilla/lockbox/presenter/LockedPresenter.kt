@@ -7,7 +7,6 @@
 package mozilla.lockbox.presenter
 
 import io.reactivex.Observable
-import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.R
 import mozilla.lockbox.action.DataStoreAction
@@ -20,6 +19,7 @@ import mozilla.lockbox.model.FingerprintAuthCallback
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.LockedStore
 import mozilla.lockbox.store.SettingStore
+import mozilla.lockbox.support.isTesting
 import java.util.concurrent.TimeUnit
 
 interface LockedView {
@@ -35,15 +35,14 @@ class LockedPresenter(
     private val lockedStore: LockedStore = LockedStore.shared,
     private val settingStore: SettingStore = SettingStore.shared
 ) : Presenter() {
+    private val delay: Long = if (isTesting()) 0 else 1
     override fun onViewReady() {
         // every time onViewReady is called, try to launch device authentication after 1 second
         Observable.just(Unit)
-            .delay(1, TimeUnit.SECONDS)
-            .switchMap { Observables.combineLatest(lockedStore.unlocking, lockedStore.forceLock) }
+            .delay(delay, TimeUnit.SECONDS)
+            .switchMap { lockedStore.canLaunchAuthenticationOnForeground }
             .take(1)
-            // make sure that we have not already starting an unlocking flow (returning from PIN screen)
-            // or reached the lock screen by tapping "Lock Now"
-            .filter { !it.first && !it.second }
+            .filter { it }
             .map { Unit }
             // make sure to listen for tapping the unlock button! it should always work.
             .mergeWith(view.unlockButtonTaps)

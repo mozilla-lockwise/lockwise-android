@@ -8,4 +8,6 @@ package mozilla.lockbox.store
 
 import org.junit.Assert.*
 
-class LockedStoreTest
+class LockedStoreTest {
+
+}
