@@ -40,8 +40,7 @@ class LockedPresenter(
         // every time onViewReady is called, try to launch device authentication after 1 second
         Observable.just(Unit)
             .delay(delay, TimeUnit.SECONDS)
-            .switchMap { lockedStore.canLaunchAuthenticationOnForeground }
-            .take(1)
+            .switchMap { lockedStore.canLaunchAuthenticationOnForeground.take(1) }
             .filter { it }
             .map { Unit }
             // make sure to listen for tapping the unlock button! it should always work.
@@ -51,8 +50,7 @@ class LockedPresenter(
             .doOnNext {
                 dispatcher.dispatch(UnlockingAction(true))
             }
-            .switchMap { settingStore.unlockWithFingerprint }
-            .take(1)
+            .switchMap { settingStore.unlockWithFingerprint.take(1) }
             .subscribe {
                 if (fingerprintStore.isFingerprintAuthAvailable && it) {
                     dispatcher.dispatch(RouteAction.DialogFragment.FingerprintDialog(R.string.fingerprint_dialog_title))
