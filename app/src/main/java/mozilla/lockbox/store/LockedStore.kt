@@ -13,7 +13,6 @@ import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.UnlockingAction
-import mozilla.lockbox.extensions.debug
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 
@@ -25,16 +24,16 @@ open class LockedStore(
         val shared = LockedStore()
     }
 
-    open val onAuthentication: Observable<FingerprintAuthAction> =
-        dispatcher.register
-            .filterByType(FingerprintAuthAction::class.java)
-
     private val unlocking = BehaviorSubject.createDefault(false)
     private val forceLock = BehaviorSubject.createDefault(false)
 
     open val canLaunchAuthenticationOnForeground: Observable<Boolean>
         get() = Observables.combineLatest(unlocking, forceLock)
             .map { !it.first && !it.second }
+
+    open val onAuthentication: Observable<FingerprintAuthAction> =
+        dispatcher.register
+            .filterByType(FingerprintAuthAction::class.java)
 
     init {
         dispatcher.register
@@ -51,7 +50,6 @@ open class LockedStore(
         dispatcher.register
             .filterByType(UnlockingAction::class.java)
             .map { it.currently }
-            .debug("new unlocking status")
             .subscribe(unlocking)
     }
 }
