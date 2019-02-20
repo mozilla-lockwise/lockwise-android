@@ -6,6 +6,7 @@
 
 package mozilla.lockbox.presenter
 
+import android.content.Context
 import android.net.ConnectivityManager
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
@@ -38,6 +39,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
+import org.mockito.Mockito
 import org.mockito.Mockito.spy
 import org.mockito.Mockito.verify
 import org.powermock.api.mockito.PowerMockito
@@ -194,6 +196,10 @@ open class ItemListPresenterTest {
     val dispatcher = Dispatcher()
     private val dispatcherObserver = TestObserver.create<Action>()!!
 
+    @Mock
+    val context: Context = Mockito.mock(Context::class.java)
+
+
     val subject =
         ItemListPresenter(
             view,
@@ -249,7 +255,7 @@ open class ItemListPresenterTest {
         dataStore.listStub.onNext(list)
 
         Assert.assertEquals(expectedList, view.updateItemsArgument)
-        Assert.assertEquals(Constant.ServerPassword.noUsername, view.updateItemsArgument!![1].subtitle)
+        Assert.assertEquals(context.resources.getString(R.string.no_username), view.updateItemsArgument!![1].subtitle)
     }
 
     @Test

@@ -222,9 +222,9 @@ class ItemDetailPresenterTest {
         Assert.assertEquals(false, wasUsernameCopied)
     }
 
-    private fun tryTapUsernameCopy(item: ItemDetailViewModel) : Boolean {
-
-        if (item.username != null && item.username != Constant.ServerPassword.noUsername) {
+    private fun tryTapUsernameCopy(item: ItemDetailViewModel): Boolean {
+        val noUsernamePlaceholder = "(no username)"
+        if (item.username != null && item.username != noUsernamePlaceholder) {
             dispatcher.dispatch(ClipboardAction.CopyUsername(item.username.toString()))
             dispatcher.dispatch(DataStoreAction.Touch(item.id))
             view.showToastNotification(R.string.toast_username_copied)

@@ -79,7 +79,6 @@ class ItemListPresenter(
             }
             .addTo(compositeDisposable)
 
-        // .mapToItemViewModelList() handles the no username situation
         Observables.combineLatest(dataStore.list, settingStore.itemListSortOrder)
             .distinctUntilChanged()
             .map { pair ->

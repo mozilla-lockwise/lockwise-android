@@ -89,7 +89,13 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         inputLayoutPassword.isHintAnimationEnabled = false
 
         inputUsername.readOnly = true
-        if (inputUsername.text == null || inputUsername.text.toString() == getString(R.string.empty_string)) {
+
+        if (item.username.isNullOrEmpty()) {
+            view!!.btnUsernameCopy.setColorFilter(resources.getColor(R.color.white_60_percent))
+            view!!.isClickable = false
+            view!!.isFocusable = false
+            inputUsername.setText(" ", TextView.BufferType.NORMAL)
+        } else {
             inputUsername.isClickable = true
             inputUsername.isFocusable = true
             inputUsername.setText(item.username, TextView.BufferType.NORMAL)

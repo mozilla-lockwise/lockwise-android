@@ -62,8 +62,4 @@ object Constant {
         const val errorTimeoutMillis: Long = 1600
         const val successDelayMillis: Long = 1300
     }
-
-    object ServerPassword {
-        const val noUsername: String = "(no username)"
-    }
 }
