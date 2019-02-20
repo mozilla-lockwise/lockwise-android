@@ -13,6 +13,7 @@ import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.R
+import mozilla.lockbox.action.AppWebPageAction
 import mozilla.lockbox.action.ClipboardAction
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.ItemDetailAction
@@ -76,7 +77,7 @@ class ItemDetailPresenter(
         }
 
         this.view.learnMoreClicks
-            .map { RouteAction.AppWebPage.FaqEdit }
+            .map { AppWebPageAction.FaqEdit }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
 

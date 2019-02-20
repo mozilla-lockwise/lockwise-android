@@ -10,7 +10,7 @@ import br.com.concretesolutions.kappuccino.actions.ClickActions.click
 import br.com.concretesolutions.kappuccino.assertions.VisibilityAssertions.displayed
 import mozilla.lockbox.R
 
-// Fingerprint Dialog
+// Fingerprint DialogAction
 class UIComponentRobot : BaseTestRobot {
     override fun exists() = displayed { id(R.id.uiComponents) }
 

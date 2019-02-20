@@ -14,6 +14,7 @@ import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.BuildConfig
 import mozilla.lockbox.R
+import mozilla.lockbox.action.AppWebPageAction
 import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.SettingAction
@@ -82,7 +83,7 @@ class SettingPresenter(
 
     private val learnMoreSendUsageDataObserver: Consumer<Unit>
         get() = Consumer {
-            dispatcher.dispatch(RouteAction.AppWebPage.Privacy)
+            dispatcher.dispatch(AppWebPageAction.Privacy)
         }
 
     override fun onViewReady() {

@@ -11,6 +11,7 @@ import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import mozilla.lockbox.R
+import mozilla.lockbox.action.AppWebPageAction
 import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.Setting
@@ -286,7 +287,7 @@ class SettingPresenterTest {
 
         (view.settingItem!![1] as ToggleSettingConfiguration).buttonObserver!!.accept(Unit)
 
-        dispatcherObserver.assertLastValue(RouteAction.AppWebPage.Privacy)
+        dispatcherObserver.assertLastValue(AppWebPageAction.Privacy)
     }
 
     @Test

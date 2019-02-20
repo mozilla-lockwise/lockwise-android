@@ -10,7 +10,7 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
@@ -51,7 +51,7 @@ class AccountSettingPresenter(
 
         view.disconnectButtonClicks
             .subscribe {
-                dispatcher.dispatch(RouteAction.Dialog.UnlinkDisclaimer)
+                dispatcher.dispatch(DialogAction.UnlinkDisclaimer)
             }
             .addTo(compositeDisposable)
     }

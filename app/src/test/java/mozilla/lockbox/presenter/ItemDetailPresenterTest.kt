@@ -13,6 +13,7 @@ import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.R
+import mozilla.lockbox.action.AppWebPageAction
 import mozilla.lockbox.action.ClipboardAction
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.ItemDetailAction
@@ -217,6 +218,6 @@ class ItemDetailPresenterTest {
     @Test
     fun `learn more clicks`() {
         view.learnMoreClickStub.onNext(Unit)
-        dispatcherObserver.assertLastValue(RouteAction.AppWebPage.FaqEdit)
+        dispatcherObserver.assertLastValue(AppWebPageAction.FaqEdit)
     }
 }

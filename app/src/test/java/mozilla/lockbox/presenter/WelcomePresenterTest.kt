@@ -7,6 +7,8 @@ package mozilla.lockbox.presenter
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
+import mozilla.lockbox.action.AppWebPageAction
+import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
@@ -52,12 +54,12 @@ class WelcomePresenterTest {
         view.getStartedStub.onNext(Unit)
 
         val routeAction = dispatcherObserver.values().first() as RouteAction
-        Assert.assertTrue(routeAction is RouteAction.Dialog.OnboardingSecurityDialog)
+        Assert.assertTrue(routeAction is DialogAction.OnboardingSecurityDialog)
     }
 
     @Test
     fun `learn more clicks`() {
         view.learnMoreStub.onNext(Unit)
-        dispatcherObserver.assertValue(RouteAction.AppWebPage.FaqWelcome)
+        dispatcherObserver.assertValue(AppWebPageAction.FaqWelcome)
     }
 }

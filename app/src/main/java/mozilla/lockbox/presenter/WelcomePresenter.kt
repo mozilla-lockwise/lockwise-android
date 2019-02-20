@@ -8,6 +8,8 @@ package mozilla.lockbox.presenter
 
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
+import mozilla.lockbox.action.AppWebPageAction
+import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
@@ -29,7 +31,7 @@ class WelcomePresenter(
                 if (fingerprintStore.isKeyguardDeviceSecure)
                     RouteAction.Login
                 else {
-                    RouteAction.Dialog.OnboardingSecurityDialog
+                    DialogAction.OnboardingSecurityDialog
                 }
             }
             .subscribe(dispatcher::dispatch)
@@ -37,7 +39,7 @@ class WelcomePresenter(
 
         view.learnMoreClicks
             .subscribe {
-                dispatcher.dispatch(RouteAction.AppWebPage.FaqWelcome)
+                dispatcher.dispatch(AppWebPageAction.FaqWelcome)
             }
             .addTo(compositeDisposable)
     }

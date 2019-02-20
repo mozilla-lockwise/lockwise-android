@@ -10,11 +10,9 @@ import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
-import mozilla.lockbox.R
 import mozilla.lockbox.flux.Action
-import mozilla.lockbox.support.Constant
 
-sealed class RouteAction(
+open class RouteAction(
     override val eventMethod: TelemetryEventMethod,
     override val eventObject: TelemetryEventObject
 ) : TelemetryAction {
@@ -33,73 +31,12 @@ sealed class RouteAction(
     data class SystemSetting(val setting: SettingIntent) :
         RouteAction(TelemetryEventMethod.show, TelemetryEventObject.settings_system)
 
-    sealed class Dialog(
-        val positiveButtonAction: List<Action> = emptyList(),
-        val negativeButtonAction: List<Action> = emptyList()
-    ) : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.dialog) {
-        object SecurityDisclaimer : Dialog(listOf(RouteAction.SystemSetting(SettingIntent.Security)))
-        object UnlinkDisclaimer : Dialog(listOf(LifecycleAction.UserReset))
-        object NoNetworkDisclaimer : Dialog()
-        object OnboardingSecurityDialog :
-            Dialog(
-                listOf(RouteAction.SystemSetting(SettingIntent.Security), RouteAction.Login),
-                listOf(RouteAction.Login)
-            )
-    }
-
     sealed class DialogFragment(
         @StringRes val dialogTitle: Int,
         @StringRes val dialogSubtitle: Int? = null
     ) : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.dialog) {
         class FingerprintDialog(@StringRes title: Int, @StringRes subtitle: Int? = null) :
             DialogFragment(dialogTitle = title, dialogSubtitle = subtitle)
-    }
-
-    sealed class AppWebPage(
-        val url: String? = null,
-        @StringRes val title: Int? = null,
-        eventObject: TelemetryEventObject
-    ) : RouteAction(TelemetryEventMethod.show, eventObject) {
-
-        object FaqList : AppWebPage(
-            Constant.Faq.topUri,
-            R.string.nav_menu_faq,
-            TelemetryEventObject.settings_faq)
-
-        object FaqWelcome : AppWebPage(
-            Constant.Faq.savedUri,
-            R.string.nav_menu_faq,
-            TelemetryEventObject.settings_faq)
-
-        object FaqSecurity : AppWebPage(
-            Constant.Faq.securityUri,
-            R.string.nav_menu_faq,
-            TelemetryEventObject.settings_faq)
-
-        object FaqSync : AppWebPage(
-            Constant.Faq.syncUri,
-            R.string.nav_menu_faq,
-            TelemetryEventObject.settings_faq)
-
-        object FaqCreate : AppWebPage(
-            Constant.Faq.createUri,
-            R.string.nav_menu_faq,
-            TelemetryEventObject.settings_faq)
-
-        object FaqEdit : AppWebPage(
-            Constant.Faq.editUri,
-            R.string.nav_menu_faq,
-            TelemetryEventObject.settings_faq)
-
-        object Privacy : AppWebPage(
-            Constant.Privacy.uri,
-            R.string.privacy,
-            TelemetryEventObject.settings_faq)
-
-        object SendFeedback : AppWebPage(
-            Constant.SendFeedback.uri,
-            R.string.nav_menu_feedback,
-            TelemetryEventObject.settings_provide_feedback)
     }
 
     sealed class Onboarding(
