@@ -110,7 +110,7 @@ open class SettingStore(
 
         rxPrefs
             .getBoolean(Keys.SEND_USAGE_DATA, Constant.SettingDefault.sendUsageData)
-        .asObservable()
+            .asObservable()
             .subscribe(sendUsageData as Subject)
 
         rxPrefs

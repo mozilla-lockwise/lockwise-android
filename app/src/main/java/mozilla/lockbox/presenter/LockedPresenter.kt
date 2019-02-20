@@ -14,7 +14,6 @@ import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.UnlockingAction
-import mozilla.lockbox.extensions.debug
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.model.FingerprintAuthCallback
@@ -37,11 +36,32 @@ class LockedPresenter(
     private val settingStore: SettingStore = SettingStore.shared
 ) : Presenter() {
     override fun onViewReady() {
-        val onViewReadyLaunch = Observable.just(Unit)
+        // every time onViewReady is called, try to launch device authentication after 1 second
+        Observable.just(Unit)
             .delay(1, TimeUnit.SECONDS)
-
-        launchUnlockWithEvent(onViewReadyLaunch)
-        alwaysLaunchUnlockWithEvent(view.unlockButtonTaps)
+            .switchMap { Observables.combineLatest(lockedStore.unlocking, lockedStore.forceLock) }
+            .take(1)
+            // make sure that we have not already starting an unlocking flow (returning from PIN screen)
+            // or reached the lock screen by tapping "Lock Now"
+            .filter { !it.first && !it.second }
+            .map { Unit }
+            // make sure to listen for tapping the unlock button! it should always work.
+            .mergeWith(view.unlockButtonTaps)
+            // once we've started the unlock process, we don't want further foregrounding events to
+            // launch the prompt again (i.e., cancelling your PIN entry to return to the unlock screen)
+            .doOnNext {
+                dispatcher.dispatch(UnlockingAction(true))
+            }
+            .switchMap { settingStore.unlockWithFingerprint }
+            .take(1)
+            .subscribe {
+                if (fingerprintStore.isFingerprintAuthAvailable && it) {
+                    dispatcher.dispatch(RouteAction.DialogFragment.FingerprintDialog(R.string.fingerprint_dialog_title))
+                } else {
+                    unlockFallback()
+                }
+            }
+            .addTo(compositeDisposable)
 
         view.unlockConfirmed
             .filter { it }
@@ -73,41 +93,5 @@ class LockedPresenter(
         } else {
             unlock()
         }
-    }
-
-    private fun launchUnlockWithEvent(events: Observable<Unit>) {
-        events
-            .switchMap { Observables.combineLatest(lockedStore.unlocking, lockedStore.forceLock) }
-            .take(1)
-            .debug("unlocking?")
-            .filter { !it.first && !it.second }
-            .switchMap { settingStore.unlockWithFingerprint.take(1) }
-            .doOnNext {
-                dispatcher.dispatch(UnlockingAction(true))
-            }
-            .subscribe {
-                if (fingerprintStore.isFingerprintAuthAvailable && it) {
-                    dispatcher.dispatch(RouteAction.DialogFragment.FingerprintDialog(R.string.fingerprint_dialog_title))
-                } else {
-                    unlockFallback()
-                }
-            }
-            .addTo(compositeDisposable)
-    }
-
-    private fun alwaysLaunchUnlockWithEvent(events: Observable<Unit>) {
-        events
-            .switchMap { settingStore.unlockWithFingerprint.take(1) }
-            .doOnNext {
-                dispatcher.dispatch(UnlockingAction(true))
-            }
-            .subscribe {
-                if (fingerprintStore.isFingerprintAuthAvailable && it) {
-                    dispatcher.dispatch(RouteAction.DialogFragment.FingerprintDialog(R.string.fingerprint_dialog_title))
-                } else {
-                    unlockFallback()
-                }
-            }
-            .addTo(compositeDisposable)
     }
 }

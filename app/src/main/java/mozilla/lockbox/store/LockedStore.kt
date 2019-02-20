@@ -19,7 +19,7 @@ import mozilla.lockbox.flux.Dispatcher
 
 open class LockedStore(
     val dispatcher: Dispatcher = Dispatcher.shared,
-    private val lifecycleStore: LifecycleStore = LifecycleStore.shared
+    lifecycleStore: LifecycleStore = LifecycleStore.shared
 ) {
     companion object {
         val shared = LockedStore()
@@ -29,12 +29,13 @@ open class LockedStore(
         dispatcher.register
             .filterByType(FingerprintAuthAction::class.java)
 
-    open val unlocking: Observable<Boolean> = BehaviorSubject.createDefault(false)
-    open val forceLock: Observable<Boolean> = BehaviorSubject.createDefault(false)
+    val unlocking: Observable<Boolean> = BehaviorSubject.createDefault(false)
+    val forceLock: Observable<Boolean> = BehaviorSubject.createDefault(false)
 
     init {
         dispatcher.register
             .filterByType(DataStoreAction::class.java)
+            // the DataStoreAction.Lock is only dispatched when tapping "Lock Now"
             .map { it == DataStoreAction.Lock }
             .subscribe(forceLock as Subject)
 
