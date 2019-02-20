@@ -9,10 +9,9 @@ package mozilla.lockbox.extensions
 import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.model.ItemViewModel
-import mozilla.lockbox.support.Constant
 
 fun ServerPassword.toViewModel(): ItemViewModel {
-    val username = this.username ?: Constant.ServerPassword.noUsername
+    val username = this.username ?: ""
     val hostname = titleFromHostname(this.hostname)
     return ItemViewModel(hostname, username, this.id)
 }
