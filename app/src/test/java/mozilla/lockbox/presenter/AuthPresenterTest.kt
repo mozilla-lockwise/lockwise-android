@@ -15,14 +15,19 @@ import mozilla.lockbox.ParsedStructure
 import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.autofill.FillResponseBuilder
 import mozilla.lockbox.extensions.assertLastValueMatches
+import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.store.DataStore
+import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.LockedStore
+import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.support.Optional
+import mozilla.lockbox.support.PublicSuffixSupport
 import mozilla.lockbox.support.asOptional
 import org.junit.Before
 import org.junit.Test
 
 internal class AuthPresenterTest : DisposingTest() {
-    class FakeLockedStore : LockedStore() {
+    class FakeLockedStore(dispatcher: Dispatcher) : LockedStore(dispatcher) {
         internal val _onAuth = PublishSubject.create<FingerprintAuthAction>()
         override val onAuthentication: Observable<FingerprintAuthAction>
             get() = _onAuth
@@ -50,7 +55,12 @@ internal class AuthPresenterTest : DisposingTest() {
             get() = TODO("not implemented")
     }
 
-    private val lockedStore = FakeLockedStore()
+    private val dispatcher = Dispatcher()
+    private val dataStore = DataStore(dispatcher)
+    private val lockedStore = FakeLockedStore(dispatcher)
+    private val fingerprintStore = FingerprintStore(dispatcher)
+    private val settingStore = SettingStore(dispatcher)
+    private val pslSupport = PublicSuffixSupport()
     private val view = FakeAuthView()
     private val responseBuilder = FillResponseBuilder(ParsedStructure(packageName = "mozilla.lockbox.testing"))
 
@@ -58,7 +68,16 @@ internal class AuthPresenterTest : DisposingTest() {
 
     @Before
     fun setUp() {
-        presenter = AuthPresenter(view, responseBuilder, lockedStore = lockedStore)
+        presenter = AuthPresenter(
+            view,
+            responseBuilder,
+            dispatcher = dispatcher,
+            fingerprintStore = fingerprintStore,
+            settingStore = settingStore,
+            lockedStore = lockedStore,
+            dataStore = dataStore,
+            pslSupport = pslSupport
+        )
         presenter.onViewReady()
     }
 
