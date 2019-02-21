@@ -62,6 +62,8 @@ internal class AuthPresenterTest : DisposingTest() {
         presenter.onViewReady()
     }
 
+    // TODO: Test the other paths
+
     @Test
     fun `tells view to finish with null on unlockConfirmed(false)`() {
         val obsFinish = createTestObserver<Optional<FillResponse>>()
