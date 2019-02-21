@@ -80,6 +80,19 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         }
     }
 
+    override fun showUsernamePlaceholder() {
+        view!!.btnUsernameCopy.setColorFilter(resources.getColor(R.color.white_60_percent))
+        view!!.isClickable = false
+        view!!.isFocusable = false
+        inputUsername.setText(" ", TextView.BufferType.NORMAL)
+    }
+
+    override fun showUsername(username: String) {
+        inputUsername.isClickable = true
+        inputUsername.isFocusable = true
+        inputUsername.setText(username, TextView.BufferType.NORMAL)
+    }
+
     override fun updateItem(item: ItemDetailViewModel) {
         assertOnUiThread()
         toolbar.title = item.title
@@ -91,14 +104,9 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         inputUsername.readOnly = true
 
         if (item.username.isNullOrEmpty()) {
-            view!!.btnUsernameCopy.setColorFilter(resources.getColor(R.color.white_60_percent))
-            view!!.isClickable = false
-            view!!.isFocusable = false
-            inputUsername.setText(" ", TextView.BufferType.NORMAL)
+
         } else {
-            inputUsername.isClickable = true
-            inputUsername.isFocusable = true
-            inputUsername.setText(item.username, TextView.BufferType.NORMAL)
+
         }
 
         inputPassword.readOnly = true

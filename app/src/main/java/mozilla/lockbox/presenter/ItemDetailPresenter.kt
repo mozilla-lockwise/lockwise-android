@@ -37,6 +37,8 @@ interface ItemDetailView {
     fun showToastNotification(@StringRes strId: Int)
     fun handleNetworkError(networkErrorVisibility: Boolean)
     //    val retryNetworkConnectionClicks: Observable<Unit>
+    fun showUsernamePlaceholder()
+    fun showUsername(username: String)
 }
 
 @ExperimentalCoroutinesApi
@@ -93,7 +95,15 @@ class ItemDetailPresenter(
             .filterNotNull()
             .doOnNext { credentials = it }
             .map { it.toDetailViewModel() }
-            .subscribe(view::updateItem)
+            .subscribe{
+                if(it.username.isNullOrEmpty()) {
+                    view.showUsernamePlaceholder()
+                }
+                else {
+                    view.showUsername(it.username)
+                    view.updateItem(it)
+                }
+            }
             .addTo(compositeDisposable)
 
         networkStore.isConnected
