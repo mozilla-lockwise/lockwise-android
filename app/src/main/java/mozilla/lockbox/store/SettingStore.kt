@@ -27,7 +27,8 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.support.Constant
 
 open class SettingStore(
-    val dispatcher: Dispatcher = Dispatcher.shared
+    val dispatcher: Dispatcher = Dispatcher.shared,
+    val fingerprintStore: FingerprintStore = FingerprintStore.shared
 ) : ContextStore {
     companion object {
         val shared = SettingStore()
@@ -38,6 +39,7 @@ open class SettingStore(
         const val ITEM_LIST_SORT_ORDER = "sort_order"
         const val UNLOCK_WITH_FINGERPRINT = "unlock_with_fingerprint"
         const val AUTO_LOCK_TIME = "auto_lock_time"
+        const val DEVICE_SECURITY_PRESENT = "device_security_present"
         const val UNLOCK_WITH_FINGERPRINT_PENDING_AUTH = "unlock_with_fingerprint_pending_auth"
     }
 
@@ -45,6 +47,7 @@ open class SettingStore(
     @RequiresApi(Build.VERSION_CODES.O)
     private lateinit var autofillManager: AutofillManager
     private val compositeDisposable = CompositeDisposable()
+    private val deviceSecurityWasPresent = ReplaySubject.createWithSize<Boolean>(1)
 
     open val sendUsageData: Observable<Boolean> = ReplaySubject.createWithSize(1)
     open val itemListSortOrder: Observable<Setting.ItemListSort> = ReplaySubject.createWithSize(1)
@@ -70,18 +73,31 @@ open class SettingStore(
             .filter { it == LifecycleAction.UserReset }
             .map { SettingAction.Reset }
 
+        val deviceSecurityAutolockTime = deviceSecurityWasPresent
+            // if the device security hasn't changed, don't change any settings
+            .filter { it == fingerprintStore.isDeviceSecure }
+            // updated value for device security
+            .doOnNext {
+                preferences.edit()
+                    .putBoolean(Keys.DEVICE_SECURITY_PRESENT, it)
+                    .apply()
+            }
+            .map {
+                if (it) SettingAction.AutoLockTime(Constant.SettingDefault.autoLockTime)
+                else SettingAction.AutoLockTime(Constant.SettingDefault.noSecurityAutoLockTime)
+            }
+
         dispatcher.register
             .filterByType(SettingAction::class.java)
             .mergeWith(resetObservable)
+            .mergeWith(deviceSecurityAutolockTime)
             .subscribe {
                 val edit = preferences.edit()
                 when (it) {
-                    is SettingAction.SendUsageData -> {
+                    is SettingAction.SendUsageData ->
                         edit.putBoolean(Keys.SEND_USAGE_DATA, it.sendUsageData)
-                    }
-                    is SettingAction.ItemListSortOrder -> {
+                    is SettingAction.ItemListSortOrder ->
                         edit.putString(Keys.ITEM_LIST_SORT_ORDER, it.sortOrder.name)
-                    }
                     is SettingAction.UnlockWithFingerprint ->
                         edit.putBoolean(Keys.UNLOCK_WITH_FINGERPRINT, it.unlockWithFingerprint)
                     is SettingAction.AutoLockTime ->
@@ -128,13 +144,26 @@ open class SettingStore(
 
         unlockWithFingerprintPendingAuth = rxPrefs.getBoolean(Keys.UNLOCK_WITH_FINGERPRINT_PENDING_AUTH).asObservable()
 
+        val defaultAutoLockTime = if (fingerprintStore.isDeviceSecure) Constant.SettingDefault.autoLockTime else Constant.SettingDefault.noSecurityAutoLockTime
+
         rxPrefs
-            .getString(Keys.AUTO_LOCK_TIME, Constant.SettingDefault.autoLockTime.name)
+            .getString(Keys.AUTO_LOCK_TIME, defaultAutoLockTime.name)
             .asObservable()
             .map {
                 Setting.AutoLockTime.valueOf(it)
             }
             .subscribe(autoLockTime as Subject)
+
+        rxPrefs
+            .getBoolean(Keys.DEVICE_SECURITY_PRESENT, fingerprintStore.isDeviceSecure)
+            .asObservable()
+            .subscribe(deviceSecurityWasPresent)
+
+        if (!preferences.contains(Keys.DEVICE_SECURITY_PRESENT)) {
+            preferences.edit()
+                .putBoolean(Keys.DEVICE_SECURITY_PRESENT, fingerprintStore.isDeviceSecure)
+                .apply()
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             autofillManager = context.getSystemService(AutofillManager::class.java)

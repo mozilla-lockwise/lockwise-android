@@ -47,6 +47,7 @@ object Constant {
     object SettingDefault {
         val itemListSort = Setting.ItemListSort.ALPHABETICALLY
         val autoLockTime = Setting.AutoLockTime.FiveMinutes
+        val noSecurityAutoLockTime = Setting.AutoLockTime.Never
         const val sendUsageData = true
         const val unlockWithFingerprint = false
     }
