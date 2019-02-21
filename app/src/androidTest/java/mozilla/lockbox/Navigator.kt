@@ -6,6 +6,7 @@
 
 package mozilla.lockbox
 
+import android.os.Build
 import android.provider.Settings
 import androidx.test.espresso.Espresso.closeSoftKeyboard
 import androidx.test.espresso.Espresso.pressBack
@@ -22,17 +23,22 @@ import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.robots.accountSettingScreen
+import mozilla.lockbox.robots.autofillOnboardingScreen
 import mozilla.lockbox.robots.disconnectDisclaimer
 import mozilla.lockbox.robots.filteredItemList
+import mozilla.lockbox.robots.fingerprintOnboardingScreen
 import mozilla.lockbox.robots.fxaLogin
 import mozilla.lockbox.robots.itemDetail
 import mozilla.lockbox.robots.itemList
 import mozilla.lockbox.robots.lockScreen
+import mozilla.lockbox.robots.onboardingConfirmationScreen
 import mozilla.lockbox.robots.securityDisclaimer
 import mozilla.lockbox.robots.settings
 import mozilla.lockbox.robots.welcome
 import mozilla.lockbox.store.DataStore
+import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.RouteStore
+import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.view.RootActivity
 import org.junit.Assert
 
@@ -92,6 +98,45 @@ class Navigator {
         fxaLogin { exists() }
     }
 
+    fun gotoFingerprintOnboarding() {
+        gotoFxALogin()
+        fxaLogin { tapPlaceholderLogin() }
+        checkAtFingerprintOnboarding()
+    }
+
+    fun checkAtFingerprintOnboarding() {
+        fingerprintOnboardingScreen { exists() }
+    }
+
+    fun gotoAutofillOnboarding() {
+        gotoFxALogin()
+        fxaLogin { tapPlaceholderLogin() }
+        checkAtFingerprintOnboarding()
+        fingerprintOnboardingScreen { tapSkip() }
+        checkAtAutofillOnboarding()
+    }
+
+    fun checkAtAutofillOnboarding() {
+        autofillOnboardingScreen { exists() }
+    }
+
+    fun gotoOnboardingConfirmation() {
+        fxaLogin { tapPlaceholderLogin() }
+        if (FingerprintStore.shared.isFingerprintAuthAvailable) {
+            checkAtFingerprintOnboarding()
+            fingerprintOnboardingScreen { tapSkip() }
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && SettingStore.shared.autofillAvailable) {
+            checkAtAutofillOnboarding()
+            autofillOnboardingScreen { tapSkip() }
+        }
+        checkAtOnboardingConfirmation()
+    }
+
+    fun checkAtOnboardingConfirmation() {
+        onboardingConfirmationScreen { exists() }
+    }
+
     fun checkAtWelcome() {
         welcome { exists() }
     }
@@ -99,13 +144,20 @@ class Navigator {
     fun gotoItemList(goManually: Boolean = false) {
         if (goManually) {
             gotoFxALogin()
-            fxaLogin { tapPlaceholderLogin() }
+            bypassOnboarding()
         } else {
             Dispatcher.shared.dispatch(LifecycleAction.UseTestData)
             log.info("blocking for the routes")
+            // block until onboarding
+            // tap skip
             blockUntil(RouteStore.shared.routes, RouteAction.ItemList)
         }
         checkAtItemList()
+    }
+
+    private fun bypassOnboarding() {
+        gotoOnboardingConfirmation()
+        onboardingConfirmationScreen { clickFinish() }
     }
 
     fun checkAtItemList() {
@@ -173,6 +225,28 @@ class Navigator {
     private fun listenSystemSecuritySettingIntent() {
         sentIntent {
             action(Settings.ACTION_SECURITY_SETTINGS)
+        }
+    }
+
+    fun goToSystemAutofillSettings() {
+        Intents.init()
+        stubSystemAutofillSettingIntent()
+        listenSystemAutofillSettingIntent()
+        Intents.release()
+    }
+
+    private fun stubSystemAutofillSettingIntent() {
+        stubIntent {
+            action(Settings.ACTION_REQUEST_SET_AUTOFILL_SERVICE)
+            respondWith {
+                ok()
+            }
+        }
+    }
+
+    private fun listenSystemAutofillSettingIntent() {
+        sentIntent {
+            action(Settings.ACTION_REQUEST_SET_AUTOFILL_SERVICE)
         }
     }
 

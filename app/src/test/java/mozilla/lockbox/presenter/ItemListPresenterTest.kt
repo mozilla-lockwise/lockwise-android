@@ -100,6 +100,7 @@ open class ItemListPresenterTest {
         val menuItemSelectionStub = PublishSubject.create<Int>()
         val itemSelectedStub = PublishSubject.create<ItemViewModel>()
         val filterClickStub = PublishSubject.create<Unit>()
+        val noEntriesClickStub = PublishSubject.create<Unit>()
         val sortItemSelectionStub = PublishSubject.create<Setting.ItemListSort>()
         val disclaimerActionStub = PublishSubject.create<AlertState>()
         val lockNowSelectionStub = PublishSubject.create<Unit>()
@@ -119,6 +120,9 @@ open class ItemListPresenterTest {
 
         override val lockNowClick: Observable<Unit>
             get() = lockNowSelectionStub
+
+        override val noEntriesClicks: Observable<Unit>
+            get() = noEntriesClickStub
 
         override fun updateAccountProfile(profile: AccountViewModel) {
             accountViewModel = AccountViewModel(
@@ -298,6 +302,12 @@ open class ItemListPresenterTest {
     fun `filter clicks cause RouteAction Filter`() {
         view.filterClickStub.onNext(Unit)
         Assert.assertTrue(dispatcherObserver.values().last() is RouteAction.Filter)
+    }
+
+    @Test
+    fun `no matching entries clicks routes to FAQ`() {
+        view.noEntriesClickStub.onNext(Unit)
+        dispatcherObserver.assertLastValue(RouteAction.AppWebPage.FaqSync)
     }
 
     @Test

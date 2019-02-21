@@ -18,12 +18,13 @@ import mozilla.appservices.logins.ServerPassword
 import mozilla.appservices.logins.SyncUnlockInfo
 import mozilla.components.service.sync.logins.AsyncLoginsStorage
 import mozilla.lockbox.action.DataStoreAction
+import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.log
 import mozilla.lockbox.model.SyncCredentials
+import mozilla.lockbox.support.AutoLockSupport
 import mozilla.lockbox.support.DataStoreSupport
-import mozilla.lockbox.support.FixedDataStoreSupport
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.asOptional
 import kotlin.coroutines.CoroutineContext
@@ -31,7 +32,9 @@ import kotlin.coroutines.CoroutineContext
 @ExperimentalCoroutinesApi
 open class DataStore(
     val dispatcher: Dispatcher = Dispatcher.shared,
-    var support: DataStoreSupport = FixedDataStoreSupport.shared
+    var support: DataStoreSupport? = null,
+    private val autoLockSupport: AutoLockSupport = AutoLockSupport.shared,
+    private val lifecycleStore: LifecycleStore = LifecycleStore.shared
 ) {
     companion object {
         val shared = DataStore()
@@ -67,10 +70,10 @@ open class DataStore(
     private val coroutineContext: CoroutineContext
         get() = Dispatchers.Default + exceptionHandler
 
-    private var backend: AsyncLoginsStorage
+    private var backend: AsyncLoginsStorage?
 
     init {
-        backend = support.createLoginsStorage()
+        backend = support?.createLoginsStorage()
         // handle state changes
         stateSubject
             .subscribe { state ->
@@ -96,6 +99,27 @@ open class DataStore(
                 }
             }
             .addTo(compositeDisposable)
+
+        setupAutoLock()
+    }
+
+    private fun setupAutoLock() {
+        val foreground = arrayOf(LifecycleAction.Foreground, LifecycleAction.AutofillStart)
+        val background = arrayOf(LifecycleAction.Background, LifecycleAction.AutofillEnd)
+
+        lifecycleStore.lifecycleEvents
+            .filter { background.contains(it) && stateSubject.value == State.Unlocked }
+            .subscribe {
+                autoLockSupport.storeNextAutoLockTime()
+            }
+            .addTo(compositeDisposable)
+
+        lifecycleStore.lifecycleEvents
+            .filter { foreground.contains(it) }
+            .map { autoLockSupport.shouldLock }
+            .filter { it }
+            .subscribe { lockInternal() }
+            .addTo(compositeDisposable)
     }
 
     open fun get(id: String): Observable<Optional<ServerPassword>> {
@@ -105,6 +129,7 @@ open class DataStore(
     }
 
     private fun touch(id: String) {
+        val backend = this.backend ?: return notReady()
         if (!backend.isLocked()) {
             backend.touch(id)
                 .asSingle(coroutineContext)
@@ -114,7 +139,16 @@ open class DataStore(
     }
 
     private fun unlock() {
-        backend.ensureUnlocked(support.encryptionKey)
+        // when we receive an external unlock action, assume it's not coming from autolock
+        // and adjust our next autolocktime to avoid race condition with foregrounding / unlocking
+        unlockInternal()
+        autoLockSupport.forwardDateNextLockTime()
+    }
+
+    private fun unlockInternal() {
+        val backend = this.backend ?: return notReady()
+        val encryptionKey = support?.encryptionKey ?: return notReady()
+        backend.ensureUnlocked(encryptionKey)
             .asSingle(coroutineContext)
             .map { State.Unlocked }
             .subscribe(stateSubject::onNext, this::pushError)
@@ -122,6 +156,12 @@ open class DataStore(
     }
 
     private fun lock() {
+        lockInternal()
+        autoLockSupport.backdateNextLockTime()
+    }
+
+    private fun lockInternal() {
+        val backend = this.backend ?: return notReady()
         backend.ensureLocked()
             .asSingle(coroutineContext)
             .map { State.Locked }
@@ -130,10 +170,12 @@ open class DataStore(
     }
 
     private fun sync() {
-        val syncConfig = support.syncConfig ?: return {
+        val syncConfig = support?.syncConfig ?: return {
             val throwable = IllegalStateException("syncConfig should already be defined")
-            stateSubject.onNext(State.Errored(throwable))
+            pushError(throwable)
         }()
+
+        val backend = this.backend ?: return notReady()
 
         (syncState as Subject).onNext(SyncState.Syncing)
 
@@ -153,6 +195,7 @@ open class DataStore(
 
     // there's probably a slicker way to do this `Unit` thing...
     private fun updateList(x: Unit) {
+        val backend = this.backend ?: return notReady()
         if (!backend.isLocked()) {
             backend.list()
                 .asSingle(coroutineContext)
@@ -170,11 +213,13 @@ open class DataStore(
             State.Unprepared -> return
             else -> {
                 clearList()
-                backend.wipeLocal()
-                    .asSingle(coroutineContext)
-                    .map { State.Unprepared }
-                    .subscribe(stateSubject::onNext, this::pushError)
-                    .addTo(compositeDisposable)
+                backend?.let { backend ->
+                    backend.wipeLocal()
+                        .asSingle(coroutineContext)
+                        .map { State.Unprepared }
+                        .subscribe(stateSubject::onNext, this::pushError)
+                        .addTo(compositeDisposable)
+                } ?: stateSubject.onNext(State.Unprepared)
             }
         }
     }
@@ -185,20 +230,30 @@ open class DataStore(
         }
 
         resetSupport(credentials.support)
+        val backend = this.backend ?: return notReady()
 
         credentials.apply {
             support.syncConfig = SyncUnlockInfo(kid, accessToken.token, syncKey, tokenServerURL)
         }
 
         if (!credentials.isNew) {
+            if (autoLockSupport.shouldLock) {
+                lockInternal()
+            } else {
+                unlockInternal()
+            }
             return
         }
 
         if (backend.isLocked()) {
-            unlock()
+            unlockInternal()
         } else {
             stateSubject.onNext(State.Unlocked)
         }
+    }
+
+    private fun notReady() {
+        pushError(IllegalStateException("DataStore backend is not set"))
     }
 
     private fun pushError(e: Throwable) {
@@ -211,13 +266,16 @@ open class DataStore(
         if (support == this.support) {
             return
         }
+
         if (stateSubject.value != State.Unprepared &&
             stateSubject.value != null
         ) {
-            backend.wipeLocal()
-                .asSingle(coroutineContext)
-                .subscribe()
-                .addTo(compositeDisposable)
+            backend?.run {
+                wipeLocal()
+                    .asSingle(coroutineContext)
+                    .subscribe()
+                    .addTo(compositeDisposable)
+            }
         }
         this.support = support
         this.backend = support.createLoginsStorage()

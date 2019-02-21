@@ -10,31 +10,43 @@ import io.reactivex.subjects.PublishSubject
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
+import org.junit.Before
 import org.junit.Test
 
 class WelcomePresenterTest {
     class FakeView : WelcomeView {
-        val tapStub: PublishSubject<Unit> = PublishSubject.create<Unit>()
+        val learnMoreStub = PublishSubject.create<Unit>()
+        override val learnMoreClicks: Observable<Unit> = learnMoreStub
 
+        val getStartedStub: PublishSubject<Unit> = PublishSubject.create<Unit>()
         override val getStartedClicks: Observable<Unit>
-            get() = tapStub
+            get() = getStartedStub
     }
 
     val view = FakeView()
     val dispatcher = Dispatcher()
+
+    val dispatcherObserver = TestObserver.create<Action>()
+
     val subject = WelcomePresenter(view, dispatcher)
 
-    @Test
-    fun onViewReady() {
-        val testObserver = TestObserver.create<Action>()
-
-        val subscription = dispatcher.register.subscribeWith(testObserver)
-
+    @Before
+    fun setUp() {
+        dispatcher.register.subscribe(dispatcherObserver)
         subject.onViewReady()
-        view.tapStub.onNext(Unit)
+    }
 
-        testObserver.assertValue(RouteAction.Login)
+    @Test
+    fun `get started clicks`() {
+        view.getStartedStub.onNext(Unit)
 
-        subscription.dispose()
+        dispatcherObserver.assertValue(RouteAction.Login)
+    }
+
+    @Test
+    fun `learn more clicks`() {
+        view.learnMoreStub.onNext(Unit)
+
+        dispatcherObserver.assertValue(RouteAction.AppWebPage.FaqWelcome)
     }
 }

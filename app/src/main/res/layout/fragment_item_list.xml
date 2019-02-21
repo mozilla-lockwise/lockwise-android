@@ -80,7 +80,7 @@
             android:id="@+id/loadingView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/backgroundGrey">
+            android:background="@color/background_grey">
 
             <ImageView
                 android:layout_width="match_parent"
@@ -133,7 +133,7 @@
         android:theme="@style/NavDrawerStyle"
         app:headerLayout="@layout/nav_header"
         app:itemTextAppearance="@style/NavDrawerStyle"
-        app:itemTextColor="@color/textGrey"
+        app:itemTextColor="@color/text_grey"
         app:menu="@menu/nav_menu">
 
         <LinearLayout
@@ -147,7 +147,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:backgroundTint="@color/backgroundWhite"
+                android:backgroundTint="@color/background_white"
                 android:drawableStart="@drawable/ic_lock"
                 android:drawablePadding="32dp"
                 android:elevation="0dp"
@@ -157,7 +157,7 @@
                 android:stateListAnimator="@null"
                 android:text="@string/lock_now"
                 android:textAlignment="viewStart"
-                android:textColor="@color/textGrey"
+                android:textColor="@color/text_grey"
                 android:theme="@style/NavDrawerButtonStyle" />
         </LinearLayout>
     </com.google.android.material.navigation.NavigationView>

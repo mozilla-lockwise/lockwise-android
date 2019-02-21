@@ -12,10 +12,10 @@ import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.model.FingerprintAuthCallback
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.LockedStore
 import mozilla.lockbox.store.SettingStore
-import mozilla.lockbox.view.FingerprintAuthDialogFragment.AuthCallback
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -102,20 +102,20 @@ class LockedPresenterTest {
     fun `unlock button tap fallback on fingerprint error`() {
         `when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(true)
         `when`(fingerprintStore.isKeyguardDeviceSecure).thenReturn(true)
-        lockedStore.onAuth.onNext(FingerprintAuthAction.OnAuthentication(AuthCallback.OnError))
+        lockedStore.onAuth.onNext(FingerprintAuthAction.OnAuthentication(FingerprintAuthCallback.OnError))
         verify(view).unlockFallback()
     }
 
     @Test
     fun `handle success authentication callback`() {
-        lockedStore.onAuth.onNext(FingerprintAuthAction.OnAuthentication(AuthCallback.OnAuth))
+        lockedStore.onAuth.onNext(FingerprintAuthAction.OnAuthentication(FingerprintAuthCallback.OnAuth))
         dispatcherObserver.assertLastValue(DataStoreAction.Unlock)
     }
 
     @Test
     fun `handle error authentication callback`() {
         `when`(fingerprintStore.isKeyguardDeviceSecure).thenReturn(false)
-        lockedStore.onAuth.onNext(FingerprintAuthAction.OnAuthentication(AuthCallback.OnError))
+        lockedStore.onAuth.onNext(FingerprintAuthAction.OnAuthentication(FingerprintAuthCallback.OnError))
         dispatcherObserver.assertLastValue(DataStoreAction.Unlock)
     }
 

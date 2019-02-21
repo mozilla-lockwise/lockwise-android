@@ -29,6 +29,43 @@
                 app:destination="@id/fragment_item_list"
                 app:launchSingleTop="true"
                 app:popUpTo="@+id/fragment_item_list"/>
+
+        <action
+                android:id="@+id/action_fxaLogin_to_fingerprint_onboarding"
+                app:destination="@id/fragment_fingerprint_onboarding"/>
+
+        <action
+                android:id="@+id/action_fxaLogin_to_onboarding_confirmation"
+                app:destination="@id/fragment_onboarding_confirmation"/>
+    </fragment>
+
+    <fragment
+            android:id="@+id/fragment_fingerprint_onboarding"
+            android:name="mozilla.lockbox.view.FingerprintOnboardingFragment"
+            tools:layout="@layout/fragment_fingerprint_onboarding">
+        <action
+            android:id="@+id/action_onboarding_fingerprint_to_autofill"
+            app:destination="@id/fragment_autofill_onboarding"/>
+        <action
+                android:id="@+id/action_fingerprint_onboarding_to_confirmation"
+                app:destination="@id/fragment_onboarding_confirmation"/>
+    </fragment>
+
+    <fragment
+            android:id="@+id/fragment_autofill_onboarding"
+            android:name="mozilla.lockbox.view.AutofillOnboardingFragment"
+            tools:layout="@layout/fragment_autofill_onboarding">
+    </fragment>
+
+    <fragment
+            android:id="@+id/fragment_onboarding_confirmation"
+            android:name="mozilla.lockbox.view.OnboardingConfirmationFragment"
+            tools:layout="@layout/fragment_onboarding_confirmation">
+        <action
+                android:id="@+id/action_onboarding_confirmation_to_itemList"
+                app:launchSingleTop="true"
+                app:destination="@id/fragment_item_list"
+                app:popUpToInclusive="true"/>
     </fragment>
 
     <fragment
@@ -41,13 +78,6 @@
         <action
                 android:id="@+id/action_itemList_to_setting"
                 app:destination="@id/fragment_setting"
-                app:enterAnim="@anim/slide_in_bottom"
-                app:exitAnim="@anim/none"
-                app:popExitAnim="@anim/slide_out_bottom"
-                app:popEnterAnim="@anim/none"/>
-        <action
-                android:id="@+id/action_itemList_to_webview"
-                app:destination="@id/fragment_webview"
                 app:enterAnim="@anim/slide_in_bottom"
                 app:exitAnim="@anim/none"
                 app:popExitAnim="@anim/slide_out_bottom"
@@ -88,7 +118,8 @@
             android:id="@+id/fragment_setting"
             android:name="mozilla.lockbox.view.SettingFragment"
             android:label="@string/nav_menu_settings"
-            tools:layout="@layout/fragment_setting"/>
+            tools:layout="@layout/fragment_setting">
+    </fragment>
 
     <fragment
             android:id="@+id/fragment_webview"
@@ -96,7 +127,7 @@
             tools:layout="@layout/fragment_webview">
         <argument
                 android:name="url"
-                android:defaultValue="@string/missing_url"
+                android:defaultValue="missing"
                 app:argType="string"/>
         <argument
                 android:name="title"
@@ -127,7 +158,6 @@
                 android:id="@+id/action_locked_to_itemList"
                 app:destination="@id/fragment_item_list"
                 app:launchSingleTop="true"
-                app:popUpTo="@+id/fragment_item_list"
                 app:popUpToInclusive="true"/>
         <action
                 android:id="@+id/action_locked_to_welcome"
@@ -155,4 +185,12 @@
             app:launchSingleTop="true"
             app:popUpTo="@+id/fragment_welcome"
             app:popUpToInclusive="true"/>
+
+    <action
+            android:id="@+id/action_to_webview"
+            app:destination="@id/fragment_webview"
+            app:enterAnim="@anim/slide_in_bottom"
+            app:exitAnim="@anim/none"
+            app:popExitAnim="@anim/slide_out_bottom"
+            app:popEnterAnim="@anim/none"/>
 </navigation>

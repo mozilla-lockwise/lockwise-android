@@ -35,6 +35,7 @@ import mozilla.lockbox.store.SettingStore
 interface ItemListView {
     val itemSelection: Observable<ItemViewModel>
     val filterClicks: Observable<Unit>
+    val noEntriesClicks: Observable<Unit>
     val menuItemSelections: Observable<Int>
     val lockNowClick: Observable<Unit>
     val sortItemSelection: Observable<Setting.ItemListSort>
@@ -99,15 +100,18 @@ class ItemListPresenter(
             .addTo(compositeDisposable)
 
         view.itemSelection
-            .subscribe { it ->
-                dispatcher.dispatch(RouteAction.ItemDetail(it.guid))
-            }
+            .map { RouteAction.ItemDetail(it.guid) }
+            .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
 
         view.filterClicks
-            .subscribe {
-                dispatcher.dispatch(RouteAction.Filter)
-            }
+            .map { RouteAction.Filter }
+            .subscribe(dispatcher::dispatch)
+            .addTo(compositeDisposable)
+
+        view.noEntriesClicks
+            .map { RouteAction.AppWebPage.FaqSync }
+            .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
 
         view.menuItemSelections
@@ -124,9 +128,11 @@ class ItemListPresenter(
             .addTo(compositeDisposable)
 
         view.sortItemSelection
-            .subscribe { sortBy ->
-                dispatcher.dispatch(SettingAction.ItemListSortOrder(sortBy))
-            }.addTo(compositeDisposable)
+            .map { sortBy ->
+                SettingAction.ItemListSortOrder(sortBy)
+            }
+            .subscribe(dispatcher::dispatch)
+            .addTo(compositeDisposable)
 
         view.refreshItemList
             .doOnDispose { view.stopRefreshing() }

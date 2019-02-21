@@ -18,7 +18,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
-import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.action.SettingAction
@@ -29,13 +28,10 @@ import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
-import mozilla.lockbox.model.SyncCredentials
 import mozilla.lockbox.store.AccountStore
-import mozilla.lockbox.store.AutoLockStore
-import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.store.SettingStore
-import mozilla.lockbox.support.Optional
+import mozilla.lockbox.support.AutoLockSupport
 import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.view.AppWebPageFragmentArgs
 import mozilla.lockbox.view.DialogFragment
@@ -48,25 +44,13 @@ class RoutePresenter(
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val routeStore: RouteStore = RouteStore.shared,
     private val settingStore: SettingStore = SettingStore.shared,
-    private val dataStore: DataStore = DataStore.shared,
     private val accountStore: AccountStore = AccountStore.shared,
-    private val autoLockStore: AutoLockStore = AutoLockStore.shared
+    private val autoLockStore: AutoLockSupport = AutoLockSupport.shared
 ) : Presenter() {
     private lateinit var navController: NavController
 
     override fun onViewReady() {
         navController = Navigation.findNavController(activity, R.id.fragment_nav_host)
-
-        val autoLockActions = autoLockStore.autoLockActivated
-            .filter { it }
-            .map { DataStoreAction.Lock }
-
-        // Moves credentials from the AccountStore, into the DataStore.
-        accountStore.syncCredentials
-            .map(this::accountToDataStoreActions)
-            .mergeWith(autoLockActions)
-            .subscribe(dispatcher::dispatch)
-            .addTo(compositeDisposable)
 
         routeStore.routes
             .observeOn(mainThread())
@@ -74,18 +58,14 @@ class RoutePresenter(
             .addTo(compositeDisposable)
     }
 
-    private fun accountToDataStoreActions(optCredentials: Optional<SyncCredentials>): DataStoreAction {
-        // we will get a null credentials object (and subsequently reset the datastore) on
-        // both initial login and reset / logout.
-        val credentials = optCredentials.value ?: return DataStoreAction.Reset
-
-        return DataStoreAction.UpdateCredentials(credentials)
-    }
-
     private fun route(action: RouteAction) {
         when (action) {
             is RouteAction.Welcome -> navigateToFragment(action, R.id.fragment_welcome)
             is RouteAction.Login -> navigateToFragment(action, R.id.fragment_fxa_login)
+            is RouteAction.Onboarding.FingerprintAuth ->
+                navigateToFragment(action, R.id.fragment_fingerprint_onboarding)
+            is RouteAction.Onboarding.Autofill -> navigateToFragment(action, R.id.fragment_autofill_onboarding)
+            is RouteAction.Onboarding.Confirmation -> navigateToFragment(action, R.id.fragment_onboarding_confirmation)
             is RouteAction.ItemList -> navigateToFragment(action, R.id.fragment_item_list)
             is RouteAction.SettingList -> navigateToFragment(action, R.id.fragment_setting)
             is RouteAction.AccountSetting -> navigateToFragment(action, R.id.fragment_account_setting)
@@ -249,21 +229,38 @@ class RoutePresenter(
         // the app will log.error.
         return when (Pair(from, to)) {
             Pair(R.id.fragment_welcome, R.id.fragment_item_list) -> R.id.action_to_itemList
-
+            Pair(R.id.fragment_welcome, R.id.fragment_item_list) -> R.id.action_to_webview
             Pair(R.id.fragment_welcome, R.id.fragment_locked) -> R.id.action_to_locked
-            Pair(R.id.fragment_welcome, R.id.fragment_item_list) -> R.id.action_to_itemList
 
             Pair(R.id.fragment_fxa_login, R.id.fragment_item_list) -> R.id.action_fxaLogin_to_itemList
+            Pair(R.id.fragment_fxa_login, R.id.fragment_fingerprint_onboarding) ->
+                R.id.action_fxaLogin_to_fingerprint_onboarding
+            Pair(R.id.fragment_fxa_login, R.id.fragment_onboarding_confirmation) ->
+                R.id.action_fxaLogin_to_onboarding_confirmation
+
+            Pair(R.id.fragment_fingerprint_onboarding, R.id.fragment_onboarding_confirmation) ->
+                R.id.action_fingerprint_onboarding_to_confirmation
+            Pair(R.id.fragment_fingerprint_onboarding, R.id.fragment_autofill_onboarding) ->
+                R.id.action_onboarding_fingerprint_to_autofill
+
+            Pair(R.id.fragment_autofill_onboarding, R.id.fragment_item_list) -> R.id.action_to_itemList
+
+            Pair(R.id.fragment_onboarding_confirmation, R.id.fragment_item_list) -> R.id.action_to_itemList
+            Pair(R.id.fragment_onboarding_confirmation, R.id.fragment_webview) -> R.id.action_to_webview
+
             Pair(R.id.fragment_locked, R.id.fragment_item_list) -> R.id.action_to_itemList
             Pair(R.id.fragment_locked, R.id.fragment_welcome) -> R.id.action_locked_to_welcome
 
             Pair(R.id.fragment_item_list, R.id.fragment_item_detail) -> R.id.action_itemList_to_itemDetail
             Pair(R.id.fragment_item_list, R.id.fragment_setting) -> R.id.action_itemList_to_setting
             Pair(R.id.fragment_item_list, R.id.fragment_account_setting) -> R.id.action_itemList_to_accountSetting
-            Pair(R.id.fragment_item_list, R.id.fragment_locked) -> R.id.action_itemList_to_locked
+            Pair(R.id.fragment_item_list, R.id.fragment_locked) -> R.id.action_to_locked
             Pair(R.id.fragment_item_list, R.id.fragment_filter) -> R.id.action_itemList_to_filter
+            Pair(R.id.fragment_item_list, R.id.fragment_webview) -> R.id.action_to_webview
 
-            Pair(R.id.fragment_item_list, R.id.fragment_webview) -> R.id.action_itemList_to_webview
+            Pair(R.id.fragment_item_detail, R.id.fragment_webview) -> R.id.action_to_webview
+
+            Pair(R.id.fragment_setting, R.id.fragment_webview) -> R.id.action_to_webview
 
             Pair(R.id.fragment_account_setting, R.id.fragment_welcome) -> R.id.action_to_welcome
 
@@ -280,6 +277,7 @@ class RoutePresenter(
 
     private fun openSetting(settingAction: RouteAction.SystemSetting) {
         val settingIntent = Intent(settingAction.setting.intentAction)
+        settingIntent.data = settingAction.setting.data
         activity.startActivity(settingIntent, null)
     }
 }

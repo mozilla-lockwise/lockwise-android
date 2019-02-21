@@ -26,7 +26,7 @@ class SortItemAdapter(
         val label = super.getView(position, convertView, parent) as TextView
         label.setTextAppearance(R.style.TextAppearanceWidgetEventToolbarTitle)
         label.setTextColor(Color.WHITE)
-        label.setBackgroundColor(label.resources.getColor(R.color.colorPrimary, null))
+        label.setBackgroundColor(label.resources.getColor(R.color.color_primary, null))
         label.text = context.resources.getString(values[position].titleId)
         label.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_down_caret, 0)
 

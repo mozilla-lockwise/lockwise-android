@@ -6,6 +6,9 @@
 
 package mozilla.lockbox.action
 
+import android.net.Uri
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import mozilla.lockbox.R
 import mozilla.lockbox.flux.Action
@@ -24,8 +27,11 @@ sealed class RouteAction(
     object LockScreen : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.lock_screen)
     object Filter : RouteAction(TelemetryEventMethod.tap, TelemetryEventObject.filter)
     data class ItemDetail(val id: String) : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.entry_detail)
-    data class OpenWebsite(val url: String) : RouteAction(TelemetryEventMethod.tap, TelemetryEventObject.open_in_browser)
-    data class SystemSetting(val setting: SettingIntent) : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.settings_system)
+    data class OpenWebsite(val url: String) :
+        RouteAction(TelemetryEventMethod.tap, TelemetryEventObject.open_in_browser)
+
+    data class SystemSetting(val setting: SettingIntent) :
+        RouteAction(TelemetryEventMethod.show, TelemetryEventObject.settings_system)
 
     sealed class Dialog(
         val positiveButtonAction: Action? = null,
@@ -51,17 +57,61 @@ sealed class RouteAction(
     ) : RouteAction(TelemetryEventMethod.show, eventObject) {
 
         object FaqList : AppWebPage(
-            Constant.Faq.uri,
+            Constant.Faq.topUri,
             R.string.nav_menu_faq,
+            TelemetryEventObject.settings_faq
+        )
+
+        object FaqWelcome : AppWebPage(
+            Constant.Faq.savedUri,
+            R.string.nav_menu_faq,
+            TelemetryEventObject.settings_faq)
+
+        object FaqSecurity : AppWebPage(
+            Constant.Faq.securityUri,
+            R.string.nav_menu_faq,
+            TelemetryEventObject.settings_faq)
+
+        object FaqSync : AppWebPage(
+            Constant.Faq.syncUri,
+            R.string.nav_menu_faq,
+            TelemetryEventObject.settings_faq)
+
+        object FaqCreate : AppWebPage(
+            Constant.Faq.createUri,
+            R.string.nav_menu_faq,
+            TelemetryEventObject.settings_faq)
+
+        object FaqEdit : AppWebPage(
+            Constant.Faq.editUri,
+            R.string.nav_menu_faq,
+            TelemetryEventObject.settings_faq)
+
+        object Privacy : AppWebPage(
+            Constant.Privacy.uri,
+            R.string.privacy,
             TelemetryEventObject.settings_faq)
 
         object SendFeedback : AppWebPage(
             Constant.SendFeedback.uri,
             R.string.nav_menu_feedback,
-            TelemetryEventObject.settings_provide_feedback)
+            TelemetryEventObject.settings_provide_feedback
+        )
+    }
+
+    sealed class Onboarding(
+        eventObject: TelemetryEventObject
+    ) : RouteAction(TelemetryEventMethod.show, eventObject) {
+        object FingerprintAuth : Onboarding(TelemetryEventObject.onboarding_fingerprint)
+        object Autofill : Onboarding(TelemetryEventObject.onboarding_autofill)
+        object Confirmation : Onboarding(TelemetryEventObject.login_onboarding_confirmation)
     }
 }
 
-enum class SettingIntent(val intentAction: String) {
-    Security(android.provider.Settings.ACTION_SECURITY_SETTINGS)
+data class OnboardingStatusAction(val onboardingInProgress: Boolean) : Action
+
+enum class SettingIntent(val intentAction: String, val data: Uri? = null) {
+    Security(android.provider.Settings.ACTION_SECURITY_SETTINGS),
+    @RequiresApi(Build.VERSION_CODES.O)
+    Autofill(android.provider.Settings.ACTION_REQUEST_SET_AUTOFILL_SERVICE, Uri.parse("package:com.mozilla.lockbox"))
 }

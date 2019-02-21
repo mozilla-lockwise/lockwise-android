@@ -77,7 +77,9 @@ class FilterFragment : BackableFragment(), FilterView {
     override val cancelButtonVisibility: Consumer<in Boolean>
         get() = view!!.cancelButton.visibility()
     override val itemSelection: Observable<ItemViewModel>
-        get() = adapter.clicks()
+        get() = adapter.itemClicks
+    override val noMatchingClicks: Observable<Unit>
+        get() = adapter.noMatchingEntriesClicks
 
     override fun updateItems(items: List<ItemViewModel>) {
         adapter.updateItems(items, true)

@@ -8,8 +8,9 @@ import mozilla.lockbox.action.FingerprintSensorAction
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.model.FingerprintAuthCallback
 import mozilla.lockbox.store.FingerprintStore
-import mozilla.lockbox.view.FingerprintAuthDialogFragment
+import mozilla.lockbox.store.FingerprintStore.AuthenticationState as AuthenticationState
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -19,7 +20,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
-@Config(packageName = "mozilla.lockbox")
+@Config(application = TestApplication::class)
 class FingerprintDialogPresenterTest {
 
     open class FakeView : FingerprintDialogView {
@@ -32,8 +33,8 @@ class FingerprintDialogPresenterTest {
         override fun onError(error: String?) {
         }
 
-        val authCallbackStub = PublishSubject.create<FingerprintAuthDialogFragment.AuthCallback>()
-        override val authCallback: Observable<FingerprintAuthDialogFragment.AuthCallback>
+        val authCallbackStub = PublishSubject.create<FingerprintAuthCallback>()
+        override val authCallback: Observable<FingerprintAuthCallback>
             get() = authCallbackStub
 
         override val onDismiss = PublishSubject.create<Unit>()
@@ -45,39 +46,40 @@ class FingerprintDialogPresenterTest {
             get() = authStateStub
     }
 
+    val dispatcher = Dispatcher()
     private val view = spy(FakeView())
     private val fingerprintStore = spy(FakeFingerprintStore())
     private val dispatcherObserver = TestObserver.create<Action>()
-    val subject = FingerprintDialogPresenter(view, Dispatcher.shared, fingerprintStore)
+    val subject = FingerprintDialogPresenter(view, dispatcher, fingerprintStore)
 
     @Before
     fun setUp() {
-        Dispatcher.shared.register.subscribe(dispatcherObserver)
+        dispatcher.register.subscribe(dispatcherObserver)
         subject.onViewReady()
     }
 
     @Test
     fun `update on succeeded state`() {
-        fingerprintStore.authStateStub.onNext(FingerprintStore.AuthenticationState.Succeeded)
+        fingerprintStore.authStateStub.onNext(AuthenticationState.Succeeded)
         verify(view).onSucceeded()
     }
 
     @Test
     fun `update on failed state`() {
-        fingerprintStore.authStateStub.onNext(FingerprintStore.AuthenticationState.Failed("error"))
+        fingerprintStore.authStateStub.onNext(AuthenticationState.Failed("error"))
         verify(view).onFailed("error")
     }
 
     @Test
     fun `update on error state`() {
-        fingerprintStore.authStateStub.onNext(FingerprintStore.AuthenticationState.Error("error"))
+        fingerprintStore.authStateStub.onNext(AuthenticationState.Error("error"))
         verify(view).onError("error")
     }
 
     @Test
     fun `dispatch authentication status for routing`() {
-        view.authCallbackStub.onNext(FingerprintAuthDialogFragment.AuthCallback.OnAuth)
-        dispatcherObserver.assertLastValue(FingerprintAuthAction.OnAuthentication(FingerprintAuthDialogFragment.AuthCallback.OnAuth))
+        view.authCallbackStub.onNext(FingerprintAuthCallback.OnAuth)
+        dispatcherObserver.assertLastValue(FingerprintAuthAction.OnAuthentication(FingerprintAuthCallback.OnAuth))
     }
 
     @Test

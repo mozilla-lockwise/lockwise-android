@@ -10,6 +10,7 @@ import androidx.annotation.StringRes
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.widget.Switch
+import com.jakewharton.rxbinding2.view.clicks
 import com.jakewharton.rxbinding2.widget.checkedChanges
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
@@ -85,6 +86,8 @@ class ToggleSettingViewHolder(val view: View) : SettingViewHolder(view) {
                 view.button.visibility = View.GONE
             }
         }
+
+    var buttonClicks: Observable<Unit> = view.button.clicks()
 
     var toggle: Switch = view.toggle
 
