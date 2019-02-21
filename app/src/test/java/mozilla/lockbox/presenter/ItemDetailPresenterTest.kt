@@ -49,9 +49,9 @@ class ItemDetailPresenterTest {
         override val learnMoreClicks: Observable<Unit>
             get() = learnMoreClickStub
 
-        private val retryButtonStub = PublishSubject.create<Unit>()
-        override val retryNetworkConnectionClicks: Observable<Unit>
-            get() = retryButtonStub
+//        private val retryButtonStub = PublishSubject.create<Unit>()
+//        override val retryNetworkConnectionClicks: Observable<Unit>
+//            get() = retryButtonStub
 
         var networkAvailable = PublishSubject.create<Boolean>()
         override fun handleNetworkError(networkErrorVisibility: Boolean) {

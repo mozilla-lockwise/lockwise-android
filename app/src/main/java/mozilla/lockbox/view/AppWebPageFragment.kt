@@ -16,11 +16,8 @@ import android.view.ViewGroup
 import mozilla.lockbox.R
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import com.jakewharton.rxbinding2.view.clicks
-import io.reactivex.Observable
 import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.fragment_fxa_login.view.*
-import kotlinx.android.synthetic.main.fragment_warning.view.*
 import kotlinx.android.synthetic.main.fragment_webview.*
 import kotlinx.android.synthetic.main.include_backable.view.*
 import mozilla.lockbox.presenter.WebPageView

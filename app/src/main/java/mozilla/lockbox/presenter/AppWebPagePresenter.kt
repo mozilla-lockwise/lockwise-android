@@ -6,10 +6,8 @@
 
 package mozilla.lockbox.presenter
 
-import io.reactivex.Observable
 import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.addTo
-import mozilla.lockbox.action.NetworkAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.store.NetworkStore

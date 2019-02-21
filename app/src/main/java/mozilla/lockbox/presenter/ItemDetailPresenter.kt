@@ -16,7 +16,6 @@ import mozilla.lockbox.R
 import mozilla.lockbox.action.ClipboardAction
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.ItemDetailAction
-import mozilla.lockbox.action.NetworkAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.extensions.toDetailViewModel

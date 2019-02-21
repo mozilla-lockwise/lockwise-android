@@ -13,7 +13,6 @@ import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.AccountAction
 import mozilla.lockbox.action.LifecycleAction
-import mozilla.lockbox.action.NetworkAction
 import mozilla.lockbox.action.OnboardingStatusAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Dispatcher

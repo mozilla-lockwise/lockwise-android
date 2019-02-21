@@ -192,9 +192,9 @@
     <string name="password_for">Password for %1$s</string>
 
     <!-- This is the text displayed on the button of the network availability error message -->
-    <string name="retry">Retry</string>
+    <!--<string name="retry">Retry</string>-->
     <!-- This is the text displayed on the button of the network availability error message -->
-    <string name="retryButton">Retry connect to internet</string>
+    <!--<string name="retryButton">Retry connect to internet</string>-->
     <!-- This label is used by screenreaders to inform the user that their device is not connected to the internet -->
     <string name="networkWarningMessage">Warning: device not connected to the internet.</string>
     <!-- This label is used by screenreaders to inform the user that the message contains an image of a warning icon -->
@@ -249,7 +249,6 @@
     <string name="skip_button">Skip</string>
     <!-- This is the the button description on the device security dialog box which routes to system security settings. -->
     <string name="set_up_now">Set Up Now</string>
-
 
     <!-- This header appears above the Privacy page of the mozilla-lockbox website. -->
     <string name="privacy">Privacy</string>
