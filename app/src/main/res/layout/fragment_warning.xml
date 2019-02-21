@@ -13,6 +13,7 @@
         android:theme="@style/NoConnectivityWarning"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
+        android:visibility="gone"
         xmlns:tools="http://schemas.android.com/tools">
 
         <ImageView
