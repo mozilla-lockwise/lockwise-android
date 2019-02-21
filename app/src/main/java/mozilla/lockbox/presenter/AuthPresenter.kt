@@ -41,9 +41,8 @@ class AuthPresenter(
 
     override fun onViewReady() {
         // taking values, or this ends up firing multiple times!
-        Observables.combineLatest(
-            settingStore.unlockWithFingerprint.take(1), dataStore.state.take(1)
-        )
+        Observables.combineLatest(settingStore.unlockWithFingerprint, dataStore.state)
+            .take(1)
             .filter { pair -> pair.second == DataStore.State.Locked }
             .subscribe { pair ->
                 if (fingerprintStore.isFingerprintAuthAvailable && pair.first) {
@@ -80,7 +79,12 @@ class AuthPresenter(
 
         dataStore.state
             .filter { it == DataStore.State.Unlocked }
-            .switchMap { responseBuilder.asyncFilter(pslSupport, dataStore.list) }
+            // switch to the latest non-empty list of ServerPasswords
+            // TODO: deal with the list really being empty ...
+            .switchMap { dataStore.list }
+            .filter { it.isNotEmpty() }
+            .take(1)
+            .switchMap { responseBuilder.asyncFilter(pslSupport, Observable.just(it)) }
             .subscribe { passwords ->
                 finishResponse(passwords)
                 dispatcher.dispatch(DataStoreAction.Lock)
