@@ -21,7 +21,6 @@ import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
 import kotlinx.android.synthetic.main.fragment_item_detail.*
 import kotlinx.android.synthetic.main.fragment_item_detail.view.*
-import kotlinx.android.synthetic.main.fragment_warning.view.*
 import kotlinx.android.synthetic.main.include_backable.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
@@ -130,8 +129,8 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         }
     }
 
-    override val retryNetworkConnectionClicks: Observable<Unit>
-        get() = view!!.networkWarning.retryButton.clicks()
+//    override val retryNetworkConnectionClicks: Observable<Unit>
+//        get() = view!!.networkWarning.retryButton.clicks()
 }
 
 var EditText.readOnly: Boolean

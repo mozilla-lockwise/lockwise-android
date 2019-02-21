@@ -44,7 +44,7 @@ interface ItemListView {
     fun updateItemListSort(sort: Setting.ItemListSort)
     fun loading(isLoading: Boolean)
     fun handleNetworkError(networkErrorVisibility: Boolean)
-    val retryNetworkConnectionClicks: Observable<Unit>
+//    val retryNetworkConnectionClicks: Observable<Unit>
     val refreshItemList: Observable<Unit>
     val isRefreshing: Boolean
     fun stopRefreshing()
@@ -157,9 +157,9 @@ class ItemListPresenter(
             .addTo(compositeDisposable)
 
         // TODO: make this more robust to retry loading the correct page again (loadUrl)
-        view.retryNetworkConnectionClicks.subscribe {
-            dispatcher.dispatch(NetworkAction.CheckConnectivity)
-        }?.addTo(compositeDisposable)
+//        view.retryNetworkConnectionClicks.subscribe {
+//            dispatcher.dispatch(NetworkAction.CheckConnectivity)
+//        }?.addTo(compositeDisposable)
     }
 
     private fun onMenuItem(@IdRes item: Int) {

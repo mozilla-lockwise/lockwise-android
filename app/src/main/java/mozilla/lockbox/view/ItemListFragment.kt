@@ -223,6 +223,6 @@ class ItemListFragment : Fragment(), ItemListView {
         }
     }
 
-    override val retryNetworkConnectionClicks: Observable<Unit>
-        get() = view!!.networkWarning.retryButton.clicks()
+//    override val retryNetworkConnectionClicks: Observable<Unit>
+//        get() = view!!.networkWarning.retryButton.clicks()
 }

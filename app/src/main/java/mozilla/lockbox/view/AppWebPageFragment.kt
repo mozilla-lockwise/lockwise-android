@@ -81,6 +81,6 @@ class AppWebPageFragment : BackableFragment(), WebPageView {
         }
     }
 
-    override val retryNetworkConnectionClicks: Observable<Unit>
-        get() = view!!.networkWarning.retryButton.clicks()
+//    override val retryNetworkConnectionClicks: Observable<Unit>
+//        get() = view!!.networkWarning.retryButton.clicks()
 }
