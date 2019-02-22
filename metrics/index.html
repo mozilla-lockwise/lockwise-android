@@ -86,7 +86,7 @@
         
             <li><a class="toctree-l3" href="#collection">Collection</a></li>
         
-            <li><a class="toctree-l3" href="#list-of-proposed-events">List of Proposed Events</a></li>
+            <li><a class="toctree-l3" href="#list-of-implemented-events">List of Implemented Events</a></li>
         
             <li><a class="toctree-l3" href="#adjust-sdk">Adjust SDK</a></li>
         
@@ -165,24 +165,24 @@
             <div class="section">
               
                 <h1 id="firefox-lockbox-for-android-metrics-plan">Firefox Lockbox for Android Metrics Plan</h1>
-<p><em>Last Updated: October 8, 2018</em></p>
+<p><em>Last Updated: Feb 4, 2019</em></p>
 <!-- TOC depthFrom:2 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
 <ul>
 <li><a href="#analysis">Analysis</a></li>
 <li><a href="#collection">Collection</a></li>
-<li><a href="#list-of-proposed-events">List of Proposed Events</a></li>
+<li><a href="#list-of-implemented-events">List of Implemented Events</a></li>
 <li><a href="#adjust-sdk">Adjust SDK</a></li>
 <li><a href="#references">References</a></li>
 </ul>
 <!-- /TOC -->
 
-<p>This is the metrics collection plan for the Lockbox Android app. It documents all events that are planned to be collected through telemetry. It will be updated periodically to reflect all new and planned data collection. A similar document for the Lockbox for iOS app can be found <a href="https://github.com/mozilla-lockbox/lockbox-ios/blob/master/docs/metrics.md">here</a>.</p>
+<p>This is the metrics collection plan for the Lockbox Android app. It documents all events that are currently collected through telemetry. It will be updated periodically to reflect all new and planned data collection. A similar document for the Lockbox for iOS app can be found <a href="https://github.com/mozilla-lockbox/lockbox-ios/blob/master/docs/metrics.md">here</a>.</p>
 <h2 id="analysis">Analysis</h2>
 <p>Data collection is done solely for the purpose of product development, improvement and maintenance.</p>
-<p>We will analyze the data described in this doc <em>primarily</em> with the purpose of (dis)confirming the following hypothesis:</p>
+<p>We analyze the data described in this doc <em>primarily</em> with the purpose of (dis)confirming the following hypothesis:</p>
 <p><code>If Firefox users have access to their browser-saved passwords on their mobile device but outside of the mobile browser, then they will use those passwords to log into both websites (via a browser; Firefox or otherwise) and stand-alone apps. We will know this to be true when the most frequent actions taken in the app are revealing, copying, or autofilling of credentials.</code></p>
-<p>In service to validating the above hypothesis, we plan on answering these specific questions, given the data we plan to collect (see <a href="#list-of-proposed-events">List of Proposed Events</a>):</p>
+<p>In service to validating the above hypothesis, we plan on answering these specific questions, given the data we collect (see <a href="#list-of-implemented-events">List of Implemented Events</a>):</p>
 <p><em>Note that when we refer to retrieval of "credentials", we mean access to usernames, passwords, or both</em></p>
 <ul>
 <li>Are users using Lockbox to retrieve credentials?<ul>
@@ -221,24 +221,22 @@
 </ul>
 </li>
 </ul>
-<p>In addition to answering the above questions that directly concern actions in the app, we will also be analyzing telemetry emitted from the password manager that exists in the the Firefox desktop browser. These analyses will primarily examine whether users of Lockbox start active curation of their credentials in the desktop browser (Lockbox users will not be able to edit credentials directly from the app).</p>
+<p>In addition to answering the above questions that directly concern actions in the app, we will also analyze telemetry emitted from the password manager that exists in the the Firefox desktop browser. These analyses will primarily examine whether users of Lockbox start active curation of their credentials in the desktop browser (Lockbox users will not be able to edit credentials directly from the app).</p>
 <h2 id="collection">Collection</h2>
 <p><em>Note: There is currently a new Mozilla mobile telemetry SDK under development, however it will not ship prior to the Lockbox for Android app. Once the new SDK ships we will evaluate whether or not to tear out the old implementation and replace it with the new SDK.</em></p>
-<p>Data will be collected using this library:</p>
+<p>Data is collected using this library:</p>
 <p>https://github.com/mozilla-mobile/android-components/blob/master/components/service/telemetry/README.md</p>
-<p>We plan to submit two ping types, both of which are implemented by the component above.</p>
+<p>We submit two ping types, both of which are implemented by the component above.</p>
 <p>First is the <a href="https://github.com/mozilla-mobile/android-components/blob/master/components/service/telemetry/src/main/java/org/mozilla/telemetry/ping/TelemetryCorePingBuilder.java">core ping</a>, which contains information about the Android version, architecture, etc of the device Lockbox has been installed on:</p>
 <p>https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/data/core-ping.html</p>
 <p>The second is the <a href="https://github.com/mozilla-mobile/android-components/blob/master/components/service/telemetry/src/main/java/org/mozilla/telemetry/ping/TelemetryEventPingBuilder.java">event ping</a> which allows us to record event telemetry:</p>
 <p>https://github.com/mozilla-mobile/focus-android/wiki/Event-Tracking-with-Mozilla%27s-Telemetry-Service</p>
-<p>TODO: link to the Lockbox for Android source code at the point where the pings and event values are defined (when that code exists).</p>
 <p>See <a href="https://github.com/mozilla-mobile/focus-android/blob/master/app/src/main/java/org/mozilla/focus/telemetry/TelemetryWrapper.kt">this</a> for the kotlin source code that Firefox Focus uses to define its telemetry events.</p>
 <p>Every event must contain <code>category</code>, <code>method</code> and <code>object</code> fields, and may optionally contain <code>value</code> and <code>extra</code> fields as well.</p>
-<p>Events related to specific credentials should have an opaque <code>item_id</code> in the extra field where possible.</p>
 <p>Finally, the <code>appName</code> metadata sent with each ping should always be <code>Lockbox</code>.</p>
 <p>See here for more information on event schemas:</p>
 <p>https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/collection/events.html#public-js-api</p>
-<h2 id="list-of-proposed-events">List of Proposed Events</h2>
+<h2 id="list-of-implemented-events">List of Implemented Events</h2>
 <ol>
 <li>
 <p>When the app starts up:</p>
@@ -251,12 +249,12 @@
 </ul>
 </li>
 <li>
-<p>When locking/unlocking the app:</p>
+<p>When locking/unlocking/accessing the datastore:</p>
 <ul>
 <li><code>category</code>: action</li>
-<li><code>method</code>: lock, unlock, autolock</li>
-<li><code>object</code>: app</li>
-<li><code>value</code>: pin, biometrics</li>
+<li><code>method</code>: lock, unlock, reset, sync, update_credentials, touch</li>
+<li><code>object</code>: datastore</li>
+<li><code>value</code>: null</li>
 <li><code>extras</code>: null</li>
 </ul>
 </li>
@@ -265,7 +263,7 @@
 <ul>
 <li><code>category</code>: action</li>
 <li><code>method</code>: show</li>
-<li><code>object</code>: login_welcome, login_fxa, login_learn_more, biometrics_setup, autofill_setup</li>
+<li><code>object</code>: login_welcome, login_fxa, login_onboarding_confirmation, login_learn_more</li>
 <li><code>value</code>: null</li>
 <li><code>extras</code>: null</li>
 </ul>
@@ -287,7 +285,7 @@
 <li><code>method</code>: show</li>
 <li><code>object</code>: entry_detail</li>
 <li><code>value</code>: null</li>
-<li><code>extras</code>: ["itemid" : itemid]</li>
+<li><code>extras</code>: null</li>
 </ul>
 </li>
 <li>
@@ -297,16 +295,16 @@
 <li><code>method</code>: tap</li>
 <li><code>object</code>: entry_copy_username_button, entry_copy_password_button</li>
 <li><code>value</code>: null</li>
-<li><code>extras</code>: ["itemid" : itemid]</li>
+<li><code>extras</code>: null</li>
 </ul>
 </li>
 <li>
-<p>When a user shows details from an item, is the password shown?:</p>
+<p>When a user taps to reveal a password:</p>
 <ul>
 <li><code>category</code>: action</li>
 <li><code>method</code>: tap</li>
 <li><code>object</code>: reveal_password</li>
-<li><code>value</code>: true or false, whether the pw is displayed</li>
+<li><code>value</code>: null</li>
 <li><code>extras</code>: null</li>
 </ul>
 </li>
@@ -324,9 +322,9 @@
 <p>When a user changes something on the settings page:</p>
 <ul>
 <li><code>category</code>: action</li>
-<li><code>method</code>: settingsChanged (<em>note this was camelCase in iOS by mistake so leaving it to match that until/if we change it there</em>)</li>
-<li><code>object</code>: settings_biometric_login, settings_autolock_time, settings_reset</li>
-<li><code>value</code>: whatever the value of each of the above was changed to, or null for settings_reset</li>
+<li><code>method</code>: setting_changed</li>
+<li><code>object</code>: settings_autolock_time, settings_reset, settings_fingerprint, settings_fingerprint_pending_auth, settings_item_list_order,</li>
+<li><code>value</code>: whatever the value of each of the above was changed to, for example <code>60</code> in the case of <code>settings_autolock_time</code></li>
 <li><code>extras</code>: null</li>
 </ul>
 </li>
@@ -341,21 +339,21 @@
 </ul>
 </li>
 <li>
-<p>Events related to autofill:</p>
+<p>When a user taps on the search box to filter the credential list:</p>
 <ul>
 <li><code>category</code>: action</li>
-<li><code>method</code>: autofill_locked, autofill_unlocked, login_selected, autofill_clear</li>
-<li><code>object</code>: autofill</li>
+<li><code>method</code>: tap</li>
+<li><code>object</code>: filter</li>
 <li><code>value</code>: null</li>
 <li><code>extras</code>: null</li>
 </ul>
 </li>
 <li>
-<p>When the user opens the app drawer:</p>
+<p>When a user taps on a link to open a webpage in their browser:</p>
 <ul>
 <li><code>category</code>: action</li>
-<li><code>method</code>: show</li>
-<li><code>object</code>: app_drawer</li>
+<li><code>method</code>: tap</li>
+<li><code>object</code>: open_in_browser</li>
 <li><code>value</code>: null</li>
 <li><code>extras</code>: null</li>
 </ul>
