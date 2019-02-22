@@ -6,6 +6,7 @@ import io.reactivex.Observable
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.autofill.FillResponseBuilder
@@ -39,7 +40,9 @@ class AuthPresenter(
 ) : Presenter() {
 
     override fun onViewReady() {
+        // taking values, or this ends up firing multiple times!
         Observables.combineLatest(settingStore.unlockWithFingerprint, dataStore.state)
+            .take(1)
             .filter { pair -> pair.second == DataStore.State.Locked }
             .subscribe { pair ->
                 if (fingerprintStore.isFingerprintAuthAvailable && pair.first) {
@@ -52,33 +55,38 @@ class AuthPresenter(
 
         lockedStore.onAuthentication
             .subscribe {
-                if (it is FingerprintAuthAction.OnAuthentication) {
-                    when (it.authCallback) {
-                        is FingerprintAuthCallback.OnAuth -> unlock()
-                        is FingerprintAuthCallback.OnError -> view.unlockFallback()
+                when (it) {
+                    is FingerprintAuthAction.OnAuthentication -> {
+                        when (it.authCallback) {
+                            is FingerprintAuthCallback.OnAuth -> unlock()
+                            is FingerprintAuthCallback.OnError -> unlockFallback()
+                        }
                     }
+                    is FingerprintAuthAction.OnCancel -> finishResponse()
                 }
             }
             .addTo(compositeDisposable)
 
         view.unlockConfirmed
-            .filter { it }
             .subscribe {
-                unlock()
+                if (it) {
+                    unlock()
+                } else {
+                    finishResponse()
+                }
             }
             .addTo(compositeDisposable)
 
         dataStore.state
             .filter { it == DataStore.State.Unlocked }
-            .switchMap { responseBuilder.asyncFilter(pslSupport, dataStore.list) }
+            // switch to the latest non-empty list of ServerPasswords
+            // TODO: deal with the list really being empty ...
+            .switchMap { dataStore.list }
+            .filter { it.isNotEmpty() }
+            .take(1)
+            .switchMap { responseBuilder.asyncFilter(pslSupport, Observable.just(it)) }
             .subscribe { passwords ->
-                val response =
-                    responseBuilder.buildFilteredFillResponse(view.context, passwords)
-                    ?: responseBuilder.buildFallbackFillResponse(view.context)
-                // This should send off to the searchable list
-                // https://github.com/mozilla-lockbox/lockbox-android/issues/421
-
-                view.setFillResponseAndFinish(response)
+                finishResponse(passwords)
                 dispatcher.dispatch(DataStoreAction.Lock)
             }
             .addTo(compositeDisposable)
@@ -93,6 +101,20 @@ class AuthPresenter(
             view.unlockFallback()
         } else {
             dispatcher.dispatch(DataStoreAction.Unlock)
+        }
+    }
+
+    private fun finishResponse(passwords: List<ServerPassword>? = null) {
+        if (passwords != null) {
+            val response =
+                responseBuilder.buildFilteredFillResponse(view.context, passwords)
+                    ?: responseBuilder.buildFallbackFillResponse(view.context)
+            // This should send off to the searchable list
+            // https://github.com/mozilla-lockbox/lockbox-android/issues/421
+
+            view.setFillResponseAndFinish(response)
+        } else {
+            view.setFillResponseAndFinish(null)
         }
     }
 }
