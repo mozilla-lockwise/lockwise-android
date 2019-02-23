@@ -19,11 +19,11 @@ class ItemViewHolder(override val containerView: View) : ItemListCell(containerV
             field = value
             value?.let {
                 itemTitle.text = it.title
-                itemSubtitle.text = setSubtitlePlaceholderText(it.subtitle)
+                itemSubtitle.text = textFromSubtitle(it.subtitle)
             }
         }
 
-    private fun setSubtitlePlaceholderText(subtitle: String?): CharSequence {
+    private fun textFromSubtitle(subtitle: String?): CharSequence {
         return if (subtitle!!.isEmpty()) {
             containerView.resources.getString(R.string.no_username)
         } else {

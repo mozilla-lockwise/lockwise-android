@@ -102,13 +102,6 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         inputLayoutPassword.isHintAnimationEnabled = false
 
         inputUsername.readOnly = true
-
-        if (item.username.isNullOrEmpty()) {
-
-        } else {
-
-        }
-
         inputPassword.readOnly = true
         inputPassword.isClickable = true
         inputPassword.isFocusable = true

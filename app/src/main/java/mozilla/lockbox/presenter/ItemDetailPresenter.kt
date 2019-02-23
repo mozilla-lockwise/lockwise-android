@@ -55,7 +55,7 @@ class ItemDetailPresenter(
 
     override fun onViewReady() {
         handleClicks(view.usernameCopyClicks) {
-            if (it.username != null && it.username != "") {
+            if (!it.username.isNullOrEmpty()) {
                 dispatcher.dispatch(ClipboardAction.CopyUsername(it.username.toString()))
                 dispatcher.dispatch(DataStoreAction.Touch(it.id))
                 view.showToastNotification(R.string.toast_username_copied)
@@ -95,14 +95,13 @@ class ItemDetailPresenter(
             .filterNotNull()
             .doOnNext { credentials = it }
             .map { it.toDetailViewModel() }
-            .subscribe{
-                if(it.username.isNullOrEmpty()) {
+            .subscribe {
+                if (it.username.isNullOrEmpty()) {
                     view.showUsernamePlaceholder()
-                }
-                else {
+                } else {
                     view.showUsername(it.username)
-                    view.updateItem(it)
                 }
+                view.updateItem(it)
             }
             .addTo(compositeDisposable)
 
