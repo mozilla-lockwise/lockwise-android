@@ -16,7 +16,6 @@ import mozilla.lockbox.R
 import mozilla.lockbox.action.ClipboardAction
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.ItemDetailAction
-import mozilla.lockbox.action.NetworkAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.extensions.toDetailViewModel
@@ -36,9 +35,8 @@ interface ItemDetailView {
     var isPasswordVisible: Boolean
     fun updateItem(item: ItemDetailViewModel)
     fun showToastNotification(@StringRes strId: Int)
-
-    val retryNetworkConnectionClicks: Observable<Unit>
     fun handleNetworkError(networkErrorVisibility: Boolean)
+    //    val retryNetworkConnectionClicks: Observable<Unit>
 }
 
 @ExperimentalCoroutinesApi
@@ -107,9 +105,9 @@ class ItemDetailPresenter(
             .subscribe { view.isPasswordVisible = it }
             .addTo(compositeDisposable)
 
-        view.retryNetworkConnectionClicks.subscribe {
-            dispatcher.dispatch(NetworkAction.CheckConnectivity)
-        }?.addTo(compositeDisposable)
+//        view.retryNetworkConnectionClicks.subscribe {
+//            dispatcher.dispatch(NetworkAction.CheckConnectivity)
+//        }?.addTo(compositeDisposable)
     }
 
     private fun handleClicks(clicks: Observable<Unit>, withServerPassword: (ServerPassword) -> Unit) {

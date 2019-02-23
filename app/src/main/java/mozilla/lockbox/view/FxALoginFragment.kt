@@ -77,8 +77,8 @@ class FxALoginFragment : BackableFragment(), FxALoginView {
         }
     }
 
-    override val retryNetworkConnectionClicks: Observable<Unit>
-        get() = view!!.networkWarning.retryButton.clicks()
+//    override val retryNetworkConnectionClicks: Observable<Unit>
+//        get() = view!!.networkWarning.retryButton.clicks()
 
     override val skipFxAClicks: Observable<Unit>?
         get() = skipFxA?.clicks()
