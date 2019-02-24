@@ -23,7 +23,6 @@ import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.action.SettingAction
-import mozilla.lockbox.extensions.debug
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.support.Constant
@@ -168,7 +167,6 @@ open class SettingStore(
                     updateFromDeviceSecurityChange()
                 }
             }
-            .debug()
             .filter { it.second == fingerprintStore.isDeviceSecure }
             .map { it.first }
     }

@@ -26,6 +26,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
+import org.mockito.Mockito.clearInvocations
 import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
 import org.powermock.api.mockito.PowerMockito
@@ -49,15 +50,19 @@ class SettingStoreTest : DisposingTest() {
     @Mock
     val autofillManager: AutofillManager = Mockito.mock(AutofillManager::class.java)
 
+    @Mock
+    val fingerprintStore: FingerprintStore = Mockito.mock(FingerprintStore::class.java)
+
     val dispatcher = Dispatcher()
-    val subject = SettingStore(dispatcher)
+    lateinit var subject: SettingStore
     private val sendUsageDataObserver = TestObserver<Boolean>()
     private val itemListSortOrder = TestObserver<Setting.ItemListSort>()
     private val unlockWithFingerprint = TestObserver<Boolean>()
     private val autoLockTime = TestObserver<Setting.AutoLockTime>()
 
-    val autofillAvailable = true
-    val isCurrentAutofillProvider = false
+    private val autofillAvailable = true
+    private val isCurrentAutofillProvider = false
+    private val isDeviceSecure = true
 
     @Before
     fun setUp() {
@@ -73,11 +78,16 @@ class SettingStoreTest : DisposingTest() {
         whenCalled(autofillManager.hasEnabledAutofillServices()).thenReturn(isCurrentAutofillProvider)
         whenCalled(context.getSystemService(AutofillManager::class.java)).thenReturn(autofillManager)
 
+        whenCalled(fingerprintStore.isDeviceSecure).thenReturn(isDeviceSecure)
+
+        subject = SettingStore(dispatcher, fingerprintStore)
+
         subject.injectContext(context)
         subject.sendUsageData.subscribe(sendUsageDataObserver)
         subject.unlockWithFingerprint.subscribe(unlockWithFingerprint)
         subject.itemListSortOrder.subscribe(itemListSortOrder)
-        subject.autoLockTime.subscribe(autoLockTime)
+
+        clearInvocations(editor)
     }
 
     @Test
@@ -144,12 +154,14 @@ class SettingStoreTest : DisposingTest() {
 
     @Test
     fun autoLockTime_defaultValue() {
+        subject.autoLockTime.subscribe(autoLockTime)
         val defaultValue = Constant.SettingDefault.autoLockTime
         autoLockTime.assertValue(defaultValue)
     }
 
     @Test
     fun autoLockTime_newValue() {
+        subject.autoLockTime.subscribe(autoLockTime)
         val newValue = Setting.AutoLockTime.OneHour
         val defaultValue = Setting.AutoLockTime.FiveMinutes
 
@@ -254,10 +266,18 @@ class SettingStoreTest : DisposingTest() {
         verify(autofillManager, never()).disableAutofillServices()
     }
 
+    private fun setDeviceSecure(value: Boolean) {
+        whenCalled(fingerprintStore.isDeviceSecure).thenReturn(value)
+
+        subject = SettingStore(dispatcher, fingerprintStore)
+    }
+
     private fun setIsCurrentAutofillProvider(value: Boolean) {
         whenCalled(autofillManager.hasEnabledAutofillServices()).thenReturn(value)
         whenCalled(context.getSystemService(AutofillManager::class.java)).thenReturn(autofillManager)
 
         subject.injectContext(context)
+
+        clearInvocations(editor)
     }
 }
