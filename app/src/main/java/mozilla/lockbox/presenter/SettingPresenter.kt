@@ -15,6 +15,7 @@ import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.BuildConfig
 import mozilla.lockbox.R
 import mozilla.lockbox.action.AppWebPageAction
+import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.SettingAction
@@ -48,7 +49,11 @@ class SettingPresenter(
 
     private val autoLockTimeClickListener: Consumer<Unit>
         get() = Consumer {
-            dispatcher.dispatch(RouteAction.AutoLockSetting)
+            if (fingerprintStore.isDeviceSecure) {
+                dispatcher.dispatch(RouteAction.AutoLockSetting)
+            } else {
+                dispatcher.dispatch(DialogAction.SecurityDisclaimer)
+            }
         }
 
     private val enableFingerprintObserver: Consumer<Boolean>

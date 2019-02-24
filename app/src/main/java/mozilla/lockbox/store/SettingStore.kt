@@ -15,6 +15,7 @@ import androidx.annotation.RequiresApi
 import com.f2prateek.rx.preferences2.RxSharedPreferences
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.ReplaySubject
 import io.reactivex.subjects.Subject
@@ -22,6 +23,7 @@ import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.action.SettingAction
+import mozilla.lockbox.extensions.debug
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.support.Constant
@@ -47,12 +49,16 @@ open class SettingStore(
     @RequiresApi(Build.VERSION_CODES.O)
     private lateinit var autofillManager: AutofillManager
     private val compositeDisposable = CompositeDisposable()
-    private val deviceSecurityWasPresent = ReplaySubject.createWithSize<Boolean>(1)
+
+    private val _deviceSecurityWasPresent = ReplaySubject.createWithSize<Boolean>(1)
+    private val _autoLockTime = ReplaySubject.createWithSize<Setting.AutoLockTime>(1)
 
     open val sendUsageData: Observable<Boolean> = ReplaySubject.createWithSize(1)
     open val itemListSortOrder: Observable<Setting.ItemListSort> = ReplaySubject.createWithSize(1)
     open val unlockWithFingerprint: Observable<Boolean> = ReplaySubject.createWithSize(1)
-    open val autoLockTime: Observable<Setting.AutoLockTime> = ReplaySubject.createWithSize(1)
+    open val autoLockTime: Observable<Setting.AutoLockTime>
+        get() = autoLockSetting()
+
     open lateinit var unlockWithFingerprintPendingAuth: Observable<Boolean>
 
     open val onEnablingFingerprint: Observable<FingerprintAuthAction> =
@@ -73,24 +79,9 @@ open class SettingStore(
             .filter { it == LifecycleAction.UserReset }
             .map { SettingAction.Reset }
 
-        val deviceSecurityAutolockTime = deviceSecurityWasPresent
-            // if the device security hasn't changed, don't change any settings
-            .filter { it == fingerprintStore.isDeviceSecure }
-            // updated value for device security
-            .doOnNext {
-                preferences.edit()
-                    .putBoolean(Keys.DEVICE_SECURITY_PRESENT, it)
-                    .apply()
-            }
-            .map {
-                if (it) SettingAction.AutoLockTime(Constant.SettingDefault.autoLockTime)
-                else SettingAction.AutoLockTime(Constant.SettingDefault.noSecurityAutoLockTime)
-            }
-
         dispatcher.register
             .filterByType(SettingAction::class.java)
             .mergeWith(resetObservable)
-            .mergeWith(deviceSecurityAutolockTime)
             .subscribe {
                 val edit = preferences.edit()
                 when (it) {
@@ -152,12 +143,12 @@ open class SettingStore(
             .map {
                 Setting.AutoLockTime.valueOf(it)
             }
-            .subscribe(autoLockTime as Subject)
+            .subscribe(_autoLockTime)
 
         rxPrefs
             .getBoolean(Keys.DEVICE_SECURITY_PRESENT, fingerprintStore.isDeviceSecure)
             .asObservable()
-            .subscribe(deviceSecurityWasPresent)
+            .subscribe(_deviceSecurityWasPresent)
 
         if (!preferences.contains(Keys.DEVICE_SECURITY_PRESENT)) {
             preferences.edit()
@@ -168,6 +159,29 @@ open class SettingStore(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             autofillManager = context.getSystemService(AutofillManager::class.java)
         }
+    }
+
+    private fun autoLockSetting(): Observable<Setting.AutoLockTime> {
+        return Observables.combineLatest(_autoLockTime, _deviceSecurityWasPresent)
+            .doOnNext {
+                if (it.second != fingerprintStore.isDeviceSecure) {
+                    updateFromDeviceSecurityChange()
+                }
+            }
+            .debug()
+            .filter { it.second == fingerprintStore.isDeviceSecure }
+            .map { it.first }
+    }
+
+    private fun updateFromDeviceSecurityChange() {
+        val newAutoLockTime = if (fingerprintStore.isDeviceSecure) Constant.SettingDefault.autoLockTime else Constant.SettingDefault.noSecurityAutoLockTime
+
+        val editor = preferences.edit()
+
+        editor.putString(Keys.AUTO_LOCK_TIME, newAutoLockTime.name)
+        editor.putBoolean(Keys.DEVICE_SECURITY_PRESENT, fingerprintStore.isDeviceSecure)
+
+        editor.apply()
     }
 
     private fun handleAutofill(enable: Boolean) {
