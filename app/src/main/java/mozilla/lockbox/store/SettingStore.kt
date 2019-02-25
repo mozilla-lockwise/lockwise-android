@@ -134,7 +134,8 @@ open class SettingStore(
 
         unlockWithFingerprintPendingAuth = rxPrefs.getBoolean(Keys.UNLOCK_WITH_FINGERPRINT_PENDING_AUTH).asObservable()
 
-        val defaultAutoLockTime = if (fingerprintStore.isDeviceSecure) Constant.SettingDefault.autoLockTime else Constant.SettingDefault.noSecurityAutoLockTime
+        val defaultAutoLockTime =
+            if (fingerprintStore.isDeviceSecure) Constant.SettingDefault.autoLockTime else Constant.SettingDefault.noSecurityAutoLockTime
 
         rxPrefs
             .getString(Keys.AUTO_LOCK_TIME, defaultAutoLockTime.name)
@@ -160,19 +161,18 @@ open class SettingStore(
         }
     }
 
-    private fun autoLockSetting(): Observable<Setting.AutoLockTime> {
-        return Observables.combineLatest(_autoLockTime, _deviceSecurityWasPresent)
-            .doOnNext {
-                if (it.second != fingerprintStore.isDeviceSecure) {
-                    updateFromDeviceSecurityChange()
-                }
+    private fun autoLockSetting() = Observables.combineLatest(_autoLockTime, _deviceSecurityWasPresent)
+        .doOnNext {
+            if (it.second != fingerprintStore.isDeviceSecure) {
+                updateFromDeviceSecurityChange()
             }
-            .filter { it.second == fingerprintStore.isDeviceSecure }
-            .map { it.first }
-    }
+        }
+        .filter { it.second == fingerprintStore.isDeviceSecure }
+        .map { it.first }
 
     private fun updateFromDeviceSecurityChange() {
-        val newAutoLockTime = if (fingerprintStore.isDeviceSecure) Constant.SettingDefault.autoLockTime else Constant.SettingDefault.noSecurityAutoLockTime
+        val newAutoLockTime =
+            if (fingerprintStore.isDeviceSecure) Constant.SettingDefault.autoLockTime else Constant.SettingDefault.noSecurityAutoLockTime
 
         val editor = preferences.edit()
 
