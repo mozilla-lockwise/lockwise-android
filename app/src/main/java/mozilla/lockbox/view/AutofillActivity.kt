@@ -18,14 +18,14 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
 import mozilla.lockbox.autofill.FillResponseBuilder
 import mozilla.lockbox.log
-import mozilla.lockbox.presenter.AuthPresenter
-import mozilla.lockbox.presenter.AuthView
+import mozilla.lockbox.presenter.AutofillPresenter
+import mozilla.lockbox.presenter.AutofillView
 import java.lang.Exception
 
 @TargetApi(Build.VERSION_CODES.O)
 @ExperimentalCoroutinesApi
-class AuthActivity : AppCompatActivity(), AuthView {
-    private lateinit var presenter: AuthPresenter
+class AutofillActivity : AppCompatActivity(), AutofillView {
+    private lateinit var presenter: AutofillPresenter
     private val _unlockConfirmed = PublishSubject.create<Boolean>()
 
     override val context: Context = this
@@ -35,7 +35,15 @@ class AuthActivity : AppCompatActivity(), AuthView {
 
         fun getAuthIntentSender(context: Context, responseBuilder: FillResponseBuilder): IntentSender {
             this.responseBuilder = responseBuilder
-            val intent = Intent(context, AuthActivity::class.java)
+            val intent = Intent(context, AutofillActivity::class.java)
+            // add extras to the intent?
+            return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT).intentSender
+        }
+
+        fun getSearchIntentSender(context: Context, responseBuilder: FillResponseBuilder): IntentSender {
+            this.responseBuilder = responseBuilder
+            val intent = Intent(context, AutofillActivity::class.java)
+            // add extras to the intent?
             return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT).intentSender
         }
 
@@ -45,7 +53,7 @@ class AuthActivity : AppCompatActivity(), AuthView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        presenter = AuthPresenter(this, responseBuilder)
+        presenter = AutofillPresenter(this, responseBuilder)
         presenter.onViewReady()
     }
 

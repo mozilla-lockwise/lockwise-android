@@ -26,14 +26,14 @@ import mozilla.lockbox.support.asOptional
 import org.junit.Before
 import org.junit.Test
 
-internal class AuthPresenterTest : DisposingTest() {
+internal class AutofillPresenterTest : DisposingTest() {
     class FakeLockedStore(dispatcher: Dispatcher) : LockedStore(dispatcher) {
         internal val _onAuth = PublishSubject.create<FingerprintAuthAction>()
         override val onAuthentication: Observable<FingerprintAuthAction>
             get() = _onAuth
     }
 
-    class FakeAuthView : AuthView {
+    class FakeAutofillView : AutofillView {
         override fun showAuthDialog() {
             TODO("not implemented")
         }
@@ -61,14 +61,14 @@ internal class AuthPresenterTest : DisposingTest() {
     private val fingerprintStore = FingerprintStore(dispatcher)
     private val settingStore = SettingStore(dispatcher)
     private val pslSupport = PublicSuffixSupport()
-    private val view = FakeAuthView()
+    private val view = FakeAutofillView()
     private val responseBuilder = FillResponseBuilder(ParsedStructure(packageName = "mozilla.lockbox.testing"))
 
-    private lateinit var presenter: AuthPresenter
+    private lateinit var presenter: AutofillPresenter
 
     @Before
     fun setUp() {
-        presenter = AuthPresenter(
+        presenter = AutofillPresenter(
             view,
             responseBuilder,
             dispatcher = dispatcher,

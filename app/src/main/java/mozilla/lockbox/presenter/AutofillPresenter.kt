@@ -19,7 +19,7 @@ import mozilla.lockbox.store.LockedStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.support.PublicSuffixSupport
 
-interface AuthView {
+interface AutofillView {
     fun showAuthDialog()
     fun unlockFallback()
     fun setFillResponseAndFinish(fillResponse: FillResponse?)
@@ -28,8 +28,8 @@ interface AuthView {
 }
 
 @ExperimentalCoroutinesApi
-class AuthPresenter(
-    private val view: AuthView,
+class AutofillPresenter(
+    private val view: AutofillView,
     private val responseBuilder: FillResponseBuilder,
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val fingerprintStore: FingerprintStore = FingerprintStore.shared,
@@ -52,6 +52,10 @@ class AuthPresenter(
                 }
             }
             .addTo(compositeDisposable)
+
+        // need a way to differentiate when launched as Search vs. just authentication
+        dataStore.state
+            .filter { it == DataStore.State.Unlocked }
 
         lockedStore.onAuthentication
             .subscribe {
