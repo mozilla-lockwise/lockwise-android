@@ -11,6 +11,7 @@ import androidx.annotation.StringRes
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.R
 import mozilla.lockbox.action.ClipboardAction
@@ -41,10 +42,21 @@ import org.powermock.api.mockito.PowerMockito
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
+@ExperimentalCoroutinesApi
 @RunWith(RobolectricTestRunner::class)
 @Config(application = TestApplication::class)
 class ItemDetailPresenterTest {
     class FakeView : ItemDetailView {
+        var isShowUsernamePlaceholderCalled = false
+        override fun showUsernamePlaceholder() {
+            isShowUsernamePlaceholderCalled = true
+        }
+
+        var isShowUsernameCalled = false
+        override fun showUsername(username: String) {
+            isShowUsernameCalled = true
+        }
+
         val learnMoreClickStub = PublishSubject.create<Unit>()
         override val learnMoreClicks: Observable<Unit>
             get() = learnMoreClickStub
@@ -92,8 +104,7 @@ class ItemDetailPresenterTest {
     val dispatcherObserver = TestObserver.create<Action>()!!
 
     val view = spy(FakeView())
-    val dataStore = FakeDataStore()
-    val itemDetailStore = ItemDetailStore(dispatcher)
+    private val itemDetailStore = ItemDetailStore(dispatcher)
 
     @Mock
     val networkStore = PowerMockito.mock(NetworkStore::class.java)!!
@@ -117,23 +128,41 @@ class ItemDetailPresenterTest {
         )
     }
 
-    val subject = ItemDetailPresenter(view, fakeCredential.id, dispatcher, networkStore, dataStore, itemDetailStore)
+    private val fakeCredentialNoUsername: ServerPassword by lazy {
+        ServerPassword(
+            "id1",
+            "https://www.mozilla.org",
+            "",
+            "woof",
+            timesUsed = 0,
+            timeCreated = 0L,
+            timeLastUsed = 0L,
+            timePasswordChanged = 0L
+        )
+    }
+
+    lateinit var dataStore: FakeDataStore
+    lateinit var subject: ItemDetailPresenter
 
     @Before
     fun setUp() {
         dispatcher.register.subscribe(dispatcherObserver)
-
         Mockito.`when`(networkStore.isConnected).thenReturn(isConnected)
         networkStore.connectivityManager = connectivityManager
         view.networkAvailable.subscribe(isConnectedObserver)
+    }
 
+    private fun setUpTestSubject(item: Optional<ServerPassword>) {
+        dataStore = FakeDataStore()
+        subject = ItemDetailPresenter(view, item.value?.id, dispatcher, networkStore, dataStore, itemDetailStore)
         subject.onViewReady()
-        dataStore.getStub.onNext(fakeCredential.asOptional())
+
+        dataStore.getStub.onNext(item)
     }
 
     @Test
     fun `sends a detail view model to view`() {
-        Assert.assertEquals(fakeCredential.id, dataStore.idArg)
+        setUpTestSubject(fakeCredential.asOptional())
 
         // test the results that the view gets.
         val obs = view.item ?: return fail("Expected an item")
@@ -144,7 +173,48 @@ class ItemDetailPresenterTest {
     }
 
     @Test
+    fun `sends a detail view model to view with null username`() {
+        setUpTestSubject(fakeCredentialNoUsername.asOptional())
+
+        view.updateItem(
+            ItemDetailViewModel(
+                fakeCredentialNoUsername.id,
+                fakeCredentialNoUsername.hostname,
+                fakeCredentialNoUsername.hostname,
+                fakeCredentialNoUsername.username,
+                fakeCredentialNoUsername.password
+            )
+        )
+
+        Assert.assertEquals(fakeCredentialNoUsername.id, dataStore.idArg)
+
+        val obs = view.item ?: return fail("Expected an item")
+        assertEquals(fakeCredentialNoUsername.hostname, obs.hostname)
+        assertEquals(fakeCredentialNoUsername.username, obs.username)
+        assertEquals(fakeCredentialNoUsername.password, obs.password)
+        assertEquals(fakeCredentialNoUsername.id, obs.id)
+    }
+
+    @Test
+    fun `correct formatting functions called with null username`() {
+        setUpTestSubject(fakeCredentialNoUsername.asOptional())
+
+        assertEquals(true, view.isShowUsernamePlaceholderCalled)
+        assertEquals(false, view.isShowUsernameCalled)
+    }
+
+    @Test
+    fun `correct formatting functions called with non-null username`() {
+        setUpTestSubject(fakeCredential.asOptional())
+
+        assertEquals(false, view.isShowUsernamePlaceholderCalled)
+        assertEquals(true, view.isShowUsernameCalled)
+    }
+
+    @Test
     fun `doesn't update UI when credential becomes null`() {
+        setUpTestSubject(Optional<ServerPassword>(null))
+
         clearInvocations(view)
 
         dataStore.getStub.onNext(Optional<ServerPassword>(null))
@@ -154,6 +224,8 @@ class ItemDetailPresenterTest {
 
     @Test
     fun `opens a browser when tapping on the hostname`() {
+        setUpTestSubject(fakeCredential.asOptional())
+
         val clicks = view.hostnameClicks
         clicks.onNext(Unit)
 
@@ -162,6 +234,7 @@ class ItemDetailPresenterTest {
 
     @Test
     fun `tapping on usernamecopy`() {
+        setUpTestSubject(fakeCredential.asOptional())
         view.usernameCopyClicks.onNext(Unit)
 
         dispatcherObserver.assertValueSequence(
@@ -175,7 +248,22 @@ class ItemDetailPresenterTest {
     }
 
     @Test
+    fun `cannot copy username when null`() {
+        setUpTestSubject(fakeCredentialNoUsername.asOptional())
+
+        view.usernameCopyClicks.onNext(Unit)
+
+        dispatcherObserver.assertValueSequence(
+            emptyList()
+        )
+
+        Assert.assertEquals(null, view.toastNotificationArgument)
+    }
+
+    @Test
     fun `tapping on passwordcopy`() {
+        setUpTestSubject(fakeCredential.asOptional())
+
         view.passwordCopyClicks.onNext(Unit)
 
         dispatcherObserver.assertValueSequence(
@@ -190,6 +278,8 @@ class ItemDetailPresenterTest {
 
     @Test
     fun `tapping on togglepassword`() {
+        setUpTestSubject(fakeCredential.asOptional())
+
         view.togglePasswordClicks.onNext(Unit)
 
         dispatcherObserver.assertValueSequence(
@@ -208,6 +298,8 @@ class ItemDetailPresenterTest {
 
     @Test
     fun `network error visibility is correctly being set`() {
+        setUpTestSubject(fakeCredential.asOptional())
+
         val value = view.networkAvailable
         value.onNext(true)
 
@@ -216,6 +308,8 @@ class ItemDetailPresenterTest {
 
     @Test
     fun `learn more clicks`() {
+        setUpTestSubject(fakeCredential.asOptional())
+
         view.learnMoreClickStub.onNext(Unit)
         dispatcherObserver.assertLastValue(RouteAction.AppWebPage.FaqEdit)
     }

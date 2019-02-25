@@ -6,6 +6,7 @@
 
 package mozilla.lockbox.presenter
 
+import android.content.Context
 import android.net.ConnectivityManager
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
@@ -37,6 +38,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
+import org.mockito.Mockito
 import org.mockito.Mockito.spy
 import org.mockito.Mockito.verify
 import org.powermock.api.mockito.PowerMockito
@@ -46,7 +48,7 @@ import org.robolectric.annotation.Config
 import org.mockito.Mockito.`when` as whenCalled
 
 private val username = "dogs@dogs.com"
-private val password1 = ServerPassword(
+private val item1 = ServerPassword(
     "fdsfda",
     "https://www.mozilla.org",
     username,
@@ -56,7 +58,7 @@ private val password1 = ServerPassword(
     timeLastUsed = 1L,
     timePasswordChanged = 0L
 )
-private val password2 = ServerPassword(
+private val item2 = ServerPassword(
     "ghfdhg",
     "https://www.cats.org",
     username,
@@ -66,10 +68,10 @@ private val password2 = ServerPassword(
     timeLastUsed = 2L,
     timePasswordChanged = 0L
 )
-private val password3 = ServerPassword(
+private val item3 = ServerPassword(
     "ioupiouiuy",
     "www.dogs.org",
-    username = "",
+    username = null,
     password = "baaaaa",
     timesUsed = 0,
     timeCreated = 0L,
@@ -193,6 +195,9 @@ open class ItemListPresenterTest {
     val dispatcher = Dispatcher()
     private val dispatcherObserver = TestObserver.create<Action>()!!
 
+    @Mock
+    val context: Context = Mockito.mock(Context::class.java)
+
     val subject =
         ItemListPresenter(
             view,
@@ -241,8 +246,8 @@ open class ItemListPresenterTest {
 
     @Test
     fun receivingPasswordList_somePasswords() {
-        val list = listOf(password1, password2, password3)
-        val expectedList = listOf(password2, password3, password1).map { it.toViewModel() }
+        val list = listOf(item1, item2, item3)
+        val expectedList = listOf(item2, item3, item1).map { it.toViewModel() }
 
         dataStore.listStub.onNext(list)
 
@@ -252,10 +257,10 @@ open class ItemListPresenterTest {
 
     @Test
     fun `updates sort order of list when item sort order menu changes`() {
-        val list = listOf(password1, password2, password3)
+        val list = listOf(item1, item2, item3)
         dataStore.listStub.onNext(list)
-        val alphabetically = listOf(password2, password3, password1).map { it.toViewModel() }
-        val lastUsed = listOf(password3, password2, password1).map { it.toViewModel() }
+        val alphabetically = listOf(item2, item3, item1).map { it.toViewModel() }
+        val lastUsed = listOf(item3, item2, item1).map { it.toViewModel() }
 
         // default
         Assert.assertEquals(alphabetically, view.updateItemsArgument)
