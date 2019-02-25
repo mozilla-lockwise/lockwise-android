@@ -259,5 +259,7 @@
     <string name="autofill_error_no_hostname">Unexpected hostname format</string>
     <!-- This is the prompt when autofill is triggered, Lockbox is unlocked, and no passwords are detected. -->
     <string name="autofill_search_cta">Search Firefox Lockbox</string>
+    <!-- This is the error message when autofill is triggered and Lockbox is in an error state. %s refers to the localized error message -->
+    <string name="autofill_error_toast">Firefox Lockbox encountered an error: %s</string>
 
 </resources>

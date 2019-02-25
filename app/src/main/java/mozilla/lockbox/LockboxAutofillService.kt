@@ -9,6 +9,7 @@ import android.os.CancellationSignal
 import android.service.autofill.AutofillService
 import android.service.autofill.FillCallback
 import android.service.autofill.FillRequest
+import android.service.autofill.FillResponse
 import android.service.autofill.SaveCallback
 import android.service.autofill.SaveRequest
 import android.view.autofill.AutofillId
@@ -66,7 +67,7 @@ class LockboxAutofillService(
                 val xml = structure.getWindowNodeAt(0).rootViewNode.dump()
                 log.debug("Autofilling failed for:\n$xml")
             }
-            callback.onFailure(null)
+            callback.onSuccess(null)
             return
         }
 
@@ -82,21 +83,23 @@ class LockboxAutofillService(
         Observables.combineLatest(dataStore.state, filteredPasswords)
             .take(1)
             .map { latest ->
-                when (latest.first) {
-                    DataStore.State.Locked -> builder.buildAuthenticationFillResponse(this)
-                    DataStore.State.Unlocked -> {
+                val state = latest.first
+                when (state) {
+                    is DataStore.State.Locked -> builder.buildAuthenticationFillResponse(this)
+                    is DataStore.State.Unlocked -> {
                         builder.buildFilteredFillResponse(this, latest.second)
                         ?: builder.buildFallbackFillResponse(this)
                     }
-                    DataStore.State.Unprepared -> null // we might consider onboarding here.
-                    else -> null
+                    is DataStore.State.Unprepared -> null // we might consider onboarding here.
+                    is DataStore.State.Errored -> state.error
                 }.asOptional()
             }
             .subscribe {
-                if (it.value != null) {
-                    callback.onSuccess(it.value)
-                } else {
-                    callback.onFailure(null)
+                val value = it.value
+                when (value) {
+                    is FillResponse -> callback.onSuccess(value)
+                    is Throwable -> callback.onFailure(getString(R.string.autofill_error_toast, value.localizedMessage))
+                    else -> callback.onSuccess(null)
                 }
             }
             .addTo(compositeDisposable)
