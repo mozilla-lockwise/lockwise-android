@@ -13,6 +13,7 @@ import mozilla.lockbox.autofill.FillResponseBuilder
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.model.FingerprintAuthCallback
+import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.LockedStore
@@ -22,7 +23,10 @@ import mozilla.lockbox.support.PublicSuffixSupport
 interface AutofillView {
     fun showAuthDialog()
     fun unlockFallback()
+    fun showSearchView()
     fun setFillResponseAndFinish(fillResponse: FillResponse?)
+    val itemSelection: Observable<ItemViewModel>
+    fun updateItems(itemList: List<ItemViewModel>)
     val unlockConfirmed: Observable<Boolean>
     val context: Context
 }
@@ -55,7 +59,7 @@ class AutofillPresenter(
 
         // need a way to differentiate when launched as Search vs. just authentication
         dataStore.state
-            .filter { it == DataStore.State.Unlocked }
+            .filter { it == DataStore.State.Unlocked } // && searching }
 
         lockedStore.onAuthentication
             .subscribe {
