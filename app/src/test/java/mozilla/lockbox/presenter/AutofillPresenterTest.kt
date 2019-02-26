@@ -33,7 +33,7 @@ internal class AutofillPresenterTest : DisposingTest() {
             get() = _onAuth
     }
 
-    class FakeAutofillView : AutofillView {
+    class FakeAutofillView : AutofillLockedView {
         override fun showAuthDialog() {
             TODO("not implemented")
         }
@@ -64,11 +64,11 @@ internal class AutofillPresenterTest : DisposingTest() {
     private val view = FakeAutofillView()
     private val responseBuilder = FillResponseBuilder(ParsedStructure(packageName = "mozilla.lockbox.testing"))
 
-    private lateinit var presenter: AutofillPresenter
+    private lateinit var presenter: AutofillRoutePresenter
 
     @Before
     fun setUp() {
-        presenter = AutofillPresenter(
+        presenter = AutofillRoutePresenter(
             view,
             responseBuilder,
             dispatcher = dispatcher,

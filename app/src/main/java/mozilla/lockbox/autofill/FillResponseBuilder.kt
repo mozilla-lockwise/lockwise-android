@@ -15,7 +15,6 @@ import mozilla.lockbox.ParsedStructure
 import mozilla.lockbox.R
 import mozilla.lockbox.support.PublicSuffixSupport
 import mozilla.lockbox.support.filter
-import mozilla.lockbox.view.AutofillActivity
 
 @TargetApi(Build.VERSION_CODES.O)
 @ExperimentalCoroutinesApi
@@ -30,7 +29,7 @@ class FillResponseBuilder(
             setTextViewText(R.id.presentationText, callToAction)
         }
 
-        val sender = AutofillActivity.getAuthIntentSender(context, this)
+        val sender = IntentBuilder.getAuthIntentSender(context, this)
         responseBuilder.setAuthentication(autofillIds(), sender, authPresentation)
 
         return responseBuilder.build()
@@ -56,7 +55,7 @@ class FillResponseBuilder(
             setTextViewText(R.id.presentationText, callToAction)
         }
         // See https://github.com/mozilla-lockbox/lockbox-android/issues/421
-        val sender = AutofillActivity.getSearchIntentSender(context, this)
+        val sender = IntentBuilder.getSearchIntentSender(context, this)
         builder.setAuthentication(autofillIds(), sender, searchPresentation)
     }
 
