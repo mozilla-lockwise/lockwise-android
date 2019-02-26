@@ -38,6 +38,7 @@
         <activity android:name=".view.AutofillRootActivity"
                   android:configChanges="orientation|keyboardHidden"
                   android:taskAffinity=".view.AuthActivity"
+                  android:theme="@style/NoBackgroundTheme"
                   android:screenOrientation="portrait"/>
 
         <service

@@ -20,7 +20,13 @@ import mozilla.lockbox.presenter.AutofillFilterView
 class AutofillFilterFragment : DialogFragment(), AutofillFilterView {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         presenter = AutofillFilterPresenter(this)
+        retainInstance = true
         return inflater.inflate(R.layout.fragment_autofill_filter, container, false)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(androidx.fragment.app.DialogFragment.STYLE_NORMAL, R.style.NoTitleDialog)
     }
 
     override val fillMeButtonClicks: Observable<Unit>

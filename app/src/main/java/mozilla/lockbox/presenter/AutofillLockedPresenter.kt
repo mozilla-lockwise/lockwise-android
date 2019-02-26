@@ -21,6 +21,7 @@ import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.LockedStore
 import mozilla.lockbox.store.SettingStore
+import java.util.concurrent.TimeUnit
 
 interface AutofillLockedView {
     fun unlockFallback()
@@ -37,6 +38,7 @@ class AutofillLockedPresenter(
     override fun onViewReady() {
         settingStore.unlockWithFingerprint
             .take(1)
+            .delay(500, TimeUnit.MILLISECONDS)
             .subscribe {
                 if (fingerprintStore.isFingerprintAuthAvailable && it) {
                     dispatcher.dispatch(RouteAction.DialogFragment.FingerprintDialog(R.string.fingerprint_dialog_title))
