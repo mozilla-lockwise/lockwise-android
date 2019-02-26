@@ -8,6 +8,7 @@ package mozilla.lockbox.presenter
 
 import android.net.ConnectivityManager
 import android.net.Uri
+import android.view.autofill.AutofillManager
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.TestObserver
@@ -24,6 +25,7 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.NetworkStore
+import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.isDebug
 import org.junit.Assert
@@ -84,6 +86,14 @@ class FxALoginPresenterTest : DisposingTest() {
     @Mock
     val accountStore = PowerMockito.mock(AccountStore::class.java)!!
 
+    @Mock
+    val settingStore = PowerMockito.mock(SettingStore::class.java)!!
+
+    @Mock
+    private val autofillManager = PowerMockito.mock(AutofillManager::class.java)
+    private val isAutofillSupportedStub: Boolean = true
+    private val hasEnabledAutofillServicesStub: Boolean = true
+
     private val loginURLSubject = PublishSubject.create<String>()
 
     val dispatcher = Dispatcher()
@@ -104,8 +114,11 @@ class FxALoginPresenterTest : DisposingTest() {
     fun setUp() {
         whenCalled(networkStore.isConnected).thenReturn(isConnected)
         whenCalled(accountStore.loginURL).thenReturn(loginURLSubject)
+        whenCalled(autofillManager.isAutofillSupported).thenReturn(isAutofillSupportedStub)
+        whenCalled(autofillManager.hasEnabledAutofillServices()).thenReturn(hasEnabledAutofillServicesStub)
 
         PowerMockito.whenNew(AccountStore::class.java).withAnyArguments().thenReturn(accountStore)
+        PowerMockito.whenNew(SettingStore::class.java).withAnyArguments().thenReturn(settingStore)
         dispatcher.register.subscribe(dispatcherObserver)
 
         networkStore.connectivityManager = connectivityManager
@@ -154,7 +167,6 @@ class FxALoginPresenterTest : DisposingTest() {
         Assert.assertEquals(OnboardingStatusAction(true), dispatcherObserver.values()[0])
         val redirectAction = dispatcherObserver.values()[1] as AccountAction.OauthRedirect
         Assert.assertEquals(url.toString(), redirectAction.url)
-        Assert.assertEquals(RouteAction.Onboarding.Confirmation, dispatcherObserver.values()[2])
     }
 
     @Test
