@@ -7,6 +7,7 @@
 package mozilla.lockbox.presenter
 
 import android.net.Uri
+import android.os.Build
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
@@ -20,13 +21,15 @@ import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.NetworkStore
+import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.support.Constant
 
 interface FxALoginView {
     var webViewRedirect: ((url: Uri?) -> Boolean)
     val skipFxAClicks: Observable<Unit>?
-//    val retryNetworkConnectionClicks: Observable<Unit>
+    //    val retryNetworkConnectionClicks: Observable<Unit>
     fun handleNetworkError(networkErrorVisibility: Boolean)
+
     fun loadURL(url: String)
 }
 
@@ -77,6 +80,10 @@ class FxALoginPresenter(
     private fun triggerOnboarding() {
         if (fingerprintStore.isFingerprintAuthAvailable) {
             dispatcher.dispatch(RouteAction.Onboarding.FingerprintAuth)
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (SettingStore.shared.autofillAvailable) {
+                dispatcher.dispatch(RouteAction.Onboarding.Autofill)
+            }
         } else {
             dispatcher.dispatch(RouteAction.Onboarding.Confirmation)
         }
