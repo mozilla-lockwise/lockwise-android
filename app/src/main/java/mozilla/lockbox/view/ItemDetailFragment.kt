@@ -47,8 +47,6 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
 
     private val errorHelper = NetworkErrorHelper()
 
-    override var showUsernamePlaceholder: Boolean = false
-
     override val usernameCopyClicks: Observable<Unit>
         get() = view!!.inputUsername.clicks()
 
@@ -81,7 +79,7 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         }
     }
 
-    override fun updateItem(item: ItemDetailViewModel) {
+    override fun updateItem(item: ItemDetailViewModel, showUsernamePlaceholder: Boolean) {
         assertOnUiThread()
         toolbar.title = item.title
 
@@ -90,18 +88,16 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         inputLayoutPassword.isHintAnimationEnabled = false
 
         inputUsername.readOnly = true
-        when (showUsernamePlaceholder) {
-            true -> {
-                view!!.btnUsernameCopy.setColorFilter(resources.getColor(R.color.white_60_percent))
-                view!!.isClickable = false
-                view!!.isFocusable = false
-                inputUsername.setText(" ", TextView.BufferType.NORMAL)
-            }
-            false -> {
-                inputUsername.isClickable = true
-                inputUsername.isFocusable = true
-                inputUsername.setText(item.username, TextView.BufferType.NORMAL)
-            }
+
+        if (showUsernamePlaceholder) {
+            view!!.btnUsernameCopy.setColorFilter(resources.getColor(R.color.white_60_percent))
+            view!!.isClickable = false
+            view!!.isFocusable = false
+            inputUsername.setText(getString(R.string.empty_space), TextView.BufferType.NORMAL)
+        } else {
+            inputUsername.isClickable = true
+            inputUsername.isFocusable = true
+            inputUsername.setText(item.username, TextView.BufferType.NORMAL)
         }
 
         inputPassword.readOnly = true

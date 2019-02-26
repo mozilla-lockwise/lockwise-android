@@ -34,11 +34,10 @@ interface ItemDetailView {
     val hostnameClicks: Observable<Unit>
     val learnMoreClicks: Observable<Unit>
     var isPasswordVisible: Boolean
-    fun updateItem(item: ItemDetailViewModel)
+    fun updateItem(item: ItemDetailViewModel, showUsernamePlaceholder: Boolean)
     fun showToastNotification(@StringRes strId: Int)
     fun handleNetworkError(networkErrorVisibility: Boolean)
     //    val retryNetworkConnectionClicks: Observable<Unit>
-    var showUsernamePlaceholder: Boolean
 }
 
 @ExperimentalCoroutinesApi
@@ -96,8 +95,8 @@ class ItemDetailPresenter(
             .doOnNext { credentials = it }
             .map { it.toDetailViewModel() }
             .subscribe {
-                view.showUsernamePlaceholder = it.username.isNullOrEmpty()
-                view.updateItem(it)
+                val showUsernamePlaceholder = it.username.isNullOrEmpty()
+                view.updateItem(it, showUsernamePlaceholder)
             }
             .addTo(compositeDisposable)
 
