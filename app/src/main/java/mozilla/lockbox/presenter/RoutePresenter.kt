@@ -13,11 +13,12 @@ import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
+import mozilla.lockbox.action.AppWebPageAction
+import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.action.SettingAction
@@ -31,9 +32,9 @@ import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.support.AutoLockSupport
 import mozilla.lockbox.view.AppWebPageFragmentArgs
+import mozilla.lockbox.view.DialogFragment
 import mozilla.lockbox.view.FingerprintAuthDialogFragment
 import mozilla.lockbox.view.ItemDetailFragmentArgs
-import mozilla.lockbox.view.DialogFragment
 
 @ExperimentalCoroutinesApi
 class RoutePresenter(
@@ -74,12 +75,12 @@ class RoutePresenter(
             is RouteAction.AutoLockSetting -> showAutoLockSelections()
             is RouteAction.DialogFragment.FingerprintDialog ->
                 showDialogFragment(FingerprintAuthDialogFragment(), action)
-            is RouteAction.Dialog -> showDialog(action)
-            is RouteAction.AppWebPage -> navigateToFragment(action, R.id.fragment_webview, bundle(action))
+            is DialogAction -> showDialog(action)
+            is AppWebPageAction -> navigateToFragment(action, R.id.fragment_webview, bundle(action))
         }
     }
 
-    private fun bundle(action: RouteAction.AppWebPage): Bundle {
+    private fun bundle(action: AppWebPageAction): Bundle {
         return AppWebPageFragmentArgs.Builder()
             .setUrl(action.url!!)
             .setTitle(action.title!!)
@@ -94,22 +95,15 @@ class RoutePresenter(
             .toBundle()
     }
 
-    private fun showDialog(destination: RouteAction.Dialog) {
-        val dialogStateObservable = when (destination) {
-            is RouteAction.Dialog.SecurityDisclaimer -> showSecurityDisclaimerDialog()
-            is RouteAction.Dialog.UnlinkDisclaimer -> showUnlinkDisclaimerDialog()
-            is RouteAction.Dialog.NoNetworkDisclaimer -> showNoNetworkDialog()
-            is RouteAction.Dialog.OnboardingSecurityDialog -> showOnboardingSecurityDialog()
-        }
-
-        dialogStateObservable
+    private fun showDialog(destination: DialogAction) {
+        AlertDialogHelper.showAlertDialog(activity, destination.viewModel)
             .map { alertState ->
                 when (alertState) {
                     AlertState.BUTTON_POSITIVE -> {
-                        destination.positiveButtonAction
+                        destination.positiveButtonActionList
                     }
                     AlertState.BUTTON_NEGATIVE -> {
-                        destination.negativeButtonAction
+                        destination.negativeButtonActionList
                     }
                 }
             }
@@ -153,47 +147,6 @@ class RoutePresenter(
             }
         }
     }
-
-    private fun showSecurityDisclaimerDialog(): Observable<AlertState> {
-        return AlertDialogHelper.showAlertDialog(
-            activity,
-            R.string.no_device_security_title,
-            R.string.no_device_security_message,
-            R.string.set_up_security_button,
-            R.string.cancel
-        )
-    }
-
-    private fun showOnboardingSecurityDialog(): Observable<AlertState> {
-        return AlertDialogHelper.showAlertDialog(
-            activity,
-            R.string.secure_your_device,
-            R.string.device_security_description,
-            R.string.set_up_now,
-            R.string.skip_button
-        )
-    }
-
-    private fun showNoNetworkDialog(): Observable<AlertState> {
-        return AlertDialogHelper.showAlertDialog(
-            activity,
-            R.string.no_network,
-            R.string.connect_to_internet,
-            R.string.ok
-        )
-    }
-
-    private fun showUnlinkDisclaimerDialog(): Observable<AlertState> {
-        return AlertDialogHelper.showAlertDialog(
-            activity,
-            R.string.disconnect_disclaimer_title,
-            R.string.disconnect_disclaimer_message,
-            R.string.disconnect,
-            R.string.cancel,
-            R.color.red
-        )
-    }
-
     private fun navigateToFragment(action: RouteAction, @IdRes destinationId: Int, args: Bundle? = null) {
         val src = navController.currentDestination ?: return
         val srcId = src.id

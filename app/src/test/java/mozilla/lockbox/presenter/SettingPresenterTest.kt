@@ -11,6 +11,8 @@ import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import mozilla.lockbox.R
+import mozilla.lockbox.action.AppWebPageAction
+import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.Setting
@@ -286,17 +288,27 @@ class SettingPresenterTest {
 
         (view.settingItem!![1] as ToggleSettingConfiguration).buttonObserver!!.accept(Unit)
 
-        dispatcherObserver.assertLastValue(RouteAction.AppWebPage.Privacy)
+        dispatcherObserver.assertLastValue(AppWebPageAction.Privacy)
     }
 
     @Test
-    fun `autoLockTime update requested`() {
-        Mockito.`when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(false)
+    fun `autoLockTime update requested with secure device`() {
+        Mockito.`when`(fingerprintStore.isDeviceSecure).thenReturn(true)
         subject.onResume()
 
         (view.settingItem!![0] as TextSettingConfiguration).clickListener.accept(Unit)
 
         dispatcherObserver.assertLastValue(RouteAction.AutoLockSetting)
+    }
+
+    @Test
+    fun `autoLockTime update requested with insecure device`() {
+        Mockito.`when`(fingerprintStore.isDeviceSecure).thenReturn(false)
+        subject.onResume()
+
+        (view.settingItem!![0] as TextSettingConfiguration).clickListener.accept(Unit)
+
+        dispatcherObserver.assertLastValue(DialogAction.SecurityDisclaimer)
     }
 
     @Test

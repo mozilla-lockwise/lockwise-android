@@ -14,6 +14,7 @@ import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.R
+import mozilla.lockbox.action.AppWebPageAction
 import mozilla.lockbox.action.ClipboardAction
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.ItemDetailAction
@@ -311,6 +312,6 @@ class ItemDetailPresenterTest {
         setUpTestSubject(fakeCredential.asOptional())
 
         view.learnMoreClickStub.onNext(Unit)
-        dispatcherObserver.assertLastValue(RouteAction.AppWebPage.FaqEdit)
+        dispatcherObserver.assertLastValue(AppWebPageAction.FaqEdit)
     }
 }

@@ -73,11 +73,11 @@ open class LockboxApplication : Application() {
 
     private fun injectContext() {
         val contextStoreList: List<ContextStore> = listOf(
+            FingerprintStore.shared,
             SettingStore.shared,
             SecurePreferences.shared,
             FxASyncDataStoreSupport.shared,
             ClipboardStore.shared,
-            FingerprintStore.shared,
             NetworkStore.shared,
             AutoLockSupport.shared,
             AccountStore.shared,

@@ -21,7 +21,7 @@ import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
 @Config(application = TestApplication::class)
-class AppWebPagePresenterTest {
+class AppWebPageActionPresenterTest {
 
     class WebPageViewFake : WebPageView {
 

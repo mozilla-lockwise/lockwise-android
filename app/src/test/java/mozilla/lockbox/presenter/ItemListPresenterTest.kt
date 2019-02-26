@@ -16,7 +16,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
 import mozilla.components.service.fxa.Profile
 import mozilla.lockbox.R
+import mozilla.lockbox.action.AppWebPageAction
 import mozilla.lockbox.action.DataStoreAction
+import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.action.SettingAction
@@ -298,9 +300,9 @@ open class ItemListPresenterTest {
         view.menuItemSelectionStub.onNext(R.id.account_setting_menu_item)
         dispatcherObserver.assertLastValue(RouteAction.AccountSetting)
         view.menuItemSelectionStub.onNext(R.id.faq_menu_item)
-        dispatcherObserver.assertLastValue(RouteAction.AppWebPage.FaqList)
+        dispatcherObserver.assertLastValue(AppWebPageAction.FaqList)
         view.menuItemSelectionStub.onNext(R.id.feedback_menu_item)
-        dispatcherObserver.assertLastValue(RouteAction.AppWebPage.SendFeedback)
+        dispatcherObserver.assertLastValue(AppWebPageAction.SendFeedback)
     }
 
     @Test
@@ -312,7 +314,7 @@ open class ItemListPresenterTest {
     @Test
     fun `no matching entries clicks routes to FAQ`() {
         view.noEntriesClickStub.onNext(Unit)
-        dispatcherObserver.assertLastValue(RouteAction.AppWebPage.FaqSync)
+        dispatcherObserver.assertLastValue(AppWebPageAction.FaqSync)
     }
 
     @Test
@@ -322,7 +324,7 @@ open class ItemListPresenterTest {
         view.lockNowSelectionStub.onNext(Unit)
         view.disclaimerActionStub.onNext(AlertState.BUTTON_POSITIVE)
 
-        Assert.assertTrue(dispatcherObserver.values().last() is RouteAction.Dialog.SecurityDisclaimer)
+        Assert.assertTrue(dispatcherObserver.values().last() is DialogAction.SecurityDisclaimer)
     }
 
     @Test
