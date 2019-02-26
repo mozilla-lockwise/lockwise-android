@@ -31,9 +31,6 @@ import mozilla.lockbox.support.assertOnUiThread
 
 @ExperimentalCoroutinesApi
 class ItemDetailFragment : BackableFragment(), ItemDetailView {
-
-    private val errorHelper = NetworkErrorHelper()
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -47,6 +44,10 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         presenter = ItemDetailPresenter(this, itemId)
         return inflater.inflate(R.layout.fragment_item_detail, container, false)
     }
+
+    private val errorHelper = NetworkErrorHelper()
+
+    override var showUsernamePlaceholder: Boolean = false
 
     override val usernameCopyClicks: Observable<Unit>
         get() = view!!.inputUsername.clicks()
@@ -80,19 +81,6 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         }
     }
 
-    override fun showUsernamePlaceholder() {
-        view!!.btnUsernameCopy.setColorFilter(resources.getColor(R.color.white_60_percent))
-        view!!.isClickable = false
-        view!!.isFocusable = false
-        inputUsername.setText(" ", TextView.BufferType.NORMAL)
-    }
-
-    override fun showUsername(username: String) {
-        inputUsername.isClickable = true
-        inputUsername.isFocusable = true
-        inputUsername.setText(username, TextView.BufferType.NORMAL)
-    }
-
     override fun updateItem(item: ItemDetailViewModel) {
         assertOnUiThread()
         toolbar.title = item.title
@@ -102,6 +90,20 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         inputLayoutPassword.isHintAnimationEnabled = false
 
         inputUsername.readOnly = true
+        when (showUsernamePlaceholder) {
+            true -> {
+                view!!.btnUsernameCopy.setColorFilter(resources.getColor(R.color.white_60_percent))
+                view!!.isClickable = false
+                view!!.isFocusable = false
+                inputUsername.setText(" ", TextView.BufferType.NORMAL)
+            }
+            false -> {
+                inputUsername.isClickable = true
+                inputUsername.isFocusable = true
+                inputUsername.setText(item.username, TextView.BufferType.NORMAL)
+            }
+        }
+
         inputPassword.readOnly = true
         inputPassword.isClickable = true
         inputPassword.isFocusable = true
