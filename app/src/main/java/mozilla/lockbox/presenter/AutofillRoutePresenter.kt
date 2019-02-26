@@ -18,10 +18,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.R
 import mozilla.lockbox.action.AutofillAction
-import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.autofill.FillResponseBuilder
-import mozilla.lockbox.extensions.debug
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
