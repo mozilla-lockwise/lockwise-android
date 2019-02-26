@@ -21,6 +21,7 @@ import mozilla.lockbox.action.AutofillAction
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.autofill.FillResponseBuilder
+import mozilla.lockbox.extensions.debug
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
@@ -44,7 +45,7 @@ class AutofillRoutePresenter(
     private lateinit var navController: NavController
 
     override fun onViewReady() {
-        navController = Navigation.findNavController(activity, R.id.fragment_nav_host)
+        navController = Navigation.findNavController(activity, R.id.autofill_fragment_nav_host)
 
         routeStore.routes
             .observeOn(AndroidSchedulers.mainThread())
@@ -65,8 +66,7 @@ class AutofillRoutePresenter(
             .take(1)
             .switchMap { responseBuilder.asyncFilter(pslSupport, Observable.just(it)) }
             .subscribe { passwords ->
-                finishResponse(passwords)
-                dispatcher.dispatch(DataStoreAction.Lock)
+//                finishResponse(passwords)
             }
             .addTo(compositeDisposable)
     }
@@ -74,7 +74,7 @@ class AutofillRoutePresenter(
     private fun route(action: RouteAction) {
         when (action) {
             is RouteAction.LockScreen -> navigateToFragment(R.id.fragment_locked)
-            is RouteAction.Filter -> navigateToFragment(R.id.fragment_filter)
+            is RouteAction.ItemList -> navigateToFragment(R.id.fragment_filter)
             is RouteAction.DialogFragment.FingerprintDialog ->
                 showDialogFragment(FingerprintAuthDialogFragment(), action)
         }

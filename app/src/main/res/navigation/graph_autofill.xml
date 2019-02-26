@@ -25,6 +25,6 @@
     <fragment
             android:id="@+id/fragment_filter"
             android:name="mozilla.lockbox.view.AutofillFilterFragment"
-            tools:layout="@layout/fragment_filter">
+            tools:layout="@layout/fragment_autofill_filter">
     </fragment>
 </navigation>

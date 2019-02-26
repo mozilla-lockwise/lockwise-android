@@ -6,6 +6,38 @@
 
 package mozilla.lockbox.view
 
-class AutofillFilterFragment : Fragment() {
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import com.jakewharton.rxbinding2.view.clicks
+import io.reactivex.Observable
+import kotlinx.android.synthetic.main.fragment_autofill_filter.view.*
+import mozilla.lockbox.R
+import mozilla.lockbox.presenter.AutofillFilterPresenter
+import mozilla.lockbox.presenter.AutofillFilterView
 
+class AutofillFilterFragment : DialogFragment(), AutofillFilterView {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        presenter = AutofillFilterPresenter(this)
+        return inflater.inflate(R.layout.fragment_autofill_filter, container, false)
+    }
+
+    override val fillMeButtonClicks: Observable<Unit>
+        get() = view!!.fillMePlaceholder.clicks()
+
+//    override val filterTextEntered: Observable<CharSequence>
+//        get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+//    override val filterText: Consumer<in CharSequence>
+//        get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+//    override val cancelButtonClicks: Observable<Unit>
+//        get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+//    override val cancelButtonVisibility: Consumer<in Boolean>
+//        get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+//    override val itemSelection: Observable<ItemViewModel>
+//        get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+//
+//    override fun updateItems(items: List<ItemViewModel>) {
+//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+//    }
 }
