@@ -80,10 +80,8 @@ class FxALoginPresenter(
     private fun triggerOnboarding() {
         if (fingerprintStore.isFingerprintAuthAvailable) {
             dispatcher.dispatch(RouteAction.Onboarding.FingerprintAuth)
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            if (SettingStore.shared.autofillAvailable) {
-                dispatcher.dispatch(RouteAction.Onboarding.Autofill)
-            }
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && SettingStore.shared.autofillAvailable) {
+            dispatcher.dispatch(RouteAction.Onboarding.Autofill)
         } else {
             dispatcher.dispatch(RouteAction.Onboarding.Confirmation)
         }
