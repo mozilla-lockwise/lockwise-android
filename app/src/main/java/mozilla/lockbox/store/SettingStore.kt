@@ -46,7 +46,7 @@ open class SettingStore(
 
     private lateinit var preferences: SharedPreferences
     @RequiresApi(Build.VERSION_CODES.O)
-    private lateinit var autofillManager: AutofillManager
+    open lateinit var autofillManager: AutofillManager
     private val compositeDisposable = CompositeDisposable()
 
     private val _deviceSecurityWasPresent = ReplaySubject.createWithSize<Boolean>(1)

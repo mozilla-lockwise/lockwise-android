@@ -39,7 +39,8 @@ class FxALoginPresenter(
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val networkStore: NetworkStore = NetworkStore.shared,
     private val accountStore: AccountStore = AccountStore.shared,
-    private val fingerprintStore: FingerprintStore = FingerprintStore.shared
+    private val fingerprintStore: FingerprintStore = FingerprintStore.shared,
+    private val settingStore: SettingStore = SettingStore.shared
 ) : Presenter() {
     fun isRedirectUri(uri: String?): Boolean = uri?.startsWith(Constant.FxA.redirectUri) ?: false
 
@@ -80,7 +81,7 @@ class FxALoginPresenter(
     private fun triggerOnboarding() {
         if (fingerprintStore.isFingerprintAuthAvailable) {
             dispatcher.dispatch(RouteAction.Onboarding.FingerprintAuth)
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && SettingStore.shared.autofillAvailable) {
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && settingStore.autofillAvailable) {
             dispatcher.dispatch(RouteAction.Onboarding.Autofill)
         } else {
             dispatcher.dispatch(RouteAction.Onboarding.Confirmation)
