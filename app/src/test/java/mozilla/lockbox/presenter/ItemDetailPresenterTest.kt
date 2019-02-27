@@ -48,7 +48,6 @@ import org.robolectric.annotation.Config
 @Config(application = TestApplication::class)
 class ItemDetailPresenterTest {
     class FakeView : ItemDetailView {
-        override var showUsernamePlaceholder: Boolean = false
 
         val learnMoreClickStub = PublishSubject.create<Unit>()
         override val learnMoreClicks: Observable<Unit>
@@ -74,10 +73,11 @@ class ItemDetailPresenterTest {
 
         override var isPasswordVisible: Boolean = false
 
-        override fun updateItem(item: ItemDetailViewModel) {
+        var showPlaceholderUsernameStub: Boolean = false
+        override fun updateItem(item: ItemDetailViewModel, showPlaceholderUsername: Boolean) {
             this.item = item
+            showPlaceholderUsernameStub = showPlaceholderUsername
         }
-
         override fun showToastNotification(@StringRes strId: Int) {
             toastNotificationArgument = strId
         }
@@ -176,7 +176,7 @@ class ItemDetailPresenterTest {
                 fakeCredentialNoUsername.hostname,
                 fakeCredentialNoUsername.username,
                 fakeCredentialNoUsername.password
-            )
+            ), true
         )
 
         Assert.assertEquals(fakeCredentialNoUsername.id, dataStore.idArg)
@@ -191,13 +191,13 @@ class ItemDetailPresenterTest {
     @Test
     fun `correct formatting functions called with null username`() {
         setUpTestSubject(fakeCredentialNoUsername.asOptional())
-        assertEquals(true, view.showUsernamePlaceholder)
+        assertEquals(true, view.showPlaceholderUsernameStub)
     }
 
     @Test
     fun `correct formatting functions called with non-null username`() {
         setUpTestSubject(fakeCredential.asOptional())
-        assertEquals(false, view.showUsernamePlaceholder)
+        assertEquals(false, view.showPlaceholderUsernameStub)
     }
 
     @Test
