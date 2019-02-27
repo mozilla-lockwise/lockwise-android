@@ -63,9 +63,8 @@ class AutofillRoutePresenter(
             .filter { it.isNotEmpty() }
             .take(1)
             .switchMap { responseBuilder.asyncFilter(pslSupport, Observable.just(it)) }
-            .subscribe { passwords ->
-//                finishResponse(passwords)
-            }
+            .filter { it.isNotEmpty() }
+            .subscribe(this::finishResponse)
             .addTo(compositeDisposable)
     }
 
