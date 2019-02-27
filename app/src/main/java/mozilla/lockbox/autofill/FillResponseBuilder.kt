@@ -11,7 +11,6 @@ import android.widget.RemoteViews
 import io.reactivex.Observable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
-import mozilla.lockbox.ParsedStructure
 import mozilla.lockbox.R
 import mozilla.lockbox.support.PublicSuffixSupport
 import mozilla.lockbox.support.filter
@@ -19,7 +18,7 @@ import mozilla.lockbox.support.filter
 @TargetApi(Build.VERSION_CODES.O)
 @ExperimentalCoroutinesApi
 class FillResponseBuilder(
-    private val parsedStructure: ParsedStructure
+    internal val parsedStructure: ParsedStructure
 ) {
     fun buildAuthenticationFillResponse(context: Context): FillResponse {
         val responseBuilder = FillResponse.Builder()

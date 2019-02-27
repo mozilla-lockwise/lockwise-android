@@ -10,28 +10,39 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
+import android.os.Bundle
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.view.AutofillRootActivity
+
+const val parsedStructureExtra = "parsedStructure"
 
 @ExperimentalCoroutinesApi
 class IntentBuilder {
     companion object {
-        lateinit var responseBuilder: FillResponseBuilder
-
         fun getAuthIntentSender(context: Context, responseBuilder: FillResponseBuilder): IntentSender {
-            this.responseBuilder = responseBuilder
             val intent = Intent(context, AutofillRootActivity::class.java)
-            // future work: add responsebuilder to intent via parcelable impl.
-
+            prepareIntent(intent, responseBuilder)
             return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT).intentSender
         }
 
         fun getSearchIntentSender(context: Context, responseBuilder: FillResponseBuilder): IntentSender {
-            this.responseBuilder = responseBuilder
             val intent = Intent(context, AutofillRootActivity::class.java)
-            // future work: add responsebuilder to intent via parcelable impl.
-            // add extras to the intent?
+            prepareIntent(intent, responseBuilder)
             return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT).intentSender
+        }
+
+        private fun prepareIntent(intent: Intent, responseBuilder: FillResponseBuilder) {
+            val extras = Bundle()
+            extras.putParcelable(parsedStructureExtra, responseBuilder.parsedStructure)
+            intent.putExtra(parsedStructureExtra, extras)
+        }
+
+        fun getResponseBuilder(intent: Intent): FillResponseBuilder {
+            val extras = intent.getBundleExtra(parsedStructureExtra)
+            val parsedStructure = extras.getParcelable<ParsedStructure>(parsedStructureExtra)
+                ?: throw IllegalStateException("Unable to reconstruct parsedStructure")
+
+            return FillResponseBuilder(parsedStructure)
         }
     }
 }

@@ -19,7 +19,8 @@ class AutofillRootActivity : AppCompatActivity() {
         setContentView(R.layout.activity_autofill)
 
         // pull responsebuilder & search status out of intent at a later iteration of this
-        presenter = AutofillRoutePresenter(this, IntentBuilder.responseBuilder)
+        val responseBuilder = IntentBuilder.getResponseBuilder(intent)
+        presenter = AutofillRoutePresenter(this, responseBuilder)
         presenter.onViewReady()
     }
 

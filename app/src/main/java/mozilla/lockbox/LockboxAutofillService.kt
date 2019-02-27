@@ -12,7 +12,6 @@ import android.service.autofill.FillRequest
 import android.service.autofill.FillResponse
 import android.service.autofill.SaveCallback
 import android.service.autofill.SaveRequest
-import android.view.autofill.AutofillId
 import androidx.annotation.RequiresApi
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.Observables
@@ -20,17 +19,15 @@ import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.autofill.FillResponseBuilder
+import mozilla.lockbox.autofill.ParsedStructure
 import mozilla.lockbox.autofill.ViewNodeNavigator
 import mozilla.lockbox.extensions.dump
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.DataStore
-import mozilla.lockbox.autofill.ParsedStructureData
 import mozilla.lockbox.autofill.ParsedStructureBuilder
 import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.support.PublicSuffixSupport
 import mozilla.lockbox.support.isDebug
-
-typealias ParsedStructure = ParsedStructureData<AutofillId>
 
 @RequiresApi(Build.VERSION_CODES.O)
 @ExperimentalCoroutinesApi
@@ -60,7 +57,7 @@ class LockboxAutofillService(
         }
 
         val nodeNavigator = ViewNodeNavigator(structure, activityPackageName)
-        val parsedStructure = ParsedStructureBuilder(nodeNavigator).build()
+        val parsedStructure = ParsedStructureBuilder(nodeNavigator).build() as ParsedStructure
 
         if (parsedStructure.passwordId == null && parsedStructure.usernameId == null) {
             if (isDebug()) {
