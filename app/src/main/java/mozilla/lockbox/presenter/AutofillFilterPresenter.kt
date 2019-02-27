@@ -16,6 +16,7 @@ import mozilla.lockbox.store.DataStore
 
 interface AutofillFilterView {
     val fillMeButtonClicks: Observable<Unit>
+    val onDismiss: Observable<Unit>
 //    val filterTextEntered: Observable<CharSequence>
 //    val filterText: Consumer<in CharSequence>
 //    val cancelButtonClicks: Observable<Unit>
@@ -38,6 +39,13 @@ class AutofillFilterPresenter(
                         "cats@cats.com",
                         "dawgzone")
                 )
+            }
+            .subscribe(dispatcher::dispatch)
+            .addTo(compositeDisposable)
+
+        view.onDismiss
+            .map {
+                AutofillAction.Cancel
             }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)

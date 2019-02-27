@@ -27,6 +27,7 @@ import mozilla.lockbox.log
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.support.PublicSuffixSupport
+import mozilla.lockbox.view.AutofillFilterFragment
 import mozilla.lockbox.view.DialogFragment
 import mozilla.lockbox.view.FingerprintAuthDialogFragment
 
@@ -71,7 +72,9 @@ class AutofillRoutePresenter(
     private fun route(action: RouteAction) {
         when (action) {
             is RouteAction.LockScreen -> navigateToFragment(R.id.fragment_locked)
-            is RouteAction.ItemList -> navigateToFragment(R.id.fragment_filter)
+            is RouteAction.ItemList -> showDialogFragment(AutofillFilterFragment(),
+                RouteAction.DialogFragment.AutofillSearchDialog
+            )
             is RouteAction.DialogFragment.FingerprintDialog ->
                 showDialogFragment(FingerprintAuthDialogFragment(), action)
         }
