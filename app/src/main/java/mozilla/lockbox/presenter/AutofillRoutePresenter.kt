@@ -11,7 +11,6 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -45,8 +44,8 @@ class AutofillRoutePresenter(
 
     override fun onViewReady() {
         navController = Navigation.findNavController(activity, R.id.autofill_fragment_nav_host)
-
         routeStore.routes
+            .distinctUntilChanged()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(this::route)
             .addTo(compositeDisposable)
@@ -58,14 +57,15 @@ class AutofillRoutePresenter(
 
         dataStore.state
             .filter { it == DataStore.State.Unlocked }
-            // switch to the latest non-empty list of ServerPasswords
-            // TODO: deal with the list really being empty ...
-            .switchMap { dataStore.list }
-            .filter { it.isNotEmpty() }
-            .take(1)
-            .switchMap { responseBuilder.asyncFilter(pslSupport, Observable.just(it)) }
-            .filter { it.isNotEmpty() }
-            .subscribe(this::finishResponse)
+            .switchMap { responseBuilder.asyncFilter(pslSupport, dataStore.list.take(1)) }
+            .map { logins ->
+                if (logins.isNotEmpty()) {
+                    AutofillAction.CompleteMultiple(logins)
+                } else {
+                    RouteAction.ItemList
+                }
+            }
+            .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
     }
 
@@ -119,19 +119,19 @@ class AutofillRoutePresenter(
     private fun findTransitionId(@IdRes from: Int, @IdRes to: Int): Int? {
         return when (Pair(from, to)) {
             Pair(R.id.fragment_locked, R.id.fragment_filter) -> R.id.action_locked_to_filter
+            Pair(R.id.fragment_null, R.id.fragment_filter) -> R.id.action_to_filter
+            Pair(R.id.fragment_null, R.id.fragment_locked) -> R.id.action_to_locked
             else -> null
         }
     }
 
-    private fun showDialogFragment(dialogFragment: DialogFragment?, destination: RouteAction.DialogFragment) {
-        if (dialogFragment != null) {
-            val fragmentManager = activity.supportFragmentManager
-            try {
-                dialogFragment.show(fragmentManager, dialogFragment.javaClass.name)
-                dialogFragment.setupDialog(destination.dialogTitle, destination.dialogSubtitle)
-            } catch (e: IllegalStateException) {
-                log.error("Could not show dialog", e)
-            }
+    private fun showDialogFragment(dialogFragment: DialogFragment, destination: RouteAction.DialogFragment) {
+        val fragmentManager = activity.supportFragmentManager
+        try {
+            dialogFragment.show(fragmentManager, dialogFragment.javaClass.name)
+            dialogFragment.setupDialog(destination.dialogTitle, destination.dialogSubtitle)
+        } catch (e: IllegalStateException) {
+            log.error("Could not show dialog", e)
         }
     }
 
@@ -139,6 +139,7 @@ class AutofillRoutePresenter(
         when (action) {
             is AutofillAction.Cancel -> setFillResponseAndFinish()
             is AutofillAction.Complete -> finishResponse(listOf(action.login))
+            is AutofillAction.CompleteMultiple -> finishResponse(action.logins)
         }
     }
 
