@@ -146,10 +146,6 @@ class AutofillRoutePresenter(
     private fun finishResponse(passwords: List<ServerPassword>) {
         val response =
             responseBuilder.buildFilteredFillResponse(activity, passwords)
-                ?: responseBuilder.buildFallbackFillResponse(activity)
-        // This should send off to the searchable list
-        // https://github.com/mozilla-lockbox/lockbox-android/issues/421
-
         setFillResponseAndFinish(response)
     }
 
