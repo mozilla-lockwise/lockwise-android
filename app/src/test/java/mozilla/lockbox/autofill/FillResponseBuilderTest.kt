@@ -8,7 +8,6 @@ package mozilla.lockbox.autofill
 
 import android.view.autofill.AutofillId
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import mozilla.lockbox.ParsedStructure
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock

@@ -21,17 +21,17 @@ class IntentBuilder {
     companion object {
         fun getAuthIntentSender(context: Context, responseBuilder: FillResponseBuilder): IntentSender {
             val intent = Intent(context, AutofillRootActivity::class.java)
-            prepareIntent(intent, responseBuilder)
+            setResponseBuilder(intent, responseBuilder)
             return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT).intentSender
         }
 
         fun getSearchIntentSender(context: Context, responseBuilder: FillResponseBuilder): IntentSender {
             val intent = Intent(context, AutofillRootActivity::class.java)
-            prepareIntent(intent, responseBuilder)
+            setResponseBuilder(intent, responseBuilder)
             return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT).intentSender
         }
 
-        private fun prepareIntent(intent: Intent, responseBuilder: FillResponseBuilder) {
+        fun setResponseBuilder(intent: Intent, responseBuilder: FillResponseBuilder) {
             val extras = Bundle()
             extras.putParcelable(parsedStructureExtra, responseBuilder.parsedStructure)
             intent.putExtra(parsedStructureExtra, extras)

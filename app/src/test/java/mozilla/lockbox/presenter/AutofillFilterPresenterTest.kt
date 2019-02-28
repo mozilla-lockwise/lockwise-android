@@ -20,6 +20,10 @@ class AutofillFilterPresenterTest {
         val fillMeButtonStub = PublishSubject.create<Unit>()
         override val fillMeButtonClicks: Observable<Unit>
             get() = fillMeButtonStub
+
+        val onDismissStub = PublishSubject.create<Unit>()
+        override val onDismiss: Observable<Unit>
+            get() = onDismissStub
     }
 
     private val view = FakeView()
@@ -39,5 +43,12 @@ class AutofillFilterPresenterTest {
         view.fillMeButtonStub.onNext(Unit)
 
         dispatcherObserver.assertValue { it is AutofillAction.Complete }
+    }
+
+    @Test
+    fun `dismiss stub cancels`() {
+        view.onDismissStub.onNext(Unit)
+
+        dispatcherObserver.assertValue { it is AutofillAction.Cancel }
     }
 }

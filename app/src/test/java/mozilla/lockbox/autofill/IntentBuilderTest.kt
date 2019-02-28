@@ -6,11 +6,12 @@
 
 package mozilla.lockbox.autofill
 
+import android.content.Intent
+import android.view.autofill.AutofillId
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mock
 import org.mockito.Mockito.mock
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
@@ -18,16 +19,16 @@ import org.robolectric.RuntimeEnvironment
 @ExperimentalCoroutinesApi
 @RunWith(RobolectricTestRunner::class)
 class IntentBuilderTest {
-
-    @Mock
-    val fillResponseBuilder: FillResponseBuilder = mock(FillResponseBuilder::class.java)
+    val usernameId = mock(AutofillId::class.java)
+    val passwordId = mock(AutofillId::class.java)
+    val parsedStructure = ParsedStructure(usernameId, passwordId, "webDomain", "packageName")
+    val fillResponseBuilder = FillResponseBuilder(parsedStructure)
     val context = RuntimeEnvironment.systemContext
 
     @Test
     fun `auth intent sender`() {
         IntentBuilder.getAuthIntentSender(context, fillResponseBuilder)
 
-        assertEquals(fillResponseBuilder, IntentBuilder.responseBuilder)
         // don't know a meaningful way to test the sender / intents
     }
 
@@ -35,7 +36,13 @@ class IntentBuilderTest {
     fun `search intent sender`() {
         IntentBuilder.getAuthIntentSender(context, fillResponseBuilder)
 
-        assertEquals(fillResponseBuilder, IntentBuilder.responseBuilder)
         // don't know a meaningful way to test the sender / intents
+    }
+
+    @Test
+    fun `roundtrip parcelable response builder`() {
+        val intent = Intent()
+        IntentBuilder.setResponseBuilder(intent, fillResponseBuilder)
+        assertEquals(fillResponseBuilder, IntentBuilder.getResponseBuilder(intent))
     }
 }

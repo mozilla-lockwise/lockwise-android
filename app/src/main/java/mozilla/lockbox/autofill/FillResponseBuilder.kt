@@ -103,4 +103,17 @@ class FillResponseBuilder(
 
     fun asyncFilter(pslSupport: PublicSuffixSupport, list: Observable<List<ServerPassword>>) =
         list.take(1).filter(pslSupport, parsedStructure.webDomain, parsedStructure.packageName)
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is FillResponseBuilder) return false
+
+        if (parsedStructure != other.parsedStructure) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return parsedStructure.hashCode()
+    }
 }

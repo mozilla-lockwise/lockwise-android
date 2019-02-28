@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
 package mozilla.lockbox.autofill
 
 import android.os.Build
@@ -12,7 +18,27 @@ open class ParsedStructureData<Id>(
     val passwordId: Id? = null,
     val webDomain: String? = null,
     val packageName: String
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is ParsedStructureData<*>) return false
+
+        if (usernameId != other.usernameId) return false
+        if (passwordId != other.passwordId) return false
+        if (webDomain != other.webDomain) return false
+        if (packageName != other.packageName) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = usernameId?.hashCode() ?: 0
+        result = 31 * result + (passwordId?.hashCode() ?: 0)
+        result = 31 * result + (webDomain?.hashCode() ?: 0)
+        result = 31 * result + packageName.hashCode()
+        return result
+    }
+}
 
 @RequiresApi(Build.VERSION_CODES.O)
 class ParsedStructure(
