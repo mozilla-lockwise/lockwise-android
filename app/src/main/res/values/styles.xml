@@ -129,10 +129,4 @@
     <style name="NoConnectivityWarning">
         <item name="android:background">@color/gray_73_percent</item>
     </style>
-    <resources>
-        <style name="AutofillHighlightAppearance" parent="android:autofillHighlight">
-            <item name="android:autofilledHighlight" tools:targetApi="o">@drawable/autofill_item</item>
-        </style>
-    </resources>
-
 </resources>
