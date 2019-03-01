@@ -79,7 +79,7 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         }
     }
 
-    override fun updateItem(item: ItemDetailViewModel, showUsernamePlaceholder: Boolean) {
+    override fun updateItem(item: ItemDetailViewModel) {
         assertOnUiThread()
         toolbar.title = item.title
 
@@ -89,7 +89,7 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
 
         inputUsername.readOnly = true
 
-        if (showUsernamePlaceholder) {
+        if (!item.hasUsername) {
             inputUsername.btnUsernameCopy.setColorFilter(resources.getColor(R.color.white_60_percent))
             inputUsername.isClickable = false
             inputUsername.isFocusable = false

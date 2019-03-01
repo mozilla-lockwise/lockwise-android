@@ -74,9 +74,9 @@ class ItemDetailPresenterTest {
         override var isPasswordVisible: Boolean = false
 
         var showPlaceholderUsernameStub: Boolean = false
-        override fun updateItem(item: ItemDetailViewModel, showPlaceholderUsername: Boolean) {
+        override fun updateItem(item: ItemDetailViewModel) {
             this.item = item
-            showPlaceholderUsernameStub = showPlaceholderUsername
+            showPlaceholderUsernameStub = !item.hasUsername
         }
         override fun showToastNotification(@StringRes strId: Int) {
             toastNotificationArgument = strId
@@ -176,8 +176,7 @@ class ItemDetailPresenterTest {
                 fakeCredentialNoUsername.hostname,
                 fakeCredentialNoUsername.username,
                 fakeCredentialNoUsername.password
-            ),
-            true
+            )
         )
 
         Assert.assertEquals(fakeCredentialNoUsername.id, dataStore.idArg)

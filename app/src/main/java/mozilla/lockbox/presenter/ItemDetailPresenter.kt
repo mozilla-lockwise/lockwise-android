@@ -34,7 +34,7 @@ interface ItemDetailView {
     val hostnameClicks: Observable<Unit>
     val learnMoreClicks: Observable<Unit>
     var isPasswordVisible: Boolean
-    fun updateItem(item: ItemDetailViewModel, showUsernamePlaceholder: Boolean)
+    fun updateItem(item: ItemDetailViewModel)
     fun showToastNotification(@StringRes strId: Int)
     fun handleNetworkError(networkErrorVisibility: Boolean)
     //    val retryNetworkConnectionClicks: Observable<Unit>
@@ -54,7 +54,7 @@ class ItemDetailPresenter(
 
     override fun onViewReady() {
         handleClicks(view.usernameCopyClicks) {
-            if (!it.username.isNullOrEmpty() && it.username != " ") {
+            if (!it.username.isNullOrBlank()) {
                 dispatcher.dispatch(ClipboardAction.CopyUsername(it.username.toString()))
                 dispatcher.dispatch(DataStoreAction.Touch(it.id))
                 view.showToastNotification(R.string.toast_username_copied)
@@ -94,10 +94,7 @@ class ItemDetailPresenter(
             .filterNotNull()
             .doOnNext { credentials = it }
             .map { it.toDetailViewModel() }
-            .subscribe {
-                val showUsernamePlaceholder = it.username.isNullOrEmpty()
-                view.updateItem(it, showUsernamePlaceholder)
-            }
+            .subscribe(view::updateItem)
             .addTo(compositeDisposable)
 
         networkStore.isConnected
@@ -115,8 +112,8 @@ class ItemDetailPresenter(
 
     private fun handleClicks(clicks: Observable<Unit>, withServerPassword: (ServerPassword) -> Unit) {
         clicks.subscribe {
-            this.credentials?.let { password -> withServerPassword(password) }
-        }
+                this.credentials?.let { password -> withServerPassword(password) }
+            }
             .addTo(compositeDisposable)
     }
 }
