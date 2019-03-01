@@ -11,16 +11,14 @@ import android.widget.RemoteViews
 import io.reactivex.Observable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
-import mozilla.lockbox.ParsedStructure
 import mozilla.lockbox.R
 import mozilla.lockbox.support.PublicSuffixSupport
 import mozilla.lockbox.support.filter
-import mozilla.lockbox.view.AuthActivity
 
 @TargetApi(Build.VERSION_CODES.O)
 @ExperimentalCoroutinesApi
-class FillResponseBuilder(
-    private val parsedStructure: ParsedStructure
+open class FillResponseBuilder(
+    internal val parsedStructure: ParsedStructure
 ) {
     fun buildAuthenticationFillResponse(context: Context): FillResponse {
         val responseBuilder = FillResponse.Builder()
@@ -30,7 +28,7 @@ class FillResponseBuilder(
             setTextViewText(R.id.presentationText, callToAction)
         }
 
-        val sender = AuthActivity.getAuthIntentSender(context, this)
+        val sender = IntentBuilder.getAuthIntentSender(context, this)
         responseBuilder.setAuthentication(autofillIds(), sender, authPresentation)
 
         return responseBuilder.build()
@@ -56,11 +54,11 @@ class FillResponseBuilder(
             setTextViewText(R.id.presentationText, callToAction)
         }
         // See https://github.com/mozilla-lockbox/lockbox-android/issues/421
-        val sender = AuthActivity.getAuthIntentSender(context, this)
+        val sender = IntentBuilder.getSearchIntentSender(context, this)
         builder.setAuthentication(autofillIds(), sender, searchPresentation)
     }
 
-    fun buildFilteredFillResponse(context: Context, filteredPasswords: List<ServerPassword>): FillResponse? {
+    open fun buildFilteredFillResponse(context: Context, filteredPasswords: List<ServerPassword>): FillResponse? {
 
         if (filteredPasswords.isEmpty()) {
             return null
@@ -103,6 +101,19 @@ class FillResponseBuilder(
         return datasetBuilder.build()
     }
 
-    fun asyncFilter(pslSupport: PublicSuffixSupport, list: Observable<List<ServerPassword>>) =
+    open fun asyncFilter(pslSupport: PublicSuffixSupport, list: Observable<List<ServerPassword>>) =
         list.take(1).filter(pslSupport, parsedStructure.webDomain, parsedStructure.packageName)
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is FillResponseBuilder) return false
+
+        if (parsedStructure != other.parsedStructure) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return parsedStructure.hashCode()
+    }
 }

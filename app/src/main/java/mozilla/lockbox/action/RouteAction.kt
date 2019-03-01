@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
+import mozilla.lockbox.R
 import mozilla.lockbox.flux.Action
 
 open class RouteAction(
@@ -37,6 +38,8 @@ open class RouteAction(
     ) : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.dialog) {
         class FingerprintDialog(@StringRes title: Int, @StringRes subtitle: Int? = null) :
             DialogFragment(dialogTitle = title, dialogSubtitle = subtitle)
+
+        object AutofillSearchDialog : DialogFragment(R.string.autofill)
     }
 
     sealed class Onboarding(

@@ -35,9 +35,10 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".view.AuthActivity"
+        <activity android:name=".view.AutofillRootActivity"
                   android:configChanges="orientation|keyboardHidden"
                   android:taskAffinity=".view.AuthActivity"
+                  android:theme="@style/NoBackgroundTheme"
                   android:screenOrientation="portrait"/>
 
         <service

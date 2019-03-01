@@ -70,7 +70,7 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
             postDelayed({
                 _authCallback.onNext(FingerprintAuthCallback.OnAuth)
                 isEnablingDismissed = false
-                dismiss()
+                dismissAllowingStateLoss()
             }, Constant.FingerprintTimeout.successDelayMillis)
         }
     }
