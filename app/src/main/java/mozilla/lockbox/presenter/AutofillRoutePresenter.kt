@@ -19,10 +19,10 @@ import mozilla.lockbox.R
 import mozilla.lockbox.action.AutofillAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.autofill.FillResponseBuilder
-import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
+import mozilla.lockbox.store.AutofillStore
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.support.PublicSuffixSupport
@@ -37,6 +37,7 @@ class AutofillRoutePresenter(
     private val responseBuilder: FillResponseBuilder,
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val routeStore: RouteStore = RouteStore.shared,
+    private val autofillStore: AutofillStore = AutofillStore.shared,
     private val dataStore: DataStore = DataStore.shared,
     private val pslSupport: PublicSuffixSupport = PublicSuffixSupport.shared
 ) : Presenter() {
@@ -50,13 +51,14 @@ class AutofillRoutePresenter(
             .subscribe(this::route)
             .addTo(compositeDisposable)
 
-        dispatcher.register
-            .filterByType(AutofillAction::class.java)
+        autofillStore.autofillActions
             .subscribe(this::finishAutofill)
             .addTo(compositeDisposable)
 
         dataStore.state
             .filter { it == DataStore.State.Unlocked }
+            // need to account for mismatch between `Unlocked` and the list being "ready"
+            // see https://github.com/mozilla-lockbox/lockbox-android/issues/464
             .switchMap { responseBuilder.asyncFilter(pslSupport, dataStore.list.take(1)) }
             .map { logins ->
                 if (logins.isNotEmpty()) {
@@ -144,8 +146,7 @@ class AutofillRoutePresenter(
     }
 
     private fun finishResponse(passwords: List<ServerPassword>) {
-        val response =
-            responseBuilder.buildFilteredFillResponse(activity, passwords)
+        val response = responseBuilder.buildFilteredFillResponse(activity, passwords)
         setFillResponseAndFinish(response)
     }
 

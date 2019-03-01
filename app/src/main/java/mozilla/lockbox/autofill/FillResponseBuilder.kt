@@ -17,7 +17,7 @@ import mozilla.lockbox.support.filter
 
 @TargetApi(Build.VERSION_CODES.O)
 @ExperimentalCoroutinesApi
-class FillResponseBuilder(
+open class FillResponseBuilder(
     internal val parsedStructure: ParsedStructure
 ) {
     fun buildAuthenticationFillResponse(context: Context): FillResponse {
@@ -58,7 +58,7 @@ class FillResponseBuilder(
         builder.setAuthentication(autofillIds(), sender, searchPresentation)
     }
 
-    fun buildFilteredFillResponse(context: Context, filteredPasswords: List<ServerPassword>): FillResponse? {
+    open fun buildFilteredFillResponse(context: Context, filteredPasswords: List<ServerPassword>): FillResponse? {
 
         if (filteredPasswords.isEmpty()) {
             return null
@@ -101,7 +101,7 @@ class FillResponseBuilder(
         return datasetBuilder.build()
     }
 
-    fun asyncFilter(pslSupport: PublicSuffixSupport, list: Observable<List<ServerPassword>>) =
+    open fun asyncFilter(pslSupport: PublicSuffixSupport, list: Observable<List<ServerPassword>>) =
         list.take(1).filter(pslSupport, parsedStructure.webDomain, parsedStructure.packageName)
 
     override fun equals(other: Any?): Boolean {
