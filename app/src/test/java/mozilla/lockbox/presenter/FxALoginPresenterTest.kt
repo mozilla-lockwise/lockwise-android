@@ -10,10 +10,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Build
-import android.preference.PreferenceManager
 import android.view.autofill.AutofillManager
-import androidx.annotation.RequiresApi
-import com.f2prateek.rx.preferences2.RxSharedPreferences
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.TestObserver
@@ -38,13 +35,12 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
+import org.mockito.Mockito
 import org.powermock.api.mockito.PowerMockito
 import org.powermock.core.classloader.annotations.PrepareForTest
-import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.robolectric.util.ReflectionHelpers
-import kotlin.jvm.internal.Reflection
 import org.mockito.Mockito.`when` as whenCalled
 
 @ExperimentalCoroutinesApi
@@ -88,45 +84,42 @@ class FxALoginPresenterTest : DisposingTest() {
             get() = fingerprintAvailableStub
     }
 
-
     class FakeSettingStore : SettingStore() {
         private val isAutofillAvailableStub: Boolean = true
         private val hasEnabledAutofillServicesStub: Boolean = true
-
-        @Mock
-        val autofillManagerStub = PowerMockito.mock(AutofillManager::class.java)
 
         override val autofillAvailable: Boolean
             get() = isAutofillAvailableStub
 
         override val isCurrentAutofillProvider: Boolean
             get() = hasEnabledAutofillServicesStub
-
-        override var autofillManager: AutofillManager = autofillManagerStub
-
     }
 
     val view = FakeFxALoginView(disposer)
     val fingerprintStore = FakeFingerprintStore()
 
     val dispatcher = Dispatcher()
+    private var isConnected: Observable<Boolean> = PublishSubject.create()
+    var isConnectedObserver = TestObserver.create<Boolean>()
     private val dispatcherObserver = TestObserver.create<Action>()
+    private val loginURLSubject = PublishSubject.create<String>()
 
     val settingStore = FakeSettingStore()
 
     @Mock
-    val accountStore = PowerMockito.mock(AccountStore::class.java)!!
+    val autofillManager: AutofillManager = Mockito.mock(AutofillManager::class.java)
 
-    private val loginURLSubject = PublishSubject.create<String>()
+    @Mock
+    val accountStore = PowerMockito.mock(AccountStore::class.java)!!
 
     @Mock
     val networkStore = PowerMockito.mock(NetworkStore::class.java)!!
 
-    private var isConnected: Observable<Boolean> = PublishSubject.create()
-    var isConnectedObserver = TestObserver.create<Boolean>()
-
     @Mock
     private val connectivityManager = PowerMockito.mock(ConnectivityManager::class.java)
+
+    @Mock
+    val context: Context = Mockito.mock(Context::class.java)
 
     lateinit var subject: FxALoginPresenter
 
@@ -136,6 +129,10 @@ class FxALoginPresenterTest : DisposingTest() {
 
         whenCalled(networkStore.isConnected).thenReturn(isConnected)
         whenCalled(accountStore.loginURL).thenReturn(loginURLSubject)
+
+        whenCalled(autofillManager.isAutofillSupported).thenReturn(settingStore.autofillAvailable)
+        whenCalled(autofillManager.hasEnabledAutofillServices()).thenReturn(settingStore.isCurrentAutofillProvider)
+        whenCalled(context.getSystemService(AutofillManager::class.java)).thenReturn(autofillManager)
 
         PowerMockito.whenNew(AccountStore::class.java).withAnyArguments().thenReturn(accountStore)
 
