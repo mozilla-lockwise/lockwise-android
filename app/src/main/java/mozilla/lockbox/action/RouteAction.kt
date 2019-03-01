@@ -28,6 +28,7 @@ open class RouteAction(
     data class ItemDetail(val id: String) : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.entry_detail)
     data class OpenWebsite(val url: String) :
         RouteAction(TelemetryEventMethod.tap, TelemetryEventObject.open_in_browser)
+    object PostOpenWebsite : RouteAction(TelemetryEventMethod.tap, TelemetryEventObject.open_in_browser)
 
     data class SystemSetting(val setting: SettingIntent) :
         RouteAction(TelemetryEventMethod.show, TelemetryEventObject.settings_system)

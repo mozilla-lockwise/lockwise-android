@@ -40,6 +40,13 @@ open class RouteStore(
     init {
         dispatcher.register
             .filterByType(RouteAction::class.java)
+            .flatMap {
+                if (it is RouteAction.OpenWebsite) {
+                    Observable.just(it, RouteAction.PostOpenWebsite)
+                } else {
+                    Observable.just(it)
+                }
+            }
             .subscribe(_routes)
 
         dispatcher.register
