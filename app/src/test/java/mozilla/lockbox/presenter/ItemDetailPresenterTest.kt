@@ -176,7 +176,8 @@ class ItemDetailPresenterTest {
                 fakeCredentialNoUsername.hostname,
                 fakeCredentialNoUsername.username,
                 fakeCredentialNoUsername.password
-            ), true
+            ),
+            true
         )
 
         Assert.assertEquals(fakeCredentialNoUsername.id, dataStore.idArg)
