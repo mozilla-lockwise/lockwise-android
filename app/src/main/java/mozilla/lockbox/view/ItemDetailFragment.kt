@@ -90,10 +90,10 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         inputUsername.readOnly = true
 
         if (showUsernamePlaceholder) {
-            view!!.btnUsernameCopy.setColorFilter(resources.getColor(R.color.white_60_percent))
-            view!!.isClickable = false
-            view!!.isFocusable = false
-            inputUsername.setText(getString(R.string.empty_space), TextView.BufferType.NORMAL)
+            inputUsername.btnUsernameCopy.setColorFilter(resources.getColor(R.color.white_60_percent))
+            inputUsername.isClickable = false
+            inputUsername.isFocusable = false
+            inputUsername.setText(R.string.empty_space, TextView.BufferType.NORMAL)
         } else {
             inputUsername.isClickable = true
             inputUsername.isFocusable = true
