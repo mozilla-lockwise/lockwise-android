@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ This Source Code Form is subject to the terms of the Mozilla Public
+  ~ License, v. 2.0. If a copy of the MPL was not distributed with this
+  ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
+  -->
+
+<!-- Hostname field -->
+<TextView
+        android:id="@+id/hostname"
+        android:layout_gravity="start"
+        android:layout_width="225dp"
+        android:layout_height="24dp"
+        android:gravity="start"
+        android:paddingStart="16dp"
+        android:textSize="16sp"
+        android:fontFamily="sans-serif"
+        android:textStyle="normal"
+        android:textColor="@color/black_87_percent"
+        android:letterSpacing="0.01"
+        android:lineSpacingExtra="8sp"
+        xmlns:android="http://schemas.android.com/apk/res/android"/>
