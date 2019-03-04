@@ -8,7 +8,6 @@ package mozilla.lockbox.view
 
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
-import android.net.Uri
 import android.os.Bundle
 import androidx.annotation.StringRes
 import android.view.LayoutInflater
@@ -17,7 +16,6 @@ import android.view.ViewGroup
 import mozilla.lockbox.R
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.browser.customtabs.CustomTabsIntent
 import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.fragment_fxa_login.view.*
 import kotlinx.android.synthetic.main.fragment_webview.*
@@ -55,22 +53,13 @@ class AppWebPageFragment : BackableFragment(), WebPageView {
     }
 
     override fun loadURL(url: String) {
-//        webView.webViewClient = object : WebViewClient() {
-//            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-//                webViewObserver?.accept(url)
-//                super.onPageStarted(view, url, favicon)
-//            }
-//        }
-//        webView.loadUrl(url)
-
-        val customTabsIntent = CustomTabsIntent.Builder()
-                .setToolbarColor(resources.getColor(R.color.colorPrimary, context?.theme))
-                .setShowTitle(true)
-//                .setCloseButtonIcon()
-                .build()
-
-        customTabsIntent.launchUrl(context, Uri.parse(url))
-
+        webView.webViewClient = object : WebViewClient() {
+            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                webViewObserver?.accept(url)
+                super.onPageStarted(view, url, favicon)
+            }
+        }
+        webView.loadUrl(url)
     }
 
     override fun handleNetworkError(networkErrorVisibility: Boolean) {
