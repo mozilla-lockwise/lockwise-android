@@ -4,7 +4,8 @@
   ~ License, v. 2.0. If a copy of the MPL was not distributed with this
   ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
   -->
-<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/appDrawer"
@@ -56,6 +57,13 @@
             </LinearLayout>
         </androidx.appcompat.widget.Toolbar>
 
+        <include layout="@layout/fragment_warning"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 app:layout_constraintTop_toBottomOf="@id/toolbar"
+                 app:layout_constraintBottom_toTopOf="@id/entriesView"
+                 tools:text="@string/no_internet_connection" />
+
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/refreshContainer"
@@ -72,7 +80,7 @@
             android:id="@+id/loadingView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/backgroundGrey">
+            android:background="@color/background_grey">
 
             <ImageView
                 android:layout_width="match_parent"
@@ -125,7 +133,7 @@
         android:theme="@style/NavDrawerStyle"
         app:headerLayout="@layout/nav_header"
         app:itemTextAppearance="@style/NavDrawerStyle"
-        app:itemTextColor="@color/textGrey"
+        app:itemTextColor="@color/text_grey"
         app:menu="@menu/nav_menu">
 
         <LinearLayout
@@ -139,7 +147,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:backgroundTint="@color/backgroundWhite"
+                android:backgroundTint="@color/background_white"
                 android:drawableStart="@drawable/ic_lock"
                 android:drawablePadding="32dp"
                 android:elevation="0dp"
@@ -149,7 +157,7 @@
                 android:stateListAnimator="@null"
                 android:text="@string/lock_now"
                 android:textAlignment="viewStart"
-                android:textColor="@color/textGrey"
+                android:textColor="@color/text_grey"
                 android:theme="@style/NavDrawerButtonStyle" />
         </LinearLayout>
     </com.google.android.material.navigation.NavigationView>

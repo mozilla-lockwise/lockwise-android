@@ -5,15 +5,15 @@
   -->
 
 <resources>
-    <color name="colorPrimary">#137db5</color>
-    <color name="colorPrimaryDark">#055894</color>
+    <color name="color_primary">#137db5</color>
+    <color name="color_primary_dark">#055894</color>
     <color name="recyclerview_divider">#26000000</color>
     <color name="white_60_percent">#99FFFFFF</color>
     <color name="black_60_percent">#99000000</color>
-    <color name="backgroundGrey">#ededf0</color>
+    <color name="background_grey">#ededf0</color>
     <color name="text_white">#ffffff</color>
-    <color name="backgroundWhite">#ffffff</color>
-    <color name="textGrey">#0c0c0d</color>
+    <color name="background_white">#ffffff</color>
+    <color name="text_grey">#0c0c0d</color>
     <color name="black_87_percent">#de000000</color>
     <color name="black_54_percent">#8a000000</color>
     <color name="blue_60_percent">#0060df</color>

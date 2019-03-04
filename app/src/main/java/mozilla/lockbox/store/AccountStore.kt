@@ -6,6 +6,7 @@
 
 package mozilla.lockbox.store
 
+import android.content.Context
 import android.net.Uri
 import android.os.Looper
 import android.webkit.CookieManager
@@ -26,8 +27,9 @@ import mozilla.components.service.fxa.FirefoxAccount
 import mozilla.components.service.fxa.FxaException
 import mozilla.components.service.fxa.Profile
 import mozilla.lockbox.action.AccountAction
+import mozilla.lockbox.action.DataStoreAction
+import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.LifecycleAction
-import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.log
@@ -43,9 +45,10 @@ import kotlin.coroutines.CoroutineContext
 
 @ExperimentalCoroutinesApi
 open class AccountStore(
+    private val lifecycleStore: LifecycleStore = LifecycleStore.shared,
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val securePreferences: SecurePreferences = SecurePreferences.shared
-) {
+) : ContextStore {
     companion object {
         val shared by lazy { AccountStore() }
     }
@@ -71,15 +74,15 @@ open class AccountStore(
     private var fxa: FirefoxAccount? = null
 
     open val loginURL: Observable<String> = ReplaySubject.createWithSize(1)
-    open val syncCredentials: Observable<Optional<SyncCredentials>> = ReplaySubject.createWithSize(1)
+    private val syncCredentials: Observable<Optional<SyncCredentials>> = ReplaySubject.createWithSize(1)
     open val profile: Observable<Optional<Profile>> = ReplaySubject.createWithSize(1)
 
     init {
-        val resetObservable = this.dispatcher.register
+        val resetObservable = lifecycleStore.lifecycleEvents
             .filter { it == LifecycleAction.UserReset }
             .map { AccountAction.Reset }
 
-        val useTestData = this.dispatcher.register
+        val useTestData = lifecycleStore.lifecycleEvents
             .filter { it == LifecycleAction.UseTestData }
             .map { AccountAction.UseTestData }
 
@@ -96,6 +99,20 @@ open class AccountStore(
             }
             .addTo(compositeDisposable)
 
+        // Moves credentials from the AccountStore, into the DataStore.
+        syncCredentials.map {
+                it.value?.let { credentials -> DataStoreAction.UpdateCredentials(credentials) }
+                ?: DataStoreAction.Reset
+            }
+            .subscribe(dispatcher::dispatch)
+            .addTo(compositeDisposable)
+    }
+
+    override fun injectContext(context: Context) {
+        detectAccount()
+    }
+
+    private fun detectAccount() {
         storedAccountJSON?.let { accountJSON ->
             if (accountJSON == Constant.App.testMarker) {
                 populateTestAccountInformation(false)
@@ -103,7 +120,7 @@ open class AccountStore(
                 try {
                     this.fxa = FirefoxAccount.fromJSONString(accountJSON)
                 } catch (e: FxaException) {
-                    dispatcher.dispatch(RouteAction.Dialog.NoNetworkDisclaimer)
+                    dispatcher.dispatch(DialogAction.NoNetworkDisclaimer)
                 }
                 generateLoginURL()
                 populateAccountInformation(false)
@@ -202,6 +219,6 @@ open class AccountStore(
     }
 
     private fun pushError(it: Throwable) {
-        dispatcher.dispatch(RouteAction.Dialog.NoNetworkDisclaimer)
+        dispatcher.dispatch(DialogAction.NoNetworkDisclaimer)
     }
 }

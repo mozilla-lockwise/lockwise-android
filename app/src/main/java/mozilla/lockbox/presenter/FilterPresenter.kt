@@ -11,6 +11,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import mozilla.lockbox.action.AppWebPageAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.mapToItemViewModelList
 import mozilla.lockbox.flux.Dispatcher
@@ -24,9 +26,11 @@ interface FilterView {
     val cancelButtonClicks: Observable<Unit>
     val cancelButtonVisibility: Consumer<in Boolean>
     val itemSelection: Observable<ItemViewModel>
+    val noMatchingClicks: Observable<Unit>
     fun updateItems(items: List<ItemViewModel>)
 }
 
+@ExperimentalCoroutinesApi
 class FilterPresenter(
     val view: FilterView,
     private val dispatcher: Dispatcher = Dispatcher.shared,
@@ -41,6 +45,11 @@ class FilterPresenter(
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(view::updateItems)
                 .addTo(compositeDisposable)
+
+        view.noMatchingClicks
+            .map { AppWebPageAction.FaqCreate }
+            .subscribe(dispatcher::dispatch)
+            .addTo(compositeDisposable)
 
         view.filterTextEntered
                 .map { it.isNotEmpty() }

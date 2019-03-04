@@ -28,5 +28,8 @@ class WelcomeFragment : Fragment(), WelcomeView {
     }
 
     override val getStartedClicks: Observable<Unit>
-            get() = view!!.buttonGetStarted.clicks()
+        get() = view!!.buttonGetStarted.clicks()
+
+    override val learnMoreClicks: Observable<Unit>
+        get() = view!!.textViewLearnMore.clicks()
 }

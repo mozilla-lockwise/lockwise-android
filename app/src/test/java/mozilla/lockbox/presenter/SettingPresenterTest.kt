@@ -11,10 +11,13 @@ import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import mozilla.lockbox.R
+import mozilla.lockbox.action.AppWebPageAction
+import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.action.SettingAction
+import mozilla.lockbox.action.SettingIntent
 import mozilla.lockbox.adapter.ListAdapterTestHelper
 import mozilla.lockbox.adapter.SectionedAdapter
 import mozilla.lockbox.adapter.SettingCellConfiguration
@@ -23,9 +26,9 @@ import mozilla.lockbox.adapter.ToggleSettingConfiguration
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.model.FingerprintAuthCallback
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.SettingStore
-import mozilla.lockbox.view.FingerprintAuthDialogFragment
 import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -60,6 +63,13 @@ class SettingPresenterTest {
         override var autoLockTime: Observable<Setting.AutoLockTime> = PublishSubject.create<Setting.AutoLockTime>()
 
         override val onEnablingFingerprint: Observable<FingerprintAuthAction> = PublishSubject.create()
+
+        var autofillAvailableStub: Boolean = false
+        override val autofillAvailable: Boolean
+            get() = autofillAvailableStub
+
+        override val isCurrentAutofillProvider: Boolean
+            get() = false
     }
 
     private lateinit var testHelper: ListAdapterTestHelper
@@ -84,9 +94,59 @@ class SettingPresenterTest {
     }
 
     @Test
-    fun `update settings when fingerprint available`() {
+    fun `update settings when fingerprint available and autofill unavailable`() {
         whenCalled(fingerprintStore.isFingerprintAuthAvailable).thenReturn(true)
-        val expectedSettings = testHelper.createAccurateListOfSettings(true)
+        settingStore.autofillAvailableStub = false
+        val expectedSettings = testHelper.createAccurateListOfSettings(true, false)
+
+        val expectedSections = listOf(
+            SectionedAdapter.Section(0, R.string.configuration_title),
+            SectionedAdapter.Section(2, R.string.support_title)
+        )
+
+        subject.onResume()
+
+        assertEquals(view.settingItem!![0].title, expectedSettings[0].title)
+        assertEquals(view.settingItem!![1].title, expectedSettings[1].title)
+        assertEquals(view.settingItem!![2].title, expectedSettings[2].title)
+        assertEquals(view.settingItem!![3].title, expectedSettings[3].title)
+
+        assertEquals(view.sectionsItem!![0].title, expectedSections[0].title)
+        assertEquals(view.sectionsItem!![1].title, expectedSections[1].title)
+
+        assertEquals(view.sectionsItem!![0].firstPosition, expectedSections[0].firstPosition)
+        assertEquals(view.sectionsItem!![1].firstPosition, expectedSections[1].firstPosition)
+    }
+
+    @Test
+    fun `update settings when fingerprint unavailable and autofill unavailable`() {
+        whenCalled(fingerprintStore.isFingerprintAuthAvailable).thenReturn(false)
+        settingStore.autofillAvailableStub = false
+        val expectedSettings = testHelper.createAccurateListOfSettings(false, false)
+
+        val expectedSections = listOf(
+            SectionedAdapter.Section(0, R.string.configuration_title),
+            SectionedAdapter.Section(1, R.string.support_title)
+        )
+
+        subject.onResume()
+
+        assertEquals(view.settingItem!![0].title, expectedSettings[0].title)
+        assertEquals(view.settingItem!![1].title, expectedSettings[1].title)
+        assertEquals(view.settingItem!![2].title, expectedSettings[2].title)
+
+        assertEquals(view.sectionsItem!![0].title, expectedSections[0].title)
+        assertEquals(view.sectionsItem!![1].title, expectedSections[1].title)
+
+        assertEquals(view.sectionsItem!![0].firstPosition, expectedSections[0].firstPosition)
+        assertEquals(view.sectionsItem!![1].firstPosition, expectedSections[1].firstPosition)
+    }
+
+    @Test
+    fun `update settings when fingerprint available and autofill available`() {
+        whenCalled(fingerprintStore.isFingerprintAuthAvailable).thenReturn(true)
+        settingStore.autofillAvailableStub = true
+        val expectedSettings = testHelper.createAccurateListOfSettings(true, true)
 
         val expectedSections = listOf(
             SectionedAdapter.Section(0, R.string.configuration_title),
@@ -99,19 +159,19 @@ class SettingPresenterTest {
         assertEquals(view.settingItem!![1].title, expectedSettings[1].title)
         assertEquals(view.settingItem!![2].title, expectedSettings[2].title)
         assertEquals(view.settingItem!![3].title, expectedSettings[3].title)
-        // assertEquals(view.settingItem!![4].title, expectedSettings[4].title)
 
         assertEquals(view.sectionsItem!![0].title, expectedSections[0].title)
         assertEquals(view.sectionsItem!![1].title, expectedSections[1].title)
 
         assertEquals(view.sectionsItem!![0].firstPosition, expectedSections[0].firstPosition)
-        // assertEquals(view.sectionsItem!![1].firstPosition, expectedSections[1].firstPosition)
+        assertEquals(view.sectionsItem!![1].firstPosition, expectedSections[1].firstPosition)
     }
 
     @Test
-    fun `update settings when fingerprint unavailable`() {
+    fun `update settings when fingerprint unavailable and autofill available`() {
         whenCalled(fingerprintStore.isFingerprintAuthAvailable).thenReturn(false)
-        val expectedSettings = testHelper.createAccurateListOfSettings(false)
+        settingStore.autofillAvailableStub = true
+        val expectedSettings = testHelper.createAccurateListOfSettings(false, true)
 
         val expectedSections = listOf(
             SectionedAdapter.Section(0, R.string.configuration_title),
@@ -123,13 +183,13 @@ class SettingPresenterTest {
         assertEquals(view.settingItem!![0].title, expectedSettings[0].title)
         assertEquals(view.settingItem!![1].title, expectedSettings[1].title)
         assertEquals(view.settingItem!![2].title, expectedSettings[2].title)
-        // assertEquals(view.settingItem!![3].title, expectedSettings[3].title)
+        assertEquals(view.settingItem!![3].title, expectedSettings[3].title)
 
         assertEquals(view.sectionsItem!![0].title, expectedSections[0].title)
         assertEquals(view.sectionsItem!![1].title, expectedSections[1].title)
 
         assertEquals(view.sectionsItem!![0].firstPosition, expectedSections[0].firstPosition)
-        // assertEquals(view.sectionsItem!![1].firstPosition, expectedSections[1].firstPosition)
+        assertEquals(view.sectionsItem!![1].firstPosition, expectedSections[1].firstPosition)
     }
 
     @Test
@@ -158,7 +218,7 @@ class SettingPresenterTest {
         subject.onResume()
         (settingStore.onEnablingFingerprint as Subject).onNext(
             FingerprintAuthAction.OnAuthentication(
-                FingerprintAuthDialogFragment.AuthCallback.OnAuth
+                FingerprintAuthCallback.OnAuth
             )
         )
         dispatcherObserver.assertValueSequence(
@@ -174,7 +234,7 @@ class SettingPresenterTest {
         subject.onResume()
         (settingStore.onEnablingFingerprint as Subject).onNext(
             FingerprintAuthAction.OnAuthentication(
-                FingerprintAuthDialogFragment.AuthCallback.OnError
+                FingerprintAuthCallback.OnError
             )
         )
         dispatcherObserver.assertValueSequence(
@@ -222,12 +282,54 @@ class SettingPresenterTest {
     }
 
     @Test
-    fun `autoLockTime update requested`() {
+    fun `learn more button in sendUsageData tapped`() {
         Mockito.`when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(false)
+        subject.onResume()
+
+        (view.settingItem!![1] as ToggleSettingConfiguration).buttonObserver!!.accept(Unit)
+
+        dispatcherObserver.assertLastValue(AppWebPageAction.Privacy)
+    }
+
+    @Test
+    fun `autoLockTime update requested with secure device`() {
+        Mockito.`when`(fingerprintStore.isDeviceSecure).thenReturn(true)
         subject.onResume()
 
         (view.settingItem!![0] as TextSettingConfiguration).clickListener.accept(Unit)
 
         dispatcherObserver.assertLastValue(RouteAction.AutoLockSetting)
+    }
+
+    @Test
+    fun `autoLockTime update requested with insecure device`() {
+        Mockito.`when`(fingerprintStore.isDeviceSecure).thenReturn(false)
+        subject.onResume()
+
+        (view.settingItem!![0] as TextSettingConfiguration).clickListener.accept(Unit)
+
+        dispatcherObserver.assertLastValue(DialogAction.SecurityDisclaimer)
+    }
+
+    @Test
+    fun `autofill provider enabled`() {
+        Mockito.`when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(false)
+        settingStore.autofillAvailableStub = true
+        subject.onResume()
+
+        (view.settingItem!![1] as ToggleSettingConfiguration).toggleObserver.accept(true)
+
+        dispatcherObserver.assertLastValue(RouteAction.SystemSetting(SettingIntent.Autofill))
+    }
+
+    @Test
+    fun `autofill provider disabled`() {
+        Mockito.`when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(false)
+        settingStore.autofillAvailableStub = true
+        subject.onResume()
+
+        (view.settingItem!![1] as ToggleSettingConfiguration).toggleObserver.accept(false)
+
+        dispatcherObserver.assertLastValue(SettingAction.Autofill(false))
     }
 }

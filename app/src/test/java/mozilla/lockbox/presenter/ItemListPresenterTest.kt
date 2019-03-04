@@ -6,6 +6,8 @@
 
 package mozilla.lockbox.presenter
 
+import android.content.Context
+import android.net.ConnectivityManager
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.BehaviorSubject
@@ -14,7 +16,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
 import mozilla.components.service.fxa.Profile
 import mozilla.lockbox.R
+import mozilla.lockbox.action.AppWebPageAction
 import mozilla.lockbox.action.DataStoreAction
+import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.action.SettingAction
@@ -28,6 +32,7 @@ import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.FingerprintStore
+import mozilla.lockbox.store.NetworkStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.support.Optional
 import org.junit.Assert
@@ -35,15 +40,17 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
+import org.mockito.Mockito
 import org.mockito.Mockito.spy
 import org.mockito.Mockito.verify
 import org.powermock.api.mockito.PowerMockito
 import org.powermock.core.classloader.annotations.PrepareForTest
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 import org.mockito.Mockito.`when` as whenCalled
 
 private val username = "dogs@dogs.com"
-private val password1 = ServerPassword(
+private val item1 = ServerPassword(
     "fdsfda",
     "https://www.mozilla.org",
     username,
@@ -53,7 +60,7 @@ private val password1 = ServerPassword(
     timeLastUsed = 1L,
     timePasswordChanged = 0L
 )
-private val password2 = ServerPassword(
+private val item2 = ServerPassword(
     "ghfdhg",
     "https://www.cats.org",
     username,
@@ -63,10 +70,10 @@ private val password2 = ServerPassword(
     timeLastUsed = 2L,
     timePasswordChanged = 0L
 )
-private val password3 = ServerPassword(
+private val item3 = ServerPassword(
     "ioupiouiuy",
     "www.dogs.org",
-    username = "",
+    username = null,
     password = "baaaaa",
     timesUsed = 0,
     timeCreated = 0L,
@@ -77,14 +84,18 @@ private val password3 = ServerPassword(
 @ExperimentalCoroutinesApi
 @RunWith(RobolectricTestRunner::class)
 @PrepareForTest(AccountStore::class)
+@Config(application = TestApplication::class)
 open class ItemListPresenterTest {
-    @Mock
-    val fingerprintStore = PowerMockito.mock(FingerprintStore::class.java)
-
-    @Mock
-    val accountStore = PowerMockito.mock(AccountStore::class.java)
-
     class FakeView : ItemListView {
+
+//        private val retryButtonStub = PublishSubject.create<Unit>()
+//        override val retryNetworkConnectionClicks: Observable<Unit>
+//            get() = retryButtonStub
+
+        var networkAvailable = PublishSubject.create<Boolean>()
+        override fun handleNetworkError(networkErrorVisibility: Boolean) {
+            networkAvailable.onNext(networkErrorVisibility)
+        }
 
         var accountViewModel: AccountViewModel? = null
         var updateItemsArgument: List<ItemViewModel>? = null
@@ -93,6 +104,7 @@ open class ItemListPresenterTest {
         val menuItemSelectionStub = PublishSubject.create<Int>()
         val itemSelectedStub = PublishSubject.create<ItemViewModel>()
         val filterClickStub = PublishSubject.create<Unit>()
+        val noEntriesClickStub = PublishSubject.create<Unit>()
         val sortItemSelectionStub = PublishSubject.create<Setting.ItemListSort>()
         val disclaimerActionStub = PublishSubject.create<AlertState>()
         val lockNowSelectionStub = PublishSubject.create<Unit>()
@@ -112,6 +124,9 @@ open class ItemListPresenterTest {
 
         override val lockNowClick: Observable<Unit>
             get() = lockNowSelectionStub
+
+        override val noEntriesClicks: Observable<Unit>
+            get() = noEntriesClickStub
 
         override fun updateAccountProfile(profile: AccountViewModel) {
             accountViewModel = AccountViewModel(
@@ -143,11 +158,12 @@ open class ItemListPresenterTest {
     }
 
     class FakeDataStore : DataStore() {
+
         val listStub = PublishSubject.create<List<ServerPassword>>()
         val syncStateStub = PublishSubject.create<SyncState>()
-
         override val list: Observable<List<ServerPassword>>
             get() = listStub
+
         override val syncState: Observable<SyncState> get() = syncStateStub
     }
 
@@ -157,22 +173,54 @@ open class ItemListPresenterTest {
         override var itemListSortOrder: Observable<Setting.ItemListSort> = itemListSortStub
     }
 
+    @Mock
+    val fingerprintStore = PowerMockito.mock(FingerprintStore::class.java)
+
+    @Mock
+    val accountStore = PowerMockito.mock(AccountStore::class.java)
+
+    @Mock
+    val networkStore = PowerMockito.mock(NetworkStore::class.java)!!
+
+    private var isConnected: Observable<Boolean> = PublishSubject.create()
+    var isConnectedObserver = TestObserver.create<Boolean>()
+
+    @Mock
+    private val connectivityManager = PowerMockito.mock(ConnectivityManager::class.java)
+
     private val dataStore = FakeDataStore()
     private val settingStore = FakeSettingStore()
     private val profileStub = PublishSubject.create<Optional<Profile>>()
 
-    val view: FakeView = spy(FakeView())
-    val dispatcher = Dispatcher()
-    val subject = ItemListPresenter(view, dispatcher, dataStore, settingStore, fingerprintStore, accountStore)
+    val view: ItemListPresenterTest.FakeView = spy(ItemListPresenterTest.FakeView())
 
+    val dispatcher = Dispatcher()
     private val dispatcherObserver = TestObserver.create<Action>()!!
+
+    @Mock
+    val context: Context = Mockito.mock(Context::class.java)
+
+    val subject =
+        ItemListPresenter(
+            view,
+            dispatcher,
+            dataStore,
+            settingStore,
+            fingerprintStore,
+            networkStore,
+            accountStore
+        )
 
     @Before
     fun setUp() {
+        whenCalled(networkStore.isConnected).thenReturn(isConnected)
 
         PowerMockito.`when`(accountStore.profile).thenReturn(profileStub)
         PowerMockito.whenNew(AccountStore::class.java).withAnyArguments().thenReturn(accountStore)
         dispatcher.register.subscribe(dispatcherObserver)
+
+        networkStore.connectivityManager = connectivityManager
+        view.networkAvailable.subscribe(isConnectedObserver)
 
         subject.onViewReady()
     }
@@ -200,8 +248,8 @@ open class ItemListPresenterTest {
 
     @Test
     fun receivingPasswordList_somePasswords() {
-        val list = listOf(password1, password2, password3)
-        val expectedList = listOf(password2, password3, password1).map { it.toViewModel() }
+        val list = listOf(item1, item2, item3)
+        val expectedList = listOf(item2, item3, item1).map { it.toViewModel() }
 
         dataStore.listStub.onNext(list)
 
@@ -211,10 +259,10 @@ open class ItemListPresenterTest {
 
     @Test
     fun `updates sort order of list when item sort order menu changes`() {
-        val list = listOf(password1, password2, password3)
+        val list = listOf(item1, item2, item3)
         dataStore.listStub.onNext(list)
-        val alphabetically = listOf(password2, password3, password1).map { it.toViewModel() }
-        val lastUsed = listOf(password3, password2, password1).map { it.toViewModel() }
+        val alphabetically = listOf(item2, item3, item1).map { it.toViewModel() }
+        val lastUsed = listOf(item3, item2, item1).map { it.toViewModel() }
 
         // default
         Assert.assertEquals(alphabetically, view.updateItemsArgument)
@@ -242,8 +290,7 @@ open class ItemListPresenterTest {
     @Test
     fun receivingPasswordList_empty() {
         dataStore.listStub.onNext(emptyList())
-
-        Assert.assertNull(view.updateItemsArgument)
+        Assert.assertEquals(emptyList<ItemViewModel>(), view.updateItemsArgument)
     }
 
     @Test
@@ -253,9 +300,9 @@ open class ItemListPresenterTest {
         view.menuItemSelectionStub.onNext(R.id.account_setting_menu_item)
         dispatcherObserver.assertLastValue(RouteAction.AccountSetting)
         view.menuItemSelectionStub.onNext(R.id.faq_menu_item)
-        dispatcherObserver.assertLastValue(RouteAction.AppWebPage.FaqList)
+        dispatcherObserver.assertLastValue(AppWebPageAction.FaqList)
         view.menuItemSelectionStub.onNext(R.id.feedback_menu_item)
-        dispatcherObserver.assertLastValue(RouteAction.AppWebPage.SendFeedback)
+        dispatcherObserver.assertLastValue(AppWebPageAction.SendFeedback)
     }
 
     @Test
@@ -265,13 +312,19 @@ open class ItemListPresenterTest {
     }
 
     @Test
+    fun `no matching entries clicks routes to FAQ`() {
+        view.noEntriesClickStub.onNext(Unit)
+        dispatcherObserver.assertLastValue(AppWebPageAction.FaqSync)
+    }
+
+    @Test
     fun `tapping on the lock menu item when the user has no device security routes to security disclaimer dialog`() {
         whenCalled(fingerprintStore.isDeviceSecure).thenReturn(false)
         setUp()
         view.lockNowSelectionStub.onNext(Unit)
         view.disclaimerActionStub.onNext(AlertState.BUTTON_POSITIVE)
 
-        Assert.assertTrue(dispatcherObserver.values().last() is RouteAction.Dialog.SecurityDisclaimer)
+        Assert.assertTrue(dispatcherObserver.values().last() is DialogAction.SecurityDisclaimer)
     }
 
     @Test
@@ -304,5 +357,13 @@ open class ItemListPresenterTest {
     fun `swipe down calls sync`() {
         view.refreshItemListStub.onNext(Unit)
         dispatcherObserver.assertLastValue(DataStoreAction.Sync)
+    }
+
+    @Test
+    fun `network error visibility is correctly being set`() {
+        val value = view.networkAvailable
+        value.onNext(true)
+
+        isConnectedObserver.assertValue(true)
     }
 }

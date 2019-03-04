@@ -17,6 +17,8 @@ import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.ClipboardAction
 import mozilla.lockbox.action.TelemetryAction
+import mozilla.lockbox.action.SettingAction
+import mozilla.lockbox.action.Setting
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.extensions.assertLastValueMatches
 import mozilla.lockbox.flux.Dispatcher
@@ -90,6 +92,11 @@ class TelemetryStoreTest : DisposingTest() {
             it.toJSON() == action.createEvent().toJSON()
         }
         action = DataStoreAction.Lock
+        dispatcher.dispatch(action)
+        eventsObserver.assertLastValueMatches {
+            it.toJSON() == action.createEvent().toJSON()
+        }
+        action = SettingAction.AutoLockTime(Setting.AutoLockTime.OneMinute)
         dispatcher.dispatch(action)
         eventsObserver.assertLastValueMatches {
             it.toJSON() == action.createEvent().toJSON()

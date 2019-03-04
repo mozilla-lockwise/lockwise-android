@@ -20,7 +20,7 @@
             android:label="@string/app_name"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
-            android:theme="@style/AppTheme"
+            android:theme="@style/AppTheme.Launcher"
             android:name=".LockboxApplication"
             tools:replace="android:allowBackup"
             tools:ignore="GoogleAppIndexingWarning">
@@ -32,10 +32,14 @@
                 android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity android:name=".view.AutofillRootActivity"
+                  android:configChanges="orientation|keyboardHidden"
+                  android:taskAffinity=".view.AuthActivity"
+                  android:theme="@style/NoBackgroundTheme"
+                  android:screenOrientation="portrait"/>
 
         <service
                 android:name=".LockboxAutofillService"

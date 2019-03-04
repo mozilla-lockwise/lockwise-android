@@ -13,30 +13,22 @@ import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
-import mozilla.lockbox.action.DataStoreAction
+import mozilla.lockbox.action.AppWebPageAction
+import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.action.SettingAction
-import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.extensions.view.AlertDialogHelper
 import mozilla.lockbox.extensions.view.AlertState
-import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
-import mozilla.lockbox.model.SyncCredentials
-import mozilla.lockbox.store.AccountStore
-import mozilla.lockbox.store.AutoLockStore
-import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.store.SettingStore
-import mozilla.lockbox.support.Optional
-import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.view.AppWebPageFragmentArgs
 import mozilla.lockbox.view.DialogFragment
 import mozilla.lockbox.view.FingerprintAuthDialogFragment
@@ -47,26 +39,12 @@ class RoutePresenter(
     private val activity: AppCompatActivity,
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val routeStore: RouteStore = RouteStore.shared,
-    private val settingStore: SettingStore = SettingStore.shared,
-    private val dataStore: DataStore = DataStore.shared,
-    private val accountStore: AccountStore = AccountStore.shared,
-    private val autoLockStore: AutoLockStore = AutoLockStore.shared
+    private val settingStore: SettingStore = SettingStore.shared
 ) : Presenter() {
     private lateinit var navController: NavController
 
     override fun onViewReady() {
         navController = Navigation.findNavController(activity, R.id.fragment_nav_host)
-
-        val autoLockActions = autoLockStore.autoLockActivated
-            .filter { it }
-            .map { DataStoreAction.Lock }
-
-        // Moves credentials from the AccountStore, into the DataStore.
-        accountStore.syncCredentials
-            .map(this::accountToDataStoreActions)
-            .mergeWith(autoLockActions)
-            .subscribe(dispatcher::dispatch)
-            .addTo(compositeDisposable)
 
         routeStore.routes
             .observeOn(mainThread())
@@ -74,34 +52,31 @@ class RoutePresenter(
             .addTo(compositeDisposable)
     }
 
-    private fun accountToDataStoreActions(optCredentials: Optional<SyncCredentials>): DataStoreAction {
-        // we will get a null credentials object (and subsequently reset the datastore) on
-        // both initial login and reset / logout.
-        val credentials = optCredentials.value ?: return DataStoreAction.Reset
-
-        return DataStoreAction.UpdateCredentials(credentials)
-    }
-
     private fun route(action: RouteAction) {
         when (action) {
-            is RouteAction.Welcome -> navigateToFragment(action, R.id.fragment_welcome)
-            is RouteAction.Login -> navigateToFragment(action, R.id.fragment_fxa_login)
-            is RouteAction.ItemList -> navigateToFragment(action, R.id.fragment_item_list)
-            is RouteAction.SettingList -> navigateToFragment(action, R.id.fragment_setting)
-            is RouteAction.AccountSetting -> navigateToFragment(action, R.id.fragment_account_setting)
-            is RouteAction.LockScreen -> navigateToFragment(action, R.id.fragment_locked)
-            is RouteAction.Filter -> navigateToFragment(action, R.id.fragment_filter)
-            is RouteAction.ItemDetail -> navigateToFragment(action, R.id.fragment_item_detail, bundle(action))
+            is RouteAction.Welcome -> navigateToFragment(R.id.fragment_welcome)
+            is RouteAction.Login -> navigateToFragment(R.id.fragment_fxa_login)
+            is RouteAction.Onboarding.FingerprintAuth ->
+                navigateToFragment(R.id.fragment_fingerprint_onboarding)
+            is RouteAction.Onboarding.Autofill -> navigateToFragment(R.id.fragment_autofill_onboarding)
+            is RouteAction.Onboarding.Confirmation -> navigateToFragment(R.id.fragment_onboarding_confirmation)
+            is RouteAction.ItemList -> navigateToFragment(R.id.fragment_item_list)
+            is RouteAction.SettingList -> navigateToFragment(R.id.fragment_setting)
+            is RouteAction.AccountSetting -> navigateToFragment(R.id.fragment_account_setting)
+            is RouteAction.LockScreen -> navigateToFragment(R.id.fragment_locked)
+            is RouteAction.Filter -> navigateToFragment(R.id.fragment_filter)
+            is RouteAction.ItemDetail -> navigateToFragment(R.id.fragment_item_detail, bundle(action))
             is RouteAction.OpenWebsite -> openWebsite(action.url)
             is RouteAction.SystemSetting -> openSetting(action)
             is RouteAction.AutoLockSetting -> showAutoLockSelections()
-            is RouteAction.DialogFragment -> showDialogFragment(FingerprintAuthDialogFragment(), action)
-            is RouteAction.Dialog -> showDialog(action)
-            is RouteAction.AppWebPage -> navigateToFragment(action, R.id.fragment_webview, bundle(action))
+            is RouteAction.DialogFragment.FingerprintDialog ->
+                showDialogFragment(FingerprintAuthDialogFragment(), action)
+            is DialogAction -> showDialog(action)
+            is AppWebPageAction -> navigateToFragment(R.id.fragment_webview, bundle(action))
         }
     }
 
-    private fun bundle(action: RouteAction.AppWebPage): Bundle {
+    private fun bundle(action: AppWebPageAction): Bundle {
         return AppWebPageFragmentArgs.Builder()
             .setUrl(action.url!!)
             .setTitle(action.title!!)
@@ -116,27 +91,19 @@ class RoutePresenter(
             .toBundle()
     }
 
-    private fun showDialog(destination: RouteAction.Dialog) {
-        val dialogStateObservable = when (destination) {
-            is RouteAction.Dialog.SecurityDisclaimer -> showSecurityDisclaimerDialog()
-            is RouteAction.Dialog.UnlinkDisclaimer -> showUnlinkDisclaimerDialog()
-            is RouteAction.Dialog.NoNetworkDisclaimer -> showNoNetworkDialog()
-        }
-
-        dialogStateObservable
+    private fun showDialog(destination: DialogAction) {
+        AlertDialogHelper.showAlertDialog(activity, destination.viewModel)
             .map { alertState ->
-                val action: Action? = when (alertState) {
+                when (alertState) {
                     AlertState.BUTTON_POSITIVE -> {
-                        destination.positiveButtonAction
+                        destination.positiveButtonActionList
                     }
                     AlertState.BUTTON_NEGATIVE -> {
-                        destination.negativeButtonAction
+                        destination.negativeButtonActionList
                     }
                 }
-
-                action.asOptional()
             }
-            .filterNotNull()
+            .flatMapIterable { it }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
     }
@@ -176,38 +143,7 @@ class RoutePresenter(
             }
         }
     }
-
-    private fun showSecurityDisclaimerDialog(): Observable<AlertState> {
-        return AlertDialogHelper.showAlertDialog(
-            activity,
-            R.string.no_device_security_title,
-            R.string.no_device_security_message,
-            R.string.set_up_security_button,
-            R.string.cancel
-        )
-    }
-
-    private fun showNoNetworkDialog(): Observable<AlertState> {
-        return AlertDialogHelper.showAlertDialog(
-            activity,
-            R.string.no_network,
-            R.string.connect_to_internet,
-            R.string.ok
-        )
-    }
-
-    private fun showUnlinkDisclaimerDialog(): Observable<AlertState> {
-        return AlertDialogHelper.showAlertDialog(
-            activity,
-            R.string.disconnect_disclaimer_title,
-            R.string.disconnect_disclaimer_message,
-            R.string.disconnect,
-            R.string.cancel,
-            R.color.red
-        )
-    }
-
-    private fun navigateToFragment(action: RouteAction, @IdRes destinationId: Int, args: Bundle? = null) {
+    private fun navigateToFragment(@IdRes destinationId: Int, args: Bundle? = null) {
         val src = navController.currentDestination ?: return
         val srcId = src.id
         if (srcId == destinationId && args == null) {
@@ -249,21 +185,38 @@ class RoutePresenter(
         // the app will log.error.
         return when (Pair(from, to)) {
             Pair(R.id.fragment_welcome, R.id.fragment_item_list) -> R.id.action_to_itemList
-
+            Pair(R.id.fragment_welcome, R.id.fragment_item_list) -> R.id.action_to_webview
             Pair(R.id.fragment_welcome, R.id.fragment_locked) -> R.id.action_to_locked
-            Pair(R.id.fragment_welcome, R.id.fragment_item_list) -> R.id.action_to_itemList
 
             Pair(R.id.fragment_fxa_login, R.id.fragment_item_list) -> R.id.action_fxaLogin_to_itemList
+            Pair(R.id.fragment_fxa_login, R.id.fragment_fingerprint_onboarding) ->
+                R.id.action_fxaLogin_to_fingerprint_onboarding
+            Pair(R.id.fragment_fxa_login, R.id.fragment_onboarding_confirmation) ->
+                R.id.action_fxaLogin_to_onboarding_confirmation
+
+            Pair(R.id.fragment_fingerprint_onboarding, R.id.fragment_onboarding_confirmation) ->
+                R.id.action_fingerprint_onboarding_to_confirmation
+            Pair(R.id.fragment_fingerprint_onboarding, R.id.fragment_autofill_onboarding) ->
+                R.id.action_onboarding_fingerprint_to_autofill
+
+            Pair(R.id.fragment_autofill_onboarding, R.id.fragment_item_list) -> R.id.action_to_itemList
+
+            Pair(R.id.fragment_onboarding_confirmation, R.id.fragment_item_list) -> R.id.action_to_itemList
+            Pair(R.id.fragment_onboarding_confirmation, R.id.fragment_webview) -> R.id.action_to_webview
+
             Pair(R.id.fragment_locked, R.id.fragment_item_list) -> R.id.action_to_itemList
             Pair(R.id.fragment_locked, R.id.fragment_welcome) -> R.id.action_locked_to_welcome
 
             Pair(R.id.fragment_item_list, R.id.fragment_item_detail) -> R.id.action_itemList_to_itemDetail
             Pair(R.id.fragment_item_list, R.id.fragment_setting) -> R.id.action_itemList_to_setting
             Pair(R.id.fragment_item_list, R.id.fragment_account_setting) -> R.id.action_itemList_to_accountSetting
-            Pair(R.id.fragment_item_list, R.id.fragment_locked) -> R.id.action_itemList_to_locked
+            Pair(R.id.fragment_item_list, R.id.fragment_locked) -> R.id.action_to_locked
             Pair(R.id.fragment_item_list, R.id.fragment_filter) -> R.id.action_itemList_to_filter
+            Pair(R.id.fragment_item_list, R.id.fragment_webview) -> R.id.action_to_webview
 
-            Pair(R.id.fragment_item_list, R.id.fragment_webview) -> R.id.action_itemList_to_webview
+            Pair(R.id.fragment_item_detail, R.id.fragment_webview) -> R.id.action_to_webview
+
+            Pair(R.id.fragment_setting, R.id.fragment_webview) -> R.id.action_to_webview
 
             Pair(R.id.fragment_account_setting, R.id.fragment_welcome) -> R.id.action_to_welcome
 
@@ -280,6 +233,7 @@ class RoutePresenter(
 
     private fun openSetting(settingAction: RouteAction.SystemSetting) {
         val settingIntent = Intent(settingAction.setting.intentAction)
+        settingIntent.data = settingAction.setting.data
         activity.startActivity(settingIntent, null)
     }
 }

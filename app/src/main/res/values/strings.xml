@@ -9,7 +9,7 @@
     <string name="app_tagline">Take your passwords everywhere.</string>
     <!-- This is used for screenreaders to know the application logo image is currently selected, not expected to translate Firefox Lockbox -->
     <string name="app_logo">Firefox Lockbox Logo</string>
-    
+
     <!-- This is the text on a button to cancel the current operation or request such as unlocking the application with a fingerprint -->
     <string name="cancel">Cancel</string>
     <!-- This is the text on a button to confirm or continue with the current operation -->
@@ -25,13 +25,13 @@
     <string name="welcome_instructions">To use Firefox Lockbox, you’ll need a\nFirefox Account with saved logins.</string>
     <!-- This is the link on the first-run welcome screen to learn more about the requirements of the application -->
     <string name="welcome_learn_more_btn">Learn More</string>
-    
+
     <!-- This is the label for a button only available on test builds to skip the authentication step and immediately use test data -->
     <string name="placeholder_skip_fxa">Use test data</string>
 
     <!-- This is the label used by screenreaders to inform the user the navigation button selected is to go backwards from where they came from -->
     <string name="backable_description">Back</string>
-    <!-- This is the label used by screenreaders to inform the user the button selected is meant to open a navigation menu --> 
+    <!-- This is the label used by screenreaders to inform the user the button selected is meant to open a navigation menu -->
     <string name="menu_description">Menu</string>
 
     <!-- This is the label for the navigation item that opens a Frequently Asked Questions web page -->
@@ -83,6 +83,8 @@
     <!-- This message appears to link to a web page explaining how to make changes to the entry details -->
     <string name="learn_to_edit_entry">Learn how to edit this entry</string>
 
+    <!-- This describes an icon to screenreaders that the button tapped will open the web address in a web browser -->
+    <string name="launch_hostname_content_description">Open web address in web browser</string>
     <!-- This describes an icon to screenreaders that the button tapped will copy the username to the device clipboard to paste and use in another application -->
     <string name="copy_username_content_description">Copy your username</string>
     <!-- This message appears when the user taps to copy the username to the device clipboard -->
@@ -119,13 +121,13 @@
     <string name="twenty_four_hours">24 hours</string>
     <!-- This is a time duration for the automatic application locking setting that means it will never automatically lock -->
     <string name="never">Never</string>
-    
+
     <!-- This is the title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application -->
-    <!-- <string name="autofill">Autofill</string> -->
+     <string name="autofill">Autofill</string>
     <!-- This is the sub-title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application, not expected to translate Firefox Lockbox -->
-    <!-- <string name="autofill_summary">Let Firefox Lockbox fill in logins for you</string> -->
+     <string name="autofill_summary">Let Firefox Lockbox fill in logins for you</string>
     <!-- This is the label a screenreader uses to inform the user they selected the autofill setting toggle -->
-    <!-- <string name="autofill_description">Application autofill setting</string> -->
+     <string name="autofill_description">Application autofill setting</string>
 
     <!-- This is the title of a setting that allows the user to enable and disable the sending of telemetry usage data to Mozilla -->
     <string name="send_usage_data">Send usage data</string>
@@ -181,7 +183,7 @@
     <string name="disconnect_disclaimer_message">This will delete your Firefox Account information and all saved entries from Firefox Lockbox.</string>
     <!-- This is the text on a final confirmation button to sign out and disconnect the account from the application -->
     <string name="disconnect">Disconnect</string>
-    
+
     <!-- This is used as the title for an alert message to inform the user the app does not detect network connectivity -->
     <string name="no_network">No Network</string>
     <!-- This is displayed in an alert message to provide information and instruction to connect to the internet to use the application, not expected to translate Firefox Lockbox -->
@@ -189,4 +191,77 @@
     <!-- This is the hint value for an autofill box that appears when suggesting a value for a password field. It is interpolated with the user's account name. -->
     <string name="password_for">Password for %1$s</string>
 
+    <!-- This is the text displayed on the button of the network availability error message -->
+    <!--<string name="retry">Retry</string>-->
+    <!-- This is the text displayed on the button of the network availability error message -->
+    <!--<string name="retryButton">Retry connect to internet</string>-->
+    <!-- This label is used by screenreaders to inform the user that their device is not connected to the internet -->
+    <string name="networkWarningMessage">Warning: device not connected to the internet.</string>
+    <!-- This label is used by screenreaders to inform the user that the message contains an image of a warning icon -->
+    <string name="warningIcon">Warning icon</string>
+    <!-- This is used as the title for an alert message to inform the user that the app does not detect network connectivity -->
+    <string name="no_internet_connection">No Internet Connection</string>
+    <!-- This is used in the app logs to inform that network connectivity has successfully been detected -->
+    <string name="network_connection_success">Network connection successful.</string>
+
+    <!-- This is used to inform the user that there are no entries in the list -->
+    <string name="no_entries_found">No Entries Found</string>
+    <!-- This explains the steps the user should take, if no saved entries are found: sign in and sync in Firefox -->
+    <string name="no_entries_description">Firefox Lockbox lets you access passwords you\'ve already saved to Firefox. To
+        view your entries here, you\'ll need to sign in and sync in Firefox.
+    </string>
+    <!-- This is the title for the biometric unlock onboarding screen. -->
+    <string name="onboarding_unlock_title">Unlock Firefox Lockbox with your fingerprint.</string>
+    <!-- This is the onboarding description for enabling biometric unlock with the fingerprint sensor. -->
+    <string name="onboarding_unlock_description">Give Firefox Lockbox permission to unlock this app with the fingerprint sensor.</string>
+    <!-- This is the description of the button to skip the onboarding for biometric unlock with the fingerprint sensor. -->
+    <string name="onboarding_skip">Skip for now</string>
+    <!-- This is the description of the fingerprint icon on the onboarding screen. -->
+    <string name="fingerprint_icon_description">Fingerprint image. </string>
+    <!-- This is the title of the Lockbox autofill onboarding screen. -->
+    <string name="onboarding_autofill_title">Let Firefox Lockbox fill in your passwords for you.</string>
+    <!-- This is the onboarding description for enabling Lockbox as an autofill provider through your phone's autofill settings. -->
+    <string name="onboarding_autofill_description">Update your device\'s Autofill settings to allow Firefox Lockbox to fill passwords. </string>
+    <!-- This button will take you to your phone's autofill settings screen. -->
+    <string name="go_to_settings">Go to settings</string>
+    <!-- This is the content description for the autofill image on the autofill onboarding screen. -->
+    <string name="onboarding_autofill_image_description">Lockbox Autofill</string>
+    <!-- This is the title for the final onboarding screen. -->
+    <string name="all_set">You\'re all set!</string>
+    <!-- This is the button to dismiss the final onboarding screen. -->
+    <string name="finish">Finish</string>
+    <!-- This description of the app functionality is shown on the final onboarding screen. -->
+    <string name="access_description">Access logins saved to Firefox from your phone</string>
+    <!-- This is an accessible content description for the security information link text. -->
+    <string name="security_content_description">This is a link to a description of security practices in Firefox Lockbox.</string>
+    <!-- This description of the app security is shown on the final onboarding screen. -->
+    <string name="security_description">Sync between devices with secure %s</string>
+    <!-- This text is displayed as a link in the security description. -->
+    <string name="security_link">256-bit encryption</string>
+    <!-- This description of the app convenience is shown on the final onboarding screen. -->
+    <string name="convenience_description">Unlock the app with ease using your fingerprint</string>
+
+    <!-- This is the title of the device security dialog box. -->
+    <string name="secure_your_device">Secure your device.</string>
+    <!-- This is the description explaining the device security requirements. -->
+    <string name="device_security_description">You should use a Pattern, PIN, or Password to lock your phone. Without this, anyone who has your phone can access the information saved here. </string>
+    <!-- This is the skip button description on the device security dialog box. -->
+    <string name="skip_button">Skip</string>
+    <!-- This is the the button description on the device security dialog box which routes to system security settings. -->
+    <string name="set_up_now">Set Up Now</string>
+
+    <!-- This header appears above the Privacy page of the mozilla-lockbox website. -->
+    <string name="privacy">Privacy</string>
+
+    <!-- This is the prompt when autofill is triggered, and Firefox Lockbox is locked. -->
+    <string name="autofill_authenticate_cta">Unlock Firefox Lockbox</string>
+    <!-- This is the error message when autofill is triggered but no domain is detected. This is unlikely. -->
+    <string name="autofill_error_no_hostname">Unexpected hostname format</string>
+    <!-- This is the prompt when autofill is triggered, Lockbox is unlocked, and no passwords are detected. -->
+    <string name="autofill_search_cta">Search Firefox Lockbox</string>
+    <!-- This is the error message when autofill is triggered and Lockbox is in an error state. %s refers to the localized error message -->
+    <string name="autofill_error_toast">Firefox Lockbox encountered an error: %s</string>
+
+    <!-- This is the placeholder text for an empty or null username. -->
+    <string name="no_username">(no username)</string>
 </resources>

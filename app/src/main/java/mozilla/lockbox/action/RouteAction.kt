@@ -6,12 +6,14 @@
 
 package mozilla.lockbox.action
 
+import android.net.Uri
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import mozilla.lockbox.R
 import mozilla.lockbox.flux.Action
-import mozilla.lockbox.support.Constant
 
-sealed class RouteAction(
+open class RouteAction(
     override val eventMethod: TelemetryEventMethod,
     override val eventObject: TelemetryEventObject
 ) : TelemetryAction {
@@ -24,17 +26,11 @@ sealed class RouteAction(
     object LockScreen : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.lock_screen)
     object Filter : RouteAction(TelemetryEventMethod.tap, TelemetryEventObject.filter)
     data class ItemDetail(val id: String) : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.entry_detail)
-    data class OpenWebsite(val url: String) : RouteAction(TelemetryEventMethod.tap, TelemetryEventObject.open_in_browser)
-    data class SystemSetting(val setting: SettingIntent) : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.settings_system)
+    data class OpenWebsite(val url: String) :
+        RouteAction(TelemetryEventMethod.tap, TelemetryEventObject.open_in_browser)
 
-    sealed class Dialog(
-        val positiveButtonAction: Action? = null,
-        val negativeButtonAction: Action? = null
-    ) : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.dialog) {
-        object SecurityDisclaimer : Dialog(RouteAction.SystemSetting(SettingIntent.Security))
-        object UnlinkDisclaimer : Dialog(LifecycleAction.UserReset)
-        object NoNetworkDisclaimer : Dialog()
-    }
+    data class SystemSetting(val setting: SettingIntent) :
+        RouteAction(TelemetryEventMethod.show, TelemetryEventObject.settings_system)
 
     sealed class DialogFragment(
         @StringRes val dialogTitle: Int,
@@ -42,26 +38,23 @@ sealed class RouteAction(
     ) : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.dialog) {
         class FingerprintDialog(@StringRes title: Int, @StringRes subtitle: Int? = null) :
             DialogFragment(dialogTitle = title, dialogSubtitle = subtitle)
+
+        object AutofillSearchDialog : DialogFragment(R.string.autofill)
     }
 
-    sealed class AppWebPage(
-        val url: String? = null,
-        @StringRes val title: Int? = null,
+    sealed class Onboarding(
         eventObject: TelemetryEventObject
     ) : RouteAction(TelemetryEventMethod.show, eventObject) {
-
-        object FaqList : AppWebPage(
-            Constant.Faq.uri,
-            R.string.nav_menu_faq,
-            TelemetryEventObject.settings_faq)
-
-        object SendFeedback : AppWebPage(
-            Constant.SendFeedback.uri,
-            R.string.nav_menu_feedback,
-            TelemetryEventObject.settings_provide_feedback)
+        object FingerprintAuth : Onboarding(TelemetryEventObject.onboarding_fingerprint)
+        object Autofill : Onboarding(TelemetryEventObject.onboarding_autofill)
+        object Confirmation : Onboarding(TelemetryEventObject.login_onboarding_confirmation)
     }
 }
 
-enum class SettingIntent(val intentAction: String) {
-    Security(android.provider.Settings.ACTION_SECURITY_SETTINGS)
+data class OnboardingStatusAction(val onboardingInProgress: Boolean) : Action
+
+enum class SettingIntent(val intentAction: String, val data: Uri? = null) {
+    Security(android.provider.Settings.ACTION_SECURITY_SETTINGS),
+    @RequiresApi(Build.VERSION_CODES.O)
+    Autofill(android.provider.Settings.ACTION_REQUEST_SET_AUTOFILL_SERVICE, Uri.parse("package:com.mozilla.lockbox"))
 }

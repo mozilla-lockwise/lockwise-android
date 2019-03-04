@@ -10,7 +10,7 @@ import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.robots.itemList
-import mozilla.lockbox.store.AutoLockStore
+import mozilla.lockbox.support.AutoLockSupport
 import mozilla.lockbox.support.LockingSupport
 import mozilla.lockbox.view.RootActivity
 import org.junit.Before
@@ -35,14 +35,14 @@ class TestLockingSupport() : LockingSupport {
 @LargeTest
 open class AutoLockTest {
     private val navigator = Navigator()
-    private val testLockingSupport = TestLockingSupport(AutoLockStore.shared.lockingSupport)
+    private val testLockingSupport = TestLockingSupport(AutoLockSupport.shared.lockingSupport)
 
     @get:Rule
     val activityRule: ActivityTestRule<RootActivity> = ActivityTestRule(RootActivity::class.java)
 
     @Before
     fun setUp() {
-        AutoLockStore.shared.lockingSupport = testLockingSupport
+        AutoLockSupport.shared.lockingSupport = testLockingSupport
     }
 
     @Test

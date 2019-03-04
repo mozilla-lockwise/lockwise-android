@@ -86,7 +86,7 @@ open class FingerprintStore(
     open val isFingerprintAuthAvailable: Boolean
         get() = fingerprintManager.isHardwareDetected && fingerprintManager.hasEnrolledFingerprints()
 
-    val isKeyguardDeviceSecure get() = keyguardManager.isDeviceSecure
+    open val isKeyguardDeviceSecure get() = keyguardManager.isDeviceSecure
 
     private fun initFingerprint() {
         setupKeyStoreAndKeyGenerator()
@@ -220,7 +220,7 @@ open class FingerprintStore(
 
         override fun onAuthenticationFailed() {
             super.onAuthenticationFailed()
-            _state.onNext(AuthenticationState.Failed())
+            _state.onNext(AuthenticationState.Failed(context.getString(R.string.fingerprint_not_recognized)))
         }
     }
 }

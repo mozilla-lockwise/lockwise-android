@@ -7,6 +7,7 @@
 package mozilla.lockbox.view
 
 import android.os.Bundle
+import android.text.InputType
 import androidx.annotation.StringRes
 import android.text.method.PasswordTransformationMethod
 import android.view.Gravity
@@ -30,6 +31,9 @@ import mozilla.lockbox.support.assertOnUiThread
 
 @ExperimentalCoroutinesApi
 class ItemDetailFragment : BackableFragment(), ItemDetailView {
+
+    private val errorHelper = NetworkErrorHelper()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -45,10 +49,10 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
     }
 
     override val usernameCopyClicks: Observable<Unit>
-        get() = view!!.btnUsernameCopy.clicks()
+        get() = view!!.inputUsername.clicks()
 
     override val passwordCopyClicks: Observable<Unit>
-        get() = view!!.btnPasswordCopy.clicks()
+        get() = view!!.inputPassword.clicks()
 
     override val togglePasswordClicks: Observable<Unit>
         get() = view!!.btnPasswordToggle.clicks()
@@ -56,18 +60,38 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
     override val hostnameClicks: Observable<Unit>
         get() = view!!.inputHostname.clicks()
 
+    override val learnMoreClicks: Observable<Unit>
+        get() = view!!.detailLearnMore.clicks()
+
     override var isPasswordVisible: Boolean = false
         set(value) {
             assertOnUiThread()
             field = value
-            if (value) {
-                inputPassword.transformationMethod = null
-                btnPasswordToggle.setImageResource(R.drawable.ic_hide)
-            } else {
-                inputPassword.transformationMethod = PasswordTransformationMethod.getInstance()
-                btnPasswordToggle.setImageResource(R.drawable.ic_show)
-            }
+            updatePasswordVisibility(value)
         }
+
+    private fun updatePasswordVisibility(visible: Boolean) {
+        if (visible) {
+            inputPassword.transformationMethod = null
+            btnPasswordToggle.setImageResource(R.drawable.ic_hide)
+        } else {
+            inputPassword.transformationMethod = PasswordTransformationMethod.getInstance()
+            btnPasswordToggle.setImageResource(R.drawable.ic_show)
+        }
+    }
+
+    override fun showUsernamePlaceholder() {
+        view!!.btnUsernameCopy.setColorFilter(resources.getColor(R.color.white_60_percent))
+        view!!.isClickable = false
+        view!!.isFocusable = false
+        inputUsername.setText(" ", TextView.BufferType.NORMAL)
+    }
+
+    override fun showUsername(username: String) {
+        inputUsername.isClickable = true
+        inputUsername.isFocusable = true
+        inputUsername.setText(username, TextView.BufferType.NORMAL)
+    }
 
     override fun updateItem(item: ItemDetailViewModel) {
         assertOnUiThread()
@@ -79,12 +103,20 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
 
         inputUsername.readOnly = true
         inputPassword.readOnly = true
+        inputPassword.isClickable = true
+        inputPassword.isFocusable = true
+
         inputHostname.readOnly = true
         inputHostname.isClickable = true
+        inputHostname.isFocusable = true
+
+        btnHostnameLaunch.isClickable = false
 
         inputHostname.setText(item.hostname, TextView.BufferType.NORMAL)
-        inputUsername.setText(item.username, TextView.BufferType.NORMAL)
         inputPassword.setText(item.password, TextView.BufferType.NORMAL)
+
+        // effect password visibility state
+        updatePasswordVisibility(isPasswordVisible)
     }
 
     override fun showToastNotification(@StringRes strId: Int) {
@@ -97,14 +129,26 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         v.text = resources.getString(strId)
         toast.show()
     }
+
+    override fun handleNetworkError(networkErrorVisibility: Boolean) {
+        if (!networkErrorVisibility) {
+            errorHelper.showNetworkError(view!!)
+        } else {
+            errorHelper.hideNetworkError(view!!, view!!.card_view, R.dimen.hidden_network_error)
+        }
+    }
+
+//    override val retryNetworkConnectionClicks: Observable<Unit>
+//        get() = view!!.networkWarning.retryButton.clicks()
 }
 
 var EditText.readOnly: Boolean
     get() = this.isFocusable
     set(readOnly) {
-            this.isFocusable = !readOnly
-            this.isFocusableInTouchMode = !readOnly
-            this.isClickable = !readOnly
-            this.isLongClickable = !readOnly
-            this.isCursorVisible = !readOnly
-        }
+        this.isFocusable = !readOnly
+        this.isFocusableInTouchMode = !readOnly
+        this.isClickable = !readOnly
+        this.isLongClickable = !readOnly
+        this.isCursorVisible = !readOnly
+        this.inputType = InputType.TYPE_NULL
+    }

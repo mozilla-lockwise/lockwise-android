@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ This Source Code Form is subject to the terms of the Mozilla Public
+  ~ License, v. 2.0. If a copy of the MPL was not distributed with this
+  ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
+  -->
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/networkWarning"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:theme="@style/NoConnectivityWarning"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:visibility="gone"
+        xmlns:tools="http://schemas.android.com/tools"
+>
+
+        <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/warningIcon"
+                android:contentDescription="@string/warningIcon"
+                android:background="@color/gray_73_percent"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:src="@drawable/ic_warning"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:ignore="ContentDescription" />
+
+        <TextView
+                android:id="@+id/warningMessage"
+                android:contentDescription="@string/networkWarningMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:background="@color/gray_73_percent"
+                android:letterSpacing="0.01"
+                android:layout_marginStart="4dp"
+                android:textSize="13sp"
+                android:fontFamily="sans-serif"
+                android:textStyle="normal"
+                android:textColor="@color/text_white"
+                android:lineSpacingExtra="6.5sp"
+                android:padding="10dp"
+                tools:text="@string/no_internet_connection"
+                app:layout_constraintStart_toEndOf="@id/warningIcon"
+                tools:ignore="SelectableText" />
+        <!--<Button-->
+                <!--android:id="@+id/retryButton"-->
+                <!--android:contentDescription="@string/retryButton"-->
+                <!--android:layout_width="40dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/retry"-->
+                <!--android:textAllCaps="false"-->
+                <!--android:background="@android:color/transparent"-->
+                <!--android:textSize="13sp"-->
+                <!--android:fontFamily="sans-serif"-->
+                <!--android:textStyle="bold"-->
+                <!--android:textColor="@color/text_white"-->
+                <!--android:lineSpacingExtra="6.5sp"-->
+                <!--app:layout_constraintEnd_toEndOf="parent" />-->
+
+</androidx.constraintlayout.widget.ConstraintLayout>

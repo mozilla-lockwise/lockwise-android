@@ -1,28 +1,28 @@
 # Firefox Lockbox for Android Metrics Plan
 
-_Last Updated: October 8, 2018_
+_Last Updated: Feb 4, 2019_
 
 <!-- TOC depthFrom:2 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
 - [Analysis](#analysis)
 - [Collection](#collection)
-- [List of Proposed Events](#list-of-proposed-events)
+- [List of Implemented Events](#list-of-implemented-events)
 - [Adjust SDK](#adjust-sdk)
 - [References](#references)
 
 <!-- /TOC -->
 
-This is the metrics collection plan for the Lockbox Android app. It documents all events that are planned to be collected through telemetry. It will be updated periodically to reflect all new and planned data collection. A similar document for the Lockbox for iOS app can be found [here](https://github.com/mozilla-lockbox/lockbox-ios/blob/master/docs/metrics.md).
+This is the metrics collection plan for the Lockbox Android app. It documents all events that are currently collected through telemetry. It will be updated periodically to reflect all new and planned data collection. A similar document for the Lockbox for iOS app can be found [here](https://github.com/mozilla-lockbox/lockbox-ios/blob/master/docs/metrics.md).
 
 ## Analysis
 
 Data collection is done solely for the purpose of product development, improvement and maintenance.
 
-We will analyze the data described in this doc *primarily* with the purpose of (dis)confirming the following hypothesis:
+We analyze the data described in this doc *primarily* with the purpose of (dis)confirming the following hypothesis:
 
 `If Firefox users have access to their browser-saved passwords on their mobile device but outside of the mobile browser, then they will use those passwords to log into both websites (via a browser; Firefox or otherwise) and stand-alone apps. We will know this to be true when the most frequent actions taken in the app are revealing, copying, or autofilling of credentials.`
 
-In service to validating the above hypothesis, we plan on answering these specific questions, given the data we plan to collect (see [List of Proposed Events](#list-of-proposed-events)):
+In service to validating the above hypothesis, we plan on answering these specific questions, given the data we collect (see [List of Implemented Events](#list-of-implemented-events)):
 
 *Note that when we refer to retrieval of "credentials", we mean access to usernames, passwords, or both*
 
@@ -48,17 +48,17 @@ In service to validating the above hypothesis, we plan on answering these specif
 * Does adoption of Lockbox lead to adoption of Firefox Mobile browsers (e.g. Focus)?
 	* Do users set the default browser in Lockbox to be a Firefox browser?
 
-In addition to answering the above questions that directly concern actions in the app, we will also be analyzing telemetry emitted from the password manager that exists in the the Firefox desktop browser. These analyses will primarily examine whether users of Lockbox start active curation of their credentials in the desktop browser (Lockbox users will not be able to edit credentials directly from the app).
+In addition to answering the above questions that directly concern actions in the app, we will also analyze telemetry emitted from the password manager that exists in the the Firefox desktop browser. These analyses will primarily examine whether users of Lockbox start active curation of their credentials in the desktop browser (Lockbox users will not be able to edit credentials directly from the app).
 
 ## Collection
 
 *Note: There is currently a new Mozilla mobile telemetry SDK under development, however it will not ship prior to the Lockbox for Android app. Once the new SDK ships we will evaluate whether or not to tear out the old implementation and replace it with the new SDK.*
 
-Data will be collected using this library:
+Data is collected using this library:
 
 https://github.com/mozilla-mobile/android-components/blob/master/components/service/telemetry/README.md
 
-We plan to submit two ping types, both of which are implemented by the component above.
+We submit two ping types, both of which are implemented by the component above.
 
 First is the [core ping](https://github.com/mozilla-mobile/android-components/blob/master/components/service/telemetry/src/main/java/org/mozilla/telemetry/ping/TelemetryCorePingBuilder.java), which contains information about the Android version, architecture, etc of the device Lockbox has been installed on:
 
@@ -68,14 +68,9 @@ The second is the [event ping](https://github.com/mozilla-mobile/android-compone
 
 https://github.com/mozilla-mobile/focus-android/wiki/Event-Tracking-with-Mozilla%27s-Telemetry-Service
 
-TODO: link to the Lockbox for Android source code at the point where the pings and event values are defined (when that code exists).
-
 See [this](https://github.com/mozilla-mobile/focus-android/blob/master/app/src/main/java/org/mozilla/focus/telemetry/TelemetryWrapper.kt) for the kotlin source code that Firefox Focus uses to define its telemetry events.
 
 Every event must contain `category`, `method` and `object` fields, and may optionally contain `value` and `extra` fields as well.
-
-Events related to specific credentials should have an opaque `item_id` in the extra field where possible.
-
 
 Finally, the `appName` metadata sent with each ping should always be `Lockbox`.
 
@@ -83,7 +78,7 @@ See here for more information on event schemas:
 
 https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/collection/events.html#public-js-api
 
-## List of Proposed Events
+## List of Implemented Events
 
 1. When the app starts up:
 	* `category`: action
@@ -92,17 +87,17 @@ https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/c
 	* `value`: null
 	* `extras`: null
 
-2. When locking/unlocking the app:
+2. When locking/unlocking/accessing the datastore:
 	* `category`: action
-	* `method`: lock, unlock, autolock
-	* `object`: app
-	* `value`: pin, biometrics
+	* `method`: lock, unlock, reset, sync, update_credentials, touch
+	* `object`: datastore
+	* `value`: null
 	* `extras`: null
 
 3. Events that fire during the setup process:
 	* `category`: action
 	* `method`: show
-	* `object`: login_welcome, login_fxa, login_learn_more, biometrics_setup, autofill_setup
+	* `object`: login_welcome, login_fxa, login_onboarding_confirmation, login_learn_more
 	* `value`: null
 	* `extras`: null
 
@@ -118,20 +113,20 @@ https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/c
 	* `method`: show
 	* `object`: entry_detail
 	* `value`: null
-	* `extras`: ["itemid" : itemid]
+	* `extras`: null
 
 6. When a user taps one of the copy buttons available after being shown entry details:
 	* `category`: action
 	* `method`: tap
 	* `object`: entry_copy_username_button, entry_copy_password_button
 	* `value`: null
-	* `extras`: ["itemid" : itemid]
+	* `extras`: null
 
-7. When a user shows details from an item, is the password shown?:
+7. When a user taps to reveal a password:
 	* `category`: action
 	* `method`: tap
 	* `object`: reveal_password
-	* `value`: true or false, whether the pw is displayed
+	* `value`: null
 	* `extras`: null
 
 8. When one of the settings pages is shown to the user:
@@ -143,9 +138,9 @@ https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/c
 
 9. When a user changes something on the settings page:
 	* `category`: action
-	* `method`: settingsChanged (*note this was camelCase in iOS by mistake so leaving it to match that until/if we change it there*)
-	* `object`: settings_biometric_login, settings_autolock_time, settings_reset
-	* `value`: whatever the value of each of the above was changed to, or null for settings_reset
+	* `method`: setting_changed
+	* `object`: settings_autolock_time, settings_reset, settings_fingerprint, settings_fingerprint_pending_auth, settings_item_list_order,
+	* `value`: whatever the value of each of the above was changed to, for example `60` in the case of `settings_autolock_time`
 	* `extras`: null
 
 10. When the app enters the background or foreground:
@@ -155,19 +150,20 @@ https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/c
 	* `value`: null
 	* `extras`: null
 
-11. Events related to autofill:
+11. When a user taps on the search box to filter the credential list:
 	* `category`: action
-	* `method`: autofill_locked, autofill_unlocked, login_selected, autofill_clear
-	* `object`: autofill
+	* `method`: tap
+	* `object`: filter
 	* `value`: null
 	* `extras`: null
 
-12. When the user opens the app drawer:
+12. When a user taps on a link to open a webpage in their browser:
 	* `category`: action
-	* `method`: show
-	* `object`: app_drawer
+	* `method`: tap
+	* `object`: open_in_browser
 	* `value`: null
 	* `extras`: null
+
 
 ## Adjust SDK
 

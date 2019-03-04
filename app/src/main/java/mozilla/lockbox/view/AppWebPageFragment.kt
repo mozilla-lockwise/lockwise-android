@@ -26,9 +26,10 @@ import mozilla.lockbox.presenter.WebPageView
 import mozilla.lockbox.presenter.AppWebPagePresenter
 
 class AppWebPageFragment : BackableFragment(), WebPageView {
-    override var webViewObserver: Consumer<String>? = null
 
+    override var webViewObserver: Consumer<String>? = null
     private var url: String? = null
+    private val errorHelper = NetworkErrorHelper()
 
     @StringRes
     private var toolbarTitle: Int? = null
@@ -39,7 +40,6 @@ class AppWebPageFragment : BackableFragment(), WebPageView {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         arguments?.let {
             url = AppWebPageFragmentArgs.fromBundle(it).url
             toolbarTitle = AppWebPageFragmentArgs.fromBundle(it).title
@@ -49,7 +49,6 @@ class AppWebPageFragment : BackableFragment(), WebPageView {
 
         var view = inflater.inflate(R.layout.fragment_webview, container, false)
         view.webView.settings.javaScriptEnabled = true
-
         view.toolbar.title = getString(toolbarTitle!!)
 
         return view
@@ -73,4 +72,23 @@ class AppWebPageFragment : BackableFragment(), WebPageView {
         customTabsIntent.launchUrl(context, Uri.parse(url))
 
     }
+
+    override fun handleNetworkError(networkErrorVisibility: Boolean) {
+        if (!networkErrorVisibility) {
+            errorHelper.showNetworkError(
+                parent = view!!,
+                child = view!!.webView,
+                topMarginId = R.dimen.network_error
+            )
+        } else {
+            errorHelper.hideNetworkError(
+                parent = view!!,
+                child = view!!.webView,
+                topMarginId = R.dimen.hidden_network_error
+            )
+        }
+    }
+
+//    override val retryNetworkConnectionClicks: Observable<Unit>
+//        get() = view!!.networkWarning.retryButton.clicks()
 }

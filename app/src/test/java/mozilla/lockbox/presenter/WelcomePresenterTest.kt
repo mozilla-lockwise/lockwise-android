@@ -7,34 +7,59 @@ package mozilla.lockbox.presenter
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
+import mozilla.lockbox.action.AppWebPageAction
+import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.store.FingerprintStore
+import org.junit.Assert
+import org.junit.Before
 import org.junit.Test
+import org.mockito.Mock
+import org.mockito.Mockito
 
 class WelcomePresenterTest {
-    class FakeView : WelcomeView {
-        val tapStub: PublishSubject<Unit> = PublishSubject.create<Unit>()
+    class FakeWelcomeView : WelcomeView {
+        val learnMoreStub = PublishSubject.create<Unit>()
+        override val learnMoreClicks: Observable<Unit> = learnMoreStub
 
+        val getStartedStub: PublishSubject<Unit> = PublishSubject.create<Unit>()
         override val getStartedClicks: Observable<Unit>
-            get() = tapStub
+            get() = getStartedStub
     }
 
-    val view = FakeView()
+    @Mock
+    val fingerprintStore = Mockito.mock(FingerprintStore::class.java)
+    var isDeviceSecureStub: Boolean = false
+
+    val view = FakeWelcomeView()
+
     val dispatcher = Dispatcher()
-    val subject = WelcomePresenter(view, dispatcher)
+    val dispatcherObserver = TestObserver.create<Action>()
 
-    @Test
-    fun onViewReady() {
-        val testObserver = TestObserver.create<Action>()
+    val subject = WelcomePresenter(view, dispatcher, fingerprintStore)
 
-        val subscription = dispatcher.register.subscribeWith(testObserver)
+    @Before
+    fun setUp() {
+        dispatcher.register.subscribe(dispatcherObserver)
+        Mockito.`when`(fingerprintStore.isKeyguardDeviceSecure).thenReturn(isDeviceSecureStub)
 
         subject.onViewReady()
-        view.tapStub.onNext(Unit)
+    }
 
-        testObserver.assertValue(RouteAction.Login)
+    @Test
+    fun `get started clicks checks device security`() {
+        isDeviceSecureStub = true
+        view.getStartedStub.onNext(Unit)
 
-        subscription.dispose()
+        val routeAction = dispatcherObserver.values().first() as RouteAction
+        Assert.assertTrue(routeAction is DialogAction.OnboardingSecurityDialog)
+    }
+
+    @Test
+    fun `learn more clicks`() {
+        view.learnMoreStub.onNext(Unit)
+        dispatcherObserver.assertValue(AppWebPageAction.FaqWelcome)
     }
 }

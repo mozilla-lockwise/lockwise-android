@@ -13,7 +13,9 @@ import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
+import mozilla.lockbox.action.AppWebPageAction
 import mozilla.lockbox.action.DataStoreAction
+import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.action.SettingAction
@@ -28,11 +30,13 @@ import mozilla.lockbox.model.titleFromHostname
 import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.FingerprintStore
+import mozilla.lockbox.store.NetworkStore
 import mozilla.lockbox.store.SettingStore
 
 interface ItemListView {
     val itemSelection: Observable<ItemViewModel>
     val filterClicks: Observable<Unit>
+    val noEntriesClicks: Observable<Unit>
     val menuItemSelections: Observable<Int>
     val lockNowClick: Observable<Unit>
     val sortItemSelection: Observable<Setting.ItemListSort>
@@ -40,6 +44,8 @@ interface ItemListView {
     fun updateAccountProfile(profile: AccountViewModel)
     fun updateItemListSort(sort: Setting.ItemListSort)
     fun loading(isLoading: Boolean)
+    fun handleNetworkError(networkErrorVisibility: Boolean)
+//    val retryNetworkConnectionClicks: Observable<Unit>
     val refreshItemList: Observable<Unit>
     val isRefreshing: Boolean
     fun stopRefreshing()
@@ -52,11 +58,11 @@ class ItemListPresenter(
     private val dataStore: DataStore = DataStore.shared,
     private val settingStore: SettingStore = SettingStore.shared,
     private val fingerprintStore: FingerprintStore = FingerprintStore.shared,
+    private val networkStore: NetworkStore = NetworkStore.shared,
     private val accountStore: AccountStore = AccountStore.shared
 ) : Presenter() {
 
     override fun onViewReady() {
-
         dataStore.syncState
             .observeOn(AndroidSchedulers.mainThread())
             .map {
@@ -76,7 +82,6 @@ class ItemListPresenter(
             .addTo(compositeDisposable)
 
         Observables.combineLatest(dataStore.list, settingStore.itemListSortOrder)
-            .filter { it.first.isNotEmpty() }
             .distinctUntilChanged()
             .map { pair ->
                 when (pair.second) {
@@ -96,15 +101,18 @@ class ItemListPresenter(
             .addTo(compositeDisposable)
 
         view.itemSelection
-            .subscribe { it ->
-                dispatcher.dispatch(RouteAction.ItemDetail(it.guid))
-            }
+            .map { RouteAction.ItemDetail(it.guid) }
+            .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
 
         view.filterClicks
-            .subscribe {
-                dispatcher.dispatch(RouteAction.Filter)
-            }
+            .map { RouteAction.Filter }
+            .subscribe(dispatcher::dispatch)
+            .addTo(compositeDisposable)
+
+        view.noEntriesClicks
+            .map { AppWebPageAction.FaqSync }
+            .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
 
         view.menuItemSelections
@@ -115,15 +123,17 @@ class ItemListPresenter(
             .map {
                 if (fingerprintStore.isDeviceSecure)
                     DataStoreAction.Lock
-                else RouteAction.Dialog.SecurityDisclaimer
+                else DialogAction.SecurityDisclaimer
             }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
 
         view.sortItemSelection
-            .subscribe { sortBy ->
-                dispatcher.dispatch(SettingAction.ItemListSortOrder(sortBy))
-            }.addTo(compositeDisposable)
+            .map { sortBy ->
+                SettingAction.ItemListSortOrder(sortBy)
+            }
+            .subscribe(dispatcher::dispatch)
+            .addTo(compositeDisposable)
 
         view.refreshItemList
             .doOnDispose { view.stopRefreshing() }
@@ -142,14 +152,23 @@ class ItemListPresenter(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(view::updateAccountProfile)
             .addTo(compositeDisposable)
+
+        networkStore.isConnected
+            .subscribe(view::handleNetworkError)
+            .addTo(compositeDisposable)
+
+        // TODO: make this more robust to retry loading the correct page again (loadUrl)
+//        view.retryNetworkConnectionClicks.subscribe {
+//            dispatcher.dispatch(NetworkAction.CheckConnectivity)
+//        }?.addTo(compositeDisposable)
     }
 
     private fun onMenuItem(@IdRes item: Int) {
         val action = when (item) {
             R.id.setting_menu_item -> RouteAction.SettingList
             R.id.account_setting_menu_item -> RouteAction.AccountSetting
-            R.id.faq_menu_item -> RouteAction.AppWebPage.FaqList
-            R.id.feedback_menu_item -> RouteAction.AppWebPage.SendFeedback
+            R.id.faq_menu_item -> AppWebPageAction.FaqList
+            R.id.feedback_menu_item -> AppWebPageAction.SendFeedback
             else -> return log.error("Cannot route from item list menu")
         }
         dispatcher.dispatch(action)

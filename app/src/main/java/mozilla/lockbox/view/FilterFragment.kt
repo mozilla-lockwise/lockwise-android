@@ -22,12 +22,14 @@ import io.reactivex.Observable
 import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.fragment_filter.view.*
 import kotlinx.android.synthetic.main.include_backable_filter.view.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
 import mozilla.lockbox.adapter.ItemListAdapter
 import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.presenter.FilterPresenter
 import mozilla.lockbox.presenter.FilterView
 
+@ExperimentalCoroutinesApi
 class FilterFragment : BackableFragment(), FilterView {
     val adapter = ItemListAdapter()
     override fun onCreateView(
@@ -75,9 +77,11 @@ class FilterFragment : BackableFragment(), FilterView {
     override val cancelButtonVisibility: Consumer<in Boolean>
         get() = view!!.cancelButton.visibility()
     override val itemSelection: Observable<ItemViewModel>
-        get() = adapter.clicks()
+        get() = adapter.itemClicks
+    override val noMatchingClicks: Observable<Unit>
+        get() = adapter.noMatchingEntriesClicks
 
     override fun updateItems(items: List<ItemViewModel>) {
-        adapter.updateItems(items)
+        adapter.updateItems(items, true)
     }
 }

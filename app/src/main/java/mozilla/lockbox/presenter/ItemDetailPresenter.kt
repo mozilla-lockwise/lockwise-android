@@ -13,8 +13,10 @@ import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.R
+import mozilla.lockbox.action.AppWebPageAction
 import mozilla.lockbox.action.ClipboardAction
 import mozilla.lockbox.action.DataStoreAction
+import mozilla.lockbox.action.ItemDetailAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.extensions.toDetailViewModel
@@ -22,17 +24,22 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.store.DataStore
+import mozilla.lockbox.store.ItemDetailStore
+import mozilla.lockbox.store.NetworkStore
 
 interface ItemDetailView {
-    fun updateItem(item: ItemDetailViewModel)
-    fun showToastNotification(@StringRes strId: Int)
-
     val usernameCopyClicks: Observable<Unit>
     val passwordCopyClicks: Observable<Unit>
     val togglePasswordClicks: Observable<Unit>
     val hostnameClicks: Observable<Unit>
-
+    val learnMoreClicks: Observable<Unit>
     var isPasswordVisible: Boolean
+    fun updateItem(item: ItemDetailViewModel)
+    fun showToastNotification(@StringRes strId: Int)
+    fun handleNetworkError(networkErrorVisibility: Boolean)
+    //    val retryNetworkConnectionClicks: Observable<Unit>
+    fun showUsernamePlaceholder()
+    fun showUsername(username: String)
 }
 
 @ExperimentalCoroutinesApi
@@ -40,16 +47,17 @@ class ItemDetailPresenter(
     private val view: ItemDetailView,
     val itemId: String?,
     private val dispatcher: Dispatcher = Dispatcher.shared,
-    private val dataStore: DataStore = DataStore.shared
+    private val networkStore: NetworkStore = NetworkStore.shared,
+    private val dataStore: DataStore = DataStore.shared,
+    private val itemDetailStore: ItemDetailStore = ItemDetailStore.shared
 ) : Presenter() {
 
     private var credentials: ServerPassword? = null
 
     override fun onViewReady() {
         handleClicks(view.usernameCopyClicks) {
-            val username = it.username ?: ""
-            if (username.isNotEmpty()) {
-                dispatcher.dispatch(ClipboardAction.CopyUsername(username))
+            if (!it.username.isNullOrEmpty()) {
+                dispatcher.dispatch(ClipboardAction.CopyUsername(it.username.toString()))
                 dispatcher.dispatch(DataStoreAction.Touch(it.id))
                 view.showToastNotification(R.string.toast_username_copied)
             }
@@ -69,10 +77,13 @@ class ItemDetailPresenter(
             }
         }
 
+        this.view.learnMoreClicks
+            .map { AppWebPageAction.FaqEdit }
+            .subscribe(dispatcher::dispatch)
+            .addTo(compositeDisposable)
+
         this.view.togglePasswordClicks
-            .subscribe {
-                view.isPasswordVisible = view.isPasswordVisible.not()
-            }
+            .subscribe { dispatcher.dispatch(ItemDetailAction.TogglePassword(view.isPasswordVisible.not())) }
             .addTo(compositeDisposable)
 
         view.isPasswordVisible = false
@@ -85,14 +96,33 @@ class ItemDetailPresenter(
             .filterNotNull()
             .doOnNext { credentials = it }
             .map { it.toDetailViewModel() }
-            .subscribe(view::updateItem)
+            .subscribe {
+                if (it.username.isNullOrEmpty()) {
+                    view.showUsernamePlaceholder()
+                } else {
+                    view.showUsername(it.username)
+                }
+                view.updateItem(it)
+            }
             .addTo(compositeDisposable)
+
+        networkStore.isConnected
+            .subscribe(view::handleNetworkError)
+            .addTo(compositeDisposable)
+
+        itemDetailStore.isPasswordVisible
+            .subscribe { view.isPasswordVisible = it }
+            .addTo(compositeDisposable)
+
+//        view.retryNetworkConnectionClicks.subscribe {
+//            dispatcher.dispatch(NetworkAction.CheckConnectivity)
+//        }?.addTo(compositeDisposable)
     }
 
     private fun handleClicks(clicks: Observable<Unit>, withServerPassword: (ServerPassword) -> Unit) {
         clicks.subscribe {
-                this.credentials?.let { password -> withServerPassword(password) }
-            }
+            this.credentials?.let { password -> withServerPassword(password) }
+        }
             .addTo(compositeDisposable)
     }
 }
