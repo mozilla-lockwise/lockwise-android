@@ -41,10 +41,11 @@ open class RouteStore(
         dispatcher.register
             .filterByType(RouteAction::class.java)
             .flatMap {
-                if (it is RouteAction.OpenWebsite) {
-                    Observable.just(it, RouteAction.PostOpenWebsite)
-                } else {
-                    Observable.just(it)
+                when (it) {
+                    is RouteAction.OpenWebsite,
+                    is RouteAction.SystemSetting ->
+                            Observable.just(it, RouteAction.NoFollowOnReturn)
+                    else -> Observable.just(it)
                 }
             }
             .subscribe(_routes)
