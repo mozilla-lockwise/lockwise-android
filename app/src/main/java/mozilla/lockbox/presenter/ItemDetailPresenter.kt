@@ -38,8 +38,6 @@ interface ItemDetailView {
     fun showToastNotification(@StringRes strId: Int)
     fun handleNetworkError(networkErrorVisibility: Boolean)
     //    val retryNetworkConnectionClicks: Observable<Unit>
-    fun showUsernamePlaceholder()
-    fun showUsername(username: String)
 }
 
 @ExperimentalCoroutinesApi
@@ -56,7 +54,7 @@ class ItemDetailPresenter(
 
     override fun onViewReady() {
         handleClicks(view.usernameCopyClicks) {
-            if (!it.username.isNullOrEmpty()) {
+            if (!it.username.isNullOrBlank()) {
                 dispatcher.dispatch(ClipboardAction.CopyUsername(it.username.toString()))
                 dispatcher.dispatch(DataStoreAction.Touch(it.id))
                 view.showToastNotification(R.string.toast_username_copied)
@@ -96,14 +94,7 @@ class ItemDetailPresenter(
             .filterNotNull()
             .doOnNext { credentials = it }
             .map { it.toDetailViewModel() }
-            .subscribe {
-                if (it.username.isNullOrEmpty()) {
-                    view.showUsernamePlaceholder()
-                } else {
-                    view.showUsername(it.username)
-                }
-                view.updateItem(it)
-            }
+            .subscribe(view::updateItem)
             .addTo(compositeDisposable)
 
         networkStore.isConnected
@@ -121,8 +112,8 @@ class ItemDetailPresenter(
 
     private fun handleClicks(clicks: Observable<Unit>, withServerPassword: (ServerPassword) -> Unit) {
         clicks.subscribe {
-            this.credentials?.let { password -> withServerPassword(password) }
-        }
+                this.credentials?.let { password -> withServerPassword(password) }
+            }
             .addTo(compositeDisposable)
     }
 }

@@ -6,8 +6,11 @@
 
 package mozilla.lockbox.presenter
 
+import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Uri
+import android.os.Build
+import android.view.autofill.AutofillManager
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.TestObserver
@@ -24,6 +27,7 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.NetworkStore
+import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.isDebug
 import org.junit.Assert
@@ -31,10 +35,12 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
+import org.mockito.Mockito
 import org.powermock.api.mockito.PowerMockito
 import org.powermock.core.classloader.annotations.PrepareForTest
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
+import org.robolectric.util.ReflectionHelpers
 import org.mockito.Mockito.`when` as whenCalled
 
 @ExperimentalCoroutinesApi
@@ -78,40 +84,64 @@ class FxALoginPresenterTest : DisposingTest() {
             get() = fingerprintAvailableStub
     }
 
+    class FakeSettingStore : SettingStore() {
+        private val isAutofillAvailableStub: Boolean = true
+        private val hasEnabledAutofillServicesStub: Boolean = true
+
+        override val autofillAvailable: Boolean
+            get() = isAutofillAvailableStub
+
+        override val isCurrentAutofillProvider: Boolean
+            get() = hasEnabledAutofillServicesStub
+    }
+
     val view = FakeFxALoginView(disposer)
     val fingerprintStore = FakeFingerprintStore()
+
+    val dispatcher = Dispatcher()
+    private var isConnected: Observable<Boolean> = PublishSubject.create()
+    var isConnectedObserver = TestObserver.create<Boolean>()
+    private val dispatcherObserver = TestObserver.create<Action>()
+    private val loginURLSubject = PublishSubject.create<String>()
+
+    val settingStore = FakeSettingStore()
+
+    @Mock
+    val autofillManager: AutofillManager = Mockito.mock(AutofillManager::class.java)
 
     @Mock
     val accountStore = PowerMockito.mock(AccountStore::class.java)!!
 
-    private val loginURLSubject = PublishSubject.create<String>()
-
-    val dispatcher = Dispatcher()
-    private val dispatcherObserver = TestObserver.create<Action>()
-
     @Mock
     val networkStore = PowerMockito.mock(NetworkStore::class.java)!!
 
-    private var isConnected: Observable<Boolean> = PublishSubject.create()
-    var isConnectedObserver = TestObserver.create<Boolean>()
-
     @Mock
     private val connectivityManager = PowerMockito.mock(ConnectivityManager::class.java)
+
+    @Mock
+    val context: Context = Mockito.mock(Context::class.java)
 
     lateinit var subject: FxALoginPresenter
 
     @Before
     fun setUp() {
+        ReflectionHelpers.setStaticField(Build.VERSION::class.java, "SDK_INT", 26)
+
         whenCalled(networkStore.isConnected).thenReturn(isConnected)
         whenCalled(accountStore.loginURL).thenReturn(loginURLSubject)
 
+        whenCalled(autofillManager.isAutofillSupported).thenReturn(settingStore.autofillAvailable)
+        whenCalled(autofillManager.hasEnabledAutofillServices()).thenReturn(settingStore.isCurrentAutofillProvider)
+        whenCalled(context.getSystemService(AutofillManager::class.java)).thenReturn(autofillManager)
+
         PowerMockito.whenNew(AccountStore::class.java).withAnyArguments().thenReturn(accountStore)
+
         dispatcher.register.subscribe(dispatcherObserver)
 
         networkStore.connectivityManager = connectivityManager
         view.networkAvailable.subscribe(isConnectedObserver)
 
-        subject = FxALoginPresenter(view, dispatcher, networkStore, accountStore, fingerprintStore)
+        subject = FxALoginPresenter(view, dispatcher, networkStore, accountStore, fingerprintStore, settingStore)
         subject.onViewReady()
     }
 
@@ -146,7 +176,9 @@ class FxALoginPresenterTest : DisposingTest() {
     }
 
     @Test
-    fun `onViewReady, when the webview redirects to a URL starting with the expected redirect and the device has no fingerprints`() {
+    fun `onViewReady, when the webview redirects to onboarding confirmation when autofill is not supported and the device has no fingerprints`() {
+        ReflectionHelpers.setStaticField(Build.VERSION::class.java, "SDK_INT", 15)
+
         fingerprintStore.fingerprintAvailableStub = false
         val url = Uri.parse(Constant.FxA.redirectUri + "?moz_fake")
         view.webViewRedirectTo.onNext(url)
@@ -155,6 +187,19 @@ class FxALoginPresenterTest : DisposingTest() {
         val redirectAction = dispatcherObserver.values()[1] as AccountAction.OauthRedirect
         Assert.assertEquals(url.toString(), redirectAction.url)
         Assert.assertEquals(RouteAction.Onboarding.Confirmation, dispatcherObserver.values()[2])
+    }
+
+    @Test
+    fun `onViewReady, when the webview redirects to autofill onboarding screen when the device has no fingerprints and build number is supported for autofill`() {
+
+        fingerprintStore.fingerprintAvailableStub = false
+        val url = Uri.parse(Constant.FxA.redirectUri + "?moz_fake")
+        view.webViewRedirectTo.onNext(url)
+
+        Assert.assertEquals(OnboardingStatusAction(true), dispatcherObserver.values()[0])
+        val redirectAction = dispatcherObserver.values()[1] as AccountAction.OauthRedirect
+        Assert.assertEquals(url.toString(), redirectAction.url)
+        Assert.assertEquals(RouteAction.Onboarding.Autofill, dispatcherObserver.values()[2])
     }
 
     @Test
