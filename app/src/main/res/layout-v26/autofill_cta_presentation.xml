@@ -8,15 +8,15 @@
 
     <!-- Search Firefox Lockbox with magnifying glass icon (ic_search) -->
 <TextView
-        android:id="@+id/searchLockboxText"
+        android:id="@+id/autofill_cta"
         android:layout_width="225dp"
         android:layout_height="56dp"
-        android:background="@color/background_white"
         android:layout_gravity="start"
         android:drawableStart="@drawable/ic_search_dark"
         android:drawablePadding="5dp"
         android:contentDescription="@string/autofill_search_cta"
         android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         android:paddingTop="16dp"
         android:paddingBottom="17dp"
         android:gravity="start|center_vertical"
