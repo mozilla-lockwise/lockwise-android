@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.jakewharton.rxbinding2.view.clicks
 import com.jakewharton.rxbinding2.view.visibility
 import com.jakewharton.rxbinding2.widget.text
@@ -19,20 +20,29 @@ import io.reactivex.functions.Consumer
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_autofill_filter.view.filterField
 import kotlinx.android.synthetic.main.fragment_autofill_filter.view.cancelButton
+import kotlinx.android.synthetic.main.fragment_filter.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
+import mozilla.lockbox.adapter.ItemListAdapter
+import mozilla.lockbox.adapter.ItemListAdapterType
 import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.presenter.AutofillFilterPresenter
 import mozilla.lockbox.presenter.AutofillFilterView
 
 @ExperimentalCoroutinesApi
 class AutofillFilterFragment : DialogFragment(), AutofillFilterView {
+    val adapter = ItemListAdapter()
     override val onDismiss: Observable<Unit> = PublishSubject.create<Unit>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         presenter = AutofillFilterPresenter(this)
+        val view = inflater.inflate(R.layout.fragment_autofill_filter, container, false)
+
+        val layoutManager = LinearLayoutManager(context)
+        view.entriesView.layoutManager = layoutManager
+        view.entriesView.adapter = adapter
         retainInstance = true
-        return inflater.inflate(R.layout.fragment_autofill_filter, container, false)
+        return view
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,10 +59,10 @@ class AutofillFilterFragment : DialogFragment(), AutofillFilterView {
     override val cancelButtonVisibility: Consumer<in Boolean>
         get() = view!!.cancelButton.visibility()
     override val itemSelection: Observable<ItemViewModel>
-        get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+        get() = adapter.itemClicks
 
-    override fun updateItems(items: List<ItemViewModel>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun updateItems(items: List<ItemViewModel>, textEntered: Boolean) {
+        adapter.updateItems(items, ItemListAdapterType.AutofillFilter(textEntered))
     }
 
     override fun onDestroyView() {

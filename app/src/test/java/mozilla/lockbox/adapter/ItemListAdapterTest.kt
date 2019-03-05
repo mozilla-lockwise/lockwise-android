@@ -75,7 +75,7 @@ class ItemListAdapterTest {
     }
 
     @Test
-    fun onBindViewHolder_emptyList() {
+    fun onBindViewHolder_emptyEntriesList() {
         subject.updateItems(emptyList())
         val viewHolder = subject.onCreateViewHolder(parent, 2)
 
@@ -84,7 +84,23 @@ class ItemListAdapterTest {
 
     @Test
     fun onBindViewHolder_emptyFilteringList() {
-        subject.updateItems(emptyList(), true)
+        subject.updateItems(emptyList(), ItemListAdapterType.Filter)
+        val viewHolder = subject.onCreateViewHolder(parent, 1)
+
+        subject.onBindViewHolder(viewHolder, 0)
+    }
+
+    @Test
+    fun onBindViewHolder_emptyAutofillFilteringListWithText() {
+        subject.updateItems(emptyList(), ItemListAdapterType.AutofillFilter(true))
+        val viewHolder = subject.onCreateViewHolder(parent, 1)
+
+        subject.onBindViewHolder(viewHolder, 0)
+    }
+
+    @Test
+    fun onBindViewHolder_emptyAutofillFilteringListWithoutText() {
+        subject.updateItems(emptyList(), ItemListAdapterType.AutofillFilter(false))
         val viewHolder = subject.onCreateViewHolder(parent, 1)
 
         subject.onBindViewHolder(viewHolder, 0)
@@ -119,7 +135,7 @@ class ItemListAdapterTest {
 
     @Test
     fun onBindViewHolder_emptyFilteringList_clicks() {
-        subject.updateItems(emptyList(), true)
+        subject.updateItems(emptyList(), ItemListAdapterType.Filter)
         val viewHolder = subject.onCreateViewHolder(parent, 1)
 
         subject.onBindViewHolder(viewHolder, 0)
@@ -135,13 +151,37 @@ class ItemListAdapterTest {
     }
 
     @Test
+    fun `getItemCount for empty itemlists`() {
+        subject.updateItems(emptyList(), ItemListAdapterType.ItemList)
+        Assert.assertEquals(1, subject.itemCount)
+    }
+
+    @Test
+    fun `getItemCount for empty filtering lists`() {
+        subject.updateItems(emptyList(), ItemListAdapterType.Filter)
+        Assert.assertEquals(1, subject.itemCount)
+    }
+
+    @Test
+    fun `getItemCount for empty autofill filtering lists with no text entered`() {
+        subject.updateItems(emptyList(), ItemListAdapterType.AutofillFilter(false))
+        Assert.assertEquals(0, subject.itemCount)
+    }
+
+    @Test
+    fun `getItemCount for empty autofill filtering lists with text entered`() {
+        subject.updateItems(emptyList(), ItemListAdapterType.AutofillFilter(true))
+        Assert.assertEquals(1, subject.itemCount)
+    }
+
+    @Test
     fun getItemViewType_populatedList() {
         Assert.assertEquals(subject.getItemViewType(0), 0)
     }
 
     @Test
     fun getItemViewType_emptyFilteringList() {
-        subject.updateItems(emptyList(), true)
+        subject.updateItems(emptyList(), ItemListAdapterType.Filter)
 
         Assert.assertEquals(subject.getItemViewType(0), 1)
     }
@@ -151,5 +191,12 @@ class ItemListAdapterTest {
         subject.updateItems(emptyList())
 
         Assert.assertEquals(subject.getItemViewType(0), 2)
+    }
+
+    @Test
+    fun `getItemViewType empty autofill filtering list with text entered`() {
+        subject.updateItems(emptyList(), ItemListAdapterType.AutofillFilter(true))
+
+        Assert.assertEquals(subject.getItemViewType(0), 3)
     }
 }

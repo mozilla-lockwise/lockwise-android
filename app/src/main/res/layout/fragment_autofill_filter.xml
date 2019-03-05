@@ -8,8 +8,8 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
         android:paddingTop="32dp"
         android:paddingBottom="32dp">
@@ -17,14 +17,13 @@
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout"
             android:layout_width="280dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="center_vertical|center_horizontal"
             android:background="@android:color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="parent">
-
 
         <EditText
                 android:id="@+id/filterField"
@@ -39,10 +38,12 @@
                 android:fontFamily="sans-serif"
                 android:textStyle="normal"
                 android:background="@android:color/transparent"
+                android:inputType="textAutoComplete"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:hint="@string/search_your_entries_cap"/>
+                android:hint="@string/search_your_entries_cap"
+                tools:ignore="Autofill"/>
 
         <ImageButton
                 android:id="@+id/cancelButton"
@@ -61,10 +62,10 @@
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/entriesView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
                 app:layout_constraintTop_toBottomOf="@id/filterField"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

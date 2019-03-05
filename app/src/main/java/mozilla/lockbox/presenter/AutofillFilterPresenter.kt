@@ -7,11 +7,13 @@
 package mozilla.lockbox.presenter
 
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.Consumer
+import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.action.AutofillAction
+import mozilla.lockbox.extensions.mapToItemViewModelList
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.model.ItemViewModel
@@ -24,7 +26,7 @@ interface AutofillFilterView {
     val cancelButtonClicks: Observable<Unit>
     val cancelButtonVisibility: Consumer<in Boolean>
     val itemSelection: Observable<ItemViewModel>
-    fun updateItems(items: List<ItemViewModel>)
+    fun updateItems(items: List<ItemViewModel>, textEntered: Boolean)
 }
 
 @ExperimentalCoroutinesApi
@@ -35,10 +37,52 @@ class AutofillFilterPresenter(
 ) : Presenter() {
     override fun onViewReady() {
         view.onDismiss
+            .map { AutofillAction.Cancel }
+            .subscribe(dispatcher::dispatch)
+            .addTo(compositeDisposable)
+
+        val itemViewModelList = dataStore.list.mapToItemViewModelList()
+
+        Observables.combineLatest(view.filterTextEntered, itemViewModelList)
+            .map { if (it.first.isEmpty()) Pair(it.first, emptyList()) else it }
+            .filterItemsForText()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                view.updateItems(it.second, !it.first.isEmpty())
+            }
+            .addTo(compositeDisposable)
+
+        view.filterTextEntered
+            .map { it.isNotEmpty() }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(view.cancelButtonVisibility)
+            .addTo(compositeDisposable)
+
+        view.cancelButtonClicks
+            .map { "" }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(view.filterText)
+            .addTo(compositeDisposable)
+
+        view.itemSelection
+            .switchMap { dataStore.get(it.guid) }
             .map {
+                it.value?.let { serverPassword ->
+                    return@map AutofillAction.Complete(serverPassword)
+                }
+
                 AutofillAction.Cancel
             }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
+    }
+
+    private fun Observable<Pair<CharSequence, List<ItemViewModel>>>.filterItemsForText(): Observable<Pair<CharSequence, List<ItemViewModel>>> {
+        return this.map { pair ->
+            Pair(pair.first, pair.second.filter {
+                it.title.contains(pair.first, true) ||
+                    it.subtitle.contains(pair.first, true)
+            })
+        }
     }
 }

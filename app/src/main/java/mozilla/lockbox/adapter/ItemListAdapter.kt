@@ -25,7 +25,7 @@ import mozilla.lockbox.view.ItemViewHolder
 
 open class ItemListCell(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer
 
-sealed class ItemListAdapterType() {
+sealed class ItemListAdapterType {
     object ItemList : ItemListAdapterType()
     object Filter : ItemListAdapterType()
     data class AutofillFilter(val textEntered: Boolean) : ItemListAdapterType()
@@ -67,6 +67,9 @@ class ItemListAdapter : RecyclerView.Adapter<ItemListCell>() {
 
                 return ItemListCell(view)
             }
+            SIMPLE_NO_ENTRIES_CELL_TYPE -> {
+                return ItemListCell(inflater.inflate(R.layout.list_cell_no_entries_found, parent, false))
+            }
             else -> {
                 val view = inflater.inflate(R.layout.list_cell_item, parent, false)
 
@@ -85,6 +88,12 @@ class ItemListAdapter : RecyclerView.Adapter<ItemListCell>() {
     override fun getItemCount(): Int {
         val list = itemList ?: return 0
         val count = list.count()
+
+        (type as? ItemListAdapterType.AutofillFilter)?.let {
+            if (count == 0 && !it.textEntered)
+                return 0
+        }
+
         return if (count == 0) 1 else count
     }
 
@@ -110,7 +119,7 @@ class ItemListAdapter : RecyclerView.Adapter<ItemListCell>() {
         }
     }
 
-    fun updateItems(newItems: List<ItemViewModel>, type: ItemListAdapterType) {
+    fun updateItems(newItems: List<ItemViewModel>, type: ItemListAdapterType = ItemListAdapterType.ItemList) {
         this.type = type
         itemList = newItems
         // note: this is not a performant way to do updates; we should think about using

@@ -25,6 +25,7 @@ import kotlinx.android.synthetic.main.include_backable_filter.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
 import mozilla.lockbox.adapter.ItemListAdapter
+import mozilla.lockbox.adapter.ItemListAdapterType
 import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.presenter.FilterPresenter
 import mozilla.lockbox.presenter.FilterView
@@ -82,6 +83,6 @@ class FilterFragment : BackableFragment(), FilterView {
         get() = adapter.noMatchingEntriesClicks
 
     override fun updateItems(items: List<ItemViewModel>) {
-        adapter.updateItems(items, true)
+        adapter.updateItems(items, ItemListAdapterType.Filter)
     }
 }
