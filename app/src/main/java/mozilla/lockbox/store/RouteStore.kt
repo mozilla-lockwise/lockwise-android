@@ -40,6 +40,14 @@ open class RouteStore(
     init {
         dispatcher.register
             .filterByType(RouteAction::class.java)
+            .flatMap {
+                when (it) {
+                    is RouteAction.OpenWebsite,
+                    is RouteAction.SystemSetting ->
+                            Observable.just(it, RouteAction.NoFollowOnReturn)
+                    else -> Observable.just(it)
+                }
+            }
             .subscribe(_routes)
 
         dispatcher.register
