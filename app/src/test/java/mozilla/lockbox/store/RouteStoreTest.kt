@@ -13,6 +13,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.OnboardingStatusAction
 import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.action.SettingIntent
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
@@ -50,6 +51,18 @@ class RouteStoreTest {
         dispatcher.dispatch(action)
 
         routeObserver.assertValue(action)
+    }
+
+    @Test
+    fun `dispatched route actions with no follow actions`() {
+        dispatcher.dispatch(RouteAction.ItemList)
+        routeObserver.assertLastValue(RouteAction.ItemList)
+
+        dispatcher.dispatch(RouteAction.SystemSetting(SettingIntent.Security))
+        routeObserver.assertLastValue(RouteAction.NoFollowOnReturn)
+
+        dispatcher.dispatch(RouteAction.OpenWebsite("https://mozilla.org"))
+        routeObserver.assertLastValue(RouteAction.NoFollowOnReturn)
     }
 
     @Test
