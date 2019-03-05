@@ -16,6 +16,12 @@ interface AutofillNodeNavigator<T, U> {
     fun isHtmlInputField(node: T): Boolean
     fun packageName(node: T): String?
     fun webDomain(node: T): String?
+    fun build(
+        usernameId: U?,
+        passwordId: U?,
+        webDomain: String?,
+        packageName: String
+    ): ParsedStructureData<U>
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -61,4 +67,18 @@ class ViewNodeNavigator(
     override fun packageName(node: ViewNode): String? = node.idPackage
 
     override fun webDomain(node: ViewNode): String? = node.webDomain
+
+    override fun build(
+        usernameId: AutofillId?,
+        passwordId: AutofillId?,
+        webDomain: String?,
+        packageName: String
+    ): ParsedStructureData<AutofillId> {
+        return ParsedStructure(
+            usernameId,
+            passwordId,
+            webDomain,
+            packageName
+        )
+    }
 }

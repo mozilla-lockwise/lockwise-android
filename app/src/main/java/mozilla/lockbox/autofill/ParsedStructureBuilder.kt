@@ -13,7 +13,7 @@ class ParsedStructureBuilder<ViewNode, AutofillId>(
         val passwordId = getPasswordId()
         val interesting = usernameId ?: passwordId
 
-        return ParsedStructureData(
+        return navigator.build(
             usernameId,
             passwordId,
             getWebDomain(interesting),

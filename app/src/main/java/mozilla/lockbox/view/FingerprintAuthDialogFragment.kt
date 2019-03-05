@@ -40,7 +40,6 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         presenter = FingerprintDialogPresenter(this)
-        retainInstance = true
         return inflater.inflate(R.layout.fragment_fingerprint_dialog, container, false)
     }
 
@@ -70,7 +69,7 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
             postDelayed({
                 _authCallback.onNext(FingerprintAuthCallback.OnAuth)
                 isEnablingDismissed = false
-                dismiss()
+                dismissAllowingStateLoss()
             }, Constant.FingerprintTimeout.successDelayMillis)
         }
     }

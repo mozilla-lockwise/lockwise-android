@@ -27,10 +27,8 @@ import mozilla.lockbox.extensions.view.AlertState
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
-import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.store.SettingStore
-import mozilla.lockbox.support.AutoLockSupport
 import mozilla.lockbox.view.AppWebPageFragmentArgs
 import mozilla.lockbox.view.DialogFragment
 import mozilla.lockbox.view.FingerprintAuthDialogFragment
@@ -41,14 +39,22 @@ class RoutePresenter(
     private val activity: AppCompatActivity,
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val routeStore: RouteStore = RouteStore.shared,
-    private val settingStore: SettingStore = SettingStore.shared,
-    private val accountStore: AccountStore = AccountStore.shared,
-    private val autoLockStore: AutoLockSupport = AutoLockSupport.shared
+    private val settingStore: SettingStore = SettingStore.shared
 ) : Presenter() {
     private lateinit var navController: NavController
 
     override fun onViewReady() {
         navController = Navigation.findNavController(activity, R.id.fragment_nav_host)
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        compositeDisposable.clear()
+    }
+
+    override fun onResume() {
+        super.onResume()
 
         routeStore.routes
             .observeOn(mainThread())
@@ -58,25 +64,25 @@ class RoutePresenter(
 
     private fun route(action: RouteAction) {
         when (action) {
-            is RouteAction.Welcome -> navigateToFragment(action, R.id.fragment_welcome)
-            is RouteAction.Login -> navigateToFragment(action, R.id.fragment_fxa_login)
+            is RouteAction.Welcome -> navigateToFragment(R.id.fragment_welcome)
+            is RouteAction.Login -> navigateToFragment(R.id.fragment_fxa_login)
             is RouteAction.Onboarding.FingerprintAuth ->
-                navigateToFragment(action, R.id.fragment_fingerprint_onboarding)
-            is RouteAction.Onboarding.Autofill -> navigateToFragment(action, R.id.fragment_autofill_onboarding)
-            is RouteAction.Onboarding.Confirmation -> navigateToFragment(action, R.id.fragment_onboarding_confirmation)
-            is RouteAction.ItemList -> navigateToFragment(action, R.id.fragment_item_list)
-            is RouteAction.SettingList -> navigateToFragment(action, R.id.fragment_setting)
-            is RouteAction.AccountSetting -> navigateToFragment(action, R.id.fragment_account_setting)
-            is RouteAction.LockScreen -> navigateToFragment(action, R.id.fragment_locked)
-            is RouteAction.Filter -> navigateToFragment(action, R.id.fragment_filter)
-            is RouteAction.ItemDetail -> navigateToFragment(action, R.id.fragment_item_detail, bundle(action))
+                navigateToFragment(R.id.fragment_fingerprint_onboarding)
+            is RouteAction.Onboarding.Autofill -> navigateToFragment(R.id.fragment_autofill_onboarding)
+            is RouteAction.Onboarding.Confirmation -> navigateToFragment(R.id.fragment_onboarding_confirmation)
+            is RouteAction.ItemList -> navigateToFragment(R.id.fragment_item_list)
+            is RouteAction.SettingList -> navigateToFragment(R.id.fragment_setting)
+            is RouteAction.AccountSetting -> navigateToFragment(R.id.fragment_account_setting)
+            is RouteAction.LockScreen -> navigateToFragment(R.id.fragment_locked)
+            is RouteAction.Filter -> navigateToFragment(R.id.fragment_filter)
+            is RouteAction.ItemDetail -> navigateToFragment(R.id.fragment_item_detail, bundle(action))
             is RouteAction.OpenWebsite -> openWebsite(action.url)
             is RouteAction.SystemSetting -> openSetting(action)
             is RouteAction.AutoLockSetting -> showAutoLockSelections()
             is RouteAction.DialogFragment.FingerprintDialog ->
                 showDialogFragment(FingerprintAuthDialogFragment(), action)
             is DialogAction -> showDialog(action)
-            is AppWebPageAction -> navigateToFragment(action, R.id.fragment_webview, bundle(action))
+            is AppWebPageAction -> navigateToFragment(R.id.fragment_webview, bundle(action))
         }
     }
 
@@ -140,6 +146,7 @@ class RoutePresenter(
         if (dialogFragment != null) {
             val fragmentManager = activity.supportFragmentManager
             try {
+                dialogFragment.setTargetFragment(fragmentManager.fragments.last(), 0)
                 dialogFragment.show(fragmentManager, dialogFragment.javaClass.name)
                 dialogFragment.setupDialog(destination.dialogTitle, destination.dialogSubtitle)
             } catch (e: IllegalStateException) {
@@ -147,7 +154,7 @@ class RoutePresenter(
             }
         }
     }
-    private fun navigateToFragment(action: RouteAction, @IdRes destinationId: Int, args: Bundle? = null) {
+    private fun navigateToFragment(@IdRes destinationId: Int, args: Bundle? = null) {
         val src = navController.currentDestination ?: return
         val srcId = src.id
         if (srcId == destinationId && args == null) {

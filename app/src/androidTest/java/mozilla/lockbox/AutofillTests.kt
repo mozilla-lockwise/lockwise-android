@@ -5,6 +5,7 @@ import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.rule.ServiceTestRule
 import mozilla.lockbox.autofill.AutofillNodeNavigator
 import mozilla.lockbox.autofill.ParsedStructureBuilder
+import mozilla.lockbox.autofill.ParsedStructureData
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -72,7 +73,6 @@ class DOMNavigator(
     filename: String,
     override val activityPackageName: String
 ) : AutofillNodeNavigator<Element, String> {
-
     private val document: Document
 
     init {
@@ -117,5 +117,14 @@ class DOMNavigator(
 
     override fun webDomain(node: Element): String? {
         return node.attributes.getNamedItem("webDomain")?.nodeValue
+    }
+
+    override fun build(
+        usernameId: String?,
+        passwordId: String?,
+        webDomain: String?,
+        packageName: String
+    ): ParsedStructureData<String> {
+        return ParsedStructureData(usernameId, passwordId, webDomain, packageName)
     }
 }
