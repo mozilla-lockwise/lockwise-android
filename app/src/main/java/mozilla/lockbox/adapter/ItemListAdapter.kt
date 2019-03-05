@@ -25,10 +25,16 @@ import mozilla.lockbox.view.ItemViewHolder
 
 open class ItemListCell(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer
 
+sealed class ItemListAdapterType() {
+    object ItemList : ItemListAdapterType()
+    object Filter : ItemListAdapterType()
+    data class AutofillFilter(val textEntered: Boolean) : ItemListAdapterType()
+}
+
 class ItemListAdapter : RecyclerView.Adapter<ItemListCell>() {
 
     private var itemList: List<ItemViewModel>? = null
-    private var isFiltering: Boolean = false
+    private var type: ItemListAdapterType = ItemListAdapterType.ItemList
     val itemClicks: Observable<ItemViewModel> = PublishSubject.create()
     val noEntriesClicks: Observable<Unit> = PublishSubject.create()
     val noMatchingEntriesClicks: Observable<Unit> = PublishSubject.create()
@@ -37,6 +43,7 @@ class ItemListAdapter : RecyclerView.Adapter<ItemListCell>() {
         private const val ITEM_DISPLAY_CELL_TYPE = 0
         private const val NO_MATCHING_ENTRIES_CELL_TYPE = 1
         private const val NO_ENTRIES_CELL_TYPE = 2
+        private const val SIMPLE_NO_ENTRIES_CELL_TYPE = 3
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemListCell {
@@ -92,14 +99,19 @@ class ItemListAdapter : RecyclerView.Adapter<ItemListCell>() {
 
     override fun getItemViewType(position: Int): Int {
         val count = itemList?.count() ?: 0
-        return when (count) {
-            0 -> if (isFiltering) NO_MATCHING_ENTRIES_CELL_TYPE else NO_ENTRIES_CELL_TYPE
-            else -> ITEM_DISPLAY_CELL_TYPE
+        if (count > 0) {
+            return ITEM_DISPLAY_CELL_TYPE
+        }
+
+        return when (type) {
+            is ItemListAdapterType.ItemList -> NO_ENTRIES_CELL_TYPE
+            is ItemListAdapterType.Filter -> NO_MATCHING_ENTRIES_CELL_TYPE
+            is ItemListAdapterType.AutofillFilter -> SIMPLE_NO_ENTRIES_CELL_TYPE
         }
     }
 
-    fun updateItems(newItems: List<ItemViewModel>, isFiltering: Boolean = false) {
-        this.isFiltering = isFiltering
+    fun updateItems(newItems: List<ItemViewModel>, type: ItemListAdapterType) {
+        this.type = type
         itemList = newItems
         // note: this is not a performant way to do updates; we should think about using
         // diffutil here when implementing filtering / sorting
