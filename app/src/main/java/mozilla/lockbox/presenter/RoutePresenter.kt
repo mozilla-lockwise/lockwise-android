@@ -26,10 +26,11 @@ import mozilla.lockbox.extensions.view.AlertDialogHelper
 import mozilla.lockbox.extensions.view.AlertState
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
+import mozilla.lockbox.log
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.store.SettingStore
-import mozilla.lockbox.support.RoutePresenterSupport
 import mozilla.lockbox.view.AppWebPageFragmentArgs
+import mozilla.lockbox.view.DialogFragment
 import mozilla.lockbox.view.FingerprintAuthDialogFragment
 import mozilla.lockbox.view.ItemDetailFragmentArgs
 
@@ -38,8 +39,7 @@ class RoutePresenter(
     private val activity: AppCompatActivity,
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val routeStore: RouteStore = RouteStore.shared,
-    private val settingStore: SettingStore = SettingStore.shared,
-    private val routePresenterSupport: RoutePresenterSupport = RoutePresenterSupport()
+    private val settingStore: SettingStore = SettingStore.shared
 ) : Presenter() {
     private lateinit var navController: NavController
 
@@ -64,24 +64,25 @@ class RoutePresenter(
 
     private fun route(action: RouteAction) {
         when (action) {
-            is RouteAction.Welcome -> routePresenterSupport.navigateToFragment(navController, activity, R.id.fragment_welcome, this::findTransitionId)
-            is RouteAction.Login -> routePresenterSupport.navigateToFragment(navController, activity, R.id.fragment_fxa_login, this::findTransitionId)
+            is RouteAction.Welcome -> navigateToFragment(R.id.fragment_welcome)
+            is RouteAction.Login -> navigateToFragment(R.id.fragment_fxa_login)
             is RouteAction.Onboarding.FingerprintAuth ->
-                routePresenterSupport.navigateToFragment(navController, activity, R.id.fragment_fingerprint_onboarding, this::findTransitionId)
-            is RouteAction.Onboarding.Autofill -> routePresenterSupport.navigateToFragment(navController, activity, R.id.fragment_autofill_onboarding, this::findTransitionId)
-            is RouteAction.Onboarding.Confirmation -> routePresenterSupport.navigateToFragment(navController, activity, R.id.fragment_onboarding_confirmation, this::findTransitionId)
-            is RouteAction.ItemList -> routePresenterSupport.navigateToFragment(navController, activity, R.id.fragment_item_list, this::findTransitionId)
-            is RouteAction.SettingList -> routePresenterSupport.navigateToFragment(navController, activity, R.id.fragment_setting, this::findTransitionId)
-            is RouteAction.AccountSetting -> routePresenterSupport.navigateToFragment(navController, activity, R.id.fragment_account_setting, this::findTransitionId)
-            is RouteAction.LockScreen -> routePresenterSupport.navigateToFragment(navController, activity, R.id.fragment_locked, this::findTransitionId)
-            is RouteAction.Filter -> routePresenterSupport.navigateToFragment(navController, activity, R.id.fragment_filter, this::findTransitionId)
-            is RouteAction.ItemDetail -> routePresenterSupport.navigateToFragment(navController, activity, R.id.fragment_item_detail, this::findTransitionId, bundle(action))
+                navigateToFragment(R.id.fragment_fingerprint_onboarding)
+            is RouteAction.Onboarding.Autofill -> navigateToFragment(R.id.fragment_autofill_onboarding)
+            is RouteAction.Onboarding.Confirmation -> navigateToFragment(R.id.fragment_onboarding_confirmation)
+            is RouteAction.ItemList -> navigateToFragment(R.id.fragment_item_list)
+            is RouteAction.SettingList -> navigateToFragment(R.id.fragment_setting)
+            is RouteAction.AccountSetting -> navigateToFragment(R.id.fragment_account_setting)
+            is RouteAction.LockScreen -> navigateToFragment(R.id.fragment_locked)
+            is RouteAction.Filter -> navigateToFragment(R.id.fragment_filter)
+            is RouteAction.ItemDetail -> navigateToFragment(R.id.fragment_item_detail, bundle(action))
             is RouteAction.OpenWebsite -> openWebsite(action.url)
             is RouteAction.SystemSetting -> openSetting(action)
             is RouteAction.AutoLockSetting -> showAutoLockSelections()
-            is RouteAction.DialogFragment.FingerprintDialog -> routePresenterSupport.showDialogFragment(activity, FingerprintAuthDialogFragment(), action)
+            is RouteAction.DialogFragment.FingerprintDialog ->
+                showDialogFragment(FingerprintAuthDialogFragment(), action)
             is DialogAction -> showDialog(action)
-            is AppWebPageAction -> routePresenterSupport.navigateToFragment(navController, activity, R.id.fragment_webview, this::findTransitionId, bundle(action))
+            is AppWebPageAction -> navigateToFragment(R.id.fragment_webview, bundle(action))
         }
     }
 
@@ -139,6 +140,54 @@ class RoutePresenter(
                 dispatcher.dispatch(SettingAction.AutoLockTime(it))
             }
             .addTo(compositeDisposable)
+    }
+
+    private fun showDialogFragment(dialogFragment: DialogFragment?, destination: RouteAction.DialogFragment) {
+        if (dialogFragment != null) {
+            val fragmentManager = activity.supportFragmentManager
+            try {
+                dialogFragment.setTargetFragment(fragmentManager.fragments.last(), 0)
+                dialogFragment.show(fragmentManager, dialogFragment.javaClass.name)
+                dialogFragment.setupDialog(destination.dialogTitle, destination.dialogSubtitle)
+            } catch (e: IllegalStateException) {
+                log.error("Could not show dialog", e)
+            }
+        }
+    }
+    private fun navigateToFragment(@IdRes destinationId: Int, args: Bundle? = null) {
+        val src = navController.currentDestination ?: return
+        val srcId = src.id
+        if (srcId == destinationId && args == null) {
+            // No point in navigating if nothing has changed.
+            return
+        }
+
+        val transition = findTransitionId(srcId, destinationId) ?: destinationId
+
+        if (transition == destinationId) {
+            // Without being able to detect if we're in developer mode,
+            // it is too dangerous to RuntimeException.
+            val from = activity.resources.getResourceName(srcId)
+            val to = activity.resources.getResourceName(destinationId)
+            log.error(
+                "Cannot route from $from to $to. " +
+                    "This is a developer bug, fixable by adding an action to graph_main.xml"
+            )
+        } else {
+            val clearBackStack = src.getAction(transition)?.navOptions?.shouldLaunchSingleTop() ?: false
+            if (clearBackStack) {
+                while (navController.popBackStack()) {
+                    // NOP
+                }
+            }
+        }
+
+        try {
+            navController.navigate(transition, args)
+        } catch (e: IllegalArgumentException) {
+            log.error("This appears to be a bug in navController", e)
+            navController.navigate(destinationId, args)
+        }
     }
 
     private fun findTransitionId(@IdRes from: Int, @IdRes to: Int): Int? {
