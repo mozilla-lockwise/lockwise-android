@@ -45,6 +45,16 @@ class RoutePresenter(
 
     override fun onViewReady() {
         navController = Navigation.findNavController(activity, R.id.fragment_nav_host)
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        compositeDisposable.clear()
+    }
+
+    override fun onResume() {
+        super.onResume()
 
         routeStore.routes
             .observeOn(mainThread())
@@ -136,6 +146,7 @@ class RoutePresenter(
         if (dialogFragment != null) {
             val fragmentManager = activity.supportFragmentManager
             try {
+                dialogFragment.setTargetFragment(fragmentManager.fragments.last(), 0)
                 dialogFragment.show(fragmentManager, dialogFragment.javaClass.name)
                 dialogFragment.setupDialog(destination.dialogTitle, destination.dialogSubtitle)
             } catch (e: IllegalStateException) {
