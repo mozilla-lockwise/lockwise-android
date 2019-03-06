@@ -19,6 +19,9 @@ buildscript {
     repositories {
         google()
         jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.3.1'
@@ -30,10 +33,6 @@ buildscript {
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
-}
-
-plugins {
-    id "com.vanniktech.android.junit.jacoco" version "0.12.0"
 }
 
 allprojects {
