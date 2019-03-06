@@ -26,7 +26,7 @@ interface AutofillFilterView {
     val cancelButtonClicks: Observable<Unit>
     val cancelButtonVisibility: Consumer<in Boolean>
     val itemSelection: Observable<ItemViewModel>
-    fun updateItems(items: List<ItemViewModel>, textEntered: Boolean)
+    fun updateItems(items: List<ItemViewModel>, displayNoEntries: Boolean)
 }
 
 @ExperimentalCoroutinesApi
@@ -44,12 +44,14 @@ class AutofillFilterPresenter(
         val itemViewModelList = dataStore.list.mapToItemViewModelList()
 
         Observables.combineLatest(view.filterTextEntered, itemViewModelList)
-            .map { if (it.first.isEmpty()) Pair(it.first, emptyList()) else it }
             .filterItemsForText()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                view.updateItems(it.second, !it.first.isEmpty())
+            .map {
+                val displayNoEntries = it.second.isEmpty() || !it.first.isEmpty()
+                val itemList = if (it.first.isEmpty()) emptyList() else it.second
+                Pair(itemList, displayNoEntries)
             }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { view.updateItems(it.first, it.second) }
             .addTo(compositeDisposable)
 
         view.filterTextEntered

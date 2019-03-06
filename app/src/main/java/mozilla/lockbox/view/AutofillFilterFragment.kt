@@ -75,8 +75,8 @@ class AutofillFilterFragment : DialogFragment(), AutofillFilterView {
     override val itemSelection: Observable<ItemViewModel>
         get() = adapter.itemClicks
 
-    override fun updateItems(items: List<ItemViewModel>, textEntered: Boolean) {
-        adapter.updateItems(items, ItemListAdapterType.AutofillFilter(textEntered))
+    override fun updateItems(items: List<ItemViewModel>, displayNoEntries: Boolean) {
+        adapter.updateItems(items, ItemListAdapterType.AutofillFilter(displayNoEntries))
     }
 
     override fun onDestroyView() {

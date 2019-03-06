@@ -51,9 +51,9 @@ class AutofillFilterPresenterTest {
         override val cancelButtonVisibility: Consumer<in Boolean> = TestConsumer(cancelButtonVisibilityStub)
 
         override val itemSelection: Observable<ItemViewModel> = itemSelectionStub
-        override fun updateItems(items: List<ItemViewModel>, textEntered: Boolean) {
+        override fun updateItems(items: List<ItemViewModel>, displayNoEntries: Boolean) {
             updateItemsArgument = items
-            updateItemsStatus = textEntered
+            updateItemsStatus = displayNoEntries
         }
     }
 
@@ -112,6 +112,16 @@ class AutofillFilterPresenterTest {
         view.filterTextEnteredStub.onNext("")
 
         assertFalse(view.updateItemsStatus!!)
+        assertEquals(emptyList<ItemViewModel>(), view.updateItemsArgument!!)
+        view.cancelButtonVisibilityStub.assertValue(false)
+    }
+
+    @Test
+    fun `empty list`() {
+        dataStore.listStub.onNext(emptyList())
+        view.filterTextEnteredStub.onNext("")
+
+        assertTrue(view.updateItemsStatus!!)
         assertEquals(emptyList<ItemViewModel>(), view.updateItemsArgument!!)
         view.cancelButtonVisibilityStub.assertValue(false)
     }

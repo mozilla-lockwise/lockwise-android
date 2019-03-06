@@ -30,7 +30,7 @@ open class ItemListCell(override val containerView: View) : RecyclerView.ViewHol
 sealed class ItemListAdapterType {
     object ItemList : ItemListAdapterType()
     object Filter : ItemListAdapterType()
-    data class AutofillFilter(val textEntered: Boolean) : ItemListAdapterType()
+    data class AutofillFilter(val displayNoEntries: Boolean) : ItemListAdapterType()
 }
 
 class ItemListAdapter : RecyclerView.Adapter<ItemListCell>() {
@@ -96,7 +96,7 @@ class ItemListAdapter : RecyclerView.Adapter<ItemListCell>() {
         val count = list.count()
 
         (type as? ItemListAdapterType.AutofillFilter)?.let {
-            if (count == 0 && !it.textEntered)
+            if (count == 0 && !it.displayNoEntries)
                 return 0
         }
 
