@@ -8,6 +8,7 @@ package mozilla.lockbox.adapter
 
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding2.view.clicks
@@ -15,6 +16,7 @@ import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.main.list_cell_item.view.*
 import kotlinx.android.synthetic.main.list_cell_no_entries.view.*
 import kotlinx.android.synthetic.main.list_cell_no_matching.view.*
 import mozilla.lockbox.R
@@ -79,6 +81,10 @@ class ItemListAdapter : RecyclerView.Adapter<ItemListCell>() {
                     .map { viewHolder.itemViewModel.asOptional() }
                     .filterNotNull()
                     .subscribe(this.itemClicks as Subject)
+
+                if (type is ItemListAdapterType.AutofillFilter) {
+                    view.disclosureIndicator.visibility = GONE
+                }
 
                 return viewHolder
             }

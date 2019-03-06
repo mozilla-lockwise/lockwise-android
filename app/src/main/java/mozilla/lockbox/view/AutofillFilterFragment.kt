@@ -6,10 +6,13 @@
 
 package mozilla.lockbox.view
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jakewharton.rxbinding2.view.clicks
 import com.jakewharton.rxbinding2.view.visibility
@@ -20,7 +23,7 @@ import io.reactivex.functions.Consumer
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_autofill_filter.view.filterField
 import kotlinx.android.synthetic.main.fragment_autofill_filter.view.cancelButton
-import kotlinx.android.synthetic.main.fragment_filter.view.*
+import kotlinx.android.synthetic.main.fragment_autofill_filter.view.entriesView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
 import mozilla.lockbox.adapter.ItemListAdapter
@@ -48,6 +51,19 @@ class AutofillFilterFragment : DialogFragment(), AutofillFilterView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(androidx.fragment.app.DialogFragment.STYLE_NORMAL, R.style.NoTitleDialog)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        dialog?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+        super.onViewCreated(view, savedInstanceState)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        view!!.filterField.requestFocus()
+
+        val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(view!!.filterField, InputMethodManager.SHOW_IMPLICIT)
     }
 
     override val filterTextEntered: Observable<CharSequence>

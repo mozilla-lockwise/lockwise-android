@@ -17,7 +17,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout"
             android:layout_width="280dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|center_horizontal"
             android:background="@android:color/white"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -29,7 +29,7 @@
                 android:id="@+id/filterField"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="35dp"
                 android:paddingStart="16dp"
                 android:paddingEnd="0dp"
                 android:textColorHint="@color/gray_73_percent"
@@ -41,7 +41,7 @@
                 android:inputType="textAutoComplete"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/entriesView"
                 android:hint="@string/search_your_entries_cap"
                 tools:ignore="Autofill"/>
 
@@ -55,14 +55,14 @@
                 android:src="@drawable/ic_close_black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
                 android:visibility="invisible"
                 android:contentDescription="@string/search_clear_content_description"/>
 
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/entriesView"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constrainedHeight="true"
                 app:layout_constraintTop_toBottomOf="@id/filterField"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
