@@ -21,9 +21,7 @@ import com.jakewharton.rxbinding2.widget.textChanges
 import io.reactivex.Observable
 import io.reactivex.functions.Consumer
 import io.reactivex.subjects.PublishSubject
-import kotlinx.android.synthetic.main.fragment_autofill_filter.view.filterField
-import kotlinx.android.synthetic.main.fragment_autofill_filter.view.cancelButton
-import kotlinx.android.synthetic.main.fragment_autofill_filter.view.entriesView
+import kotlinx.android.synthetic.main.fragment_autofill_filter.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
 import mozilla.lockbox.adapter.ItemListAdapter

@@ -12,7 +12,8 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:paddingTop="32dp"
-        android:paddingBottom="32dp">
+        android:paddingBottom="32dp"
+        android:clipToPadding="false">
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout"
