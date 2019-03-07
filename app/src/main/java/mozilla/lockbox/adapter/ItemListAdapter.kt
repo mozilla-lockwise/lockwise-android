@@ -30,13 +30,15 @@ open class ItemListCell(override val containerView: View) : RecyclerView.ViewHol
 sealed class ItemListAdapterType {
     object ItemList : ItemListAdapterType()
     object Filter : ItemListAdapterType()
-    data class AutofillFilter(val displayNoEntries: Boolean) : ItemListAdapterType()
+    object AutofillFilter : ItemListAdapterType()
 }
 
-class ItemListAdapter : RecyclerView.Adapter<ItemListCell>() {
+class ItemListAdapter(
+    val type: ItemListAdapterType
+) : RecyclerView.Adapter<ItemListCell>() {
 
     private var itemList: List<ItemViewModel>? = null
-    private var type: ItemListAdapterType = ItemListAdapterType.ItemList
+    private var displayNoEntries: Boolean = true
     val itemClicks: Observable<ItemViewModel> = PublishSubject.create()
     val noEntriesClicks: Observable<Unit> = PublishSubject.create()
     val noMatchingEntriesClicks: Observable<Unit> = PublishSubject.create()
@@ -95,9 +97,8 @@ class ItemListAdapter : RecyclerView.Adapter<ItemListCell>() {
         val list = itemList ?: return 0
         val count = list.count()
 
-        (type as? ItemListAdapterType.AutofillFilter)?.let {
-            if (count == 0 && !it.displayNoEntries)
-                return 0
+        if (count == 0 && !displayNoEntries) {
+            return 0
         }
 
         return if (count == 0) 1 else count
@@ -125,11 +126,14 @@ class ItemListAdapter : RecyclerView.Adapter<ItemListCell>() {
         }
     }
 
-    fun updateItems(newItems: List<ItemViewModel>, type: ItemListAdapterType = ItemListAdapterType.ItemList) {
-        this.type = type
+    fun updateItems(newItems: List<ItemViewModel>) {
         itemList = newItems
         // note: this is not a performant way to do updates; we should think about using
         // diffutil here when implementing filtering / sorting
         notifyDataSetChanged()
+    }
+
+    fun displayNoEntries(enabled: Boolean) {
+        displayNoEntries = enabled
     }
 }

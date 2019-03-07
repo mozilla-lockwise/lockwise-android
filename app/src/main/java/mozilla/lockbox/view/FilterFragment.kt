@@ -32,7 +32,7 @@ import mozilla.lockbox.presenter.FilterView
 
 @ExperimentalCoroutinesApi
 class FilterFragment : BackableFragment(), FilterView {
-    val adapter = ItemListAdapter()
+    val adapter = ItemListAdapter(ItemListAdapterType.Filter)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -83,6 +83,6 @@ class FilterFragment : BackableFragment(), FilterView {
         get() = adapter.noMatchingEntriesClicks
 
     override fun updateItems(items: List<ItemViewModel>) {
-        adapter.updateItems(items, ItemListAdapterType.Filter)
+        adapter.updateItems(items)
     }
 }

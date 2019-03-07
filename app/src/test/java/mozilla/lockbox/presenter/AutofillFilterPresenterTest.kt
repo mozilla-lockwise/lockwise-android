@@ -41,19 +41,21 @@ class AutofillFilterPresenterTest {
 
         val itemSelectionStub = PublishSubject.create<ItemViewModel>()
         var updateItemsArgument: List<ItemViewModel>? = null
-        var updateItemsStatus: Boolean? = null
+        var displayNoEntriesArgument: Boolean? = null
 
         override val onDismiss: Observable<Unit> = onDismissStub
         override val filterTextEntered: Observable<CharSequence> = filterTextEnteredStub
         override val filterText: Consumer<in CharSequence> = TestConsumer(filterTextSetStub)
         override val cancelButtonClicks: Observable<Unit> = cancelButtonStub
-
         override val cancelButtonVisibility: Consumer<in Boolean> = TestConsumer(cancelButtonVisibilityStub)
-
         override val itemSelection: Observable<ItemViewModel> = itemSelectionStub
-        override fun updateItems(items: List<ItemViewModel>, displayNoEntries: Boolean) {
+
+        override fun updateItems(items: List<ItemViewModel>) {
             updateItemsArgument = items
-            updateItemsStatus = displayNoEntries
+        }
+
+        override fun displayNoEntries(enabled: Boolean) {
+            displayNoEntriesArgument = enabled
         }
     }
 
@@ -111,7 +113,7 @@ class AutofillFilterPresenterTest {
         dataStore.listStub.onNext(items)
         view.filterTextEnteredStub.onNext("")
 
-        assertFalse(view.updateItemsStatus!!)
+        assertFalse(view.displayNoEntriesArgument!!)
         assertEquals(emptyList<ItemViewModel>(), view.updateItemsArgument!!)
         view.cancelButtonVisibilityStub.assertValue(false)
     }
@@ -121,7 +123,7 @@ class AutofillFilterPresenterTest {
         dataStore.listStub.onNext(emptyList())
         view.filterTextEnteredStub.onNext("")
 
-        assertTrue(view.updateItemsStatus!!)
+        assertTrue(view.displayNoEntriesArgument!!)
         assertEquals(emptyList<ItemViewModel>(), view.updateItemsArgument!!)
         view.cancelButtonVisibilityStub.assertValue(false)
     }
@@ -131,7 +133,7 @@ class AutofillFilterPresenterTest {
         dataStore.listStub.onNext(items)
         view.filterTextEnteredStub.onNext("cat")
 
-        assertTrue(view.updateItemsStatus!!)
+        assertTrue(view.displayNoEntriesArgument!!)
         assertEquals(listOf(serverPassword1.toViewModel()), view.updateItemsArgument)
         view.cancelButtonVisibilityStub.assertValue(true)
     }
@@ -141,7 +143,7 @@ class AutofillFilterPresenterTest {
         dataStore.listStub.onNext(items)
         view.filterTextEnteredStub.onNext("neo")
 
-        assertTrue(view.updateItemsStatus!!)
+        assertTrue(view.displayNoEntriesArgument!!)
         assertEquals(listOf(serverPassword2.toViewModel()), view.updateItemsArgument)
         view.cancelButtonVisibilityStub.assertValue(true)
     }
@@ -151,7 +153,7 @@ class AutofillFilterPresenterTest {
         dataStore.listStub.onNext(items)
         view.filterTextEnteredStub.onNext("vvvvvvvvvvv")
 
-        assertTrue(view.updateItemsStatus!!)
+        assertTrue(view.displayNoEntriesArgument!!)
         assertEquals(emptyList<ItemViewModel>(), view.updateItemsArgument)
         view.cancelButtonVisibilityStub.assertValue(true)
     }

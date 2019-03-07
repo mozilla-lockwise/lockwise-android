@@ -32,9 +32,9 @@ import mozilla.lockbox.presenter.AutofillFilterView
 
 @ExperimentalCoroutinesApi
 class AutofillFilterFragment : DialogFragment(), AutofillFilterView {
-    val adapter = ItemListAdapter()
-    override val onDismiss: Observable<Unit> = PublishSubject.create<Unit>()
+    val adapter = ItemListAdapter(ItemListAdapterType.AutofillFilter)
 
+    override val onDismiss: Observable<Unit> = PublishSubject.create<Unit>()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         presenter = AutofillFilterPresenter(this)
         val view = inflater.inflate(R.layout.fragment_autofill_filter, container, false)
@@ -66,6 +66,7 @@ class AutofillFilterFragment : DialogFragment(), AutofillFilterView {
 
     override val filterTextEntered: Observable<CharSequence>
         get() = view!!.filterField.textChanges()
+
     override val filterText: Consumer<in CharSequence>
         get() = view!!.filterField.text()
     override val cancelButtonClicks: Observable<Unit>
@@ -75,8 +76,12 @@ class AutofillFilterFragment : DialogFragment(), AutofillFilterView {
     override val itemSelection: Observable<ItemViewModel>
         get() = adapter.itemClicks
 
-    override fun updateItems(items: List<ItemViewModel>, displayNoEntries: Boolean) {
-        adapter.updateItems(items, ItemListAdapterType.AutofillFilter(displayNoEntries))
+    override fun updateItems(items: List<ItemViewModel>) {
+        adapter.updateItems(items)
+    }
+
+    override fun displayNoEntries(enabled: Boolean) {
+        adapter.displayNoEntries(enabled)
     }
 
     override fun onDestroyView() {

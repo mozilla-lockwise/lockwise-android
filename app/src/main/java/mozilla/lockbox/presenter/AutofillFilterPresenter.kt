@@ -26,7 +26,8 @@ interface AutofillFilterView {
     val cancelButtonClicks: Observable<Unit>
     val cancelButtonVisibility: Consumer<in Boolean>
     val itemSelection: Observable<ItemViewModel>
-    fun updateItems(items: List<ItemViewModel>, displayNoEntries: Boolean)
+    fun updateItems(items: List<ItemViewModel>)
+    fun displayNoEntries(enabled: Boolean)
 }
 
 @ExperimentalCoroutinesApi
@@ -43,15 +44,23 @@ class AutofillFilterPresenter(
 
         val itemViewModelList = dataStore.list.mapToItemViewModelList()
 
-        Observables.combineLatest(view.filterTextEntered, itemViewModelList)
-            .filterItemsForText()
-            .map {
-                val displayNoEntries = it.second.isEmpty() || !it.first.isEmpty()
-                val itemList = if (it.first.isEmpty()) emptyList() else it.second
-                Pair(itemList, displayNoEntries)
+        val filteredItems = Observables.combineLatest(view.filterTextEntered, itemViewModelList)
+            .map { pair ->
+                Pair(pair.first, pair.second.filter {
+                    it.title.contains(pair.first, true) ||
+                        it.subtitle.contains(pair.first, true)
+                })
             }
+
+        filteredItems
+            .map { if (it.first.isEmpty()) emptyList() else it.second }
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { view.updateItems(it.first, it.second) }
+            .subscribe(view::updateItems)
+            .addTo(compositeDisposable)
+
+        filteredItems
+            .map { !it.first.isEmpty() || it.second.isEmpty() }
+            .subscribe(view::displayNoEntries)
             .addTo(compositeDisposable)
 
         view.filterTextEntered
@@ -70,21 +79,10 @@ class AutofillFilterPresenter(
             .switchMap { dataStore.get(it.guid) }
             .map {
                 it.value?.let { serverPassword ->
-                    return@map AutofillAction.Complete(serverPassword)
-                }
-
-                AutofillAction.Cancel
+                    AutofillAction.Complete(serverPassword)
+                } ?: AutofillAction.Cancel
             }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
-    }
-
-    private fun Observable<Pair<CharSequence, List<ItemViewModel>>>.filterItemsForText(): Observable<Pair<CharSequence, List<ItemViewModel>>> {
-        return this.map { pair ->
-            Pair(pair.first, pair.second.filter {
-                it.title.contains(pair.first, true) ||
-                    it.subtitle.contains(pair.first, true)
-            })
-        }
     }
 }
