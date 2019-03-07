@@ -15,6 +15,7 @@
               android:paddingEnd="16dp"
               android:paddingTop="6dp"
               android:paddingBottom="7dp"
+              android:background="@color/background_white"
     >
     <TextView
             android:id="@+id/hostname"

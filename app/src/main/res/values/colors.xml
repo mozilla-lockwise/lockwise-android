@@ -18,6 +18,7 @@
     <color name="black_54_percent">#8a000000</color>
     <color name="blue_60_percent">#0060df</color>
     <color name="gray_73_percent">#737373</color>
+    <color name="ghost_white">#f9f9fa</color>
     <color name="dark_gray_background">#4a4a4f</color>
 
     <color name="light_blue_pressed">#cce5f1</color>
