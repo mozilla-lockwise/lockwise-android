@@ -11,13 +11,13 @@ class ParsedStructureBuilder<ViewNode, AutofillId>(
     fun build(): ParsedStructureData<AutofillId> {
         val usernameId = getUsernameId()
         val passwordId = getPasswordId()
-        val interesting = usernameId ?: passwordId
+        val hostnameClue = usernameId ?: passwordId
 
         return navigator.build(
             usernameId,
             passwordId,
-            getWebDomain(interesting),
-            getPackageName(interesting) ?: navigator.activityPackageName
+            getWebDomain(hostnameClue),
+            getPackageName(hostnameClue) ?: navigator.activityPackageName
         )
     }
 

@@ -15,6 +15,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.view.AutofillRootActivity
 
 const val parsedStructureExtra = "parsedStructure"
+const val searchRequiredExtra = "searchRequired"
 
 @ExperimentalCoroutinesApi
 class IntentBuilder {
@@ -28,6 +29,7 @@ class IntentBuilder {
         fun getSearchIntentSender(context: Context, responseBuilder: FillResponseBuilder): IntentSender {
             val intent = Intent(context, AutofillRootActivity::class.java)
             setResponseBuilder(intent, responseBuilder)
+            setSearchRequired(intent)
             return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT).intentSender
         }
 
@@ -43,6 +45,14 @@ class IntentBuilder {
                 ?: throw IllegalStateException("Unable to reconstruct parsedStructure")
 
             return FillResponseBuilder(parsedStructure)
+        }
+
+        fun isSearchRequired(intent: Intent): Boolean {
+            return intent.getBooleanExtra(searchRequiredExtra, false)
+        }
+
+        fun setSearchRequired(intent: Intent, value: Boolean = true) {
+            intent.putExtra(searchRequiredExtra, value)
         }
     }
 }
