@@ -1,5 +1,19 @@
 # Release Notes
 
+## 1.0 (Build 2955)
+
+_Date: 2019-03-08_
+
+Fourth internal Alpha release on Play Store. Changes include:
+
+- more telemetry events (#439)
+- onboarding instructions if no device security set (#438)
+- handling automatic locking if no device security set (#456)
+- automatically launch biometrics prompt when returning from background (#428)
+- improvements to networking warning error (#458)
+- added handling for empty username entries (#451)
+- autofill infrastructure and UI improvements (#470 #471 #474 #475 #487)
+
 ## 1.0 (Build 2599)
 
 _Date: 2019-02-19_
