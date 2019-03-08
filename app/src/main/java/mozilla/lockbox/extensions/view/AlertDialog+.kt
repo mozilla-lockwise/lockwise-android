@@ -8,12 +8,12 @@ package mozilla.lockbox.extensions.view
 
 import android.content.Context
 import android.content.DialogInterface
-import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
 import mozilla.lockbox.R
+import mozilla.lockbox.model.DialogViewModel
 
 enum class AlertState {
     BUTTON_POSITIVE, BUTTON_NEGATIVE
@@ -22,26 +22,22 @@ enum class AlertState {
 object AlertDialogHelper {
     fun showAlertDialog(
         context: Context,
-        @StringRes title: Int? = null,
-        @StringRes message: Int? = null,
-        @StringRes positiveButtonTitle: Int? = null,
-        @StringRes negativeButtonTitle: Int? = null,
-        @ColorRes positiveButtonColor: Int? = null
+        viewModel: DialogViewModel
     ): Observable<AlertState> {
         return Observable.create { emitter ->
             val builder = AlertDialog.Builder(context, R.style.AlertDialogStyle)
 
-            title?.let { builder.setTitle(title) }
-            message?.let { builder.setMessage(message) }
+            viewModel.title?.let { builder.setTitle(it) }
+            viewModel.message?.let { builder.setMessage(it) }
 
-            positiveButtonTitle?.let {
-                builder.setPositiveButton(positiveButtonTitle) { _, _ ->
+            viewModel.positiveButtonTitle?.let {
+                builder.setPositiveButton(it) { _, _ ->
                     emitter.onNext(AlertState.BUTTON_POSITIVE)
                 }
             }
 
-            negativeButtonTitle?.let {
-                builder.setNegativeButton(negativeButtonTitle) { _, _ ->
+            viewModel.negativeButtonTitle?.let {
+                builder.setNegativeButton(it) { _, _ ->
                     emitter.onNext(AlertState.BUTTON_NEGATIVE)
                 }
             }
@@ -52,7 +48,7 @@ object AlertDialogHelper {
 
             dialog.show()
 
-            positiveButtonColor?.let {
+            viewModel.positiveButtonColor?.let {
                 dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(context.getColor(it))
             }
         }

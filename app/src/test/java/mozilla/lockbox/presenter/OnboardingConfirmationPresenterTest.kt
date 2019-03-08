@@ -10,8 +10,8 @@ import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
+import mozilla.lockbox.action.AppWebPageAction
 import mozilla.lockbox.action.OnboardingStatusAction
-import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
@@ -48,6 +48,6 @@ class OnboardingConfirmationPresenterTest {
     fun encryptionClicks() {
         (view.encryptionClicks as Subject).onNext(Unit)
 
-        dispatcherObserver.assertLastValue(RouteAction.AppWebPage.FaqSecurity)
+        dispatcherObserver.assertLastValue(AppWebPageAction.FaqSecurity)
     }
 }

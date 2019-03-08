@@ -12,9 +12,8 @@ import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import mozilla.lockbox.R
 import mozilla.lockbox.flux.Action
-import mozilla.lockbox.support.Constant
 
-sealed class RouteAction(
+open class RouteAction(
     override val eventMethod: TelemetryEventMethod,
     override val eventObject: TelemetryEventObject
 ) : TelemetryAction {
@@ -30,17 +29,13 @@ sealed class RouteAction(
     data class OpenWebsite(val url: String) :
         RouteAction(TelemetryEventMethod.tap, TelemetryEventObject.open_in_browser)
 
+    // This route shouldn't be used on its own. It is a terminator route to ensure that actions
+    // that leave the app do not get replayed once the app becomes foregrounded.
+    // It never flows through the dispatcher, so does not get wrongly recorded by telemetry.
+    object NoFollowOnReturn : RouteAction(TelemetryEventMethod.tap, TelemetryEventObject.back)
+
     data class SystemSetting(val setting: SettingIntent) :
         RouteAction(TelemetryEventMethod.show, TelemetryEventObject.settings_system)
-
-    sealed class Dialog(
-        val positiveButtonAction: Action? = null,
-        val negativeButtonAction: Action? = null
-    ) : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.dialog) {
-        object SecurityDisclaimer : Dialog(RouteAction.SystemSetting(SettingIntent.Security))
-        object UnlinkDisclaimer : Dialog(LifecycleAction.UserReset)
-        object NoNetworkDisclaimer : Dialog()
-    }
 
     sealed class DialogFragment(
         @StringRes val dialogTitle: Int,
@@ -48,55 +43,8 @@ sealed class RouteAction(
     ) : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.dialog) {
         class FingerprintDialog(@StringRes title: Int, @StringRes subtitle: Int? = null) :
             DialogFragment(dialogTitle = title, dialogSubtitle = subtitle)
-    }
 
-    sealed class AppWebPage(
-        val url: String? = null,
-        @StringRes val title: Int? = null,
-        eventObject: TelemetryEventObject
-    ) : RouteAction(TelemetryEventMethod.show, eventObject) {
-
-        object FaqList : AppWebPage(
-            Constant.Faq.topUri,
-            R.string.nav_menu_faq,
-            TelemetryEventObject.settings_faq
-        )
-
-        object FaqWelcome : AppWebPage(
-            Constant.Faq.savedUri,
-            R.string.nav_menu_faq,
-            TelemetryEventObject.settings_faq)
-
-        object FaqSecurity : AppWebPage(
-            Constant.Faq.securityUri,
-            R.string.nav_menu_faq,
-            TelemetryEventObject.settings_faq)
-
-        object FaqSync : AppWebPage(
-            Constant.Faq.syncUri,
-            R.string.nav_menu_faq,
-            TelemetryEventObject.settings_faq)
-
-        object FaqCreate : AppWebPage(
-            Constant.Faq.createUri,
-            R.string.nav_menu_faq,
-            TelemetryEventObject.settings_faq)
-
-        object FaqEdit : AppWebPage(
-            Constant.Faq.editUri,
-            R.string.nav_menu_faq,
-            TelemetryEventObject.settings_faq)
-
-        object Privacy : AppWebPage(
-            Constant.Privacy.uri,
-            R.string.privacy,
-            TelemetryEventObject.settings_faq)
-
-        object SendFeedback : AppWebPage(
-            Constant.SendFeedback.uri,
-            R.string.nav_menu_feedback,
-            TelemetryEventObject.settings_provide_feedback
-        )
+        object AutofillSearchDialog : DialogFragment(R.string.autofill)
     }
 
     sealed class Onboarding(

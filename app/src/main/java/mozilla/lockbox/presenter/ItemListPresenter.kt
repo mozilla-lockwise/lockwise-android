@@ -13,8 +13,9 @@ import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
+import mozilla.lockbox.action.AppWebPageAction
 import mozilla.lockbox.action.DataStoreAction
-import mozilla.lockbox.action.NetworkAction
+import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.action.SettingAction
@@ -44,7 +45,7 @@ interface ItemListView {
     fun updateItemListSort(sort: Setting.ItemListSort)
     fun loading(isLoading: Boolean)
     fun handleNetworkError(networkErrorVisibility: Boolean)
-    val retryNetworkConnectionClicks: Observable<Unit>
+//    val retryNetworkConnectionClicks: Observable<Unit>
     val refreshItemList: Observable<Unit>
     val isRefreshing: Boolean
     fun stopRefreshing()
@@ -110,7 +111,7 @@ class ItemListPresenter(
             .addTo(compositeDisposable)
 
         view.noEntriesClicks
-            .map { RouteAction.AppWebPage.FaqSync }
+            .map { AppWebPageAction.FaqSync }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
 
@@ -122,7 +123,7 @@ class ItemListPresenter(
             .map {
                 if (fingerprintStore.isDeviceSecure)
                     DataStoreAction.Lock
-                else RouteAction.Dialog.SecurityDisclaimer
+                else DialogAction.SecurityDisclaimer
             }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
@@ -157,17 +158,17 @@ class ItemListPresenter(
             .addTo(compositeDisposable)
 
         // TODO: make this more robust to retry loading the correct page again (loadUrl)
-        view.retryNetworkConnectionClicks.subscribe {
-            dispatcher.dispatch(NetworkAction.CheckConnectivity)
-        }?.addTo(compositeDisposable)
+//        view.retryNetworkConnectionClicks.subscribe {
+//            dispatcher.dispatch(NetworkAction.CheckConnectivity)
+//        }?.addTo(compositeDisposable)
     }
 
     private fun onMenuItem(@IdRes item: Int) {
         val action = when (item) {
             R.id.setting_menu_item -> RouteAction.SettingList
             R.id.account_setting_menu_item -> RouteAction.AccountSetting
-            R.id.faq_menu_item -> RouteAction.AppWebPage.FaqList
-            R.id.feedback_menu_item -> RouteAction.AppWebPage.SendFeedback
+            R.id.faq_menu_item -> AppWebPageAction.FaqList
+            R.id.feedback_menu_item -> AppWebPageAction.SendFeedback
             else -> return log.error("Cannot route from item list menu")
         }
         dispatcher.dispatch(action)

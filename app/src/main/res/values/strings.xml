@@ -67,6 +67,8 @@
     <string name="search_description">Search entries</string>
     <!-- This is the placeholder text to visibly describe a text area is to be used to search all the entries seen in the list view -->
     <string name="search_your_entries">search your entries</string>
+    <!-- This is the placeholder text to visibly describe a text area is to be used to search all the entries seen in the list view with the first letter capitalized -->
+    <string name="search_your_entries_cap">Search your entries</string>
     <!-- This is the label used by screenreaders to inform the user the selected button will clear the text currently input in the search area -->
     <string name="search_clear_content_description">Clear search bar text</string>
     <!-- This is shown when a user has entered search terms that have filtered the list of entries to find no results -->
@@ -192,9 +194,9 @@
     <string name="password_for">Password for %1$s</string>
 
     <!-- This is the text displayed on the button of the network availability error message -->
-    <string name="retry">Retry</string>
+    <!--<string name="retry">Retry</string>-->
     <!-- This is the text displayed on the button of the network availability error message -->
-    <string name="retryButton">Retry connect to internet</string>
+    <!--<string name="retryButton">Retry connect to internet</string>-->
     <!-- This label is used by screenreaders to inform the user that their device is not connected to the internet -->
     <string name="networkWarningMessage">Warning: device not connected to the internet.</string>
     <!-- This label is used by screenreaders to inform the user that the message contains an image of a warning icon -->
@@ -241,6 +243,15 @@
     <!-- This description of the app convenience is shown on the final onboarding screen. -->
     <string name="convenience_description">Unlock the app with ease using your fingerprint</string>
 
+    <!-- This is the title of the device security dialog box. -->
+    <string name="secure_your_device">Secure your device.</string>
+    <!-- This is the description explaining the device security requirements. -->
+    <string name="device_security_description">You should use a Pattern, PIN, or Password to lock your phone. Without this, anyone who has your phone can access the information saved here. </string>
+    <!-- This is the skip button description on the device security dialog box. -->
+    <string name="skip_button">Skip</string>
+    <!-- This is the the button description on the device security dialog box which routes to system security settings. -->
+    <string name="set_up_now">Set Up Now</string>
+
     <!-- This header appears above the Privacy page of the mozilla-lockbox website. -->
     <string name="privacy">Privacy</string>
 
@@ -250,5 +261,9 @@
     <string name="autofill_error_no_hostname">Unexpected hostname format</string>
     <!-- This is the prompt when autofill is triggered, Lockbox is unlocked, and no passwords are detected. -->
     <string name="autofill_search_cta">Search Firefox Lockbox</string>
+    <!-- This is the error message when autofill is triggered and Lockbox is in an error state. %s refers to the localized error message -->
+    <string name="autofill_error_toast">Firefox Lockbox encountered an error: %s</string>
 
+    <!-- This is the placeholder text for an empty or null username. -->
+    <string name="no_username">(no username)</string>
 </resources>

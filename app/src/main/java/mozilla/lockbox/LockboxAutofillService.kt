@@ -9,9 +9,9 @@ import android.os.CancellationSignal
 import android.service.autofill.AutofillService
 import android.service.autofill.FillCallback
 import android.service.autofill.FillRequest
+import android.service.autofill.FillResponse
 import android.service.autofill.SaveCallback
 import android.service.autofill.SaveRequest
-import android.view.autofill.AutofillId
 import androidx.annotation.RequiresApi
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.Observables
@@ -19,17 +19,15 @@ import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.autofill.FillResponseBuilder
+import mozilla.lockbox.autofill.ParsedStructure
 import mozilla.lockbox.autofill.ViewNodeNavigator
 import mozilla.lockbox.extensions.dump
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.DataStore
-import mozilla.lockbox.autofill.ParsedStructureData
 import mozilla.lockbox.autofill.ParsedStructureBuilder
 import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.support.PublicSuffixSupport
 import mozilla.lockbox.support.isDebug
-
-typealias ParsedStructure = ParsedStructureData<AutofillId>
 
 @RequiresApi(Build.VERSION_CODES.O)
 @ExperimentalCoroutinesApi
@@ -59,14 +57,14 @@ class LockboxAutofillService(
         }
 
         val nodeNavigator = ViewNodeNavigator(structure, activityPackageName)
-        val parsedStructure = ParsedStructureBuilder(nodeNavigator).build()
+        val parsedStructure = ParsedStructureBuilder(nodeNavigator).build() as ParsedStructure
 
         if (parsedStructure.passwordId == null && parsedStructure.usernameId == null) {
             if (isDebug()) {
                 val xml = structure.getWindowNodeAt(0).rootViewNode.dump()
                 log.debug("Autofilling failed for:\n$xml")
             }
-            callback.onFailure(null)
+            callback.onSuccess(null)
             return
         }
 
@@ -82,21 +80,23 @@ class LockboxAutofillService(
         Observables.combineLatest(dataStore.state, filteredPasswords)
             .take(1)
             .map { latest ->
-                when (latest.first) {
-                    DataStore.State.Locked -> builder.buildAuthenticationFillResponse(this)
-                    DataStore.State.Unlocked -> {
+                val state = latest.first
+                when (state) {
+                    is DataStore.State.Locked -> builder.buildAuthenticationFillResponse(this)
+                    is DataStore.State.Unlocked -> {
                         builder.buildFilteredFillResponse(this, latest.second)
                         ?: builder.buildFallbackFillResponse(this)
                     }
-                    DataStore.State.Unprepared -> null // we might consider onboarding here.
-                    else -> null
+                    is DataStore.State.Unprepared -> null // we might consider onboarding here.
+                    is DataStore.State.Errored -> state.error
                 }.asOptional()
             }
             .subscribe {
-                if (it.value != null) {
-                    callback.onSuccess(it.value)
-                } else {
-                    callback.onFailure(null)
+                val value = it.value
+                when (value) {
+                    is FillResponse -> callback.onSuccess(value)
+                    is Throwable -> callback.onFailure(getString(R.string.autofill_error_toast, value.localizedMessage))
+                    else -> callback.onSuccess(null)
                 }
             }
             .addTo(compositeDisposable)

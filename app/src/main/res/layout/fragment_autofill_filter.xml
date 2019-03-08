@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ This Source Code Form is subject to the terms of the Mozilla Public
+  ~ License, v. 2.0. If a copy of the MPL was not distributed with this
+  ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
+  -->
+
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:paddingTop="32dp"
+        android:paddingBottom="32dp"
+        android:clipToPadding="false">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:background="@android:color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="parent">
+
+        <EditText
+                android:id="@+id/filterField"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginTop="35dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="0dp"
+                android:textColorHint="@color/gray_73_percent"
+                android:lineSpacingExtra="6.5sp"
+                android:textSize="16sp"
+                android:fontFamily="sans-serif"
+                android:textStyle="normal"
+                android:background="@android:color/transparent"
+                android:inputType="textAutoComplete"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/entriesView"
+                android:hint="@string/search_your_entries_cap"
+                tools:ignore="Autofill"/>
+
+        <ImageButton
+                android:id="@+id/cancelButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="16dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_close_black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:visibility="invisible"
+                android:contentDescription="@string/search_clear_content_description"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/entriesView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constrainedHeight="true"
+                app:layout_constraintTop_toBottomOf="@id/filterField"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageView
+            android:id="@+id/iconLockbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="6dp"
+            app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/constraintLayout"
+            app:srcCompat="@drawable/ic_lockbox"
+            tools:ignore="ContentDescription"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

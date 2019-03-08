@@ -28,8 +28,8 @@ import mozilla.components.service.fxa.FxaException
 import mozilla.components.service.fxa.Profile
 import mozilla.lockbox.action.AccountAction
 import mozilla.lockbox.action.DataStoreAction
+import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.LifecycleAction
-import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.log
@@ -120,7 +120,7 @@ open class AccountStore(
                 try {
                     this.fxa = FirefoxAccount.fromJSONString(accountJSON)
                 } catch (e: FxaException) {
-                    dispatcher.dispatch(RouteAction.Dialog.NoNetworkDisclaimer)
+                    dispatcher.dispatch(DialogAction.NoNetworkDisclaimer)
                 }
                 generateLoginURL()
                 populateAccountInformation(false)
@@ -219,6 +219,6 @@ open class AccountStore(
     }
 
     private fun pushError(it: Throwable) {
-        dispatcher.dispatch(RouteAction.Dialog.NoNetworkDisclaimer)
+        dispatcher.dispatch(DialogAction.NoNetworkDisclaimer)
     }
 }

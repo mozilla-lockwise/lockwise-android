@@ -13,7 +13,9 @@
         android:theme="@style/NoConnectivityWarning"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        xmlns:tools="http://schemas.android.com/tools">
+        android:visibility="gone"
+        xmlns:tools="http://schemas.android.com/tools"
+>
 
         <ImageView
                 android:layout_width="wrap_content"
@@ -32,7 +34,7 @@
                 android:id="@+id/warningMessage"
                 android:contentDescription="@string/networkWarningMessage"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:background="@color/gray_73_percent"
                 android:letterSpacing="0.01"
                 android:layout_marginStart="4dp"
@@ -41,24 +43,23 @@
                 android:textStyle="normal"
                 android:textColor="@color/text_white"
                 android:lineSpacingExtra="6.5sp"
+                android:padding="10dp"
                 tools:text="@string/no_internet_connection"
                 app:layout_constraintStart_toEndOf="@id/warningIcon"
-                app:layout_constraintTop_toTopOf="@id/warningIcon"
-                app:layout_constraintBottom_toBottomOf="@id/warningIcon"
                 tools:ignore="SelectableText" />
-        <Button
-                android:id="@+id/retryButton"
-                android:contentDescription="@string/retryButton"
-                android:layout_width="40dp"
-                android:layout_height="wrap_content"
-                android:text="@string/retry"
-                android:textAllCaps="false"
-                android:background="@android:color/transparent"
-                android:textSize="13sp"
-                android:fontFamily="sans-serif"
-                android:textStyle="bold"
-                android:textColor="@color/text_white"
-                android:lineSpacingExtra="6.5sp"
-                app:layout_constraintEnd_toEndOf="parent" />
+        <!--<Button-->
+                <!--android:id="@+id/retryButton"-->
+                <!--android:contentDescription="@string/retryButton"-->
+                <!--android:layout_width="40dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/retry"-->
+                <!--android:textAllCaps="false"-->
+                <!--android:background="@android:color/transparent"-->
+                <!--android:textSize="13sp"-->
+                <!--android:fontFamily="sans-serif"-->
+                <!--android:textStyle="bold"-->
+                <!--android:textColor="@color/text_white"-->
+                <!--android:lineSpacingExtra="6.5sp"-->
+                <!--app:layout_constraintEnd_toEndOf="parent" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

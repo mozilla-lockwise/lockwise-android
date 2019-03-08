@@ -21,13 +21,13 @@ import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
 @Config(application = TestApplication::class)
-class AppWebPagePresenterTest {
+class AppWebPageActionPresenterTest {
 
     class WebPageViewFake : WebPageView {
 
-        val retryButtonStub = PublishSubject.create<Unit>()
-        override val retryNetworkConnectionClicks: Observable<Unit>
-            get() = retryButtonStub
+//        val retryButtonStub = PublishSubject.create<Unit>()
+//        override val retryNetworkConnectionClicks: Observable<Unit>
+//            get() = retryButtonStub
 
         var networkAvailable = PublishSubject.create<Boolean>()
         override fun handleNetworkError(networkErrorVisibility: Boolean) {

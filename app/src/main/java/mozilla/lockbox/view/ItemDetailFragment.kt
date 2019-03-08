@@ -21,7 +21,6 @@ import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
 import kotlinx.android.synthetic.main.fragment_item_detail.*
 import kotlinx.android.synthetic.main.fragment_item_detail.view.*
-import kotlinx.android.synthetic.main.fragment_warning.view.*
 import kotlinx.android.synthetic.main.include_backable.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
@@ -32,9 +31,6 @@ import mozilla.lockbox.support.assertOnUiThread
 
 @ExperimentalCoroutinesApi
 class ItemDetailFragment : BackableFragment(), ItemDetailView {
-
-    private val errorHelper = NetworkErrorHelper()
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -48,6 +44,8 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         presenter = ItemDetailPresenter(this, itemId)
         return inflater.inflate(R.layout.fragment_item_detail, container, false)
     }
+
+    private val errorHelper = NetworkErrorHelper()
 
     override val usernameCopyClicks: Observable<Unit>
         get() = view!!.inputUsername.clicks()
@@ -90,8 +88,17 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         inputLayoutPassword.isHintAnimationEnabled = false
 
         inputUsername.readOnly = true
-        inputUsername.isClickable = true
-        inputUsername.isFocusable = true
+
+        if (!item.hasUsername) {
+            inputUsername.btnUsernameCopy.setColorFilter(resources.getColor(R.color.white_60_percent))
+            inputUsername.isClickable = false
+            inputUsername.isFocusable = false
+            inputUsername.setText(R.string.empty_space, TextView.BufferType.NORMAL)
+        } else {
+            inputUsername.isClickable = true
+            inputUsername.isFocusable = true
+            inputUsername.setText(item.username, TextView.BufferType.NORMAL)
+        }
 
         inputPassword.readOnly = true
         inputPassword.isClickable = true
@@ -104,7 +111,6 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         btnHostnameLaunch.isClickable = false
 
         inputHostname.setText(item.hostname, TextView.BufferType.NORMAL)
-        inputUsername.setText(item.username, TextView.BufferType.NORMAL)
         inputPassword.setText(item.password, TextView.BufferType.NORMAL)
 
         // effect password visibility state
@@ -130,8 +136,8 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         }
     }
 
-    override val retryNetworkConnectionClicks: Observable<Unit>
-        get() = view!!.networkWarning.retryButton.clicks()
+//    override val retryNetworkConnectionClicks: Observable<Unit>
+//        get() = view!!.networkWarning.retryButton.clicks()
 }
 
 var EditText.readOnly: Boolean

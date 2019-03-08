@@ -13,9 +13,10 @@ import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.R
+import mozilla.lockbox.action.AppWebPageAction
 import mozilla.lockbox.action.ClipboardAction
 import mozilla.lockbox.action.DataStoreAction
-import mozilla.lockbox.action.NetworkAction
+import mozilla.lockbox.action.ItemDetailAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.extensions.toDetailViewModel
@@ -23,6 +24,7 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.store.DataStore
+import mozilla.lockbox.store.ItemDetailStore
 import mozilla.lockbox.store.NetworkStore
 
 interface ItemDetailView {
@@ -34,9 +36,8 @@ interface ItemDetailView {
     var isPasswordVisible: Boolean
     fun updateItem(item: ItemDetailViewModel)
     fun showToastNotification(@StringRes strId: Int)
-
-    val retryNetworkConnectionClicks: Observable<Unit>
     fun handleNetworkError(networkErrorVisibility: Boolean)
+    //    val retryNetworkConnectionClicks: Observable<Unit>
 }
 
 @ExperimentalCoroutinesApi
@@ -45,16 +46,16 @@ class ItemDetailPresenter(
     val itemId: String?,
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val networkStore: NetworkStore = NetworkStore.shared,
-    private val dataStore: DataStore = DataStore.shared
+    private val dataStore: DataStore = DataStore.shared,
+    private val itemDetailStore: ItemDetailStore = ItemDetailStore.shared
 ) : Presenter() {
 
     private var credentials: ServerPassword? = null
 
     override fun onViewReady() {
         handleClicks(view.usernameCopyClicks) {
-            val username = it.username ?: ""
-            if (username.isNotEmpty()) {
-                dispatcher.dispatch(ClipboardAction.CopyUsername(username))
+            if (!it.username.isNullOrBlank()) {
+                dispatcher.dispatch(ClipboardAction.CopyUsername(it.username.toString()))
                 dispatcher.dispatch(DataStoreAction.Touch(it.id))
                 view.showToastNotification(R.string.toast_username_copied)
             }
@@ -75,14 +76,12 @@ class ItemDetailPresenter(
         }
 
         this.view.learnMoreClicks
-            .map { RouteAction.AppWebPage.FaqEdit }
+            .map { AppWebPageAction.FaqEdit }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
 
         this.view.togglePasswordClicks
-            .subscribe {
-                view.isPasswordVisible = view.isPasswordVisible.not()
-            }
+            .subscribe { dispatcher.dispatch(ItemDetailAction.TogglePassword(view.isPasswordVisible.not())) }
             .addTo(compositeDisposable)
 
         view.isPasswordVisible = false
@@ -102,15 +101,19 @@ class ItemDetailPresenter(
             .subscribe(view::handleNetworkError)
             .addTo(compositeDisposable)
 
-        view.retryNetworkConnectionClicks.subscribe {
-            dispatcher.dispatch(NetworkAction.CheckConnectivity)
-        }?.addTo(compositeDisposable)
+        itemDetailStore.isPasswordVisible
+            .subscribe { view.isPasswordVisible = it }
+            .addTo(compositeDisposable)
+
+//        view.retryNetworkConnectionClicks.subscribe {
+//            dispatcher.dispatch(NetworkAction.CheckConnectivity)
+//        }?.addTo(compositeDisposable)
     }
 
     private fun handleClicks(clicks: Observable<Unit>, withServerPassword: (ServerPassword) -> Unit) {
         clicks.subscribe {
-            this.credentials?.let { password -> withServerPassword(password) }
-        }
+                this.credentials?.let { password -> withServerPassword(password) }
+            }
             .addTo(compositeDisposable)
     }
 }

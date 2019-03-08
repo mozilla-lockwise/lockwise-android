@@ -12,6 +12,7 @@ import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import mozilla.lockbox.action.AppWebPageAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.mapToItemViewModelList
 import mozilla.lockbox.flux.Dispatcher
@@ -46,7 +47,7 @@ class FilterPresenter(
                 .addTo(compositeDisposable)
 
         view.noMatchingClicks
-            .map { RouteAction.AppWebPage.FaqCreate }
+            .map { AppWebPageAction.FaqCreate }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
 

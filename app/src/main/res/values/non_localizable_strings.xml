@@ -10,6 +10,8 @@
     <string name="default_avatar_url"  translatable="false">https://firefoxusercontent.com/00000000000000000000000000000000</string>
     <!--suppress CheckTagEmptyBody -->
     <string name="empty_string"></string>
+    <!-- Unicode character for an empty space -->
+    <string name="empty_space">\u0020</string>
     <string name="firefox_account" translatable="false">Firefox Account</string>
     <string name="telemetry_server_endpoint" translatable="false">https://incoming.telemetry.mozilla.org</string>
 </resources>

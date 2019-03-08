@@ -12,6 +12,7 @@ import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.TestConsumer
+import mozilla.lockbox.action.AppWebPageAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.toViewModel
 import mozilla.lockbox.flux.Action
@@ -150,6 +151,6 @@ class FilterPresenterTest {
     fun noMatchingClicks() {
         view.noMatchingClickStub.onNext(Unit)
 
-        dispatcherObserver.assertValue(RouteAction.AppWebPage.FaqCreate)
+        dispatcherObserver.assertValue(AppWebPageAction.FaqCreate)
     }
 }

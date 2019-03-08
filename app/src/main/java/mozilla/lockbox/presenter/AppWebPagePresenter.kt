@@ -6,17 +6,15 @@
 
 package mozilla.lockbox.presenter
 
-import io.reactivex.Observable
 import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.addTo
-import mozilla.lockbox.action.NetworkAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.store.NetworkStore
 
 interface WebPageView {
     var webViewObserver: Consumer<String>?
-    val retryNetworkConnectionClicks: Observable<Unit>
+//    val retryNetworkConnectionClicks: Observable<Unit>
     fun handleNetworkError(networkErrorVisibility: Boolean)
     fun loadURL(url: String)
 }
@@ -33,9 +31,9 @@ class AppWebPagePresenter(
             .subscribe(view::handleNetworkError)
             .addTo(compositeDisposable)
 
-        view.retryNetworkConnectionClicks.subscribe {
-            dispatcher.dispatch(NetworkAction.CheckConnectivity)
-        }?.addTo(compositeDisposable)
+//        view.retryNetworkConnectionClicks.subscribe {
+//            dispatcher.dispatch(NetworkAction.CheckConnectivity)
+//        }?.addTo(compositeDisposable)
 
         view.loadURL(url!!)
     }
