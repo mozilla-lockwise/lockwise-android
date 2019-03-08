@@ -34,12 +34,12 @@ import io.reactivex.subjects.PublishSubject
 import jp.wasabeef.picasso.transformations.CropCircleTransformation
 import kotlinx.android.synthetic.main.fragment_item_list.*
 import kotlinx.android.synthetic.main.fragment_item_list.view.*
-import kotlinx.android.synthetic.main.fragment_warning.view.*
 import kotlinx.android.synthetic.main.nav_header.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.adapter.ItemListAdapter
+import mozilla.lockbox.adapter.ItemListAdapterType
 import mozilla.lockbox.adapter.SortItemAdapter
 import mozilla.lockbox.model.AccountViewModel
 import mozilla.lockbox.model.ItemViewModel
@@ -50,7 +50,7 @@ import mozilla.lockbox.support.showAndRemove
 @ExperimentalCoroutinesApi
 class ItemListFragment : Fragment(), ItemListView {
     private val compositeDisposable = CompositeDisposable()
-    private val adapter = ItemListAdapter()
+    private val adapter = ItemListAdapter(ItemListAdapterType.ItemList)
     private val errorHelper = NetworkErrorHelper()
 
     private lateinit var spinner: Spinner

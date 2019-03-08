@@ -67,6 +67,8 @@
     <string name="search_description">Search entries</string>
     <!-- This is the placeholder text to visibly describe a text area is to be used to search all the entries seen in the list view -->
     <string name="search_your_entries">search your entries</string>
+    <!-- This is the placeholder text to visibly describe a text area is to be used to search all the entries seen in the list view with the first letter capitalized -->
+    <string name="search_your_entries_cap">Search your entries</string>
     <!-- This is the label used by screenreaders to inform the user the selected button will clear the text currently input in the search area -->
     <string name="search_clear_content_description">Clear search bar text</string>
     <!-- This is shown when a user has entered search terms that have filtered the list of entries to find no results -->
