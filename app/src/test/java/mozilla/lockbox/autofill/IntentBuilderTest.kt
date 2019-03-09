@@ -10,6 +10,8 @@ import android.content.Intent
 import android.view.autofill.AutofillId
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.mock
@@ -37,6 +39,13 @@ class IntentBuilderTest {
         IntentBuilder.getAuthIntentSender(context, fillResponseBuilder)
 
         // don't know a meaningful way to test the sender / intents
+        val intent = Intent()
+
+        IntentBuilder.setResponseBuilder(intent, fillResponseBuilder)
+        IntentBuilder.setSearchRequired(intent)
+
+        assertEquals(fillResponseBuilder, IntentBuilder.getResponseBuilder(intent))
+        assertTrue(IntentBuilder.isSearchRequired(intent))
     }
 
     @Test
@@ -44,5 +53,6 @@ class IntentBuilderTest {
         val intent = Intent()
         IntentBuilder.setResponseBuilder(intent, fillResponseBuilder)
         assertEquals(fillResponseBuilder, IntentBuilder.getResponseBuilder(intent))
+        assertFalse(IntentBuilder.isSearchRequired(intent))
     }
 }

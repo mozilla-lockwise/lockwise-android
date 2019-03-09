@@ -12,6 +12,7 @@ plugins {
     id 'kotlin-android'
     id 'io.sentry.android.gradle'
     id 'org.mozilla.appservices'
+    id 'jacoco'
 }
 
 android {
@@ -82,7 +83,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0-alpha03'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.google.android.material:material:1.1.0-alpha04'
-    implementation 'androidx.recyclerview:recyclerview:1.1.0-alpha02'
+    implementation "androidx.recyclerview:recyclerview:$recyclerview_version"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.exifinterface:exifinterface:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha3'
@@ -102,9 +103,8 @@ dependencies {
     implementation "org.mozilla.components:lib-fetch-httpurlconnection:${rootProject.ext.android_components_version}"
     implementation "org.mozilla.components:lib-publicsuffixlist:${rootProject.ext.android_components_version}"
     implementation 'io.sentry:sentry-android:1.7.14'
-    implementation 'com.github.magiepooh:recycler-itemdecoration:1.1.1@aar'
-    implementation 'com.squareup.picasso:picasso:2.71828'
-    implementation 'jp.wasabeef:picasso-transformations:2.2.1'
+    implementation "com.squareup.picasso:picasso:$picasso_version"
+    implementation project(":thirdparty")
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutine_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutine_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:$coroutine_version"
@@ -189,6 +189,44 @@ configurations.all { config ->
         config.resolutionStrategy.eachDependency { details ->
             if (details.requested.group == 'com.squareup.leakcanary' && details.requested.name == 'leakcanary-android') {
                 details.useTarget(group: details.requested.group, name: 'leakcanary-android-no-op', version: details.requested.version)
+            }
+        }
+    }
+}
+
+// Set up jacoco for code coverage.
+if (project.hasProperty("coverage")) {
+    tasks.withType(Test) {
+        jacoco.includeNoLocationClasses = true
+    }
+    android.applicationVariants.all { variant ->
+        // We dynamically generate our jacoco tasks to avoid creating too many build variants,
+        // which takes up space in AS despite not being run by most users and it can accidentally
+        // be run during CI with commands like `./gradlew test`, taking up more build time.
+        task "jacoco${variant.name.capitalize()}TestReport"(type: JacocoReport,
+                dependsOn: ["test${variant.name.capitalize()}UnitTest"]) {
+            reports {
+                html.enabled true
+                xml.enabled true
+            }
+            def fileFilter = ['**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*',
+                              '**/*Test*.*', 'android/**/*.*', '**/*$[0-9].*']
+            def kotlinTree = fileTree(dir: "$project.buildDir/tmp/kotlin-classes/${variant.name}", excludes: fileFilter)
+            def javaTree = fileTree(dir: "$project.buildDir/intermediates/classes/${variant.flavorName}/${variant.buildType.name}",
+                    excludes: fileFilter)
+            def mainSrc = "$project.projectDir/src/main/java"
+            sourceDirectories = files([mainSrc])
+            classDirectories = files([kotlinTree, javaTree])
+            executionData = fileTree(dir: project.buildDir, includes: [
+                    "jacoco/test${variant.name.capitalize()}UnitTest.exec", 'outputs/code-coverage/connected/*coverage.ec'
+            ])
+        }
+    }
+    android {
+        buildTypes {
+            debug {
+                testCoverageEnabled true
+                applicationIdSuffix ".coverage"
             }
         }
     }

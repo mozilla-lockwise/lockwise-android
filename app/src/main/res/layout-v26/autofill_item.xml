@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ This Source Code Form is subject to the terms of the Mozilla Public
+  ~ License, v. 2.0. If a copy of the MPL was not distributed with this
+  ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="225dp"
+              android:layout_height="56dp"
+              android:layout_gravity="start"
+              android:orientation="vertical"
+              android:paddingStart="16dp"
+              android:paddingEnd="16dp"
+              android:paddingTop="6dp"
+              android:paddingBottom="7dp"
+              android:background="@color/background_white"
+    >
+    <TextView
+            android:id="@+id/hostname"
+            android:layout_gravity="start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:textSize="16sp"
+            android:fontFamily="sans-serif"
+            android:textStyle="normal"
+            android:textColor="@color/black_87_percent"
+            android:letterSpacing="0.01"
+            android:lineSpacingExtra="8sp"
+            tools:text="twitter.com"
+            />
+    <TextView
+            android:id="@+id/autofillValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:background="@android:color/transparent"
+            android:textSize="14sp"
+            android:fontFamily="sans-serif"
+            android:textStyle="normal"
+            android:textColor="@color/black_60_percent"
+            android:letterSpacing="0.02"
+            android:lineSpacingExtra="6sp"
+            tools:text="asadotzler"
+    />
+</LinearLayout>
