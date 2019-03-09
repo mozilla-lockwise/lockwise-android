@@ -2,6 +2,7 @@ package mozilla.lockbox.autofill
 
 import android.annotation.TargetApi
 import android.content.Context
+import android.content.IntentSender
 import android.os.Build
 import android.service.autofill.Dataset
 import android.service.autofill.FillResponse
@@ -12,6 +13,7 @@ import io.reactivex.Observable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.R
+import mozilla.lockbox.model.titleFromHostname
 import mozilla.lockbox.support.PublicSuffixSupport
 import mozilla.lockbox.support.filter
 
@@ -23,13 +25,11 @@ open class FillResponseBuilder(
     fun buildAuthenticationFillResponse(context: Context): FillResponse {
         val responseBuilder = FillResponse.Builder()
 
-        val authPresentation = RemoteViews(context.packageName, R.layout.autofill_item).apply {
-            val callToAction = context.resources.getString(R.string.autofill_authenticate_cta)
-            setTextViewText(R.id.presentationText, callToAction)
-        }
+        val presentation = RemoteViews(context.packageName, R.layout.autofill_cta_presentation)
+        presentation.setTextViewText(R.id.autofill_cta, context.getString(R.string.autofill_authenticate_cta))
 
         val sender = IntentBuilder.getAuthIntentSender(context, this)
-        responseBuilder.setAuthentication(autofillIds(), sender, authPresentation)
+        responseBuilder.setAuthentication(autofillIds(), sender, presentation)
 
         return responseBuilder.build()
     }
@@ -44,22 +44,26 @@ open class FillResponseBuilder(
     fun buildFallbackFillResponse(context: Context): FillResponse? {
         // See https://github.com/mozilla-lockbox/lockbox-android/issues/421
         val builder = FillResponse.Builder()
-        addSearchFallback(context, builder)
+        addSearchFallback(context) { sender, presentation ->
+            builder.setAuthentication(autofillIds(), sender, presentation)
+        }
         return builder.build()
     }
 
-    private fun addSearchFallback(context: Context, builder: FillResponse.Builder) {
-        val searchPresentation = RemoteViews(context.packageName, R.layout.autofill_item).apply {
-            val callToAction = context.resources.getString(R.string.autofill_search_cta)
-            setTextViewText(R.id.presentationText, callToAction)
+    private fun addSearchFallback(
+        context: Context,
+        presentationAdder: (IntentSender, RemoteViews) -> Unit
+    ) {
+        val presentation = RemoteViews(context.packageName, R.layout.autofill_cta_presentation).apply {
+            setTextViewText(R.id.autofill_cta, context.getString(R.string.autofill_search_cta))
         }
+
         // See https://github.com/mozilla-lockbox/lockbox-android/issues/421
         val sender = IntentBuilder.getSearchIntentSender(context, this)
-        builder.setAuthentication(autofillIds(), sender, searchPresentation)
+        presentationAdder(sender, presentation)
     }
 
     open fun buildFilteredFillResponse(context: Context, filteredPasswords: List<ServerPassword>): FillResponse? {
-
         if (filteredPasswords.isEmpty()) {
             return null
         }
@@ -68,9 +72,20 @@ open class FillResponseBuilder(
 
         filteredPasswords
             .map { serverPasswordToDataset(context, it) }
-            .forEach { builder.addDataset(it) }
+            .map(builder::addDataset)
 
         // no clickable footer is possible.
+        addSearchFallback(context) { sender, presentation ->
+            val datasetBuilder = Dataset.Builder()
+
+            autofillIds().forEach { id ->
+                datasetBuilder.setValue(id, null, presentation)
+            }
+
+            datasetBuilder.setAuthentication(sender)
+
+            builder.addDataset(datasetBuilder.build())
+        }
 
         return builder.build()
     }
@@ -80,22 +95,35 @@ open class FillResponseBuilder(
         credential: ServerPassword
     ): Dataset {
         val datasetBuilder = Dataset.Builder()
-        val usernamePresentation = RemoteViews(context.packageName, mozilla.lockbox.R.layout.autofill_item)
-        val passwordPresentation = RemoteViews(context.packageName, mozilla.lockbox.R.layout.autofill_item)
-        usernamePresentation.setTextViewText(mozilla.lockbox.R.id.presentationText, credential.username)
-        passwordPresentation.setTextViewText(
-            mozilla.lockbox.R.id.presentationText,
-            context.getString(mozilla.lockbox.R.string.password_for, credential.username)
-        )
+
+        val title = titleFromHostname(credential.hostname)
 
         parsedStructure.usernameId?.let {
-            datasetBuilder.setValue(it,
-                AutofillValue.forText(credential.username), usernamePresentation)
+            val presentation = RemoteViews(context.packageName, R.layout.autofill_item)
+                .apply {
+                    setTextViewText(R.id.autofillValue, credential.username)
+                    setTextViewText(R.id.hostname, title)
+                }
+
+            datasetBuilder.setValue(
+                it,
+                AutofillValue.forText(credential.username),
+                presentation
+            )
         }
 
         parsedStructure.passwordId?.let {
-            datasetBuilder.setValue(it,
-                AutofillValue.forText(credential.password), passwordPresentation)
+            val presentation = RemoteViews(context.packageName, R.layout.autofill_item)
+                .apply {
+                    setTextViewText(R.id.autofillValue, context.getString(R.string.password_for, credential.username))
+                    setTextViewText(R.id.hostname, title)
+                }
+
+            datasetBuilder.setValue(
+                it,
+                AutofillValue.forText(credential.password),
+                presentation
+            )
         }
 
         return datasetBuilder.build()

@@ -30,6 +30,7 @@ import mozilla.lockbox.R
 import mozilla.lockbox.action.AutofillAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.autofill.FillResponseBuilder
+import mozilla.lockbox.autofill.IntentBuilder
 import mozilla.lockbox.autofill.ParsedStructure
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.flux.Action
@@ -90,6 +91,8 @@ class AutofillRoutePresenterTest {
 
     @Mock
     val intent: Intent = PowerMockito.mock(Intent::class.java)
+
+    val callingIntent = Intent()
 
     class FakeResponseBuilder : FillResponseBuilder(ParsedStructure(packageName = "meow")) {
         @Mock
@@ -176,6 +179,8 @@ class AutofillRoutePresenterTest {
         PowerMockito.whenNew(Intent::class.java).withNoArguments()
             .thenReturn(intent)
 
+        IntentBuilder.setSearchRequired(intent, true)
+        whenCalled(activity.intent).thenReturn(callingIntent)
         whenCalled(activity.supportFragmentManager).thenReturn(fragmentManager)
         whenCalled(navDestination.id).thenReturn(R.id.fragment_null)
         whenCalled(navController.currentDestination).thenReturn(navDestination)

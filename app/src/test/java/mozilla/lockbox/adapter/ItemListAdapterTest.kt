@@ -13,7 +13,6 @@ import io.reactivex.observers.TestObserver
 import kotlinx.android.synthetic.main.list_cell_item.*
 import kotlinx.android.synthetic.main.list_cell_no_entries.view.*
 import kotlinx.android.synthetic.main.list_cell_no_matching.view.*
-import kotlinx.android.synthetic.main.list_cell_setting_toggle.*
 import mozilla.lockbox.R
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.model.ItemViewModel
@@ -34,7 +33,7 @@ class ItemListAdapterTest {
     val noEntriesObserver = TestObserver.create<Unit>()
     val noMatchingObserver = TestObserver.create<Unit>()
 
-    val subject = ItemListAdapter()
+    lateinit var subject: ItemListAdapter
     private lateinit var context: Context
     private lateinit var parent: RecyclerView
 
@@ -50,15 +49,11 @@ class ItemListAdapterTest {
         context = RuntimeEnvironment.application
         parent = RecyclerView(context)
         parent.layoutManager = LinearLayoutManager(context)
-        subject.itemClicks.subscribe(itemObserver)
-        subject.noEntriesClicks.subscribe(noEntriesObserver)
-        subject.noMatchingEntriesClicks.subscribe(noMatchingObserver)
-
-        subject.updateItems(list)
     }
 
     @Test
     fun onBindViewHolder_mapEmptyUsernameToPlaceholder() {
+        setupSubject(ItemListAdapterType.ItemList)
         val viewHolder = subject.onCreateViewHolder(parent, 0) as ItemViewHolder
 
         subject.onBindViewHolder(viewHolder, 3)
@@ -67,6 +62,7 @@ class ItemListAdapterTest {
 
     @Test
     fun onBindViewHolder_populatedList() {
+        setupSubject(ItemListAdapterType.ItemList)
         val viewHolder = subject.onCreateViewHolder(parent, 0) as ItemViewHolder
 
         subject.onBindViewHolder(viewHolder, 1)
@@ -75,7 +71,8 @@ class ItemListAdapterTest {
     }
 
     @Test
-    fun onBindViewHolder_emptyList() {
+    fun onBindViewHolder_emptyEntriesList() {
+        setupSubject(ItemListAdapterType.ItemList)
         subject.updateItems(emptyList())
         val viewHolder = subject.onCreateViewHolder(parent, 2)
 
@@ -84,7 +81,28 @@ class ItemListAdapterTest {
 
     @Test
     fun onBindViewHolder_emptyFilteringList() {
-        subject.updateItems(emptyList(), true)
+        setupSubject(ItemListAdapterType.Filter)
+        subject.updateItems(emptyList())
+        val viewHolder = subject.onCreateViewHolder(parent, 1)
+
+        subject.onBindViewHolder(viewHolder, 0)
+    }
+
+    @Test
+    fun onBindViewHolder_emptyAutofillFilteringListWithText() {
+        setupSubject(ItemListAdapterType.AutofillFilter)
+        subject.displayNoEntries(true)
+        subject.updateItems(emptyList())
+        val viewHolder = subject.onCreateViewHolder(parent, 1)
+
+        subject.onBindViewHolder(viewHolder, 0)
+    }
+
+    @Test
+    fun onBindViewHolder_emptyAutofillFilteringListWithoutText() {
+        setupSubject(ItemListAdapterType.AutofillFilter)
+        subject.updateItems(emptyList())
+        subject.displayNoEntries(false)
         val viewHolder = subject.onCreateViewHolder(parent, 1)
 
         subject.onBindViewHolder(viewHolder, 0)
@@ -92,6 +110,7 @@ class ItemListAdapterTest {
 
     @Test
     fun onBindViewHolder_populatedList_clicks() {
+        setupSubject(ItemListAdapterType.ItemList)
         val viewHolder = subject.onCreateViewHolder(parent, 0) as ItemViewHolder
         val indexOfItem = 1
         val expectedItemViewModel = list[indexOfItem]
@@ -107,6 +126,7 @@ class ItemListAdapterTest {
 
     @Test
     fun onBindViewHolder_emptyList_clicks() {
+        setupSubject(ItemListAdapterType.ItemList)
         subject.updateItems(emptyList())
         val viewHolder = subject.onCreateViewHolder(parent, 2)
 
@@ -119,7 +139,8 @@ class ItemListAdapterTest {
 
     @Test
     fun onBindViewHolder_emptyFilteringList_clicks() {
-        subject.updateItems(emptyList(), true)
+        setupSubject(ItemListAdapterType.Filter)
+        subject.updateItems(emptyList())
         val viewHolder = subject.onCreateViewHolder(parent, 1)
 
         subject.onBindViewHolder(viewHolder, 0)
@@ -131,25 +152,77 @@ class ItemListAdapterTest {
 
     @Test
     fun getItemCount() {
+        setupSubject(ItemListAdapterType.ItemList)
         Assert.assertEquals(4, subject.itemCount)
     }
 
     @Test
+    fun `getItemCount for empty itemlists`() {
+        setupSubject(ItemListAdapterType.ItemList)
+        subject.updateItems(emptyList())
+        Assert.assertEquals(1, subject.itemCount)
+    }
+
+    @Test
+    fun `getItemCount for empty filtering lists`() {
+        setupSubject(ItemListAdapterType.Filter)
+        subject.updateItems(emptyList())
+        Assert.assertEquals(1, subject.itemCount)
+    }
+
+    @Test
+    fun `getItemCount for empty autofill filtering lists with no text entered`() {
+        setupSubject(ItemListAdapterType.AutofillFilter)
+        subject.displayNoEntries(false)
+        subject.updateItems(emptyList())
+        Assert.assertEquals(0, subject.itemCount)
+    }
+
+    @Test
+    fun `getItemCount for empty autofill filtering lists with text entered`() {
+        setupSubject(ItemListAdapterType.AutofillFilter)
+        subject.displayNoEntries(true)
+        subject.updateItems(emptyList())
+        Assert.assertEquals(1, subject.itemCount)
+    }
+
+    @Test
     fun getItemViewType_populatedList() {
+        setupSubject(ItemListAdapterType.ItemList)
         Assert.assertEquals(subject.getItemViewType(0), 0)
     }
 
     @Test
     fun getItemViewType_emptyFilteringList() {
-        subject.updateItems(emptyList(), true)
+        setupSubject(ItemListAdapterType.Filter)
+        subject.updateItems(emptyList())
 
         Assert.assertEquals(subject.getItemViewType(0), 1)
     }
 
     @Test
     fun getItemViewType_emptyList() {
+        setupSubject(ItemListAdapterType.ItemList)
         subject.updateItems(emptyList())
 
         Assert.assertEquals(subject.getItemViewType(0), 2)
+    }
+
+    @Test
+    fun `getItemViewType empty autofill filtering list with text entered`() {
+        setupSubject(ItemListAdapterType.AutofillFilter)
+        subject.updateItems(emptyList())
+        subject.displayNoEntries(true)
+
+        Assert.assertEquals(subject.getItemViewType(0), 3)
+    }
+
+    private fun setupSubject(type: ItemListAdapterType) {
+        subject = ItemListAdapter(type)
+        subject.itemClicks.subscribe(itemObserver)
+        subject.noEntriesClicks.subscribe(noEntriesObserver)
+        subject.noMatchingEntriesClicks.subscribe(noMatchingObserver)
+
+        subject.updateItems(list)
     }
 }

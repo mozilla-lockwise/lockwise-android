@@ -11,6 +11,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -19,6 +20,7 @@ import mozilla.lockbox.R
 import mozilla.lockbox.action.AutofillAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.autofill.FillResponseBuilder
+import mozilla.lockbox.autofill.IntentBuilder
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
@@ -57,9 +59,16 @@ class AutofillRoutePresenter(
 
         dataStore.state
             .filter { it == DataStore.State.Unlocked }
-            // need to account for mismatch between `Unlocked` and the list being "ready"
-            // see https://github.com/mozilla-lockbox/lockbox-android/issues/464
-            .switchMap { responseBuilder.asyncFilter(pslSupport, dataStore.list.take(1)) }
+            .switchMap {
+                if (!IntentBuilder.isSearchRequired(activity.intent)) {
+                    // need to account for mismatch between `Unlocked` and the list being "ready"
+                    // see https://github.com/mozilla-lockbox/lockbox-android/issues/464
+                    responseBuilder.asyncFilter(pslSupport, dataStore.list.take(1))
+                } else {
+                    // the user has pressed search, so we shouldn't filter the list here.
+                    Observable.just(emptyList())
+                }
+            }
             .map { logins ->
                 if (logins.isNotEmpty()) {
                     AutofillAction.CompleteMultiple(logins)
