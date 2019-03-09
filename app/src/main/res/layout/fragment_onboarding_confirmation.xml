@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@null"
+        android:clickable="false"
         android:id="@+id/fragment_onboarding_confirmation">
 
     <TextView
@@ -55,6 +56,7 @@
             android:maxWidth="250dp"
             android:drawablePadding="8dp"
             android:drawableStart="@drawable/ic_security"
+            android:clickable="false"
             android:contentDescription="@string/security_content_description"
     />
 
