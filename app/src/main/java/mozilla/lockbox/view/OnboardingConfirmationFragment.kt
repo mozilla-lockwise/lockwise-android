@@ -52,7 +52,6 @@ class OnboardingConfirmationFragment : Fragment(), OnboardingConfirmationView {
                 ds.color = linkColor
                 ds.isUnderlineText = false
             }
-
         }
 
         spannableSecurityText.setSpan(
