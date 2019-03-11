@@ -56,7 +56,6 @@
             android:maxWidth="250dp"
             android:drawablePadding="8dp"
             android:drawableStart="@drawable/ic_security"
-            android:clickable="false"
             android:contentDescription="@string/security_content_description"
     />
 
