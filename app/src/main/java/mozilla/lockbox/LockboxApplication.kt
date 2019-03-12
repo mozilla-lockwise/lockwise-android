@@ -9,6 +9,8 @@ package mozilla.lockbox
 import android.app.Application
 import androidx.lifecycle.ProcessLifecycleOwner
 import android.os.Build
+import com.adjust.sdk.Adjust
+import com.adjust.sdk.AdjustConfig
 import com.squareup.leakcanary.LeakCanary
 import io.sentry.Sentry
 import io.sentry.android.AndroidSentryClientFactory
@@ -27,9 +29,12 @@ import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.NetworkStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.store.TelemetryStore
+import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.FxASyncDataStoreSupport
 import mozilla.lockbox.support.PublicSuffixSupport
 import mozilla.lockbox.support.SecurePreferences
+import android.app.Activity
+import android.os.Bundle
 
 sealed class LogProvider {
     companion object {
@@ -54,6 +59,20 @@ open class LockboxApplication : Application() {
         injectContext()
         setupLifecycleListener()
         setupSentry()
+
+        // Adjust Integration
+        val appToken = Constant.App.appToken
+
+        // ONLY USE SANDBOX when we are developing locally or testing.
+        // ONLY USE PRODUCTION when it is a real play store build.
+        val environment = AdjustConfig.ENVIRONMENT_SANDBOX
+        // AdjustConfig.ENVIRONMENT_PRODUCTION
+
+        val config = AdjustConfig(this, appToken, environment)
+        Adjust.onCreate(config)
+
+        // register instance of the ActivityLifecycleCallbacks class.
+        registerActivityLifecycleCallbacks(AdjustLifecycleCallbacks())
     }
 
     private fun setupDataStoreSupport() {
@@ -129,5 +148,25 @@ open class LockboxApplication : Application() {
             product = ""
         }
         return device == "robolectric" && product == "robolectric"
+    }
+
+    private class AdjustLifecycleCallbacks : ActivityLifecycleCallbacks {
+        override fun onActivityResumed(activity: Activity) {
+            Adjust.onResume()
+        }
+
+        override fun onActivityPaused(activity: Activity) {
+            Adjust.onPause()
+        }
+
+        override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {}
+
+        override fun onActivityStarted(activity: Activity?) {}
+
+        override fun onActivityDestroyed(activity: Activity?) {}
+
+        override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {}
+
+        override fun onActivityStopped(activity: Activity?) {}
     }
 }
