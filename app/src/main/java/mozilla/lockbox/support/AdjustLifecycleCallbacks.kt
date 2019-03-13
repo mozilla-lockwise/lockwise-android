@@ -9,16 +9,11 @@ package mozilla.lockbox.support
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
-import com.adjust.sdk.Adjust
 
 class AdjustLifecycleCallbacks : Application.ActivityLifecycleCallbacks {
-    override fun onActivityResumed(activity: Activity) {
-        Adjust.onResume()
-    }
+    override fun onActivityResumed(activity: Activity) {}
 
-    override fun onActivityPaused(activity: Activity) {
-        Adjust.onPause()
-    }
+    override fun onActivityPaused(activity: Activity) {}
 
     override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {}
 
