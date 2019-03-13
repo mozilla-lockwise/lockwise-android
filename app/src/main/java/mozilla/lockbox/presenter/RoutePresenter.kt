@@ -194,47 +194,47 @@ class RoutePresenter(
         // This maps two nodes in the graph_main.xml to the edge between them.
         // If a RouteAction is called from a place the graph doesn't know about then
         // the app will log.error.
-        return when (Pair(from, to)) {
-            Pair(R.id.fragment_null, R.id.fragment_item_list) -> R.id.action_init_to_unlocked
-            Pair(R.id.fragment_null, R.id.fragment_locked) -> R.id.action_init_to_locked
-            Pair(R.id.fragment_null, R.id.fragment_welcome) -> R.id.action_init_to_unprepared
+        return when (from to to) {
+            R.id.fragment_null to R.id.fragment_item_list -> R.id.action_init_to_unlocked
+            R.id.fragment_null to R.id.fragment_locked -> R.id.action_init_to_locked
+            R.id.fragment_null to R.id.fragment_welcome -> R.id.action_init_to_unprepared
 
-            Pair(R.id.fragment_welcome, R.id.fragment_fxa_login) -> R.id.action_welcome_to_fxaLogin
+            R.id.fragment_welcome to R.id.fragment_fxa_login -> R.id.action_welcome_to_fxaLogin
 
-            Pair(R.id.fragment_fxa_login, R.id.fragment_item_list) -> R.id.action_fxaLogin_to_itemList
-            Pair(R.id.fragment_fxa_login, R.id.fragment_fingerprint_onboarding) ->
+            R.id.fragment_fxa_login to R.id.fragment_item_list -> R.id.action_fxaLogin_to_itemList
+            R.id.fragment_fxa_login to R.id.fragment_fingerprint_onboarding ->
                 R.id.action_fxaLogin_to_fingerprint_onboarding
-            Pair(R.id.fragment_fxa_login, R.id.fragment_onboarding_confirmation) ->
+            R.id.fragment_fxa_login to R.id.fragment_onboarding_confirmation ->
                 R.id.action_fxaLogin_to_onboarding_confirmation
 
-            Pair(R.id.fragment_fingerprint_onboarding, R.id.fragment_onboarding_confirmation) ->
+            R.id.fragment_fingerprint_onboarding to R.id.fragment_onboarding_confirmation ->
                 R.id.action_fingerprint_onboarding_to_confirmation
-            Pair(R.id.fragment_fingerprint_onboarding, R.id.fragment_autofill_onboarding) ->
+            R.id.fragment_fingerprint_onboarding to R.id.fragment_autofill_onboarding ->
                 R.id.action_onboarding_fingerprint_to_autofill
 
-            Pair(R.id.fragment_autofill_onboarding, R.id.fragment_item_list) -> R.id.action_to_itemList
-            Pair(R.id.fragment_autofill_onboarding, R.id.fragment_onboarding_confirmation) -> R.id.action_autofill_onboarding_to_confirmation
+            R.id.fragment_autofill_onboarding to R.id.fragment_item_list -> R.id.action_to_itemList
+            R.id.fragment_autofill_onboarding to R.id.fragment_onboarding_confirmation -> R.id.action_autofill_onboarding_to_confirmation
 
-            Pair(R.id.fragment_onboarding_confirmation, R.id.fragment_item_list) -> R.id.action_to_itemList
-            Pair(R.id.fragment_onboarding_confirmation, R.id.fragment_webview) -> R.id.action_to_webview
+            R.id.fragment_onboarding_confirmation to R.id.fragment_item_list -> R.id.action_to_itemList
+            R.id.fragment_onboarding_confirmation to R.id.fragment_webview -> R.id.action_to_webview
 
-            Pair(R.id.fragment_locked, R.id.fragment_item_list) -> R.id.action_to_itemList
-            Pair(R.id.fragment_locked, R.id.fragment_welcome) -> R.id.action_locked_to_welcome
+            R.id.fragment_locked to R.id.fragment_item_list -> R.id.action_to_itemList
+            R.id.fragment_locked to R.id.fragment_welcome -> R.id.action_locked_to_welcome
 
-            Pair(R.id.fragment_item_list, R.id.fragment_item_detail) -> R.id.action_itemList_to_itemDetail
-            Pair(R.id.fragment_item_list, R.id.fragment_setting) -> R.id.action_itemList_to_setting
-            Pair(R.id.fragment_item_list, R.id.fragment_account_setting) -> R.id.action_itemList_to_accountSetting
-            Pair(R.id.fragment_item_list, R.id.fragment_locked) -> R.id.action_to_locked
-            Pair(R.id.fragment_item_list, R.id.fragment_filter) -> R.id.action_itemList_to_filter
-            Pair(R.id.fragment_item_list, R.id.fragment_webview) -> R.id.action_to_webview
+            R.id.fragment_item_list to R.id.fragment_item_detail -> R.id.action_itemList_to_itemDetail
+            R.id.fragment_item_list to R.id.fragment_setting -> R.id.action_itemList_to_setting
+            R.id.fragment_item_list to R.id.fragment_account_setting -> R.id.action_itemList_to_accountSetting
+            R.id.fragment_item_list to R.id.fragment_locked -> R.id.action_to_locked
+            R.id.fragment_item_list to R.id.fragment_filter -> R.id.action_itemList_to_filter
+            R.id.fragment_item_list to R.id.fragment_webview -> R.id.action_to_webview
 
-            Pair(R.id.fragment_item_detail, R.id.fragment_webview) -> R.id.action_to_webview
+            R.id.fragment_item_detail to R.id.fragment_webview -> R.id.action_to_webview
 
-            Pair(R.id.fragment_setting, R.id.fragment_webview) -> R.id.action_to_webview
+            R.id.fragment_setting to R.id.fragment_webview -> R.id.action_to_webview
 
-            Pair(R.id.fragment_account_setting, R.id.fragment_welcome) -> R.id.action_to_welcome
+            R.id.fragment_account_setting to R.id.fragment_welcome -> R.id.action_to_welcome
 
-            Pair(R.id.fragment_filter, R.id.fragment_item_detail) -> R.id.action_filter_to_itemDetail
+            R.id.fragment_filter to R.id.fragment_item_detail -> R.id.action_filter_to_itemDetail
 
             else -> null
         }
