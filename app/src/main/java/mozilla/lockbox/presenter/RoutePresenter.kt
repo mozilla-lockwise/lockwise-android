@@ -9,6 +9,7 @@ package mozilla.lockbox.presenter
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
@@ -42,20 +43,25 @@ class RoutePresenter(
     private val settingStore: SettingStore = SettingStore.shared
 ) : Presenter() {
     private lateinit var navController: NavController
+    private lateinit var backListener: OnBackPressedCallback
 
     override fun onViewReady() {
         navController = Navigation.findNavController(activity, R.id.fragment_nav_host)
+        backListener = OnBackPressedCallback {
+            dispatcher.dispatch(RouteAction.InternalBack)
+            false
+        }
     }
 
     override fun onPause() {
         super.onPause()
-
+        activity.removeOnBackPressedCallback(backListener)
         compositeDisposable.clear()
     }
 
     override fun onResume() {
         super.onResume()
-
+        activity.addOnBackPressedCallback(backListener)
         routeStore.routes
             .observeOn(mainThread())
             .subscribe(this::route)
@@ -179,6 +185,7 @@ class RoutePresenter(
                 while (navController.popBackStack()) {
                     // NOP
                 }
+                routeStore.clearBackStack()
             }
         }
 

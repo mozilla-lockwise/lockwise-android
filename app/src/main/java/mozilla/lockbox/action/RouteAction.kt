@@ -29,10 +29,8 @@ open class RouteAction(
     data class OpenWebsite(val url: String) :
         RouteAction(TelemetryEventMethod.tap, TelemetryEventObject.open_in_browser)
 
-    // This route shouldn't be used on its own. It is a terminator route to ensure that actions
-    // that leave the app do not get replayed once the app becomes foregrounded.
-    // It never flows through the dispatcher, so does not get wrongly recorded by telemetry.
-    object NoFollowOnReturn : RouteAction(TelemetryEventMethod.tap, TelemetryEventObject.back)
+    // This should _only_ be triggered by pressing the back button.
+    object InternalBack : RouteAction(TelemetryEventMethod.tap, TelemetryEventObject.back)
 
     data class SystemSetting(val setting: SettingIntent) :
         RouteAction(TelemetryEventMethod.show, TelemetryEventObject.settings_system)

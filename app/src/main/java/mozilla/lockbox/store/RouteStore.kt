@@ -12,13 +12,13 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
-import io.reactivex.subjects.ReplaySubject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.OnboardingStatusAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.flux.StackReplaySubject
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.asOptional
 
@@ -34,21 +34,24 @@ open class RouteStore(
     internal val compositeDisposable = CompositeDisposable()
 
     private val onboarding: Observable<Boolean> = BehaviorRelay.createDefault(false)
-    private val _routes = ReplaySubject.createWithSize<RouteAction>(1)
+    private val _routes = StackReplaySubject.create<RouteAction>()
     open val routes: Observable<RouteAction> = _routes
 
     init {
         dispatcher.register
             .filterByType(RouteAction::class.java)
-            .flatMap {
+            .subscribe {
+                when (it) {
+                    is RouteAction.InternalBack -> _routes.safePop()
+                    else -> _routes.onNext(it)
+                }
+
                 when (it) {
                     is RouteAction.OpenWebsite,
-                    is RouteAction.SystemSetting ->
-                            Observable.just(it, RouteAction.NoFollowOnReturn)
-                    else -> Observable.just(it)
+                    is RouteAction.SystemSetting -> _routes.pop()
                 }
             }
-            .subscribe(_routes)
+            .addTo(compositeDisposable)
 
         dispatcher.register
             .filterByType(OnboardingStatusAction::class.java)
@@ -70,5 +73,9 @@ open class RouteStore(
             is DataStore.State.Unprepared -> RouteAction.Welcome
             else -> null
         }.asOptional()
+    }
+
+    fun clearBackStack() {
+        _routes.trimTail()
     }
 }
