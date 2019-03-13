@@ -33,8 +33,8 @@ import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.FxASyncDataStoreSupport
 import mozilla.lockbox.support.PublicSuffixSupport
 import mozilla.lockbox.support.SecurePreferences
-import android.app.Activity
-import android.os.Bundle
+import mozilla.lockbox.support.AdjustLifecycleCallbacks
+import mozilla.lockbox.support.isDebug
 
 sealed class LogProvider {
     companion object {
@@ -63,10 +63,11 @@ open class LockboxApplication : Application() {
         // Adjust Integration
         val appToken = Constant.App.appToken
 
-        // ONLY USE SANDBOX when we are developing locally or testing.
-        // ONLY USE PRODUCTION when it is a real play store build.
-        val environment = AdjustConfig.ENVIRONMENT_SANDBOX
-        // AdjustConfig.ENVIRONMENT_PRODUCTION
+        val environment = if (isDebug()) {
+            AdjustConfig.ENVIRONMENT_SANDBOX
+        } else {
+            AdjustConfig.ENVIRONMENT_PRODUCTION
+        }
 
         val config = AdjustConfig(this, appToken, environment)
         Adjust.onCreate(config)
@@ -148,25 +149,5 @@ open class LockboxApplication : Application() {
             product = ""
         }
         return device == "robolectric" && product == "robolectric"
-    }
-
-    private class AdjustLifecycleCallbacks : ActivityLifecycleCallbacks {
-        override fun onActivityResumed(activity: Activity) {
-            Adjust.onResume()
-        }
-
-        override fun onActivityPaused(activity: Activity) {
-            Adjust.onPause()
-        }
-
-        override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {}
-
-        override fun onActivityStarted(activity: Activity?) {}
-
-        override fun onActivityDestroyed(activity: Activity?) {}
-
-        override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {}
-
-        override fun onActivityStopped(activity: Activity?) {}
     }
 }
