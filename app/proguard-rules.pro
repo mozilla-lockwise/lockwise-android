@@ -23,3 +23,10 @@
 -keepattributes LineNumberTable,SourceFile
 -dontwarn org.slf4j.**
 -dontwarn javax.**
+
+-keep public class com.adjust.sdk.** { *; }
+-keep class com.google.android.gms.common.ConnectionResult {
+    int SUCCESS;
+}
+
+-keep public class com.android.installreferrer.** { *; }

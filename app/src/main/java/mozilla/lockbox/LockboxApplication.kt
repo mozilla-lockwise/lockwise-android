@@ -33,7 +33,6 @@ import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.FxASyncDataStoreSupport
 import mozilla.lockbox.support.PublicSuffixSupport
 import mozilla.lockbox.support.SecurePreferences
-import mozilla.lockbox.support.AdjustLifecycleCallbacks
 import mozilla.lockbox.support.isDebug
 
 sealed class LogProvider {
@@ -71,9 +70,6 @@ open class LockboxApplication : Application() {
 
         val config = AdjustConfig(this, appToken, environment)
         Adjust.onCreate(config)
-
-        // register instance of the ActivityLifecycleCallbacks class.
-        registerActivityLifecycleCallbacks(AdjustLifecycleCallbacks())
     }
 
     private fun setupDataStoreSupport() {
