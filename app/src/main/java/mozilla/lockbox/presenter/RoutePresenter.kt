@@ -170,28 +170,34 @@ class RoutePresenter(
 
         val transition = findTransitionId(srcId, destinationId) ?: destinationId
 
-        if (transition == destinationId) {
+        val navOptions = if (transition == destinationId) {
             // Without being able to detect if we're in developer mode,
             // it is too dangerous to RuntimeException.
             val from = activity.resources.getResourceName(srcId)
             val to = activity.resources.getResourceName(destinationId)
+            val graphName = activity.resources.getResourceName(navController.graph.id)
             log.error(
                 "Cannot route from $from to $to. " +
-                    "This is a developer bug, fixable by adding an action to graph_main.xml"
+                    "This is a developer bug, fixable by adding an action to $graphName.xml and/or ${javaClass.simpleName}"
             )
+            null
         } else {
-            val clearBackStack = src.getAction(transition)?.navOptions?.shouldLaunchSingleTop() ?: false
-            if (clearBackStack) {
-                while (navController.popBackStack()) {
-                    // NOP
+            // Get the transition action out of the graph, before we manually clear the back
+            // stack, because it causes IllegalArgumentExceptions.
+            src.getAction(transition)?.navOptions?.let { navOptions ->
+                if (navOptions.shouldLaunchSingleTop()) {
+                    while (navController.popBackStack()) {
+                        // NOP
+                    }
+                    routeStore.clearBackStack()
                 }
-                routeStore.clearBackStack()
+                navOptions
             }
         }
 
         try {
-            navController.navigate(transition, args)
-        } catch (e: IllegalArgumentException) {
+            navController.navigate(destinationId, args, navOptions)
+        } catch (e: Throwable) {
             log.error("This appears to be a bug in navController", e)
             navController.navigate(destinationId, args)
         }
