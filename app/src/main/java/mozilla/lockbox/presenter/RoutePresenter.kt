@@ -195,9 +195,11 @@ class RoutePresenter(
         // If a RouteAction is called from a place the graph doesn't know about then
         // the app will log.error.
         return when (Pair(from, to)) {
-            Pair(R.id.fragment_welcome, R.id.fragment_item_list) -> R.id.action_to_itemList
-            Pair(R.id.fragment_welcome, R.id.fragment_item_list) -> R.id.action_to_webview
-            Pair(R.id.fragment_welcome, R.id.fragment_locked) -> R.id.action_to_locked
+            Pair(R.id.fragment_null, R.id.fragment_item_list) -> R.id.action_init_to_unlocked
+            Pair(R.id.fragment_null, R.id.fragment_locked) -> R.id.action_init_to_locked
+            Pair(R.id.fragment_null, R.id.fragment_welcome) -> R.id.action_init_to_unprepared
+
+            Pair(R.id.fragment_welcome, R.id.fragment_fxa_login) -> R.id.action_welcome_to_fxaLogin
 
             Pair(R.id.fragment_fxa_login, R.id.fragment_item_list) -> R.id.action_fxaLogin_to_itemList
             Pair(R.id.fragment_fxa_login, R.id.fragment_fingerprint_onboarding) ->
@@ -211,6 +213,7 @@ class RoutePresenter(
                 R.id.action_onboarding_fingerprint_to_autofill
 
             Pair(R.id.fragment_autofill_onboarding, R.id.fragment_item_list) -> R.id.action_to_itemList
+            Pair(R.id.fragment_autofill_onboarding, R.id.fragment_onboarding_confirmation) -> R.id.action_autofill_onboarding_to_confirmation
 
             Pair(R.id.fragment_onboarding_confirmation, R.id.fragment_item_list) -> R.id.action_to_itemList
             Pair(R.id.fragment_onboarding_confirmation, R.id.fragment_webview) -> R.id.action_to_webview
