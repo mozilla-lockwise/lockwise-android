@@ -100,7 +100,6 @@ class LockboxAutofillService(
 
         autofillStore.autofillActions
             .map {
-                @Suppress("IMPLICIT_CAST_TO_ANY")
                 when (it) {
                     is AutofillAction.Complete -> builder.buildFilteredFillResponse(this, listOf(it.login)).asOptional()
                     is AutofillAction.CompleteMultiple -> (builder.buildFilteredFillResponse(this, it.logins)
