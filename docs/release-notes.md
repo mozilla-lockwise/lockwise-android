@@ -1,5 +1,15 @@
 # Release Notes
 
+## 1.0.0 (Build 3024)
+
+Release Candidate
+
+- moved some dependencies into our codebase (#491)
+- fixed crash on entries with no username (#496)
+- fixed bug in onboarding screen (#495)
+- added telemetry to autofill events (#498)
+- added Adjust (#497)
+
 ## 1.0 (Build 2955)
 
 _Date: 2019-03-08_
