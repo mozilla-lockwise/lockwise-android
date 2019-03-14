@@ -38,7 +38,7 @@ class LockboxAutofillServiceTest {
 
     @Before
     fun setUp() {
-        subject = LockboxAutofillService(dataStore, dispatcher)
+        subject = LockboxAutofillService(dataStore = dataStore, dispatcher = dispatcher)
         subject.onConnected()
     }
 

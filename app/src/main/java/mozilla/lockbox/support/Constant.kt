@@ -14,6 +14,7 @@ object Constant {
         const val dbFilename = "firefox-lockbox.db"
         const val testMarker = "TEST"
         const val bootIDPath = "/proc/sys/kernel/random/boot_id"
+        const val appToken = "383z4i46o48w"
     }
 
     object FxA {

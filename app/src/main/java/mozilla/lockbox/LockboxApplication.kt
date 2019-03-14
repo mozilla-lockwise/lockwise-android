@@ -9,6 +9,8 @@ package mozilla.lockbox
 import android.app.Application
 import androidx.lifecycle.ProcessLifecycleOwner
 import android.os.Build
+import com.adjust.sdk.Adjust
+import com.adjust.sdk.AdjustConfig
 import com.squareup.leakcanary.LeakCanary
 import io.sentry.Sentry
 import io.sentry.android.AndroidSentryClientFactory
@@ -27,9 +29,11 @@ import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.NetworkStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.store.TelemetryStore
+import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.FxASyncDataStoreSupport
 import mozilla.lockbox.support.PublicSuffixSupport
 import mozilla.lockbox.support.SecurePreferences
+import mozilla.lockbox.support.isDebug
 
 sealed class LogProvider {
     companion object {
@@ -54,6 +58,18 @@ open class LockboxApplication : Application() {
         injectContext()
         setupLifecycleListener()
         setupSentry()
+
+        // Adjust Integration
+        val appToken = Constant.App.appToken
+
+        val environment = if (isDebug()) {
+            AdjustConfig.ENVIRONMENT_SANDBOX
+        } else {
+            AdjustConfig.ENVIRONMENT_PRODUCTION
+        }
+
+        val config = AdjustConfig(this, appToken, environment)
+        Adjust.onCreate(config)
     }
 
     private fun setupDataStoreSupport() {

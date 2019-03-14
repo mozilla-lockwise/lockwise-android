@@ -9,7 +9,6 @@ import android.os.CancellationSignal
 import android.service.autofill.AutofillService
 import android.service.autofill.FillCallback
 import android.service.autofill.FillRequest
-import android.service.autofill.FillResponse
 import android.service.autofill.SaveCallback
 import android.service.autofill.SaveRequest
 import androidx.annotation.RequiresApi
@@ -17,22 +16,29 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import mozilla.lockbox.action.AutofillAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.autofill.FillResponseBuilder
 import mozilla.lockbox.autofill.ParsedStructure
+import mozilla.lockbox.autofill.ParsedStructureBuilder
 import mozilla.lockbox.autofill.ViewNodeNavigator
 import mozilla.lockbox.extensions.dump
+import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.store.AutofillStore
 import mozilla.lockbox.store.DataStore
-import mozilla.lockbox.autofill.ParsedStructureBuilder
-import mozilla.lockbox.support.asOptional
+import mozilla.lockbox.store.TelemetryStore
+import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.PublicSuffixSupport
+import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.support.isDebug
 
 @RequiresApi(Build.VERSION_CODES.O)
 @ExperimentalCoroutinesApi
 class LockboxAutofillService(
     val dataStore: DataStore = DataStore.shared,
+    private val telemetryStore: TelemetryStore = TelemetryStore.shared,
+    private val autofillStore: AutofillStore = AutofillStore.shared,
     val dispatcher: Dispatcher = Dispatcher.shared
 ) : AutofillService() {
 
@@ -41,6 +47,7 @@ class LockboxAutofillService(
 
     override fun onConnected() {
         dispatcher.dispatch(LifecycleAction.AutofillStart)
+        telemetryStore.injectContext(this)
     }
 
     override fun onDisconnected() {
@@ -82,22 +89,32 @@ class LockboxAutofillService(
             .map { latest ->
                 val state = latest.first
                 when (state) {
-                    is DataStore.State.Locked -> builder.buildAuthenticationFillResponse(this)
-                    is DataStore.State.Unlocked -> {
-                        builder.buildFilteredFillResponse(this, latest.second)
-                        ?: builder.buildFallbackFillResponse(this)
+                    is DataStore.State.Locked -> AutofillAction.Authenticate
+                    is DataStore.State.Unlocked -> AutofillAction.CompleteMultiple(latest.second)
+                    is DataStore.State.Unprepared -> AutofillAction.Cancel // we might consider onboarding here.
+                    is DataStore.State.Errored -> AutofillAction.Error(state.error)
+                }
+            }
+            .subscribe(dispatcher::dispatch)
+            .addTo(compositeDisposable)
+
+        autofillStore.autofillActions
+            .map {
+                when (it) {
+                    is AutofillAction.Complete -> builder.buildFilteredFillResponse(this, listOf(it.login)).asOptional()
+                    is AutofillAction.CompleteMultiple -> (builder.buildFilteredFillResponse(this, it.logins)
+                        ?: builder.buildFallbackFillResponse(this)).asOptional()
+                    is AutofillAction.Authenticate -> builder.buildAuthenticationFillResponse(this).asOptional()
+                    is AutofillAction.Cancel -> Optional(null)
+                    is AutofillAction.Error -> {
+                        callback.onFailure(getString(R.string.autofill_error_toast, it.error.localizedMessage))
+                        null
                     }
-                    is DataStore.State.Unprepared -> null // we might consider onboarding here.
-                    is DataStore.State.Errored -> state.error
                 }.asOptional()
             }
+            .filterNotNull()
             .subscribe {
-                val value = it.value
-                when (value) {
-                    is FillResponse -> callback.onSuccess(value)
-                    is Throwable -> callback.onFailure(getString(R.string.autofill_error_toast, value.localizedMessage))
-                    else -> callback.onSuccess(null)
-                }
+                callback.onSuccess(it.value)
             }
             .addTo(compositeDisposable)
     }

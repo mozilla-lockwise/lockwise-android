@@ -9,18 +9,23 @@ package mozilla.lockbox.view
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_onboarding_confirmation.view.*
 import mozilla.lockbox.R
 import mozilla.lockbox.presenter.OnboardingConfirmationPresenter
 import mozilla.lockbox.presenter.OnboardingConfirmationView
 
 class OnboardingConfirmationFragment : Fragment(), OnboardingConfirmationView {
+    private val _linkClicked = PublishSubject.create<Unit>()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         presenter = OnboardingConfirmationPresenter(this)
 
@@ -37,19 +42,32 @@ class OnboardingConfirmationFragment : Fragment(), OnboardingConfirmationView {
 
         val securityLinkStart = securityText.indexOf(securityLink)
 
+        val clickableSpan = object : ClickableSpan() {
+            override fun onClick(view: View) {
+                _linkClicked.onNext(Unit)
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.color = linkColor
+                ds.isUnderlineText = false
+            }
+        }
+
         spannableSecurityText.setSpan(
-            ForegroundColorSpan(linkColor),
+            clickableSpan,
             securityLinkStart,
             securityLinkStart + securityLink.length,
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
 
         view.encryptionText.text = spannableSecurityText
+        view.encryptionText.movementMethod = LinkMovementMethod.getInstance()
     }
 
     override val finishClicks: Observable<Unit>
         get() = view!!.finishButton.clicks()
 
     override val encryptionClicks: Observable<Unit>
-        get() = view!!.encryptionText.clicks()
+        get() = _linkClicked
 }
