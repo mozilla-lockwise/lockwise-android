@@ -82,7 +82,10 @@ class AutofillRoutePresenter(
 
     private fun route(action: RouteAction) {
         when (action) {
-            is RouteAction.LockScreen -> navigateToFragment(R.id.fragment_locked)
+            is RouteAction.LockScreen -> {
+                dismissDialogIfPresent(AutofillFilterFragment::class.java)
+                navigateToFragment(R.id.fragment_locked)
+            }
             is RouteAction.ItemList -> showDialogFragment(AutofillFilterFragment(),
                 RouteAction.DialogFragment.AutofillSearchDialog
             )
@@ -128,10 +131,10 @@ class AutofillRoutePresenter(
     }
 
     private fun findTransitionId(@IdRes from: Int, @IdRes to: Int): Int? {
-        return when (Pair(from, to)) {
-            Pair(R.id.fragment_locked, R.id.fragment_filter) -> R.id.action_locked_to_filter
-            Pair(R.id.fragment_null, R.id.fragment_filter) -> R.id.action_to_filter
-            Pair(R.id.fragment_null, R.id.fragment_locked) -> R.id.action_to_locked
+        return when (from to to) {
+            R.id.fragment_locked to R.id.fragment_filter -> R.id.action_locked_to_filter
+            R.id.fragment_null to R.id.fragment_filter -> R.id.action_to_filter
+            R.id.fragment_null to R.id.fragment_locked -> R.id.action_autofill_to_locked
             else -> null
         }
     }
@@ -144,6 +147,13 @@ class AutofillRoutePresenter(
         } catch (e: IllegalStateException) {
             log.error("Could not show dialog", e)
         }
+    }
+
+    private fun <T : DialogFragment> dismissDialogIfPresent(clazz: Class<T>) {
+        val fragmentManager = activity.supportFragmentManager
+        val presentedDialog = fragmentManager.findFragmentByTag(clazz.name)
+
+        (presentedDialog as? DialogFragment)?.dismiss()
     }
 
     private fun finishAutofill(action: AutofillAction) {

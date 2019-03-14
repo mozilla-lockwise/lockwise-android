@@ -21,7 +21,7 @@
                 app:launchSingleTop="true"
                 app:popUpToInclusive="true"/>
         <action
-                android:id="@+id/action_to_locked"
+                android:id="@+id/action_autofill_to_locked"
                 app:destination="@id/fragment_locked"
                 app:launchSingleTop="true"
                 app:popUpToInclusive="true"/>
