@@ -111,8 +111,8 @@ dependencies {
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.2'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.2'
     testImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.2'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0-alpha02'
-    implementation 'androidx.lifecycle:lifecycle-common-java8:2.1.0-alpha02'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0-alpha03'
+    implementation 'androidx.lifecycle:lifecycle-common-java8:2.1.0-alpha03'
     implementation "android.arch.navigation:navigation-fragment:$navigation_version"
     implementation "android.arch.navigation:navigation-ui-ktx:$navigation_version"
     implementation 'com.adjust.sdk:adjust-android:4.17.0'
