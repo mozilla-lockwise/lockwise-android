@@ -12,5 +12,7 @@ import mozilla.lockbox.flux.Action
 sealed class AutofillAction : Action {
     data class Complete(val login: ServerPassword) : AutofillAction()
     data class CompleteMultiple(val logins: List<ServerPassword>) : AutofillAction()
+    data class Error(val error: Throwable) : AutofillAction()
+    object Authenticate : AutofillAction()
     object Cancel : AutofillAction()
 }
