@@ -86,9 +86,10 @@ class AutofillRoutePresenter(
                 dismissDialogIfPresent(AutofillFilterFragment::class.java)
                 navigateToFragment(R.id.fragment_locked)
             }
-            is RouteAction.ItemList -> showDialogFragment(AutofillFilterFragment(),
-                RouteAction.DialogFragment.AutofillSearchDialog
-            )
+            is RouteAction.ItemList -> {
+                navigateToFragment(R.id.fragment_null)
+                showDialogFragment(AutofillFilterFragment(), RouteAction.DialogFragment.AutofillSearchDialog)
+            }
             is RouteAction.DialogFragment.FingerprintDialog ->
                 showDialogFragment(FingerprintAuthDialogFragment(), action)
         }
@@ -114,11 +115,17 @@ class AutofillRoutePresenter(
                     "This is a developer bug, fixable by adding an action to graph_autofill.xml"
             )
         } else {
-            val clearBackStack = src.getAction(transition)?.navOptions?.shouldLaunchSingleTop() ?: false
+            val action = src.getAction(transition)
+            val clearBackStack = action?.navOptions?.shouldLaunchSingleTop() ?: false
             if (clearBackStack) {
                 while (navController.popBackStack()) {
                     // NOP
                 }
+            }
+
+            action?.let {
+                navController.navigate(it.destinationId, args, it.navOptions)
+                return
             }
         }
 
@@ -134,7 +141,7 @@ class AutofillRoutePresenter(
         return when (from to to) {
             R.id.fragment_locked to R.id.fragment_filter -> R.id.action_locked_to_filter
             R.id.fragment_null to R.id.fragment_filter -> R.id.action_to_filter
-            R.id.fragment_null to R.id.fragment_locked -> R.id.action_autofill_to_locked
+            R.id.fragment_null to R.id.fragment_locked -> R.id.action_to_locked
             else -> null
         }
     }
@@ -152,6 +159,7 @@ class AutofillRoutePresenter(
     private fun <T : DialogFragment> dismissDialogIfPresent(clazz: Class<T>) {
         val fragmentManager = activity.supportFragmentManager
         val presentedDialog = fragmentManager.findFragmentByTag(clazz.name)
+        log.info("presented dialog: $presentedDialog")
 
         (presentedDialog as? DialogFragment)?.dismiss()
     }
