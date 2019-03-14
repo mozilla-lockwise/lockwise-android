@@ -93,6 +93,15 @@
     <li class="toctree-l3"><a href="#steps-to-run-build">Steps to Run / Build</a></li>
     
 
+    <li class="toctree-l3"><a href="#testing">Testing</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#code-coverage">Code coverage</a></li>
+        
+        </ul>
+    
+
     </ul>
                 </li>
                 <li class="">
@@ -175,6 +184,24 @@
 <p>Gradle Sync &amp; build/run the project</p>
 </li>
 </ol>
+<h3 id="testing">Testing</h3>
+<p>The tests can be run from Android Studio or from the command line:</p>
+<pre><code class="sh">./gradlew testDebug
+</code></pre>
+
+<h4 id="code-coverage">Code coverage</h4>
+<p>Local code coverage reports can be generated from Android Studio or from the
+command line:</p>
+<pre><code class="sh">./gradlew -Pcoverage jacocoDebugTestReport
+</code></pre>
+
+<p>The command line reports can be found at
+<code>app/build/reports/jacoco/jacocoDebugTestReport/html/index.html</code>.</p>
+<p><strong>N.B.:</strong> each method uses a different reporter and will provide different
+results. They both tend to miss things: it's often best to test your code using
+both.</p>
+<p>The project's <a href="https://codecov.io/gh/mozilla-lockbox/lockbox-android">official code coverage rating can be found on codecov.io</a>,
+which uses the results from jacoco (i.e. the command line).</p>
               
             </div>
           </div>
