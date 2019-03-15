@@ -1,5 +1,6 @@
 package mozilla.lockbox.presenter
 
+import androidx.annotation.CallSuper
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.action.RouteAction
@@ -14,6 +15,7 @@ class BackablePresenter(
     val view: BackableView,
     val dispatcher: Dispatcher = Dispatcher.shared
 ) : Presenter() {
+    @CallSuper
     override fun onViewReady() {
         view.backButtonClicks
             .subscribe {
