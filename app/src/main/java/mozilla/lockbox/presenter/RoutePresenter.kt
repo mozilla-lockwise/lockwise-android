@@ -69,6 +69,7 @@ class RoutePresenter(
     }
 
     private fun route(action: RouteAction) {
+        activity.setTheme(R.style.AppTheme)
         when (action) {
             is RouteAction.Welcome -> navigateToFragment(R.id.fragment_welcome)
             is RouteAction.Login -> navigateToFragment(R.id.fragment_fxa_login)
