@@ -13,6 +13,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.OnboardingStatusAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.filterByType
@@ -40,15 +41,24 @@ open class RouteStore(
     init {
         dispatcher.register
             .filterByType(RouteAction::class.java)
-            .subscribe {
-                when (it) {
+            .subscribe { routeAction ->
+                when (routeAction) {
                     is RouteAction.InternalBack -> _routes.safePop()
-                    else -> _routes.onNext(it)
+                    else -> _routes.onNext(routeAction)
                 }
 
-                when (it) {
-                    is RouteAction.OpenWebsite,
-                    is RouteAction.SystemSetting -> _routes.pop()
+                // If we're about to leave the app and then come back again
+                // then trim the history of any dialogs that have just been dismissed
+                // or the very route action that caused us to leave the app.
+                _routes.trim {
+                    when (it) {
+                        is DialogAction,
+                        is RouteAction.AutoLockSetting,
+                        is RouteAction.DialogFragment,
+                        is RouteAction.OpenWebsite,
+                        is RouteAction.SystemSetting -> true
+                        else -> false
+                    }
                 }
             }
             .addTo(compositeDisposable)

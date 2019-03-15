@@ -197,8 +197,12 @@ internal constructor() : Subject<T>() {
     }
 
     fun trim(vararg values: T) {
+        trim { values.contains(it) }
+    }
+
+    fun trim(test: (T) -> Boolean) {
         synchronized(history) {
-            while (history.isNotEmpty() && values.contains(history.peek())) {
+            while (history.isNotEmpty() && test(history.peek())) {
                 history.pop()
             }
         }

@@ -120,7 +120,7 @@ class RoutePresenter(
                     }
                 }
             }
-            .flatMapIterable { it }
+            .flatMapIterable { listOf(RouteAction.InternalBack) + it }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
     }
@@ -140,12 +140,10 @@ class RoutePresenter(
                     negativeButtonTitle = R.string.cancel
                 )
             }
-            .map {
-                autoLockValues[it]
+            .flatMapIterable {
+                listOf(RouteAction.InternalBack, SettingAction.AutoLockTime(autoLockValues[it]))
             }
-            .subscribe {
-                dispatcher.dispatch(SettingAction.AutoLockTime(it))
-            }
+            .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
     }
 
