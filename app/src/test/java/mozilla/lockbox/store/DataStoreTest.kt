@@ -25,9 +25,11 @@ import org.junit.Assert
 import org.junit.Ignore
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.clearInvocations
 import org.mockito.Mockito.never
 import org.mockito.Mockito.spy
+import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 
 @ExperimentalCoroutinesApi
@@ -62,10 +64,15 @@ class DataStoreTest : DisposingTest() {
         val stateIterator = this.subject.state.blockingIterable().iterator()
         val listIterator = this.subject.list.blockingIterable().iterator()
         Assert.assertEquals(0, listIterator.next().size)
+        clearInvocations(support.storage)
 
         dispatcher.dispatch(DataStoreAction.Unlock)
         Assert.assertEquals(State.Unlocked, stateIterator.next())
         Assert.assertEquals(10, listIterator.next().size)
+        Assert.assertEquals(10, listIterator.next().size)
+        Assert.assertEquals(10, listIterator.next().size)
+        verify(support.storage).sync(support.syncConfig!!)
+        verify(support.storage, times(3)).list()
 
         dispatcher.dispatch(DataStoreAction.Lock)
         Assert.assertEquals(State.Locked, stateIterator.next())
@@ -88,7 +95,7 @@ class DataStoreTest : DisposingTest() {
         listIterator.next()
 
         verify(support.storage).touch(id)
-        verify(support.storage).list()
+        verify(support.storage, atLeastOnce()).list()
     }
 
     @Test
@@ -107,6 +114,8 @@ class DataStoreTest : DisposingTest() {
 
         dispatcher.dispatch(DataStoreAction.Unlock)
         Assert.assertEquals(State.Unlocked, stateIterator.next())
+        Assert.assertEquals(10, listIterator.next().size)
+        Assert.assertEquals(10, listIterator.next().size)
         Assert.assertEquals(10, listIterator.next().size)
 
         dispatcher.dispatch(DataStoreAction.Reset)
