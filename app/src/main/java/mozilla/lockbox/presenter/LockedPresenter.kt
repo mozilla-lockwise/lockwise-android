@@ -86,6 +86,7 @@ class LockedPresenter(
 
     private fun unlockFallback() {
         if (fingerprintStore.isKeyguardDeviceSecure) {
+            dispatcher.dispatch(RouteAction.UnlockFallbackDialog)
             view.unlockFallback()
         } else {
             unlock()

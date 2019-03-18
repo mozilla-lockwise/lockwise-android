@@ -12,6 +12,7 @@ import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import mozilla.lockbox.R
 import mozilla.lockbox.flux.Action
+import mozilla.lockbox.support.Constant
 
 open class RouteAction(
     override val eventMethod: TelemetryEventMethod,
@@ -26,14 +27,10 @@ open class RouteAction(
     object LockScreen : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.lock_screen)
     object Filter : RouteAction(TelemetryEventMethod.tap, TelemetryEventObject.filter)
     data class ItemDetail(val id: String) : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.entry_detail)
-    data class OpenWebsite(val url: String) :
-        RouteAction(TelemetryEventMethod.tap, TelemetryEventObject.open_in_browser)
+
 
     // This should _only_ be triggered by pressing the back button.
     object InternalBack : RouteAction(TelemetryEventMethod.tap, TelemetryEventObject.back)
-
-    data class SystemSetting(val setting: SettingIntent) :
-        RouteAction(TelemetryEventMethod.show, TelemetryEventObject.settings_system)
 
     sealed class DialogFragment(
         @StringRes val dialogTitle: Int,
@@ -45,6 +42,12 @@ open class RouteAction(
         object AutofillSearchDialog : DialogFragment(R.string.autofill)
     }
 
+    open class SystemIntent(
+        val requestCode: Int = Constant.RequestCode.noResult,
+        eventMethod: TelemetryEventMethod,
+        eventObject: TelemetryEventObject
+    ) : RouteAction(eventMethod, eventObject)
+
     sealed class Onboarding(
         eventObject: TelemetryEventObject
     ) : RouteAction(TelemetryEventMethod.show, eventObject) {
@@ -52,6 +55,24 @@ open class RouteAction(
         object Autofill : Onboarding(TelemetryEventObject.onboarding_autofill)
         object Confirmation : Onboarding(TelemetryEventObject.login_onboarding_confirmation)
     }
+
+    object UnlockFallbackDialog : SystemIntent(
+        Constant.RequestCode.unlock,
+        TelemetryEventMethod.show,
+        TelemetryEventObject.dialog
+    )
+
+    data class OpenWebsite(val url: String) : SystemIntent(
+        Constant.RequestCode.noResult,
+        TelemetryEventMethod.tap,
+        TelemetryEventObject.open_in_browser
+    )
+
+    data class SystemSetting(val setting: SettingIntent) : SystemIntent(
+        Constant.RequestCode.noResult,
+        TelemetryEventMethod.show,
+        TelemetryEventObject.settings_system
+    )
 }
 
 data class OnboardingStatusAction(val onboardingInProgress: Boolean) : Action

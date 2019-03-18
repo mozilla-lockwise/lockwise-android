@@ -6,12 +6,16 @@
 
 package mozilla.lockbox.presenter
 
+import android.app.KeyguardManager
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
@@ -44,6 +48,18 @@ class RoutePresenter(
 ) : Presenter() {
     private lateinit var navController: NavController
     private lateinit var backListener: OnBackPressedCallback
+
+    private val navHostFragmentManager: FragmentManager
+        get() {
+            val fragmentManager = activity.supportFragmentManager
+            val navHost = fragmentManager.fragments.last()
+            return navHost.childFragmentManager
+        }
+
+    private val currentFragment: Fragment
+        get() {
+            return navHostFragmentManager.fragments.last()
+        }
 
     override fun onViewReady() {
         navController = Navigation.findNavController(activity, R.id.fragment_nav_host)
@@ -85,6 +101,7 @@ class RoutePresenter(
             is RouteAction.ItemDetail -> navigateToFragment(R.id.fragment_item_detail, bundle(action))
             is RouteAction.OpenWebsite -> openWebsite(action.url)
             is RouteAction.SystemSetting -> openSetting(action)
+            is RouteAction.UnlockFallbackDialog -> showUnlockFallback(action)
             is RouteAction.AutoLockSetting -> showAutoLockSelections()
             is RouteAction.DialogFragment.FingerprintDialog ->
                 showDialogFragment(FingerprintAuthDialogFragment(), action)
@@ -147,18 +164,25 @@ class RoutePresenter(
             .addTo(compositeDisposable)
     }
 
-    private fun showDialogFragment(dialogFragment: DialogFragment?, destination: RouteAction.DialogFragment) {
-        if (dialogFragment != null) {
-            val fragmentManager = activity.supportFragmentManager
-            try {
-                dialogFragment.setTargetFragment(fragmentManager.fragments.last(), 0)
-                dialogFragment.show(fragmentManager, dialogFragment.javaClass.name)
-                dialogFragment.setupDialog(destination.dialogTitle, destination.dialogSubtitle)
-            } catch (e: IllegalStateException) {
-                log.error("Could not show dialog", e)
-            }
+    private fun showDialogFragment(dialogFragment: DialogFragment, destination: RouteAction.DialogFragment) {
+        try {
+            dialogFragment.setTargetFragment(currentFragment, 0)
+            dialogFragment.show(navHostFragmentManager, dialogFragment.javaClass.name)
+            dialogFragment.setupDialog(destination.dialogTitle, destination.dialogSubtitle)
+        } catch (e: IllegalStateException) {
+            log.error("Could not show dialog", e)
         }
     }
+
+    private fun showUnlockFallback(action: RouteAction.UnlockFallbackDialog) {
+        val manager = activity.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+        val intent = manager.createConfirmDeviceCredentialIntent(
+            activity.getString(R.string.unlock_fallback_title),
+            activity.getString(R.string.confirm_pattern)
+        )
+        currentFragment.startActivityForResult(intent, action.requestCode)
+    }
+
     private fun navigateToFragment(@IdRes destinationId: Int, args: Bundle? = null) {
         val src = navController.currentDestination ?: return
         val srcId = src.id

@@ -21,6 +21,7 @@ import kotlinx.android.synthetic.main.fragment_locked.view.*
 import mozilla.lockbox.R
 import mozilla.lockbox.presenter.LockedPresenter
 import mozilla.lockbox.presenter.LockedView
+import mozilla.lockbox.support.Constant
 import java.lang.Exception
 
 class LockedFragment : Fragment(), LockedView {
@@ -39,23 +40,14 @@ class LockedFragment : Fragment(), LockedView {
         get() = view!!.unlockButton.clicks()
 
     override fun unlockFallback() {
-        val manager = context?.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
-        val intent = manager.createConfirmDeviceCredentialIntent(
-            getString(R.string.unlock_fallback_title),
-            getString(R.string.confirm_pattern)
-        )
-        try {
-            startActivityForResult(intent, LOCK_REQUEST_CODE)
-        } catch (exception: Exception) {
-            _unlockConfirmed.onNext(false)
-        }
+        // Deleted
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == RESULT_OK) {
             when (requestCode) {
-                LOCK_REQUEST_CODE -> _unlockConfirmed.onNext(true)
+                Constant.RequestCode.unlock -> _unlockConfirmed.onNext(true)
             }
         } else {
             _unlockConfirmed.onNext(false)

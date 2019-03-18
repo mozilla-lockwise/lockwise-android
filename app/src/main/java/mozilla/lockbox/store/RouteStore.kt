@@ -55,8 +55,7 @@ open class RouteStore(
                         is DialogAction,
                         is RouteAction.AutoLockSetting,
                         is RouteAction.DialogFragment,
-                        is RouteAction.OpenWebsite,
-                        is RouteAction.SystemSetting -> true
+                        is RouteAction.SystemIntent -> true
                         else -> false
                     }
                 }
