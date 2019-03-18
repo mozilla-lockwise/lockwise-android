@@ -47,7 +47,10 @@ class RoutePresenter(
     private val settingStore: SettingStore = SettingStore.shared
 ) : Presenter() {
     private lateinit var navController: NavController
-    private lateinit var backListener: OnBackPressedCallback
+    private val backListener = OnBackPressedCallback {
+        dispatcher.dispatch(RouteAction.InternalBack)
+        false
+    }
 
     private val navHostFragmentManager: FragmentManager
         get() {
@@ -63,10 +66,6 @@ class RoutePresenter(
 
     override fun onViewReady() {
         navController = Navigation.findNavController(activity, R.id.fragment_nav_host)
-        backListener = OnBackPressedCallback {
-            dispatcher.dispatch(RouteAction.InternalBack)
-            false
-        }
     }
 
     override fun onPause() {
