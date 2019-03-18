@@ -4,7 +4,6 @@ import android.app.KeyguardManager
 import android.content.Context
 import android.hardware.fingerprint.FingerprintManager
 import io.reactivex.Observable
-import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import junit.framework.Assert.assertEquals
@@ -14,15 +13,12 @@ import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.UnlockingAction
-import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.model.FingerprintAuthCallback
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.LockedStore
 import mozilla.lockbox.store.SettingStore
-import org.junit.Assert
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.`when`
@@ -71,7 +67,6 @@ class LockedPresenterTest {
     private val lockedStore = FakeLockedStore()
     private val settingStore = FakeSettingStore()
     private val dispatcher = Dispatcher()
-    private val dispatcherObserver = TestObserver.create<Action>()
     private lateinit var context: Context
     val subject = LockedPresenter(
         view,
@@ -84,17 +79,18 @@ class LockedPresenterTest {
     @Before
     fun setUp() {
         context = RuntimeEnvironment.application.applicationContext
-        dispatcher.register.subscribe(dispatcherObserver)
         subject.onViewReady()
     }
 
     @Test
     fun `unlock button tap shows fingerprint dialog`() {
+        val dispatchIterator = dispatcher.register.blockingIterable().iterator()
         `when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(true)
         view.unlockButtonTaps.onNext(Unit)
-        assertTrue((dispatcherObserver.values().first() as UnlockingAction).currently)
+        val unlockingAction = dispatchIterator.next() as UnlockingAction
+        assertTrue(unlockingAction.currently)
         settingStore.unlock.onNext(true)
-        val routeAction = dispatcherObserver.values().last() as RouteAction.DialogFragment
+        val routeAction = dispatchIterator.next() as RouteAction.DialogFragment
         assertTrue(routeAction is RouteAction.DialogFragment.FingerprintDialog)
     }
 
@@ -117,21 +113,26 @@ class LockedPresenterTest {
 
     @Test
     fun `onviewready when can launch authentication shows fingerprint dialog`() {
+        val dispatchIterator = dispatcher.register.blockingIterable().iterator()
         (lockedStore.canLaunchAuthenticationOnForeground as Subject).onNext(true)
         `when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(true)
         settingStore.unlock.onNext(true)
-        val routeAction = dispatcherObserver.values().last() as RouteAction.DialogFragment
+        val unlockingAction = dispatchIterator.next() as UnlockingAction
+        assertTrue(unlockingAction.currently)
+        val routeAction = dispatchIterator.next() as RouteAction.DialogFragment
         assertTrue(routeAction is RouteAction.DialogFragment.FingerprintDialog)
     }
 
-    @Ignore
     @Test
     fun `onviewready when can launch authentication if no fingerprint`() {
+        val dispatchIterator = dispatcher.register.blockingIterable().iterator()
         (lockedStore.canLaunchAuthenticationOnForeground as Subject).onNext(true)
 
         `when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(false)
         `when`(fingerprintStore.isKeyguardDeviceSecure).thenReturn(true)
         settingStore.unlock.onNext(false)
+        val unlockingAction = dispatchIterator.next() as UnlockingAction
+        assertTrue(unlockingAction.currently)
         verify(view).unlockFallback()
     }
 
@@ -145,35 +146,32 @@ class LockedPresenterTest {
 
     @Test
     fun `handle success authentication callback`() {
+        val dispatchIterator = dispatcher.register.blockingIterable().iterator()
         lockedStore.onAuth.onNext(FingerprintAuthAction.OnAuthentication(FingerprintAuthCallback.OnAuth))
 
-        assertEquals(2, dispatcherObserver.valueCount())
-        assertEquals(DataStoreAction.Unlock, dispatcherObserver.values().first())
-        assertFalse((dispatcherObserver.values().last() as UnlockingAction).currently)
+        assertEquals(DataStoreAction.Unlock, dispatchIterator.next())
+        val unlockingAction = dispatchIterator.next() as UnlockingAction
+        assertFalse(unlockingAction.currently)
     }
 
     @Test
-    fun `handle error authentication callback`() {
+    fun `handle error authentication callback when the device has no other security`() {
+        val dispatchIterator = dispatcher.register.blockingIterable().iterator()
         `when`(fingerprintStore.isKeyguardDeviceSecure).thenReturn(false)
         lockedStore.onAuth.onNext(FingerprintAuthAction.OnAuthentication(FingerprintAuthCallback.OnError))
 
-        assertEquals(2, dispatcherObserver.valueCount())
-        assertEquals(DataStoreAction.Unlock, dispatcherObserver.values().first())
-        assertFalse((dispatcherObserver.values().last() as UnlockingAction).currently)
+        assertEquals(DataStoreAction.Unlock, dispatchIterator.next())
+        val unlockingAction = dispatchIterator.next() as UnlockingAction
+        assertFalse(unlockingAction.currently)
     }
 
     @Test
     fun `handle unlock confirmed true`() {
+        val dispatchIterator = dispatcher.register.blockingIterable().iterator()
         view.unlockConfirmedStub.onNext(true)
 
-        assertEquals(2, dispatcherObserver.valueCount())
-        assertEquals(DataStoreAction.Unlock, dispatcherObserver.values().first())
-        assertFalse((dispatcherObserver.values().last() as UnlockingAction).currently)
-    }
-
-    @Test
-    fun `handle unlock confirmed false`() {
-        view.unlockConfirmedStub.onNext(false)
-        Assert.assertEquals(0, dispatcherObserver.valueCount())
+        assertEquals(DataStoreAction.Unlock, dispatchIterator.next())
+        val unlockingAction = dispatchIterator.next() as UnlockingAction
+        assertFalse(unlockingAction.currently)
     }
 }

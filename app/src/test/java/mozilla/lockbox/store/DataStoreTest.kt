@@ -253,6 +253,7 @@ class DataStoreTest : DisposingTest() {
 
         dispatcher.dispatch(DataStoreAction.Lock)
         verify(autoLockSupport).backdateNextLockTime()
+        Assert.assertEquals(State.Locked, stateIterator.next())
 
         (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Background)
         verify(autoLockSupport, never()).storeNextAutoLockTime()
