@@ -150,6 +150,15 @@ open class DataStore(
         val encryptionKey = support?.encryptionKey ?: return notReady()
         backend.ensureUnlocked(encryptionKey)
             .asSingle(coroutineContext)
+            .toObservable()
+            // start listening to the list when receiving the unlock completion
+            .switchMap { list }
+            // force an update
+            .doOnNext { updateList(Unit) }
+            // don't take the "locked" version of the list
+            .skip(1)
+            // once we get an "updated" list, we are done + can update the state
+            .take(1)
             .map { State.Unlocked }
             .subscribe(stateSubject::onNext, this::pushError)
             .addTo(compositeDisposable)
