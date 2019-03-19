@@ -22,7 +22,6 @@ import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.autofill.FillResponseBuilder
 import mozilla.lockbox.autofill.IntentBuilder
 import mozilla.lockbox.flux.Dispatcher
-import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
 import mozilla.lockbox.store.AutofillStore
 import mozilla.lockbox.store.DataStore
@@ -42,7 +41,8 @@ class AutofillRoutePresenter(
     private val autofillStore: AutofillStore = AutofillStore.shared,
     private val dataStore: DataStore = DataStore.shared,
     private val pslSupport: PublicSuffixSupport = PublicSuffixSupport.shared
-) : Presenter() {
+) : RoutePresenter(activity) {
+
     private lateinit var navController: NavController
 
     override fun onViewReady() {
@@ -82,7 +82,7 @@ class AutofillRoutePresenter(
 
     private fun route(action: RouteAction) {
         when (action) {
-            is RouteAction.LockScreen -> navigateToFragment(R.id.fragment_locked)
+            is RouteAction.LockScreen -> navigateTo(R.id.fragment_locked)
             is RouteAction.ItemList -> showDialogFragment(AutofillFilterFragment(),
                 RouteAction.DialogFragment.AutofillSearchDialog
             )
@@ -91,9 +91,9 @@ class AutofillRoutePresenter(
         }
     }
 
-    private fun navigateToFragment(@IdRes destinationId: Int, args: Bundle? = null) {
-        val src = navController.currentDestination ?: return
-        val srcId = src.id
+    private fun navigateTo(@IdRes destinationId: Int, args: Bundle? = null) {
+        val srcId = getSourceId(navController, destinationId) ?: return
+
         if (srcId == destinationId && args == null) {
             // No point in navigating if nothing has changed.
             return
@@ -101,31 +101,9 @@ class AutofillRoutePresenter(
 
         val transition = findTransitionId(srcId, destinationId) ?: destinationId
 
-        if (transition == destinationId) {
-            // Without being able to detect if we're in developer mode,
-            // it is too dangerous to RuntimeException.
-            val from = activity.resources.getResourceName(srcId)
-            val to = activity.resources.getResourceName(destinationId)
-            log.error(
-                "Cannot route from $from to $to. " +
-                    "This is a developer bug, fixable by adding an action to graph_autofill.xml"
-            )
-        } else {
-            val clearBackStack = src.getAction(transition)?.navOptions?.shouldLaunchSingleTop() ?: false
-            if (clearBackStack) {
-                while (navController.popBackStack()) {
-                    // NOP
-                }
-            }
-        }
-
-        try {
-            navController.navigate(transition, args)
-        } catch (e: IllegalArgumentException) {
-            log.error("This appears to be a bug in navController", e)
-            navController.navigate(destinationId, args)
-        }
+        super.navigateToFragment(navController, destinationId, transition, args)
     }
+
 
     private fun findTransitionId(@IdRes from: Int, @IdRes to: Int): Int? {
         return when (Pair(from, to)) {
@@ -136,6 +114,7 @@ class AutofillRoutePresenter(
         }
     }
 
+    // could possibly put this in RoutePresenter? slight differences between these versions
     private fun showDialogFragment(dialogFragment: DialogFragment, destination: RouteAction.DialogFragment) {
         val fragmentManager = activity.supportFragmentManager
         try {
