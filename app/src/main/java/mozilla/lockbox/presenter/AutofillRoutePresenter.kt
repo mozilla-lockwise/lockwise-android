@@ -137,8 +137,8 @@ class AutofillRoutePresenter(
         }
     }
 
-    private fun findTransitionId(@IdRes from: Int, @IdRes to: Int): Int? {
-        return when (from to to) {
+    private fun findTransitionId(@IdRes from: Int, @IdRes destination: Int): Int? {
+        return when (from to destination) {
             R.id.fragment_locked to R.id.fragment_filter -> R.id.action_locked_to_filter
             R.id.fragment_null to R.id.fragment_filter -> R.id.action_to_filter
             R.id.fragment_null to R.id.fragment_locked -> R.id.action_to_locked
