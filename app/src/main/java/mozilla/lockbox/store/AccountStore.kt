@@ -27,7 +27,6 @@ import mozilla.components.service.fxa.FirefoxAccount
 import mozilla.components.service.fxa.Profile
 import mozilla.lockbox.action.AccountAction
 import mozilla.lockbox.action.DataStoreAction
-import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
@@ -43,7 +42,6 @@ import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 import org.mozilla.fxaclient.internal.FxaException as FxaException
 
-
 @ExperimentalCoroutinesApi
 open class AccountStore(
     private val lifecycleStore: LifecycleStore = LifecycleStore.shared,
@@ -58,11 +56,11 @@ open class AccountStore(
 
     private val exceptionHandler: CoroutineExceptionHandler
         get() = CoroutineExceptionHandler { _, e ->
-                log.error(
-                    message = "Unexpected error occurred during Firefox Account authentication",
-                    throwable = e
-                )
-            }
+            log.error(
+                message = "Unexpected error occurred during Firefox Account authentication",
+                throwable = e
+            )
+        }
 
     private val coroutineContext: CoroutineContext
         get() = Dispatchers.Default + exceptionHandler
@@ -107,9 +105,9 @@ open class AccountStore(
 
         // Moves credentials from the AccountStore, into the DataStore.
         syncCredentials.map {
-                it.value?.let { credentials -> DataStoreAction.UpdateCredentials(credentials) }
+            it.value?.let { credentials -> DataStoreAction.UpdateCredentials(credentials) }
                 ?: DataStoreAction.Reset
-            }
+        }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
     }
@@ -221,12 +219,14 @@ open class AccountStore(
     }
 
     private fun pushError(it: Throwable) {
-        when(it) {
-            is FxaException.Unauthorized -> log.error("FxA error populating account information. Message: " + it.message, it)
+        when (it) {
+            is FxaException.Unauthorized -> log.error(
+                "FxA error populating account information. Message: " + it.message,
+                it
+            )
             is FxaException.Unspecified -> log.error("Unspecified FxA error. Message: " + it.message, it)
             is FxaException.Network -> log.error("FxA network error. Message: " + it.message, it)
             is FxaException.Panic -> log.error("FxA error. Message: " + it.message, it)
-            else -> null
         }
     }
 }

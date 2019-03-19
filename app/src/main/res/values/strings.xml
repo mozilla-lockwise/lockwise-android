@@ -12,8 +12,6 @@
 
     <!-- This is the text on a button to cancel the current operation or request such as unlocking the application with a fingerprint -->
     <string name="cancel">Cancel</string>
-    <!-- This is the text on a button to confirm or continue with the current operation -->
-    <string name="ok">OK</string>
     <!-- This is the title of a link for users to tap to open a web page to learn more about a related setting or feature -->
     <string name="learn_more">Learn more</string>
     <!-- This is the label a screenreader uses to inform the user they selected a link that will open a webpage to learn more about the feature or setting -->
@@ -185,11 +183,6 @@
     <string name="disconnect_disclaimer_message">This will delete your Firefox Account information and all saved entries from Firefox Lockbox.</string>
     <!-- This is the text on a final confirmation button to sign out and disconnect the account from the application -->
     <string name="disconnect">Disconnect</string>
-
-    <!-- This is used as the title for an alert message to inform the user the app does not detect network connectivity -->
-    <string name="no_network">No Network</string>
-    <!-- This is displayed in an alert message to provide information and instruction to connect to the internet to use the application, not expected to translate Firefox Lockbox -->
-    <string name="connect_to_internet">Please connect to the internet to use Firefox Lockbox</string>
     <!-- This is the hint value for an autofill box that appears when suggesting a value for a password field. It is interpolated with the user's account name. -->
     <string name="password_for">Password for %1$s</string>
 
