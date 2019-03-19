@@ -23,7 +23,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.spy
-import org.mockito.Mockito.verify
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
@@ -33,9 +32,6 @@ import org.robolectric.annotation.Config
 class LockedPresenterTest {
 
     open class FakeView : LockedView {
-        override fun unlockFallback() {
-        }
-
         val unlockConfirmedStub = PublishSubject.create<Boolean>()
         override val unlockConfirmed: Observable<Boolean> get() = unlockConfirmedStub
         override val unlockButtonTaps = PublishSubject.create<Unit>()
@@ -96,19 +92,22 @@ class LockedPresenterTest {
 
     @Test
     fun `unlock button tap fallback if no fingerprint`() {
+        val dispatchIterator = dispatcher.register.blockingIterable().iterator()
         `when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(false)
         `when`(fingerprintStore.isKeyguardDeviceSecure).thenReturn(true)
         view.unlockButtonTaps.onNext(Unit)
         settingStore.unlock.onNext(false)
-        verify(view).unlockFallback()
+        assertTrue(dispatchIterator.next() is UnlockingAction)
+        assertEquals(RouteAction.UnlockFallbackDialog, dispatchIterator.next())
     }
 
     @Test
     fun `unlock button tap fallback on fingerprint error`() {
+        val dispatchIterator = dispatcher.register.blockingIterable().iterator()
         `when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(true)
         `when`(fingerprintStore.isKeyguardDeviceSecure).thenReturn(true)
         lockedStore.onAuth.onNext(FingerprintAuthAction.OnAuthentication(FingerprintAuthCallback.OnError))
-        verify(view).unlockFallback()
+        assertEquals(RouteAction.UnlockFallbackDialog, dispatchIterator.next())
     }
 
     @Test
@@ -133,15 +132,16 @@ class LockedPresenterTest {
         settingStore.unlock.onNext(false)
         val unlockingAction = dispatchIterator.next() as UnlockingAction
         assertTrue(unlockingAction.currently)
-        verify(view).unlockFallback()
+        assertEquals(RouteAction.UnlockFallbackDialog, dispatchIterator.next())
     }
 
     @Test
     fun `foreground action fallback on fingerprint error`() {
+        val dispatchIterator = dispatcher.register.blockingIterable().iterator()
         `when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(true)
         `when`(fingerprintStore.isKeyguardDeviceSecure).thenReturn(true)
         lockedStore.onAuth.onNext(FingerprintAuthAction.OnAuthentication(FingerprintAuthCallback.OnError))
-        verify(view).unlockFallback()
+        assertEquals(RouteAction.UnlockFallbackDialog, dispatchIterator.next())
     }
 
     @Test

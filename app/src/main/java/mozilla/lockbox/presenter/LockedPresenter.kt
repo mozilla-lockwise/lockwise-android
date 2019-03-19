@@ -24,7 +24,6 @@ import java.util.concurrent.TimeUnit
 
 interface LockedView {
     val unlockButtonTaps: Observable<Unit>
-    fun unlockFallback()
     val unlockConfirmed: Observable<Boolean>
 }
 
@@ -87,7 +86,6 @@ class LockedPresenter(
     private fun unlockFallback() {
         if (fingerprintStore.isKeyguardDeviceSecure) {
             dispatcher.dispatch(RouteAction.UnlockFallbackDialog)
-            view.unlockFallback()
         } else {
             unlock()
         }

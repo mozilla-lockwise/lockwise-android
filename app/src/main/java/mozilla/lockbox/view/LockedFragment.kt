@@ -24,10 +24,6 @@ import mozilla.lockbox.support.Constant
 class LockedFragment : Fragment(), LockedView {
     private val _unlockConfirmed = PublishSubject.create<Boolean>()
 
-    companion object {
-        private const val LOCK_REQUEST_CODE = 221
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         presenter = LockedPresenter(this)
         return inflater.inflate(R.layout.fragment_locked, container, false)
@@ -35,10 +31,6 @@ class LockedFragment : Fragment(), LockedView {
 
     override val unlockButtonTaps: Observable<Unit>
         get() = view!!.unlockButton.clicks()
-
-    override fun unlockFallback() {
-        // Deleted
-    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
