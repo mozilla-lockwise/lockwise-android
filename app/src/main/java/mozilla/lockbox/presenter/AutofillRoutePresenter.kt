@@ -92,26 +92,7 @@ class AutofillRoutePresenter(
     }
 
     private fun navigateTo(@IdRes destinationId: Int, args: Bundle? = null) {
-        val srcId = getSourceId(navController, destinationId) ?: return
-
-        if (srcId == destinationId && args == null) {
-            // No point in navigating if nothing has changed.
-            return
-        }
-
-        val transition = findTransitionId(srcId, destinationId) ?: destinationId
-
-        super.navigateToFragment(navController, destinationId, transition, args)
-    }
-
-
-    private fun findTransitionId(@IdRes from: Int, @IdRes to: Int): Int? {
-        return when (Pair(from, to)) {
-            Pair(R.id.fragment_locked, R.id.fragment_filter) -> R.id.action_locked_to_filter
-            Pair(R.id.fragment_null, R.id.fragment_filter) -> R.id.action_to_filter
-            Pair(R.id.fragment_null, R.id.fragment_locked) -> R.id.action_to_locked
-            else -> null
-        }
+        super.navigateToFragment(navController, destinationId, args)
     }
 
     // could possibly put this in RoutePresenter? slight differences between these versions
