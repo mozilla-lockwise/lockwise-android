@@ -34,13 +34,6 @@ sealed class DialogAction(
         ),
         listOf(LifecycleAction.UserReset)
     )
-    object NoNetworkDisclaimer : DialogAction(
-        DialogViewModel(
-            R.string.no_network,
-            R.string.connect_to_internet,
-            R.string.ok
-        )
-    )
     object OnboardingSecurityDialog : DialogAction(
             DialogViewModel(
                 R.string.secure_your_device,
