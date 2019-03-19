@@ -16,3 +16,4 @@ ignore:
   - "app/src/main/java/mozilla/lockbox/extensions/view"
   - "app/src/debug/java/mozilla/lockbox/view/UITestActivity.kt"
   - "app/src/main/java/mozilla/lockbox/presenter/RoutePresenter.kt"
+  - "app/src/main/java/mozilla/lockbox/presenter/AppRoutePresenter.kt"
