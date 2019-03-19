@@ -28,7 +28,6 @@ open class RouteAction(
     object Filter : RouteAction(TelemetryEventMethod.tap, TelemetryEventObject.filter)
     data class ItemDetail(val id: String) : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.entry_detail)
 
-
     // This should _only_ be triggered by pressing the back button.
     object InternalBack : RouteAction(TelemetryEventMethod.tap, TelemetryEventObject.back)
 

@@ -7,8 +7,6 @@
 package mozilla.lockbox.view
 
 import android.app.Activity.RESULT_OK
-import android.app.KeyguardManager
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -22,7 +20,6 @@ import mozilla.lockbox.R
 import mozilla.lockbox.presenter.LockedPresenter
 import mozilla.lockbox.presenter.LockedView
 import mozilla.lockbox.support.Constant
-import java.lang.Exception
 
 class LockedFragment : Fragment(), LockedView {
     private val _unlockConfirmed = PublishSubject.create<Boolean>()
