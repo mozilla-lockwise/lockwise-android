@@ -117,6 +117,7 @@ dependencies {
     implementation "android.arch.navigation:navigation-ui-ktx:$navigation_version"
     implementation 'com.adjust.sdk:adjust-android:4.17.0'
     implementation 'com.android.installreferrer:installreferrer:1.0'
+    implementation 'com.google.android.gms:play-services-analytics:16.0.7'
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:2.22.0'
     testImplementation 'org.robolectric:robolectric:4.0.2'
