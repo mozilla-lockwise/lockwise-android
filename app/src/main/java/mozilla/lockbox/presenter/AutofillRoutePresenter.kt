@@ -3,16 +3,13 @@ package mozilla.lockbox.presenter
 import android.app.Activity
 import android.content.Intent
 import android.os.Build
-import android.os.Bundle
 import android.service.autofill.FillResponse
 import android.view.autofill.AutofillManager
 import androidx.annotation.IdRes
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
@@ -22,8 +19,6 @@ import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.autofill.FillResponseBuilder
 import mozilla.lockbox.autofill.IntentBuilder
 import mozilla.lockbox.flux.Dispatcher
-import mozilla.lockbox.flux.Presenter
-import mozilla.lockbox.log
 import mozilla.lockbox.store.AutofillStore
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.RouteStore
@@ -35,23 +30,21 @@ import mozilla.lockbox.view.FingerprintAuthDialogFragment
 @ExperimentalCoroutinesApi
 @RequiresApi(Build.VERSION_CODES.O)
 class AutofillRoutePresenter(
-    private val activity: AppCompatActivity,
+    activity: AppCompatActivity,
     private val responseBuilder: FillResponseBuilder,
-    private val dispatcher: Dispatcher = Dispatcher.shared,
-    private val routeStore: RouteStore = RouteStore.shared,
+    dispatcher: Dispatcher = Dispatcher.shared,
+    routeStore: RouteStore = RouteStore.shared,
     private val autofillStore: AutofillStore = AutofillStore.shared,
     private val dataStore: DataStore = DataStore.shared,
     private val pslSupport: PublicSuffixSupport = PublicSuffixSupport.shared
-) : Presenter() {
-    private lateinit var navController: NavController
+) : AbstractRoutePresenter(activity, dispatcher, routeStore) {
 
     override fun onViewReady() {
         navController = Navigation.findNavController(activity, R.id.autofill_fragment_nav_host)
-        routeStore.routes
-            .distinctUntilChanged()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(this::route)
-            .addTo(compositeDisposable)
+    }
+
+    override fun onResume() {
+        super.onResume()
 
         autofillStore.autofillActions
             .subscribe(this::finishAutofill)
@@ -80,7 +73,7 @@ class AutofillRoutePresenter(
             .addTo(compositeDisposable)
     }
 
-    private fun route(action: RouteAction) {
+    override fun route(action: RouteAction) {
         when (action) {
             is RouteAction.LockScreen -> navigateToFragment(R.id.fragment_locked)
             is RouteAction.ItemList -> showDialogFragment(AutofillFilterFragment(),
@@ -90,59 +83,16 @@ class AutofillRoutePresenter(
                 showDialogFragment(FingerprintAuthDialogFragment(), action)
         }
     }
-
-    private fun navigateToFragment(@IdRes destinationId: Int, args: Bundle? = null) {
-        val src = navController.currentDestination ?: return
-        val srcId = src.id
-        if (srcId == destinationId && args == null) {
-            // No point in navigating if nothing has changed.
-            return
-        }
-
-        val transition = findTransitionId(srcId, destinationId) ?: destinationId
-
-        if (transition == destinationId) {
-            // Without being able to detect if we're in developer mode,
-            // it is too dangerous to RuntimeException.
-            val from = activity.resources.getResourceName(srcId)
-            val to = activity.resources.getResourceName(destinationId)
-            log.error(
-                "Cannot route from $from to $to. " +
-                    "This is a developer bug, fixable by adding an action to graph_autofill.xml"
             )
-        } else {
-            val clearBackStack = src.getAction(transition)?.navOptions?.shouldLaunchSingleTop() ?: false
-            if (clearBackStack) {
-                while (navController.popBackStack()) {
-                    // NOP
-                }
-            }
-        }
-
-        try {
-            navController.navigate(transition, args)
-        } catch (e: IllegalArgumentException) {
-            log.error("This appears to be a bug in navController", e)
-            navController.navigate(destinationId, args)
         }
     }
 
-    private fun findTransitionId(@IdRes from: Int, @IdRes to: Int): Int? {
+    override fun findTransitionId(@IdRes from: Int, @IdRes to: Int): Int? {
         return when (Pair(from, to)) {
             Pair(R.id.fragment_locked, R.id.fragment_filter) -> R.id.action_locked_to_filter
             Pair(R.id.fragment_null, R.id.fragment_filter) -> R.id.action_to_filter
             Pair(R.id.fragment_null, R.id.fragment_locked) -> R.id.action_to_locked
             else -> null
-        }
-    }
-
-    private fun showDialogFragment(dialogFragment: DialogFragment, destination: RouteAction.DialogFragment) {
-        val fragmentManager = activity.supportFragmentManager
-        try {
-            dialogFragment.show(fragmentManager, dialogFragment.javaClass.name)
-            dialogFragment.setupDialog(destination.dialogTitle, destination.dialogSubtitle)
-        } catch (e: IllegalStateException) {
-            log.error("Could not show dialog", e)
         }
     }
 

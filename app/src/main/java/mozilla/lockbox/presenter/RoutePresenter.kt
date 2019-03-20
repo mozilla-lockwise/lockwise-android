@@ -6,19 +6,10 @@
 
 package mozilla.lockbox.presenter
 
-import android.app.KeyguardManager
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import androidx.activity.OnBackPressedCallback
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
@@ -28,62 +19,26 @@ import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.extensions.view.AlertDialogHelper
-import mozilla.lockbox.extensions.view.AlertState
 import mozilla.lockbox.flux.Dispatcher
-import mozilla.lockbox.flux.Presenter
-import mozilla.lockbox.log
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.view.AppWebPageFragmentArgs
-import mozilla.lockbox.view.DialogFragment
 import mozilla.lockbox.view.FingerprintAuthDialogFragment
 import mozilla.lockbox.view.ItemDetailFragmentArgs
 
 @ExperimentalCoroutinesApi
 class RoutePresenter(
-    private val activity: AppCompatActivity,
-    private val dispatcher: Dispatcher = Dispatcher.shared,
-    private val routeStore: RouteStore = RouteStore.shared,
-    private val settingStore: SettingStore = SettingStore.shared
-) : Presenter() {
-    private lateinit var navController: NavController
-    private val backListener = OnBackPressedCallback {
-        dispatcher.dispatch(RouteAction.InternalBack)
-        false
-    }
-
-    private val navHostFragmentManager: FragmentManager
-        get() {
-            val fragmentManager = activity.supportFragmentManager
-            val navHost = fragmentManager.fragments.last()
-            return navHost.childFragmentManager
-        }
-
-    private val currentFragment: Fragment
-        get() {
-            return navHostFragmentManager.fragments.last()
-        }
+    activity: AppCompatActivity,
+    dispatcher: Dispatcher = Dispatcher.shared,
+    routeStore: RouteStore = RouteStore.shared,
+    internal val settingStore: SettingStore = SettingStore.shared
+) : AbstractRoutePresenter(activity, dispatcher, routeStore) {
 
     override fun onViewReady() {
         navController = Navigation.findNavController(activity, R.id.fragment_nav_host)
     }
 
-    override fun onPause() {
-        super.onPause()
-        activity.removeOnBackPressedCallback(backListener)
-        compositeDisposable.clear()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        activity.addOnBackPressedCallback(backListener)
-        routeStore.routes
-            .observeOn(mainThread())
-            .subscribe(this::route)
-            .addTo(compositeDisposable)
-    }
-
-    private fun route(action: RouteAction) {
+    override fun route(action: RouteAction) {
         activity.setTheme(R.style.AppTheme)
         when (action) {
             is RouteAction.Welcome -> navigateToFragment(R.id.fragment_welcome)
@@ -124,108 +79,7 @@ class RoutePresenter(
             .toBundle()
     }
 
-    private fun showDialog(destination: DialogAction) {
-        AlertDialogHelper.showAlertDialog(activity, destination.viewModel)
-            .map { alertState ->
-                when (alertState) {
-                    AlertState.BUTTON_POSITIVE -> {
-                        destination.positiveButtonActionList
-                    }
-                    AlertState.BUTTON_NEGATIVE -> {
-                        destination.negativeButtonActionList
-                    }
-                }
-            }
-            .flatMapIterable { listOf(RouteAction.InternalBack) + it }
-            .subscribe(dispatcher::dispatch)
-            .addTo(compositeDisposable)
-    }
-
-    private fun showAutoLockSelections() {
-        val autoLockValues = Setting.AutoLockTime.values()
-        val items = autoLockValues.map { it.stringValue }.toTypedArray()
-
-        settingStore.autoLockTime.take(1)
-            .map { autoLockValues.indexOf(it) }
-            .flatMap {
-                AlertDialogHelper.showRadioAlertDialog(
-                    activity,
-                    R.string.auto_lock,
-                    items,
-                    it,
-                    negativeButtonTitle = R.string.cancel
-                )
-            }
-            .flatMapIterable {
-                listOf(RouteAction.InternalBack, SettingAction.AutoLockTime(autoLockValues[it]))
-            }
-            .subscribe(dispatcher::dispatch)
-            .addTo(compositeDisposable)
-    }
-
-    private fun showDialogFragment(dialogFragment: DialogFragment, destination: RouteAction.DialogFragment) {
-        try {
-            dialogFragment.setTargetFragment(currentFragment, 0)
-            dialogFragment.show(navHostFragmentManager, dialogFragment.javaClass.name)
-            dialogFragment.setupDialog(destination.dialogTitle, destination.dialogSubtitle)
-        } catch (e: IllegalStateException) {
-            log.error("Could not show dialog", e)
-        }
-    }
-
-    private fun showUnlockFallback(action: RouteAction.UnlockFallbackDialog) {
-        val manager = activity.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
-        val intent = manager.createConfirmDeviceCredentialIntent(
-            activity.getString(R.string.unlock_fallback_title),
-            activity.getString(R.string.confirm_pattern)
-        )
-        currentFragment.startActivityForResult(intent, action.requestCode)
-    }
-
-    private fun navigateToFragment(@IdRes destinationId: Int, args: Bundle? = null) {
-        val src = navController.currentDestination ?: return
-        val srcId = src.id
-        if (srcId == destinationId && args == null) {
-            // No point in navigating if nothing has changed.
-            return
-        }
-
-        val transition = findTransitionId(srcId, destinationId) ?: destinationId
-
-        val navOptions = if (transition == destinationId) {
-            // Without being able to detect if we're in developer mode,
-            // it is too dangerous to RuntimeException.
-            val from = activity.resources.getResourceName(srcId)
-            val to = activity.resources.getResourceName(destinationId)
-            val graphName = activity.resources.getResourceName(navController.graph.id)
-            log.error(
-                "Cannot route from $from to $to. " +
-                    "This is a developer bug, fixable by adding an action to $graphName.xml and/or ${javaClass.simpleName}"
-            )
-            null
-        } else {
-            // Get the transition action out of the graph, before we manually clear the back
-            // stack, because it causes IllegalArgumentExceptions.
-            src.getAction(transition)?.navOptions?.let { navOptions ->
-                if (navOptions.shouldLaunchSingleTop()) {
-                    while (navController.popBackStack()) {
-                        // NOP
-                    }
-                    routeStore.clearBackStack()
-                }
-                navOptions
-            }
-        }
-
-        try {
-            navController.navigate(destinationId, args, navOptions)
-        } catch (e: Throwable) {
-            log.error("This appears to be a bug in navController", e)
-            navController.navigate(destinationId, args)
-        }
-    }
-
-    private fun findTransitionId(@IdRes from: Int, @IdRes to: Int): Int? {
+    override fun findTransitionId(@IdRes src: Int, @IdRes dest: Int): Int? {
         // This maps two nodes in the graph_main.xml to the edge between them.
         // If a RouteAction is called from a place the graph doesn't know about then
         // the app will log.error.
@@ -275,14 +129,25 @@ class RoutePresenter(
         }
     }
 
-    private fun openWebsite(url: String) {
-        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-        activity.startActivity(browserIntent, null)
-    }
+    private fun showAutoLockSelections() {
+        val autoLockValues = Setting.AutoLockTime.values()
+        val items = autoLockValues.map { it.stringValue }.toTypedArray()
 
-    private fun openSetting(settingAction: RouteAction.SystemSetting) {
-        val settingIntent = Intent(settingAction.setting.intentAction)
-        settingIntent.data = settingAction.setting.data
-        activity.startActivity(settingIntent, null)
+        settingStore.autoLockTime.take(1)
+            .map { autoLockValues.indexOf(it) }
+            .flatMap {
+                AlertDialogHelper.showRadioAlertDialog(
+                    activity,
+                    R.string.auto_lock,
+                    items,
+                    it,
+                    negativeButtonTitle = R.string.cancel
+                )
+            }
+            .flatMapIterable {
+                listOf(RouteAction.InternalBack, SettingAction.AutoLockTime(autoLockValues[it]))
+            }
+            .subscribe(dispatcher::dispatch)
+            .addTo(compositeDisposable)
     }
 }
