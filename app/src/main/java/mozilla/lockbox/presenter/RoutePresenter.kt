@@ -6,11 +6,16 @@
 
 package mozilla.lockbox.presenter
 
+import android.app.KeyguardManager
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
@@ -42,6 +47,22 @@ class RoutePresenter(
     private val settingStore: SettingStore = SettingStore.shared
 ) : Presenter() {
     private lateinit var navController: NavController
+    private val backListener = OnBackPressedCallback {
+        dispatcher.dispatch(RouteAction.InternalBack)
+        false
+    }
+
+    private val navHostFragmentManager: FragmentManager
+        get() {
+            val fragmentManager = activity.supportFragmentManager
+            val navHost = fragmentManager.fragments.last()
+            return navHost.childFragmentManager
+        }
+
+    private val currentFragment: Fragment
+        get() {
+            return navHostFragmentManager.fragments.last()
+        }
 
     override fun onViewReady() {
         navController = Navigation.findNavController(activity, R.id.fragment_nav_host)
@@ -49,13 +70,13 @@ class RoutePresenter(
 
     override fun onPause() {
         super.onPause()
-
+        activity.removeOnBackPressedCallback(backListener)
         compositeDisposable.clear()
     }
 
     override fun onResume() {
         super.onResume()
-
+        activity.addOnBackPressedCallback(backListener)
         routeStore.routes
             .observeOn(mainThread())
             .subscribe(this::route)
@@ -63,6 +84,7 @@ class RoutePresenter(
     }
 
     private fun route(action: RouteAction) {
+        activity.setTheme(R.style.AppTheme)
         when (action) {
             is RouteAction.Welcome -> navigateToFragment(R.id.fragment_welcome)
             is RouteAction.Login -> navigateToFragment(R.id.fragment_fxa_login)
@@ -78,6 +100,7 @@ class RoutePresenter(
             is RouteAction.ItemDetail -> navigateToFragment(R.id.fragment_item_detail, bundle(action))
             is RouteAction.OpenWebsite -> openWebsite(action.url)
             is RouteAction.SystemSetting -> openSetting(action)
+            is RouteAction.UnlockFallbackDialog -> showUnlockFallback(action)
             is RouteAction.AutoLockSetting -> showAutoLockSelections()
             is RouteAction.DialogFragment.FingerprintDialog ->
                 showDialogFragment(FingerprintAuthDialogFragment(), action)
@@ -113,7 +136,7 @@ class RoutePresenter(
                     }
                 }
             }
-            .flatMapIterable { it }
+            .flatMapIterable { listOf(RouteAction.InternalBack) + it }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
     }
@@ -133,27 +156,32 @@ class RoutePresenter(
                     negativeButtonTitle = R.string.cancel
                 )
             }
-            .map {
-                autoLockValues[it]
+            .flatMapIterable {
+                listOf(RouteAction.InternalBack, SettingAction.AutoLockTime(autoLockValues[it]))
             }
-            .subscribe {
-                dispatcher.dispatch(SettingAction.AutoLockTime(it))
-            }
+            .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
     }
 
-    private fun showDialogFragment(dialogFragment: DialogFragment?, destination: RouteAction.DialogFragment) {
-        if (dialogFragment != null) {
-            val fragmentManager = activity.supportFragmentManager
-            try {
-                dialogFragment.setTargetFragment(fragmentManager.fragments.last(), 0)
-                dialogFragment.show(fragmentManager, dialogFragment.javaClass.name)
-                dialogFragment.setupDialog(destination.dialogTitle, destination.dialogSubtitle)
-            } catch (e: IllegalStateException) {
-                log.error("Could not show dialog", e)
-            }
+    private fun showDialogFragment(dialogFragment: DialogFragment, destination: RouteAction.DialogFragment) {
+        try {
+            dialogFragment.setTargetFragment(currentFragment, 0)
+            dialogFragment.show(navHostFragmentManager, dialogFragment.javaClass.name)
+            dialogFragment.setupDialog(destination.dialogTitle, destination.dialogSubtitle)
+        } catch (e: IllegalStateException) {
+            log.error("Could not show dialog", e)
         }
     }
+
+    private fun showUnlockFallback(action: RouteAction.UnlockFallbackDialog) {
+        val manager = activity.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+        val intent = manager.createConfirmDeviceCredentialIntent(
+            activity.getString(R.string.unlock_fallback_title),
+            activity.getString(R.string.confirm_pattern)
+        )
+        currentFragment.startActivityForResult(intent, action.requestCode)
+    }
+
     private fun navigateToFragment(@IdRes destinationId: Int, args: Bundle? = null) {
         val src = navController.currentDestination ?: return
         val srcId = src.id
@@ -164,27 +192,34 @@ class RoutePresenter(
 
         val transition = findTransitionId(srcId, destinationId) ?: destinationId
 
-        if (transition == destinationId) {
+        val navOptions = if (transition == destinationId) {
             // Without being able to detect if we're in developer mode,
             // it is too dangerous to RuntimeException.
             val from = activity.resources.getResourceName(srcId)
             val to = activity.resources.getResourceName(destinationId)
+            val graphName = activity.resources.getResourceName(navController.graph.id)
             log.error(
                 "Cannot route from $from to $to. " +
-                    "This is a developer bug, fixable by adding an action to graph_main.xml"
+                    "This is a developer bug, fixable by adding an action to $graphName.xml and/or ${javaClass.simpleName}"
             )
+            null
         } else {
-            val clearBackStack = src.getAction(transition)?.navOptions?.shouldLaunchSingleTop() ?: false
-            if (clearBackStack) {
-                while (navController.popBackStack()) {
-                    // NOP
+            // Get the transition action out of the graph, before we manually clear the back
+            // stack, because it causes IllegalArgumentExceptions.
+            src.getAction(transition)?.navOptions?.let { navOptions ->
+                if (navOptions.shouldLaunchSingleTop()) {
+                    while (navController.popBackStack()) {
+                        // NOP
+                    }
+                    routeStore.clearBackStack()
                 }
+                navOptions
             }
         }
 
         try {
-            navController.navigate(transition, args)
-        } catch (e: IllegalArgumentException) {
+            navController.navigate(destinationId, args, navOptions)
+        } catch (e: Throwable) {
             log.error("This appears to be a bug in navController", e)
             navController.navigate(destinationId, args)
         }
@@ -194,44 +229,47 @@ class RoutePresenter(
         // This maps two nodes in the graph_main.xml to the edge between them.
         // If a RouteAction is called from a place the graph doesn't know about then
         // the app will log.error.
-        return when (Pair(from, to)) {
-            Pair(R.id.fragment_welcome, R.id.fragment_item_list) -> R.id.action_to_itemList
-            Pair(R.id.fragment_welcome, R.id.fragment_item_list) -> R.id.action_to_webview
-            Pair(R.id.fragment_welcome, R.id.fragment_locked) -> R.id.action_to_locked
+        return when (from to to) {
+            R.id.fragment_null to R.id.fragment_item_list -> R.id.action_init_to_unlocked
+            R.id.fragment_null to R.id.fragment_locked -> R.id.action_init_to_locked
+            R.id.fragment_null to R.id.fragment_welcome -> R.id.action_init_to_unprepared
 
-            Pair(R.id.fragment_fxa_login, R.id.fragment_item_list) -> R.id.action_fxaLogin_to_itemList
-            Pair(R.id.fragment_fxa_login, R.id.fragment_fingerprint_onboarding) ->
+            R.id.fragment_welcome to R.id.fragment_fxa_login -> R.id.action_welcome_to_fxaLogin
+
+            R.id.fragment_fxa_login to R.id.fragment_item_list -> R.id.action_fxaLogin_to_itemList
+            R.id.fragment_fxa_login to R.id.fragment_fingerprint_onboarding ->
                 R.id.action_fxaLogin_to_fingerprint_onboarding
-            Pair(R.id.fragment_fxa_login, R.id.fragment_onboarding_confirmation) ->
+            R.id.fragment_fxa_login to R.id.fragment_onboarding_confirmation ->
                 R.id.action_fxaLogin_to_onboarding_confirmation
 
-            Pair(R.id.fragment_fingerprint_onboarding, R.id.fragment_onboarding_confirmation) ->
+            R.id.fragment_fingerprint_onboarding to R.id.fragment_onboarding_confirmation ->
                 R.id.action_fingerprint_onboarding_to_confirmation
-            Pair(R.id.fragment_fingerprint_onboarding, R.id.fragment_autofill_onboarding) ->
+            R.id.fragment_fingerprint_onboarding to R.id.fragment_autofill_onboarding ->
                 R.id.action_onboarding_fingerprint_to_autofill
 
-            Pair(R.id.fragment_autofill_onboarding, R.id.fragment_item_list) -> R.id.action_to_itemList
+            R.id.fragment_autofill_onboarding to R.id.fragment_item_list -> R.id.action_to_itemList
+            R.id.fragment_autofill_onboarding to R.id.fragment_onboarding_confirmation -> R.id.action_autofill_onboarding_to_confirmation
 
-            Pair(R.id.fragment_onboarding_confirmation, R.id.fragment_item_list) -> R.id.action_to_itemList
-            Pair(R.id.fragment_onboarding_confirmation, R.id.fragment_webview) -> R.id.action_to_webview
+            R.id.fragment_onboarding_confirmation to R.id.fragment_item_list -> R.id.action_to_itemList
+            R.id.fragment_onboarding_confirmation to R.id.fragment_webview -> R.id.action_to_webview
 
-            Pair(R.id.fragment_locked, R.id.fragment_item_list) -> R.id.action_to_itemList
-            Pair(R.id.fragment_locked, R.id.fragment_welcome) -> R.id.action_locked_to_welcome
+            R.id.fragment_locked to R.id.fragment_item_list -> R.id.action_to_itemList
+            R.id.fragment_locked to R.id.fragment_welcome -> R.id.action_locked_to_welcome
 
-            Pair(R.id.fragment_item_list, R.id.fragment_item_detail) -> R.id.action_itemList_to_itemDetail
-            Pair(R.id.fragment_item_list, R.id.fragment_setting) -> R.id.action_itemList_to_setting
-            Pair(R.id.fragment_item_list, R.id.fragment_account_setting) -> R.id.action_itemList_to_accountSetting
-            Pair(R.id.fragment_item_list, R.id.fragment_locked) -> R.id.action_to_locked
-            Pair(R.id.fragment_item_list, R.id.fragment_filter) -> R.id.action_itemList_to_filter
-            Pair(R.id.fragment_item_list, R.id.fragment_webview) -> R.id.action_to_webview
+            R.id.fragment_item_list to R.id.fragment_item_detail -> R.id.action_itemList_to_itemDetail
+            R.id.fragment_item_list to R.id.fragment_setting -> R.id.action_itemList_to_setting
+            R.id.fragment_item_list to R.id.fragment_account_setting -> R.id.action_itemList_to_accountSetting
+            R.id.fragment_item_list to R.id.fragment_locked -> R.id.action_to_locked
+            R.id.fragment_item_list to R.id.fragment_filter -> R.id.action_itemList_to_filter
+            R.id.fragment_item_list to R.id.fragment_webview -> R.id.action_to_webview
 
-            Pair(R.id.fragment_item_detail, R.id.fragment_webview) -> R.id.action_to_webview
+            R.id.fragment_item_detail to R.id.fragment_webview -> R.id.action_to_webview
 
-            Pair(R.id.fragment_setting, R.id.fragment_webview) -> R.id.action_to_webview
+            R.id.fragment_setting to R.id.fragment_webview -> R.id.action_to_webview
 
-            Pair(R.id.fragment_account_setting, R.id.fragment_welcome) -> R.id.action_to_welcome
+            R.id.fragment_account_setting to R.id.fragment_welcome -> R.id.action_to_welcome
 
-            Pair(R.id.fragment_filter, R.id.fragment_item_detail) -> R.id.action_filter_to_itemDetail
+            R.id.fragment_filter to R.id.fragment_item_detail -> R.id.action_filter_to_itemDetail
 
             else -> null
         }

@@ -59,10 +59,14 @@ class RouteStoreTest {
         routeObserver.assertLastValue(RouteAction.ItemList)
 
         dispatcher.dispatch(RouteAction.SystemSetting(SettingIntent.Security))
-        routeObserver.assertLastValue(RouteAction.NoFollowOnReturn)
+        val routeObserver1 = TestObserver.create<RouteAction>()
+        subject.routes.subscribe(routeObserver1)
+        routeObserver1.assertLastValue(RouteAction.ItemList)
 
         dispatcher.dispatch(RouteAction.OpenWebsite("https://mozilla.org"))
-        routeObserver.assertLastValue(RouteAction.NoFollowOnReturn)
+        val routeObserver2 = TestObserver.create<RouteAction>()
+        subject.routes.subscribe(routeObserver2)
+        routeObserver2.assertLastValue(RouteAction.ItemList)
     }
 
     @Test

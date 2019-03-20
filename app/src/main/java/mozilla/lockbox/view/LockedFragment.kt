@@ -7,8 +7,6 @@
 package mozilla.lockbox.view
 
 import android.app.Activity.RESULT_OK
-import android.app.KeyguardManager
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -21,14 +19,10 @@ import kotlinx.android.synthetic.main.fragment_locked.view.*
 import mozilla.lockbox.R
 import mozilla.lockbox.presenter.LockedPresenter
 import mozilla.lockbox.presenter.LockedView
-import java.lang.Exception
+import mozilla.lockbox.support.Constant
 
 class LockedFragment : Fragment(), LockedView {
     private val _unlockConfirmed = PublishSubject.create<Boolean>()
-
-    companion object {
-        private const val LOCK_REQUEST_CODE = 221
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         presenter = LockedPresenter(this)
@@ -38,24 +32,11 @@ class LockedFragment : Fragment(), LockedView {
     override val unlockButtonTaps: Observable<Unit>
         get() = view!!.unlockButton.clicks()
 
-    override fun unlockFallback() {
-        val manager = context?.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
-        val intent = manager.createConfirmDeviceCredentialIntent(
-            getString(R.string.unlock_fallback_title),
-            getString(R.string.confirm_pattern)
-        )
-        try {
-            startActivityForResult(intent, LOCK_REQUEST_CODE)
-        } catch (exception: Exception) {
-            _unlockConfirmed.onNext(false)
-        }
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == RESULT_OK) {
             when (requestCode) {
-                LOCK_REQUEST_CODE -> _unlockConfirmed.onNext(true)
+                Constant.RequestCode.unlock -> _unlockConfirmed.onNext(true)
             }
         } else {
             _unlockConfirmed.onNext(false)

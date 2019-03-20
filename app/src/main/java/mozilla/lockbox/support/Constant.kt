@@ -64,4 +64,10 @@ object Constant {
         const val errorTimeoutMillis: Long = 1600
         const val successDelayMillis: Long = 1300
     }
+
+    object RequestCode {
+        const val noResult = 0
+
+        const val unlock = 221
+    }
 }
