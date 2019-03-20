@@ -9,17 +9,12 @@
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/graph_autofill"
-            app:startDestination="@id/fragment_null">
+            app:startDestination="@id/fragment_filter_backdrop">
 
     <fragment
-            android:id="@+id/fragment_null"
-            android:name="androidx.fragment.app.Fragment"
+            android:id="@+id/fragment_filter_backdrop"
+            android:name="mozilla.lockbox.view.AutofillFilterBackdropFragment"
             tools:layout="@null">
-        <action
-                android:id="@+id/action_to_filter"
-                app:destination="@id/fragment_filter"
-                app:launchSingleTop="true"
-                app:popUpToInclusive="true"/>
         <action
                 android:id="@+id/action_to_locked"
                 app:destination="@id/fragment_locked"
@@ -32,15 +27,9 @@
             android:name="mozilla.lockbox.view.AutofillLockedFragment"
             tools:layout="@layout/fragment_locked">
         <action
-                android:id="@+id/action_locked_to_filter"
-                app:destination="@id/fragment_filter"
+                android:id="@+id/action_to_filter"
+                app:destination="@id/fragment_filter_backdrop"
                 app:launchSingleTop="true"
                 app:popUpToInclusive="true"/>
-    </fragment>
-
-    <fragment
-            android:id="@+id/fragment_filter"
-            android:name="mozilla.lockbox.view.AutofillFilterFragment"
-            tools:layout="@layout/fragment_autofill_filter">
     </fragment>
 </navigation>

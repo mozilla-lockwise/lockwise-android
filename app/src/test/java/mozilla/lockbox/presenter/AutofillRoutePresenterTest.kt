@@ -182,7 +182,7 @@ class AutofillRoutePresenterTest {
         IntentBuilder.setSearchRequired(intent, true)
         whenCalled(activity.intent).thenReturn(callingIntent)
         whenCalled(activity.supportFragmentManager).thenReturn(fragmentManager)
-        whenCalled(navDestination.id).thenReturn(R.id.fragment_null)
+        whenCalled(navDestination.id).thenReturn(R.id.fragment_filter_backdrop)
         whenCalled(navController.currentDestination).thenReturn(navDestination)
         PowerMockito.mockStatic(Navigation::class.java)
         whenCalled(Navigation.findNavController(activity, R.id.autofill_fragment_nav_host)).thenReturn(navController)

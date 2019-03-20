@@ -9,9 +9,9 @@
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/graph_main"
-            app:startDestination="@id/fragment_null">
+            app:startDestination="@id/fragment_filter_backdrop">
     <fragment
-            android:id="@+id/fragment_null"
+            android:id="@+id/fragment_filter_backdrop"
             android:name="androidx.fragment.app.Fragment"
             tools:layout="@null">
         <action android:id="@+id/action_init_to_locked"

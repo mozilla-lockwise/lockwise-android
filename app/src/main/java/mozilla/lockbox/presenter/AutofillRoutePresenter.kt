@@ -9,6 +9,8 @@ import android.view.autofill.AutofillManager
 import androidx.annotation.IdRes
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import io.reactivex.Observable
@@ -44,6 +46,18 @@ class AutofillRoutePresenter(
     private val pslSupport: PublicSuffixSupport = PublicSuffixSupport.shared
 ) : Presenter() {
     private lateinit var navController: NavController
+
+    private val navHostFragmentManager: FragmentManager
+        get() {
+            val fragmentManager = activity.supportFragmentManager
+            val navHost = fragmentManager.fragments.last()
+            return navHost.childFragmentManager
+        }
+
+    private val currentFragment: Fragment
+        get() {
+            return navHostFragmentManager.fragments.last()
+        }
 
     override fun onViewReady() {
         navController = Navigation.findNavController(activity, R.id.autofill_fragment_nav_host)
@@ -82,10 +96,16 @@ class AutofillRoutePresenter(
 
     private fun route(action: RouteAction) {
         when (action) {
-            is RouteAction.LockScreen -> navigateToFragment(R.id.fragment_locked)
-            is RouteAction.ItemList -> showDialogFragment(AutofillFilterFragment(),
-                RouteAction.DialogFragment.AutofillSearchDialog
-            )
+            is RouteAction.LockScreen -> {
+                dismissDialogIfPresent()
+                navigateToFragment(R.id.fragment_locked)
+            }
+            is RouteAction.ItemList -> {
+                dismissDialogIfPresent()
+                navigateToFragment(R.id.fragment_filter_backdrop)
+            }
+            is RouteAction.DialogFragment.AutofillSearchDialog ->
+                showDialogFragment(AutofillFilterFragment(), action)
             is RouteAction.DialogFragment.FingerprintDialog ->
                 showDialogFragment(FingerprintAuthDialogFragment(), action)
         }
@@ -101,26 +121,33 @@ class AutofillRoutePresenter(
 
         val transition = findTransitionId(srcId, destinationId) ?: destinationId
 
-        if (transition == destinationId) {
+        val navOptions = if (transition == destinationId) {
             // Without being able to detect if we're in developer mode,
             // it is too dangerous to RuntimeException.
             val from = activity.resources.getResourceName(srcId)
             val to = activity.resources.getResourceName(destinationId)
+            val graphName = activity.resources.getResourceName(navController.graph.id)
             log.error(
                 "Cannot route from $from to $to. " +
-                    "This is a developer bug, fixable by adding an action to graph_autofill.xml"
+                    "This is a developer bug, fixable by adding an action to $graphName.xml and/or ${javaClass.simpleName}"
             )
+            null
         } else {
-            val clearBackStack = src.getAction(transition)?.navOptions?.shouldLaunchSingleTop() ?: false
-            if (clearBackStack) {
-                while (navController.popBackStack()) {
-                    // NOP
+            // Get the transition action out of the graph, before we manually clear the back
+            // stack, because it causes IllegalArgumentExceptions.
+            src.getAction(transition)?.navOptions?.let { navOptions ->
+                if (navOptions.shouldLaunchSingleTop()) {
+                    while (navController.popBackStack()) {
+                        // NOP
+                    }
+                    routeStore.clearBackStack()
                 }
+                navOptions
             }
         }
 
         try {
-            navController.navigate(transition, args)
+            navController.navigate(destinationId, args, navOptions)
         } catch (e: IllegalArgumentException) {
             log.error("This appears to be a bug in navController", e)
             navController.navigate(destinationId, args)
@@ -129,21 +156,24 @@ class AutofillRoutePresenter(
 
     private fun findTransitionId(@IdRes from: Int, @IdRes destination: Int): Int? {
         return when (from to destination) {
-            R.id.fragment_locked to R.id.fragment_filter -> R.id.action_locked_to_filter
-            R.id.fragment_null to R.id.fragment_filter -> R.id.action_to_filter
-            R.id.fragment_null to R.id.fragment_locked -> R.id.action_to_locked
+            R.id.fragment_locked to R.id.fragment_filter_backdrop -> R.id.action_to_filter
+            R.id.fragment_filter_backdrop to R.id.fragment_locked -> R.id.action_to_locked
             else -> null
         }
     }
 
     private fun showDialogFragment(dialogFragment: DialogFragment, destination: RouteAction.DialogFragment) {
-        val fragmentManager = activity.supportFragmentManager
         try {
-            dialogFragment.show(fragmentManager, dialogFragment.javaClass.name)
+            dialogFragment.setTargetFragment(currentFragment, 0)
+            dialogFragment.show(navHostFragmentManager, dialogFragment.javaClass.name)
             dialogFragment.setupDialog(destination.dialogTitle, destination.dialogSubtitle)
         } catch (e: IllegalStateException) {
             log.error("Could not show dialog", e)
         }
+    }
+
+    private fun dismissDialogIfPresent() {
+        (currentFragment as? DialogFragment)?.dismiss()
     }
 
     private fun finishAutofill(action: AutofillAction) {
