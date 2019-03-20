@@ -24,7 +24,7 @@ import org.junit.runner.RunWith
  */
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
-open class RoutePresenterTest {
+open class AppRoutePresenterTest {
     private val navigator = Navigator()
 
     @Rule @JvmField

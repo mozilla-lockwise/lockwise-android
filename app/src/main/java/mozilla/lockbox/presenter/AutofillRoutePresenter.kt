@@ -44,7 +44,7 @@ class AutofillRoutePresenter(
     private val autofillStore: AutofillStore = AutofillStore.shared,
     private val dataStore: DataStore = DataStore.shared,
     private val pslSupport: PublicSuffixSupport = PublicSuffixSupport.shared
-) : Presenter() {
+) : RoutePresenter(activity, dispatcher, routeStore) {
     private lateinit var navController: NavController
 
     private val navHostFragmentManager: FragmentManager
