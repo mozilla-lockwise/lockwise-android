@@ -76,13 +76,13 @@ class AutofillRoutePresenter(
     override fun route(action: RouteAction) {
         when (action) {
             is RouteAction.LockScreen -> navigateToFragment(R.id.fragment_locked)
-            is RouteAction.ItemList -> showDialogFragment(AutofillFilterFragment(),
+            is RouteAction.ItemList -> showDialogFragment(
+                AutofillFilterFragment(),
                 RouteAction.DialogFragment.AutofillSearchDialog
             )
-            is RouteAction.DialogFragment.FingerprintDialog ->
-                showDialogFragment(FingerprintAuthDialogFragment(), action)
-        }
-    }
+            is RouteAction.DialogFragment.FingerprintDialog -> showDialogFragment(
+                FingerprintAuthDialogFragment(),
+                action
             )
         }
     }
@@ -98,7 +98,7 @@ class AutofillRoutePresenter(
 
     private fun finishAutofill(action: AutofillAction) {
         when (action) {
-            is AutofillAction.Cancel -> setFillResponseAndFinish()
+            is AutofillAction.Cancel -> cancelAndFinish()
             is AutofillAction.Complete -> finishResponse(listOf(action.login))
             is AutofillAction.CompleteMultiple -> finishResponse(action.logins)
         }
@@ -106,15 +106,17 @@ class AutofillRoutePresenter(
 
     private fun finishResponse(passwords: List<ServerPassword>) {
         val response = responseBuilder.buildFilteredFillResponse(activity, passwords)
-        setFillResponseAndFinish(response)
+        response?.let { setFillResponseAndFinish(it) } ?: cancelAndFinish()
     }
 
-    private fun setFillResponseAndFinish(fillResponse: FillResponse? = null) {
-        if (fillResponse == null) {
-            activity.setResult(Activity.RESULT_CANCELED)
-        } else {
-            activity.setResult(Activity.RESULT_OK, Intent().putExtra(AutofillManager.EXTRA_AUTHENTICATION_RESULT, fillResponse))
-        }
+    private fun cancelAndFinish() {
+        activity.setResult(Activity.RESULT_CANCELED)
+        activity.finish()
+    }
+
+    private fun setFillResponseAndFinish(fillResponse: FillResponse) {
+        val results = Intent().putExtra(AutofillManager.EXTRA_AUTHENTICATION_RESULT, fillResponse)
+        activity.setResult(Activity.RESULT_OK, results)
         activity.finish()
     }
 }

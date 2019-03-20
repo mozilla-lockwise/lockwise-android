@@ -43,8 +43,7 @@ class RoutePresenter(
         when (action) {
             is RouteAction.Welcome -> navigateToFragment(R.id.fragment_welcome)
             is RouteAction.Login -> navigateToFragment(R.id.fragment_fxa_login)
-            is RouteAction.Onboarding.FingerprintAuth ->
-                navigateToFragment(R.id.fragment_fingerprint_onboarding)
+            is RouteAction.Onboarding.FingerprintAuth -> navigateToFragment(R.id.fragment_fingerprint_onboarding)
             is RouteAction.Onboarding.Autofill -> navigateToFragment(R.id.fragment_autofill_onboarding)
             is RouteAction.Onboarding.Confirmation -> navigateToFragment(R.id.fragment_onboarding_confirmation)
             is RouteAction.ItemList -> navigateToFragment(R.id.fragment_item_list)
@@ -57,8 +56,10 @@ class RoutePresenter(
             is RouteAction.SystemSetting -> openSetting(action)
             is RouteAction.UnlockFallbackDialog -> showUnlockFallback(action)
             is RouteAction.AutoLockSetting -> showAutoLockSelections()
-            is RouteAction.DialogFragment.FingerprintDialog ->
-                showDialogFragment(FingerprintAuthDialogFragment(), action)
+            is RouteAction.DialogFragment.FingerprintDialog -> showDialogFragment(
+                FingerprintAuthDialogFragment(),
+                action
+            )
             is DialogAction -> showDialog(action)
             is AppWebPageAction -> navigateToFragment(R.id.fragment_webview, bundle(action))
         }
@@ -83,7 +84,7 @@ class RoutePresenter(
         // This maps two nodes in the graph_main.xml to the edge between them.
         // If a RouteAction is called from a place the graph doesn't know about then
         // the app will log.error.
-        return when (from to to) {
+        return when (src to dest) {
             R.id.fragment_null to R.id.fragment_item_list -> R.id.action_init_to_unlocked
             R.id.fragment_null to R.id.fragment_locked -> R.id.action_init_to_locked
             R.id.fragment_null to R.id.fragment_welcome -> R.id.action_init_to_unprepared
