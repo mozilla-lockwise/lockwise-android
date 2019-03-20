@@ -82,14 +82,10 @@ class AutofillRoutePresenter(
 
     private fun route(action: RouteAction) {
         when (action) {
-            is RouteAction.LockScreen -> {
-                dismissDialogIfPresent(AutofillFilterFragment::class.java)
-                navigateToFragment(R.id.fragment_locked)
-            }
-            is RouteAction.ItemList -> {
-                navigateToFragment(R.id.fragment_null)
-                showDialogFragment(AutofillFilterFragment(), RouteAction.DialogFragment.AutofillSearchDialog)
-            }
+            is RouteAction.LockScreen -> navigateToFragment(R.id.fragment_locked)
+            is RouteAction.ItemList -> showDialogFragment(AutofillFilterFragment(),
+                RouteAction.DialogFragment.AutofillSearchDialog
+            )
             is RouteAction.DialogFragment.FingerprintDialog ->
                 showDialogFragment(FingerprintAuthDialogFragment(), action)
         }
@@ -115,17 +111,11 @@ class AutofillRoutePresenter(
                     "This is a developer bug, fixable by adding an action to graph_autofill.xml"
             )
         } else {
-            val action = src.getAction(transition)
-            val clearBackStack = action?.navOptions?.shouldLaunchSingleTop() ?: false
+            val clearBackStack = src.getAction(transition)?.navOptions?.shouldLaunchSingleTop() ?: false
             if (clearBackStack) {
                 while (navController.popBackStack()) {
                     // NOP
                 }
-            }
-
-            action?.let {
-                navController.navigate(it.destinationId, args, it.navOptions)
-                return
             }
         }
 
@@ -154,14 +144,6 @@ class AutofillRoutePresenter(
         } catch (e: IllegalStateException) {
             log.error("Could not show dialog", e)
         }
-    }
-
-    private fun <T : DialogFragment> dismissDialogIfPresent(clazz: Class<T>) {
-        val fragmentManager = activity.supportFragmentManager
-        val presentedDialog = fragmentManager.findFragmentByTag(clazz.name)
-        log.info("presented dialog: $presentedDialog")
-
-        (presentedDialog as? DialogFragment)?.dismiss()
     }
 
     private fun finishAutofill(action: AutofillAction) {
