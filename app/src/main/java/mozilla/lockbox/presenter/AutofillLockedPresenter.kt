@@ -22,7 +22,6 @@ import mozilla.lockbox.store.SettingStore
 import java.util.concurrent.TimeUnit
 
 interface AutofillLockedView {
-    fun unlockFallback()
     val unlockConfirmed: Observable<Boolean>
 }
 
@@ -78,7 +77,7 @@ class AutofillLockedPresenter(
 
     private fun unlockFallback() {
         if (fingerprintStore.isKeyguardDeviceSecure) {
-            lockedView.unlockFallback()
+            dispatcher.dispatch(RouteAction.UnlockFallbackDialog)
         } else {
             unlock()
         }
