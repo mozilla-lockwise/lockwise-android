@@ -12,6 +12,8 @@ import android.content.Intent
 import android.service.autofill.FillResponse
 import android.view.autofill.AutofillManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
@@ -85,6 +87,15 @@ class AutofillRoutePresenterTest {
 
     @Mock
     val fragmentManager: FragmentManager = mock(FragmentManager::class.java)
+
+    @Mock
+    val childFragmentManager: FragmentManager = mock(FragmentManager::class.java)
+
+    @Mock
+    val currentFragment: DialogFragment = mock(DialogFragment::class.java)
+
+    @Mock
+    val navHost: Fragment = mock(Fragment::class.java)
 
     @Mock
     val activity: AppCompatActivity = mock(AppCompatActivity::class.java)
@@ -179,6 +190,9 @@ class AutofillRoutePresenterTest {
         PowerMockito.whenNew(Intent::class.java).withNoArguments()
             .thenReturn(intent)
 
+        whenCalled(childFragmentManager.fragments).thenReturn(listOf(currentFragment))
+        whenCalled(navHost.childFragmentManager).thenReturn(childFragmentManager)
+        whenCalled(fragmentManager.fragments).thenReturn(listOf(navHost))
         IntentBuilder.setSearchRequired(intent, true)
         whenCalled(activity.intent).thenReturn(callingIntent)
         whenCalled(activity.supportFragmentManager).thenReturn(fragmentManager)
@@ -203,14 +217,22 @@ class AutofillRoutePresenterTest {
     fun `locked routes`() {
         routeStore.routeStub.onNext(RouteAction.LockScreen)
 
-        verify(navController).navigate(R.id.action_to_locked, null)
+        verify(navController).navigate(R.id.fragment_locked, null, null)
     }
 
     @Test
-    fun `item list routes navigate to search`() {
+    fun `item list routes navigate to filter backdrop`() {
+        whenCalled(navDestination.id).thenReturn(R.id.fragment_locked)
         routeStore.routeStub.onNext(RouteAction.ItemList)
 
-        verify(autofillFilterFragment).show(eq(fragmentManager), anyString())
+        verify(navController).navigate(R.id.fragment_filter_backdrop, null, null)
+    }
+
+    @Test
+    fun `autofill search dialog route route to autofill filter fragment`() {
+        routeStore.routeStub.onNext(RouteAction.DialogFragment.AutofillSearchDialog)
+
+        verify(autofillFilterFragment).show(eq(childFragmentManager), anyString())
         verify(autofillFilterFragment).setupDialog(R.string.autofill, null)
     }
 
@@ -219,7 +241,7 @@ class AutofillRoutePresenterTest {
         val title = R.string.fingerprint_dialog_title
         routeStore.routeStub.onNext(RouteAction.DialogFragment.FingerprintDialog(title))
 
-        verify(fingerprintAuthDialogFragment).show(eq(fragmentManager), anyString())
+        verify(fingerprintAuthDialogFragment).show(eq(childFragmentManager), anyString())
         verify(fingerprintAuthDialogFragment).setupDialog(title, null)
     }
 
