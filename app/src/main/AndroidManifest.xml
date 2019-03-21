@@ -49,5 +49,14 @@
                 <action android:name="android.service.autofill.AutofillService"/>
             </intent-filter>
         </service>
+
+        <receiver
+                android:name="com.adjust.sdk.AdjustReferrerReceiver"
+                android:permission="android.permission.INSTALL_PACKAGES"
+                android:exported="true" >
+            <intent-filter>
+                <action android:name="com.android.vending.INSTALL_REFERRER" />
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>
