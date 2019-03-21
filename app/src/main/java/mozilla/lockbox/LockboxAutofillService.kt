@@ -95,7 +95,9 @@ class LockboxAutofillService(
                     is DataStore.State.Errored -> AutofillAction.Error(state.error)
                 }
             }
-            .subscribe(dispatcher::dispatch)
+            .subscribe(dispatcher::dispatch) {
+                log.error(throwable = it)
+            }
             .addTo(compositeDisposable)
 
         autofillStore.autofillActions
