@@ -1,5 +1,16 @@
 # Release Notes
 
+## 1.0.0 (Build 3137)
+
+Introducing Firefox Lockbox for Android!
+
+Minor changes since Release Candidate:
+
+- Fix Adjust integration (#521)
+- Add more autofill telemetry actions (#522)
+- use blocking operators rather than inline checks (#506)
+- only update lock status after updating list (#505)
+
 ## 1.0.0 (Build 3024)
 
 Release Candidate
