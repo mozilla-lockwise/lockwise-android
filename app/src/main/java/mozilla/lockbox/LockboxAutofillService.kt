@@ -97,6 +97,7 @@ class LockboxAutofillService(
             }
             .subscribe(dispatcher::dispatch) {
                 log.error(throwable = it)
+                dispatcher.dispatch(AutofillAction.CompleteMultiple(emptyList()))
             }
             .addTo(compositeDisposable)
 
