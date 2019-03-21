@@ -3,13 +3,16 @@
 Some assumptions:
 
 - `master` is the default branch and is production-ready
-- commits made to `master` are built and pass in [bitrise][1]
+  - non-'master' and non-'production' branches run the "primary" workflow which signs a "Debug" variant
+  - though, users with access can manually "Start" a "deploy" build against a branch from the bitrise UI
+- commits made to `master` and `production` are built and pass in [bitrise][1]
+  - the "deploy" workflow in bitrise runs and signs a "Release" variant APK
 - bitrise will test, build, and sign the APK for every build on every branch
 - `production` is our public release branch and may not match `master`
   - ideally, `production` will perfectly reproduce master
   - but if `master` is in an un-releasable state, we cherry-pick commits to this branch
   - this is an exception rather than the preferred maintenance method
-- no automated uploads to Google Play Console occur, manual artifact uploads (from bitrise's signed artifacts) are required for internal, closed, open, and production releases
+- no automated uploads to Google Play Console occur, manual artifact uploads (from bitrise's signed Release artifacts) are required for internal, closed, open, and production releases
 - Play Store has Internal (core team, email-restricted), Alpha (closed, email-restricted), and Production (everyone!) release channels configured
   - currently, no plans exist for "external" testers nor "Open" release channels
   - in the future we may create an open Beta testing channel to allow anyone outside of Mozilla to help us test in-progress work
