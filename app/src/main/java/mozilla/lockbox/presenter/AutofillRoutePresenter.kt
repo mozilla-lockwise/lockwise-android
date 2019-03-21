@@ -84,11 +84,12 @@ class AutofillRoutePresenter(
                 FingerprintAuthDialogFragment(),
                 action
             )
+            is RouteAction.UnlockFallbackDialog -> showUnlockFallback(action)
         }
     }
 
-    override fun findTransitionId(@IdRes from: Int, @IdRes to: Int): Int? {
-        return when (Pair(from, to)) {
+    override fun findTransitionId(@IdRes src: Int, @IdRes dest: Int): Int? {
+        return when (Pair(src, dest)) {
             Pair(R.id.fragment_locked, R.id.fragment_filter) -> R.id.action_locked_to_filter
             Pair(R.id.fragment_null, R.id.fragment_filter) -> R.id.action_to_filter
             Pair(R.id.fragment_null, R.id.fragment_locked) -> R.id.action_to_locked

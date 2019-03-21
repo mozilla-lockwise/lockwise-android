@@ -154,7 +154,7 @@ abstract class AbstractRoutePresenter(
         }
     }
 
-    protected abstract fun findTransitionId(@IdRes from: Int, @IdRes to: Int): Int?
+    protected abstract fun findTransitionId(@IdRes src: Int, @IdRes dest: Int): Int?
 
     protected fun openWebsite(url: String) {
         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
