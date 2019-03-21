@@ -7,12 +7,14 @@
 package mozilla.lockbox.action
 
 import mozilla.appservices.logins.ServerPassword
-import mozilla.lockbox.flux.Action
 
-sealed class AutofillAction : Action {
-    data class Complete(val login: ServerPassword) : AutofillAction()
-    data class CompleteMultiple(val logins: List<ServerPassword>) : AutofillAction()
-    data class Error(val error: Throwable) : AutofillAction()
-    object Authenticate : AutofillAction()
-    object Cancel : AutofillAction()
+sealed class AutofillAction(
+    override val eventMethod: TelemetryEventMethod,
+    override val eventObject: TelemetryEventObject
+) : TelemetryAction {
+    data class Complete(val login: ServerPassword) : AutofillAction(TelemetryEventMethod.autofill_single, TelemetryEventObject.autofill)
+    data class CompleteMultiple(val logins: List<ServerPassword>) : AutofillAction(TelemetryEventMethod.autofill_multiple, TelemetryEventObject.autofill)
+    data class Error(val error: Throwable) : AutofillAction(TelemetryEventMethod.autofill_error, TelemetryEventObject.autofill)
+    object Authenticate : AutofillAction(TelemetryEventMethod.autofill_locked, TelemetryEventObject.autofill)
+    object Cancel : AutofillAction(TelemetryEventMethod.autofill_cancel, TelemetryEventObject.autofill)
 }
