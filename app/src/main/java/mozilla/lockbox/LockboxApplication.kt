@@ -29,6 +29,7 @@ import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.NetworkStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.store.TelemetryStore
+import mozilla.lockbox.support.AdjustSupport
 import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.FxASyncDataStoreSupport
 import mozilla.lockbox.support.PublicSuffixSupport
@@ -70,6 +71,8 @@ open class LockboxApplication : Application() {
 
         val config = AdjustConfig(this, appToken, environment)
         Adjust.onCreate(config)
+        // register instance of the ActivityLifecycleCallbacks class.
+        registerActivityLifecycleCallbacks(AdjustSupport.AdjustLifecycleCallbacks())
     }
 
     private fun setupDataStoreSupport() {
