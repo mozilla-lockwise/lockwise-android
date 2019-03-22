@@ -52,7 +52,8 @@ enum class TelemetryEventMethod {
     autofill_single,
     autofill_multiple,
     autofill_cancel,
-    autofill_error
+    autofill_error,
+    autofill_filter
 }
 
 enum class TelemetryEventObject {
