@@ -154,10 +154,12 @@ class AutofillRoutePresenter(
         }
     }
 
-    private fun findTransitionId(@IdRes from: Int, @IdRes destination: Int): Int? {
-        return when (from to destination) {
-            R.id.fragment_locked to R.id.fragment_filter_backdrop -> R.id.action_to_filter
-            R.id.fragment_filter_backdrop to R.id.fragment_locked -> R.id.action_to_locked
+    private fun findTransitionId(@IdRes src: Int, @IdRes destination: Int): Int? {
+        return when (src to destination) {
+            R.id.fragment_null to R.id.fragment_filter_backdrop -> R.id.action_to_filter
+            R.id.fragment_null to R.id.fragment_locked -> R.id.action_to_locked
+            R.id.fragment_locked to R.id.fragment_filter_backdrop -> R.id.action_locked_to_filter
+            R.id.fragment_filter_backdrop to R.id.fragment_locked -> R.id.action_filter_to_locked
             else -> null
         }
     }
