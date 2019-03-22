@@ -10,7 +10,7 @@ import br.com.concretesolutions.kappuccino.actions.TextActions.typeText
 import br.com.concretesolutions.kappuccino.assertions.VisibilityAssertions.displayed
 import mozilla.lockbox.R
 
-// Filter ItemList
+// SearchFallback ItemList
 class FilteredItemListRobot : BaseTestRobot {
     override fun exists() = displayed { id(R.id.filterField) }
 
