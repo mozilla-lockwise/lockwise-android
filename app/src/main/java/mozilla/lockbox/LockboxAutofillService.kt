@@ -95,9 +95,9 @@ class LockboxAutofillService(
                     is DataStore.State.Errored -> AutofillAction.Error(state.error)
                 }
             }
+            .onErrorReturnItem(AutofillAction.Filter)
             .subscribe(dispatcher::dispatch) {
                 log.error(throwable = it)
-                dispatcher.dispatch(AutofillAction.CompleteMultiple(emptyList()))
             }
             .addTo(compositeDisposable)
 
@@ -107,6 +107,7 @@ class LockboxAutofillService(
                     is AutofillAction.Complete -> builder.buildFilteredFillResponse(this, listOf(it.login)).asOptional()
                     is AutofillAction.CompleteMultiple -> (builder.buildFilteredFillResponse(this, it.logins)
                         ?: builder.buildFallbackFillResponse(this)).asOptional()
+                    is AutofillAction.Filter -> builder.buildFallbackFillResponse(this).asOptional()
                     is AutofillAction.Authenticate -> builder.buildAuthenticationFillResponse(this).asOptional()
                     is AutofillAction.Cancel -> Optional(null)
                     is AutofillAction.Error -> {
