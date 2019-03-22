@@ -14,7 +14,6 @@ import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.UnlockingAction
 import mozilla.lockbox.flux.Dispatcher
-import mozilla.lockbox.model.FingerprintAuthCallback
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.LockedStore
 import mozilla.lockbox.store.SettingStore
@@ -106,7 +105,7 @@ class LockedPresenterTest {
         val dispatchIterator = dispatcher.register.blockingIterable().iterator()
         `when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(true)
         `when`(fingerprintStore.isKeyguardDeviceSecure).thenReturn(true)
-        lockedStore.onAuth.onNext(FingerprintAuthAction.OnAuthentication(FingerprintAuthCallback.OnError))
+        lockedStore.onAuth.onNext(FingerprintAuthAction.OnAuthError)
         assertEquals(RouteAction.UnlockFallbackDialog, dispatchIterator.next())
     }
 
@@ -140,14 +139,14 @@ class LockedPresenterTest {
         val dispatchIterator = dispatcher.register.blockingIterable().iterator()
         `when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(true)
         `when`(fingerprintStore.isKeyguardDeviceSecure).thenReturn(true)
-        lockedStore.onAuth.onNext(FingerprintAuthAction.OnAuthentication(FingerprintAuthCallback.OnError))
+        lockedStore.onAuth.onNext(FingerprintAuthAction.OnAuthError)
         assertEquals(RouteAction.UnlockFallbackDialog, dispatchIterator.next())
     }
 
     @Test
     fun `handle success authentication callback`() {
         val dispatchIterator = dispatcher.register.blockingIterable().iterator()
-        lockedStore.onAuth.onNext(FingerprintAuthAction.OnAuthentication(FingerprintAuthCallback.OnAuth))
+        lockedStore.onAuth.onNext(FingerprintAuthAction.OnAuthSuccess)
 
         assertEquals(DataStoreAction.Unlock, dispatchIterator.next())
         val unlockingAction = dispatchIterator.next() as UnlockingAction
@@ -158,7 +157,7 @@ class LockedPresenterTest {
     fun `handle error authentication callback when the device has no other security`() {
         val dispatchIterator = dispatcher.register.blockingIterable().iterator()
         `when`(fingerprintStore.isKeyguardDeviceSecure).thenReturn(false)
-        lockedStore.onAuth.onNext(FingerprintAuthAction.OnAuthentication(FingerprintAuthCallback.OnError))
+        lockedStore.onAuth.onNext(FingerprintAuthAction.OnAuthError)
 
         assertEquals(DataStoreAction.Unlock, dispatchIterator.next())
         val unlockingAction = dispatchIterator.next() as UnlockingAction

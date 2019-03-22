@@ -15,7 +15,6 @@ import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.UnlockingAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
-import mozilla.lockbox.model.FingerprintAuthCallback
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.LockedStore
 import mozilla.lockbox.store.SettingStore
@@ -68,11 +67,9 @@ class LockedPresenter(
 
         lockedStore.onAuthentication
             .subscribe {
-                if (it is FingerprintAuthAction.OnAuthentication) {
-                    when (it.authCallback) {
-                        is FingerprintAuthCallback.OnAuth -> unlock()
-                        is FingerprintAuthCallback.OnError -> unlockFallback()
-                    }
+                when (it) {
+                    is FingerprintAuthAction.OnAuthSuccess -> unlock()
+                    is FingerprintAuthAction.OnAuthError -> unlockFallback()
                 }
             }
             .addTo(compositeDisposable)

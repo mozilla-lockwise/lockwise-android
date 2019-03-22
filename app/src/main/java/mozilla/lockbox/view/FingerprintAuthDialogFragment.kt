@@ -7,10 +7,10 @@
 package mozilla.lockbox.view
 
 import android.os.Bundle
-import androidx.annotation.StringRes
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.StringRes
 import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -18,15 +18,15 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_fingerprint_dialog.view.*
 import mozilla.lockbox.R
-import mozilla.lockbox.model.FingerprintAuthCallback
+import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.presenter.FingerprintDialogPresenter
 import mozilla.lockbox.presenter.FingerprintDialogView
 import mozilla.lockbox.support.Constant
 
 class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
     private val compositeDisposable = CompositeDisposable()
-    private val _authCallback = PublishSubject.create<FingerprintAuthCallback>()
-    override val authCallback: Observable<FingerprintAuthCallback> get() = _authCallback
+    private val _authCallback = PublishSubject.create<FingerprintAuthAction>()
+    override val authCallback: Observable<FingerprintAuthAction> get() = _authCallback
     private val _dismiss = PublishSubject.create<Unit>()
     override val onDismiss: Observable<Unit> get() = _dismiss
     private var isEnablingDismissed: Boolean = true
@@ -67,7 +67,7 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
         view!!.imageView.run {
             setImageResource(R.drawable.ic_fingerprint_success)
             postDelayed({
-                _authCallback.onNext(FingerprintAuthCallback.OnAuth)
+                _authCallback.onNext(FingerprintAuthAction.OnAuthSuccess)
                 isEnablingDismissed = false
                 dismissAllowingStateLoss()
             }, Constant.FingerprintTimeout.successDelayMillis)
@@ -82,7 +82,7 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
     override fun onError(error: String?) {
         showError(error ?: getString(R.string.fingerprint_sensor_error))
         view!!.imageView.postDelayed({
-            _authCallback.onNext(FingerprintAuthCallback.OnError)
+            _authCallback.onNext(FingerprintAuthAction.OnAuthError)
             dismiss()
         }, Constant.FingerprintTimeout.errorTimeoutMillis)
     }
