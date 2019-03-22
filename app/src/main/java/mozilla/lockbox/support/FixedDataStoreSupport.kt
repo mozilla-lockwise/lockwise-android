@@ -21,8 +21,7 @@ class FixedDataStoreSupport(
 ) : DataStoreSupport {
     var size = getRandomInRange(40, 50)
     private val logins = MemoryLoginsStorage(
-//        values ?: List(size) { createDummyItem(it) }
-        List(size) { createDummyItem(it) } + listOf(createDummyIPItem())
+        values ?: List(size) { createDummyItem(it) } + listOf(createDummyIPItem())
     )
 
     override var encryptionKey: String = "shh-keep-it-secret"
@@ -73,7 +72,7 @@ internal fun createDummyIPItem(): ServerPassword {
     val random = Random()
     val id = UUID.randomUUID().toString()
     val pwd = createRandomPassword()
-    val host = "10.250.7.80"
+    val host = "http://10.250.7.80"
     val user = createUserId()
     val created = Date().time
     val used = Date(created - 86400000).time
