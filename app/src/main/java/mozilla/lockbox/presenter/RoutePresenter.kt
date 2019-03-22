@@ -230,9 +230,9 @@ class RoutePresenter(
         // If a RouteAction is called from a place the graph doesn't know about then
         // the app will log.error.
         return when (from to to) {
-            R.id.fragment_filter_backdrop to R.id.fragment_item_list -> R.id.action_init_to_unlocked
-            R.id.fragment_filter_backdrop to R.id.fragment_locked -> R.id.action_init_to_locked
-            R.id.fragment_filter_backdrop to R.id.fragment_welcome -> R.id.action_init_to_unprepared
+            R.id.fragment_null to R.id.fragment_item_list -> R.id.action_init_to_unlocked
+            R.id.fragment_null to R.id.fragment_locked -> R.id.action_init_to_locked
+            R.id.fragment_null to R.id.fragment_welcome -> R.id.action_init_to_unprepared
 
             R.id.fragment_welcome to R.id.fragment_fxa_login -> R.id.action_welcome_to_fxaLogin
 
