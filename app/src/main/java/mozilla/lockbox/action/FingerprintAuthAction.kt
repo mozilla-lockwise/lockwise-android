@@ -9,7 +9,7 @@ package mozilla.lockbox.action
 import mozilla.lockbox.flux.Action
 
 sealed class FingerprintAuthAction : Action {
-    object OnAuthSuccess : FingerprintAuthAction()
-    object OnAuthError : FingerprintAuthAction()
+    object OnSuccess : FingerprintAuthAction()
+    object OnError : FingerprintAuthAction()
     object OnCancel : FingerprintAuthAction()
 }

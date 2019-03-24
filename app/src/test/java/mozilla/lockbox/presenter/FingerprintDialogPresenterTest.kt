@@ -77,8 +77,8 @@ class FingerprintDialogPresenterTest {
 
     @Test
     fun `dispatch authentication status for routing`() {
-        view.authCallbackStub.onNext(FingerprintAuthAction.OnAuthSuccess)
-        dispatcherObserver.assertLastValue(FingerprintAuthAction.OnAuthSuccess)
+        view.authCallbackStub.onNext(FingerprintAuthAction.OnSuccess)
+        dispatcherObserver.assertLastValue(FingerprintAuthAction.OnSuccess)
     }
 
     @Test

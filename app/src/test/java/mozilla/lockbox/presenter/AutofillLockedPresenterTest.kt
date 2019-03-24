@@ -101,21 +101,21 @@ class AutofillLockedPresenterTest : DisposingTest() {
 
     @Test
     fun `on successful fingerprint authentication`() {
-        lockedStore.authenticationStub.onNext(FingerprintAuthAction.OnAuthSuccess)
+        lockedStore.authenticationStub.onNext(FingerprintAuthAction.OnSuccess)
         dispatcherObserver.assertLastValue(DataStoreAction.Unlock)
     }
 
     @Test
     fun `on unsuccessful fingerprint authentication when there is no other security`() {
         fingerprintStore.keyguardDeviceSecureStub = false
-        lockedStore.authenticationStub.onNext(FingerprintAuthAction.OnAuthError)
+        lockedStore.authenticationStub.onNext(FingerprintAuthAction.OnError)
         dispatcherObserver.assertLastValue(DataStoreAction.Unlock)
     }
 
     @Test
     fun `on unsuccessful fingerprint authentication when there is other security`() {
         fingerprintStore.keyguardDeviceSecureStub = true
-        lockedStore.authenticationStub.onNext(FingerprintAuthAction.OnAuthError)
+        lockedStore.authenticationStub.onNext(FingerprintAuthAction.OnError)
         assertTrue(view.unlockFallbackCalled)
     }
 

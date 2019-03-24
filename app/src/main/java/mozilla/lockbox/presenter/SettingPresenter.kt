@@ -94,9 +94,9 @@ class SettingPresenter(
         settingStore.onEnablingFingerprint
             .subscribe {
                 when (it) {
-                    is FingerprintAuthAction.OnAuthSuccess ->
+                    is FingerprintAuthAction.OnSuccess ->
                         dispatcher.dispatch(SettingAction.UnlockWithFingerprint(true))
-                    is FingerprintAuthAction.OnAuthError ->
+                    is FingerprintAuthAction.OnError ->
                         dispatcher.dispatch(SettingAction.UnlockWithFingerprint(false))
                     is FingerprintAuthAction.OnCancel ->
                         dispatcher.dispatch(SettingAction.UnlockWithFingerprint(false))

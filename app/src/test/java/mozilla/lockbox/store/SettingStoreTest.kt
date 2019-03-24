@@ -429,14 +429,14 @@ class SettingStoreTest : DisposingTest() {
         val fingerprintAuthObserver = createTestObserver<FingerprintAuthAction>()
         subject.onEnablingFingerprint.subscribe(fingerprintAuthObserver)
 
-        dispatcher.dispatch(FingerprintAuthAction.OnAuthSuccess)
-        dispatcher.dispatch(FingerprintAuthAction.OnAuthError)
+        dispatcher.dispatch(FingerprintAuthAction.OnSuccess)
+        dispatcher.dispatch(FingerprintAuthAction.OnError)
         dispatcher.dispatch(FingerprintAuthAction.OnCancel)
 
         fingerprintAuthObserver.assertValueSequence(
             listOf(
-                FingerprintAuthAction.OnAuthSuccess,
-                FingerprintAuthAction.OnAuthError,
+                FingerprintAuthAction.OnSuccess,
+                FingerprintAuthAction.OnError,
                 FingerprintAuthAction.OnCancel
             )
         )

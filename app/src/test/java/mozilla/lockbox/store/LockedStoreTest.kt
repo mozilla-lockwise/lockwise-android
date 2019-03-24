@@ -42,7 +42,7 @@ class LockedStoreTest {
 
     @Test
     fun `authentication events`() {
-        val authAction = FingerprintAuthAction.OnAuthSuccess
+        val authAction = FingerprintAuthAction.OnSuccess
         dispatcher.dispatch(authAction)
 
         authenticationObserver.assertValue(authAction)

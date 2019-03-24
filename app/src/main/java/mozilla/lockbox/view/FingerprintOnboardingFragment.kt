@@ -41,7 +41,7 @@ class FingerprintOnboardingFragment : Fragment(), FingerprintOnboardingView {
 
         view!!.sensorDescription.removeCallbacks(resetErrorTextRunnable)
         view!!.iconFingerprint.postDelayed({
-            _authCallback.onNext(FingerprintAuthAction.OnAuthSuccess)
+            _authCallback.onNext(FingerprintAuthAction.OnSuccess)
             isEnablingDismissed = false
         }, Constant.FingerprintTimeout.successDelayMillis)
     }
@@ -53,7 +53,7 @@ class FingerprintOnboardingFragment : Fragment(), FingerprintOnboardingView {
     override fun onError(error: String?) {
         showError(error ?: getString(R.string.fingerprint_sensor_error))
         view!!.postDelayed(
-            { _authCallback.onNext(FingerprintAuthAction.OnAuthError) },
+            { _authCallback.onNext(FingerprintAuthAction.OnError) },
             Constant.FingerprintTimeout.errorTimeoutMillis
         )
     }

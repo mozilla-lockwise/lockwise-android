@@ -215,7 +215,7 @@ class SettingPresenterTest {
     @Test
     fun `handle success enabling fingerprint`() {
         subject.onResume()
-        (settingStore.onEnablingFingerprint as Subject).onNext(FingerprintAuthAction.OnAuthSuccess)
+        (settingStore.onEnablingFingerprint as Subject).onNext(FingerprintAuthAction.OnSuccess)
         dispatcherObserver.assertValueSequence(
             listOf<Action>(
                 SettingAction.UnlockWithFingerprint(true),
@@ -227,7 +227,7 @@ class SettingPresenterTest {
     @Test
     fun `handle error enabling fingerprint`() {
         subject.onResume()
-        (settingStore.onEnablingFingerprint as Subject).onNext(FingerprintAuthAction.OnAuthError)
+        (settingStore.onEnablingFingerprint as Subject).onNext(FingerprintAuthAction.OnError)
         dispatcherObserver.assertValueSequence(
             listOf<Action>(
                 SettingAction.UnlockWithFingerprint(false),

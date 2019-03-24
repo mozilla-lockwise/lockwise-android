@@ -105,7 +105,7 @@ class LockedPresenterTest {
         val dispatchIterator = dispatcher.register.blockingIterable().iterator()
         `when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(true)
         `when`(fingerprintStore.isKeyguardDeviceSecure).thenReturn(true)
-        lockedStore.onAuth.onNext(FingerprintAuthAction.OnAuthError)
+        lockedStore.onAuth.onNext(FingerprintAuthAction.OnError)
         assertEquals(RouteAction.UnlockFallbackDialog, dispatchIterator.next())
     }
 
@@ -139,14 +139,14 @@ class LockedPresenterTest {
         val dispatchIterator = dispatcher.register.blockingIterable().iterator()
         `when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(true)
         `when`(fingerprintStore.isKeyguardDeviceSecure).thenReturn(true)
-        lockedStore.onAuth.onNext(FingerprintAuthAction.OnAuthError)
+        lockedStore.onAuth.onNext(FingerprintAuthAction.OnError)
         assertEquals(RouteAction.UnlockFallbackDialog, dispatchIterator.next())
     }
 
     @Test
     fun `handle success authentication callback`() {
         val dispatchIterator = dispatcher.register.blockingIterable().iterator()
-        lockedStore.onAuth.onNext(FingerprintAuthAction.OnAuthSuccess)
+        lockedStore.onAuth.onNext(FingerprintAuthAction.OnSuccess)
 
         assertEquals(DataStoreAction.Unlock, dispatchIterator.next())
         val unlockingAction = dispatchIterator.next() as UnlockingAction
@@ -157,7 +157,7 @@ class LockedPresenterTest {
     fun `handle error authentication callback when the device has no other security`() {
         val dispatchIterator = dispatcher.register.blockingIterable().iterator()
         `when`(fingerprintStore.isKeyguardDeviceSecure).thenReturn(false)
-        lockedStore.onAuth.onNext(FingerprintAuthAction.OnAuthError)
+        lockedStore.onAuth.onNext(FingerprintAuthAction.OnError)
 
         assertEquals(DataStoreAction.Unlock, dispatchIterator.next())
         val unlockingAction = dispatchIterator.next() as UnlockingAction

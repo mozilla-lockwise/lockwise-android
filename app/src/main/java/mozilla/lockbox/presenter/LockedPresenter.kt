@@ -68,8 +68,8 @@ class LockedPresenter(
         lockedStore.onAuthentication
             .subscribe {
                 when (it) {
-                    is FingerprintAuthAction.OnAuthSuccess -> unlock()
-                    is FingerprintAuthAction.OnAuthError -> unlockFallback()
+                    is FingerprintAuthAction.OnSuccess -> unlock()
+                    is FingerprintAuthAction.OnError -> unlockFallback()
                 }
             }
             .addTo(compositeDisposable)

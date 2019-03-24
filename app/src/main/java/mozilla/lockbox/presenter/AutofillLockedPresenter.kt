@@ -48,8 +48,8 @@ class AutofillLockedPresenter(
         lockedStore.onAuthentication
             .subscribe {
                 when (it) {
-                    is FingerprintAuthAction.OnAuthSuccess -> unlock()
-                    is FingerprintAuthAction.OnAuthError -> unlockFallback()
+                    is FingerprintAuthAction.OnSuccess -> unlock()
+                    is FingerprintAuthAction.OnError -> unlockFallback()
                     is FingerprintAuthAction.OnCancel -> dispatcher.dispatch(AutofillAction.Cancel)
                 }
             }

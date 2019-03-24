@@ -45,7 +45,7 @@ class FingerprintOnboardingPresenter(
             .subscribe {
                 dispatcher.dispatch(it)
                 val unlock = when (it) {
-                    is FingerprintAuthAction.OnAuthSuccess -> true
+                    is FingerprintAuthAction.OnSuccess -> true
                     else -> false
                 }
                 dispatcher.dispatch(SettingAction.UnlockWithFingerprint(unlock))

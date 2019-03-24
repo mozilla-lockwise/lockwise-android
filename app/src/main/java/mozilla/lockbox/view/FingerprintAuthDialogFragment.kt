@@ -67,7 +67,7 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
         view!!.imageView.run {
             setImageResource(R.drawable.ic_fingerprint_success)
             postDelayed({
-                _authCallback.onNext(FingerprintAuthAction.OnAuthSuccess)
+                _authCallback.onNext(FingerprintAuthAction.OnSuccess)
                 isEnablingDismissed = false
                 dismissAllowingStateLoss()
             }, Constant.FingerprintTimeout.successDelayMillis)
@@ -82,7 +82,7 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
     override fun onError(error: String?) {
         showError(error ?: getString(R.string.fingerprint_sensor_error))
         view!!.imageView.postDelayed({
-            _authCallback.onNext(FingerprintAuthAction.OnAuthError)
+            _authCallback.onNext(FingerprintAuthAction.OnError)
             dismiss()
         }, Constant.FingerprintTimeout.errorTimeoutMillis)
     }
