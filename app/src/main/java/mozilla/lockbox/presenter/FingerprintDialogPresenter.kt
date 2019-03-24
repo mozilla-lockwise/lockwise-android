@@ -35,7 +35,7 @@ class FingerprintDialogPresenter(
             .addTo(compositeDisposable)
 
         view.authCallback
-            .subscribe { dispatcher.dispatch(it) }
+            .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
 
         view.onDismiss
