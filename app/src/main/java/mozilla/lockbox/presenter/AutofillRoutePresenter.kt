@@ -3,10 +3,8 @@ package mozilla.lockbox.presenter
 import android.app.Activity
 import android.content.Intent
 import android.os.Build
-import android.os.Bundle
 import android.service.autofill.FillResponse
 import android.view.autofill.AutofillManager
-import androidx.annotation.IdRes
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -24,14 +22,11 @@ import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.autofill.FillResponseBuilder
 import mozilla.lockbox.autofill.IntentBuilder
 import mozilla.lockbox.flux.Dispatcher
-import mozilla.lockbox.flux.Presenter
-import mozilla.lockbox.log
 import mozilla.lockbox.store.AutofillStore
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.support.PublicSuffixSupport
 import mozilla.lockbox.view.AutofillFilterFragment
-import mozilla.lockbox.view.DialogFragment
 import mozilla.lockbox.view.FingerprintAuthDialogFragment
 
 @ExperimentalCoroutinesApi
@@ -45,7 +40,6 @@ class AutofillRoutePresenter(
     private val dataStore: DataStore = DataStore.shared,
     private val pslSupport: PublicSuffixSupport = PublicSuffixSupport.shared
 ) : RoutePresenter(activity, dispatcher, routeStore) {
-    private lateinit var navController: NavController
 
     private val navHostFragmentManager: FragmentManager
         get() {

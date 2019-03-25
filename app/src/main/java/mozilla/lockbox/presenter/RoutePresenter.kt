@@ -7,11 +7,15 @@
 package mozilla.lockbox.presenter
 
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.R
+import mozilla.lockbox.action.AppWebPageAction
 import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.view.AlertDialogHelper
@@ -20,17 +24,50 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
 import mozilla.lockbox.store.RouteStore
+import mozilla.lockbox.view.AppWebPageFragmentArgs
+import mozilla.lockbox.view.DialogFragment
+import mozilla.lockbox.view.ItemDetailFragmentArgs
 
 open class RoutePresenter(
     private val activity: AppCompatActivity,
     private val dispatcher: Dispatcher,
     private val routeStore: RouteStore
 ) : Presenter() {
-    private lateinit var navController: NavController
+    lateinit var navController: NavController
 
+    val navHostFragmentManager: FragmentManager
+        get() {
+            val fragmentManager = activity.supportFragmentManager
+            val navHost = fragmentManager.fragments.last()
+            return navHost.childFragmentManager
+        }
 
+    val currentFragment: Fragment
+        get() {
+            return navHostFragmentManager.fragments.last()
+        }
 
-    private fun showDialog(destination: DialogAction) {
+    val backListener = OnBackPressedCallback {
+        dispatcher.dispatch(RouteAction.InternalBack)
+        false
+    }
+
+    fun bundle(action: AppWebPageAction): Bundle {
+        return AppWebPageFragmentArgs.Builder()
+            .setUrl(action.url!!)
+            .setTitle(action.title!!)
+            .build()
+            .toBundle()
+    }
+
+    fun bundle(action: RouteAction.ItemDetail): Bundle {
+        return ItemDetailFragmentArgs.Builder()
+            .setItemId(action.id)
+            .build()
+            .toBundle()
+    }
+
+    fun showDialog(destination: DialogAction) {
         AlertDialogHelper.showAlertDialog(activity, destination.viewModel)
             .map { alertState ->
                 when (alertState) {
@@ -47,7 +84,17 @@ open class RoutePresenter(
             .addTo(compositeDisposable)
     }
 
-    private fun navigateToFragment(@IdRes destinationId: Int, args: Bundle? = null) {
+    fun showDialogFragment(dialogFragment: DialogFragment, destination: RouteAction.DialogFragment) {
+        try {
+            dialogFragment.setTargetFragment(currentFragment, 0)
+            dialogFragment.show(navHostFragmentManager, dialogFragment.javaClass.name)
+            dialogFragment.setupDialog(destination.dialogTitle, destination.dialogSubtitle)
+        } catch (e: IllegalStateException) {
+            log.error("Could not show dialog", e)
+        }
+    }
+
+    fun navigateToFragment(@IdRes destinationId: Int, args: Bundle? = null) {
         val src = navController.currentDestination ?: return
         val srcId = src.id
         if (srcId == destinationId && args == null) {

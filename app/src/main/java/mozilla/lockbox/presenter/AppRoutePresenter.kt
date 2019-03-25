@@ -10,13 +10,7 @@ import android.app.KeyguardManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Bundle
-import androidx.activity.OnBackPressedCallback
-import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.rxkotlin.addTo
@@ -28,16 +22,10 @@ import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.extensions.view.AlertDialogHelper
-import mozilla.lockbox.extensions.view.AlertState
 import mozilla.lockbox.flux.Dispatcher
-import mozilla.lockbox.flux.Presenter
-import mozilla.lockbox.log
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.store.SettingStore
-import mozilla.lockbox.view.AppWebPageFragmentArgs
-import mozilla.lockbox.view.DialogFragment
 import mozilla.lockbox.view.FingerprintAuthDialogFragment
-import mozilla.lockbox.view.ItemDetailFragmentArgs
 
 @ExperimentalCoroutinesApi
 class AppRoutePresenter(
@@ -45,24 +33,7 @@ class AppRoutePresenter(
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val routeStore: RouteStore = RouteStore.shared,
     private val settingStore: SettingStore = SettingStore.shared
-) : RoutePresenter(activity, dispatcher) {
-//    private lateinit var navController: NavController
-    private val backListener = OnBackPressedCallback {
-        dispatcher.dispatch(RouteAction.InternalBack)
-        false
-    }
-
-    private val navHostFragmentManager: FragmentManager
-        get() {
-            val fragmentManager = activity.supportFragmentManager
-            val navHost = fragmentManager.fragments.last()
-            return navHost.childFragmentManager
-        }
-
-    private val currentFragment: Fragment
-        get() {
-            return navHostFragmentManager.fragments.last()
-        }
+) : RoutePresenter(activity, dispatcher, routeStore) {
 
     override fun onViewReady() {
         navController = Navigation.findNavController(activity, R.id.fragment_nav_host)
@@ -109,21 +80,6 @@ class AppRoutePresenter(
         }
     }
 
-    private fun bundle(action: AppWebPageAction): Bundle {
-        return AppWebPageFragmentArgs.Builder()
-            .setUrl(action.url!!)
-            .setTitle(action.title!!)
-            .build()
-            .toBundle()
-    }
-
-    private fun bundle(action: RouteAction.ItemDetail): Bundle {
-        return ItemDetailFragmentArgs.Builder()
-            .setItemId(action.id)
-            .build()
-            .toBundle()
-    }
-
     private fun showAutoLockSelections() {
         val autoLockValues = Setting.AutoLockTime.values()
         val items = autoLockValues.map { it.stringValue }.toTypedArray()
@@ -146,15 +102,6 @@ class AppRoutePresenter(
             .addTo(compositeDisposable)
     }
 
-    private fun showDialogFragment(dialogFragment: DialogFragment, destination: RouteAction.DialogFragment) {
-        try {
-            dialogFragment.setTargetFragment(currentFragment, 0)
-            dialogFragment.show(navHostFragmentManager, dialogFragment.javaClass.name)
-            dialogFragment.setupDialog(destination.dialogTitle, destination.dialogSubtitle)
-        } catch (e: IllegalStateException) {
-            log.error("Could not show dialog", e)
-        }
-    }
 
     private fun showUnlockFallback(action: RouteAction.UnlockFallbackDialog) {
         val manager = activity.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
