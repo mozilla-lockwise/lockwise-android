@@ -121,7 +121,11 @@ open class AccountStore(
             if (accountJSON == Constant.App.testMarker) {
                 populateTestAccountInformation(false)
             } else {
-                this.fxa = FirefoxAccount.fromJSONString(accountJSON)
+                try {
+                    this.fxa = FirefoxAccount.fromJSONString(accountJSON)
+                } catch (e: FxaException) {
+                    pushError(e)
+                }
                 generateLoginURL()
                 populateAccountInformation(false)
             }
