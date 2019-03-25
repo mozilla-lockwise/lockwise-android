@@ -17,17 +17,16 @@ import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
-import mozilla.lockbox.model.FingerprintAuthCallback
-import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.FingerprintStore.AuthenticationState
+import mozilla.lockbox.store.SettingStore
 
 interface FingerprintOnboardingView {
     fun onSucceeded()
     fun onFailed(error: String?)
     fun onError(error: String?)
     val onSkipClick: Observable<Unit>
-    val authCallback: Observable<FingerprintAuthCallback>
+    val authCallback: Observable<FingerprintAuthAction>
 }
 
 @ExperimentalCoroutinesApi
@@ -44,9 +43,9 @@ class FingerprintOnboardingPresenter(
 
         view.authCallback
             .subscribe {
-                dispatcher.dispatch(FingerprintAuthAction.OnAuthentication(it))
+                dispatcher.dispatch(it)
                 val unlock = when (it) {
-                    is FingerprintAuthCallback.OnAuth -> true
+                    is FingerprintAuthAction.OnSuccess -> true
                     else -> false
                 }
                 dispatcher.dispatch(SettingAction.UnlockWithFingerprint(unlock))

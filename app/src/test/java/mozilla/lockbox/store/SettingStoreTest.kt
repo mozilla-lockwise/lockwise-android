@@ -24,7 +24,6 @@ import mozilla.lockbox.action.Setting
 import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.flux.Dispatcher
-import mozilla.lockbox.model.FingerprintAuthCallback
 import mozilla.lockbox.support.Constant
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -430,14 +429,14 @@ class SettingStoreTest : DisposingTest() {
         val fingerprintAuthObserver = createTestObserver<FingerprintAuthAction>()
         subject.onEnablingFingerprint.subscribe(fingerprintAuthObserver)
 
-        dispatcher.dispatch(FingerprintAuthAction.OnAuthentication(FingerprintAuthCallback.OnAuth))
-        dispatcher.dispatch(FingerprintAuthAction.OnAuthentication(FingerprintAuthCallback.OnError))
+        dispatcher.dispatch(FingerprintAuthAction.OnSuccess)
+        dispatcher.dispatch(FingerprintAuthAction.OnError)
         dispatcher.dispatch(FingerprintAuthAction.OnCancel)
 
         fingerprintAuthObserver.assertValueSequence(
             listOf(
-                FingerprintAuthAction.OnAuthentication(FingerprintAuthCallback.OnAuth),
-                FingerprintAuthAction.OnAuthentication(FingerprintAuthCallback.OnError),
+                FingerprintAuthAction.OnSuccess,
+                FingerprintAuthAction.OnError,
                 FingerprintAuthAction.OnCancel
             )
         )

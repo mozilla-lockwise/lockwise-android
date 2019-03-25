@@ -20,7 +20,6 @@ import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
-import mozilla.lockbox.model.FingerprintAuthCallback
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.LockedStore
 import mozilla.lockbox.store.SettingStore
@@ -102,21 +101,21 @@ class AutofillLockedPresenterTest : DisposingTest() {
 
     @Test
     fun `on successful fingerprint authentication`() {
-        lockedStore.authenticationStub.onNext(FingerprintAuthAction.OnAuthentication(FingerprintAuthCallback.OnAuth))
+        lockedStore.authenticationStub.onNext(FingerprintAuthAction.OnSuccess)
         dispatcherObserver.assertLastValue(DataStoreAction.Unlock)
     }
 
     @Test
     fun `on unsuccessful fingerprint authentication when there is no other security`() {
         fingerprintStore.keyguardDeviceSecureStub = false
-        lockedStore.authenticationStub.onNext(FingerprintAuthAction.OnAuthentication(FingerprintAuthCallback.OnError))
+        lockedStore.authenticationStub.onNext(FingerprintAuthAction.OnError)
         dispatcherObserver.assertLastValue(DataStoreAction.Unlock)
     }
 
     @Test
     fun `on unsuccessful fingerprint authentication when there is other security`() {
         fingerprintStore.keyguardDeviceSecureStub = true
-        lockedStore.authenticationStub.onNext(FingerprintAuthAction.OnAuthentication(FingerprintAuthCallback.OnError))
+        lockedStore.authenticationStub.onNext(FingerprintAuthAction.OnError)
         assertTrue(view.unlockFallbackCalled)
     }
 
