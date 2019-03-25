@@ -58,6 +58,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
+            android:gravity="center"
             android:fontFamily="sans-serif"
             android:lineSpacingExtra="6.5sp"
             android:paddingStart="16dp"
