@@ -8,8 +8,6 @@ package mozilla.lockbox.presenter
 
 import android.app.KeyguardManager
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.Navigation
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
@@ -102,7 +100,6 @@ class AppRoutePresenter(
             .addTo(compositeDisposable)
     }
 
-
     private fun showUnlockFallback(action: RouteAction.UnlockFallbackDialog) {
         val manager = activity.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
         val intent = manager.createConfirmDeviceCredentialIntent(
@@ -110,16 +107,5 @@ class AppRoutePresenter(
             activity.getString(R.string.confirm_pattern)
         )
         currentFragment.startActivityForResult(intent, action.requestCode)
-    }
-
-    private fun openWebsite(url: String) {
-        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-        activity.startActivity(browserIntent, null)
-    }
-
-    private fun openSetting(settingAction: RouteAction.SystemSetting) {
-        val settingIntent = Intent(settingAction.setting.intentAction)
-        settingIntent.data = settingAction.setting.data
-        activity.startActivity(settingIntent, null)
     }
 }

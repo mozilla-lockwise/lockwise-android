@@ -6,6 +6,8 @@
 
 package mozilla.lockbox.presenter
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.IdRes
@@ -92,6 +94,17 @@ open class RoutePresenter(
         } catch (e: IllegalStateException) {
             log.error("Could not show dialog", e)
         }
+    }
+
+    fun openWebsite(url: String) {
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        activity.startActivity(browserIntent, null)
+    }
+
+    fun openSetting(settingAction: RouteAction.SystemSetting) {
+        val settingIntent = Intent(settingAction.setting.intentAction)
+        settingIntent.data = settingAction.setting.data
+        activity.startActivity(settingIntent, null)
     }
 
     fun navigateToFragment(@IdRes destinationId: Int, args: Bundle? = null) {
