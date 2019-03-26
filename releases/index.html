@@ -172,13 +172,16 @@
 <p>Some assumptions:</p>
 <ul>
 <li><code>master</code> is the default branch and is production-ready</li>
-<li>commits made to <code>master</code> are built and pass in <a href="https://app.bitrise.io/app/20089a88380dd14d">bitrise</a></li>
+<li>non-'master' and non-'production' branches run the "primary" workflow which signs a "Debug" variant</li>
+<li>though, users with access can manually "Start" a "deploy" build against a branch from the bitrise UI</li>
+<li>commits made to <code>master</code> and <code>production</code> are built and pass in <a href="https://app.bitrise.io/app/20089a88380dd14d">bitrise</a></li>
+<li>the "deploy" workflow in bitrise runs and signs a "Release" variant APK</li>
 <li>bitrise will test, build, and sign the APK for every build on every branch</li>
 <li><code>production</code> is our public release branch and may not match <code>master</code></li>
 <li>ideally, <code>production</code> will perfectly reproduce master</li>
 <li>but if <code>master</code> is in an un-releasable state, we cherry-pick commits to this branch</li>
 <li>this is an exception rather than the preferred maintenance method</li>
-<li>no automated uploads to Google Play Console occur, manual artifact uploads (from bitrise's signed artifacts) are required for internal, closed, open, and production releases</li>
+<li>no automated uploads to Google Play Console occur, manual artifact uploads (from bitrise's signed Release artifacts) are required for internal, closed, open, and production releases</li>
 <li>Play Store has Internal (core team, email-restricted), Alpha (closed, email-restricted), and Production (everyone!) release channels configured</li>
 <li>currently, no plans exist for "external" testers nor "Open" release channels</li>
 <li>in the future we may create an open Beta testing channel to allow anyone outside of Mozilla to help us test in-progress work</li>
