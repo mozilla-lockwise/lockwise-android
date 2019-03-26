@@ -2,15 +2,6 @@
 <issues format="5" by="lint 3.3.1" client="gradle" variant="all" version="3.3.1">
 
     <issue
-        id="ObsoleteLintCustomCheck"
-        message="Lint found an issue registry (`mozilla.components.tooling.lint.LintIssueRegistry`) which is older than the current API level; these checks may not work correctly.&#xA;&#xA;Recompile the checks against the latest version. Custom check API version is 2 (3.2), current lint API level is 3 (3.3+)"
-        includedVariants="debug"
-        excludedVariants="release">
-        <location
-            file="../../../.gradle/caches/transforms-1/files-1.1/lib-publicsuffixlist-0.40.0.aar/89d62c37aacf8b1a44f832ced00759ad/jars/lint.jar"/>
-    </issue>
-
-    <issue
         id="MissingConstraints"
         message="This view is not constrained horizontally: at runtime it will jump to the left unless you add a horizontal constraint"
         errorLine1="        &lt;ImageView"
@@ -200,18 +191,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="261"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.string.autofill_error_toast` appears to be unused"
-        errorLine1="    &lt;string name=&quot;autofill_error_toast&quot;>Firefox Lockbox encountered an error: %s&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="265"
+            line="254"
             column="13"/>
     </issue>
 
