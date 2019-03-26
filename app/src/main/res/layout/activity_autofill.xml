@@ -17,7 +17,7 @@
             android:layout_height="match_parent"
             android:id="@+id/autofill_fragment_nav_host"
             android:name="androidx.navigation.fragment.NavHostFragment"
-            app:navGraph="@navigation/graph_autofill"
+            app:navGraph="@navigation/graph_main"
             app:defaultNavHost="true"
     />
 </androidx.constraintlayout.widget.ConstraintLayout>

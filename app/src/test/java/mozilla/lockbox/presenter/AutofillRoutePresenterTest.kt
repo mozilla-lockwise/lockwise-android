@@ -50,7 +50,6 @@ import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.eq
 import org.mockito.Mock
-import org.mockito.Mockito
 import org.mockito.Mockito.anyString
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
@@ -60,8 +59,6 @@ import org.powermock.modules.junit4.PowerMockRunner
 import java.util.concurrent.Executor
 import java.util.concurrent.TimeUnit
 import org.powermock.api.mockito.PowerMockito.`when` as whenCalled
-
-fun <T> any(): T = Mockito.any<T>()
 
 @ExperimentalCoroutinesApi
 @RunWith(PowerMockRunner::class)
@@ -80,7 +77,8 @@ class AutofillRoutePresenterTest {
     val navDestination: NavDestination = mock(NavDestination::class.java)
 
     @Mock
-    val fingerprintAuthDialogFragment: FingerprintAuthDialogFragment = PowerMockito.mock(FingerprintAuthDialogFragment::class.java)
+    val fingerprintAuthDialogFragment: FingerprintAuthDialogFragment =
+        PowerMockito.mock(FingerprintAuthDialogFragment::class.java)
 
     @Mock
     val autofillFilterFragment: AutofillFilterFragment = PowerMockito.mock(AutofillFilterFragment::class.java)
@@ -171,7 +169,6 @@ class AutofillRoutePresenterTest {
     private val autofillStore = FakeAutofillStore()
     private val pslSupport = FakePslSupport()
     private val dispatcherObserver = TestObserver.create<Action>()
-
     lateinit var subject: AutofillRoutePresenter
 
     @Before
@@ -216,7 +213,6 @@ class AutofillRoutePresenterTest {
     @Test
     fun `locked routes`() {
         routeStore.routeStub.onNext(RouteAction.LockScreen)
-
         verify(navController).navigate(R.id.fragment_locked, null, null)
     }
 

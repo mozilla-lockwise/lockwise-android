@@ -96,6 +96,16 @@ open class RoutePresenter(
         }
     }
 
+    fun showAutofillDialogFragment(dialogFragment: DialogFragment, destination: RouteAction.DialogFragment) {
+        val fragmentManager = activity.supportFragmentManager
+        try {
+            dialogFragment.show(fragmentManager, dialogFragment.javaClass.name)
+            dialogFragment.setupDialog(destination.dialogTitle, destination.dialogSubtitle)
+        } catch (e: IllegalStateException) {
+            log.error("Could not show dialog", e)
+        }
+    }
+
     fun openWebsite(url: String) {
         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         activity.startActivity(browserIntent, null)
@@ -197,8 +207,8 @@ open class RoutePresenter(
             R.id.fragment_filter to R.id.fragment_item_detail -> R.id.action_filter_to_itemDetail
 
             // autofill routes
-            Pair(R.id.fragment_locked, R.id.fragment_filter) -> R.id.action_locked_to_filter
-            Pair(R.id.fragment_null, R.id.fragment_filter) -> R.id.action_to_filter
+            Pair(R.id.fragment_locked, R.id.fragment_autofill_filter) -> R.id.action_locked_to_filter
+            Pair(R.id.fragment_null, R.id.fragment_autofill_filter) -> R.id.action_to_filter_autofill
             Pair(R.id.fragment_null, R.id.fragment_locked) -> R.id.action_to_locked
 
             else -> null

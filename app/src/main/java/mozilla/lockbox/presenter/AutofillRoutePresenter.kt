@@ -101,7 +101,7 @@ class AutofillRoutePresenter(
             is RouteAction.DialogFragment.AutofillSearchDialog ->
                 showDialogFragment(AutofillFilterFragment(), action)
             is RouteAction.DialogFragment.FingerprintDialog ->
-                showDialogFragment(FingerprintAuthDialogFragment(), action)
+                showAutofillDialogFragment(FingerprintAuthDialogFragment(), action)
         }
     }
 
@@ -189,7 +189,10 @@ class AutofillRoutePresenter(
         if (fillResponse == null) {
             activity.setResult(Activity.RESULT_CANCELED)
         } else {
-            activity.setResult(Activity.RESULT_OK, Intent().putExtra(AutofillManager.EXTRA_AUTHENTICATION_RESULT, fillResponse))
+            activity.setResult(
+                Activity.RESULT_OK,
+                Intent().putExtra(AutofillManager.EXTRA_AUTHENTICATION_RESULT, fillResponse)
+            )
         }
         activity.finish()
     }
