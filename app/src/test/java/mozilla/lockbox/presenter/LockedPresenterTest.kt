@@ -37,8 +37,8 @@ class LockedPresenterTest {
     }
 
     open class FakeFingerprintStore : FingerprintStore() {
-        override var fingerprintManager: FingerprintManager =
-            RuntimeEnvironment.application.getSystemService(Context.FINGERPRINT_SERVICE) as FingerprintManager
+        override var fingerprintManager: FingerprintManager? =
+            RuntimeEnvironment.application.getSystemService(Context.FINGERPRINT_SERVICE) as? FingerprintManager
 
         override var keyguardManager: KeyguardManager =
             spy(RuntimeEnvironment.application.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager)
