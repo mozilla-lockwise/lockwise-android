@@ -202,7 +202,9 @@ open class DataStore(
         this.listSubject.accept(emptyList())
     }
 
+    // Parameter x is needed to ensure that the function is indeed a Consumer so that it can be used in a suscribe-call
     // there's probably a slicker way to do this `Unit` thing...
+    @Suppress("UNUSED_PARAMETER")
     private fun updateList(x: Unit) {
         val backend = this.backend ?: return notReady()
         if (!backend.isLocked()) {
