@@ -9,6 +9,7 @@
 package mozilla.lockbox.support
 
 import android.content.Context
+import androidx.test.core.app.ApplicationProvider
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.rxkotlin.Observables
@@ -22,7 +23,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 
 typealias PublicSuffixPair = Pair<PublicSuffix, PublicSuffix>
@@ -31,7 +31,7 @@ typealias PublicSuffixPair = Pair<PublicSuffix, PublicSuffix>
 @RunWith(RobolectricTestRunner::class)
 @Config(application = TestApplication::class)
 class PublicSuffixSupportTest : DisposingTest() {
-    private val appContext: Context = RuntimeEnvironment.application
+    private val appContext: Context = ApplicationProvider.getApplicationContext()
     private val support = PublicSuffixSupport()
 
     @Before
@@ -322,7 +322,11 @@ class PublicSuffixSupportTest : DisposingTest() {
 
         val (example, firefox1, firefox2, mozilla) = passwords
 
-        fun testFiltering(webDomain: String?, packageName: String = "com.android.chrome", vararg expected: ServerPassword) {
+        fun testFiltering(
+            webDomain: String?,
+            packageName: String = "com.android.chrome",
+            vararg expected: ServerPassword
+        ) {
             val matchObserver = createTestObserver<List<ServerPassword>>()
             Observable.just(passwords)
                 .filter(support, webDomain, packageName)

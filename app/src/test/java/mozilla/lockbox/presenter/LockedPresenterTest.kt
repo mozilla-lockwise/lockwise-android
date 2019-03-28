@@ -3,6 +3,7 @@ package mozilla.lockbox.presenter
 import android.app.KeyguardManager
 import android.content.Context
 import android.hardware.fingerprint.FingerprintManager
+import androidx.test.core.app.ApplicationProvider
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
@@ -23,7 +24,6 @@ import org.junit.runner.RunWith
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.spy
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
@@ -38,10 +38,10 @@ class LockedPresenterTest {
 
     open class FakeFingerprintStore : FingerprintStore() {
         override var fingerprintManager: FingerprintManager? =
-            RuntimeEnvironment.application.getSystemService(Context.FINGERPRINT_SERVICE) as? FingerprintManager
+            ApplicationProvider.getApplicationContext<Context>().getSystemService(Context.FINGERPRINT_SERVICE) as? FingerprintManager
 
         override var keyguardManager: KeyguardManager =
-            spy(RuntimeEnvironment.application.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager)
+            spy(ApplicationProvider.getApplicationContext<Context>().getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager)
     }
 
     class FakeLockedStore : LockedStore() {
@@ -73,7 +73,7 @@ class LockedPresenterTest {
 
     @Before
     fun setUp() {
-        context = RuntimeEnvironment.application.applicationContext
+        context = ApplicationProvider.getApplicationContext()
         subject.onViewReady()
     }
 

@@ -9,12 +9,13 @@ package mozilla.lockbox.adapter
 import android.content.Context
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.core.app.ApplicationProvider
 import mozilla.lockbox.BuildConfig
 import mozilla.lockbox.R
 import mozilla.lockbox.adapter.SettingListAdapter.Companion.SETTING_TEXT_TYPE
 import mozilla.lockbox.adapter.SettingListAdapter.Companion.SETTING_TOGGLE_TYPE
-import mozilla.lockbox.view.TextSettingViewHolder
 import mozilla.lockbox.view.AppVersionSettingViewHolder
+import mozilla.lockbox.view.TextSettingViewHolder
 import mozilla.lockbox.view.ToggleSettingViewHolder
 import org.hamcrest.Matchers.instanceOf
 import org.junit.Assert
@@ -24,7 +25,6 @@ import org.junit.Test
 import org.junit.jupiter.api.Assertions
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
@@ -45,7 +45,7 @@ class SettingListAdapterTest {
 
     @Before
     fun setUp() {
-        context = RuntimeEnvironment.application
+        context = ApplicationProvider.getApplicationContext()
         parent = RecyclerView(context)
         parent.layoutManager = LinearLayoutManager(context)
         testHelper = ListAdapterTestHelper()
