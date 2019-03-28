@@ -4,10 +4,10 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.preference.PreferenceManager
-import junit.framework.Assert.assertEquals
 import mozilla.lockbox.DisposingTest
 import mozilla.lockbox.action.NetworkAction
 import mozilla.lockbox.flux.Dispatcher
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith

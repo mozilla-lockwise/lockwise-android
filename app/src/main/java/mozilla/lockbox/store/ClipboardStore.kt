@@ -20,6 +20,7 @@ open class ClipboardStore(
     val dispatcher: Dispatcher = Dispatcher.shared
 ) : ContextStore {
     internal val compositeDisposable = CompositeDisposable()
+
     companion object {
         val shared = ClipboardStore()
     }
@@ -29,19 +30,19 @@ open class ClipboardStore(
 
     init {
         dispatcher.register
-                .filterByType(ClipboardAction::class.java)
-                .subscribe {
-                    // unpack the action, including adding new Clips to the Clipboard.
-                    when (it) {
-                        is ClipboardAction.CopyUsername -> {
-                            addToClipboard("username", it.username)
-                        }
-                        is ClipboardAction.CopyPassword -> {
-                            addToClipboard("password", it.password)
-                        }
+            .filterByType(ClipboardAction::class.java)
+            .subscribe {
+                // unpack the action, including adding new Clips to the Clipboard.
+                when (it) {
+                    is ClipboardAction.CopyUsername -> {
+                        addToClipboard("username", it.username)
+                    }
+                    is ClipboardAction.CopyPassword -> {
+                        addToClipboard("password", it.password)
                     }
                 }
-                .addTo(compositeDisposable)
+            }
+            .addTo(compositeDisposable)
     }
 
     override fun injectContext(context: Context) {
@@ -61,8 +62,8 @@ open class ClipboardStore(
     }
 
     fun replaceDirty(dirty: String, clean: String = "") {
-        val clipData = clipboardManager.primaryClip.getItemAt(0)
-        if (clipData.text == dirty) {
+        val clipData = clipboardManager.primaryClip?.getItemAt(0)
+        if (clipData?.text == dirty) {
             clipboardManager.primaryClip = ClipData.newPlainText("", clean)
         }
     }

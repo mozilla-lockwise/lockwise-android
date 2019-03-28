@@ -5,11 +5,11 @@ import io.reactivex.Observable
 import io.reactivex.functions.Consumer
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
-import junit.framework.Assert.assertEquals
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.NetworkStore
 import mozilla.lockbox.support.Constant
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
