@@ -233,3 +233,7 @@ if (project.hasProperty("coverage")) {
         }
     }
 }
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions.allWarningsAsErrors = true
+}
