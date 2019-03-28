@@ -253,13 +253,13 @@ class RoutePresenter(
             R.id.fragment_onboarding_confirmation to R.id.fragment_item_list -> R.id.action_to_itemList
             R.id.fragment_onboarding_confirmation to R.id.fragment_webview -> R.id.action_to_webview
 
-            R.id.fragment_locked to R.id.fragment_item_list -> R.id.action_to_itemList
+            R.id.fragment_locked to R.id.fragment_item_list -> R.id.action_locked_to_itemList
             R.id.fragment_locked to R.id.fragment_welcome -> R.id.action_locked_to_welcome
 
             R.id.fragment_item_list to R.id.fragment_item_detail -> R.id.action_itemList_to_itemDetail
             R.id.fragment_item_list to R.id.fragment_setting -> R.id.action_itemList_to_setting
             R.id.fragment_item_list to R.id.fragment_account_setting -> R.id.action_itemList_to_accountSetting
-            R.id.fragment_item_list to R.id.fragment_locked -> R.id.action_to_locked
+            R.id.fragment_item_list to R.id.fragment_locked -> R.id.action_itemList_to_locked
             R.id.fragment_item_list to R.id.fragment_filter -> R.id.action_itemList_to_filter
             R.id.fragment_item_list to R.id.fragment_webview -> R.id.action_to_webview
 
