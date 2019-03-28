@@ -65,7 +65,7 @@ class AppRoutePresenter(
             is RouteAction.SettingList -> navigateToFragment(R.id.fragment_setting)
             is RouteAction.AccountSetting -> navigateToFragment(R.id.fragment_account_setting)
             is RouteAction.LockScreen -> navigateToFragment(R.id.fragment_locked)
-            is RouteAction.Filter -> navigateToFragment(R.id.fragment_filter)
+            is RouteAction.Filter -> navigateToFragment(R.id.fragment_filter_backdrop)
             is RouteAction.ItemDetail -> navigateToFragment(R.id.fragment_item_detail, bundle(action))
             is RouteAction.OpenWebsite -> openWebsite(action.url)
             is RouteAction.SystemSetting -> openSetting(action)

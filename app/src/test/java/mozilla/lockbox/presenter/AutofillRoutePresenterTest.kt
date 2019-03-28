@@ -237,7 +237,7 @@ class AutofillRoutePresenterTest {
         val title = R.string.fingerprint_dialog_title
         routeStore.routeStub.onNext(RouteAction.DialogFragment.FingerprintDialog(title))
 
-        verify(fingerprintAuthDialogFragment).show(eq(childFragmentManager), anyString())
+        verify(fingerprintAuthDialogFragment).show(eq(fragmentManager), anyString())
         verify(fingerprintAuthDialogFragment).setupDialog(title, null)
     }
 

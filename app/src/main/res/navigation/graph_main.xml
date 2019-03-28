@@ -10,7 +10,6 @@
             xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/graph_main"
             app:startDestination="@id/fragment_null">
-
     <fragment
             android:id="@+id/fragment_null"
             android:name="androidx.fragment.app.Fragment"
@@ -19,20 +18,36 @@
                 app:destination="@id/fragment_locked"
                 app:launchSingleTop="true"
                 app:popUpTo="@id/fragment_locked"
-                app:popUpToInclusive="true"/>
+                app:popUpToInclusive="true" />
         <action android:id="@+id/action_init_to_unlocked"
                 app:destination="@id/fragment_item_list"
                 app:launchSingleTop="true"
                 app:popUpTo="@id/fragment_item_list"
-                app:popUpToInclusive="true"/>
+                app:popUpToInclusive="true" />
         <action android:id="@+id/action_init_to_unprepared"
                 app:destination="@id/fragment_welcome"
                 app:launchSingleTop="true"
                 app:popUpTo="@id/fragment_welcome"
+                app:popUpToInclusive="true" />
+        <action
+                android:id="@+id/action_to_locked"
+                app:destination="@id/fragment_locked"
+                app:launchSingleTop="true"
                 app:popUpToInclusive="true"/>
         <action
-                android:id="@+id/action_to_filter_autofill"
-                app:destination="@id/fragment_filter"
+                android:id="@+id/action_to_filter"
+                app:destination="@id/fragment_filter_backdrop"
+                app:launchSingleTop="true"
+                app:popUpToInclusive="true"/>
+    </fragment>
+
+    <fragment
+            android:id="@+id/fragment_filter_backdrop"
+            android:name="mozilla.lockbox.view.AutofillFilterBackdropFragment"
+            tools:layout="@null">
+        <action
+                android:id="@+id/action_filter_to_locked"
+                app:destination="@id/fragment_locked"
                 app:launchSingleTop="true"
                 app:popUpToInclusive="true"/>
     </fragment>
@@ -180,12 +195,6 @@
     </fragment>
 
     <fragment
-            android:id="@+id/fragment_autofill_filter"
-            android:name="mozilla.lockbox.view.AutofillFilterFragment"
-            tools:layout="@layout/fragment_autofill_filter">
-    </fragment>
-
-    <fragment
             android:id="@+id/fragment_locked"
             android:name="mozilla.lockbox.view.LockedFragment"
             tools:layout="@layout/fragment_locked">
@@ -201,7 +210,7 @@
                 app:launchSingleTop="true"/>
         <action
                 android:id="@+id/action_locked_to_filter"
-                app:destination="@id/fragment_filter"
+                app:destination="@id/fragment_filter_backdrop"
                 app:launchSingleTop="true"
                 app:popUpToInclusive="true"/>
     </fragment>

@@ -195,7 +195,7 @@ open class RoutePresenter(
             R.id.fragment_item_list to R.id.fragment_setting -> R.id.action_itemList_to_setting
             R.id.fragment_item_list to R.id.fragment_account_setting -> R.id.action_itemList_to_accountSetting
             R.id.fragment_item_list to R.id.fragment_locked -> R.id.action_itemList_to_locked
-            R.id.fragment_item_list to R.id.fragment_filter -> R.id.action_itemList_to_filter
+            R.id.fragment_item_list to R.id.fragment_filter_backdrop -> R.id.action_itemList_to_filter
             R.id.fragment_item_list to R.id.fragment_webview -> R.id.action_to_webview
 
             R.id.fragment_item_detail to R.id.fragment_webview -> R.id.action_to_webview
@@ -204,12 +204,12 @@ open class RoutePresenter(
 
             R.id.fragment_account_setting to R.id.fragment_welcome -> R.id.action_to_welcome
 
-            R.id.fragment_filter to R.id.fragment_item_detail -> R.id.action_filter_to_itemDetail
+            R.id.fragment_filter_backdrop to R.id.fragment_item_detail -> R.id.action_filter_to_itemDetail
 
             // autofill routes
-            Pair(R.id.fragment_locked, R.id.fragment_autofill_filter) -> R.id.action_locked_to_filter
-            Pair(R.id.fragment_null, R.id.fragment_autofill_filter) -> R.id.action_to_filter_autofill
-            Pair(R.id.fragment_null, R.id.fragment_locked) -> R.id.action_to_locked
+            R.id.fragment_null to R.id.fragment_filter_backdrop -> R.id.action_to_filter
+            R.id.fragment_locked to R.id.fragment_filter_backdrop -> R.id.action_locked_to_filter
+            R.id.fragment_filter_backdrop to R.id.fragment_locked -> R.id.action_filter_to_locked
 
             else -> null
         }

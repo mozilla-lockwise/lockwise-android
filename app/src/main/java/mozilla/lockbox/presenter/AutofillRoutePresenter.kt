@@ -7,9 +7,6 @@ import android.service.autofill.FillResponse
 import android.view.autofill.AutofillManager
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -27,6 +24,7 @@ import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.support.PublicSuffixSupport
 import mozilla.lockbox.view.AutofillFilterFragment
+import mozilla.lockbox.view.DialogFragment
 import mozilla.lockbox.view.FingerprintAuthDialogFragment
 
 @ExperimentalCoroutinesApi
@@ -40,18 +38,6 @@ class AutofillRoutePresenter(
     private val dataStore: DataStore = DataStore.shared,
     private val pslSupport: PublicSuffixSupport = PublicSuffixSupport.shared
 ) : RoutePresenter(activity, dispatcher, routeStore) {
-
-    private val navHostFragmentManager: FragmentManager
-        get() {
-            val fragmentManager = activity.supportFragmentManager
-            val navHost = fragmentManager.fragments.last()
-            return navHost.childFragmentManager
-        }
-
-    private val currentFragment: Fragment
-        get() {
-            return navHostFragmentManager.fragments.last()
-        }
 
     override fun onViewReady() {
         navController = Navigation.findNavController(activity, R.id.autofill_fragment_nav_host)
@@ -102,69 +88,6 @@ class AutofillRoutePresenter(
                 showDialogFragment(AutofillFilterFragment(), action)
             is RouteAction.DialogFragment.FingerprintDialog ->
                 showAutofillDialogFragment(FingerprintAuthDialogFragment(), action)
-        }
-    }
-
-    private fun navigateToFragment(@IdRes destinationId: Int, args: Bundle? = null) {
-        val src = navController.currentDestination ?: return
-        val srcId = src.id
-        if (srcId == destinationId && args == null) {
-            // No point in navigating if nothing has changed.
-            return
-        }
-
-        val transition = findTransitionId(srcId, destinationId) ?: destinationId
-
-        val navOptions = if (transition == destinationId) {
-            // Without being able to detect if we're in developer mode,
-            // it is too dangerous to RuntimeException.
-            val from = activity.resources.getResourceName(srcId)
-            val to = activity.resources.getResourceName(destinationId)
-            val graphName = activity.resources.getResourceName(navController.graph.id)
-            log.error(
-                "Cannot route from $from to $to. " +
-                    "This is a developer bug, fixable by adding an action to $graphName.xml and/or ${javaClass.simpleName}"
-            )
-            null
-        } else {
-            // Get the transition action out of the graph, before we manually clear the back
-            // stack, because it causes IllegalArgumentExceptions.
-            src.getAction(transition)?.navOptions?.let { navOptions ->
-                if (navOptions.shouldLaunchSingleTop()) {
-                    while (navController.popBackStack()) {
-                        // NOP
-                    }
-                    routeStore.clearBackStack()
-                }
-                navOptions
-            }
-        }
-
-        try {
-            navController.navigate(destinationId, args, navOptions)
-        } catch (e: IllegalArgumentException) {
-            log.error("This appears to be a bug in navController", e)
-            navController.navigate(destinationId, args)
-        }
-    }
-
-    private fun findTransitionId(@IdRes src: Int, @IdRes destination: Int): Int? {
-        return when (src to destination) {
-            R.id.fragment_null to R.id.fragment_filter_backdrop -> R.id.action_to_filter
-            R.id.fragment_null to R.id.fragment_locked -> R.id.action_to_locked
-            R.id.fragment_locked to R.id.fragment_filter_backdrop -> R.id.action_locked_to_filter
-            R.id.fragment_filter_backdrop to R.id.fragment_locked -> R.id.action_filter_to_locked
-            else -> null
-        }
-    }
-
-    private fun showDialogFragment(dialogFragment: DialogFragment, destination: RouteAction.DialogFragment) {
-        try {
-            dialogFragment.setTargetFragment(currentFragment, 0)
-            dialogFragment.show(navHostFragmentManager, dialogFragment.javaClass.name)
-            dialogFragment.setupDialog(destination.dialogTitle, destination.dialogSubtitle)
-        } catch (e: IllegalStateException) {
-            log.error("Could not show dialog", e)
         }
     }
 
