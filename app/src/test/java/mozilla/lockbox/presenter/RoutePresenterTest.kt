@@ -17,10 +17,13 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.BundleCompat
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.NavHostFragment
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.android.plugins.RxAndroidPlugins
@@ -39,6 +42,7 @@ import mozilla.lockbox.extensions.view.AlertDialogHelper
 import mozilla.lockbox.extensions.view.AlertState
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.log
 import mozilla.lockbox.model.DialogViewModel
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.view.AppWebPageFragmentArgs
@@ -52,6 +56,8 @@ import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyBoolean
+import org.mockito.ArgumentMatchers.anyInt
+import org.mockito.ArgumentMatchers.anyString
 import org.mockito.ArgumentMatchers.eq
 import org.mockito.ArgumentMatchers.isA
 import org.mockito.Mock
@@ -63,6 +69,7 @@ import org.mockito.internal.matchers.Any
 import org.powermock.api.mockito.PowerMockito
 import org.powermock.core.classloader.annotations.PrepareForTest
 import org.powermock.modules.junit4.PowerMockRunner
+import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import java.util.concurrent.Executor
 import java.util.concurrent.TimeUnit
@@ -84,13 +91,29 @@ class RoutePresenterTest {
     val activity: AppCompatActivity = Mockito.mock(AppCompatActivity::class.java)
 
     @Mock
+    val context: Context = Mockito.mock(Context::class.java)
+
+    @Mock
     val navController: NavController = Mockito.mock(NavController::class.java)
 
     @Mock
     val fragmentManager: FragmentManager = Mockito.mock(FragmentManager::class.java)
 
     @Mock
+    val currentFragment: Fragment = Mockito.mock(Fragment::class.java)
+
+    @Mock
     val navDestination: NavDestination = Mockito.mock(NavDestination::class.java)
+
+    @Mock
+    val fingerprintAuthDialogFragment: FingerprintAuthDialogFragment =
+        PowerMockito.mock(FingerprintAuthDialogFragment::class.java)
+
+    @Mock
+    val dialogFragment = Mockito.mock(mozilla.lockbox.view.DialogFragment::class.java)
+
+    @Mock
+    val autofillFilterFragment: AutofillFilterFragment = PowerMockito.mock(AutofillFilterFragment::class.java)
 
     @Mock
     val intent: Intent = PowerMockito.mock(Intent::class.java)
@@ -104,12 +127,9 @@ class RoutePresenterTest {
     @Mock
     val action = Mockito.mock(Action::class.java)
 
-    @Mock
-    val context: Context = Mockito.mock(Context::class.java)
 
     @Mock
     val dialogHelper = Mockito.mock(AlertDialogHelper::class.java)
-
 
     @Mock
     val dialogViewModel = Mockito.mock(DialogViewModel::class.java)
@@ -124,13 +144,11 @@ class RoutePresenterTest {
     @Mock
     val alertDialog = Mockito.mock(AlertDialog::class.java)
 
-
     class FakeRouteStore : RouteStore() {
         val routeStub = PublishSubject.create<RouteAction>()
         override val routes: Observable<RouteAction>
             get() = routeStub
     }
-
     private val immediate = object : Scheduler() {
         override fun scheduleDirect(
             run: Runnable,
@@ -147,6 +165,7 @@ class RoutePresenterTest {
     }
 
     private val dispatcher = Dispatcher()
+
     private val dispatcherObserver = TestObserver.create<Action>()
     private val routeStore = FakeRouteStore()
     val callingIntent = Intent()
@@ -159,6 +178,25 @@ class RoutePresenterTest {
 
     @Mock
     val windowMock = Mockito.mock(Window::class.java)
+
+
+    class RoutePresenterStub(
+        activity: AppCompatActivity,
+        dispatcher: Dispatcher,
+        routeStore: RouteStore,
+        fragmentManagerStub: FragmentManager,
+        currentFragmentStub: Fragment
+    ) : RoutePresenter(activity, dispatcher, routeStore) {
+
+        private val navHostFragmentManagerStub: FragmentManager = fragmentManagerStub
+        override val navHostFragmentManager: FragmentManager
+            get() = navHostFragmentManagerStub
+
+        private val currentFragmentStub: Fragment = currentFragmentStub
+        override val currentFragment: Fragment
+            get() = currentFragmentStub
+    }
+
 
     @Before
     fun setUp() {
@@ -175,8 +213,12 @@ class RoutePresenterTest {
 
         PowerMockito.mockStatic(Navigation::class.java)
         PowerMockito.mockStatic(AlertDialogHelper::class.java)
+
         PowerMockito.whenNew(Intent::class.java).withNoArguments()
             .thenReturn(intent)
+
+        PowerMockito.whenNew(AlertDialogHelper::class.java).withNoArguments()
+            .thenReturn(dialogHelper)
 
         IntentBuilder.setSearchRequired(intent, true)
         whenCalled(activity.intent).thenReturn(callingIntent)
@@ -209,14 +251,16 @@ class RoutePresenterTest {
 
 
         // setup
-        subject = RoutePresenter(
+        subject = RoutePresenterStub(
             activity,
             dispatcher,
-            routeStore
+            routeStore,
+            fragmentManager,
+            currentFragment
         )
         subject.navController = navController
 
-        activity.applicationContext.setTheme(R.style.AlertDialog_AppCompat)
+//        activity.applicationContext.setTheme(R.style.AlertDialog_AppCompat)
     }
 
     @Test
@@ -235,20 +279,20 @@ class RoutePresenterTest {
 
     @Test
     fun `dialog fragment is set up`() {
-
+        val destination = RouteAction.DialogFragment.FingerprintDialog(
+            R.string.fingerprint_dialog_title,
+            R.string.enable_fingerprint_dialog_subtitle
+        )
+        subject.showDialogFragment(dialogFragment, destination)
+        verify(dialogFragment).setupDialog(destination.dialogTitle, destination.dialogSubtitle)
     }
+
 
     @Test
     fun `autofill dialog fragment is set up`() {
-
-    }
-
-
-    @Test
-    fun `dialog is shown`() {
-        val dialogAction = DialogAction.UnlinkDisclaimer
-        subject.showDialog(dialogAction)
-//        dispatcherObserver.assertValueAt(0, eq(ArgumentMatchers.any(RouteAction::class.java)))
+        val destination = RouteAction.DialogFragment.AutofillSearchDialog
+        subject.showDialogFragment(dialogFragment, destination)
+        verify(dialogFragment).setupDialog(destination.dialogTitle, null)
     }
 
     @Test
@@ -265,4 +309,12 @@ class RoutePresenterTest {
         Assert.assertThat(result, instanceOf(Bundle::class.java))
     }
 
+    @Test
+    fun `find transition ids`() {
+        val current = R.id.fragment_null
+        val destination = R.id.fragment_locked
+
+        val result = subject.findTransitionId(current, destination)
+        Assert.assertEquals(R.id.action_to_locked, result)
+    }
 }

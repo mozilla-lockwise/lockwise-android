@@ -37,14 +37,14 @@ open class RoutePresenter(
 ) : Presenter() {
     lateinit var navController: NavController
 
-    val navHostFragmentManager: FragmentManager
+    open val navHostFragmentManager: FragmentManager
         get() {
             val fragmentManager = activity.supportFragmentManager
             val navHost = fragmentManager.fragments.last()
             return navHost.childFragmentManager
         }
 
-    val currentFragment: Fragment
+    open val currentFragment: Fragment
         get() {
             return navHostFragmentManager.fragments.last()
         }
@@ -160,7 +160,7 @@ open class RoutePresenter(
         }
     }
 
-    private fun findTransitionId(@IdRes from: Int, @IdRes to: Int): Int? {
+    fun findTransitionId(@IdRes from: Int, @IdRes to: Int): Int? {
         // This maps two nodes in the graph_main.xml to the edge between them.
         // If a RouteAction is called from a place the graph doesn't know about then
         // the app will log.error.
