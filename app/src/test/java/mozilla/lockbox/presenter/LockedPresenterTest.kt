@@ -37,11 +37,13 @@ class LockedPresenterTest {
     }
 
     open class FakeFingerprintStore : FingerprintStore() {
+        private val context: Context = ApplicationProvider.getApplicationContext()
+
         override var fingerprintManager: FingerprintManager? =
-            ApplicationProvider.getApplicationContext<Context>().getSystemService(Context.FINGERPRINT_SERVICE) as? FingerprintManager
+            context.getSystemService(Context.FINGERPRINT_SERVICE) as? FingerprintManager
 
         override var keyguardManager: KeyguardManager =
-            spy(ApplicationProvider.getApplicationContext<Context>().getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager)
+            spy(context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager)
     }
 
     class FakeLockedStore : LockedStore() {

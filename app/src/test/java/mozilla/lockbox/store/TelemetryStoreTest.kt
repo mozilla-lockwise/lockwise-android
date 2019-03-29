@@ -64,9 +64,10 @@ class TelemetryStoreTest : DisposingTest() {
     @Test
     fun testApplyConfig() {
         val applyObserver = createTestObserver<Context>()
+        val context: Context = ApplicationProvider.getApplicationContext()
         wrapper.applySubject.subscribe(applyObserver)
-        subject.injectContext(ApplicationProvider.getApplicationContext())
-        applyObserver.assertValue(ApplicationProvider.getApplicationContext<Context>())
+        subject.injectContext(context)
+        applyObserver.assertValue(context)
     }
 
     @Test
