@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package mozilla.lockbox.presenter
 
 import android.hardware.fingerprint.FingerprintManager
