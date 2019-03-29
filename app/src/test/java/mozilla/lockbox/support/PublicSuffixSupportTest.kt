@@ -320,7 +320,7 @@ class PublicSuffixSupportTest : DisposingTest() {
         val domains = listOf("example.com", "firefox.com", "accounts.firefox.com", "mozilla.org")
         val passwords = domains.map { ServerPassword(id = it, hostname = "https://$it", username = it, password = it) }
 
-        val (example, firefox1, firefox2, mozilla) = passwords
+        val (example, firefox1, firefox2) = passwords
 
         fun testFiltering(
             webDomain: String?,
