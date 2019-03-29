@@ -6,6 +6,8 @@
 
 package mozilla.lockbox.presenter
 
+import android.app.KeyguardManager
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -15,9 +17,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
-import mozilla.lockbox.action.AppWebPageAction
 import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.view.AlertDialogHelper
@@ -26,11 +29,10 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
 import mozilla.lockbox.store.RouteStore
-import mozilla.lockbox.view.AppWebPageFragmentArgs
 import mozilla.lockbox.view.DialogFragment
-import mozilla.lockbox.view.ItemDetailFragmentArgs
 
-open class RoutePresenter(
+@ExperimentalCoroutinesApi
+abstract class RoutePresenter(
     private val activity: AppCompatActivity,
     private val dispatcher: Dispatcher,
     private val routeStore: RouteStore
@@ -54,20 +56,25 @@ open class RoutePresenter(
         false
     }
 
-    fun bundle(action: AppWebPageAction): Bundle {
-        return AppWebPageFragmentArgs.Builder()
-            .setUrl(action.url!!)
-            .setTitle(action.title!!)
-            .build()
-            .toBundle()
+    override fun onPause() {
+        super.onPause()
+        activity.removeOnBackPressedCallback(backListener)
+        compositeDisposable.clear()
     }
 
-    fun bundle(action: RouteAction.ItemDetail): Bundle {
-        return ItemDetailFragmentArgs.Builder()
-            .setItemId(action.id)
-            .build()
-            .toBundle()
+    override fun onResume() {
+        super.onResume()
+        activity.addOnBackPressedCallback(backListener)
+        routeStore.routes
+            .distinctUntilChanged()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(this::route)
+            .addTo(compositeDisposable)
     }
+
+    protected abstract fun route(action: RouteAction)
+
+    protected abstract fun findTransitionId(@IdRes src: Int, @IdRes dest: Int): Int?
 
     fun showDialog(destination: DialogAction) {
         AlertDialogHelper.showAlertDialog(activity, destination.viewModel)
@@ -160,58 +167,12 @@ open class RoutePresenter(
         }
     }
 
-    fun findTransitionId(@IdRes from: Int, @IdRes to: Int): Int? {
-        // This maps two nodes in the graph_main.xml to the edge between them.
-        // If a RouteAction is called from a place the graph doesn't know about then
-        // the app will log.error.
-        return when (from to to) {
-            R.id.fragment_null to R.id.fragment_item_list -> R.id.action_init_to_unlocked
-            R.id.fragment_null to R.id.fragment_locked -> R.id.action_init_to_locked
-            R.id.fragment_null to R.id.fragment_welcome -> R.id.action_init_to_unprepared
-
-            R.id.fragment_welcome to R.id.fragment_fxa_login -> R.id.action_welcome_to_fxaLogin
-
-            R.id.fragment_fxa_login to R.id.fragment_item_list -> R.id.action_fxaLogin_to_itemList
-            R.id.fragment_fxa_login to R.id.fragment_fingerprint_onboarding ->
-                R.id.action_fxaLogin_to_fingerprint_onboarding
-            R.id.fragment_fxa_login to R.id.fragment_onboarding_confirmation ->
-                R.id.action_fxaLogin_to_onboarding_confirmation
-
-            R.id.fragment_fingerprint_onboarding to R.id.fragment_onboarding_confirmation ->
-                R.id.action_fingerprint_onboarding_to_confirmation
-            R.id.fragment_fingerprint_onboarding to R.id.fragment_autofill_onboarding ->
-                R.id.action_onboarding_fingerprint_to_autofill
-
-            R.id.fragment_autofill_onboarding to R.id.fragment_item_list -> R.id.action_to_itemList
-            R.id.fragment_autofill_onboarding to R.id.fragment_onboarding_confirmation -> R.id.action_autofill_onboarding_to_confirmation
-
-            R.id.fragment_onboarding_confirmation to R.id.fragment_item_list -> R.id.action_to_itemList
-            R.id.fragment_onboarding_confirmation to R.id.fragment_webview -> R.id.action_to_webview
-
-            R.id.fragment_locked to R.id.fragment_item_list -> R.id.action_locked_to_itemList
-            R.id.fragment_locked to R.id.fragment_welcome -> R.id.action_locked_to_welcome
-
-            R.id.fragment_item_list to R.id.fragment_item_detail -> R.id.action_itemList_to_itemDetail
-            R.id.fragment_item_list to R.id.fragment_setting -> R.id.action_itemList_to_setting
-            R.id.fragment_item_list to R.id.fragment_account_setting -> R.id.action_itemList_to_accountSetting
-            R.id.fragment_item_list to R.id.fragment_locked -> R.id.action_itemList_to_locked
-            R.id.fragment_item_list to R.id.fragment_filter_backdrop -> R.id.action_itemList_to_filter
-            R.id.fragment_item_list to R.id.fragment_webview -> R.id.action_to_webview
-
-            R.id.fragment_item_detail to R.id.fragment_webview -> R.id.action_to_webview
-
-            R.id.fragment_setting to R.id.fragment_webview -> R.id.action_to_webview
-
-            R.id.fragment_account_setting to R.id.fragment_welcome -> R.id.action_to_welcome
-
-            R.id.fragment_filter_backdrop to R.id.fragment_item_detail -> R.id.action_filter_to_itemDetail
-
-            // autofill routes
-            R.id.fragment_null to R.id.fragment_filter_backdrop -> R.id.action_to_filter
-            R.id.fragment_locked to R.id.fragment_filter_backdrop -> R.id.action_locked_to_filter
-            R.id.fragment_filter_backdrop to R.id.fragment_locked -> R.id.action_filter_to_locked
-
-            else -> null
-        }
+    fun showUnlockFallback(action: RouteAction.UnlockFallbackDialog) {
+        val manager = activity.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+        val intent = manager.createConfirmDeviceCredentialIntent(
+            activity.getString(R.string.unlock_fallback_title),
+            activity.getString(R.string.confirm_pattern)
+        )
+        currentFragment.startActivityForResult(intent, action.requestCode)
     }
 }

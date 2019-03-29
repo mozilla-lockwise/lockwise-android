@@ -5,11 +5,11 @@ import android.content.Intent
 import android.os.Build
 import android.service.autofill.FillResponse
 import android.view.autofill.AutofillManager
+import androidx.annotation.IdRes
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.Navigation
 import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
@@ -41,11 +41,6 @@ class AutofillRoutePresenter(
 
     override fun onViewReady() {
         navController = Navigation.findNavController(activity, R.id.autofill_fragment_nav_host)
-        routeStore.routes
-            .distinctUntilChanged()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(this::route)
-            .addTo(compositeDisposable)
 
         autofillStore.autofillActions
             .subscribe(this::finishAutofill)
@@ -74,7 +69,7 @@ class AutofillRoutePresenter(
             .addTo(compositeDisposable)
     }
 
-    private fun route(action: RouteAction) {
+    override fun route(action: RouteAction) {
         when (action) {
             is RouteAction.LockScreen -> {
                 dismissDialogIfPresent()
@@ -91,13 +86,22 @@ class AutofillRoutePresenter(
         }
     }
 
+    override fun findTransitionId(@IdRes src: Int, @IdRes dest: Int): Int? {
+        return when (Pair(src, dest)) {
+            Pair(R.id.fragment_locked, R.id.fragment_filter) -> R.id.action_locked_to_filter
+            Pair(R.id.fragment_null, R.id.fragment_filter) -> R.id.action_to_filter
+            Pair(R.id.fragment_null, R.id.fragment_locked) -> R.id.action_to_locked
+            else -> null
+        }
+    }
+
     private fun dismissDialogIfPresent() {
         (currentFragment as? DialogFragment)?.dismiss()
     }
 
     private fun finishAutofill(action: AutofillAction) {
         when (action) {
-            is AutofillAction.Cancel -> setFillResponseAndFinish()
+            is AutofillAction.Cancel -> cancelAndFinish()
             is AutofillAction.Complete -> finishResponse(listOf(action.login))
             is AutofillAction.CompleteMultiple -> finishResponse(action.logins)
         }
@@ -105,18 +109,17 @@ class AutofillRoutePresenter(
 
     private fun finishResponse(passwords: List<ServerPassword>) {
         val response = responseBuilder.buildFilteredFillResponse(activity, passwords)
-        setFillResponseAndFinish(response)
+        response?.let { setFillResponseAndFinish(it) } ?: cancelAndFinish()
     }
 
-    private fun setFillResponseAndFinish(fillResponse: FillResponse? = null) {
-        if (fillResponse == null) {
-            activity.setResult(Activity.RESULT_CANCELED)
-        } else {
-            activity.setResult(
-                Activity.RESULT_OK,
-                Intent().putExtra(AutofillManager.EXTRA_AUTHENTICATION_RESULT, fillResponse)
-            )
-        }
+    private fun cancelAndFinish() {
+        activity.setResult(Activity.RESULT_CANCELED)
+        activity.finish()
+    }
+
+    private fun setFillResponseAndFinish(fillResponse: FillResponse) {
+        val results = Intent().putExtra(AutofillManager.EXTRA_AUTHENTICATION_RESULT, fillResponse)
+        activity.setResult(Activity.RESULT_OK, results)
         activity.finish()
     }
 }

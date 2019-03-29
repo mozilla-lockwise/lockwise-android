@@ -127,15 +127,17 @@ class RoutePresenterTest {
         activity: AppCompatActivity,
         dispatcher: Dispatcher,
         routeStore: RouteStore,
-        fragmentManagerStub: FragmentManager,
-        currentFragmentStub: Fragment
+        private val navHostFragmentManagerStub: FragmentManager,
+        private val currentFragmentStub: Fragment
     ) : RoutePresenter(activity, dispatcher, routeStore) {
 
-        private val navHostFragmentManagerStub: FragmentManager = fragmentManagerStub
+        override fun route(action: RouteAction) {}
+
+        override fun findTransitionId(src: Int, dest: Int): Int? {}
+
         override val navHostFragmentManager: FragmentManager
             get() = navHostFragmentManagerStub
 
-        private val currentFragmentStub: Fragment = currentFragmentStub
         override val currentFragment: Fragment
             get() = currentFragmentStub
     }
@@ -207,28 +209,5 @@ class RoutePresenterTest {
         val destination = RouteAction.DialogFragment.AutofillSearchDialog
         subject.showDialogFragment(dialogFragment, destination)
         verify(dialogFragment).setupDialog(destination.dialogTitle, null)
-    }
-
-    @Test
-    fun `web view bundle is created`() {
-        val action = AppWebPageAction.FaqList
-        val result = subject.bundle(action)
-        Assert.assertThat(result, instanceOf(Bundle::class.java))
-    }
-
-    @Test
-    fun `item detail bundle is created`() {
-        val action = RouteAction.ItemDetail("id")
-        val result = subject.bundle(action)
-        Assert.assertThat(result, instanceOf(Bundle::class.java))
-    }
-
-    @Test
-    fun `find transition ids`() {
-        val current = R.id.fragment_null
-        val destination = R.id.fragment_locked
-
-        val result = subject.findTransitionId(current, destination)
-        Assert.assertEquals(R.id.action_filter_to_locked, result)
     }
 }

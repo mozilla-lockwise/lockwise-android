@@ -8,6 +8,8 @@ package mozilla.lockbox.presenter
 
 import android.app.KeyguardManager
 import android.content.Context
+import android.os.Bundle
+import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.Navigation
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
@@ -23,7 +25,9 @@ import mozilla.lockbox.extensions.view.AlertDialogHelper
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.store.SettingStore
+import mozilla.lockbox.view.AppWebPageFragmentArgs
 import mozilla.lockbox.view.FingerprintAuthDialogFragment
+import mozilla.lockbox.view.ItemDetailFragmentArgs
 
 @ExperimentalCoroutinesApi
 class AppRoutePresenter(
@@ -52,7 +56,22 @@ class AppRoutePresenter(
             .addTo(compositeDisposable)
     }
 
-    private fun route(action: RouteAction) {
+    fun bundle(action: AppWebPageAction): Bundle {
+        return AppWebPageFragmentArgs.Builder()
+            .setUrl(action.url!!)
+            .setTitle(action.title!!)
+            .build()
+            .toBundle()
+    }
+
+    fun bundle(action: RouteAction.ItemDetail): Bundle {
+        return ItemDetailFragmentArgs.Builder()
+            .setItemId(action.id)
+            .build()
+            .toBundle()
+    }
+
+    override fun route(action: RouteAction) {
         activity.setTheme(R.style.AppTheme)
         when (action) {
             is RouteAction.Welcome -> navigateToFragment(R.id.fragment_welcome)
@@ -78,6 +97,56 @@ class AppRoutePresenter(
         }
     }
 
+    override fun findTransitionId(@IdRes src: Int, @IdRes dest: Int): Int? {
+        // This maps two nodes in the graph_main.xml to the edge between them.
+        // If a RouteAction is called from a place the graph doesn't know about then
+        // the app will log.error.
+        return when (src to dest) {
+            R.id.fragment_null to R.id.fragment_item_list -> R.id.action_init_to_unlocked
+            R.id.fragment_null to R.id.fragment_locked -> R.id.action_init_to_locked
+            R.id.fragment_null to R.id.fragment_welcome -> R.id.action_init_to_unprepared
+
+            R.id.fragment_welcome to R.id.fragment_fxa_login -> R.id.action_welcome_to_fxaLogin
+
+            R.id.fragment_fxa_login to R.id.fragment_item_list -> R.id.action_fxaLogin_to_itemList
+            R.id.fragment_fxa_login to R.id.fragment_fingerprint_onboarding ->
+                R.id.action_fxaLogin_to_fingerprint_onboarding
+            R.id.fragment_fxa_login to R.id.fragment_onboarding_confirmation ->
+                R.id.action_fxaLogin_to_onboarding_confirmation
+
+            R.id.fragment_fingerprint_onboarding to R.id.fragment_onboarding_confirmation ->
+                R.id.action_fingerprint_onboarding_to_confirmation
+            R.id.fragment_fingerprint_onboarding to R.id.fragment_autofill_onboarding ->
+                R.id.action_onboarding_fingerprint_to_autofill
+
+            R.id.fragment_autofill_onboarding to R.id.fragment_item_list -> R.id.action_to_itemList
+            R.id.fragment_autofill_onboarding to R.id.fragment_onboarding_confirmation -> R.id.action_autofill_onboarding_to_confirmation
+
+            R.id.fragment_onboarding_confirmation to R.id.fragment_item_list -> R.id.action_to_itemList
+            R.id.fragment_onboarding_confirmation to R.id.fragment_webview -> R.id.action_to_webview
+
+            R.id.fragment_locked to R.id.fragment_item_list -> R.id.action_locked_to_itemList
+            R.id.fragment_locked to R.id.fragment_welcome -> R.id.action_locked_to_welcome
+
+            R.id.fragment_item_list to R.id.fragment_item_detail -> R.id.action_itemList_to_itemDetail
+            R.id.fragment_item_list to R.id.fragment_setting -> R.id.action_itemList_to_setting
+            R.id.fragment_item_list to R.id.fragment_account_setting -> R.id.action_itemList_to_accountSetting
+            R.id.fragment_item_list to R.id.fragment_locked -> R.id.action_itemList_to_locked
+            R.id.fragment_item_list to R.id.fragment_filter_backdrop -> R.id.action_itemList_to_filter
+            R.id.fragment_item_list to R.id.fragment_webview -> R.id.action_to_webview
+
+            R.id.fragment_item_detail to R.id.fragment_webview -> R.id.action_to_webview
+
+            R.id.fragment_setting to R.id.fragment_webview -> R.id.action_to_webview
+
+            R.id.fragment_account_setting to R.id.fragment_welcome -> R.id.action_to_welcome
+
+            R.id.fragment_filter_backdrop to R.id.fragment_item_detail -> R.id.action_filter_to_itemDetail
+
+            else -> null
+        }
+    }
+
     private fun showAutoLockSelections() {
         val autoLockValues = Setting.AutoLockTime.values()
         val items = autoLockValues.map { it.stringValue }.toTypedArray()
@@ -98,14 +167,5 @@ class AppRoutePresenter(
             }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
-    }
-
-    private fun showUnlockFallback(action: RouteAction.UnlockFallbackDialog) {
-        val manager = activity.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
-        val intent = manager.createConfirmDeviceCredentialIntent(
-            activity.getString(R.string.unlock_fallback_title),
-            activity.getString(R.string.confirm_pattern)
-        )
-        currentFragment.startActivityForResult(intent, action.requestCode)
     }
 }
