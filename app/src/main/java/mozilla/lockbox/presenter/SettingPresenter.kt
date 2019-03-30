@@ -160,7 +160,9 @@ class SettingPresenter(
                 toggleObserver = sendUsageDataObserver
             ),
             AppVersionSettingConfiguration(
-                text = "App Version: $versionName ($versionNumber)",
+                title = R.string.app_version_title,
+                appVersion = BuildConfig.VERSION_NAME,
+                buildNumber = BuildConfig.BITRISE_BUILD_NUMBER,
                 contentDescription = R.string.app_version_description
             )
         )
