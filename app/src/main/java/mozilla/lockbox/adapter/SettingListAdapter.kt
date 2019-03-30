@@ -91,7 +91,7 @@ class SettingListAdapter : RecyclerView.Adapter<SettingViewHolder>() {
                     .addTo(compositeDisposable)
             }
             holder is AppVersionSettingViewHolder && configuration is AppVersionSettingConfiguration -> {
-                holder.setVersion(configuration.title, configuration.appVersion, configuration.buildNumber)
+                holder.setTitle(configuration.title, configuration.appVersion, configuration.buildNumber)
                 holder.contentDescription = configuration.contentDescription
             }
         }
