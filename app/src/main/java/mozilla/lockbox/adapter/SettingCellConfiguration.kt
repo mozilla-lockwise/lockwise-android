@@ -37,6 +37,6 @@ class ToggleSettingConfiguration(
 class AppVersionSettingConfiguration(
     @StringRes override val title: Int,
     val appVersion: String,
-    val buildNumber: String,
+    val buildNumber: Int,
     @StringRes override val contentDescription: Int
 ) : SettingCellConfiguration(contentDescription = contentDescription)

@@ -101,7 +101,7 @@ class AppVersionSettingViewHolder(val view: View) : SettingViewHolder(view) {
             view.contentDescription = view.resources.getString(value)
         }
 
-    fun setVersion(@StringRes format: Int, version: String, buildNumber: String = "0") {
+    fun setVersion(@StringRes format: Int, version: String, buildNumber: Int = 0) {
         view.appVersion.text = view.resources.getString(format, version, buildNumber)
     }
 }
