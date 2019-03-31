@@ -20,6 +20,7 @@ open class BackableFragment : Fragment(), BackableView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         navController = requireActivity().findNavController(R.id.fragment_nav_host)
         view.toolbar.setupWithNavController(navController)
+        view.toolbar.elevation = resources.getDimension(R.dimen.toolbar_elevation)
         view.toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
         view.toolbar.setNavigationContentDescription(R.string.backable_description)
 
