@@ -89,7 +89,9 @@ class ListAdapterTestHelper {
                 toggleObserver = toggleConsumerFake
             ),
             AppVersionSettingConfiguration(
-                text = "App Version: $expectedVersionNumber",
+                title = R.string.app_version_title,
+                appVersion = BuildConfig.VERSION_NAME,
+                buildNumber = BuildConfig.BITRISE_BUILD_NUMBER,
                 contentDescription = R.string.empty_string
             )
         )

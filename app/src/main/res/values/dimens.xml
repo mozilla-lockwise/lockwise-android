@@ -15,4 +15,5 @@
     <dimen name="hidden_network_error">0px</dimen>
     <dimen name="network_error_with_toolbar">96dp</dimen>
     <dimen name="network_error">40dp</dimen>
+    <dimen name="toolbar_elevation">4dp</dimen>
 </resources>
