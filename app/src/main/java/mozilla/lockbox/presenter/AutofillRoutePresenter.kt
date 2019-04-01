@@ -10,6 +10,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.Navigation
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
@@ -19,6 +20,7 @@ import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.autofill.FillResponseBuilder
 import mozilla.lockbox.autofill.IntentBuilder
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.log
 import mozilla.lockbox.store.AutofillStore
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.RouteStore
@@ -29,7 +31,7 @@ import mozilla.lockbox.view.FingerprintAuthDialogFragment
 
 @ExperimentalCoroutinesApi
 @RequiresApi(Build.VERSION_CODES.O)
-class AutofillRoutePresenter(
+open class AutofillRoutePresenter(
     private val activity: AppCompatActivity,
     private val responseBuilder: FillResponseBuilder,
     private val dispatcher: Dispatcher = Dispatcher.shared,
@@ -41,6 +43,12 @@ class AutofillRoutePresenter(
 
     override fun onViewReady() {
         navController = Navigation.findNavController(activity, R.id.autofill_fragment_nav_host)
+
+        routeStore.routes
+            .distinctUntilChanged()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(this::route)
+            .addTo(compositeDisposable)
 
         autofillStore.autofillActions
             .subscribe(this::finishAutofill)
@@ -82,16 +90,27 @@ class AutofillRoutePresenter(
             is RouteAction.DialogFragment.AutofillSearchDialog ->
                 showDialogFragment(AutofillFilterFragment(), action)
             is RouteAction.DialogFragment.FingerprintDialog ->
-                showAutofillDialogFragment(FingerprintAuthDialogFragment(), action)
+                showDialogFragment(FingerprintAuthDialogFragment(), action)
         }
     }
 
     override fun findTransitionId(@IdRes src: Int, @IdRes dest: Int): Int? {
         return when (Pair(src, dest)) {
-            Pair(R.id.fragment_locked, R.id.fragment_filter) -> R.id.action_locked_to_filter
-            Pair(R.id.fragment_null, R.id.fragment_filter) -> R.id.action_to_filter
-            Pair(R.id.fragment_null, R.id.fragment_locked) -> R.id.action_to_locked
+            R.id.fragment_null to R.id.fragment_filter_backdrop -> R.id.action_to_filter
+            R.id.fragment_null to R.id.fragment_locked -> R.id.action_to_locked
+            R.id.fragment_locked to R.id.fragment_filter_backdrop -> R.id.action_locked_to_filter
+            R.id.fragment_filter_backdrop to R.id.fragment_locked -> R.id.action_filter_to_locked
             else -> null
+        }
+    }
+
+    override fun showDialogFragment(dialogFragment: DialogFragment, destination: RouteAction.DialogFragment) {
+        val fragmentManager = activity.supportFragmentManager
+        try {
+            dialogFragment.show(fragmentManager, dialogFragment.javaClass.name)
+            dialogFragment.setupDialog(destination.dialogTitle, destination.dialogSubtitle)
+        } catch (e: IllegalStateException) {
+            log.error("Could not show dialog", e)
         }
     }
 

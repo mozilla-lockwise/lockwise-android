@@ -10,35 +10,39 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.Navigation
 import io.reactivex.Observable
-import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
 import mozilla.lockbox.action.AppWebPageAction
 import mozilla.lockbox.action.RouteAction
-import mozilla.lockbox.autofill.IntentBuilder
-import mozilla.lockbox.extensions.view.AlertDialogHelper
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.store.SettingStore
+import mozilla.lockbox.view.FingerprintAuthDialogFragment
 import org.hamcrest.CoreMatchers
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
-import org.mockito.ArgumentMatchers
+import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.powermock.api.mockito.PowerMockito
+import org.powermock.core.classloader.annotations.PrepareForTest
+import org.powermock.modules.junit4.PowerMockRunner
 
 @ExperimentalCoroutinesApi
+@RunWith(PowerMockRunner::class)
+@PrepareForTest(
+    Navigation::class,
+    FingerprintAuthDialogFragment::class,
+    Intent::class
+)
 class AppRoutePresenterTest {
 
     @Mock
@@ -54,9 +58,6 @@ class AppRoutePresenterTest {
     val navDestination: NavDestination = Mockito.mock(NavDestination::class.java)
 
     @Mock
-    val fragmentManager: FragmentManager = Mockito.mock(FragmentManager::class.java)
-
-    @Mock
     private val settingStore = Mockito.mock(SettingStore::class.java)
 
     class FakeRouteStore : RouteStore() {
@@ -67,7 +68,7 @@ class AppRoutePresenterTest {
 
     private val dispatcher = Dispatcher()
     private val dispatcherObserver = TestObserver.create<Action>()
-    private val routeStore = RoutePresenterTest.FakeRouteStore()
+    private val routeStore = FakeRouteStore()
 
     lateinit var subject: AppRoutePresenter
 
@@ -101,5 +102,4 @@ class AppRoutePresenterTest {
         val result = subject.bundle(action)
         Assert.assertThat(result, CoreMatchers.instanceOf(Bundle::class.java))
     }
-
 }

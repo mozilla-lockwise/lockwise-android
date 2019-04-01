@@ -17,7 +17,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
@@ -65,11 +64,11 @@ abstract class RoutePresenter(
     override fun onResume() {
         super.onResume()
         activity.addOnBackPressedCallback(backListener)
-        routeStore.routes
-            .distinctUntilChanged()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(this::route)
-            .addTo(compositeDisposable)
+//        routeStore.routes
+//            .distinctUntilChanged()
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .subscribe(this::route)
+//            .addTo(compositeDisposable)
     }
 
     protected abstract fun route(action: RouteAction)
@@ -93,20 +92,10 @@ abstract class RoutePresenter(
             .addTo(compositeDisposable)
     }
 
-    fun showDialogFragment(dialogFragment: DialogFragment, destination: RouteAction.DialogFragment) {
+    open fun showDialogFragment(dialogFragment: DialogFragment, destination: RouteAction.DialogFragment) {
         try {
             dialogFragment.setTargetFragment(currentFragment, 0)
             dialogFragment.show(navHostFragmentManager, dialogFragment.javaClass.name)
-            dialogFragment.setupDialog(destination.dialogTitle, destination.dialogSubtitle)
-        } catch (e: IllegalStateException) {
-            log.error("Could not show dialog", e)
-        }
-    }
-
-    fun showAutofillDialogFragment(dialogFragment: DialogFragment, destination: RouteAction.DialogFragment) {
-        val fragmentManager = activity.supportFragmentManager
-        try {
-            dialogFragment.show(fragmentManager, dialogFragment.javaClass.name)
             dialogFragment.setupDialog(destination.dialogTitle, destination.dialogSubtitle)
         } catch (e: IllegalStateException) {
             log.error("Could not show dialog", e)

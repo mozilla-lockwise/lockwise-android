@@ -8,7 +8,6 @@ package mozilla.lockbox.presenter
 
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -24,7 +23,6 @@ import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
-import mozilla.lockbox.action.AppWebPageAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.SettingIntent
 import mozilla.lockbox.autofill.IntentBuilder
@@ -32,8 +30,6 @@ import mozilla.lockbox.extensions.view.AlertDialogHelper
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.RouteStore
-import org.hamcrest.CoreMatchers.instanceOf
-import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -133,7 +129,7 @@ class RoutePresenterTest {
 
         override fun route(action: RouteAction) {}
 
-        override fun findTransitionId(src: Int, dest: Int): Int? {}
+        override fun findTransitionId(src: Int, dest: Int): Int? { return null }
 
         override val navHostFragmentManager: FragmentManager
             get() = navHostFragmentManagerStub
