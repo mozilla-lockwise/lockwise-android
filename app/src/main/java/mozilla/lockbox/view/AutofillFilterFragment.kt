@@ -7,6 +7,7 @@
 package mozilla.lockbox.view
 
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -84,9 +85,12 @@ class AutofillFilterFragment : DialogFragment(), AutofillFilterView {
         adapter.displayNoEntries(enabled)
     }
 
-    override fun onDestroyView() {
+    override fun onCancel(dialog: DialogInterface) {
         (onDismiss as PublishSubject).onNext(Unit)
+        super.onCancel(dialog)
+    }
 
+    override fun onDestroyView() {
         val dialog = dialog
         // handles https://code.google.com/p/android/issues/detail?id=17423
         if (dialog != null && retainInstance) {

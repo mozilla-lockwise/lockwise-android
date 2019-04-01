@@ -54,6 +54,7 @@ class FxALoginFragment : BackableFragment(), FxALoginView {
             skipFxA.visibility = View.GONE
         }
         view.toolbar.setNavigationIcon(R.drawable.ic_close)
+        view.toolbar.elevation = resources.getDimension(R.dimen.toolbar_elevation)
     }
 
     override fun loadURL(url: String) {
