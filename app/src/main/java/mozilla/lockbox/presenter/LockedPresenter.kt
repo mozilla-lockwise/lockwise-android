@@ -15,7 +15,6 @@ import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.UnlockingAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
-import mozilla.lockbox.model.FingerprintAuthCallback
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.LockedStore
 import mozilla.lockbox.store.SettingStore
@@ -24,7 +23,6 @@ import java.util.concurrent.TimeUnit
 
 interface LockedView {
     val unlockButtonTaps: Observable<Unit>
-    fun unlockFallback()
     val unlockConfirmed: Observable<Boolean>
 }
 
@@ -69,11 +67,9 @@ class LockedPresenter(
 
         lockedStore.onAuthentication
             .subscribe {
-                if (it is FingerprintAuthAction.OnAuthentication) {
-                    when (it.authCallback) {
-                        is FingerprintAuthCallback.OnAuth -> unlock()
-                        is FingerprintAuthCallback.OnError -> unlockFallback()
-                    }
+                when (it) {
+                    is FingerprintAuthAction.OnSuccess -> unlock()
+                    is FingerprintAuthAction.OnError -> unlockFallback()
                 }
             }
             .addTo(compositeDisposable)
@@ -86,7 +82,7 @@ class LockedPresenter(
 
     private fun unlockFallback() {
         if (fingerprintStore.isKeyguardDeviceSecure) {
-            view.unlockFallback()
+            dispatcher.dispatch(RouteAction.UnlockFallbackDialog)
         } else {
             unlock()
         }

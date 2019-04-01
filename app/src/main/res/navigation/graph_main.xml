@@ -9,7 +9,27 @@
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/graph_main"
-            app:startDestination="@id/fragment_item_list">
+            app:startDestination="@id/fragment_null">
+    <fragment
+            android:id="@+id/fragment_null"
+            android:name="androidx.fragment.app.Fragment"
+            tools:layout="@null">
+        <action android:id="@+id/action_init_to_locked"
+                app:destination="@id/fragment_locked"
+                app:launchSingleTop="true"
+                app:popUpTo="@id/fragment_locked"
+                app:popUpToInclusive="true" />
+        <action android:id="@+id/action_init_to_unlocked"
+                app:destination="@id/fragment_item_list"
+                app:launchSingleTop="true"
+                app:popUpTo="@id/fragment_item_list"
+                app:popUpToInclusive="true" />
+        <action android:id="@+id/action_init_to_unprepared"
+                app:destination="@id/fragment_welcome"
+                app:launchSingleTop="true"
+                app:popUpTo="@id/fragment_welcome"
+                app:popUpToInclusive="true" />
+    </fragment>
 
     <fragment
             android:id="@+id/fragment_welcome"
@@ -55,6 +75,8 @@
             android:id="@+id/fragment_autofill_onboarding"
             android:name="mozilla.lockbox.view.AutofillOnboardingFragment"
             tools:layout="@layout/fragment_autofill_onboarding">
+        <action android:id="@+id/action_autofill_onboarding_to_confirmation"
+                app:destination="@id/fragment_onboarding_confirmation"/>
     </fragment>
 
     <fragment
@@ -65,6 +87,7 @@
                 android:id="@+id/action_onboarding_confirmation_to_itemList"
                 app:launchSingleTop="true"
                 app:destination="@id/fragment_item_list"
+                app:popUpTo="@id/fragment_item_list"
                 app:popUpToInclusive="true"/>
     </fragment>
 
@@ -158,6 +181,7 @@
                 android:id="@+id/action_locked_to_itemList"
                 app:destination="@id/fragment_item_list"
                 app:launchSingleTop="true"
+                app:popUpTo="@id/fragment_item_list"
                 app:popUpToInclusive="true"/>
         <action
                 android:id="@+id/action_locked_to_welcome"

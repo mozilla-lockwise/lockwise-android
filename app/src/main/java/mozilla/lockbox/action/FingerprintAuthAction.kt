@@ -7,9 +7,9 @@
 package mozilla.lockbox.action
 
 import mozilla.lockbox.flux.Action
-import mozilla.lockbox.model.FingerprintAuthCallback
 
 sealed class FingerprintAuthAction : Action {
-    data class OnAuthentication(val authCallback: FingerprintAuthCallback) : FingerprintAuthAction()
+    object OnSuccess : FingerprintAuthAction()
+    object OnError : FingerprintAuthAction()
     object OnCancel : FingerprintAuthAction()
 }

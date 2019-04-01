@@ -15,7 +15,6 @@ import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
-import mozilla.lockbox.model.FingerprintAuthCallback
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.LockedStore
 import mozilla.lockbox.store.SettingStore
@@ -49,12 +48,8 @@ class AutofillLockedPresenter(
         lockedStore.onAuthentication
             .subscribe {
                 when (it) {
-                    is FingerprintAuthAction.OnAuthentication -> {
-                        when (it.authCallback) {
-                            is FingerprintAuthCallback.OnAuth -> unlock()
-                            is FingerprintAuthCallback.OnError -> unlockFallback()
-                        }
-                    }
+                    is FingerprintAuthAction.OnSuccess -> unlock()
+                    is FingerprintAuthAction.OnError -> unlockFallback()
                     is FingerprintAuthAction.OnCancel -> dispatcher.dispatch(AutofillAction.Cancel)
                 }
             }

@@ -16,7 +16,6 @@ import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.UnlockingAction
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.flux.Dispatcher
-import mozilla.lockbox.model.FingerprintAuthCallback
 import org.junit.Before
 import org.junit.Test
 
@@ -43,7 +42,7 @@ class LockedStoreTest {
 
     @Test
     fun `authentication events`() {
-        val authAction = FingerprintAuthAction.OnAuthentication(FingerprintAuthCallback())
+        val authAction = FingerprintAuthAction.OnSuccess
         dispatcher.dispatch(authAction)
 
         authenticationObserver.assertValue(authAction)

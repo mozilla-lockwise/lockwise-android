@@ -127,6 +127,7 @@ class ItemListFragment : Fragment(), ItemListView {
     private fun setupToolbar(toolbar: Toolbar, drawerLayout: DrawerLayout) {
         toolbar.navigationIcon = resources.getDrawable(R.drawable.ic_menu, null)
         toolbar.setNavigationContentDescription(R.string.menu_description)
+        toolbar.elevation = resources.getDimension(R.dimen.toolbar_elevation)
         toolbar.navigationClicks().subscribe { drawerLayout.openDrawer(GravityCompat.START) }
             .addTo(compositeDisposable)
     }

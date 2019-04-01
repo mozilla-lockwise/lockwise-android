@@ -19,7 +19,6 @@ class RootActivity : AppCompatActivity() {
     private var presenter: RoutePresenter = RoutePresenter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_root)
         if (!isDebug()) window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)

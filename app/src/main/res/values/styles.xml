@@ -52,7 +52,7 @@
 
     <style name="TextAppearanceWidgetEventToolbarTitle">
         <item name="android:letterSpacing">0.01</item>
-        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textSize">20sp</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:background">@color/color_primary</item>

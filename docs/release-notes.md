@@ -1,6 +1,38 @@
 # Release Notes
 
+## 1.0.1 (Build 3190)
+
+_Date: 2019-03-26_
+
+First internal test build for post-launch point release:
+
+- improve navigation and routing for stability (#499)
+- make finger print auth action flatter (#529)
+
+## 1.0.0 (Build 3171)
+
+_Date: 2019-03-26_
+
+Introducing Firefox Lockbox for Android!
+
+Minor change since Build 3137:
+
+- add error handler to filtering to prevent crashes on autofill (#526)
+
+## 1.0.0 (Build 3137)
+
+_Date: 2019-03-21_
+
+Minor changes since Release Candidate:
+
+- Fix Adjust integration (#521)
+- Add more autofill telemetry actions (#522)
+- use blocking operators rather than inline checks (#506)
+- only update lock status after updating list (#505)
+
 ## 1.0.0 (Build 3024)
+
+_Date: 2019-03-14_
 
 Release Candidate
 

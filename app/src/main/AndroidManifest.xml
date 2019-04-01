@@ -27,7 +27,7 @@
         <activity
                 android:name=".view.RootActivity"
                 android:label="@string/app_label"
-                android:windowSoftInputMode="adjustResize"
+                android:windowSoftInputMode="adjustUnspecified"
                 android:configChanges="orientation|keyboardHidden"
                 android:screenOrientation="portrait">
             <intent-filter>
