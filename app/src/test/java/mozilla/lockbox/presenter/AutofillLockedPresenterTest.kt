@@ -6,6 +6,9 @@
 
 package mozilla.lockbox.presenter
 
+import android.app.KeyguardManager
+import android.content.Context
+import android.hardware.fingerprint.FingerprintManager
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
@@ -23,9 +26,12 @@ import mozilla.lockbox.store.LockedStore
 import mozilla.lockbox.store.SettingStore
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.mockito.Mockito
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
@@ -55,30 +61,44 @@ class AutofillLockedPresenterTest : DisposingTest() {
             get() = unlockWithFingerprintStub
     }
 
+    @Mock
+    val fingerprintManager = Mockito.mock(FingerprintManager::class.java)
+
+    @Mock
+    val keyguardManager = Mockito.mock(KeyguardManager::class.java)
+
+    @Mock
+    val context = Mockito.mock(Context::class.java)
+
     class FakeFingerprintStore : FingerprintStore() {
         var fingerprintAuthAvailableStub: Boolean = false
         override val isFingerprintAuthAvailable: Boolean
             get() = fingerprintAuthAvailableStub
 
-        var keyguardDeviceSecureStub = false
+        var keyguardDeviceSecureStub: Boolean = false
         override val isKeyguardDeviceSecure: Boolean
             get() = keyguardDeviceSecureStub
     }
 
     private val dispatcher = Dispatcher()
+    private val dispatcherObserver: TestObserver<Action> = TestObserver.create()
     private val lockedStore = FakeLockedStore()
     private val fingerprintStore = FakeFingerprintStore()
     private val settingStore = FakeSettingStore()
     private val view = FakeAutofillView()
 
-    private val dispatcherObserver: TestObserver<Action> = TestObserver.create()
-
-    val subject = AutofillLockedPresenter(view, dispatcher, fingerprintStore, settingStore, lockedStore)
+    val subject = AutofillLockedPresenter(
+            view,
+            dispatcher,
+            fingerprintStore,
+            settingStore,
+            lockedStore
+        )
 
     @Before
     fun setUp() {
         dispatcher.register.subscribe(dispatcherObserver)
-        subject.onViewReady()
+
     }
 
     @Test
@@ -107,7 +127,7 @@ class AutofillLockedPresenterTest : DisposingTest() {
 
     @Test
     fun `on unsuccessful fingerprint authentication when there is no other security`() {
-        fingerprintStore.keyguardDeviceSecureStub = false
+//        fingerprintStore.keyguardDeviceSecureStub = false
         lockedStore.authenticationStub.onNext(FingerprintAuthAction.OnError)
         dispatcherObserver.assertLastValue(DataStoreAction.Unlock)
     }
@@ -115,13 +135,29 @@ class AutofillLockedPresenterTest : DisposingTest() {
     @Test
     fun `on unsuccessful fingerprint authentication when there is other security`() {
         fingerprintStore.keyguardDeviceSecureStub = true
+
+        Mockito.`when`(context.getSystemService(Context.FINGERPRINT_SERVICE)).thenReturn(fingerprintManager)
+        Mockito.`when`(context.getSystemService(Context.KEYGUARD_SERVICE)).thenReturn(keyguardManager)
+
+        fingerprintStore.injectContext(context)
+//        Assert.assertTrue(keyguardManager.isDeviceSecure)
+
+        Mockito.`when`(fingerprintStore.keyguardManager).thenReturn(keyguardManager)
+
+        Mockito.`when`(fingerprintManager.isHardwareDetected).thenReturn(true)
+        Mockito.`when`(fingerprintManager.hasEnrolledFingerprints()).thenReturn(true)
+        Mockito.`when`(keyguardManager.isDeviceSecure).thenReturn(true)
+//        Mockito.`when`(fingerprintStore.isKeyguardDeviceSecure).thenReturn(true)
+
+        subject.onViewReady()
+
         lockedStore.authenticationStub.onNext(FingerprintAuthAction.OnError)
         assertTrue(view.unlockFallbackCalled)
     }
 
     @Test
     fun `when fingerprint auth is available and enabled`() {
-        fingerprintStore.fingerprintAuthAvailableStub = true
+//        fingerprintStore.fingerprintAuthAvailableStub = true
         settingStore.unlockWithFingerprintStub.onNext(true)
 
         Thread.sleep(600)
@@ -131,8 +167,8 @@ class AutofillLockedPresenterTest : DisposingTest() {
 
     @Test
     fun `when fingerprint auth is available but not enabled and there is other device security`() {
-        fingerprintStore.fingerprintAuthAvailableStub = true
-        fingerprintStore.keyguardDeviceSecureStub = true
+//        fingerprintStore.fingerprintAuthAvailableStub = true
+//        fingerprintStore.keyguardDeviceSecureStub = true
         settingStore.unlockWithFingerprintStub.onNext(false)
         Thread.sleep(600)
         assertTrue(view.unlockFallbackCalled)
@@ -140,8 +176,8 @@ class AutofillLockedPresenterTest : DisposingTest() {
 
     @Test
     fun `when fingerprint auth is not available or enabled and there is other device security`() {
-        fingerprintStore.fingerprintAuthAvailableStub = false
-        fingerprintStore.keyguardDeviceSecureStub = true
+//        fingerprintStore.fingerprintAuthAvailableStub = false
+//        fingerprintStore.keyguardDeviceSecureStub = true
         settingStore.unlockWithFingerprintStub.onNext(false)
         Thread.sleep(600)
         assertTrue(view.unlockFallbackCalled)
@@ -149,8 +185,8 @@ class AutofillLockedPresenterTest : DisposingTest() {
 
     @Test
     fun `when fingerprint auth is available but not enabled and there is not other device security`() {
-        fingerprintStore.fingerprintAuthAvailableStub = true
-        fingerprintStore.keyguardDeviceSecureStub = false
+//        fingerprintStore.fingerprintAuthAvailableStub = true
+//        fingerprintStore.keyguardDeviceSecureStub = false
         settingStore.unlockWithFingerprintStub.onNext(false)
         Thread.sleep(600)
         dispatcherObserver.assertLastValue(DataStoreAction.Unlock)
@@ -158,8 +194,8 @@ class AutofillLockedPresenterTest : DisposingTest() {
 
     @Test
     fun `when fingerprint auth is not available or enabled and there is not other device security`() {
-        fingerprintStore.fingerprintAuthAvailableStub = false
-        fingerprintStore.keyguardDeviceSecureStub = false
+//        fingerprintStore.fingerprintAuthAvailableStub = false
+//        fingerprintStore.keyguardDeviceSecureStub = false
         settingStore.unlockWithFingerprintStub.onNext(false)
         Thread.sleep(600)
         dispatcherObserver.assertLastValue(DataStoreAction.Unlock)
