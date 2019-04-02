@@ -10,9 +10,6 @@ import io.reactivex.Observable
 import io.reactivex.functions.Consumer
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
-import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertFalse
-import junit.framework.Assert.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.TestConsumer
@@ -24,6 +21,9 @@ import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.asOptional
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith

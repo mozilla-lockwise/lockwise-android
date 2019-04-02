@@ -5,11 +5,12 @@ import io.reactivex.Observable
 import io.reactivex.functions.Consumer
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
-import junit.framework.Assert.assertEquals
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.NetworkStore
 import mozilla.lockbox.support.Constant
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -19,6 +20,7 @@ import org.powermock.api.mockito.PowerMockito
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
+@ExperimentalCoroutinesApi
 @RunWith(RobolectricTestRunner::class)
 @Config(application = TestApplication::class)
 class AppWebPageActionPresenterTest {
@@ -34,7 +36,7 @@ class AppWebPageActionPresenterTest {
             networkAvailable.onNext(networkErrorVisibility)
         }
 
-        open var loadedUrl: String? = null
+        var loadedUrl: String? = null
         override var webViewObserver: Consumer<String>? = null
         override fun loadURL(url: String) {
             loadedUrl = url

@@ -7,10 +7,9 @@
 package mozilla.lockbox
 
 import io.reactivex.observers.TestObserver
-import junit.framework.Assert.assertEquals
 import mozilla.lockbox.extensions.assertLastValue
-
 import mozilla.lockbox.flux.StackReplaySubject
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.util.concurrent.atomic.AtomicInteger
 

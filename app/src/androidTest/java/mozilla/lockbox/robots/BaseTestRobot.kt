@@ -4,6 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+@file:Suppress("DEPRECATION")
+
 package mozilla.lockbox.robots
 
 import androidx.test.espresso.Espresso

@@ -9,6 +9,7 @@ package mozilla.lockbox.store
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import androidx.test.core.app.ApplicationProvider
 import mozilla.lockbox.DisposingTest
 import mozilla.lockbox.action.ClipboardAction
 import mozilla.lockbox.flux.Dispatcher
@@ -19,7 +20,6 @@ import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 import org.mockito.Mockito.`when` as whenCalled
 
@@ -34,7 +34,7 @@ class ClipboardStoreTest : DisposingTest() {
     val context: Context = Mockito.mock(Context::class.java)
 
     private val clipboardManager =
-        RuntimeEnvironment.application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        ApplicationProvider.getApplicationContext<Context>().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
     @Before
     fun setUp() {
@@ -48,7 +48,7 @@ class ClipboardStoreTest : DisposingTest() {
     fun testCopyUsername() {
         val testString = "my_test_string"
         dispatcher.dispatch(ClipboardAction.CopyUsername(testString))
-        val clip = clipboardManager.primaryClip.getItemAt(0)
+        val clip = clipboardManager.primaryClip?.getItemAt(0) ?: throw AssertionError("PrimaryClip must not be null")
         Assert.assertEquals(testString, clip.text)
     }
 
@@ -56,7 +56,7 @@ class ClipboardStoreTest : DisposingTest() {
     fun testCopyPassword() {
         val testString = "my_test_password"
         dispatcher.dispatch(ClipboardAction.CopyPassword(testString))
-        val clip = clipboardManager.primaryClip.getItemAt(0)
+        val clip = clipboardManager.primaryClip?.getItemAt(0) ?: throw AssertionError("PrimaryClip must not be null")
         Assert.assertEquals(testString, clip.text)
     }
 
@@ -66,11 +66,11 @@ class ClipboardStoreTest : DisposingTest() {
 
         dispatcher.dispatch(ClipboardAction.CopyPassword(testString))
 
-        val dirty = clipboardManager.primaryClip.getItemAt(0)
+        val dirty = clipboardManager.primaryClip?.getItemAt(0) ?: throw AssertionError("PrimaryClip must not be null")
         Assert.assertEquals(testString, dirty.text)
 
         subject.replaceDirty(testString)
-        val clean = clipboardManager.primaryClip.getItemAt(0)
+        val clean = clipboardManager.primaryClip?.getItemAt(0) ?: throw AssertionError("PrimaryClip must not be null")
         Assert.assertEquals("", clean.text)
     }
 
@@ -80,14 +80,14 @@ class ClipboardStoreTest : DisposingTest() {
 
         dispatcher.dispatch(ClipboardAction.CopyPassword(testString))
 
-        val dirty = clipboardManager.primaryClip.getItemAt(0)
+        val dirty = clipboardManager.primaryClip?.getItemAt(0) ?: throw AssertionError("PrimaryClip must not be null")
         Assert.assertEquals(testString, dirty.text)
 
         val url = "https://www.mozilla.org"
         clipboardManager.primaryClip = ClipData.newPlainText("url", url)
 
         subject.replaceDirty(testString)
-        val clean = clipboardManager.primaryClip.getItemAt(0)
+        val clean = clipboardManager.primaryClip?.getItemAt(0) ?: throw AssertionError("PrimaryClip must not be null")
         Assert.assertEquals(url, clean.text)
     }
 }

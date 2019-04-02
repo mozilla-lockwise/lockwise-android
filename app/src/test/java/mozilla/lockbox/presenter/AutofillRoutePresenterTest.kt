@@ -25,7 +25,6 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.internal.schedulers.ExecutorScheduler
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
-import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.R
@@ -44,6 +43,7 @@ import mozilla.lockbox.support.PublicSuffixSupport
 import mozilla.lockbox.view.AutofillFilterFragment
 import mozilla.lockbox.view.FingerprintAuthDialogFragment
 import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith

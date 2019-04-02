@@ -1,14 +1,14 @@
+@file:Suppress("DEPRECATION")
+
 package mozilla.lockbox.presenter
 
 import android.app.KeyguardManager
 import android.content.Context
 import android.hardware.fingerprint.FingerprintManager
+import androidx.test.core.app.ApplicationProvider
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
-import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertFalse
-import junit.framework.Assert.assertTrue
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.RouteAction
@@ -17,13 +17,15 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.LockedStore
 import mozilla.lockbox.store.SettingStore
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.spy
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
@@ -37,11 +39,13 @@ class LockedPresenterTest {
     }
 
     open class FakeFingerprintStore : FingerprintStore() {
+        private val context: Context = ApplicationProvider.getApplicationContext()
+
         override var fingerprintManager: FingerprintManager? =
-            RuntimeEnvironment.application.getSystemService(Context.FINGERPRINT_SERVICE) as? FingerprintManager
+            context.getSystemService(Context.FINGERPRINT_SERVICE) as? FingerprintManager
 
         override var keyguardManager: KeyguardManager =
-            spy(RuntimeEnvironment.application.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager)
+            spy(context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager)
     }
 
     class FakeLockedStore : LockedStore() {
@@ -73,7 +77,7 @@ class LockedPresenterTest {
 
     @Before
     fun setUp() {
-        context = RuntimeEnvironment.application.applicationContext
+        context = ApplicationProvider.getApplicationContext()
         subject.onViewReady()
     }
 

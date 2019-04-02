@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package mozilla.lockbox.presenter
 
 import android.hardware.fingerprint.FingerprintManager
@@ -5,6 +7,7 @@ import android.view.autofill.AutofillManager
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.FingerprintSensorAction
 import mozilla.lockbox.action.SettingAction
@@ -23,6 +26,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.mockito.Mockito.`when` as whenCalled
 
+@ExperimentalCoroutinesApi
 @RunWith(RobolectricTestRunner::class)
 @Config(application = TestApplication::class)
 class FingerprintOnboardingPresenterTest {
