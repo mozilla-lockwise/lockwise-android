@@ -21,7 +21,7 @@ class FixedDataStoreSupport(
 ) : DataStoreSupport {
     var size = getRandomInRange(40, 50)
     private val logins = MemoryLoginsStorage(
-        values ?: List(size) { createDummyItem(it) } + listOf(createDummyIPItem())
+        values ?: List(size) { createDummyItem() } + listOf(createDummyIPItem())
     )
 
     override var encryptionKey: String = "shh-keep-it-secret"
@@ -45,7 +45,7 @@ class FixedDataStoreSupport(
  * Some functionality inspired by FxA 'upload_fake_passwords.py'
  * https://gist.github.com/rfk/916d9ca684f862b1c1030c685a5a4d19
  */
-internal fun createDummyItem(idx: Int): ServerPassword {
+internal fun createDummyItem(): ServerPassword {
     val random = Random()
     val id = UUID.randomUUID().toString()
     val pwd = createRandomPassword()

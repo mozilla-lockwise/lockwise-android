@@ -9,8 +9,6 @@ package mozilla.lockbox.presenter
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
-import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertTrue
 import mozilla.lockbox.DisposingTest
 import mozilla.lockbox.R
 import mozilla.lockbox.action.AutofillAction
@@ -23,6 +21,8 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.LockedStore
 import mozilla.lockbox.store.SettingStore
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith

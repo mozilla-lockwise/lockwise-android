@@ -6,10 +6,10 @@
 
 package mozilla.lockbox
 
-import junit.framework.Assert.assertFalse
-import junit.framework.Assert.assertTrue
-import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Action
+import mozilla.lockbox.flux.Dispatcher
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -24,7 +24,7 @@ class DispatcherTest {
         val dispatcher = Dispatcher()
         val onNextExecuted = AtomicBoolean(false)
 
-        val subscription = dispatcher.register.subscribe { _ -> onNextExecuted.set(true) }
+        val subscription = dispatcher.register.subscribe { onNextExecuted.set(true) }
         assertFalse(onNextExecuted.get())
         dispatcher.dispatch(TestAction.UNIT)
         assertTrue(onNextExecuted.get())

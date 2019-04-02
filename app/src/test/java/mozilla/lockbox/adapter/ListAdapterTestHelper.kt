@@ -22,7 +22,7 @@ class ListAdapterTestHelper {
     private val toggleObserverFake = TestObserver<Boolean>()
     private val toggleConsumerFake = TestConsumer(toggleObserverFake) as Consumer<Boolean>
     private val textClicksObserverFake = TestObserver<Unit>()
-    private val textClicksConsumerFake = TestConsumer(toggleObserverFake) as Consumer<Unit>
+    private val textClicksConsumerFake = TestConsumer(textClicksObserverFake)
     private val expectedVersionNumber = BuildConfig.VERSION_NAME
 
     fun createListOfSettings(): List<SettingCellConfiguration> {

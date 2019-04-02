@@ -6,9 +6,9 @@
 
 package mozilla.lockbox.view
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import mozilla.lockbox.R
 import mozilla.lockbox.log
 
@@ -18,7 +18,7 @@ class UITestActivity : AppCompatActivity() {
         setContentView(R.layout.activity_test)
     }
 
-    fun launchFingerprint(view: View) {
+    fun launchFingerprint(@Suppress("UNUSED_PARAMETER") view: View) {
         val dialogFragment = FingerprintAuthDialogFragment()
         val fragmentManager = this.supportFragmentManager
         try {

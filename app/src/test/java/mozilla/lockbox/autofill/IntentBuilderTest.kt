@@ -6,8 +6,10 @@
 
 package mozilla.lockbox.autofill
 
+import android.content.Context
 import android.content.Intent
 import android.view.autofill.AutofillId
+import androidx.test.core.app.ApplicationProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -16,7 +18,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.mock
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 
 @ExperimentalCoroutinesApi
 @RunWith(RobolectricTestRunner::class)
@@ -25,7 +26,7 @@ class IntentBuilderTest {
     val passwordId = mock(AutofillId::class.java)
     val parsedStructure = ParsedStructure(usernameId, passwordId, "webDomain", "packageName")
     val fillResponseBuilder = FillResponseBuilder(parsedStructure)
-    val context = RuntimeEnvironment.systemContext
+    val context: Context = ApplicationProvider.getApplicationContext()
 
     @Test
     fun `auth intent sender`() {

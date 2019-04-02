@@ -8,15 +8,14 @@ package mozilla.lockbox.view
 
 import android.content.Context
 import android.os.Bundle
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.jakewharton.rxbinding2.view.clicks
 import com.jakewharton.rxbinding2.view.visibility
-import com.jakewharton.rxbinding2.widget.text
 import com.jakewharton.rxbinding2.widget.textChanges
 import io.reactivex.Observable
 import io.reactivex.functions.Consumer
@@ -72,7 +71,7 @@ class FilterFragment : BackableFragment(), FilterView {
     override val filterTextEntered: Observable<CharSequence>
         get() = view!!.filterField.textChanges()
     override val filterText: Consumer<in CharSequence>
-        get() = view!!.filterField.text()
+        get() = Consumer { newText -> view!!.filterField.setText(newText) }
     override val cancelButtonClicks: Observable<Unit>
         get() = view!!.cancelButton.clicks()
     override val cancelButtonVisibility: Consumer<in Boolean>

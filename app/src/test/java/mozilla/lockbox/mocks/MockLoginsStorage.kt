@@ -16,7 +16,7 @@ import mozilla.lockbox.support.createDummyItem
 import org.mockito.Mockito
 
 open class MockLoginsStorage : LoginsStorage {
-    private val all = MutableList(10) { createDummyItem(it) }
+    private val all = MutableList(10) { createDummyItem() }
 
     private var _locked = true
 
