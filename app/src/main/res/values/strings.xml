@@ -26,6 +26,8 @@
 
     <!-- This is the label for a button only available on test builds to skip the authentication step and immediately use test data -->
     <string name="placeholder_skip_fxa">Use test data</string>
+    <!-- This is the label used for the title in the web view of the account's authentication instances. -->
+    <string name="get_started_title">Get Started</string>
 
     <!-- This is the label used by screenreaders to inform the user the navigation button selected is to go backwards from where they came from -->
     <string name="backable_description">Back</string>
