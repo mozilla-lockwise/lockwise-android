@@ -44,7 +44,9 @@ class SettingPresenter(
     private val fingerprintStore: FingerprintStore = FingerprintStore.shared
 ) : Presenter() {
 
-    private val versionNumber = BuildConfig.VERSION_NAME
+    private val versionName = BuildConfig.VERSION_NAME
+
+    private val versionNumber = BuildConfig.VERSION_CODE
 
     private val autoLockTimeClickListener: Consumer<Unit>
         get() = Consumer {
@@ -158,7 +160,9 @@ class SettingPresenter(
                 toggleObserver = sendUsageDataObserver
             ),
             AppVersionSettingConfiguration(
-                text = "App Version: $versionNumber",
+                title = R.string.app_version_title,
+                appVersion = BuildConfig.VERSION_NAME,
+                buildNumber = BuildConfig.BITRISE_BUILD_NUMBER,
                 contentDescription = R.string.app_version_description
             )
         )

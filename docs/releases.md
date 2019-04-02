@@ -87,7 +87,7 @@ NOTE: _brand new_ apps may take 1 or more hours to appear in the Play Store wher
 
 _Once a version has been merged or released, the major app version should be increased_
 
-- Update the `versionCode` and `versionName` values in `app/build.gradle`
+- Update the `versionName` value (and `versionCode` if applicable) in `app/build.gradle`
 - Also update the value in the `list_cell_setting_appversion.xml` layout to _the exact same version_
 
 [1]: https://app.bitrise.io/app/20089a88380dd14d

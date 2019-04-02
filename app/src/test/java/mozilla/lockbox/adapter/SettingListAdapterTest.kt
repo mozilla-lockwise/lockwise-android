@@ -36,6 +36,7 @@ class SettingListAdapterTest {
     private lateinit var parent: RecyclerView
     private lateinit var testHelper: ListAdapterTestHelper
     private val expectedVersionNumber = BuildConfig.VERSION_NAME
+    private val expectedBuildNumber = BuildConfig.BITRISE_BUILD_NUMBER
 
     class SettingCellConfigFake : SettingCellConfiguration(
         title = R.string.search_menu_title,
@@ -150,10 +151,15 @@ class SettingListAdapterTest {
 
     @Test
     fun onBindViewHolderTest_appVersionSettingCell() {
-        val expectedAppVersion = "App Version: $expectedVersionNumber"
+        val expectedTitle = "App Version: $expectedVersionNumber ($expectedBuildNumber)"
 
         val sectionConfig = listOf(
-            AppVersionSettingConfiguration(text = expectedAppVersion, contentDescription = R.string.empty_string)
+            AppVersionSettingConfiguration(
+                title = R.string.app_version_title,
+                appVersion = expectedVersionNumber,
+                buildNumber = BuildConfig.BITRISE_BUILD_NUMBER,
+                contentDescription = R.string.empty_string
+            )
         )
 
         subject.setItems(sectionConfig)
@@ -163,6 +169,6 @@ class SettingListAdapterTest {
 
         subject.onBindViewHolder(appVersionViewHolder, 0)
 
-        Assert.assertEquals(expectedAppVersion, appVersionViewHolder.text)
+        Assert.assertEquals(expectedTitle, appVersionViewHolder.title)
     }
 }

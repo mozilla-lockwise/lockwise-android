@@ -139,6 +139,9 @@
     <!-- This is the label a screenreader uses to inform the user they selected a label on the screen that includes the application version number -->
     <string name="app_version_description">Application version number</string>
 
+    <!-- This is the title of a setting that shows the version and the build number of an app -->
+    <string name="app_version_title">App Version: %1$s (%2$d)</string>
+
     <!-- This is the title of a setting that allows the user to use the device fingerprint biometrics to unlock the application -->
     <string name="unlock">Unlock with fingerprint</string>
     <!-- This is the label a screenreader uses to inform the user they selected the fingerprint setting toggle -->

@@ -22,13 +22,15 @@ android {
         minSdkVersion 24
         //noinspection OldTargetApi
         targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
+        versionCode 3255
+        versionName "1.0.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         // The following argument makes the Android Test Orchestrator run its
         // "pm clear" command after each test invocation. This command ensures
         // that the app's state is completely cleared between tests.
         testInstrumentationRunnerArguments clearPackageData: 'true'
+
+        buildConfigField "int", "BITRISE_BUILD_NUMBER", System.getenv("BITRISE_BUILD_NUMBER") ?: "0"
     }
     buildTypes {
         debug {
