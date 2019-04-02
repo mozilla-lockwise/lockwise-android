@@ -14,13 +14,12 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.rule.ActivityTestRule
 import br.com.concretesolutions.kappuccino.actions.ClickActions
 import br.com.concretesolutions.kappuccino.assertions.VisibilityAssertions.displayed
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
 import mozilla.lockbox.view.RootActivity
 import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.not
 
-@ExperimentalCoroutinesApi
+@Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_API_USAGE_ERROR", "EXPERIMENTAL_IS_NOT_ENABLED")
 class ItemDetailRobot : BaseTestRobot {
     override fun exists() = displayed {
         id(R.id.inputHostname)
@@ -36,5 +35,4 @@ class ItemDetailRobot : BaseTestRobot {
             .check(matches(isDisplayed()))
 }
 
-@UseExperimental(ExperimentalCoroutinesApi::class)
 fun itemDetail(f: ItemDetailRobot.() -> Unit) = ItemDetailRobot().apply(f)
