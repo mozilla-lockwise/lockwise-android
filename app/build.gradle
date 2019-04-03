@@ -32,6 +32,13 @@ android {
 
         buildConfigField "int", "BITRISE_BUILD_NUMBER", System.getenv("BITRISE_BUILD_NUMBER") ?: "0"
     }
+
+    bundle {
+        language {
+            enableSplit = true
+        }
+    }
+
     buildTypes {
         debug {
             debuggable true
