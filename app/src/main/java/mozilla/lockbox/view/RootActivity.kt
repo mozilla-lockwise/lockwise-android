@@ -11,12 +11,12 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
-import mozilla.lockbox.presenter.RoutePresenter
+import mozilla.lockbox.presenter.AppRoutePresenter
 import mozilla.lockbox.support.isDebug
 
 @ExperimentalCoroutinesApi
 class RootActivity : AppCompatActivity() {
-    private var presenter: RoutePresenter = RoutePresenter(this)
+    private var presenter: AppRoutePresenter = AppRoutePresenter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
