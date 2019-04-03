@@ -12,7 +12,6 @@ import android.content.Intent
 import android.service.autofill.FillResponse
 import android.view.autofill.AutofillManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
@@ -47,10 +46,9 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.eq
 import org.mockito.Mock
-import org.mockito.Mockito
+import org.mockito.Mockito.any
 import org.mockito.Mockito.anyString
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
@@ -60,8 +58,6 @@ import org.powermock.modules.junit4.PowerMockRunner
 import java.util.concurrent.Executor
 import java.util.concurrent.TimeUnit
 import org.powermock.api.mockito.PowerMockito.`when` as whenCalled
-
-fun <T> any(): T = Mockito.any<T>()
 
 @ExperimentalCoroutinesApi
 @RunWith(PowerMockRunner::class)
@@ -80,7 +76,8 @@ class AutofillRoutePresenterTest {
     val navDestination: NavDestination = mock(NavDestination::class.java)
 
     @Mock
-    val fingerprintAuthDialogFragment: FingerprintAuthDialogFragment = PowerMockito.mock(FingerprintAuthDialogFragment::class.java)
+    val fingerprintAuthDialogFragment: FingerprintAuthDialogFragment =
+        PowerMockito.mock(FingerprintAuthDialogFragment::class.java)
 
     @Mock
     val autofillFilterFragment: AutofillFilterFragment = PowerMockito.mock(AutofillFilterFragment::class.java)
@@ -92,7 +89,7 @@ class AutofillRoutePresenterTest {
     val childFragmentManager: FragmentManager = mock(FragmentManager::class.java)
 
     @Mock
-    val currentFragment: DialogFragment = mock(DialogFragment::class.java)
+    val currentFragment: Fragment = mock(Fragment::class.java)
 
     @Mock
     val navHost: Fragment = mock(Fragment::class.java)
@@ -171,7 +168,6 @@ class AutofillRoutePresenterTest {
     private val autofillStore = FakeAutofillStore()
     private val pslSupport = FakePslSupport()
     private val dispatcherObserver = TestObserver.create<Action>()
-
     lateinit var subject: AutofillRoutePresenter
 
     @Before
@@ -196,7 +192,7 @@ class AutofillRoutePresenterTest {
         IntentBuilder.setSearchRequired(intent, true)
         whenCalled(activity.intent).thenReturn(callingIntent)
         whenCalled(activity.supportFragmentManager).thenReturn(fragmentManager)
-        whenCalled(navDestination.id).thenReturn(R.id.fragment_filter_backdrop)
+        whenCalled(navDestination.id).thenReturn(R.id.fragment_null)
         whenCalled(navController.currentDestination).thenReturn(navDestination)
         PowerMockito.mockStatic(Navigation::class.java)
         whenCalled(Navigation.findNavController(activity, R.id.autofill_fragment_nav_host)).thenReturn(navController)
@@ -216,15 +212,12 @@ class AutofillRoutePresenterTest {
     @Test
     fun `locked routes`() {
         routeStore.routeStub.onNext(RouteAction.LockScreen)
-
         verify(navController).navigate(R.id.fragment_locked, null, null)
     }
 
     @Test
     fun `item list routes navigate to filter backdrop`() {
-        whenCalled(navDestination.id).thenReturn(R.id.fragment_locked)
         routeStore.routeStub.onNext(RouteAction.ItemList)
-
         verify(navController).navigate(R.id.fragment_filter_backdrop, null, null)
     }
 
@@ -232,7 +225,7 @@ class AutofillRoutePresenterTest {
     fun `autofill search dialog route route to autofill filter fragment`() {
         routeStore.routeStub.onNext(RouteAction.DialogFragment.AutofillSearchDialog)
 
-        verify(autofillFilterFragment).show(eq(childFragmentManager), anyString())
+        verify(autofillFilterFragment).show(eq(fragmentManager), anyString())
         verify(autofillFilterFragment).setupDialog(R.string.autofill, null)
     }
 
@@ -241,7 +234,7 @@ class AutofillRoutePresenterTest {
         val title = R.string.fingerprint_dialog_title
         routeStore.routeStub.onNext(RouteAction.DialogFragment.FingerprintDialog(title))
 
-        verify(fingerprintAuthDialogFragment).show(eq(childFragmentManager), anyString())
+        verify(fingerprintAuthDialogFragment).show(eq(fragmentManager), anyString())
         verify(fingerprintAuthDialogFragment).setupDialog(title, null)
     }
 
