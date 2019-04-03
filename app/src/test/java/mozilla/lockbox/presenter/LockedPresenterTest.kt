@@ -13,6 +13,7 @@ import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import junit.framework.Assert
 import mozilla.lockbox.action.DataStoreAction
+import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.UnlockingAction
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
@@ -33,8 +34,9 @@ class LockedPresenterTest {
         dispatcher: Dispatcher,
         fingerprintStore: FingerprintStore
     ) : LockedPresenter(dispatcher, fingerprintStore) {
+        private var unlocked: Boolean = false
         override fun unlock() {
-            // TODO
+            unlocked = true
         }
     }
 
