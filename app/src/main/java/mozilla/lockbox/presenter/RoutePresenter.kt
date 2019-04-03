@@ -64,11 +64,6 @@ abstract class RoutePresenter(
     override fun onResume() {
         super.onResume()
         activity.addOnBackPressedCallback(backListener)
-//        routeStore.routes
-//            .distinctUntilChanged()
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .subscribe(this::route)
-//            .addTo(compositeDisposable)
     }
 
     protected abstract fun route(action: RouteAction)
