@@ -8,25 +8,19 @@ package mozilla.lockbox.presenter
 
 import io.reactivex.Observable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import mozilla.lockbox.action.AutofillAction
+import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.model.ItemViewModel
 
 @ExperimentalCoroutinesApi
-class AutofillFilterPresenter(
+class AppFilterPresenter(
     override val view: FilterView
 ) : FilterPresenter(view) {
-
     override fun itemSelectionAction(id: String): Observable<Action> {
-        return dataStore.get(id)
-            .map {
-                it.value?.let { serverPassword ->
-                    AutofillAction.Complete(serverPassword)
-                } ?: AutofillAction.Cancel
-            }
+        return Observable.just(RouteAction.ItemDetail(id))
     }
 
     override fun Observable<Pair<CharSequence, List<ItemViewModel>>>.itemListMap(): Observable<List<ItemViewModel>> {
-        return this.map { if (it.first.isEmpty()) emptyList() else it.second }
+        return this.map { it.second }
     }
 }

@@ -30,6 +30,10 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class FilterPresenterTest {
     class FakeView : FilterView {
+        override val onDismiss: Observable<Unit>?
+            get() = null
+        override val displayNoEntries: ((Boolean) -> Unit)?
+            get() = null
         val filterTextEnteredStub = PublishSubject.create<CharSequence>()
         val filterTextSetStub = TestObserver<CharSequence>()
         val cancelButtonStub = PublishSubject.create<Unit>()
