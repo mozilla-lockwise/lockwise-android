@@ -1,10 +1,65 @@
 # Release Notes
 
+## 1.0.1 (Build 3320)
+
+_Date: 2019-04-04_
+
+Release Candidate
+
+- improve navigation and routing for stability (#499)
+- make finger print auth action flatter (#529)
+- fix font in spinner list (#540)
+- add nullsafe operations on FingerprintManager to prevent crashes (#546)
+- change network connection checks (#518)
+- fix error text alignment (#538)
+- fix mismatching monster on unlock screen (#553)
+- improve autofill behavior after backgrounding (#502)
+- add app bar shadow (#566)
+- add build number on settings screen (#552)
+- add title to sign in screen (#569)
+- autolock on device restart (#568)
+- merge route presenters (#539) 
+
+## 1.0.1 (Build 3307)
+
+_Date: 2019-04-01_
+
+Third internal test build for post-launch point release.
+
+- improve navigation and routing for stability (#499)
+- make finger print auth action flatter (#529)
+- fix font in spinner list (#540)
+- add nullsafe operations on FingerprintManager to prevent crashes (#546)
+- change network connection checks (#518)
+- fix error text alignment (#538)
+- fix mismatching monster on unlock screen (#553)
+- improve autofill behavior after backgrounding (#502)
+- add app bar shadow (#566)
+- add build number on settings screen (#552)
+- add title to sign in screen (#569)
+- autolock on device restart (#568)
+
+## 1.0.1 (Build 3264)
+
+_Date: 2019-04-01_
+
+Second internal test build for post-launch point release.
+
+- improve navigation and routing for stability (#499)
+- make finger print auth action flatter (#529)
+- fix font in spinner list (#540)
+- add nullsafe operations on FingerprintManager to prevent crashes (#546)
+- change network connection checks (#518)
+- fix error text alignment (#538)
+- fix mismatching monster on unlock screen (#553)
+- improve autofill behavior after backgrounding (#502)
+- add app bar shadow (#566)
+
 ## 1.0.1 (Build 3190)
 
 _Date: 2019-03-26_
 
-First internal test build for post-launch point release:
+First internal test build for post-launch point release.
 
 - improve navigation and routing for stability (#499)
 - make finger print auth action flatter (#529)

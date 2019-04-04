@@ -9,12 +9,13 @@ package mozilla.lockbox.adapter
 import android.content.Context
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.core.app.ApplicationProvider
 import mozilla.lockbox.BuildConfig
 import mozilla.lockbox.R
 import mozilla.lockbox.adapter.SettingListAdapter.Companion.SETTING_TEXT_TYPE
 import mozilla.lockbox.adapter.SettingListAdapter.Companion.SETTING_TOGGLE_TYPE
-import mozilla.lockbox.view.TextSettingViewHolder
 import mozilla.lockbox.view.AppVersionSettingViewHolder
+import mozilla.lockbox.view.TextSettingViewHolder
 import mozilla.lockbox.view.ToggleSettingViewHolder
 import org.hamcrest.Matchers.instanceOf
 import org.junit.Assert
@@ -24,7 +25,6 @@ import org.junit.Test
 import org.junit.jupiter.api.Assertions
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
@@ -36,6 +36,7 @@ class SettingListAdapterTest {
     private lateinit var parent: RecyclerView
     private lateinit var testHelper: ListAdapterTestHelper
     private val expectedVersionNumber = BuildConfig.VERSION_NAME
+    private val expectedBuildNumber = BuildConfig.BITRISE_BUILD_NUMBER
 
     class SettingCellConfigFake : SettingCellConfiguration(
         title = R.string.search_menu_title,
@@ -45,7 +46,7 @@ class SettingListAdapterTest {
 
     @Before
     fun setUp() {
-        context = RuntimeEnvironment.application
+        context = ApplicationProvider.getApplicationContext()
         parent = RecyclerView(context)
         parent.layoutManager = LinearLayoutManager(context)
         testHelper = ListAdapterTestHelper()
@@ -150,10 +151,15 @@ class SettingListAdapterTest {
 
     @Test
     fun onBindViewHolderTest_appVersionSettingCell() {
-        val expectedAppVersion = "App Version: $expectedVersionNumber"
+        val expectedTitle = "App Version: $expectedVersionNumber ($expectedBuildNumber)"
 
         val sectionConfig = listOf(
-            AppVersionSettingConfiguration(text = expectedAppVersion, contentDescription = R.string.empty_string)
+            AppVersionSettingConfiguration(
+                title = R.string.app_version_title,
+                appVersion = expectedVersionNumber,
+                buildNumber = BuildConfig.BITRISE_BUILD_NUMBER,
+                contentDescription = R.string.empty_string
+            )
         )
 
         subject.setItems(sectionConfig)
@@ -163,6 +169,6 @@ class SettingListAdapterTest {
 
         subject.onBindViewHolder(appVersionViewHolder, 0)
 
-        Assert.assertEquals(expectedAppVersion, appVersionViewHolder.text)
+        Assert.assertEquals(expectedTitle, appVersionViewHolder.title)
     }
 }

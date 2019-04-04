@@ -29,6 +29,8 @@ android {
         // "pm clear" command after each test invocation. This command ensures
         // that the app's state is completely cleared between tests.
         testInstrumentationRunnerArguments clearPackageData: 'true'
+
+        buildConfigField "int", "BITRISE_BUILD_NUMBER", System.getenv("BITRISE_BUILD_NUMBER") ?: "0"
     }
     buildTypes {
         debug {
@@ -80,7 +82,7 @@ configurations.all { config ->
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.1.0-alpha03'
+    implementation 'androidx.appcompat:appcompat:1.1.0-alpha04'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.google.android.material:material:1.1.0-alpha05'
     implementation "androidx.recyclerview:recyclerview:$recyclerview_version"
@@ -111,12 +113,13 @@ dependencies {
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.2'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.2'
     testImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.2'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0-alpha03'
-    implementation 'androidx.lifecycle:lifecycle-common-java8:2.1.0-alpha03'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0-alpha04'
+    implementation 'androidx.lifecycle:lifecycle-common-java8:2.1.0-alpha04'
     implementation "android.arch.navigation:navigation-fragment:$navigation_version"
     implementation "android.arch.navigation:navigation-ui-ktx:$navigation_version"
     implementation 'com.adjust.sdk:adjust-android:4.17.0'
     implementation 'com.android.installreferrer:installreferrer:1.0'
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:2.22.0'
     testImplementation 'org.robolectric:robolectric:4.0.2'
@@ -124,7 +127,7 @@ dependencies {
     testImplementation "org.powermock:powermock-api-mockito2:2.0.0-beta.5"
     testImplementation "org.junit.jupiter:junit-jupiter-api:5.3.1"
     androidTestImplementation "org.junit.jupiter:junit-jupiter-api:5.3.1"
-    androidTestImplementation "androidx.test:core:$androidxTest_version"
+    testImplementation "androidx.test:core:$androidxTest_version"
     androidTestImplementation "androidx.test.ext:junit:$androidxTest_version"
     androidTestImplementation "androidx.test:runner:$androidxTest_version"
     androidTestImplementation "androidx.test:rules:$androidxTest_version"
@@ -232,4 +235,8 @@ if (project.hasProperty("coverage")) {
             }
         }
     }
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions.allWarningsAsErrors = true
 }

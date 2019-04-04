@@ -19,7 +19,7 @@ import mozilla.lockbox.view.RootActivity
 import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.not
 
-// ItemDetail
+@Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_API_USAGE_ERROR", "EXPERIMENTAL_IS_NOT_ENABLED")
 class ItemDetailRobot : BaseTestRobot {
     override fun exists() = displayed {
         id(R.id.inputHostname)

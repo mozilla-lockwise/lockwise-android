@@ -7,9 +7,10 @@
 package mozilla.lockbox.adapter
 
 import android.content.Context
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import android.widget.LinearLayout
+import androidx.test.core.app.ApplicationProvider
 import mozilla.lockbox.R
 import mozilla.lockbox.adapter.SectionedAdapter.Section
 import mozilla.lockbox.view.ToggleSettingViewHolder
@@ -20,7 +21,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
@@ -34,7 +34,8 @@ class SectionedAdapterTest {
 
     @Before
     fun setUp() {
-        context = RuntimeEnvironment.application
+
+        context = ApplicationProvider.getApplicationContext()
         parent = RecyclerView(context)
         parent.layoutManager = LinearLayoutManager(context)
         testHelper = ListAdapterTestHelper()

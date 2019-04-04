@@ -83,6 +83,7 @@ data class PublicSuffix(
         this.topDomain.equals(expected.topDomain, true)
 }
 
+@ExperimentalCoroutinesApi
 private fun asyncDomain(pslSupport: PublicSuffixSupport, webDomain: String?, packageName: String) =
     // resolve the (webDomain || packageName) to a 1+publicsuffix =
     when (webDomain) {
@@ -95,6 +96,7 @@ private data class FillablePassword(
     val entry: ServerPassword
 )
 
+@ExperimentalCoroutinesApi
 fun Observable<List<ServerPassword>>.filter(pslSupport: PublicSuffixSupport, webDomain: String?, packageName: String): Observable<List<ServerPassword>> {
     val passwords = this.switchMap { serverPasswords ->
         val parsedPasswords = serverPasswords

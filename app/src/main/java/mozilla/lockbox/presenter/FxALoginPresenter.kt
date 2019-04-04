@@ -46,7 +46,7 @@ class FxALoginPresenter(
 
     override fun onViewReady() {
         view.webViewRedirect = { url ->
-            val urlStr = url?.toString() ?: null
+            val urlStr = url?.toString()
             val result = isRedirectUri(urlStr)
             if (result) {
                 dispatcher.dispatch(OnboardingStatusAction(true))

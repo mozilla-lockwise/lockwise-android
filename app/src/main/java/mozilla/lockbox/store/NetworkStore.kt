@@ -4,12 +4,12 @@ import android.content.Context
 import android.net.ConnectivityManager
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
+import io.reactivex.subjects.ReplaySubject
 import mozilla.lockbox.action.NetworkAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.subjects.ReplaySubject
 
 open class NetworkStore(
     val dispatcher: Dispatcher = Dispatcher.shared
@@ -22,7 +22,7 @@ open class NetworkStore(
     val isConnected: Observable<Boolean>
 
     val isConnectedState: Boolean
-        get() = connectivityManager.activeNetworkInfo?.isConnectedOrConnecting == true
+        get() = connectivityManager.activeNetworkInfo?.isConnected == true
 
     companion object {
         val shared = NetworkStore()

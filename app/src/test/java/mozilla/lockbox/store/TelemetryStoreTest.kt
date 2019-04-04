@@ -7,27 +7,27 @@
 package mozilla.lockbox.store
 
 import android.content.Context
+import androidx.test.core.app.ApplicationProvider
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.ReplaySubject
 import mozilla.lockbox.DisposingTest
+import mozilla.lockbox.action.ClipboardAction
+import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.RouteAction
-import mozilla.lockbox.action.DataStoreAction
-import mozilla.lockbox.action.ClipboardAction
-import mozilla.lockbox.action.TelemetryAction
-import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.action.Setting
+import mozilla.lockbox.action.SettingAction
+import mozilla.lockbox.action.TelemetryAction
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.extensions.assertLastValueMatches
 import mozilla.lockbox.flux.Dispatcher
-import org.junit.Test
 import org.junit.Assert
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.mozilla.telemetry.event.TelemetryEvent
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
@@ -42,6 +42,7 @@ class TelemetryStoreTest : DisposingTest() {
         override fun lateinitContext(ctx: Context) {
             applySubject.onNext(ctx)
         }
+
         override fun recordEvent(event: TelemetryEvent) {
             eventsSubject.onNext(event)
         }
@@ -63,9 +64,10 @@ class TelemetryStoreTest : DisposingTest() {
     @Test
     fun testApplyConfig() {
         val applyObserver = createTestObserver<Context>()
+        val context: Context = ApplicationProvider.getApplicationContext()
         wrapper.applySubject.subscribe(applyObserver)
-        subject.injectContext(RuntimeEnvironment.application)
-        applyObserver.assertValue(RuntimeEnvironment.application)
+        subject.injectContext(context)
+        applyObserver.assertValue(context)
     }
 
     @Test

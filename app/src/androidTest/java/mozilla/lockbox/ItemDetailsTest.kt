@@ -2,6 +2,7 @@ package mozilla.lockbox
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.robots.itemDetail
 import mozilla.lockbox.robots.itemList
 import mozilla.lockbox.view.RootActivity
@@ -9,6 +10,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+@ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 open class ItemDetailsTest {
     private val navigator = Navigator()

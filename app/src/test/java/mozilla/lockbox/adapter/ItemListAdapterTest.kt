@@ -9,6 +9,7 @@ package mozilla.lockbox.adapter
 import android.content.Context
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.core.app.ApplicationProvider
 import io.reactivex.observers.TestObserver
 import kotlinx.android.synthetic.main.list_cell_item.*
 import kotlinx.android.synthetic.main.list_cell_no_entries.view.*
@@ -22,7 +23,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
@@ -46,7 +46,7 @@ class ItemListAdapterTest {
 
     @Before
     fun setUp() {
-        context = RuntimeEnvironment.application
+        context = ApplicationProvider.getApplicationContext()
         parent = RecyclerView(context)
         parent.layoutManager = LinearLayoutManager(context)
     }

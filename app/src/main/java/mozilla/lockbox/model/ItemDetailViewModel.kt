@@ -13,6 +13,6 @@ data class ItemDetailViewModel(
     val username: String?,
     val password: String
 ) {
-    var hasUsername: Boolean = false
+    val hasUsername: Boolean
         get() = !username.isNullOrBlank()
 }

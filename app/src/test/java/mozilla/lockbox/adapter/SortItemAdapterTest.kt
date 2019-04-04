@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.widget.ListView
 import android.widget.TextView
+import androidx.test.core.app.ApplicationProvider
 import mozilla.lockbox.R
 import mozilla.lockbox.action.Setting
 import org.hamcrest.Matchers.instanceOf
@@ -15,7 +16,6 @@ import org.junit.runner.RunWith
 import org.mockito.Mockito.spy
 import org.mockito.Mockito.verify
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
@@ -31,7 +31,7 @@ class SortItemAdapterTest {
 
     @Before
     fun setUp() {
-        context = RuntimeEnvironment.application.applicationContext
+        context = ApplicationProvider.getApplicationContext()
         subject = SortItemAdapter(context, android.R.layout.simple_spinner_item, ArrayList(list))
     }
 

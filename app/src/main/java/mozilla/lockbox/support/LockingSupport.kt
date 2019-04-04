@@ -3,10 +3,10 @@ package mozilla.lockbox.support
 import android.os.SystemClock
 
 interface LockingSupport {
-    var systemTimeElapsed: Long
+    val systemTimeElapsed: Long
 }
 
 class SystemLockingSupport : LockingSupport {
-    override var systemTimeElapsed: Long = 0L
+    override val systemTimeElapsed: Long
         get() = SystemClock.elapsedRealtime()
 }

@@ -22,7 +22,7 @@ class ListAdapterTestHelper {
     private val toggleObserverFake = TestObserver<Boolean>()
     private val toggleConsumerFake = TestConsumer(toggleObserverFake) as Consumer<Boolean>
     private val textClicksObserverFake = TestObserver<Unit>()
-    private val textClicksConsumerFake = TestConsumer(toggleObserverFake) as Consumer<Unit>
+    private val textClicksConsumerFake = TestConsumer(textClicksObserverFake)
     private val expectedVersionNumber = BuildConfig.VERSION_NAME
 
     fun createListOfSettings(): List<SettingCellConfiguration> {
@@ -56,7 +56,10 @@ class ListAdapterTestHelper {
         )
     }
 
-    fun createAccurateListOfSettings(isFingerprintAvailable: Boolean, isAutofillAvailable: Boolean): List<SettingCellConfiguration> {
+    fun createAccurateListOfSettings(
+        isFingerprintAvailable: Boolean,
+        isAutofillAvailable: Boolean
+    ): List<SettingCellConfiguration> {
         var settings: List<SettingCellConfiguration> = listOf(
             TextSettingConfiguration(
                 title = R.string.auto_lock,
@@ -76,7 +79,8 @@ class ListAdapterTestHelper {
             )
         }
 
-        settings += listOf(ToggleSettingConfiguration(
+        settings += listOf(
+            ToggleSettingConfiguration(
                 title = R.string.send_usage_data,
                 subtitle = R.string.send_usage_data_summary,
                 contentDescription = R.string.empty_string,
@@ -85,7 +89,9 @@ class ListAdapterTestHelper {
                 toggleObserver = toggleConsumerFake
             ),
             AppVersionSettingConfiguration(
-                text = "App Version: $expectedVersionNumber",
+                title = R.string.app_version_title,
+                appVersion = BuildConfig.VERSION_NAME,
+                buildNumber = BuildConfig.BITRISE_BUILD_NUMBER,
                 contentDescription = R.string.empty_string
             )
         )

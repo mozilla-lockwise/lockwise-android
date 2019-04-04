@@ -6,14 +6,15 @@
 
 package mozilla.lockbox.autofill
 
+import android.content.Context
 import android.view.autofill.AutofillId
+import androidx.test.core.app.ApplicationProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.mock
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 
 @ExperimentalCoroutinesApi
 @RunWith(RobolectricTestRunner::class)
@@ -25,7 +26,7 @@ class FillResponseBuilderTest {
     @Mock
     val passwordId = mock(AutofillId::class.java)
 
-    val context = RuntimeEnvironment.application.applicationContext
+    val context: Context = ApplicationProvider.getApplicationContext()
     val parsedStructure = ParsedStructure(usernameId = usernameId, passwordId = passwordId, packageName = "mozilla.lockbox")
     val subject = FillResponseBuilder(parsedStructure)
 

@@ -12,11 +12,7 @@ fun AssistStructure.ViewNode.dump(): String {
 
 @TargetApi(Build.VERSION_CODES.O)
 private fun AssistStructure.ViewNode.dumpNode(sb: StringBuilder = StringBuilder()): StringBuilder {
-    val name = if (htmlInfo != null) {
-        htmlInfo.tag
-    } else {
-        className.split('.').last()
-    }
+    val name = htmlInfo?.tag ?: className.split('.').last()
 
     var attrs = listOf(
         Pair("idEntry", idEntry ?: ""),
