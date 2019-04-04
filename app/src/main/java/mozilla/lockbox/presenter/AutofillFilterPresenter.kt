@@ -10,15 +10,19 @@ import io.reactivex.Observable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.AutofillAction
 import mozilla.lockbox.flux.Action
+import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.model.ItemViewModel
+import mozilla.lockbox.store.DataStore
 
 @ExperimentalCoroutinesApi
-class AutofillFilterPresenter(
-    override val view: FilterView
-) : FilterPresenter(view) {
+open class AutofillFilterPresenter(
+    override val view: FilterView,
+    override val dispatcher: Dispatcher = Dispatcher.shared,
+    override val dataStore: DataStore = DataStore.shared
+) : FilterPresenter(view, dispatcher, dataStore) {
 
-    override fun itemSelectionAction(id: String): Observable<Action> {
-        return dataStore.get(id)
+    override fun Observable<ItemViewModel>.itemSelectionActionMap(): Observable<Action> {
+        return this.switchMap { dataStore.get(it.id) }
             .map {
                 it.value?.let { serverPassword ->
                     AutofillAction.Complete(serverPassword)

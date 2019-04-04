@@ -29,7 +29,7 @@ import org.robolectric.RobolectricTestRunner
 @ExperimentalCoroutinesApi
 @RunWith(RobolectricTestRunner::class)
 class FilterPresenterTest {
-    class FakeView : FilterView {
+    class FakeFilterView : FilterView {
         override val onDismiss: Observable<Unit>?
             get() = null
         override val displayNoEntries: ((Boolean) -> Unit)?
@@ -58,14 +58,12 @@ class FilterPresenterTest {
 
     class FakeFilterPresenter(
         override val view: FilterView,
+        override val dispatcher: Dispatcher,
         override val dataStore: DataStore
-    ) : FilterPresenter(view, dataStore = dataStore) {
+    ) : FilterPresenter(view, dispatcher, dataStore) {
         val itemSelectionActionSubject = PublishSubject.create<Action>()
 
-        var itemSelectionArgument: String? = null
-
-        override fun itemSelectionAction(id: String): Observable<Action> {
-            itemSelectionArgument = id
+        override fun Observable<ItemViewModel>.itemSelectionActionMap(): Observable<Action> {
             return itemSelectionActionSubject
         }
 
@@ -79,9 +77,10 @@ class FilterPresenterTest {
         override val list = listStub
     }
 
-    val view = FakeView()
+    val view = FakeFilterView()
+    val dispatcher = Dispatcher()
     val dataStore = FakeDataStore()
-    val subject = FakeFilterPresenter(view, dataStore = dataStore)
+    val subject = FakeFilterPresenter(view, dispatcher, dataStore)
 
     val dispatcherObserver: TestObserver<Action> = TestObserver.create<Action>()
 
@@ -101,7 +100,7 @@ class FilterPresenterTest {
 
     @Before
     fun setUp() {
-        Dispatcher.shared.register.subscribe(dispatcherObserver)
+        dispatcher.register.subscribe(dispatcherObserver)
 
         subject.onViewReady()
         dataStore.listStub.onNext(items)
@@ -167,7 +166,6 @@ class FilterPresenterTest {
         val guid = "fdssdfsdf"
         val model = ItemViewModel("mozilla.org", "cats@cats.com", guid)
         view.itemSelectionStub.onNext(model)
-        Assert.assertEquals(subject.itemSelectionArgument, guid)
         val action = RouteAction.LockScreen
 
         subject.itemSelectionActionSubject.onNext(action)

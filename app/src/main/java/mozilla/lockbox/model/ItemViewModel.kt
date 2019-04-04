@@ -9,5 +9,5 @@ package mozilla.lockbox.model
 data class ItemViewModel(
     val title: String,
     val subtitle: String,
-    val guid: String
+    val id: String
 )

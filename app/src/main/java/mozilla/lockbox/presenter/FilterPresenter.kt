@@ -37,11 +37,11 @@ interface FilterView {
 @ExperimentalCoroutinesApi
 abstract class FilterPresenter(
     open val view: FilterView,
-    open val dispatcher: Dispatcher = Dispatcher.shared,
-    open val dataStore: DataStore = DataStore.shared
+    open val dispatcher: Dispatcher,
+    open val dataStore: DataStore
 ) : Presenter() {
 
-    protected abstract fun itemSelectionAction(id: String): Observable<Action>
+    protected abstract fun Observable<ItemViewModel>.itemSelectionActionMap(): Observable<Action>
 
     protected abstract fun Observable<Pair<CharSequence, List<ItemViewModel>>>.itemListMap(): Observable<List<ItemViewModel>>
 
@@ -89,8 +89,7 @@ abstract class FilterPresenter(
             .addTo(compositeDisposable)
 
         view.itemSelection
-            .map { it.guid }
-            .switchMap { this.itemSelectionAction(it) }
+            .itemSelectionActionMap()
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
 
