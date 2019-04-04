@@ -56,6 +56,24 @@ class FilterPresenterTest {
         }
     }
 
+    class FakeFilterPresenter(
+        override val view: FilterView,
+        override val dataStore: DataStore
+    ) : FilterPresenter(view, dataStore = dataStore) {
+        val itemSelectionActionSubject = PublishSubject.create<Action>()
+
+        var itemSelectionArgument: String? = null
+
+        override fun itemSelectionAction(id: String): Observable<Action> {
+            itemSelectionArgument = id
+            return itemSelectionActionSubject
+        }
+
+        override fun Observable<Pair<CharSequence, List<ItemViewModel>>>.itemListMap(): Observable<List<ItemViewModel>> {
+            return this.map { it.second }
+        }
+    }
+
     class FakeDataStore : DataStore() {
         val listStub = PublishSubject.create<List<ServerPassword>>()
         override val list = listStub
@@ -63,7 +81,7 @@ class FilterPresenterTest {
 
     val view = FakeView()
     val dataStore = FakeDataStore()
-    val subject = FilterPresenter(view, dataStore = dataStore)
+    val subject = FakeFilterPresenter(view, dataStore = dataStore)
 
     val dispatcherObserver: TestObserver<Action> = TestObserver.create<Action>()
 
@@ -149,8 +167,12 @@ class FilterPresenterTest {
         val guid = "fdssdfsdf"
         val model = ItemViewModel("mozilla.org", "cats@cats.com", guid)
         view.itemSelectionStub.onNext(model)
+        Assert.assertEquals(subject.itemSelectionArgument, guid)
+        val action = RouteAction.LockScreen
 
-        dispatcherObserver.assertValue(RouteAction.ItemDetail(guid))
+        subject.itemSelectionActionSubject.onNext(action)
+
+        dispatcherObserver.assertValue(action)
     }
 
     @Test

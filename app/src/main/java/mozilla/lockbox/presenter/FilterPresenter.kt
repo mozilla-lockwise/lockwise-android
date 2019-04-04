@@ -37,8 +37,8 @@ interface FilterView {
 @ExperimentalCoroutinesApi
 abstract class FilterPresenter(
     open val view: FilterView,
-    val dispatcher: Dispatcher = Dispatcher.shared,
-    val dataStore: DataStore = DataStore.shared
+    open val dispatcher: Dispatcher = Dispatcher.shared,
+    open val dataStore: DataStore = DataStore.shared
 ) : Presenter() {
 
     protected abstract fun itemSelectionAction(id: String): Observable<Action>
