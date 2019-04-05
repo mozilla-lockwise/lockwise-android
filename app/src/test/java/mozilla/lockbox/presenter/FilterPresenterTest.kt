@@ -29,7 +29,11 @@ import org.robolectric.RobolectricTestRunner
 @ExperimentalCoroutinesApi
 @RunWith(RobolectricTestRunner::class)
 class FilterPresenterTest {
-    class FakeView : FilterView {
+    class FakeFilterView : FilterView {
+        override val onDismiss: Observable<Unit>?
+            get() = null
+        override val displayNoEntries: ((Boolean) -> Unit)?
+            get() = null
         val filterTextEnteredStub = PublishSubject.create<CharSequence>()
         val filterTextSetStub = TestObserver<CharSequence>()
         val cancelButtonStub = PublishSubject.create<Unit>()
@@ -52,14 +56,31 @@ class FilterPresenterTest {
         }
     }
 
+    class FakeFilterPresenter(
+        override val view: FilterView,
+        override val dispatcher: Dispatcher,
+        override val dataStore: DataStore
+    ) : FilterPresenter(view, dispatcher, dataStore) {
+        val itemSelectionActionSubject = PublishSubject.create<Action>()
+
+        override fun Observable<ItemViewModel>.itemSelectionActionMap(): Observable<Action> {
+            return itemSelectionActionSubject
+        }
+
+        override fun Observable<Pair<CharSequence, List<ItemViewModel>>>.itemListMap(): Observable<List<ItemViewModel>> {
+            return this.map { it.second }
+        }
+    }
+
     class FakeDataStore : DataStore() {
         val listStub = PublishSubject.create<List<ServerPassword>>()
         override val list = listStub
     }
 
-    val view = FakeView()
+    val view = FakeFilterView()
+    val dispatcher = Dispatcher()
     val dataStore = FakeDataStore()
-    val subject = FilterPresenter(view, dataStore = dataStore)
+    val subject = FakeFilterPresenter(view, dispatcher, dataStore)
 
     val dispatcherObserver: TestObserver<Action> = TestObserver.create<Action>()
 
@@ -79,7 +100,7 @@ class FilterPresenterTest {
 
     @Before
     fun setUp() {
-        Dispatcher.shared.register.subscribe(dispatcherObserver)
+        dispatcher.register.subscribe(dispatcherObserver)
 
         subject.onViewReady()
         dataStore.listStub.onNext(items)
@@ -145,8 +166,11 @@ class FilterPresenterTest {
         val guid = "fdssdfsdf"
         val model = ItemViewModel("mozilla.org", "cats@cats.com", guid)
         view.itemSelectionStub.onNext(model)
+        val action = RouteAction.LockScreen
 
-        dispatcherObserver.assertValue(RouteAction.ItemDetail(guid))
+        subject.itemSelectionActionSubject.onNext(action)
+
+        dispatcherObserver.assertValue(action)
     }
 
     @Test
