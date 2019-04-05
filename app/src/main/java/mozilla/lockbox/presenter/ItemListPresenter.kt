@@ -101,7 +101,7 @@ class ItemListPresenter(
             .addTo(compositeDisposable)
 
         view.itemSelection
-            .map { RouteAction.ItemDetail(it.guid) }
+            .map { RouteAction.ItemDetail(it.id) }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
 
