@@ -88,7 +88,7 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:$recyclerview_version"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.exifinterface:exifinterface:1.0.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha3'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha4'
     implementation "com.jakewharton.rxbinding2:rxbinding:${rxbinding_version}"
     implementation "com.jakewharton.rxbinding2:rxbinding-design-kotlin:${rxbinding_version}"
     implementation "com.jakewharton.rxbinding2:rxbinding-appcompat-v7-kotlin:${rxbinding_version}"
