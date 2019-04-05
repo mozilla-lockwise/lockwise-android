@@ -7,34 +7,18 @@
 package mozilla.lockbox.presenter
 
 import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import mozilla.appservices.logins.ServerPassword
-import mozilla.lockbox.action.AutofillAction
+import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.model.ItemViewModel
-import mozilla.lockbox.store.DataStore
-import mozilla.lockbox.support.Optional
-import mozilla.lockbox.support.asOptional
 import org.junit.Assert
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class AutofillFilterPresenterTest {
-    class FakeDataStore : DataStore() {
-        val getStub = PublishSubject.create<Optional<ServerPassword>>()
-        var getArgument: String? = null
-
-        override fun get(id: String): Observable<Optional<ServerPassword>> {
-            getArgument = id
-            return getStub
-        }
-    }
-
+class AppFilterPresenterTest {
     class ExercisingFake(
-        override val view: FilterView,
-        override val dataStore: DataStore
-    ) : AutofillFilterPresenter(view, dataStore = dataStore) {
+        override val view: FilterView
+    ) : AppFilterPresenter(view) {
 
         fun exerciseItemSelectionActionMap(original: Observable<ItemViewModel>): Observable<Action> {
             return original.itemSelectionActionMap()
@@ -46,13 +30,12 @@ class AutofillFilterPresenterTest {
     }
 
     private val view = FilterPresenterTest.FakeFilterView()
-    private val dataStore = FakeDataStore()
-    val subject = ExercisingFake(view, dataStore)
+    val subject = ExercisingFake(view)
     private val id = "jnewkdiou"
     private val itemViewModel = ItemViewModel("mozilla", "cats@cats.com", id)
 
     @Test
-    fun `item selection with null item`() {
+    fun `item selection`() {
         val action = subject
             .exerciseItemSelectionActionMap(
                 Observable.just(ItemViewModel("mozilla", "cats@cats.com", id))
@@ -60,26 +43,7 @@ class AutofillFilterPresenterTest {
             .blockingIterable()
             .iterator()
 
-        Assert.assertEquals(id, dataStore.getArgument)
-        dataStore.getStub.onNext(Optional(null))
-
-        Assert.assertEquals(AutofillAction.Cancel, action.next())
-    }
-
-    @Test
-    fun `item selection with non-null item`() {
-        val action = subject
-            .exerciseItemSelectionActionMap(
-                Observable.just(itemViewModel)
-            )
-            .blockingIterable()
-            .iterator()
-
-        Assert.assertEquals(id, dataStore.getArgument)
-        val serverPassword = ServerPassword(id, "www.mozilla.org", password = "dawgz")
-        dataStore.getStub.onNext(serverPassword.asOptional())
-
-        Assert.assertEquals(AutofillAction.Complete(serverPassword), action.next())
+        Assert.assertEquals(RouteAction.ItemDetail(id), action.next())
     }
 
     @Test
@@ -105,6 +69,6 @@ class AutofillFilterPresenterTest {
             .blockingIterable()
             .iterator()
 
-        Assert.assertEquals(emptyList<ItemViewModel>(), mappedList.next())
+        Assert.assertEquals(list, mappedList.next())
     }
 }

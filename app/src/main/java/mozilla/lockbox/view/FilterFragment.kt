@@ -26,7 +26,7 @@ import mozilla.lockbox.R
 import mozilla.lockbox.adapter.ItemListAdapter
 import mozilla.lockbox.adapter.ItemListAdapterType
 import mozilla.lockbox.model.ItemViewModel
-import mozilla.lockbox.presenter.FilterPresenter
+import mozilla.lockbox.presenter.AppFilterPresenter
 import mozilla.lockbox.presenter.FilterView
 
 @ExperimentalCoroutinesApi
@@ -37,7 +37,7 @@ class FilterFragment : BackableFragment(), FilterView {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        presenter = FilterPresenter(this)
+        presenter = AppFilterPresenter(this)
         val view = inflater.inflate(R.layout.fragment_filter, container, false)
 
         val layoutManager = LinearLayoutManager(context)
@@ -50,7 +50,6 @@ class FilterFragment : BackableFragment(), FilterView {
 
         return view
     }
-
     override fun onResume() {
         super.onResume()
         view!!.filterField.requestFocus()
@@ -80,6 +79,8 @@ class FilterFragment : BackableFragment(), FilterView {
         get() = adapter.itemClicks
     override val noMatchingClicks: Observable<Unit>
         get() = adapter.noMatchingEntriesClicks
+    override val onDismiss: Observable<Unit>? = null
+    override val displayNoEntries: ((Boolean) -> Unit)? = null
 
     override fun updateItems(items: List<ItemViewModel>) {
         adapter.updateItems(items)
