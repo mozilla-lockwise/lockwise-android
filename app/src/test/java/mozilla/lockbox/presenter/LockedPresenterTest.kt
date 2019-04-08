@@ -83,8 +83,9 @@ class LockedPresenterTest {
 
     @Test
     fun `unlock button tap shows fingerprint dialog`() {
-        val dispatchIterator = dispatcher.register.blockingIterable().iterator()
         `when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(true)
+
+        val dispatchIterator = dispatcher.register.blockingIterable().iterator()
         view.unlockButtonTaps.onNext(Unit)
         val unlockingAction = dispatchIterator.next() as UnlockingAction
         assertTrue(unlockingAction.currently)
@@ -95,9 +96,10 @@ class LockedPresenterTest {
 
     @Test
     fun `unlock button tap fallback if no fingerprint`() {
-        val dispatchIterator = dispatcher.register.blockingIterable().iterator()
         `when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(false)
         `when`(fingerprintStore.isKeyguardDeviceSecure).thenReturn(true)
+
+        val dispatchIterator = dispatcher.register.blockingIterable().iterator()
         view.unlockButtonTaps.onNext(Unit)
         settingStore.unlock.onNext(false)
         assertTrue(dispatchIterator.next() is UnlockingAction)
@@ -106,18 +108,20 @@ class LockedPresenterTest {
 
     @Test
     fun `unlock button tap fallback on fingerprint error`() {
-        val dispatchIterator = dispatcher.register.blockingIterable().iterator()
         `when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(true)
         `when`(fingerprintStore.isKeyguardDeviceSecure).thenReturn(true)
+
+        val dispatchIterator = dispatcher.register.blockingIterable().iterator()
         lockedStore.onAuth.onNext(FingerprintAuthAction.OnError)
         assertEquals(RouteAction.UnlockFallbackDialog, dispatchIterator.next())
     }
 
     @Test
     fun `onviewready when can launch authentication shows fingerprint dialog`() {
+        `when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(true)
+
         val dispatchIterator = dispatcher.register.blockingIterable().iterator()
         (lockedStore.canLaunchAuthenticationOnForeground as Subject).onNext(true)
-        `when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(true)
         settingStore.unlock.onNext(true)
         val unlockingAction = dispatchIterator.next() as UnlockingAction
         assertTrue(unlockingAction.currently)
@@ -127,11 +131,12 @@ class LockedPresenterTest {
 
     @Test
     fun `onviewready when can launch authentication if no fingerprint`() {
+        `when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(false)
+        `when`(fingerprintStore.isKeyguardDeviceSecure).thenReturn(true)
+
         val dispatchIterator = dispatcher.register.blockingIterable().iterator()
         (lockedStore.canLaunchAuthenticationOnForeground as Subject).onNext(true)
 
-        `when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(false)
-        `when`(fingerprintStore.isKeyguardDeviceSecure).thenReturn(true)
         settingStore.unlock.onNext(false)
         val unlockingAction = dispatchIterator.next() as UnlockingAction
         assertTrue(unlockingAction.currently)
@@ -140,9 +145,10 @@ class LockedPresenterTest {
 
     @Test
     fun `foreground action fallback on fingerprint error`() {
-        val dispatchIterator = dispatcher.register.blockingIterable().iterator()
         `when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(true)
         `when`(fingerprintStore.isKeyguardDeviceSecure).thenReturn(true)
+
+        val dispatchIterator = dispatcher.register.blockingIterable().iterator()
         lockedStore.onAuth.onNext(FingerprintAuthAction.OnError)
         assertEquals(RouteAction.UnlockFallbackDialog, dispatchIterator.next())
     }
@@ -159,8 +165,8 @@ class LockedPresenterTest {
 
     @Test
     fun `handle error authentication callback when the device has no other security`() {
-        val dispatchIterator = dispatcher.register.blockingIterable().iterator()
         `when`(fingerprintStore.isKeyguardDeviceSecure).thenReturn(false)
+        val dispatchIterator = dispatcher.register.blockingIterable().iterator()
         lockedStore.onAuth.onNext(FingerprintAuthAction.OnError)
 
         assertEquals(DataStoreAction.Unlock, dispatchIterator.next())
