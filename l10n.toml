@@ -4,6 +4,7 @@ locales = [
   "de",
   "es",
   "fr",
+  "it"
 ]
 [env]
 
