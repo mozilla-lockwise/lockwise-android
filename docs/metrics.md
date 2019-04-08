@@ -164,6 +164,21 @@ https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/c
 	* `value`: null
 	* `extras`: null
 
+13. When a user interacts with the autofill functionality
+	* `category`: action
+	* `method`:
+		* autofill_error (there was an error when attempting to fill a form),
+		* autofill_single (the autofill API returned one credential that fit a form),
+		* autofill_multiple (the autofill API returned multiple possible matches to a form),
+		* autofill_filter (the user filtered a returned list of autofill credentials),
+		* autofill_locked (the datastore was locked when a form triggered the autofill API),
+		* autofill_cancel (the user cancelled form autofill),
+		* background (always when the app is backgrounded?),
+		* foreground (always when the app is foregrounded?)
+	* `object`: autofill
+	* `value`: null
+	* `extras`: null
+
 
 ## Adjust SDK
 
