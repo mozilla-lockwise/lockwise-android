@@ -4,8 +4,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-@file:Suppress("DEPRECATION")
-
 package mozilla.lockbox.presenter
 
 import android.app.KeyguardManager
@@ -16,6 +14,7 @@ import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.arch.core.util.Cancellable
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
@@ -57,15 +56,18 @@ abstract class RoutePresenter(
         false
     }
 
+    private var backListenerCancellable: Cancellable? = null
+
     override fun onPause() {
         super.onPause()
-        activity.removeOnBackPressedCallback(backListener)
+        backListenerCancellable?.cancel()
+        backListenerCancellable = null
         compositeDisposable.clear()
     }
 
     override fun onResume() {
         super.onResume()
-        activity.addOnBackPressedCallback(backListener)
+        backListenerCancellable = activity.onBackPressedDispatcher.addCallback(activity, backListener)
     }
 
     protected abstract fun route(action: RouteAction)
