@@ -11,6 +11,7 @@
         package="mozilla.lockbox">
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <!--USE_FINGERPRINT is deprecated in API 28+. Use android.permission.USE_BIOMETRIC instead. -->
     <uses-permission android:name="android.permission.USE_FINGERPRINT"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
