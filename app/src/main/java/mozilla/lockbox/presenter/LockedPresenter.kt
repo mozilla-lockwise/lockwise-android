@@ -6,17 +6,21 @@
 
 package mozilla.lockbox.presenter
 
+import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.action.AutofillAction
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.FingerprintAuthAction
-import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.UnlockingAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.LockedStore
-import mozilla.lockbox.view.LockedView
+
+interface LockedView {
+    fun unlockFallback()
+    val unlockConfirmed: Observable<Boolean>
+}
 
 abstract class LockedPresenter(
     private val lockedView: LockedView,
@@ -54,7 +58,7 @@ abstract class LockedPresenter(
 
     fun unlockFallback() {
         if (fingerprintStore.isKeyguardDeviceSecure) {
-            dispatcher.dispatch(RouteAction.UnlockFallbackDialog)
+            lockedView.unlockFallback()
         } else {
             unlock()
         }

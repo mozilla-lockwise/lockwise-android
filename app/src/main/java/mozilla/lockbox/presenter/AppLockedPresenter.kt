@@ -16,7 +16,6 @@ import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.LockedStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.support.isTesting
-import mozilla.lockbox.view.LockedView
 import java.util.concurrent.TimeUnit
 
 interface AppLockedView : LockedView {
@@ -34,16 +33,12 @@ class AppLockedPresenter(
     private val delay: Long = if (isTesting()) 0 else 1
 
     override fun onViewReady() {
-        // every time onViewReady is called, try to launch device authentication after 1 second
         Observable.just(Unit)
             .delay(delay, TimeUnit.SECONDS)
             .switchMap { lockedStore.canLaunchAuthenticationOnForeground.take(1) }
             .filter { it }
             .map { Unit }
-            // make sure to listen for tapping the unlock button! it should always work.
             .mergeWith(lockedView.unlockButtonTaps)
-            // once we've started the unlock process, we don't want further foregrounding events to
-            // launch the prompt again (i.e., cancelling your PIN entry to return to the unlock screen)
             .doOnNext {
                 dispatcher.dispatch(UnlockingAction(true))
             }

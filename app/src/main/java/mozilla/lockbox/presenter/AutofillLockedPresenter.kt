@@ -13,19 +13,16 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.LockedStore
 import mozilla.lockbox.store.SettingStore
-import mozilla.lockbox.view.LockedView
 import java.util.concurrent.TimeUnit
 
-interface AutofillLockedView : LockedView {
-    fun unlockFallback()
-}
+interface AutofillLockedView : LockedView
 
 class AutofillLockedPresenter(
-    private val lockedView: AutofillLockedView,
+    lockedView: AutofillLockedView,
+    lockedStore: LockedStore = LockedStore.shared,
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val fingerprintStore: FingerprintStore = FingerprintStore.shared,
-    private val settingStore: SettingStore = SettingStore.shared,
-    private val lockedStore: LockedStore = LockedStore.shared
+    private val settingStore: SettingStore = SettingStore.shared
 ) : LockedPresenter(lockedView, dispatcher, fingerprintStore, lockedStore) {
 
     override fun onViewReady() {
