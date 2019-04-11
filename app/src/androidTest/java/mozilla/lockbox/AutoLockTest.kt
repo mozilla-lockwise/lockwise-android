@@ -14,10 +14,12 @@ import mozilla.lockbox.support.AutoLockSupport
 import mozilla.lockbox.support.LockingSupport
 import mozilla.lockbox.view.RootActivity
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+@Ignore
 class TestLockingSupport() : LockingSupport {
     override var systemTimeElapsed: Long = 0L
 
@@ -33,6 +35,7 @@ class TestLockingSupport() : LockingSupport {
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 @LargeTest
+@Ignore
 open class AutoLockTest {
     private val navigator = Navigator()
     private val testLockingSupport = TestLockingSupport(AutoLockSupport.shared.lockingSupport)
