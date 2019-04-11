@@ -38,8 +38,8 @@ import org.robolectric.annotation.Config
 @Config(packageName = "mozilla.lockbox")
 class AppLockedPresenterTest {
     open class FakeView : LockedView {
-        val unlockConfirmedStub = PublishSubject.create<Boolean>()
-        override val unlockConfirmed: Observable<Boolean> get() = unlockConfirmedStub
+        val activityResult = PublishSubject.create<Pair<Int, Int>>()
+        override val onActivityResult: Observable<Pair<Int, Int>> get() = activityResult
         override val unlockButtonTaps = PublishSubject.create<Unit>()
     }
 
@@ -70,13 +70,7 @@ class AppLockedPresenterTest {
     private val settingStore = FakeSettingStore()
     private val dispatcher = Dispatcher()
     private lateinit var context: Context
-    val subject = AppLockedPresenter(
-        view,
-        dispatcher,
-        fingerprintStore,
-        lockedStore,
-        settingStore
-    )
+    val subject = AppLockedPresenter(view, dispatcher, fingerprintStore, lockedStore, settingStore)
 
     @Before
     fun setUp() {
