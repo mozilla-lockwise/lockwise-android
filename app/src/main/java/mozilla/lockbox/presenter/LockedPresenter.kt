@@ -8,26 +8,33 @@ package mozilla.lockbox.presenter
 
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
+import mozilla.lockbox.R
 import mozilla.lockbox.action.AutofillAction
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.FingerprintAuthAction
+import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.UnlockingAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.LockedStore
+import mozilla.lockbox.store.SettingStore
 
 interface LockedView {
     fun unlockFallback()
     val unlockConfirmed: Observable<Boolean>
+    val unlockButtonTaps: Observable<Unit>?
 }
 
 abstract class LockedPresenter(
     private val lockedView: LockedView,
-    private val dispatcher: Dispatcher = Dispatcher.shared,
-    private val fingerprintStore: FingerprintStore = FingerprintStore.shared,
-    private val lockedStore: LockedStore = LockedStore.shared
-    ) : Presenter() {
+    val dispatcher: Dispatcher = Dispatcher.shared,
+    val fingerprintStore: FingerprintStore = FingerprintStore.shared,
+    val lockedStore: LockedStore = LockedStore.shared,
+    val settingStore: SettingStore = SettingStore.shared
+) : Presenter() {
+
+    abstract val launchAuthenticationObservable: Observable<Boolean>
 
     override fun onViewReady() {
         lockedView.unlockConfirmed
@@ -49,6 +56,16 @@ abstract class LockedPresenter(
                 }
             }
             .addTo(compositeDisposable)
+
+        launchAuthenticationObservable
+            .subscribe {
+                if (fingerprintStore.isFingerprintAuthAvailable && it) {
+                    dispatcher.dispatch(RouteAction.DialogFragment.FingerprintDialog(R.string.fingerprint_dialog_title))
+                } else {
+                    unlockFallback()
+                }
+            }
+            .addTo(compositeDisposable)
     }
 
     fun unlock() {
@@ -56,7 +73,7 @@ abstract class LockedPresenter(
         dispatcher.dispatch(UnlockingAction(false))
     }
 
-    fun unlockFallback() {
+    private fun unlockFallback() {
         if (fingerprintStore.isKeyguardDeviceSecure) {
             lockedView.unlockFallback()
         } else {

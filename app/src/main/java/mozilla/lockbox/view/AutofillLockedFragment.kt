@@ -15,10 +15,12 @@ import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import mozilla.lockbox.R
 import mozilla.lockbox.presenter.AutofillLockedPresenter
-import mozilla.lockbox.presenter.AutofillLockedView
+import mozilla.lockbox.presenter.LockedView
 import mozilla.lockbox.support.Constant
 
-class AutofillLockedFragment : Fragment(), AutofillLockedView {
+class AutofillLockedFragment : Fragment(), LockedView {
+    override val unlockButtonTaps: Observable<Unit>? = null
+
     private val _unlockConfirmed = PublishSubject.create<Boolean>()
     override val unlockConfirmed: Observable<Boolean> get() = _unlockConfirmed
 
