@@ -57,7 +57,6 @@ object Constant {
         const val firefoxAccount = "firefox-account"
         const val encryptionKey = "database-encryption-key"
         const val autoLockTimerDate = "auto-lock-timer-date"
-        const val bootID = "boot-id"
     }
 
     object FingerprintTimeout {
@@ -67,7 +66,10 @@ object Constant {
 
     object RequestCode {
         const val noResult = 0
-
         const val unlock = 221
+    }
+
+    object Sentry {
+        const val dsn = "https://19558af5301f43e1a95ab4b8ceae663b@sentry.prod.mozaws.net/401"
     }
 }
