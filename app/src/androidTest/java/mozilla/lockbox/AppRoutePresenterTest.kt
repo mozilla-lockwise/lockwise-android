@@ -47,7 +47,6 @@ open class AppRoutePresenterTest {
 
     @Test
     fun testOnboardingConfirmation() {
-        navigator.gotoFxALogin()
         navigator.gotoOnboardingConfirmation()
         navigator.checkAtOnboardingConfirmation()
     }

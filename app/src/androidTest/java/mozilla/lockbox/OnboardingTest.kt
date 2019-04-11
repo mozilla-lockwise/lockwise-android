@@ -10,6 +10,7 @@ import mozilla.lockbox.robots.onboardingConfirmationScreen
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.view.RootActivity
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -23,7 +24,7 @@ open class OnboardingTest {
     @Rule
     @JvmField
     val activityRule: ActivityTestRule<RootActivity> = ActivityTestRule(RootActivity::class.java)
-
+    @Ignore
     @Test
     fun fingerprintSkipButtonNavigatesToItemList() {
         navigator.gotoFingerprintOnboarding()
@@ -31,6 +32,7 @@ open class OnboardingTest {
         navigator.checkAtItemList()
     }
 
+    @Ignore
     @Test
     fun fingerprintSuccessNavigatesToItemList() {
         navigator.gotoFingerprintOnboarding()
@@ -42,6 +44,7 @@ open class OnboardingTest {
         navigator.checkAtItemList()
     }
 
+    @Ignore
     @Test
     fun autofillSkipButtonNavigatesToItemList() {
         navigator.gotoAutofillOnboarding()
@@ -49,6 +52,7 @@ open class OnboardingTest {
         navigator.checkAtOnboardingConfirmation()
     }
 
+    @Ignore
     @Test
     fun autofillGoToSettingsNavigatesToSystemSettings() {
         navigator.gotoAutofillOnboarding()
