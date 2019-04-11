@@ -17,6 +17,7 @@ buildscript {
     ext.androidxTest_version = '1.1.0'
     ext.picasso_version = '2.71828'
     ext.recyclerview_version = '1.1.0-alpha04'
+    ext.sentry_version = '1.7.16'
 
     repositories {
         google()
@@ -29,7 +30,7 @@ buildscript {
         classpath 'com.android.tools.build:gradle:3.3.2'
         //noinspection DifferentKotlinGradleVersion
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'io.sentry:sentry-android-gradle-plugin:1.7.10'
+        classpath "io.sentry:sentry-android-gradle-plugin:$sentry_version"
         classpath "android.arch.navigation:navigation-safe-args-gradle-plugin:$navigation_version"
         classpath 'org.mozilla.appservices:gradle-plugin:0.3.1'
         // NOTE: Do not place your application dependencies here; they belong
@@ -50,3 +51,4 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
