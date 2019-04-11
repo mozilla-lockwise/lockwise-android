@@ -91,7 +91,9 @@ class Navigator {
 
     fun gotoFxALogin() {
         welcome { tapGetStarted() }
-        welcome { tapSkipSecureYourDevice() }
+        if (!FingerprintStore.shared.isDeviceSecure) {
+            welcome { tapSkipSecureYourDevice() }
+        }
         checkAtFxALogin()
     }
 
@@ -112,8 +114,10 @@ class Navigator {
     fun gotoAutofillOnboarding() {
         gotoFxALogin()
         fxaLogin { tapPlaceholderLogin() }
-        checkAtFingerprintOnboarding()
-        fingerprintOnboardingScreen { tapSkip() }
+        if (FingerprintStore.shared.isDeviceSecure) {
+            checkAtFingerprintOnboarding()
+            fingerprintOnboardingScreen { tapSkip() }
+        }
         checkAtAutofillOnboarding()
     }
 

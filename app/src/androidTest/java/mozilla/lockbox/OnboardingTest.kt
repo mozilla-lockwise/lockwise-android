@@ -44,7 +44,6 @@ open class OnboardingTest {
         navigator.checkAtItemList()
     }
 
-    @Ignore
     @Test
     fun autofillSkipButtonNavigatesToItemList() {
         navigator.gotoAutofillOnboarding()
@@ -52,7 +51,6 @@ open class OnboardingTest {
         navigator.checkAtOnboardingConfirmation()
     }
 
-    @Ignore
     @Test
     fun autofillGoToSettingsNavigatesToSystemSettings() {
         navigator.gotoAutofillOnboarding()
