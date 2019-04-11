@@ -102,6 +102,7 @@ class LockboxAutofillService(
             .addTo(compositeDisposable)
 
         autofillStore.autofillActions
+            .take(1)
             .map {
                 when (it) {
                     is AutofillAction.Complete -> builder.buildFilteredFillResponse(this, listOf(it.login)).asOptional()
@@ -117,9 +118,11 @@ class LockboxAutofillService(
                 }.asOptional()
             }
             .filterNotNull()
-            .subscribe {
+            .subscribe( {
                 callback.onSuccess(it.value)
-            }
+            }, {
+                log.error(throwable = it)
+            })
             .addTo(compositeDisposable)
     }
 
