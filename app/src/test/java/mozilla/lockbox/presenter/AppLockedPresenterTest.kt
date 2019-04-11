@@ -37,7 +37,7 @@ import org.robolectric.annotation.Config
 @RunWith(RobolectricTestRunner::class)
 @Config(packageName = "mozilla.lockbox")
 class AppLockedPresenterTest {
-    open class FakeView : LockedView {
+    open class FakeView : AppLockedView {
         val unlockConfirmedStub = PublishSubject.create<Boolean>()
         override val unlockConfirmed: Observable<Boolean> get() = unlockConfirmedStub
         override val unlockButtonTaps = PublishSubject.create<Unit>()

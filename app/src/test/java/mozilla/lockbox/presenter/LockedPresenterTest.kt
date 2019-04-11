@@ -13,11 +13,11 @@ import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import junit.framework.Assert
 import mozilla.lockbox.action.DataStoreAction
-import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.UnlockingAction
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.FingerprintStore
+import mozilla.lockbox.view.LockedView
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito
@@ -27,17 +27,13 @@ class LockedPresenterTest {
     open class FakeView : LockedView {
         val unlockConfirmedStub = PublishSubject.create<Boolean>()
         override val unlockConfirmed: Observable<Boolean> get() = unlockConfirmedStub
-        override val unlockButtonTaps = PublishSubject.create<Unit>()
     }
 
     class FakeLockedPresenter(
+        view: FakeView,
         dispatcher: Dispatcher,
         fingerprintStore: FingerprintStore
-    ) : LockedPresenter(dispatcher, fingerprintStore) {
-        private var unlocked: Boolean = false
-        override fun unlock() {
-            unlocked = true
-        }
+    ) : LockedPresenter(view, dispatcher, fingerprintStore) {
     }
 
     class FakeFingerprintStore : FingerprintStore() {
@@ -55,7 +51,7 @@ class LockedPresenterTest {
     private val fingerprintStore = FakeFingerprintStore()
     val view: FakeView = Mockito.spy(FakeView())
 
-    val subject = FakeLockedPresenter(dispatcher, fingerprintStore)
+    val subject = FakeLockedPresenter(view, dispatcher, fingerprintStore)
 
     @Before
     fun setUp() {

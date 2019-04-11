@@ -18,13 +18,18 @@ import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_locked.view.*
 import mozilla.lockbox.R
 import mozilla.lockbox.presenter.AppLockedPresenter
-import mozilla.lockbox.presenter.LockedView
+import mozilla.lockbox.presenter.AppLockedView
 import mozilla.lockbox.support.Constant
 
-class LockedFragment : Fragment(), LockedView {
+class LockedFragment : Fragment(), AppLockedView {
     private val _unlockConfirmed = PublishSubject.create<Boolean>()
+    override val unlockConfirmed: Observable<Boolean> get() = _unlockConfirmed
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         presenter = AppLockedPresenter(this)
         return inflater.inflate(R.layout.fragment_locked, container, false)
     }
@@ -42,6 +47,4 @@ class LockedFragment : Fragment(), LockedView {
             _unlockConfirmed.onNext(false)
         }
     }
-
-    override val unlockConfirmed: Observable<Boolean> get() = _unlockConfirmed
 }

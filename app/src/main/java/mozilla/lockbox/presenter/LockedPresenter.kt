@@ -6,17 +6,51 @@
 
 package mozilla.lockbox.presenter
 
+import io.reactivex.rxkotlin.addTo
+import mozilla.lockbox.action.AutofillAction
+import mozilla.lockbox.action.DataStoreAction
+import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.action.UnlockingAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.store.FingerprintStore
+import mozilla.lockbox.store.LockedStore
+import mozilla.lockbox.view.LockedView
 
 abstract class LockedPresenter(
+    private val lockedView: LockedView,
     private val dispatcher: Dispatcher = Dispatcher.shared,
-    private val fingerprintStore: FingerprintStore = FingerprintStore.shared
-) : Presenter() {
+    private val fingerprintStore: FingerprintStore = FingerprintStore.shared,
+    private val lockedStore: LockedStore = LockedStore.shared
+    ) : Presenter() {
 
-    abstract fun unlock()
+    override fun onViewReady() {
+        lockedView.unlockConfirmed
+            .subscribe {
+                if (it) {
+                    unlock()
+                } else {
+                    dispatcher.dispatch(AutofillAction.Cancel)
+                }
+            }
+            .addTo(compositeDisposable)
+
+        lockedStore.onAuthentication
+            .subscribe {
+                when (it) {
+                    is FingerprintAuthAction.OnSuccess -> unlock()
+                    is FingerprintAuthAction.OnError -> unlockFallback()
+                    is FingerprintAuthAction.OnCancel -> dispatcher.dispatch(AutofillAction.Cancel)
+                }
+            }
+            .addTo(compositeDisposable)
+    }
+
+    fun unlock() {
+        dispatcher.dispatch(DataStoreAction.Unlock)
+        dispatcher.dispatch(UnlockingAction(false))
+    }
 
     fun unlockFallback() {
         if (fingerprintStore.isKeyguardDeviceSecure) {

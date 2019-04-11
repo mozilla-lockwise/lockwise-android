@@ -11,22 +11,19 @@ import android.app.KeyguardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
-import kotlinx.android.synthetic.main.fragment_locked.view.*
 import mozilla.lockbox.R
 import mozilla.lockbox.presenter.AutofillLockedPresenter
 import mozilla.lockbox.presenter.AutofillLockedView
-
-private const val LOCK_REQUEST_CODE = 112
+import mozilla.lockbox.support.Constant
 
 class AutofillLockedFragment : Fragment(), AutofillLockedView {
     private val _unlockConfirmed = PublishSubject.create<Boolean>()
+    override val unlockConfirmed: Observable<Boolean> get() = _unlockConfirmed
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         presenter = AutofillLockedPresenter(this)
         presenter.onViewReady()
     }
@@ -43,7 +40,7 @@ class AutofillLockedFragment : Fragment(), AutofillLockedView {
             getString(R.string.confirm_pattern)
         )
         try {
-            startActivityForResult(intent, LOCK_REQUEST_CODE)
+            startActivityForResult(intent, Constant.RequestCode.lock)
         } catch (exception: Exception) {
             _unlockConfirmed.onNext(false)
         }
@@ -53,12 +50,10 @@ class AutofillLockedFragment : Fragment(), AutofillLockedView {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
-                LOCK_REQUEST_CODE -> _unlockConfirmed.onNext(true)
+                Constant.RequestCode.lock -> _unlockConfirmed.onNext(true)
             }
         } else {
             _unlockConfirmed.onNext(false)
         }
     }
-
-    override val unlockConfirmed: Observable<Boolean> get() = _unlockConfirmed
 }

@@ -66,6 +66,7 @@ object Constant {
 
     object RequestCode {
         const val noResult = 0
+        const val lock = 112
         const val unlock = 221
     }
 

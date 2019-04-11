@@ -20,6 +20,7 @@ import mozilla.lockbox.action.AutofillAction
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.action.UnlockingAction
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
@@ -101,7 +102,7 @@ class AutofillLockedPresenterTest : DisposingTest() {
     @Test
     fun `pushes unlock action on unlockConfirmed(true)`() {
         view.unlockConfirmedStub.onNext(true)
-        dispatcherObserver.assertLastValue(DataStoreAction.Unlock)
+        dispatcherObserver.assertValueAt(0, DataStoreAction.Unlock)
     }
 
     @Test
@@ -113,7 +114,7 @@ class AutofillLockedPresenterTest : DisposingTest() {
     @Test
     fun `unlock on successful fingerprint authentication`() {
         lockedStore.onAuth.onNext(FingerprintAuthAction.OnSuccess)
-        dispatcherObserver.assertLastValue(DataStoreAction.Unlock)
+        dispatcherObserver.assertValueAt(0, DataStoreAction.Unlock)
     }
 
     @Test
