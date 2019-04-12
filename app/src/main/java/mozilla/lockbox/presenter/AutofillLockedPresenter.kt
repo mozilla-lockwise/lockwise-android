@@ -12,8 +12,9 @@ import java.util.concurrent.TimeUnit
 class AutofillLockedPresenter(
     lockedView: LockedView
 ) : LockedPresenter(lockedView) {
-    override val launchAuthenticationObservable: Observable<Boolean> =
-        settingStore.unlockWithFingerprint
-            .take(1)
-            .delay(500, TimeUnit.MILLISECONDS)
+
+    override fun Observable<Unit>.unlockAuthenticationObservable(): Observable<Boolean> {
+        return this.delay(500, TimeUnit.MILLISECONDS)
+            .switchMap { settingStore.unlockWithFingerprint.take(1) }
+    }
 }

@@ -8,22 +8,24 @@ package mozilla.lockbox.presenter
 
 import io.reactivex.Observable
 import mozilla.lockbox.action.UnlockingAction
-import mozilla.lockbox.support.Constant
+import mozilla.lockbox.extensions.debug
+import mozilla.lockbox.support.Constant.App.delay
 import java.util.concurrent.TimeUnit
 
 class AppLockedPresenter(
     lockedView: LockedView
 ) : LockedPresenter(lockedView) {
 
-    override val launchAuthenticationObservable: Observable<Boolean> =
-        Observable.just(Unit)
-            .delay(Constant.App.delay, TimeUnit.SECONDS)
+    override fun Observable<Unit>.unlockAuthenticationObservable(): Observable<Boolean> {
+        return this.delay(delay, TimeUnit.SECONDS)
             .switchMap { lockedStore.canLaunchAuthenticationOnForeground.take(1) }
+            .debug("canLaunchAuthOnForeground")
             .filter { it }
             .map { Unit }
-            .mergeWith(lockedView.unlockButtonTaps ?: Observable.never())
+            .mergeWith(lockedView.unlockButtonTaps)
             .doOnNext {
                 dispatcher.dispatch(UnlockingAction(true))
             }
             .switchMap { settingStore.unlockWithFingerprint.take(1) }
+    }
 }

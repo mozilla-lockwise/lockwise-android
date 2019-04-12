@@ -19,6 +19,7 @@ import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_locked.view.*
 import mozilla.lockbox.R
+import mozilla.lockbox.log
 import mozilla.lockbox.presenter.AppLockedPresenter
 import mozilla.lockbox.presenter.LockedView
 import mozilla.lockbox.support.Constant
@@ -36,14 +37,16 @@ class LockedFragment : Fragment(), LockedView {
         return inflater.inflate(R.layout.fragment_locked, container, false)
     }
 
-    override val unlockButtonTaps: Observable<Unit>?
+    override val unlockButtonTaps: Observable<Unit>
         get() = view!!.unlockButton.clicks()
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+
+        log.info("onactivityresult, $resultCode")
         if (resultCode == RESULT_OK) {
             when (requestCode) {
-                Constant.RequestCode.unlock -> _unlockConfirmed.onNext(true)
+                Constant.RequestCode.lock -> _unlockConfirmed.onNext(true)
             }
         } else {
             _unlockConfirmed.onNext(false)

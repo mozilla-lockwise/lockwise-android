@@ -27,16 +27,28 @@ interface LockedView {
 }
 
 abstract class LockedPresenter(
-    private val lockedView: LockedView,
+    val lockedView: LockedView,
     val dispatcher: Dispatcher = Dispatcher.shared,
     val fingerprintStore: FingerprintStore = FingerprintStore.shared,
     val lockedStore: LockedStore = LockedStore.shared,
     val settingStore: SettingStore = SettingStore.shared
 ) : Presenter() {
 
-    abstract val launchAuthenticationObservable: Observable<Boolean>
+    abstract fun Observable<Unit>.unlockAuthenticationObservable(): Observable<Boolean>
 
     override fun onViewReady() {
+        Observable.just(Unit)
+            .unlockAuthenticationObservable()
+            .subscribe {
+                if (fingerprintStore.isFingerprintAuthAvailable && it) {
+                    dispatcher.dispatch(RouteAction.DialogFragment.FingerprintDialog(R.string.fingerprint_dialog_title))
+                } else {
+                    unlockFallback()
+                }
+            }
+            .addTo(compositeDisposable)
+
+
         lockedView.unlockConfirmed
             .subscribe {
                 if (it) {
@@ -53,16 +65,6 @@ abstract class LockedPresenter(
                     is FingerprintAuthAction.OnSuccess -> unlock()
                     is FingerprintAuthAction.OnError -> unlockFallback()
                     is FingerprintAuthAction.OnCancel -> dispatcher.dispatch(AutofillAction.Cancel)
-                }
-            }
-            .addTo(compositeDisposable)
-
-        launchAuthenticationObservable
-            .subscribe {
-                if (fingerprintStore.isFingerprintAuthAvailable && it) {
-                    dispatcher.dispatch(RouteAction.DialogFragment.FingerprintDialog(R.string.fingerprint_dialog_title))
-                } else {
-                    unlockFallback()
                 }
             }
             .addTo(compositeDisposable)
