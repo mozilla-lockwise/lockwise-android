@@ -20,7 +20,6 @@ import mozilla.lockbox.action.AutofillAction
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.RouteAction
-import mozilla.lockbox.action.UnlockingAction
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
@@ -39,12 +38,17 @@ import org.robolectric.annotation.Config
 @Config(packageName = "mozilla.lockbox")
 class AutofillLockedPresenterTest : DisposingTest() {
 
-    open class FakeView : AutofillLockedView {
+    open class FakeView : LockedView {
+        override val unlockButtonTaps: Observable<Unit>?
+            get() = TODO("not implemented")
+
         val unlockConfirmedStub = PublishSubject.create<Boolean>()
         var unlockFallbackCalled: Boolean = false
 
         override val unlockConfirmed: Observable<Boolean> get() = unlockConfirmedStub
-        override fun unlockFallback() { unlockFallbackCalled = true }
+        override fun unlockFallback() {
+            unlockFallbackCalled = true
+        }
     }
 
     open class FakeFingerprintStore : FingerprintStore() {
@@ -76,14 +80,7 @@ class AutofillLockedPresenterTest : DisposingTest() {
     private val dispatcherObserver: TestObserver<Action> = TestObserver.create()
     private lateinit var context: Context
 
-
-    val subject = AutofillLockedPresenter(
-            view,
-            dispatcher,
-            fingerprintStore,
-            settingStore,
-            lockedStore
-        )
+    val subject = AutofillLockedPresenter(view)
 
     @Before
     fun setUp() {

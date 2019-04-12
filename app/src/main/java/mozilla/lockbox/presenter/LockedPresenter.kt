@@ -48,7 +48,6 @@ abstract class LockedPresenter(
             }
             .addTo(compositeDisposable)
 
-
         lockedView.unlockConfirmed
             .subscribe {
                 if (it) {

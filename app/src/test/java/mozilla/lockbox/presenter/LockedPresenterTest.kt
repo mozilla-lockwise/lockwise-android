@@ -17,14 +17,19 @@ import mozilla.lockbox.action.UnlockingAction
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.FingerprintStore
-import mozilla.lockbox.view.LockedView
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito
 
 class LockedPresenterTest {
-
     open class FakeView : LockedView {
+        override fun unlockFallback() {
+            TODO("not implemented")
+        }
+
+        override val unlockButtonTaps: Observable<Unit>?
+            get() = TODO("not implemented")
+
         val unlockConfirmedStub = PublishSubject.create<Boolean>()
         override val unlockConfirmed: Observable<Boolean> get() = unlockConfirmedStub
     }
@@ -34,6 +39,9 @@ class LockedPresenterTest {
         dispatcher: Dispatcher,
         fingerprintStore: FingerprintStore
     ) : LockedPresenter(view, dispatcher, fingerprintStore) {
+        override fun Observable<Unit>.unlockAuthenticationObservable(): Observable<Boolean> {
+            TODO("not implemented")
+        }
     }
 
     class FakeFingerprintStore : FingerprintStore() {
