@@ -9,7 +9,6 @@ pages:
 - 'Release Notes': 'release-notes.md'
 - 'How to Contribute': 
   - 'Contributing': 'contributing.md'
-  - 'Code of Conduct': 'code_of_conduct.md'
 - 'Telemetry and Metrics': 'metrics.md'
 - 'Developer Guides':
   - 'Build and Install': 'install.md'
