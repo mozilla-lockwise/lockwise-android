@@ -104,6 +104,9 @@ dependencies {
     implementation "org.mozilla.components:lib-dataprotect:${rootProject.ext.android_components_version}"
     implementation "org.mozilla.components:lib-fetch-httpurlconnection:${rootProject.ext.android_components_version}"
     implementation "org.mozilla.components:lib-publicsuffixlist:${rootProject.ext.android_components_version}"
+    implementation "org.mozilla.components:support-rustlog:${rootProject.ext.android_components_version}"
+    implementation "org.mozilla.components:concept-sync:${rootProject.ext.android_components_version}"
+
     implementation "io.sentry:sentry-android:$sentry_version"
     implementation "com.squareup.picasso:picasso:$picasso_version"
     implementation project(":thirdparty")

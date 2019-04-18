@@ -146,7 +146,7 @@ class ItemListPresenter(
                 AccountViewModel(
                     accountName = it.displayName,
                     displayEmailName = it.email,
-                    avatarFromURL = it.avatar
+                    avatarFromURL = it.avatar?.url
                 )
             }
             .observeOn(AndroidSchedulers.mainThread())
