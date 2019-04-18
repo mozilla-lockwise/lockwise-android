@@ -8,12 +8,15 @@ package mozilla.lockbox.robots
 
 import br.com.concretesolutions.kappuccino.actions.ClickActions.click
 import br.com.concretesolutions.kappuccino.assertions.VisibilityAssertions.displayed
+import kotlinx.android.synthetic.main.mtrl_alert_dialog_actions.view.*
 import mozilla.lockbox.R
 
 class WelcomeRobot : BaseTestRobot {
     override fun exists() = displayed { id(R.id.buttonGetStarted) }
 
     fun tapGetStarted() = click { id(R.id.buttonGetStarted) }
+
+    fun tapSkipSecureYourDevice() = click { id(android.R.id.button2) }
 }
 
 fun welcome(f: WelcomeRobot.() -> Unit) = WelcomeRobot().apply(f)
