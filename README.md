@@ -41,7 +41,7 @@ All alternative licenses and the origins of third party code is cited in the [th
 [docs-link]: docs/
 [org-website]: https://lockbox.firefox.com/
 [contributing-link]: docs/contributing.md
-[coc-link]: docs/code_of_conduct.md
+[coc-link]: /CODE_OF_CONDUCT.md
 [security-link]: docs/SECURITY.md
 [license-link]: /LICENSE
 [third-party-link]: thirdparty/README.md

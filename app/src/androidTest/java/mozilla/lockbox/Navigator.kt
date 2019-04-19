@@ -91,6 +91,9 @@ class Navigator {
 
     fun gotoFxALogin() {
         welcome { tapGetStarted() }
+        if (!FingerprintStore.shared.isDeviceSecure) {
+            welcome { tapSkipSecureYourDevice() }
+        }
         checkAtFxALogin()
     }
 
@@ -111,8 +114,10 @@ class Navigator {
     fun gotoAutofillOnboarding() {
         gotoFxALogin()
         fxaLogin { tapPlaceholderLogin() }
-        checkAtFingerprintOnboarding()
-        fingerprintOnboardingScreen { tapSkip() }
+        if (FingerprintStore.shared.isDeviceSecure) {
+            checkAtFingerprintOnboarding()
+            fingerprintOnboardingScreen { tapSkip() }
+        }
         checkAtAutofillOnboarding()
     }
 
@@ -144,7 +149,6 @@ class Navigator {
 
     fun gotoItemList(goManually: Boolean = false) {
         if (goManually) {
-            gotoFxALogin()
             bypassOnboarding()
         } else {
             Dispatcher.shared.dispatch(LifecycleAction.UseTestData)
@@ -273,7 +277,7 @@ class Navigator {
         lockScreen { exists() }
     }
 
-    fun gotoItemDetail(position: Int = 0) {
+    fun gotoItemDetail(position: Int = 1) {
         gotoItemList()
         gotoItemDetail_from_itemList(position)
     }
