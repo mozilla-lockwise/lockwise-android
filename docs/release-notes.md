@@ -1,5 +1,16 @@
 # Release Notes
 
+## 1.0.2 (Build 3417)
+
+First Alpha/Beta build with dependency updates, paving way for more crash reporting and fixes coming soon.
+
+- update constraintlayout dependency (#578) 
+- fix race condition in LocketPresenterTest (#573)
+- update more dependencies (#572)
+- add Sentry to log errors and crashes (#588)
+- update UI tests (#590)
+- enable R8 and byte-level optimizations (#594)
+
 ## 1.0.1 (Build 3320)
 
 _Date: 2019-04-04_
