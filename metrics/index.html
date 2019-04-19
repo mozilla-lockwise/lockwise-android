@@ -66,10 +66,6 @@
                     
     <a class="" href="../contributing/">Contributing</a>
                 </li>
-                <li class="">
-                    
-    <a class="" href="../code_of_conduct/">Code of Conduct</a>
-                </li>
     </ul>
 	    </li>
           
@@ -358,6 +354,26 @@
 <li><code>extras</code>: null</li>
 </ul>
 </li>
+<li>
+<p>When a user interacts with the autofill functionality</p>
+<ul>
+<li><code>category</code>: action</li>
+<li><code>method</code>:<ul>
+<li>autofill_error (there was an error when attempting to fill a form),</li>
+<li>autofill_multiple (the autofill API returned a list possible credentials to fill a form),</li>
+<li>autofill_single (a credential was selected from the list of possible credentials to fill a form),</li>
+<li>autofill_filter (the user filtered a returned list of autofill credentials),</li>
+<li>autofill_locked (the datastore was locked when a form triggered the autofill API),</li>
+<li>autofill_cancel (the user cancelled form autofill),</li>
+<li>background (when the autofill service is backgrounded, doesn't necessarily involve user-facing UX),</li>
+<li>foreground (always when the autofill service is foregrounded, doesn't necessarily involve user-facing UX)</li>
+</ul>
+</li>
+<li><code>object</code>: autofill</li>
+<li><code>value</code>: null</li>
+<li><code>extras</code>: null</li>
+</ul>
+</li>
 </ol>
 <h2 id="adjust-sdk">Adjust SDK</h2>
 <p>The app also includes a version of the <a href="https://github.com/adjust/android_sdk">adjust SDK</a>. Mozilla uses this software to keep track of the number of installations of the Lockbox app, as well the number of new Firefox Accounts registered through the app.</p>
@@ -376,7 +392,7 @@
         <a href="../install/" class="btn btn-neutral float-right" title="Build and Install">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../code_of_conduct/" class="btn btn-neutral" title="Code of Conduct"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../contributing/" class="btn btn-neutral" title="Contributing"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -404,7 +420,7 @@
           <a href="https://github.com/mozilla-lockbox/lockbox-android/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
-        <span><a href="../code_of_conduct/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../contributing/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
         <span style="margin-left: 15px"><a href="../install/" style="color: #fcfcfc">Next &raquo;</a></span>
