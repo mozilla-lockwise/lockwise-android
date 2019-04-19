@@ -118,7 +118,7 @@ class LockboxAutofillService(
                 }.asOptional()
             }
             .filterNotNull()
-            .subscribe( {
+            .subscribe({
                 callback.onSuccess(it.value)
             }, {
                 log.error(throwable = it)
