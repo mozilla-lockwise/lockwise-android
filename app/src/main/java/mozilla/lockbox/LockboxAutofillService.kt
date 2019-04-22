@@ -32,6 +32,7 @@ import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.PublicSuffixSupport
 import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.support.isDebug
+import java.lang.Exception
 
 @RequiresApi(Build.VERSION_CODES.O)
 @ExperimentalCoroutinesApi
@@ -68,8 +69,12 @@ class LockboxAutofillService(
 
         if (parsedStructure.passwordId == null && parsedStructure.usernameId == null) {
             if (isDebug()) {
-                val xml = structure.getWindowNodeAt(0).rootViewNode.dump()
-                log.debug("Autofilling failed for:\n$xml")
+                try {
+                    val xml = structure.getWindowNodeAt(0).rootViewNode.dump()
+                    log.debug("Autofilling failed for:\n$xml")
+                } catch (e: Exception) {
+                    log.debug("Exception: $e")
+                }
             }
             callback.onSuccess(null)
             return
