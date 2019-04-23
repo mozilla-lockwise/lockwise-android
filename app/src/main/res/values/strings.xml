@@ -174,9 +174,9 @@
     <!-- This is the message displayed on a button to open the device settings for the user to set up device-provided security protections -->
     <string name="set_up_security_button">Set up Now</string>
 
-    <!-- This is used for screenreaders to inform the user they have selected the account profile image, not expected to translate Firefox Account -->
+    <!-- This is used for screenreaders to inform the user they have selected the account profile image. Firefox Account is to be translated consistently to match use in other Firefox products. -->
     <string name="profile_image_content_description">Firefox Account Profile Image</string>
-    <!-- This message is displayed to inform users how to change their Firefox Account profile details on a setting screen, not expected to translate Firefox Account -->
+    <!-- This message is displayed to inform users how to change their Firefox Account profile details on a setting screen. Firefox Account is to be translated consistently to match use in other Firefox products. -->
     <string name="account_information">To make changes to your account, log in to your Firefox Account from any browser.</string>
     <!-- This is the text on a button to sign out and disconnect the account from the application. %1$S will be replaced with application name -->
     <string name="disconnect_button">Disconnect %1$S</string>
