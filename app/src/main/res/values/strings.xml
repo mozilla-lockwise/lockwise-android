@@ -189,10 +189,6 @@
     <!-- This is the hint value for an autofill box that appears when suggesting a value for a password field. It is interpolated with the user's account name. -->
     <string name="password_for">Password for %1$s</string>
 
-    <!-- This is the text displayed on the button of the network availability error message -->
-    <!--<string name="retry">Retry</string>-->
-    <!-- This is the text displayed on the button of the network availability error message -->
-    <!--<string name="retryButton">Retry connect to internet</string>-->
     <!-- This label is used by screenreaders to inform the user that their device is not connected to the internet -->
     <string name="networkWarningMessage">Warning: device not connected to the internet.</string>
     <!-- This label is used by screenreaders to inform the user that the message contains an image of a warning icon -->
@@ -262,4 +258,10 @@
 
     <!-- This is the placeholder text for an empty or null username. -->
     <string name="no_username">(no username)</string>
+    
+    <!-- CURRENTLY UNUSED BUT RESERVED FOR FUTURE USE -->
+    <!-- This is the text displayed on the button of the network availability error message -->
+    <!--<string name="retry">Retry</string>-->
+    <!-- This is the text displayed on the button of the network availability error message -->
+    <!--<string name="retryButton">Retry connect to internet</string>-->
 </resources>
