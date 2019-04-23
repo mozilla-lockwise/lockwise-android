@@ -24,8 +24,6 @@
     <!-- This is the link on the first-run welcome screen to learn more about the requirements of the application -->
     <string name="welcome_learn_more_btn">Learn More</string>
 
-    <!-- This is the label for a button only available on test builds to skip the authentication step and immediately use test data -->
-    <string name="placeholder_skip_fxa">Use test data</string>
     <!-- This is the label used for the title in the web view of the account's authentication instances. -->
     <string name="get_started_title">Get Started</string>
 
