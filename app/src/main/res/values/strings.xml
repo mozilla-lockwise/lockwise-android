@@ -224,11 +224,11 @@
     <string name="onboarding_autofill_description">Update your device’s Autofill settings to allow %1$S to fill passwords. </string>
     <!-- This button will take you to your phone's autofill settings screen. -->
     <string name="go_to_settings">Go to settings</string>
-    <!-- This is the title for the final onboarding screen. -->
-    <string name="all_set">You\'re all set!</string>
-    <!-- This is the button to dismiss the final onboarding screen. -->
     <!-- This is the content description for the autofill image on the autofill onboarding screen. %1$S will be replaced with application name -->
     <string name="onboarding_autofill_image_description">%1$S Autofill</string>
+    <!-- This is the title for the final onboarding screen -->
+    <string name="all_set">You’re all set!</string>
+    <!-- This is the button to dismiss the final onboarding screen -->
     <string name="finish">Finish</string>
     <!-- This description of the app functionality is shown on the final onboarding screen -->
     <string name="access_description">Access logins saved to Firefox from your phone</string>
