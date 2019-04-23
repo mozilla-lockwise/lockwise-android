@@ -5,16 +5,16 @@
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- This string is a promotional or short descriptional sentence to describe the purpose of the application -->
+    <!-- This string is a promotional or short descriptional sentence to describe the purpose of the application. -->
     <string name="app_tagline">Take your passwords everywhere.</string>
     <!-- This is used for screenreaders to know the application logo image is currently selected, not expected to translate Firefox Lockbox -->
     <string name="app_logo">Firefox Lockbox Logo</string>
 
-    <!-- This is the text on a button to cancel the current operation or request such as unlocking the application with a fingerprint -->
+    <!-- This is the text on a button to cancel the current operation or request such as unlocking the application with a fingerprint. -->
     <string name="cancel">Cancel</string>
-    <!-- This is the title of a link for users to tap to open a web page to learn more about a related setting or feature -->
+    <!-- This is the title of a link for users to tap to open a web page to learn more about a related setting or feature. -->
     <string name="learn_more">Learn more</string>
-    <!-- This is the label a screenreader uses to inform the user they selected a link that will open a webpage to learn more about the feature or setting -->
+    <!-- This is the label a screenreader uses to inform the user they selected a link that will open a webpage to learn more about the feature or setting. -->
     <string name="learn_more_description">Open a link to Learn more</string>
 
     <!-- This is used as the label on a button on a first-run welcome screen to sign in and start using the application -->
@@ -230,7 +230,7 @@
     <string name="all_set">You\'re all set!</string>
     <!-- This is the button to dismiss the final onboarding screen. -->
     <string name="finish">Finish</string>
-    <!-- This description of the app functionality is shown on the final onboarding screen. -->
+    <!-- This description of the app functionality is shown on the final onboarding screen -->
     <string name="access_description">Access logins saved to Firefox from your phone</string>
     <!-- This is an accessible content description for the security information link text. -->
     <string name="security_content_description">This is a link to a description of security practices in Firefox Lockbox.</string>
