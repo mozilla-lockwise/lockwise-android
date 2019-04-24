@@ -51,7 +51,7 @@ abstract class RoutePresenter(
             return navHostFragmentManager.fragments.last()
         }
 
-    val backListener = OnBackPressedCallback {
+    private val backListener = OnBackPressedCallback {
         dispatcher.dispatch(RouteAction.InternalBack)
         false
     }
