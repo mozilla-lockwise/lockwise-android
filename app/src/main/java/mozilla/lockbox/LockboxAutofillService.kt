@@ -32,7 +32,6 @@ import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.PublicSuffixSupport
 import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.support.isDebug
-import java.lang.Exception
 
 @RequiresApi(Build.VERSION_CODES.O)
 @ExperimentalCoroutinesApi
