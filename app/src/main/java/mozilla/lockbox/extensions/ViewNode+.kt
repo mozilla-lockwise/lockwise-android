@@ -4,6 +4,8 @@ import android.annotation.TargetApi
 import android.app.assist.AssistStructure
 import android.os.Build
 
+private const val emptyString = ""
+
 @TargetApi(Build.VERSION_CODES.O)
 fun AssistStructure.ViewNode.dump(): String {
     val sb = StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
@@ -15,21 +17,21 @@ private fun AssistStructure.ViewNode.dumpNode(sb: StringBuilder = StringBuilder(
     val name = htmlInfo?.tag ?: className?.split('.')?.last() ?: "unknown"
 
     var attrs = listOf(
-        Pair("idEntry", idEntry ?: ""),
-        Pair("idPackage", idPackage ?: ""),
-        Pair("idType", idType ?: ""),
-        Pair("webDomain", webDomain ?: ""),
-        Pair("hint", hint ?: ""),
-        Pair("autofillValue", autofillValue?.textValue ?: ""),
-        Pair("autofillHints", autofillHints?.joinToString(", ") ?: ""),
-        Pair("autofillOptions", autofillOptions?.joinToString(", ") ?: "")
+        Pair("idEntry", idEntry ?: emptyString),
+        Pair("idPackage", idPackage ?: emptyString),
+        Pair("idType", idType ?: emptyString),
+        Pair("webDomain", webDomain ?: emptyString),
+        Pair("hint", hint ?: emptyString),
+        Pair("autofillValue", autofillValue?.isText ?: autofillValue?.textValue ?: emptyString),
+        Pair("autofillHints", autofillHints?.joinToString(", ") ?: emptyString),
+        Pair("autofillOptions", autofillOptions?.joinToString(", ") ?: emptyString)
     )
 
     htmlInfo?.attributes?.let { attributes ->
         attrs += attributes.map { Pair(it.first, it.second) }
     }
 
-    attrs = attrs.filter { it.second != "" && it.second != "null" }
+    attrs = attrs.filter { it.second != emptyString && it.second != "null" }
 
     sb.append("<$name")
     if (!attrs.isEmpty()) {
