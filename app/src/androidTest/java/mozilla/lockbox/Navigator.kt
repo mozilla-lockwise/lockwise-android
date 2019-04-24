@@ -277,7 +277,7 @@ class Navigator {
         lockScreen { exists() }
     }
 
-    fun gotoItemDetail(position: Int = 1) {
+    fun gotoItemDetail(position: Int = 0) {
         gotoItemList()
         gotoItemDetail_from_itemList(position)
     }

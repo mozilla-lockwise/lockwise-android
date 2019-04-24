@@ -11,6 +11,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import mozilla.lockbox.robots.fingerprintDialog
 import mozilla.lockbox.robots.uiComponents
 import mozilla.lockbox.view.UITestActivity
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -24,6 +25,7 @@ open class FingerprintDialogTest {
     @JvmField
     val activityRule = ActivityTestRule(UITestActivity::class.java)
 
+    @Ignore
     @Test
     fun testLaunchRobot() {
         uiComponents {
@@ -40,7 +42,7 @@ open class FingerprintDialogTest {
             exists()
         }
     }
-
+    @Ignore
     @Test
     fun testLaunchEnableFingerprintRobot() {
         uiComponents {
