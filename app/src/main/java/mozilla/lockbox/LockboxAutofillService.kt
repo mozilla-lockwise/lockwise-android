@@ -69,12 +69,8 @@ class LockboxAutofillService(
 
         if (parsedStructure.passwordId == null && parsedStructure.usernameId == null) {
             if (isDebug()) {
-                try {
-                    val xml = structure.getWindowNodeAt(0).rootViewNode.dump()
-                    log.debug("Autofilling failed for:\n$xml")
-                } catch (e: Exception) {
-                    log.debug("Exception: $e")
-                }
+                val xml = structure.getWindowNodeAt(0).rootViewNode.dump()
+                log.debug("Autofilling failed for:\n$xml")
             }
             callback.onSuccess(null)
             return
