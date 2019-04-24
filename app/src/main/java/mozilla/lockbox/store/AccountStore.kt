@@ -38,9 +38,10 @@ import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.SecurePreferences
 import mozilla.lockbox.support.asOptional
+import java.lang.Exception
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
-import org.mozilla.fxaclient.internal.FxaException as FxaException
+import org.mozilla.fxaclient.internal.FxaException
 
 @ExperimentalCoroutinesApi
 open class AccountStore(
@@ -123,7 +124,7 @@ open class AccountStore(
             } else {
                 try {
                     this.fxa = FirefoxAccount.fromJSONString(accountJSON)
-                } catch (e: FxaException) {
+                } catch (e: Exception) {
                     pushError(e)
                 }
                 generateLoginURL()
@@ -178,7 +179,7 @@ open class AccountStore(
             val config = Config.release(Constant.FxA.clientID, Constant.FxA.redirectUri)
             fxa = FirefoxAccount(config)
             generateLoginURL()
-        } catch (e: FxaException) {
+        } catch (e: Exception) {
             this.pushError(e)
         }
         (syncCredentials as Subject).onNext(Optional(null))

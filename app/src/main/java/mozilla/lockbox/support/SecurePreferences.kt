@@ -11,6 +11,7 @@ import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import android.util.Base64
 import mozilla.components.lib.dataprotect.Keystore
+import mozilla.lockbox.LogProvider.Companion.log
 import mozilla.lockbox.store.ContextStore
 import java.nio.charset.StandardCharsets
 
@@ -39,7 +40,8 @@ open class SecurePreferences(
             try {
                 val plain = keystore.decryptBytes(encrypted)
                 String(plain, StandardCharsets.UTF_8)
-            } catch (error: IllegalArgumentException) {
+            } catch (error: Throwable) {
+                log.error("DecryptBytes exception: ", error)
                 null
             }
         } else {
