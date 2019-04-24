@@ -7,8 +7,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- This string is a promotional or short descriptional sentence to describe the purpose of the application. -->
     <string name="app_tagline">Take your passwords everywhere.</string>
-    <!-- This is used for screenreaders to know the application logo image is currently selected. %1$S will be replaced with application name. -->
-    <string name="app_logo">%1$S Logo</string>
+    <!-- This is used for screenreaders to know the application logo image is currently selected. %1$s will be replaced with application name. -->
+    <string name="app_logo">%1$s Logo</string>
 
     <!-- This is the text on a button to cancel the current operation or request such as unlocking the application with a fingerprint. -->
     <string name="cancel">Cancel</string>
@@ -19,8 +19,8 @@
 
     <!-- This is used as the label on a button on a first-run welcome screen to sign in and start using the application -->
     <string name="welcome_start_btn">Get Started</string>
-    <!-- This provides context near a button on the first-run welcome screen to describe application requirements. Firefox Account is to be translated consistently to match use in other Firefox products. %1$S will be replaced with application name. -->
-    <string name="welcome_instructions">To use %1$S, you’ll need a\nFirefox Account with saved logins.</string>
+    <!-- This provides context near a button on the first-run welcome screen to describe application requirements. Firefox Account is to be translated consistently to match use in other Firefox products. %1$s will be replaced with application name. -->
+    <string name="welcome_instructions">To use %1$s, you’ll need a\nFirefox Account with saved logins.</string>
     <!-- This is the link on the first-run welcome screen to learn more about the requirements of the application -->
     <string name="welcome_learn_more_btn">Learn More</string>
 
@@ -124,8 +124,8 @@
 
     <!-- This is the title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application -->
      <string name="autofill">Autofill</string>
-    <!-- This is the sub-title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application. %1$S will be replaced with application name -->
-     <string name="autofill_summary">Let %1$S fill in logins for you</string>
+    <!-- This is the sub-title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application. %1$s will be replaced with application name -->
+     <string name="autofill_summary">Let %1$s fill in logins for you</string>
     <!-- This is the label a screenreader uses to inform the user they selected the autofill setting toggle -->
      <string name="autofill_description">Application autofill setting</string>
 
@@ -144,16 +144,16 @@
     <string name="unlock">Unlock with fingerprint</string>
     <!-- This is the label a screenreader uses to inform the user they selected the fingerprint setting toggle -->
     <string name="fingerprint_description">Enable fingerprint setting</string>
-    <!-- This is the title of a dialog that pops up to unlock the application when the unlock with fingerprint setting is enabled. %1$S will be replaced with application name -->
-    <string name="fingerprint_dialog_title">Unlock %1$S</string>
-    <!-- This is the message displayed to the user to unlock the application. %1$S will be replaced with application name -->
-    <string name="unlock_fallback_title">Unlock %1$S</string>
+    <!-- This is the title of a dialog that pops up to unlock the application when the unlock with fingerprint setting is enabled. %1$s will be replaced with application name -->
+    <string name="fingerprint_dialog_title">Unlock %1$s</string>
+    <!-- This is the message displayed to the user to unlock the application. %1$s will be replaced with application name -->
+    <string name="unlock_fallback_title">Unlock %1$s</string>
     <!-- This is an instructional message displayed to use the fingerprint sensor to unlock the application -->
     <string name="touch_fingerprint_sensor">Touch the fingerprint sensor.</string>
     <!-- This is the title of a dialog requesting permission for the application to unlock using the device fingerprint sensor -->
     <string name="enable_fingerprint_dialog_title">Enable Fingerprint</string>
-    <!-- This is the message requesting permission for the application to unlock using the device fingerprint sensor. %1$S will be replaced with application name -->
-    <string name="enable_fingerprint_dialog_subtitle">Give %1$S permission to unlock this app with the fingerprint sensor.</string>
+    <!-- This is the message requesting permission for the application to unlock using the device fingerprint sensor. %1$s will be replaced with application name -->
+    <string name="enable_fingerprint_dialog_subtitle">Give %1$s permission to unlock this app with the fingerprint sensor.</string>
     <!-- This is the error displayed when attempting to unlock the application with a fingerprint and the device does not recognize it as a match -->
     <string name="fingerprint_not_recognized">Not recognized</string>
     <!-- This is the success message displayed after using the fingerprint sensor to unlock the application -->
@@ -167,8 +167,8 @@
 
     <!-- This is the title of a dialog displayed to encourage the user to enable security to lock their device and the application -->
     <string name="no_device_security_title">Secure your device.</string>
-    <!-- This is a message displayed requiring the user to enable device-provided security to lock their device and the application. %1$S will be replaced with application name -->
-    <string name="no_device_security_message">In order to lock %1$S, a Pattern, PIN, or Password must be set up on your device. Without this, anyone who has your phone can access the information saved here.</string>
+    <!-- This is a message displayed requiring the user to enable device-provided security to lock their device and the application. %1$s will be replaced with application name -->
+    <string name="no_device_security_message">In order to lock %1$s, a Pattern, PIN, or Password must be set up on your device. Without this, anyone who has your phone can access the information saved here.</string>
     <!-- This is the message displayed on a button to open the device settings for the user to set up device-provided security protections -->
     <string name="set_up_security_button">Set up Now</string>
 
@@ -176,14 +176,14 @@
     <string name="profile_image_content_description">Firefox Account Profile Image</string>
     <!-- This message is displayed to inform users how to change their Firefox Account profile details on a setting screen. Firefox Account is to be translated consistently to match use in other Firefox products. -->
     <string name="account_information">To make changes to your account, log in to your Firefox Account from any browser.</string>
-    <!-- This is the text on a button to sign out and disconnect the account from the application. %1$S will be replaced with application name -->
-    <string name="disconnect_button">Disconnect %1$S</string>
-    <!-- This message is displayed near a button to sign out and disconnect the account from the application explaining this does not affect the data stored with Firefox. %1$S will be replaced with application name -->
-    <string name="disconnect_disclaimer">This removes synced entries from %1$S, but will not delete your entries from Firefox.</string>
-    <!-- This is the text on a final confirmation button to sign out and disconnect the account from the application. %1$S will be replaced with application name -->
-    <string name="disconnect_disclaimer_title">Disconnect %1$S?</string>
-    <!-- This message is displayed on a final confirmation dialog to sign out and disconnect their account from the application. Firefox Account is to be translated consistently to match use in other Firefox products. %1$S will be replaced with application name -->
-    <string name="disconnect_disclaimer_message">This will delete your Firefox Account information and all saved entries from %1$S.</string>
+    <!-- This is the text on a button to sign out and disconnect the account from the application. %1$s will be replaced with application name -->
+    <string name="disconnect_button">Disconnect %1$s</string>
+    <!-- This message is displayed near a button to sign out and disconnect the account from the application explaining this does not affect the data stored with Firefox. %1$s will be replaced with application name -->
+    <string name="disconnect_disclaimer">This removes synced entries from %1$s, but will not delete your entries from Firefox.</string>
+    <!-- This is the text on a final confirmation button to sign out and disconnect the account from the application. %1$s will be replaced with application name -->
+    <string name="disconnect_disclaimer_title">Disconnect %1$s?</string>
+    <!-- This message is displayed on a final confirmation dialog to sign out and disconnect their account from the application. Firefox Account is to be translated consistently to match use in other Firefox products. %1$s will be replaced with application name -->
+    <string name="disconnect_disclaimer_message">This will delete your Firefox Account information and all saved entries from %1$s.</string>
     <!-- This is the text on a final confirmation button to sign out and disconnect the account from the application -->
     <string name="disconnect">Disconnect</string>
     <!-- This is the hint value for an autofill box that appears when suggesting a value for a password field. It is interpolated with the user's account name. -->
@@ -200,34 +200,34 @@
 
     <!-- This is used to inform the user that there are no entries in the list -->
     <string name="no_entries_found">No Entries Found</string>
-    <!-- This explains the steps the user should take, if no saved entries are found: sign in and sync in Firefox. %1$S will be replaced with application name -->
-    <string name="no_entries_description">%1$S lets you access passwords you’ve already saved to Firefox. To
+    <!-- This explains the steps the user should take, if no saved entries are found: sign in and sync in Firefox. %1$s will be replaced with application name -->
+    <string name="no_entries_description">%1$s lets you access passwords you’ve already saved to Firefox. To
         view your entries here, you’ll need to sign in and sync in Firefox.
     </string>
-    <!-- This is the title for the biometric unlock onboarding screen. %1$S will be replaced with application name -->
-    <string name="onboarding_unlock_title">Unlock %1$S with your fingerprint.</string>
-    <!-- This is the onboarding description for enabling biometric unlock with the fingerprint sensor. %1$S will be replaced with application name -->
-    <string name="onboarding_unlock_description">Give %1$S permission to unlock this app with the fingerprint sensor.</string>
+    <!-- This is the title for the biometric unlock onboarding screen. %1$s will be replaced with application name -->
+    <string name="onboarding_unlock_title">Unlock %1$s with your fingerprint.</string>
+    <!-- This is the onboarding description for enabling biometric unlock with the fingerprint sensor. %1$s will be replaced with application name -->
+    <string name="onboarding_unlock_description">Give %1$s permission to unlock this app with the fingerprint sensor.</string>
     <!-- This is the description of the button to skip the onboarding for biometric unlock with the fingerprint sensor. -->
     <string name="onboarding_skip">Skip for now</string>
     <!-- This is the description of the fingerprint icon on the onboarding screen -->
     <string name="fingerprint_icon_description">Fingerprint image</string>
-    <!-- This is the title of the autofill onboarding screen. %1$S will be replaced with application name -->
-    <string name="onboarding_autofill_title">Let %1$S fill in your passwords for you.</string>
-    <!-- This is the onboarding description for enabling the application as an autofill provider through the device's autofill settings. %1$S will be replaced with application name -->
-    <string name="onboarding_autofill_description">Update your device’s Autofill settings to allow %1$S to fill passwords. </string>
+    <!-- This is the title of the autofill onboarding screen. %1$s will be replaced with application name -->
+    <string name="onboarding_autofill_title">Let %1$s fill in your passwords for you.</string>
+    <!-- This is the onboarding description for enabling the application as an autofill provider through the device's autofill settings. %1$s will be replaced with application name -->
+    <string name="onboarding_autofill_description">Update your device’s Autofill settings to allow %1$s to fill passwords. </string>
     <!-- This button will take you to your phone's autofill settings screen. -->
     <string name="go_to_settings">Go to settings</string>
-    <!-- This is the content description for the autofill image on the autofill onboarding screen. %1$S will be replaced with application name -->
-    <string name="onboarding_autofill_image_description">%1$S Autofill</string>
+    <!-- This is the content description for the autofill image on the autofill onboarding screen. %1$s will be replaced with application name -->
+    <string name="onboarding_autofill_image_description">%1$s Autofill</string>
     <!-- This is the title for the final onboarding screen -->
     <string name="all_set">You’re all set!</string>
     <!-- This is the button to dismiss the final onboarding screen -->
     <string name="finish">Finish</string>
     <!-- This description of the app functionality is shown on the final onboarding screen -->
     <string name="access_description">Access logins saved to Firefox from your phone</string>
-    <!-- This is an accessible content description for the security information link text. %1$S will be replaced with application name -->
-    <string name="security_content_description">This is a link to a description of security practices in %1$S.</string>
+    <!-- This is an accessible content description for the security information link text. %1$s will be replaced with application name -->
+    <string name="security_content_description">This is a link to a description of security practices in %1$s.</string>
     <!-- This description of the app security is shown on the final onboarding screen. %s will be replaced with the security link. -->
     <string name="security_description">Sync between devices with secure %s</string>
     <!-- This text is displayed as a link in the security description. -->
@@ -247,14 +247,14 @@
     <!-- This header appears above the Privacy page of the application website. -->
     <string name="privacy">Privacy</string>
 
-    <!-- This is the prompt when autofill is triggered and the application is locked. %1$S will be replaced with application name -->
-    <string name="autofill_authenticate_cta">Unlock %1$S</string>
+    <!-- This is the prompt when autofill is triggered and the application is locked. %1$s will be replaced with application name -->
+    <string name="autofill_authenticate_cta">Unlock %1$s</string>
     <!-- This is the error message when autofill is triggered but no domain is detected. This is unlikely. -->
     <string name="autofill_error_no_hostname">Unexpected hostname format</string>
-    <!-- This is the prompt when autofill is triggered, application is unlocked, and no passwords are detected. %1$S will be replaced with application name. -->
-    <string name="autofill_search_cta">Search %1$S</string>
-    <!-- This is the error message when autofill is triggered and the application is in an error state. %s refers to the localized error message -->
-    <string name="autofill_error_toast">%1$S encountered an error: %s</string>
+    <!-- This is the prompt when autofill is triggered, application is unlocked, and no passwords are detected. %1$s will be replaced with application name. -->
+    <string name="autofill_search_cta">Search %1$s</string>
+    <!-- This is the error message when autofill is triggered and the application is in an error state. %s refers to the localized error message that will be provided by the system -->
+    <string name="autofill_error_toast">%1$s encountered an error: %s</string>
 
     <!-- This is the placeholder text for an empty or null username. -->
     <string name="no_username">(no username)</string>
