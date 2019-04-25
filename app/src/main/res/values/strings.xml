@@ -253,7 +253,7 @@
     <string name="autofill_error_no_hostname">Unexpected hostname format</string>
     <!-- This is the prompt when autofill is triggered, application is unlocked, and no passwords are detected. %1$s will be replaced with application name. -->
     <string name="autofill_search_cta">Search %1$s</string>
-    <!-- This is the error message when autofill is triggered and the application is in an error state. %s refers to the localized error message that will be provided by the system -->
+    <!-- This is the error message when autofill is triggered and the application is in an error state. %1$s will be replaced with application name. %s refers to the localized error message that will be provided by the system. -->
     <string name="autofill_error_toast">%1$s encountered an error: %s</string>
 
     <!-- This is the placeholder text for an empty or null username. -->
