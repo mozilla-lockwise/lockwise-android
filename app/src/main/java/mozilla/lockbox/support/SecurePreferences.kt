@@ -14,6 +14,7 @@ import mozilla.components.lib.dataprotect.Keystore
 import mozilla.lockbox.log
 import mozilla.lockbox.store.ContextStore
 import java.nio.charset.StandardCharsets
+import javax.crypto.AEADBadTagException
 
 private const val BASE_64_FLAGS = Base64.URL_SAFE or Base64.NO_PADDING
 
@@ -40,10 +41,11 @@ open class SecurePreferences(
             try {
                 val plain = keystore.decryptBytes(encrypted)
                 String(plain, StandardCharsets.UTF_8)
-            } catch (illegalArgError: IllegalArgumentException) {
-                log.error("IllegalArgumentException exception: ", illegalArgError)
+            } catch (error: IllegalArgumentException) {
+                log.error("IllegalArgumentException exception: ", error)
                 null
-            } catch (error: Throwable) {
+            } catch (error: AEADBadTagException) {
+                // TODO: Handle this error better once the A-C issue has been triaged: android-components/issues/2841
                 log.error("DecryptBytes exception: ", error)
                 null
             }
