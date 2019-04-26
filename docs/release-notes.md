@@ -1,6 +1,19 @@
 # Release Notes
 
+## 1.0.2 (Build 3428)
+
+_Date: 2019-04-19_
+
+Second Alpha/Beta build with a fix for autofill crashes and proper version number in-app.
+
+Additional changes since 3417:
+
+- set version name (number) to 1.0.2 (#605)
+- fix for an IllegalStateException autofill crash (#548)
+
 ## 1.0.2 (Build 3417)
+
+_Date: 2019-04-19_
 
 First Alpha/Beta build with dependency updates, paving way for more crash reporting and fixes coming soon.
 

@@ -4,8 +4,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-@file:Suppress("DEPRECATION")
-
 package mozilla.lockbox.presenter
 
 import android.os.Bundle
@@ -43,13 +41,11 @@ class AppRoutePresenter(
 
     override fun onPause() {
         super.onPause()
-        activity.removeOnBackPressedCallback(backListener)
         compositeDisposable.clear()
     }
 
     override fun onResume() {
         super.onResume()
-        activity.addOnBackPressedCallback(backListener)
         routeStore.routes
             .observeOn(mainThread())
             .subscribe(this::route)

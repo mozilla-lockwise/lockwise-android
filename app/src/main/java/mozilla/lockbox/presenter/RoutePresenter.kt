@@ -46,12 +46,12 @@ abstract class RoutePresenter(
             return navHost.childFragmentManager
         }
 
-    open val currentFragment: Fragment
+    open val currentFragment: Fragment?
         get() {
-            return navHostFragmentManager.fragments.last()
+            return navHostFragmentManager.fragments.lastOrNull()
         }
 
-    val backListener = OnBackPressedCallback {
+    private val backListener = OnBackPressedCallback {
         dispatcher.dispatch(RouteAction.InternalBack)
         false
     }
@@ -161,6 +161,6 @@ abstract class RoutePresenter(
             activity.getString(R.string.unlock_fallback_title),
             activity.getString(R.string.confirm_pattern)
         )
-        currentFragment.startActivityForResult(intent, action.requestCode)
+        currentFragment?.startActivityForResult(intent, action.requestCode)
     }
 }
