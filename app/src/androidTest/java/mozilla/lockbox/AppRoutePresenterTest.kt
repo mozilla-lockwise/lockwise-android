@@ -115,12 +115,11 @@ open class AppRoutePresenterTest {
         navigator.checkAtItemList()
     }
 
-    @Ignore
     @Test
     fun testNoSecurityDialog() {
-//        navigator.gotoNoSecurityDialog()
-//        navigator.back(true)
-//        navigator.checkAtItemList()
+        navigator.gotoNoSecurityDialog()
+        navigator.back(true)
+        navigator.checkAtItemList()
     }
 
     @Ignore
