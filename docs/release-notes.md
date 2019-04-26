@@ -1,5 +1,15 @@
 # Release Notes
 
+## 1.0.3 (Build 3522)
+
+_Date: 2019-04-26_
+
+First Alpha build with crash fixes.
+
+- null fragment if fragment list unavailable (#618)
+- fix crash for null className on Android Q (#609)
+- remove deprecated calls (#591)
+
 ## 1.0.2 (Build 3428)
 
 _Date: 2019-04-19_
