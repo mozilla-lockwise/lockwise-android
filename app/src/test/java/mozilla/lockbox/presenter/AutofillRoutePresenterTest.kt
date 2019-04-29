@@ -7,6 +7,7 @@
 package mozilla.lockbox.presenter
 
 import android.app.Activity
+import android.app.KeyguardManager
 import android.content.Context
 import android.content.Intent
 import android.service.autofill.FillResponse
@@ -46,8 +47,10 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.eq
 import org.mockito.Mock
+import org.mockito.Mockito
 import org.mockito.Mockito.any
 import org.mockito.Mockito.anyString
 import org.mockito.Mockito.mock
@@ -100,7 +103,11 @@ class AutofillRoutePresenterTest {
     @Mock
     val intent: Intent = PowerMockito.mock(Intent::class.java)
 
+    @Mock
+    val keyguardManager = Mockito.mock(KeyguardManager::class.java)
+
     val callingIntent = Intent()
+    val credentialIntent = Intent()
 
     class FakeResponseBuilder : FillResponseBuilder(ParsedStructure(packageName = "meow")) {
         @Mock
@@ -186,6 +193,14 @@ class AutofillRoutePresenterTest {
         PowerMockito.whenNew(Intent::class.java).withNoArguments()
             .thenReturn(intent)
 
+        whenCalled(activity.getString(ArgumentMatchers.anyInt())).thenReturn("hello")
+        whenCalled(
+            keyguardManager.createConfirmDeviceCredentialIntent(
+                ArgumentMatchers.anyString(),
+                ArgumentMatchers.anyString()
+            )
+        ).thenReturn(credentialIntent)
+        whenCalled(activity.getSystemService(Context.KEYGUARD_SERVICE)).thenReturn(keyguardManager)
         whenCalled(childFragmentManager.fragments).thenReturn(listOf(currentFragment))
         whenCalled(navHost.childFragmentManager).thenReturn(childFragmentManager)
         whenCalled(fragmentManager.fragments).thenReturn(listOf(navHost))
@@ -236,6 +251,13 @@ class AutofillRoutePresenterTest {
 
         verify(fingerprintAuthDialogFragment).show(eq(fragmentManager), anyString())
         verify(fingerprintAuthDialogFragment).setupDialog(title, null)
+    }
+
+    @Test
+    fun `unlock fallback dialog is called`() {
+        val action = RouteAction.UnlockFallbackDialog
+        routeStore.routeStub.onNext(action)
+        verify(currentFragment).startActivityForResult(credentialIntent, action.requestCode)
     }
 
     @Test
