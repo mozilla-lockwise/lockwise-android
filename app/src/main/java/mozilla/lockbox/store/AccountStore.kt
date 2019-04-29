@@ -124,7 +124,7 @@ open class AccountStore(
             } else {
                 try {
                     this.fxa = FirefoxAccount.fromJSONString(accountJSON)
-                } catch (e: Exception) {
+                } catch (e: FxaException) {
                     pushError(e)
                 }
                 generateLoginURL()
@@ -179,7 +179,7 @@ open class AccountStore(
             val config = Config.release(Constant.FxA.clientID, Constant.FxA.redirectUri)
             fxa = FirefoxAccount(config)
             generateLoginURL()
-        } catch (e: Exception) {
+        } catch (e: FxaException) {
             this.pushError(e)
         }
         (syncCredentials as Subject).onNext(Optional(null))
