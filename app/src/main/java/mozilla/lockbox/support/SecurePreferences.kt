@@ -15,7 +15,6 @@ import mozilla.lockbox.log
 import mozilla.lockbox.store.ContextStore
 import java.nio.charset.StandardCharsets
 import java.security.GeneralSecurityException
-import javax.crypto.AEADBadTagException
 
 private const val BASE_64_FLAGS = Base64.URL_SAFE or Base64.NO_PADDING
 
