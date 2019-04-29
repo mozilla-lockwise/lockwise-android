@@ -15,7 +15,7 @@ import mozilla.lockbox.store.ContextStore
 import java.security.SecureRandom
 
 /**
- * @param keyStrength The strength ofthe generated key in bits
+ * @param keyStrength The strength of the generated key in bits
  */
 internal fun generateEncryptionKey(keyStrength: Int): String {
     val bytes = ByteArray(keyStrength / 8)

@@ -88,7 +88,7 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:$recyclerview_version"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.exifinterface:exifinterface:1.0.0'
-    implementation "androidx.constraintlayout:constraintlayout:2.0.0-alpha5"
+    implementation "androidx.constraintlayout:constraintlayout:${constraintlayout_version}"
     implementation "com.jakewharton.rxbinding2:rxbinding:${rxbinding_version}"
     implementation "com.jakewharton.rxbinding2:rxbinding-design-kotlin:${rxbinding_version}"
     implementation "com.jakewharton.rxbinding2:rxbinding-appcompat-v7-kotlin:${rxbinding_version}"
@@ -121,8 +121,8 @@ dependencies {
     implementation 'com.android.installreferrer:installreferrer:1.0'
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     testImplementation 'junit:junit:4.12'
-    testImplementation 'org.mockito:mockito-core:2.22.0'
-    testImplementation 'org.robolectric:robolectric:4.0.2'
+    testImplementation 'org.mockito:mockito-core:2.24.5'
+    testImplementation 'org.robolectric:robolectric:4.1'
     testImplementation "org.powermock:powermock-module-junit4:2.0.0-beta.5"
     testImplementation "org.powermock:powermock-api-mockito2:2.0.0-beta.5"
     testImplementation "org.junit.jupiter:junit-jupiter-api:5.3.1"

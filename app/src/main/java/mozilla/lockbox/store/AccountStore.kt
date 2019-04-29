@@ -40,7 +40,7 @@ import mozilla.lockbox.support.SecurePreferences
 import mozilla.lockbox.support.asOptional
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
-import org.mozilla.fxaclient.internal.FxaException as FxaException
+import org.mozilla.fxaclient.internal.FxaException
 
 @ExperimentalCoroutinesApi
 open class AccountStore(
