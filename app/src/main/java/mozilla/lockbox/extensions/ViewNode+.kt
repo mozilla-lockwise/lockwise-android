@@ -4,8 +4,6 @@ import android.annotation.TargetApi
 import android.app.assist.AssistStructure
 import android.os.Build
 
-private const val emptyString = ""
-
 @TargetApi(Build.VERSION_CODES.O)
 fun AssistStructure.ViewNode.dump(): String {
     val sb = StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
@@ -14,39 +12,23 @@ fun AssistStructure.ViewNode.dump(): String {
 
 @TargetApi(Build.VERSION_CODES.O)
 private fun AssistStructure.ViewNode.dumpNode(sb: StringBuilder = StringBuilder()): StringBuilder {
+
     val name = htmlInfo?.tag ?: className?.split('.')?.last() ?: "unknown"
 
-    var attrs: List<Pair<String, String>> = listOf(
+    val viewAttrs = listOf(
         "idEntry" to idEntry,
         "idPackage" to idPackage,
         "idType" to idType,
         "webDomain" to webDomain,
         "hint" to hint,
-        "autofillValue" to
-            if (autofillValue != null && autofillValue?.isText!!) {
-                autofillValue!!.textValue.toString()
-            } else {
-                emptyString
-            },
-        "autofillHints" to
-            if (autofillHints.isNullOrEmpty()) {
-                emptyString
-            } else {
-                autofillHints!!.joinToString(", ")
-            },
-        "autofillOptions" to
-            if (autofillOptions.isNullOrEmpty()) {
-                emptyString
-            } else {
-                autofillOptions!!.joinToString(", ")
-            }
+        "autofillValue" to autofillValue?.let { if (it.isText) it.textValue.toString() else null },
+        "autofillHints" to autofillHints?.joinToString(", "),
+        "autofillOptions" to autofillOptions?.joinToString(", ")
     )
 
-    htmlInfo?.attributes?.let { attributes ->
-        attrs += attributes.map { it.first to it.second }
-    }
+    val htmlAttrs = htmlInfo?.attributes?.map { it.first to it.second } ?: emptyList()
 
-    attrs = attrs.filter { it.first != emptyString && it.second != "null" }
+    val attrs = (viewAttrs + htmlAttrs).filter { it.second != null }
 
     sb.append("<$name")
     if (!attrs.isEmpty()) {
