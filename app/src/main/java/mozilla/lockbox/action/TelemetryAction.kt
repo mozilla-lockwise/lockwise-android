@@ -53,7 +53,8 @@ enum class TelemetryEventMethod {
     autofill_multiple,
     autofill_cancel,
     autofill_error,
-    autofill_filter
+    autofill_filter,
+    autofill_add
 }
 
 enum class TelemetryEventObject {

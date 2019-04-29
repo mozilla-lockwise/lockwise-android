@@ -22,6 +22,7 @@ import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.log
+import mozilla.lockbox.model.AutofillItemViewModel
 import mozilla.lockbox.model.SyncCredentials
 import mozilla.lockbox.support.AutoLockSupport
 import mozilla.lockbox.support.DataStoreSupport
@@ -53,7 +54,7 @@ open class DataStore(
 
     internal val compositeDisposable = CompositeDisposable()
     private val stateSubject = ReplaySubject.createWithSize<State>(1)
-    private val listSubject: BehaviorRelay<List<ServerPassword>> = BehaviorRelay.createDefault(emptyList())
+    private var listSubject: BehaviorRelay<List<ServerPassword>> = BehaviorRelay.createDefault(emptyList())
 
     open val state: Observable<State> = stateSubject
     open val syncState: Observable<SyncState> = ReplaySubject.create()
@@ -96,6 +97,7 @@ open class DataStore(
                     is DataStoreAction.Touch -> touch(action.id)
                     is DataStoreAction.Reset -> reset()
                     is DataStoreAction.UpdateCredentials -> updateCredentials(action.syncCredentials)
+                    is DataStoreAction.Add -> add(action.item)
                 }
             }
             .addTo(compositeDisposable)
@@ -126,6 +128,22 @@ open class DataStore(
         return list.map { items ->
             items.findLast { item -> item.id == id }.asOptional()
         }
+    }
+
+    private fun add(item: AutofillItemViewModel) {
+//         retrieve the save request
+//         add as ServerPassword to list
+
+        val newCredentials = ServerPassword(
+            id = item.autofillId,
+            hostname = item.hostName,
+            username = item.username ?: "",
+            password = item.password ?: ""
+        )
+
+        // nope
+        val newList = listSubject.value + newCredentials
+        listSubject = BehaviorRelay.createDefault(newList)
     }
 
     private fun touch(id: String) {

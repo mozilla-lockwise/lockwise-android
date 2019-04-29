@@ -4,6 +4,7 @@
 
 package mozilla.lockbox
 
+import android.app.assist.AssistStructure
 import android.os.Build
 import android.os.CancellationSignal
 import android.service.autofill.AutofillService
@@ -11,6 +12,7 @@ import android.service.autofill.FillCallback
 import android.service.autofill.FillRequest
 import android.service.autofill.SaveCallback
 import android.service.autofill.SaveRequest
+import android.view.autofill.AutofillId
 import androidx.annotation.RequiresApi
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.Observables
@@ -18,6 +20,7 @@ import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.AutofillAction
 import mozilla.lockbox.action.LifecycleAction
+import mozilla.lockbox.autofill.ClientParser
 import mozilla.lockbox.autofill.FillResponseBuilder
 import mozilla.lockbox.autofill.ParsedStructure
 import mozilla.lockbox.autofill.ParsedStructureBuilder
@@ -32,6 +35,9 @@ import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.PublicSuffixSupport
 import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.support.isDebug
+import mozilla.lockbox.action.DataStoreAction
+import mozilla.lockbox.model.AutofillDataViewModel
+import mozilla.lockbox.model.AutofillItemViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @ExperimentalCoroutinesApi
@@ -44,6 +50,7 @@ class LockboxAutofillService(
 
     private var compositeDisposable = CompositeDisposable()
     private val pslSupport = PublicSuffixSupport.shared
+    private lateinit var parsedStructure: ParsedStructure
 
     override fun onConnected() {
         dispatcher.dispatch(LifecycleAction.AutofillStart)
@@ -64,7 +71,7 @@ class LockboxAutofillService(
         }
 
         val nodeNavigator = ViewNodeNavigator(structure, activityPackageName)
-        val parsedStructure = ParsedStructureBuilder(nodeNavigator).build() as ParsedStructure
+        parsedStructure = ParsedStructureBuilder(nodeNavigator).build() as ParsedStructure
 
         if (parsedStructure.passwordId == null && parsedStructure.usernameId == null) {
             if (isDebug()) {
@@ -120,6 +127,9 @@ class LockboxAutofillService(
             }
             .filterNotNull()
             .subscribe({
+                // either call onSuccess (is there a failure path? or is onSuccess like "complete"?)
+                // or onSaveRequest
+
                 callback.onSuccess(it.value)
             }, {
                 log.error(throwable = it)
@@ -127,6 +137,78 @@ class LockboxAutofillService(
             .addTo(compositeDisposable)
     }
 
-    // to be implemented in issue #217
-    override fun onSaveRequest(request: SaveRequest, callback: SaveCallback) {}
+    @RequiresApi(Build.VERSION_CODES.P)
+    override fun onSaveRequest(request: SaveRequest, callback: SaveCallback) {
+        log.info("Save request values: $request")
+
+        val clientState = request.clientState
+        log.info("Bundle: $clientState")
+
+        val structure = request.fillContexts.last().structure
+        val activityPackageName = structure.activityComponent.packageName
+        if (this.packageName == activityPackageName) {
+            callback.onSuccess(null)
+            return
+        }
+
+        // get ViewNode
+        val nodeNavigator = ViewNodeNavigator(structure, activityPackageName)
+        parsedStructure = ParsedStructureBuilder(nodeNavigator).build() as ParsedStructure
+
+        // get the ids we already know
+        val usernameId: AutofillId? = clientState?.getParcelable("usernameId")
+        val passwordId: AutofillId? = clientState?.getParcelable("passwordId")
+
+        // find the matching viewnodes
+        val usernameNode = findNodeByAutofillId(structure, usernameId)
+        val passwordNode = findNodeByAutofillId(structure, passwordId)
+
+        // find the username and password values
+        val username = usernameNode.autofillValue?.textValue.toString()
+        val password = passwordNode.autofillValue?.textValue.toString()
+
+        log.info("ParsedStructure: $parsedStructure")
+
+        // questions:
+        // what do we want to use as the autofill id?
+        val autofillItem = AutofillItemViewModel(
+            autofillId = activityPackageName,
+            hostName = parsedStructure.webDomain ?: "",
+            username = username,
+            password = password
+        )
+
+        dispatcher.dispatch(DataStoreAction.Add(autofillItem))
+        callback.onSuccess()
+    }
+
+    // better way to do this...
+    private fun findNodeByAutofillId(structure: AssistStructure, id: AutofillId?): AssistStructure.ViewNode {
+        if(id == null) {
+            log.info("AutofillId is null")
+        }
+
+        val nodes = structure.windowNodeCount
+
+        var index = 0
+        var node: AssistStructure.ViewNode? = null
+        while (index < nodes && node == null) {
+            node = parseNode(structure.getWindowNodeAt(index).rootViewNode, id)
+            index++
+        }
+
+        return node!!
+    }
+
+    private fun parseNode(root: AssistStructure.ViewNode, id: AutofillId?): AssistStructure.ViewNode {
+        if (root.autofillId == id) {
+            return root
+        }
+        else {
+            val childrenSize = root.childCount
+            for (i in 0 until childrenSize) {
+                parseNode(root.getChildAt(i))
+            }
+        }
+    }
 }
