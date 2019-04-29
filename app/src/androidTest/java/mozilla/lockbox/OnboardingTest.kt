@@ -57,7 +57,6 @@ open class OnboardingTest {
         autofillOnboardingScreen { tapSkip() }
         navigator.checkAtOnboardingConfirmation()
         onboardingConfirmationScreen { clickFinish() }
-        navigator.disconnectAccount()
     }
 
     @Ignore
