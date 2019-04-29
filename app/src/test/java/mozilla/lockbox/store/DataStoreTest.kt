@@ -103,8 +103,32 @@ class DataStoreTest : DisposingTest() {
         Assert.assertEquals(subject.syncStateSubject.value, DataStore.SyncState.NotSyncing)
     }
 
+    fun testAddNewEntry() {
+        // set up unlocked store
+        val stateIterator = this.subject.state.blockingIterable().iterator()
+        val listIterator = this.subject.list.blockingIterable().iterator()
+        Assert.assertEquals(0, listIterator.next().size)
+
+        dispatcher.dispatch(DataStoreAction.Unlock)
+        Assert.assertEquals(State.Unlocked, stateIterator.next())
+        Assert.assertEquals(10, listIterator.next().size)
+        clearInvocations(support.storage)
+
+        // create new entry and add
+        val newEntry = ServerPassword(
+            id = "",
+            hostname = "cats.com",
+            username = "feline",
+            password = "iLUVkatz",
+            formSubmitURL = "cats.com"
+        )
+        dispatcher.dispatch(DataStoreAction.Add(newEntry))
+
+        verify(support.storage).add(newEntry)
+    }
+
     @Test
-    fun testLockUnlock_shouldSync() {
+    fun testLockUnlock() {
         val stateIterator = this.subject.state.blockingIterable().iterator()
         val listIterator = this.subject.list.blockingIterable().iterator()
         Assert.assertEquals(0, listIterator.next().size)

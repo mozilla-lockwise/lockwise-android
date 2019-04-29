@@ -57,6 +57,7 @@ open class DataStore(
     }
 
     internal val compositeDisposable = CompositeDisposable()
+
     private val stateSubject = ReplayRelay.createWithSize<State>(1)
     @VisibleForTesting
     val syncStateSubject: BehaviorRelay<SyncState> = BehaviorRelay.createDefault(SyncState.NotSyncing)
@@ -110,6 +111,7 @@ open class DataStore(
                     is DataStoreAction.UpdateSyncCredentials -> updateCredentials(action.syncCredentials)
                     is DataStoreAction.Delete -> delete(action.item)
                     is DataStoreAction.UpdateItemDetail -> update(action.item)
+                    is DataStoreAction.Add -> add(action.item)
                 }
             }
             .addTo(compositeDisposable)
@@ -181,6 +183,17 @@ open class DataStore(
             Optional(
                 items.findLast { item -> item.id == id }
             )
+        }
+    }
+
+    private fun add(item: ServerPassword) {
+        val backend = this.backend
+        if (!backend.isLocked()) {
+            backend.add(item)
+                .asSingle(coroutineContext)
+                .map { Unit }
+                .subscribe(this::updateList, this::pushError)
+                .addTo(compositeDisposable)
         }
     }
 

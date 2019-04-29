@@ -66,6 +66,7 @@ object Constant {
         const val clearClipboardIntent = "mozilla.lockbox.intent.CLEAR_CLIPBOARD"
         const val clipboardDirtyExtra = "clipboard-dirty"
         const val accessToken = "access-token"
+        const val parsedStructure = "parsed-structure"
     }
 
     object FingerprintTimeout {

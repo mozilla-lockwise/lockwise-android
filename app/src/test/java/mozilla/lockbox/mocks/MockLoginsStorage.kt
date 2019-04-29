@@ -17,7 +17,7 @@ import mozilla.lockbox.support.createDummyItem
 import org.mockito.Mockito
 
 open class MockLoginsStorage : LoginsStorage {
-    private val all = MutableList(10) { createDummyItem() }
+    private var all = MutableList(10) { createDummyItem() }
 
     private var _locked = true
 
@@ -32,6 +32,7 @@ open class MockLoginsStorage : LoginsStorage {
     }
 
     override fun add(login: ServerPassword): String {
+        all.add(login)
         return ""
     }
 

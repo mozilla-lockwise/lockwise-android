@@ -4,8 +4,10 @@ import android.annotation.TargetApi
 import android.content.Context
 import android.content.IntentSender
 import android.os.Build
+import android.os.Bundle
 import android.service.autofill.Dataset
 import android.service.autofill.FillResponse
+import android.service.autofill.SaveInfo
 import android.view.autofill.AutofillId
 import android.view.autofill.AutofillValue
 import android.widget.RemoteViews
@@ -14,6 +16,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.R
 import mozilla.lockbox.model.titleFromHostname
+import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.PublicSuffixSupport
 import mozilla.lockbox.support.filter
 
@@ -22,6 +25,24 @@ import mozilla.lockbox.support.filter
 open class FillResponseBuilder(
     internal val parsedStructure: ParsedStructure
 ) {
+    private val saveResponse: SaveInfo
+        get() {
+            return SaveInfo.Builder(
+                SaveInfo.SAVE_DATA_TYPE_PASSWORD,
+                arrayOf(parsedStructure.password)
+                    .filter { it != null }
+                    .toTypedArray()
+            )
+                .build()
+        }
+
+    private val clientState: Bundle
+        get() {
+            val bundle = Bundle()
+            bundle.putParcelable(Constant.Key.parsedStructure, parsedStructure)
+            return bundle
+        }
+
     fun buildAuthenticationFillResponse(context: Context): FillResponse {
         val responseBuilder = FillResponse.Builder()
 
@@ -31,13 +52,16 @@ open class FillResponseBuilder(
         presentation.setTextViewText(R.id.autofill_cta, authenticationText)
 
         val sender = IntentBuilder.getAuthIntentSender(context, this)
+
         responseBuilder.setAuthentication(autofillIds(), sender, presentation)
+        responseBuilder.setSaveInfo(saveResponse)
+        responseBuilder.setClientState(clientState)
 
         return responseBuilder.build()
     }
 
     private fun autofillIds(): Array<AutofillId> {
-        return arrayOf(parsedStructure.usernameId, parsedStructure.passwordId)
+        return arrayOf(parsedStructure.username, parsedStructure.password)
             .filter { it != null }
             .map { it!! }
             .toTypedArray()
@@ -49,6 +73,8 @@ open class FillResponseBuilder(
         addSearchFallback(context) { sender, presentation ->
             builder.setAuthentication(autofillIds(), sender, presentation)
         }
+        builder.setSaveInfo(saveResponse)
+        builder.setClientState(clientState)
         return builder.build()
     }
 
@@ -90,6 +116,8 @@ open class FillResponseBuilder(
             builder.addDataset(datasetBuilder.build())
         }
 
+        builder.setSaveInfo(saveResponse)
+        builder.setClientState(clientState)
         return builder.build()
     }
 
@@ -102,7 +130,7 @@ open class FillResponseBuilder(
         val title = titleFromHostname(credential.hostname)
         val username = credential.username ?: context.getString(R.string.no_username)
 
-        parsedStructure.usernameId?.let { id ->
+        parsedStructure.username?.let { id ->
             val presentation = RemoteViews(context.packageName, R.layout.autofill_item)
                 .apply {
                     setTextViewText(R.id.autofillValue, username)
@@ -116,7 +144,7 @@ open class FillResponseBuilder(
             )
         }
 
-        parsedStructure.passwordId?.let { id ->
+        parsedStructure.password?.let { id ->
             val presentation = RemoteViews(context.packageName, R.layout.autofill_item)
                 .apply {
                     setTextViewText(R.id.autofillValue, context.getString(R.string.password_for, username))

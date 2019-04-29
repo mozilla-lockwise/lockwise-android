@@ -89,4 +89,6 @@ sealed class DataStoreAction(
             TelemetryEventMethod.edit,
             TelemetryEventObject.update_credential
         )
+
+    data class Add(val item: ServerPassword) : DataStoreAction(TelemetryEventMethod.autofill_add, TelemetryEventObject.datastore)
 }

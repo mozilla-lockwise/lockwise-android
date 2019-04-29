@@ -8,19 +8,18 @@ import mozilla.lockbox.autofill.ViewNodeNavigator
 import org.junit.Assert
 import org.junit.Test
 import org.mockito.Mock
-import org.mockito.Mockito
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when` as whenCalled
 
 class ParsedStructureTest {
     @Mock
-    val assistStructure: AssistStructure = Mockito.mock(AssistStructure::class.java)
+    val assistStructure: AssistStructure = mock(AssistStructure::class.java)
 
     @Mock
-    val windowNode: AssistStructure.WindowNode = Mockito.mock(AssistStructure.WindowNode::class.java)
+    val windowNode: AssistStructure.WindowNode = mock(AssistStructure.WindowNode::class.java)
 
     @Mock
-    val rootViewNode = Mockito.mock(AssistStructure.ViewNode::class.java)
+    val rootViewNode = mock(AssistStructure.ViewNode::class.java)
 
     @Test
     fun usernameAndPasswordAutofillHintsOnEditText() {
@@ -31,6 +30,7 @@ class ParsedStructureTest {
         whenCalled(usernameViewNode.autofillHints).thenReturn(arrayOf(View.AUTOFILL_HINT_USERNAME))
         whenCalled(usernameViewNode.autofillId).thenReturn(usernameId)
         whenCalled(usernameViewNode.className).thenReturn("android.widget.EditText")
+
         val passwordViewNode = mock(AssistStructure.ViewNode::class.java)
         whenCalled(passwordViewNode.autofillHints).thenReturn(arrayOf(View.AUTOFILL_HINT_PASSWORD))
         whenCalled(passwordViewNode.autofillId).thenReturn(passwordId)
@@ -48,8 +48,8 @@ class ParsedStructureTest {
         val navigator = ViewNodeNavigator(assistStructure, "caller-package-name")
         val subject = ParsedStructureBuilder(navigator).build()
 
-        Assert.assertEquals(usernameId, subject.usernameId)
-        Assert.assertEquals(passwordId, subject.passwordId)
+        Assert.assertEquals(usernameId, subject.username)
+        Assert.assertEquals(passwordId, subject.password)
     }
 
     @Test
@@ -78,8 +78,8 @@ class ParsedStructureTest {
         val navigator = ViewNodeNavigator(assistStructure, "caller-package-name")
         val subject = ParsedStructureBuilder(navigator).build()
 
-        Assert.assertNull(subject.usernameId)
-        Assert.assertNull(subject.passwordId)
+        Assert.assertNull(subject.username)
+        Assert.assertNull(subject.password)
     }
 
     @Test
@@ -108,8 +108,8 @@ class ParsedStructureTest {
         val navigator = ViewNodeNavigator(assistStructure, "caller-package-name")
         val subject = ParsedStructureBuilder(navigator).build()
 
-        Assert.assertEquals(usernameId, subject.usernameId)
-        Assert.assertEquals(passwordId, subject.passwordId)
+        Assert.assertEquals(usernameId, subject.username)
+        Assert.assertEquals(passwordId, subject.password)
     }
 
     @Test
@@ -149,7 +149,7 @@ class ParsedStructureTest {
         val navigator = ViewNodeNavigator(assistStructure, "caller-package-name")
         val subject = ParsedStructureBuilder(navigator).build()
 
-        Assert.assertEquals(usernameId, subject.usernameId)
-        Assert.assertEquals(passwordId, subject.passwordId)
+        Assert.assertEquals(usernameId, subject.username)
+        Assert.assertEquals(passwordId, subject.password)
     }
 }

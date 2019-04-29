@@ -16,8 +16,11 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.action.AutofillAction
+import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
+import mozilla.lockbox.autofill.AutofillTextValueBuilder
 import mozilla.lockbox.autofill.FillResponseBuilder
 import mozilla.lockbox.autofill.ParsedStructure
 import mozilla.lockbox.autofill.ParsedStructureBuilder
@@ -29,7 +32,9 @@ import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.AutofillStore
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.TelemetryStore
+
 import mozilla.lockbox.support.FxASyncDataStoreSupport
+import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.PublicSuffixSupport
 import mozilla.lockbox.support.asOptional
@@ -73,7 +78,7 @@ class LockboxAutofillService(
         val nodeNavigator = ViewNodeNavigator(structure, activityPackageName)
         val parsedStructure = ParsedStructureBuilder(nodeNavigator).build() as ParsedStructure
 
-        if (parsedStructure.passwordId == null && parsedStructure.usernameId == null) {
+        if (parsedStructure.password == null && parsedStructure.username == null) {
             if (isDebug()) {
                 val xml = structure.getWindowNodeAt(0).rootViewNode.dump()
                 log.debug("Autofilling failed for:\n$xml")
@@ -142,6 +147,33 @@ class LockboxAutofillService(
             .addTo(compositeDisposable)
     }
 
-    // to be implemented in issue #217
-    override fun onSaveRequest(request: SaveRequest, callback: SaveCallback) {}
+    // won't be in the list until we sync
+    override fun onSaveRequest(request: SaveRequest, callback: SaveCallback) {
+        val clientState = request.clientState
+        clientState?.classLoader = ParsedStructure::class.java.classLoader
+        val structure = request.fillContexts.last().structure
+        val parsedStructure = clientState?.getParcelable<ParsedStructure>(Constant.Key.parsedStructure)
+        val nodeNavigator = ViewNodeNavigator(structure, parsedStructure?.packageName ?: "")
+
+        val autofillItem = AutofillTextValueBuilder(parsedStructure!!, nodeNavigator).build()
+
+        pslSupport.fromPackageName(parsedStructure.packageName)
+            .map {
+                ServerPassword(
+                    "",
+                    it.fullDomain,
+                    autofillItem.username,
+                    autofillItem.password ?: "",
+                    formSubmitURL = it.fullDomain
+                )
+            }
+            .map {
+                DataStoreAction.Add(it)
+            }
+            .doOnNext {
+                callback.onSuccess()
+            }
+            .subscribe(dispatcher::dispatch)
+            .addTo(compositeDisposable)
+    }
 }

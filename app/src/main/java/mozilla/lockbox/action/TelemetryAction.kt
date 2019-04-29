@@ -48,13 +48,14 @@ enum class TelemetryEventMethod {
     list_update_error,
     touch,
     update_credentials,
+    delete,
+    edit,
     autofill_single,
     autofill_multiple,
     autofill_cancel,
     autofill_error,
     autofill_filter,
-    delete,
-    edit
+    autofill_add,
 }
 
 enum class TelemetryEventObject {
