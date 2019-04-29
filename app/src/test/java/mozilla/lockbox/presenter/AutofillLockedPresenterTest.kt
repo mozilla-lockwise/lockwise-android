@@ -10,37 +10,25 @@ package mozilla.lockbox.presenter
 
 import android.app.Activity
 import android.app.Activity.RESULT_OK
-import android.app.KeyguardManager
-import android.content.Context
-import android.hardware.fingerprint.FingerprintManager
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
-import junit.framework.Assert
 import mozilla.lockbox.DisposingTest
 import mozilla.lockbox.action.AutofillAction
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.RouteAction
-import mozilla.lockbox.action.UnlockingAction
-import mozilla.lockbox.extensions.assertLastValue
-import mozilla.lockbox.extensions.assertLastValueMatches
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.LockedStore
 import mozilla.lockbox.store.SettingStore
-import org.hamcrest.CoreMatchers.instanceOf
-import org.hamcrest.Matcher
-import org.hamcrest.Matchers
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentMatchers.eq
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
@@ -56,15 +44,7 @@ class AutofillLockedPresenterTest : DisposingTest() {
         override val onActivityResult: Observable<Pair<Int, Int>>
             get() = activityResult
     }
-//
-//    open class FakeFingerprintStore : FingerprintStore() {
-//        override var fingerprintManager: FingerprintManager? =
-//            RuntimeEnvironment.application.getSystemService(Context.FINGERPRINT_SERVICE) as? FingerprintManager
-//
-//        override var keyguardManager: KeyguardManager =
-//            Mockito.spy(RuntimeEnvironment.application.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager)
-//    }
-//
+
     class FakeLockedStore : LockedStore() {
         val onAuth = PublishSubject.create<FingerprintAuthAction>()
         override val onAuthentication: Observable<FingerprintAuthAction>
@@ -86,14 +66,11 @@ class AutofillLockedPresenterTest : DisposingTest() {
     private val lockedStore = FakeLockedStore()
     private val dispatcher = Dispatcher()
     private val dispatcherObserver: TestObserver<Action> = TestObserver.create()
-//    private lateinit var context: Context
 
     val subject = AutofillLockedPresenter(view, dispatcher, fingerprintStore, lockedStore, settingStore)
 
     @Before
     fun setUp() {
-//        context = RuntimeEnvironment.application.applicationContext
-//        fingerprintStore.injectContext(context)
         dispatcher.register.subscribe(dispatcherObserver)
         subject.onViewReady()
     }
@@ -128,6 +105,6 @@ class AutofillLockedPresenterTest : DisposingTest() {
         Mockito.`when`(fingerprintStore.isKeyguardDeviceSecure).thenReturn(true)
 
         settingStore.unlockWithFingerprintStub.onNext(true)
-        dispatcherObserver.assertValueCount(1)
+        dispatcherObserver.assertValue { it is RouteAction.DialogFragment.FingerprintDialog }
     }
 }
