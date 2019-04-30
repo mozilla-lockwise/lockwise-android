@@ -14,6 +14,7 @@ import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import mozilla.lockbox.DisposingTest
+import mozilla.lockbox.R
 import mozilla.lockbox.action.AutofillAction
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.FingerprintAuthAction
@@ -29,6 +30,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
+import org.mockito.Mockito.verify
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
@@ -108,7 +110,8 @@ class AutofillLockedPresenterTest : DisposingTest() {
         Mockito.`when`(fingerprintStore.isKeyguardDeviceSecure).thenReturn(true)
 
         settingStore.unlockWithFingerprintStub.onNext(true)
-        val resultAction = dispatchIterator.next()
-        Assert.assertTrue(resultAction is RouteAction.DialogFragment.FingerprintDialog)
+        val resultAction = dispatchIterator.next() as RouteAction.DialogFragment.FingerprintDialog
+        verify(fingerprintStore).isFingerprintAuthAvailable
+        Assert.assertEquals(resultAction.dialogTitle, R.string.fingerprint_dialog_title)
     }
 }
