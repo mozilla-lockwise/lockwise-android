@@ -23,6 +23,7 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.LockedStore
 import mozilla.lockbox.store.SettingStore
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -101,10 +102,13 @@ class AutofillLockedPresenterTest : DisposingTest() {
 
     @Test
     fun `unlock when fingerprint auth is available and enabled`() {
+        val dispatchIterator = dispatcher.register.blockingIterable().iterator()
+
         Mockito.`when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(true)
         Mockito.`when`(fingerprintStore.isKeyguardDeviceSecure).thenReturn(true)
 
         settingStore.unlockWithFingerprintStub.onNext(true)
-        dispatcherObserver.assertValue { it is RouteAction.DialogFragment.FingerprintDialog }
+        val resultAction = dispatchIterator.next()
+        Assert.assertTrue(resultAction is RouteAction.DialogFragment.FingerprintDialog)
     }
 }
