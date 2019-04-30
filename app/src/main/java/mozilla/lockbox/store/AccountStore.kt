@@ -24,9 +24,9 @@ import kotlinx.coroutines.rx2.asSingle
 import mozilla.appservices.fxaclient.FxaException
 import mozilla.components.concept.sync.AccessTokenInfo
 import mozilla.components.concept.sync.Avatar
+import mozilla.components.concept.sync.Profile
 import mozilla.components.service.fxa.Config
 import mozilla.components.service.fxa.FirefoxAccount
-import mozilla.components.concept.sync.Profile
 import mozilla.lockbox.action.AccountAction
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
