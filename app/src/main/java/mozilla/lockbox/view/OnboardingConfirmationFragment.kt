@@ -63,6 +63,8 @@ class OnboardingConfirmationFragment : Fragment(), OnboardingConfirmationView {
 
         view.encryptionText.text = spannableSecurityText
         view.encryptionText.movementMethod = LinkMovementMethod.getInstance()
+        val appName = getString(R.string.app_name)
+        view.encryptionText.contentDescription = getString(R.string.security_content_description, appName)
     }
 
     override val finishClicks: Observable<Unit>

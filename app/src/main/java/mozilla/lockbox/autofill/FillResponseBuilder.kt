@@ -26,7 +26,8 @@ open class FillResponseBuilder(
         val responseBuilder = FillResponse.Builder()
 
         val presentation = RemoteViews(context.packageName, R.layout.autofill_cta_presentation)
-        presentation.setTextViewText(R.id.autofill_cta, context.getString(R.string.autofill_authenticate_cta))
+        val appName = context.getString(R.string.app_name)
+        presentation.setTextViewText(R.id.autofill_cta, context.getString(R.string.autofill_authenticate_cta, appName))
 
         val sender = IntentBuilder.getAuthIntentSender(context, this)
         responseBuilder.setAuthentication(autofillIds(), sender, presentation)
@@ -55,7 +56,8 @@ open class FillResponseBuilder(
         presentationAdder: (IntentSender, RemoteViews) -> Unit
     ) {
         val presentation = RemoteViews(context.packageName, R.layout.autofill_cta_presentation).apply {
-            setTextViewText(R.id.autofill_cta, context.getString(R.string.autofill_search_cta))
+            val appName = context.getString(R.string.app_name)
+            setTextViewText(R.id.autofill_cta, context.getString(R.string.autofill_search_cta, appName))
         }
 
         // See https://github.com/mozilla-lockbox/lockbox-android/issues/421

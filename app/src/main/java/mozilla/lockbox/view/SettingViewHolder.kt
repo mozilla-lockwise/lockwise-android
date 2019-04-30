@@ -70,7 +70,13 @@ class ToggleSettingViewHolder(val view: View) : SettingViewHolder(view) {
         set(@StringRes value) {
             field = value
             if (value != R.string.empty_string) {
-                view.subtitle.setText(value)
+                val string = view.context.resources.getString(value)
+                if (string.contains("%1\$s")) {
+                    val appName = view.context.resources.getString(R.string.app_name)
+                    view.subtitle.text = String.format(string, appName)
+                } else {
+                    view.subtitle.setText(value)
+                }
                 view.subtitle.visibility = View.VISIBLE
             } else {
                 view.subtitle.visibility = View.GONE
