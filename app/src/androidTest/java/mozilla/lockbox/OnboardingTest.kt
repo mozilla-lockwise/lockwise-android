@@ -14,6 +14,7 @@ import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.BeforeTest
 
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
@@ -24,6 +25,12 @@ open class OnboardingTest {
     @Rule
     @JvmField
     val activityRule: ActivityTestRule<RootActivity> = ActivityTestRule(RootActivity::class.java)
+
+    @BeforeTest
+    fun setUp() {
+        navigator.disconnectAccount()
+    }
+
     @Ignore
     @Test
     fun fingerprintSkipButtonNavigatesToItemList() {
@@ -49,8 +56,10 @@ open class OnboardingTest {
         navigator.gotoAutofillOnboarding()
         autofillOnboardingScreen { tapSkip() }
         navigator.checkAtOnboardingConfirmation()
+        onboardingConfirmationScreen { clickFinish() }
     }
 
+    @Ignore
     @Test
     fun autofillGoToSettingsNavigatesToSystemSettings() {
         navigator.gotoAutofillOnboarding()
