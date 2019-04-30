@@ -6,32 +6,46 @@
 
 package mozilla.lockbox.store
 
-import android.content.ClipData
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.content.ClipboardManager
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import mozilla.lockbox.DisposingTest
 import mozilla.lockbox.action.ClipboardAction
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.support.LockingSupport
 import org.junit.Assert
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers
 import org.mockito.Mock
 import org.mockito.Mockito
+import org.mockito.Mockito.any
+import org.mockito.Mockito.verify
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.mockito.Mockito.`when` as whenCalled
+
+@Ignore
+class TestSystemTimeSupport : LockingSupport {
+    override val systemTimeElapsed: Long = 2000L
+}
 
 @RunWith(RobolectricTestRunner::class)
 @Config(packageName = "mozilla.lockbox")
 class ClipboardStoreTest : DisposingTest() {
 
+    private val timeSupport = TestSystemTimeSupport()
     private lateinit var dispatcher: Dispatcher
     private lateinit var subject: ClipboardStore
 
     @Mock
     val context: Context = Mockito.mock(Context::class.java)
+    @Mock
+    val alarmManager: AlarmManager = Mockito.mock(AlarmManager::class.java)
 
     private val clipboardManager =
         ApplicationProvider.getApplicationContext<Context>().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -39,8 +53,9 @@ class ClipboardStoreTest : DisposingTest() {
     @Before
     fun setUp() {
         whenCalled(context.getSystemService(Context.CLIPBOARD_SERVICE)).thenReturn(clipboardManager)
+        whenCalled(context.getSystemService(Context.ALARM_SERVICE)).thenReturn(alarmManager)
         dispatcher = Dispatcher()
-        subject = ClipboardStore(dispatcher)
+        subject = ClipboardStore(dispatcher, timeSupport)
         subject.injectContext(context)
     }
 
@@ -50,6 +65,9 @@ class ClipboardStoreTest : DisposingTest() {
         dispatcher.dispatch(ClipboardAction.CopyUsername(testString))
         val clip = clipboardManager.primaryClip?.getItemAt(0) ?: throw AssertionError("PrimaryClip must not be null")
         Assert.assertEquals(testString, clip.text)
+        verify(alarmManager).set(ArgumentMatchers.eq(AlarmManager.ELAPSED_REALTIME),
+            ArgumentMatchers.eq(timeSupport.systemTimeElapsed + 60000L),
+            any(PendingIntent::class.java))
     }
 
     @Test
@@ -58,36 +76,8 @@ class ClipboardStoreTest : DisposingTest() {
         dispatcher.dispatch(ClipboardAction.CopyPassword(testString))
         val clip = clipboardManager.primaryClip?.getItemAt(0) ?: throw AssertionError("PrimaryClip must not be null")
         Assert.assertEquals(testString, clip.text)
-    }
-
-    @Test
-    fun testReplaceDirty() {
-        val testString = "my_test_password"
-
-        dispatcher.dispatch(ClipboardAction.CopyPassword(testString))
-
-        val dirty = clipboardManager.primaryClip?.getItemAt(0) ?: throw AssertionError("PrimaryClip must not be null")
-        Assert.assertEquals(testString, dirty.text)
-
-        subject.replaceDirty(testString)
-        val clean = clipboardManager.primaryClip?.getItemAt(0) ?: throw AssertionError("PrimaryClip must not be null")
-        Assert.assertEquals("", clean.text)
-    }
-
-    @Test
-    fun testReplaceDirty_negativeTest() {
-        val testString = "my_test_password"
-
-        dispatcher.dispatch(ClipboardAction.CopyPassword(testString))
-
-        val dirty = clipboardManager.primaryClip?.getItemAt(0) ?: throw AssertionError("PrimaryClip must not be null")
-        Assert.assertEquals(testString, dirty.text)
-
-        val url = "https://www.mozilla.org"
-        clipboardManager.primaryClip = ClipData.newPlainText("url", url)
-
-        subject.replaceDirty(testString)
-        val clean = clipboardManager.primaryClip?.getItemAt(0) ?: throw AssertionError("PrimaryClip must not be null")
-        Assert.assertEquals(url, clean.text)
+        verify(alarmManager).set(ArgumentMatchers.eq(AlarmManager.ELAPSED_REALTIME),
+            ArgumentMatchers.eq(timeSupport.systemTimeElapsed + 60000L),
+            any(PendingIntent::class.java))
     }
 }

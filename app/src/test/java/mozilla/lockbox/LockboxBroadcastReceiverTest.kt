@@ -10,6 +10,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
+import mozilla.lockbox.support.ClipboardSupport
 import mozilla.lockbox.support.Constant
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -26,7 +27,7 @@ import org.mockito.Mockito.`when` as whenCalled
 
 @RunWith(PowerMockRunner::class)
 @PrepareForTest(PreferenceManager::class)
-class BootReceiverTest {
+class LockboxBroadcastReceiverTest {
     @Mock
     val editor: SharedPreferences.Editor = Mockito.mock(SharedPreferences.Editor::class.java)
 
@@ -39,7 +40,10 @@ class BootReceiverTest {
     @Mock
     val intent = Mockito.mock(Intent::class.java)
 
-    val subject = BootReceiver()
+    @Mock
+    val clipboardSupport = Mockito.mock(ClipboardSupport::class.java)
+
+    val subject = LockboxBroadcastReceiver { clipboardSupport }
 
     @Test
     fun `receiving unexpected intents`() {
@@ -59,7 +63,7 @@ class BootReceiverTest {
     }
 
     @Test
-    fun `receiving expected intents with a context object`() {
+    fun `receiving expected BOOT_COMPLETED with a context object`() {
         whenCalled(intent.action).thenReturn("android.intent.action.BOOT_COMPLETED")
         Mockito.`when`(editor.putLong(anyString(), anyLong())).thenReturn(editor)
         Mockito.`when`(preferences.edit()).thenReturn(editor)
@@ -71,5 +75,14 @@ class BootReceiverTest {
         verify(preferences).edit()
         verify(editor).putLong(Constant.Key.autoLockTimerDate, 0)
         verify(editor).apply()
+    }
+
+    @Test
+    fun `receiving expected CLEAR_CLIPBOARD with a contet object`() {
+        whenCalled(intent.action).thenReturn(Constant.Key.clearClipboardIntent)
+        whenCalled(intent.getStringExtra(Constant.Key.clipboardDirtyExtra)).thenReturn("pasted value")
+
+        subject.onReceive(context, intent)
+        verify(clipboardSupport).clear("pasted value", "")
     }
 }

@@ -57,6 +57,9 @@ object Constant {
         const val firefoxAccount = "firefox-account"
         const val encryptionKey = "database-encryption-key"
         const val autoLockTimerDate = "auto-lock-timer-date"
+        const val bootCompletedIntent = "android.intent.action.BOOT_COMPLETED"
+        const val clearClipboardIntent = "mozilla.lockbox.intent.CLEAR_CLIPBOARD"
+        const val clipboardDirtyExtra = "clipboard-dirty"
     }
 
     object FingerprintTimeout {
