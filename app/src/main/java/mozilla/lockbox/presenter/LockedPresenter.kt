@@ -6,11 +6,9 @@
 
 package mozilla.lockbox.presenter
 
-import android.app.Activity.RESULT_OK
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.R
-import mozilla.lockbox.action.AutofillAction
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.RouteAction
@@ -20,43 +18,50 @@ import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.LockedStore
 import mozilla.lockbox.store.SettingStore
-import mozilla.lockbox.support.Constant
+import mozilla.lockbox.support.isTesting
+import java.util.concurrent.TimeUnit
 
 interface LockedView {
-    val onActivityResult: Observable<Pair<Int, Int>>
-    val unlockButtonTaps: Observable<Unit>?
+    val unlockButtonTaps: Observable<Unit>
+    val unlockConfirmed: Observable<Boolean>
 }
 
-abstract class LockedPresenter(
-    val lockedView: LockedView,
-    open val dispatcher: Dispatcher,
-    open val fingerprintStore: FingerprintStore,
-    open val lockedStore: LockedStore,
-    open val settingStore: SettingStore
+class LockedPresenter(
+    private val view: LockedView,
+    private val dispatcher: Dispatcher = Dispatcher.shared,
+    private val fingerprintStore: FingerprintStore = FingerprintStore.shared,
+    private val lockedStore: LockedStore = LockedStore.shared,
+    private val settingStore: SettingStore = SettingStore.shared
 ) : Presenter() {
-
-    abstract fun Observable<Unit>.unlockAuthenticationObservable(): Observable<Boolean>
-
+    private val delay: Long = if (isTesting()) 0 else 1
     override fun onViewReady() {
+        // every time onViewReady is called, try to launch device authentication after 1 second
         Observable.just(Unit)
-            .unlockAuthenticationObservable()
-            .map {
+            .delay(delay, TimeUnit.SECONDS)
+            .switchMap { lockedStore.canLaunchAuthenticationOnForeground.take(1) }
+            .filter { it }
+            .map { Unit }
+            // make sure to listen for tapping the unlock button! it should always work.
+            .mergeWith(view.unlockButtonTaps)
+            // once we've started the unlock process, we don't want further foregrounding events to
+            // launch the prompt again (i.e., cancelling your PIN entry to return to the unlock screen)
+            .doOnNext {
+                dispatcher.dispatch(UnlockingAction(true))
+            }
+            .switchMap { settingStore.unlockWithFingerprint.take(1) }
+            .subscribe {
                 if (fingerprintStore.isFingerprintAuthAvailable && it) {
-                    RouteAction.DialogFragment.FingerprintDialog(R.string.fingerprint_dialog_title)
+                    dispatcher.dispatch(RouteAction.DialogFragment.FingerprintDialog(R.string.fingerprint_dialog_title))
                 } else {
-                    RouteAction.UnlockFallbackDialog
+                    unlockFallback()
                 }
             }
-            .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
 
-        lockedView.onActivityResult
+        view.unlockConfirmed
+            .filter { it }
             .subscribe {
-                if (it.first == Constant.RequestCode.unlock && it.second == RESULT_OK) {
-                    unlock()
-                } else {
-                    cancel()
-                }
+                unlock()
             }
             .addTo(compositeDisposable)
 
@@ -64,14 +69,7 @@ abstract class LockedPresenter(
             .subscribe {
                 when (it) {
                     is FingerprintAuthAction.OnSuccess -> unlock()
-                    is FingerprintAuthAction.OnError ->
-                        if (fingerprintStore.isKeyguardDeviceSecure)
-                        // route presenter takes care of the unlockFallback()
-                            dispatcher.dispatch(RouteAction.UnlockFallbackDialog)
-                        else unlock()
-                    is FingerprintAuthAction.OnCancel -> {
-                        cancel()
-                    }
+                    is FingerprintAuthAction.OnError -> unlockFallback()
                 }
             }
             .addTo(compositeDisposable)
@@ -82,8 +80,11 @@ abstract class LockedPresenter(
         dispatcher.dispatch(UnlockingAction(false))
     }
 
-    private fun cancel() {
-        dispatcher.dispatch(AutofillAction.Cancel)
-        dispatcher.dispatch(UnlockingAction(false))
+    private fun unlockFallback() {
+        if (fingerprintStore.isKeyguardDeviceSecure) {
+            dispatcher.dispatch(RouteAction.UnlockFallbackDialog)
+        } else {
+            unlock()
+        }
     }
 }
