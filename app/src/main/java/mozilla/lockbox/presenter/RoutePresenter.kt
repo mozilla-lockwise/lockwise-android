@@ -162,10 +162,6 @@ abstract class RoutePresenter(
             activity.getString(R.string.unlock_fallback_title, appName),
             activity.getString(R.string.confirm_pattern)
         )
-        try {
-            currentFragment?.startActivityForResult(intent, action.requestCode)
-        } catch (e: Exception) {
-            log.error("Unlock fallback failed: ", e)
-        }
+        currentFragment?.startActivityForResult(intent, action.requestCode)
     }
 }

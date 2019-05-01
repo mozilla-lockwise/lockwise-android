@@ -15,8 +15,6 @@ object Constant {
         const val testMarker = "TEST"
         const val bootIDPath = "/proc/sys/kernel/random/boot_id"
         const val appToken = "383z4i46o48w"
-
-        val delay: Long = if (isTesting()) 0 else 1
     }
 
     object FxA {

@@ -6,6 +6,7 @@
 
 package mozilla.lockbox.view
 
+import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,19 +17,15 @@ import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_locked.view.*
 import mozilla.lockbox.R
-import mozilla.lockbox.presenter.AppLockedPresenter
+import mozilla.lockbox.presenter.LockedPresenter
 import mozilla.lockbox.presenter.LockedView
+import mozilla.lockbox.support.Constant
 
 class LockedFragment : Fragment(), LockedView {
-    private val _onActivityResult = PublishSubject.create<Pair<Int, Int>>()
-    override val onActivityResult: Observable<Pair<Int, Int>> get() = _onActivityResult
+    private val _unlockConfirmed = PublishSubject.create<Boolean>()
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        presenter = AppLockedPresenter(this)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        presenter = LockedPresenter(this)
         return inflater.inflate(R.layout.fragment_locked, container, false)
     }
 
@@ -37,6 +34,14 @@ class LockedFragment : Fragment(), LockedView {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        _onActivityResult.onNext(Pair(requestCode, resultCode))
+        if (resultCode == RESULT_OK) {
+            when (requestCode) {
+                Constant.RequestCode.unlock -> _unlockConfirmed.onNext(true)
+            }
+        } else {
+            _unlockConfirmed.onNext(false)
+        }
     }
+
+    override val unlockConfirmed: Observable<Boolean> get() = _unlockConfirmed
 }
