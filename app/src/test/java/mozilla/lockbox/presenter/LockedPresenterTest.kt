@@ -11,7 +11,10 @@ package mozilla.lockbox.presenter
 import android.app.Activity.RESULT_CANCELED
 import android.app.Activity.RESULT_OK
 import io.reactivex.Observable
+import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.observers.TestObserver
+import io.reactivex.plugins.RxJavaPlugins
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import junit.framework.Assert
 import mozilla.lockbox.action.AutofillAction
@@ -25,11 +28,23 @@ import mozilla.lockbox.store.LockedStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.support.Constant
 import org.junit.Before
+import org.junit.BeforeClass
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito
 
 class LockedPresenterTest {
+
+    companion object {
+        @BeforeClass
+        @JvmStatic
+        fun beforeClass() {
+            val trampoline = Schedulers.trampoline()
+            RxJavaPlugins.setInitComputationSchedulerHandler { trampoline }
+            RxAndroidPlugins.setInitMainThreadSchedulerHandler { trampoline }
+        }
+    }
+
     class FakeLockedPresenter(
         view: FakeView,
         dispatcher: Dispatcher,

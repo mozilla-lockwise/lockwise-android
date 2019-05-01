@@ -72,6 +72,7 @@ import org.powermock.api.mockito.PowerMockito.`when` as whenCalled
     Intent::class
 )
 class AutofillRoutePresenterTest {
+
     @Mock
     val navController: NavController = mock(NavController::class.java)
 
@@ -251,13 +252,6 @@ class AutofillRoutePresenterTest {
 
         verify(fingerprintAuthDialogFragment).show(eq(fragmentManager), anyString())
         verify(fingerprintAuthDialogFragment).setupDialog(title, null)
-    }
-
-    @Test
-    fun `unlock fallback dialog is called`() {
-        val action = RouteAction.UnlockFallbackDialog
-        routeStore.routeStub.onNext(action)
-        verify(currentFragment).startActivityForResult(credentialIntent, action.requestCode)
     }
 
     @Test

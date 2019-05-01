@@ -157,6 +157,7 @@ class RoutePresenterTest {
         RxAndroidPlugins.setInitMainThreadSchedulerHandler { immediate }
 
         whenCalled(activity.supportFragmentManager).thenReturn(fragmentManager)
+        whenCalled(activity.applicationContext).thenReturn(context)
         whenCalled(navDestination.id).thenReturn(R.id.fragment_null)
         whenCalled(navController.currentDestination).thenReturn(navDestination)
 
@@ -228,8 +229,9 @@ class RoutePresenterTest {
     @Test
     fun `unlock fallback activity is started`() {
         val action = RouteAction.UnlockFallbackDialog
+
         subject.showUnlockFallback(action)
 
-        verify(currentFragment).startActivityForResult(credentialIntent, action.requestCode)
+        verify(currentFragment).startActivityForResult(null, action.requestCode)
     }
 }
