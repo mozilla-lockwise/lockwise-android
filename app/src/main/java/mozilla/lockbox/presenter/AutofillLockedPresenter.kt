@@ -11,10 +11,10 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.LockedStore
 import mozilla.lockbox.store.SettingStore
-import java.util.concurrent.TimeUnit
 import mozilla.lockbox.support.Constant.App.delay
+import java.util.concurrent.TimeUnit
 
-class AutofillLockedPresenter(
+open class AutofillLockedPresenter(
     lockedView: LockedView,
     override val dispatcher: Dispatcher = Dispatcher.shared,
     override val fingerprintStore: FingerprintStore = FingerprintStore.shared,

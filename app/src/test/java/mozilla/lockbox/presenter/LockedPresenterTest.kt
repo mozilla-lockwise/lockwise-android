@@ -16,6 +16,7 @@ import io.reactivex.subjects.PublishSubject
 import junit.framework.Assert
 import mozilla.lockbox.action.AutofillAction
 import mozilla.lockbox.action.DataStoreAction
+import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.UnlockingAction
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
@@ -25,17 +26,10 @@ import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.support.Constant
 import org.junit.Before
 import org.junit.Test
+import org.mockito.Mock
 import org.mockito.Mockito
 
 class LockedPresenterTest {
-    open class FakeView : LockedView {
-        override val unlockButtonTaps: Observable<Unit>?
-            get() = TODO("not implemented")
-
-        val activityResult = PublishSubject.create<Pair<Int, Int>>()
-        override val onActivityResult: Observable<Pair<Int, Int>> get() = activityResult
-    }
-
     class FakeLockedPresenter(
         view: FakeView,
         dispatcher: Dispatcher,
@@ -48,22 +42,37 @@ class LockedPresenterTest {
         }
     }
 
-    class FakeFingerprintStore : FingerprintStore() {
-        var fingerprintAuthAvailableStub: Boolean = false
-        override val isFingerprintAuthAvailable: Boolean
-            get() = fingerprintAuthAvailableStub
+    open class FakeView : LockedView {
+        open var _unlockButtonTaps = Observable.just(Unit)
+        override val unlockButtonTaps: Observable<Unit>?
+            get() = _unlockButtonTaps
 
-        var keyguardDeviceSecureStub: Boolean = false
-        override val isKeyguardDeviceSecure: Boolean
-            get() = keyguardDeviceSecureStub
+        val activityResult = PublishSubject.create<Pair<Int, Int>>()
+        override val onActivityResult: Observable<Pair<Int, Int>>
+            get() = activityResult
     }
+
+    class FakeLockedStore : LockedStore() {
+        val onAuth = PublishSubject.create<FingerprintAuthAction>()
+        override val onAuthentication: Observable<FingerprintAuthAction>
+            get() = onAuth
+
+        override val canLaunchAuthenticationOnForeground: Observable<Boolean> = PublishSubject.create()
+    }
+
+    class FakeSettingStore : SettingStore() {
+        val unlockWithFingerprintStub = PublishSubject.create<Boolean>()
+        override var unlockWithFingerprint: Observable<Boolean> = unlockWithFingerprintStub
+    }
+
+    @Mock
+    private val fingerprintStore = Mockito.mock(FingerprintStore::class.java)
+    private val settingStore = FakeSettingStore()
+    private val lockedStore = FakeLockedStore()
 
     private val dispatcher = Dispatcher()
     private val dispatcherObserver: TestObserver<Action> = TestObserver.create()
-    private val fingerprintStore = FakeFingerprintStore()
-    val view: FakeView = Mockito.spy(FakeView())
-    private val settingStore = Mockito.mock(SettingStore::class.java)
-    private val lockedStore = LockedStore.shared
+    val view = FakeView()
 
     val subject = FakeLockedPresenter(view, dispatcher, fingerprintStore, settingStore, lockedStore)
 
