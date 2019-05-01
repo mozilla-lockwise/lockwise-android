@@ -9,15 +9,12 @@
 package mozilla.lockbox.presenter
 
 import io.reactivex.Observable
-import io.reactivex.plugins.RxJavaPlugins
-import io.reactivex.schedulers.TestScheduler
 import io.reactivex.subjects.ReplaySubject
 import mozilla.lockbox.DisposingTest
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.LockedStore
 import mozilla.lockbox.store.SettingStore
-import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
@@ -66,20 +63,10 @@ class AutofillLockedPresenterTest : DisposingTest() {
         settingStore
     )
 
-//    @Test
-//    fun `unlock when fingerprint auth is available and enabled`() {
-//        settingStore.unlockWithFingerprintStub.onNext(true)
-//        val iterable = subject.callUnlockAuthObs().blockingIterable().iterator()
-//
-//        assertTrue(iterable.next())
-//    }
-
     @Test
     fun `unlock when fingerprint auth is available and enabled`() {
         settingStore.unlockWithFingerprintStub.onNext(true)
-
         val testObserver = subject.callUnlockAuthObs().test()
-//        assertTrue(testObserver.values().last())
         testObserver.assertValue(true)
     }
 }

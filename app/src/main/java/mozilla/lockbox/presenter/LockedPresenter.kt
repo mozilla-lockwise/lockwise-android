@@ -8,6 +8,7 @@ package mozilla.lockbox.presenter
 
 import android.app.Activity.RESULT_OK
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
 import mozilla.lockbox.R
 import mozilla.lockbox.action.AutofillAction
@@ -21,6 +22,7 @@ import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.LockedStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.support.Constant
+import java.util.concurrent.TimeUnit
 
 interface LockedView {
     val onActivityResult: Observable<Pair<Int, Int>>
@@ -39,7 +41,9 @@ abstract class LockedPresenter(
 
     override fun onViewReady() {
         Observable.just(Unit)
+            .observeOn(AndroidSchedulers.mainThread())
             .unlockAuthenticationObservable()
+            .delay(500, TimeUnit.MILLISECONDS)
             .map {
                 if (fingerprintStore.isFingerprintAuthAvailable && it) {
                     RouteAction.DialogFragment.FingerprintDialog(R.string.fingerprint_dialog_title)
