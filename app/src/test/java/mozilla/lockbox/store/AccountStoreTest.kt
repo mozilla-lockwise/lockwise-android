@@ -8,7 +8,7 @@ package mozilla.lockbox.store
 
 import io.reactivex.observers.TestObserver
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import mozilla.components.service.fxa.Profile
+import mozilla.components.concept.sync.Profile
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.model.SyncCredentials
 import mozilla.lockbox.support.Optional
