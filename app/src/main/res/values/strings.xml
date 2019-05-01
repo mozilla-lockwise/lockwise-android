@@ -258,10 +258,4 @@
 
     <!-- This is the placeholder text for an empty or null username. -->
     <string name="no_username">(no username)</string>
-    
-    <!-- CURRENTLY UNUSED BUT RESERVED FOR FUTURE USE -->
-    <!-- This is the text displayed on the button of the network availability error message -->
-    <!--<string name="retry">Retry</string>-->
-    <!-- This is the text displayed on the button of the network availability error message -->
-    <!--<string name="retryButton">Retry connect to internet</string>-->
 </resources>
