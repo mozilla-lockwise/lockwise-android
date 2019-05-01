@@ -91,8 +91,6 @@ open class AutofillRoutePresenter(
                 showDialogFragment(AutofillFilterFragment(), action)
             is RouteAction.DialogFragment.FingerprintDialog ->
                 showDialogFragment(FingerprintAuthDialogFragment(), action)
-            is RouteAction.UnlockFallbackDialog ->
-                showUnlockFallback(action)
         }
     }
 
