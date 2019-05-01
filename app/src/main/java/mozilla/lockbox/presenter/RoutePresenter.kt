@@ -157,7 +157,8 @@ abstract class RoutePresenter(
 
     fun showUnlockFallback(action: RouteAction.UnlockFallbackDialog) {
         val manager = activity.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
-        val appName = activity.getString(R.string.app_name)
+        val appName = activity.applicationContext.getString(R.string.app_name)
+
         val intent = manager.createConfirmDeviceCredentialIntent(
             activity.getString(R.string.unlock_fallback_title, appName),
             activity.getString(R.string.confirm_pattern)
