@@ -21,6 +21,6 @@ open class AutofillLockedPresenter(
 ) : LockedPresenter(lockedView, dispatcher, fingerprintStore, lockedStore, settingStore) {
 
     override fun Observable<Unit>.unlockAuthenticationObservable(): Observable<Boolean> {
-        return this.switchMap { settingStore.unlockWithFingerprint.take(1) }
+        return this.flatMap { settingStore.unlockWithFingerprint.take(1) }
     }
 }
