@@ -45,7 +45,15 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        titleId?.let { view.dialogTitle.text = getString(it) }
+        titleId?.let {
+            val title = getString(it)
+            if (title.contains("%1\$s")) {
+                val appName = getString(R.string.app_name)
+                view.dialogTitle.text = getString(it, appName)
+            } else {
+                view.dialogTitle.text = getString(it)
+            }
+        }
         subtitleId?.let {
             view.dialogSubtitle.text = getString(it)
             view.dialogSubtitle.visibility = View.VISIBLE

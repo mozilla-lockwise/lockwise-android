@@ -32,6 +32,11 @@ class AutofillOnboardingFragment : Fragment(), AutofillOnboardingView {
         savedInstanceState: Bundle?
     ): View? {
         presenter = AutofillOnboardingPresenter(this)
-        return inflater.inflate(R.layout.fragment_autofill_onboarding, container, false)
+        val view = inflater.inflate(R.layout.fragment_autofill_onboarding, container, false)
+        val appName = getString(R.string.app_name)
+        view.iconAutofill.contentDescription = getString(R.string.onboarding_autofill_image_description, appName)
+        view.autofillTitle.text = getString(R.string.onboarding_autofill_title, appName)
+        view.autofillDescription.text = getString(R.string.onboarding_autofill_description, appName)
+        return view
     }
 }

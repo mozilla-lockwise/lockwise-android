@@ -24,7 +24,10 @@ class WelcomeFragment : Fragment(), WelcomeView {
         savedInstanceState: Bundle?
     ): View? {
         presenter = WelcomePresenter(this)
-        return inflater.inflate(R.layout.fragment_welcome, container, false)
+        val view = inflater.inflate(R.layout.fragment_welcome, container, false)
+        val appName = getString(R.string.app_name)
+        view.textViewInstructions.text = getString(R.string.welcome_instructions, appName)
+        return view
     }
 
     override val getStartedClicks: Observable<Unit>
