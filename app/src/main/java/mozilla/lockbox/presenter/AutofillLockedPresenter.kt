@@ -11,8 +11,6 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.LockedStore
 import mozilla.lockbox.store.SettingStore
-import mozilla.lockbox.support.Constant.App.delay
-import java.util.concurrent.TimeUnit
 
 open class AutofillLockedPresenter(
     lockedView: LockedView,
@@ -23,7 +21,6 @@ open class AutofillLockedPresenter(
 ) : LockedPresenter(lockedView, dispatcher, fingerprintStore, lockedStore, settingStore) {
 
     override fun Observable<Unit>.unlockAuthenticationObservable(): Observable<Boolean> {
-        return this.delay(delay, TimeUnit.SECONDS)
-            .switchMap { settingStore.unlockWithFingerprint.take(1) }
+        return this.switchMap { settingStore.unlockWithFingerprint.take(1) }
     }
 }
