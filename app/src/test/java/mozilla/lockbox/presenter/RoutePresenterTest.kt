@@ -6,7 +6,6 @@
 
 package mozilla.lockbox.presenter
 
-import android.app.KeyguardManager
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -35,8 +34,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers
-import org.mockito.ArgumentMatchers.anyInt
-import org.mockito.ArgumentMatchers.anyString
 import org.mockito.ArgumentMatchers.eq
 import org.mockito.Mock
 import org.mockito.Mockito
@@ -94,9 +91,6 @@ class RoutePresenterTest {
     @Mock
     val dialogHelper = Mockito.mock(AlertDialogHelper::class.java)
 
-    @Mock
-    val keyguardManager = Mockito.mock(KeyguardManager::class.java)
-
     class FakeRouteStore : RouteStore() {
         val routeStub = PublishSubject.create<RouteAction>()
         override val routes: Observable<RouteAction>
@@ -122,7 +116,6 @@ class RoutePresenterTest {
     private val dispatcherObserver = TestObserver.create<Action>()
     private val routeStore = FakeRouteStore()
     val callingIntent = Intent()
-    val credentialIntent = Intent()
 
     lateinit var subject: RoutePresenter
 
@@ -136,9 +129,7 @@ class RoutePresenterTest {
 
         override fun route(action: RouteAction) {}
 
-        override fun findTransitionId(src: Int, dest: Int): Int? {
-            return null
-        }
+        override fun findTransitionId(src: Int, dest: Int): Int? { return null }
 
         override val navHostFragmentManager: FragmentManager
             get() = navHostFragmentManagerStub
@@ -167,18 +158,9 @@ class RoutePresenterTest {
         PowerMockito.whenNew(AlertDialogHelper::class.java).withNoArguments()
             .thenReturn(dialogHelper)
 
-        whenCalled(activity.getString(anyInt())).thenReturn("hello")
-
         IntentBuilder.setSearchRequired(intent, true)
         whenCalled(activity.intent).thenReturn(callingIntent)
         whenCalled(settingAction.setting).thenReturn(settingIntent)
-        whenCalled(
-            keyguardManager.createConfirmDeviceCredentialIntent(
-                anyString(),
-                anyString()
-            )
-        ).thenReturn(credentialIntent)
-        whenCalled(activity.getSystemService(Context.KEYGUARD_SERVICE)).thenReturn(keyguardManager)
 
         val securityIntent = "android.provider.Settings.ACTION_SECURITY_SETTINGS"
         whenCalled(settingIntent.intentAction).thenReturn(securityIntent)
@@ -223,13 +205,5 @@ class RoutePresenterTest {
         val destination = RouteAction.DialogFragment.AutofillSearchDialog
         subject.showDialogFragment(dialogFragment, destination)
         verify(dialogFragment).setupDialog(destination.dialogTitle, null)
-    }
-
-    @Test
-    fun `unlock fallback activity is started`() {
-        val action = RouteAction.UnlockFallbackDialog
-        subject.showUnlockFallback(action)
-
-        verify(currentFragment).startActivityForResult(credentialIntent, action.requestCode)
     }
 }
