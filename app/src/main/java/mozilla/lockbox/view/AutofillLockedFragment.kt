@@ -36,8 +36,9 @@ class AutofillLockedFragment : Fragment(), AutofillLockedView {
 
     override fun unlockFallback() {
         val manager = context?.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+        val appName = getString(R.string.app_name)
         val intent = manager.createConfirmDeviceCredentialIntent(
-            getString(R.string.unlock_fallback_title),
+            getString(R.string.unlock_fallback_title, appName),
             getString(R.string.confirm_pattern)
         )
         try {

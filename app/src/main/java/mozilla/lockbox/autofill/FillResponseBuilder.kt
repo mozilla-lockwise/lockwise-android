@@ -27,7 +27,8 @@ open class FillResponseBuilder(
 
         val presentation = RemoteViews(context.packageName, R.layout.autofill_cta_presentation)
         val appName = context.getString(R.string.app_name)
-        presentation.setTextViewText(R.id.autofill_cta, context.getString(R.string.autofill_authenticate_cta, appName))
+        val authenticationText = context.getString(R.string.autofill_authenticate_cta, appName)
+        presentation.setTextViewText(R.id.autofill_cta, authenticationText)
 
         val sender = IntentBuilder.getAuthIntentSender(context, this)
         responseBuilder.setAuthentication(autofillIds(), sender, presentation)
