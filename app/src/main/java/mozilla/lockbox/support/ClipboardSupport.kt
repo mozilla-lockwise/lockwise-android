@@ -9,28 +9,25 @@ package mozilla.lockbox.support
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import mozilla.lockbox.support.Constant.Common.emptyString
 
 typealias ClipboardSupportFactory = (Context) -> ClipboardSupport
 
 open class ClipboardSupport(
-    private val clipboard: ClipboardManager
+    context: Context
 ) {
-    companion object {
-        val create: ClipboardSupportFactory = { context ->
-            ClipboardSupport(context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
-        }
-    }
+    private val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
     open fun paste(label: String, value: String) {
         clipboard.primaryClip = ClipData.newPlainText(label, value)
     }
 
-    open fun clear(dirty: String, clean: String = "") {
-        if (dirty == "") { return }
+    open fun clear(dirty: String) {
+        if (dirty == emptyString) { return }
 
         val clipData = clipboard.primaryClip?.getItemAt(0)
         if (clipData?.text == dirty) {
-            clipboard.primaryClip = ClipData.newPlainText("", clean)
+            clipboard.primaryClip = ClipData.newPlainText(emptyString, emptyString)
         }
     }
 }

@@ -83,6 +83,6 @@ class LockboxBroadcastReceiverTest {
         whenCalled(intent.getStringExtra(Constant.Key.clipboardDirtyExtra)).thenReturn("pasted value")
 
         subject.onReceive(context, intent)
-        verify(clipboardSupport).clear("pasted value", "")
+        verify(clipboardSupport).clear("pasted value")
     }
 }

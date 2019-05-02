@@ -9,6 +9,10 @@ package mozilla.lockbox.support
 import mozilla.lockbox.action.Setting
 
 object Constant {
+    object Common {
+        const val emptyString = ""
+    }
+
     object App {
         const val keystoreLabel = "lockbox-keystore"
         const val dbFilename = "firefox-lockbox.db"

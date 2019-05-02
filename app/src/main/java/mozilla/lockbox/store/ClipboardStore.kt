@@ -55,7 +55,7 @@ open class ClipboardStore(
 
     override fun injectContext(context: Context) {
         this.context = context
-        this.clipboardSupport = ClipboardSupport.create(context)
+        this.clipboardSupport = ClipboardSupport(context)
         this.alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     }
 

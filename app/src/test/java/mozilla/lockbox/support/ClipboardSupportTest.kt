@@ -9,19 +9,33 @@ package mozilla.lockbox.support
 import android.content.ClipboardManager
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
+import mozilla.lockbox.support.Constant.Common.emptyString
 import org.junit.Assert
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.mockito.Mockito
+import org.mockito.Mockito.`when` as whenCalled
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
 @Config(packageName = "mozilla.lockbox")
 class ClipboardSupportTest {
+    @Mock
+    private val context: Context = Mockito.mock(Context::class.java)
+
     private val clipboardManager =
         ApplicationProvider.getApplicationContext<Context>().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
-    private val subject = ClipboardSupport(clipboardManager)
+    private lateinit var subject: ClipboardSupport
+
+    @Before
+    fun setUp() {
+        whenCalled(context.getSystemService(Context.CLIPBOARD_SERVICE)).thenReturn(clipboardManager)
+        subject = ClipboardSupport(context)
+    }
 
     @Test
     fun `pastes to clipboard`() {
@@ -35,16 +49,16 @@ class ClipboardSupportTest {
     fun `clears when clipboard matches`() {
         subject.paste("label", "was pasted")
 
-        subject.clear("was pasted", "cleared value")
+        subject.clear("was pasted")
         val clip = clipboardManager.primaryClip?.getItemAt(0) ?: throw AssertionError("PrimaryClip must not be null")
-        Assert.assertEquals("cleared value", clip.text)
+        Assert.assertEquals(emptyString, clip.text)
     }
 
     @Test
     fun `doesn't clear when clipboard is different`() {
         subject.paste("label", "was actually pasted")
 
-        subject.clear("was pasted", "cleared value")
+        subject.clear("was pasted")
         val clip = clipboardManager.primaryClip?.getItemAt(0) ?: throw AssertionError("PrimaryClip must not be null")
         Assert.assertEquals("was actually pasted", clip.text)
     }

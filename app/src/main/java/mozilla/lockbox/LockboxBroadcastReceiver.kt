@@ -12,15 +12,16 @@ import android.content.Intent
 import android.preference.PreferenceManager
 import mozilla.lockbox.support.ClipboardSupport
 import mozilla.lockbox.support.ClipboardSupportFactory
-import mozilla.lockbox.support.Constant
+import mozilla.lockbox.support.Constant.Key
+import mozilla.lockbox.support.Constant.Common.emptyString
 
 open class LockboxBroadcastReceiver(
-    private val createClipboardSupport: ClipboardSupportFactory = ClipboardSupport.create
+    private val createClipboardSupport: ClipboardSupportFactory = { ctx: Context -> ClipboardSupport(ctx) }
 ) : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         when (intent?.action) {
-            Constant.Key.bootCompletedIntent -> resetAutolock(context)
-            Constant.Key.clearClipboardIntent -> clearClipboard(context, intent)
+            Key.bootCompletedIntent -> resetAutolock(context)
+            Key.clearClipboardIntent -> clearClipboard(context, intent)
         }
     }
 
@@ -30,7 +31,7 @@ open class LockboxBroadcastReceiver(
 
             prefs
                 .edit()
-                .putLong(Constant.Key.autoLockTimerDate, 0)
+                .putLong(Key.autoLockTimerDate, 0)
                 .apply()
         }
     }
@@ -38,9 +39,9 @@ open class LockboxBroadcastReceiver(
     private fun clearClipboard(context: Context?, intent: Intent?) {
         context?.let {
             val support = createClipboardSupport(it)
-            val dirty = intent?.getStringExtra(Constant.Key.clipboardDirtyExtra)
+            val dirty = intent?.getStringExtra(Key.clipboardDirtyExtra)
 
-            support.clear(dirty ?: "", "")
+            support.clear(dirty ?: emptyString)
         }
     }
 }
