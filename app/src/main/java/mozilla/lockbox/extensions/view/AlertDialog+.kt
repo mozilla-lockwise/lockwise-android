@@ -27,8 +27,25 @@ object AlertDialogHelper {
         return Observable.create { emitter ->
             val builder = AlertDialog.Builder(context, R.style.AlertDialogStyle)
 
-            viewModel.title?.let { builder.setTitle(it) }
-            viewModel.message?.let { builder.setMessage(it) }
+            viewModel.title?.let {
+                val titleString = context.getString(it)
+                if (titleString.contains("%1\$s")) {
+                    val appName = context.getString(R.string.app_name)
+                    builder.setTitle(String.format(titleString, appName))
+                } else {
+                    builder.setTitle(it)
+                }
+            }
+
+            viewModel.message?.let {
+                val titleString = context.getString(it)
+                if (titleString.contains("%1\$s")) {
+                    val appName = context.getString(R.string.app_name)
+                    builder.setMessage(String.format(titleString, appName))
+                } else {
+                    builder.setMessage(it)
+                }
+            }
 
             viewModel.positiveButtonTitle?.let {
                 builder.setPositiveButton(it) { _, _ ->

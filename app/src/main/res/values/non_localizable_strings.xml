@@ -14,4 +14,12 @@
     <string name="empty_space">\u0020</string>
     <string name="firefox_account" translatable="false">Firefox Account</string>
     <string name="telemetry_server_endpoint" translatable="false">https://incoming.telemetry.mozilla.org</string>
+    <!-- This is the label for a button only available on test builds to skip the authentication step and immediately use test data -->
+    <string name="placeholder_skip_fxa">Use test data</string>
+
+    <!-- CURRENTLY UNUSED BUT RESERVED FOR FUTURE USE -->
+    <!-- This is the text displayed on the button of the network availability error message -->
+    <!--<string name="retry">Retry</string>-->
+    <!-- This is the text displayed on the button of the network availability error message -->
+    <!--<string name="retryButton">Retry connect to internet</string>-->
 </resources>

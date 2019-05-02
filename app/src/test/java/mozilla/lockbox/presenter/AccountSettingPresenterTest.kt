@@ -11,7 +11,8 @@ import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import mozilla.components.service.fxa.Profile
+import mozilla.components.concept.sync.Avatar
+import mozilla.components.concept.sync.Profile
 import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
@@ -35,14 +36,14 @@ import org.powermock.api.mockito.PowerMockito.`when` as whenCalled
 class AccountSettingPresenterTest {
     class FakeAccountSettingView : AccountSettingView {
         var setDisplayNameArgument: String? = null
-        var setAvatarFromURLArgument: String? = null
+        var setAvatarArgument: Avatar? = null
 
         override fun setDisplayName(text: String) {
             setDisplayNameArgument = text
         }
 
-        override fun setAvatarFromURL(url: String) {
-            setAvatarFromURLArgument = url
+        override fun setAvatar(avatar: Avatar) {
+            setAvatarArgument = avatar
         }
 
         override val disconnectButtonClicks: Observable<Unit> = PublishSubject.create<Unit>()
@@ -72,7 +73,7 @@ class AccountSettingPresenterTest {
     fun `new profile object with a displayName and email`() {
         val displayName = "TROGDOR"
         val email = "sample@sample.com"
-        val avatar = "www.mozilla.org/pix.png"
+        val avatar = Avatar(url = "www.mozilla.org/pix.png", isDefault = true)
         profileStub.onNext(
             Profile("lkjkhjlfdshkjljkafds", email, avatar, displayName).asOptional()
         )
@@ -84,7 +85,7 @@ class AccountSettingPresenterTest {
     fun `new profile object with a displayName and null email`() {
         val displayName = "TROGDOR"
         val email = null
-        val avatar = "www.mozilla.org/pix.png"
+        val avatar = Avatar(url = "www.mozilla.org/pix.png", isDefault = true)
         profileStub.onNext(
             Profile("lkjkhjlfdshkjljkafds", email, avatar, displayName).asOptional()
         )
@@ -96,7 +97,7 @@ class AccountSettingPresenterTest {
     fun `new profile object with a null displayName and non-null email`() {
         val displayName = null
         val email = "sample@sample.com"
-        val avatar = "www.mozilla.org/pix.png"
+        val avatar = Avatar(url = "www.mozilla.org/pix.png", isDefault = true)
         profileStub.onNext(
             Profile("lkjkhjlfdshkjljkafds", email, avatar, displayName).asOptional()
         )
@@ -108,7 +109,7 @@ class AccountSettingPresenterTest {
     fun `new profile object with a null displayName and null email`() {
         val displayName = null
         val email = null
-        val avatar = "www.mozilla.org/pix.png"
+        val avatar = Avatar(url = "www.mozilla.org/pix.png", isDefault = true)
         profileStub.onNext(
             Profile("lkjkhjlfdshkjljkafds", email, avatar, displayName).asOptional()
         )
@@ -120,12 +121,12 @@ class AccountSettingPresenterTest {
     fun `new profile object with an avatar value`() {
         val displayName = "TROGDOR"
         val email = "sample@sample.com"
-        val avatar = "www.mozilla.org/pix.png"
+        val avatar = Avatar(url = "www.mozilla.org/pix.png", isDefault = true)
         profileStub.onNext(
             Profile("lkjkhjlfdshkjljkafds", email, avatar, displayName).asOptional()
         )
 
-        Assert.assertEquals(avatar, view.setAvatarFromURLArgument)
+        Assert.assertEquals(avatar, view.setAvatarArgument)
     }
 
     @Test
@@ -137,7 +138,7 @@ class AccountSettingPresenterTest {
             Profile("lkjkhjlfdshkjljkafds", email, avatar, displayName).asOptional()
         )
 
-        Assert.assertNull(view.setAvatarFromURLArgument)
+        Assert.assertNull(view.setAvatarArgument)
     }
 
     @Test
@@ -145,7 +146,7 @@ class AccountSettingPresenterTest {
         profileStub.onNext(Optional(null))
 
         Assert.assertNull(view.setDisplayNameArgument)
-        Assert.assertNull(view.setAvatarFromURLArgument)
+        Assert.assertNull(view.setAvatarArgument)
     }
 
     @Test

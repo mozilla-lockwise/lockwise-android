@@ -12,24 +12,23 @@ fun AssistStructure.ViewNode.dump(): String {
 
 @TargetApi(Build.VERSION_CODES.O)
 private fun AssistStructure.ViewNode.dumpNode(sb: StringBuilder = StringBuilder()): StringBuilder {
+
     val name = htmlInfo?.tag ?: className?.split('.')?.last() ?: "unknown"
 
-    var attrs = listOf(
-        Pair("idEntry", idEntry ?: ""),
-        Pair("idPackage", idPackage ?: ""),
-        Pair("idType", idType ?: ""),
-        Pair("webDomain", webDomain ?: ""),
-        Pair("hint", hint ?: ""),
-        Pair("autofillValue", autofillValue?.textValue ?: ""),
-        Pair("autofillHints", autofillHints?.joinToString(", ") ?: ""),
-        Pair("autofillOptions", autofillOptions?.joinToString(", ") ?: "")
+    val viewAttrs = listOf(
+        "idEntry" to idEntry,
+        "idPackage" to idPackage,
+        "idType" to idType,
+        "webDomain" to webDomain,
+        "hint" to hint,
+        "autofillValue" to autofillValue?.let { if (it.isText) it.textValue.toString() else null },
+        "autofillHints" to autofillHints?.joinToString(", "),
+        "autofillOptions" to autofillOptions?.joinToString(", ")
     )
 
-    htmlInfo?.attributes?.let { attributes ->
-        attrs += attributes.map { Pair(it.first, it.second) }
-    }
+    val htmlAttrs = htmlInfo?.attributes?.map { it.first to it.second } ?: emptyList()
 
-    attrs = attrs.filter { it.second != "" && it.second != "null" }
+    val attrs = (viewAttrs + htmlAttrs).filter { it.second != null }
 
     sb.append("<$name")
     if (!attrs.isEmpty()) {
