@@ -11,7 +11,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    style="@style/WelcomeScreen">
+    style="@style/WelcomeScreen"
+    android:id="@+id/fragmentLocked">
 
     <include android:id="@+id/include"
         layout="@layout/include_nessie"

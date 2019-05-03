@@ -7,12 +7,15 @@
 package mozilla.lockbox.presenter
 
 import io.reactivex.Observable
+import mozilla.lockbox.action.UnlockingAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.LockedStore
 import mozilla.lockbox.store.SettingStore
+import mozilla.lockbox.support.Constant.App.delay
+import java.util.concurrent.TimeUnit
 
-open class AutofillLockedPresenter(
+class AppLockedPresenter(
     lockedView: LockedView,
     override val dispatcher: Dispatcher = Dispatcher.shared,
     override val fingerprintStore: FingerprintStore = FingerprintStore.shared,
@@ -21,6 +24,14 @@ open class AutofillLockedPresenter(
 ) : LockedPresenter(lockedView, dispatcher, fingerprintStore, lockedStore, settingStore) {
 
     override fun Observable<Unit>.unlockAuthenticationObservable(): Observable<Boolean> {
-        return this.flatMap { settingStore.unlockWithFingerprint.take(1) }
+        return this.delay(delay, TimeUnit.SECONDS)
+            .switchMap { lockedStore.canLaunchAuthenticationOnForeground.take(1) }
+            .filter { it }
+            .map { Unit }
+            .mergeWith(lockedView.unlockButtonTaps)
+            .doOnNext {
+                dispatcher.dispatch(UnlockingAction(true))
+            }
+            .switchMap { settingStore.unlockWithFingerprint.take(1) }
     }
 }
