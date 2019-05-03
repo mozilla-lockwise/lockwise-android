@@ -7,6 +7,7 @@
 package mozilla.lockbox.presenter
 
 import android.app.Activity
+import android.app.KeyguardManager
 import android.content.Context
 import android.content.Intent
 import android.service.autofill.FillResponse
@@ -46,8 +47,10 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.eq
 import org.mockito.Mock
+import org.mockito.Mockito
 import org.mockito.Mockito.any
 import org.mockito.Mockito.anyString
 import org.mockito.Mockito.mock
@@ -69,6 +72,7 @@ import org.powermock.api.mockito.PowerMockito.`when` as whenCalled
     Intent::class
 )
 class AutofillRoutePresenterTest {
+
     @Mock
     val navController: NavController = mock(NavController::class.java)
 
@@ -100,7 +104,11 @@ class AutofillRoutePresenterTest {
     @Mock
     val intent: Intent = PowerMockito.mock(Intent::class.java)
 
+    @Mock
+    val keyguardManager = Mockito.mock(KeyguardManager::class.java)
+
     val callingIntent = Intent()
+    val credentialIntent = Intent()
 
     class FakeResponseBuilder : FillResponseBuilder(ParsedStructure(packageName = "meow")) {
         @Mock
@@ -186,6 +194,14 @@ class AutofillRoutePresenterTest {
         PowerMockito.whenNew(Intent::class.java).withNoArguments()
             .thenReturn(intent)
 
+        whenCalled(activity.getString(ArgumentMatchers.anyInt())).thenReturn("hello")
+        whenCalled(
+            keyguardManager.createConfirmDeviceCredentialIntent(
+                ArgumentMatchers.anyString(),
+                ArgumentMatchers.anyString()
+            )
+        ).thenReturn(credentialIntent)
+        whenCalled(activity.getSystemService(Context.KEYGUARD_SERVICE)).thenReturn(keyguardManager)
         whenCalled(childFragmentManager.fragments).thenReturn(listOf(currentFragment))
         whenCalled(navHost.childFragmentManager).thenReturn(childFragmentManager)
         whenCalled(fragmentManager.fragments).thenReturn(listOf(navHost))

@@ -6,18 +6,24 @@
 
 package mozilla.lockbox.store
 
-import android.content.ClipData
-import android.content.ClipboardManager
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.content.Context
-import android.os.Handler
+import android.content.Intent
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
+import mozilla.lockbox.LockboxBroadcastReceiver
 import mozilla.lockbox.action.ClipboardAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.support.ClipboardSupport
+import mozilla.lockbox.support.Constant
+import mozilla.lockbox.support.LockingSupport
+import mozilla.lockbox.support.SystemLockingSupport
 
 open class ClipboardStore(
-    val dispatcher: Dispatcher = Dispatcher.shared
+    val dispatcher: Dispatcher = Dispatcher.shared,
+    val timerSupport: LockingSupport = SystemLockingSupport()
 ) : ContextStore {
     internal val compositeDisposable = CompositeDisposable()
 
@@ -26,7 +32,9 @@ open class ClipboardStore(
     }
 
     private val defaultClipboardTimeout = 60000L
-    private lateinit var clipboardManager: ClipboardManager
+    private lateinit var clipboardSupport: ClipboardSupport
+    private lateinit var alarmManager: AlarmManager
+    private lateinit var context: Context
 
     init {
         dispatcher.register
@@ -46,25 +54,22 @@ open class ClipboardStore(
     }
 
     override fun injectContext(context: Context) {
-        this.clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        this.context = context
+        this.clipboardSupport = ClipboardSupport(context)
+        this.alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     }
 
     private fun addToClipboard(label: String, string: String) {
-        val clip = ClipData.newPlainText(label, string)
-        clipboardManager.primaryClip = clip
+        clipboardSupport.paste(label, string)
         timedReplaceDirty(string)
     }
 
-    private fun timedReplaceDirty(dirty: String, clean: String = "", delay: Long = defaultClipboardTimeout) {
-        Handler().postDelayed({
-            replaceDirty(dirty, clean)
-        }, delay)
-    }
-
-    fun replaceDirty(dirty: String, clean: String = "") {
-        val clipData = clipboardManager.primaryClip?.getItemAt(0)
-        if (clipData?.text == dirty) {
-            clipboardManager.primaryClip = ClipData.newPlainText("", clean)
-        }
+    private fun timedReplaceDirty(dirty: String, delay: Long = defaultClipboardTimeout) {
+        val triggerAt = delay + this.timerSupport.systemTimeElapsed
+        val intent = Intent(context, LockboxBroadcastReceiver::class.java)
+        intent.action = Constant.Key.clearClipboardIntent
+        intent.putExtra(Constant.Key.clipboardDirtyExtra, dirty)
+        val scheduled = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME, triggerAt, scheduled)
     }
 }

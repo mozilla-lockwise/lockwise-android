@@ -174,6 +174,8 @@ class ItemListFragment : Fragment(), ItemListView {
 
     override fun updateAccountProfile(profile: AccountViewModel) {
         val header = view!!.navView.getHeaderView(0)
+        val appName = getString(R.string.app_name)
+        header.menuHeader.profileImage.contentDescription = getString(R.string.app_logo, appName)
         header.menuHeader.displayName.text = profile.displayEmailName ?: resources.getString(R.string.firefox_account)
         header.menuHeader.accountName.text = profile.accountName ?: resources.getString(R.string.app_name)
 

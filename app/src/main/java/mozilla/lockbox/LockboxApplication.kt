@@ -16,9 +16,11 @@ import io.sentry.Sentry
 import io.sentry.android.AndroidSentryClientFactory
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.LockboxMegazord
+import mozilla.components.lib.fetch.httpurlconnection.HttpURLConnectionClient
 import mozilla.components.support.base.log.Log
 import mozilla.components.support.base.log.logger.Logger
 import mozilla.components.support.base.log.sink.AndroidLogSink
+import mozilla.components.support.rustlog.RustLog
 import mozilla.lockbox.presenter.ApplicationPresenter
 import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.support.AutoLockSupport
@@ -76,7 +78,8 @@ open class LockboxApplication : Application() {
     }
 
     private fun setupDataStoreSupport() {
-        LockboxMegazord.init()
+        LockboxMegazord.init(lazy { HttpURLConnectionClient() })
+        RustLog.enable()
 
         // This list of stores need to be constructed
         // in the given order. e.g. AccountStore dispatches DataStoreActions.

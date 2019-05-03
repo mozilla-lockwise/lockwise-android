@@ -11,7 +11,7 @@ import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.SyncUnlockInfo
-import mozilla.components.service.fxa.AccessTokenInfo
+import mozilla.components.concept.sync.AccessTokenInfo
 import mozilla.lockbox.DisposingTest
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
@@ -165,9 +165,10 @@ class DataStoreTest : DisposingTest() {
         val kid = "dfsdfsfads"
         val k = "lololololol"
         val accessToken = "jlk;sfdkljdfsljk"
+        val scope = "asdf1234"
 
         val syncCredentials = FixedSyncCredentials(
-            accessToken = AccessTokenInfo(accessToken, null, 0L),
+            accessToken = AccessTokenInfo(scope, accessToken, null, 0L),
             tokenServerURL = tokenServerURL,
             kid = kid,
             syncKey = k,
