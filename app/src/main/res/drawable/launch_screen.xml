@@ -7,7 +7,7 @@
           android:width="@dimen/logo_size"
           android:background="@null"
           android:gravity="top|center_horizontal" >
-        <bitmap android:src="@drawable/ic_lockbox"
+        <bitmap android:src="@drawable/ic_lockwise_bordered"
         />
     </item>
 
