@@ -35,7 +35,9 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:contentDescription="@string/autofill_background_image"/>
+            android:contentDescription="@null"
+            android:importantForAccessibility="no"
+    />
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/onboardingBottom"

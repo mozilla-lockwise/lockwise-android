@@ -253,8 +253,6 @@
 
     <!-- This is the prompt when autofill is triggered and the application is locked. %1$s will be replaced with application name -->
     <string name="autofill_authenticate_cta">Unlock %1$s</string>
-    <!-- This is the error message when autofill is triggered but no domain is detected. This is unlikely. -->
-    <string name="autofill_error_no_hostname">Unexpected hostname format</string>
     <!-- This is the prompt when autofill is triggered, application is unlocked, and no passwords are detected. %1$s will be replaced with application name. -->
     <string name="autofill_search_cta">Search %1$s</string>
     <!-- This is the error message when autofill is triggered and the application is in an error state. %1$s will be replaced with application name. %s refers to the localized error message that will be provided by the system. -->

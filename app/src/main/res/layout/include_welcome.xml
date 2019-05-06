@@ -21,7 +21,10 @@
             android:layout_marginTop="19dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:src="@drawable/ic_welcome_illustration"/>
+            android:src="@drawable/ic_welcome_illustration"
+            android:contentDescription="@null"
+            android:importantForAccessibility="no"
+    />
 
     <ImageView
             android:layout_width="800dp"
@@ -33,6 +36,8 @@
             android:layout_marginStart="-300dp"
             android:layout_marginTop="130dp"
             android:src="@drawable/ic_welcome_blob"
+            android:contentDescription="@null"
+            android:importantForAccessibility="no"
     />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
