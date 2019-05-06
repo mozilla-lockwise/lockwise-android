@@ -19,8 +19,8 @@
 
     <ImageView
         android:id="@+id/lockwiseIcon"
-        android:layout_width="160dp"
-        android:layout_height="160dp"
+        android:layout_width="@dimen/logo_size"
+        android:layout_height="@dimen/logo_size"
         android:background="@null"
         android:src="@drawable/ic_lockbox"
         app:layout_constraintTop_toTopOf="parent"
@@ -28,7 +28,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="200dp"
         android:layout_marginBottom="8dp"
-    />
+        android:contentDescription="@string/logo_description"/>
 
     <ImageView
         android:id="@+id/lockwiseTitle"
@@ -39,7 +39,7 @@
         app:layout_constraintTop_toBottomOf="@id/lockwiseIcon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-    />
+        android:contentDescription="@string/lockwise_title_description"/>
 
     <TextView
         android:id="@+id/tagline"
@@ -113,6 +113,4 @@
             android:layout_gravity="center"
         />
     </LinearLayout>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

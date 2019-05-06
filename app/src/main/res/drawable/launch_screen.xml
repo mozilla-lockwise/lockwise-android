@@ -1,4 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android" android:opacity="opaque">
-    <item android:drawable="@color/color_primary"/>
+    <item android:drawable="@color/background_white"/>
+
+    <item android:top="208dp"
+          android:height="145dp"
+          android:width="@dimen/logo_size"
+          android:background="@null"
+          android:gravity="top|center_horizontal" >
+        <bitmap android:src="@drawable/ic_lockbox"
+        />
+    </item>
+
+    <item android:top="60dp"
+          android:gravity="center_horizontal" >
+        <bitmap android:src="@drawable/ic_title"
+                android:gravity="center_horizontal"/>
+    </item>
 </layer-list>
