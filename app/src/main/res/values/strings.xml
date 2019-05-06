@@ -124,8 +124,6 @@
 
     <!-- This is the title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application -->
     <string name="autofill">Autofill</string>
-    <!-- This is the text a screenreader reads for a background image on an onboarding screen demonstrating the application branding-->
-    <string name="abstract_autofill_background_image">Autofill onboarding background image</string>
     <!-- This is the sub-title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application. %1$s will be replaced with application name -->
     <string name="autofill_summary">Let %1$s fill in logins for you</string>
     <!-- This is the label a screenreader uses to inform the user they selected the autofill setting toggle -->
@@ -142,8 +140,6 @@
     <!-- This is the title of a setting that shows the version and the build number of an app -->
     <string name="app_version_title">App Version: %1$s (%2$d)</string>
 
-    <!-- This is the text a screenreader reads for a background image on an onboarding screen demonstrating the application branding for biometric unlocking-->
-    <string name="autofill_background_image">Biometrics onboarding background image</string>
     <!-- This is the title of a setting that allows the user to use the device fingerprint biometrics to unlock the application -->
     <string name="unlock">Unlock with fingerprint</string>
     <!-- This is the label a screenreader uses to inform the user they selected the fingerprint setting toggle -->
