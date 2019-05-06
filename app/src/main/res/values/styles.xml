@@ -81,7 +81,9 @@
         <item name="android:backgroundTint">@color/background_white</item>
     </style>
     <style name="WelcomeScreen" parent="AppTheme">
-        <item name="android:background">@color/color_primary</item>
+        <item name="android:background">@color/background_violet</item>
+        <item name="android:windowBackground">@color/background_violet</item>
+        <item name="android:colorBackground">@color/background_violet</item>
     </style>
     <style name="AlertDialogStyle" parent="Theme.AppCompat.Light.Dialog">
         <item name="android:textColorPrimary">@color/text_ink</item>
