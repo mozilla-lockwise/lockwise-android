@@ -46,16 +46,4 @@
         app:layout_constraintBottom_toBottomOf="parent"
         tools:text="asadotzler@example.com"
         tools:ignore="SelectableText" />
-
-    <ImageView
-        android:id="@+id/disclosureIndicator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:alpha="0.54"
-        android:src="@drawable/ic_disclosure"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:ignore="ContentDescription" />
 </androidx.constraintlayout.widget.ConstraintLayout>

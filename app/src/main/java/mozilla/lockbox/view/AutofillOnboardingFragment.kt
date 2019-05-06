@@ -39,6 +39,7 @@ class AutofillOnboardingFragment : Fragment(), AutofillOnboardingView {
         view.iconAutofill.contentDescription = getString(R.string.onboarding_autofill_image_description, appLabel)
         view.autofillTitle.text = getString(R.string.onboarding_autofill_title, appLabel)
         view.autofillDescription.text = getString(R.string.onboarding_autofill_description, appLabel)
+
         return view
     }
 }

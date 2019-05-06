@@ -83,6 +83,8 @@
     </style>
     <style name="WelcomeScreen" parent="AppTheme">
         <item name="android:background">@color/color_primary</item>
+        <item name="android:windowBackground">@color/color_primary</item>
+        <item name="android:colorBackground">@color/color_primary</item>
     </style>
     <style name="AlertDialogStyle" parent="Theme.AppCompat.Light.Dialog">
         <item name="android:textColorPrimary">@color/text_ink</item>
