@@ -86,10 +86,6 @@ class ItemListAdapter(
                     .filterNotNull()
                     .subscribe(this.itemClicks as Subject)
 
-                if (type is ItemListAdapterType.AutofillFilter) {
-                    view.disclosureIndicator.visibility = GONE
-                }
-
                 return viewHolder
             }
         }
