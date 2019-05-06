@@ -262,9 +262,4 @@
 
     <!-- This is the placeholder text for an empty or null username. -->
     <string name="no_username">(no username)</string>
-
-    <!-- This is the descriptive text for the Lockwise logo. -->
-    <string name="logo_description">Lockwise logo.</string>
-    <!-- This is the descriptive text for the Lockwise title text. -->
-    <string name="lockwise_title_description">Firefox Lockwise title text. </string>
 </resources>

@@ -28,7 +28,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="200dp"
         android:layout_marginBottom="8dp"
-        android:contentDescription="@string/logo_description"/>
+        android:contentDescription="@string/app_logo"/>
 
     <ImageView
         android:id="@+id/lockwiseTitle"
@@ -39,7 +39,7 @@
         app:layout_constraintTop_toBottomOf="@id/lockwiseIcon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:contentDescription="@string/lockwise_title_description"/>
+        android:contentDescription="@string/app_name"/>
 
     <TextView
         android:id="@+id/tagline"
