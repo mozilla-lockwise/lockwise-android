@@ -6,12 +6,15 @@
 
 package mozilla.lockbox.view
 
+import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -58,7 +61,14 @@ class OnboardingConfirmationFragment : Fragment(), OnboardingConfirmationView {
             clickableSpan,
             securityLinkStart,
             securityLinkStart + securityLink.length,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        spannableSecurityText.setSpan(
+            StyleSpan(Typeface.BOLD),
+            securityLinkStart,
+            securityLinkStart + securityLink.length,
+            SPAN_EXCLUSIVE_EXCLUSIVE
         )
 
         view.encryptionText.text = spannableSecurityText
