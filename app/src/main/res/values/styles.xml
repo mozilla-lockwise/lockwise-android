@@ -4,7 +4,7 @@
   ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
   -->
 
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
@@ -24,6 +24,7 @@
     <style name="AppTheme.Launcher" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowBackground">@null</item>
         <item name="android:background">@drawable/launch_screen</item>
+        <item name="android:statusBarColor">@color/color_primary_dark</item>
     </style>
 
     <style name="NoBackgroundTheme" parent="Theme.AppCompat.Light.NoActionBar">
