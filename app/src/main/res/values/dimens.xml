@@ -13,5 +13,5 @@
     <dimen name="network_error_with_toolbar">96dp</dimen>
     <dimen name="network_error">40dp</dimen>
     <dimen name="toolbar_elevation">4dp</dimen>
-    <dimen name="logo_size">160dp</dimen>
+    <dimen name="logo_size">90dp</dimen>
 </resources>

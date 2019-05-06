@@ -2,17 +2,17 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android" android:opacity="opaque">
     <item android:drawable="@color/background_white"/>
 
-    <item android:top="208dp"
-          android:height="145dp"
+    <item android:top="200dp"
+          android:height="@dimen/logo_size"
           android:width="@dimen/logo_size"
           android:background="@null"
           android:gravity="top|center_horizontal" >
-        <bitmap android:src="@drawable/ic_lockwise_bordered"
+        <bitmap android:src="@drawable/ic_lockwise_glyph"
         />
     </item>
 
-    <item android:top="60dp"
-          android:gravity="center_horizontal" >
+    <item android:top="295dp"
+          android:gravity="top|center_horizontal" >
         <bitmap android:src="@drawable/ic_title"
                 android:gravity="center_horizontal"/>
     </item>
