@@ -76,7 +76,7 @@ class ItemListFragment : Fragment(), ItemListView {
         setupNavigationView(navController, view.navView)
         setupListView(view.entriesView)
         setupSpinner(view)
-        view.refreshContainer.setColorSchemeResources(R.color.refresh_blue)
+        view.refreshContainer.setColorSchemeResources(R.color.refresh_violet)
         super.onViewCreated(view, savedInstanceState)
     }
 
