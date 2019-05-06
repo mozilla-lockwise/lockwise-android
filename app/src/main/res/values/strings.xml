@@ -167,8 +167,8 @@
 
     <!-- This is the title of a dialog displayed to encourage the user to enable security to lock their device and the application -->
     <string name="no_device_security_title">Secure your device.</string>
-    <!-- This is a message displayed requiring the user to enable device-provided security to lock their device and the application. %1$s will be replaced with application name -->
-    <string name="no_device_security_message">In order to lock %1$s, a Pattern, PIN, or Password must be set up on your device. Without this, anyone who has your phone can access the information saved here.</string>
+    <!-- This is a message displayed requiring the user to enable device-provided security to lock their device and the application. -->
+    <string name="no_device_security_message">In order to set the Auto lock timer, a Pattern, PIN, or Password must be set up on your device.</string>
     <!-- This is the message displayed on a button to open the device settings for the user to set up device-provided security protections -->
     <string name="set_up_security_button">Set up Now</string>
 
