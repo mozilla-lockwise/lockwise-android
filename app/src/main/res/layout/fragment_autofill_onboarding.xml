@@ -36,7 +36,7 @@
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginStart="-270dp"
             android:layout_marginTop="230dp"
-    />
+            android:contentDescription="@string/abstract_autofill_background_image"/>
 
     <TextView
             android:id="@+id/autofillTitle"
