@@ -55,7 +55,7 @@
                         android:hint="@string/hint_hostname"
                         android:inputType="textNoSuggestions"
                         android:singleLine="true"
-                        android:textColor="@color/blue_60_percent"
+                        android:textColor="@color/violet_70"
                         android:clickable="true"
                         android:focusable="true"
                         tools:ignore="Autofill"/>

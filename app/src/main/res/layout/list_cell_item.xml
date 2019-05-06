@@ -19,7 +19,7 @@
         android:textSize="16sp"
         android:fontFamily="sans-serif"
         android:textStyle="normal"
-        android:textColor="@color/black_87_percent"
+        android:textColor="@color/text_ink"
         android:letterSpacing="0.01"
         android:lineSpacingExtra="8sp"
         android:layout_marginStart="16dp"
