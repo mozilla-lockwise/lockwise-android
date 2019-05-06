@@ -64,9 +64,9 @@
     <!-- This is the label used by screenreaders to inform the user the selected text area is used to search the logins in the list -->
     <string name="search_description">Search logins</string>
     <!-- This is the placeholder text to visibly describe a text area is to be used to search all the logins seen in the list view -->
-    <string name="search_your_entries">search your logins</string>
+    <string name="search_your_entries">search logins</string>
     <!-- This is the placeholder text to visibly describe a text area is to be used to search all the logins seen in the list view with the first letter capitalized -->
-    <string name="search_your_entries_cap">Search your logins</string>
+    <string name="search_your_entries_cap">Search logins</string>
     <!-- This is the label used by screenreaders to inform the user the selected button will clear the text currently input in the search area -->
     <string name="search_clear_content_description">Clear search bar text</string>
     <!-- This is shown when a user has entered search terms that have filtered the list of logins to find no results -->
@@ -86,11 +86,11 @@
     <!-- This describes an icon to screenreaders that the button tapped will open the web address in a web browser -->
     <string name="launch_hostname_content_description">Open web address in web browser</string>
     <!-- This describes an icon to screenreaders that the button tapped will copy the username to the device clipboard to paste and use in another application -->
-    <string name="copy_username_content_description">Copy your username</string>
+    <string name="copy_username_content_description">Copy username</string>
     <!-- This message appears when the user taps to copy the username to the device clipboard -->
     <string name="toast_username_copied">Username copied</string>
     <!-- This describes an icon to screenreaders that the button tapped will copy the password to the device clipboard to paste and use in another application -->
-    <string name="copy_password_content_description">Copy your password</string>
+    <string name="copy_password_content_description">Copy password</string>
     <!-- This message appears when the user taps to copy the password to the device clipboard -->
     <string name="toast_password_copied">Password copied</string>
     <!-- This describes an icon to screenreaders that the button tapped will display the password in plain text for immediate reading or use -->
@@ -214,8 +214,8 @@
     <string name="fingerprint_icon_description">Fingerprint image</string>
     <!-- This is the title of the autofill onboarding screen. %1$s will be replaced with application name -->
     <string name="onboarding_autofill_title">Let %1$s fill in your passwords for you.</string>
-    <!-- This is the onboarding description for enabling the application as an autofill provider through the device's autofill settings. %1$s will be replaced with application name -->
-    <string name="onboarding_autofill_description">Update your device’s Autofill settings to allow %1$s to fill passwords. </string>
+    <!-- This is the onboarding description for enabling the application as an autofill provider through the device's autofill settings. -->
+    <string name="onboarding_autofill_description">Easily fill usernames and passwords  where you need them most.</string>
     <!-- This button will take you to your phone's autofill settings screen. -->
     <string name="go_to_settings">Go to settings</string>
     <!-- This is the content description for the autofill image on the autofill onboarding screen. %1$s will be replaced with application name -->
