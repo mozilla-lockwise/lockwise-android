@@ -10,7 +10,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    style="@style/WelcomeScreen"
+    android:theme="@style/WelcomeScreen"
     android:id="@+id/fragmentLocked">
 
     <include android:id="@+id/include"
@@ -18,34 +18,70 @@
 
     <ImageView
             android:id="@+id/iconLock"
-            android:layout_width="32dp"
-            android:layout_height="40dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:background="@android:color/transparent"
-            app:srcCompat="@drawable/ic_icon_lock"
+            app:srcCompat="@drawable/ic_lock_large"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/unlockButton"
-            android:layout_marginBottom="16dp"
+            android:layout_marginTop="280dp"
             android:contentDescription="@string/lock_icon_description"/>
+
+    <ImageView
+            android:id="@+id/lockwiseTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:src="@drawable/ic_title"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/iconLock"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+    />
+    <TextView
+            android:id="@+id/tagline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:fontFamily="sans-serif"
+            android:textStyle="normal"
+            android:textColor="#20123a"
+            android:letterSpacing="-0.01"
+            android:lineSpacingExtra="7.5sp"
+            android:background="@android:color/transparent"
+            android:text="@string/app_tagline"
+            app:layout_constraintTop_toBottomOf="@id/lockwiseTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="8dp"
+    />
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            android:background="@color/background_white"
+            app:layout_constraintTop_toBottomOf="@id/tagline"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+    >
+
     <Button
             android:id="@+id/unlockButton"
-            android:layout_width="0dp"
+            android:layout_width="180dp"
             android:layout_height="36dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="90dp"
-            android:layout_marginStart="90dp"
-            android:layout_marginTop="225dp"
+            android:layout_marginTop="40dp"
             android:background="@drawable/rounded_corner_selector_violet"
             android:letterSpacing="0.09"
             android:lineSpacingExtra="2sp"
             android:text="@string/unlock_button"
             android:textColor="@color/text_white"
             android:textStyle="normal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            android:layout_gravity="center"/>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

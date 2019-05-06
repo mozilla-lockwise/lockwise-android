@@ -207,23 +207,6 @@
     </issue>
 
     <issue
-        id="IconXmlAndPng"
-        message="The following images appear both as density independent `.xml` files and as bitmap files: src/main/res/drawable-hdpi/ic_lock_large.png, src/main/res/drawable/ic_lock_large.xml">
-        <location
-            file="src/main/res/drawable/ic_lock_large.xml"/>
-        <location
-            file="src/main/res/drawable-xxxhdpi/ic_lock_large.png"/>
-        <location
-            file="src/main/res/drawable-xxhdpi/ic_lock_large.png"/>
-        <location
-            file="src/main/res/drawable-xhdpi/ic_lock_large.png"/>
-        <location
-            file="src/main/res/drawable-mdpi/ic_lock_large.png"/>
-        <location
-            file="src/main/res/drawable-hdpi/ic_lock_large.png"/>
-    </issue>
-
-    <issue
         id="RtlSymmetry"
         message="When you define `paddingStart` you should probably also define `paddingEnd` for right-to-left symmetry"
         errorLine1="                android:paddingStart=&quot;16dp&quot;"
