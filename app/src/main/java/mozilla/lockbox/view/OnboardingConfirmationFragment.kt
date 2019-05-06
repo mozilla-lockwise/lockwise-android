@@ -35,7 +35,7 @@ class OnboardingConfirmationFragment : Fragment(), OnboardingConfirmationView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val linkColor = resources.getColor(R.color.blue_60_percent, null)
+        val linkColor = resources.getColor(R.color.violet_70, null)
         val securityLink = getString(R.string.security_link)
         val securityText = String.format(getString(R.string.security_description), securityLink)
         val spannableSecurityText = SpannableString(securityText)

@@ -133,7 +133,7 @@
         android:theme="@style/NavDrawerStyle"
         app:headerLayout="@layout/nav_header"
         app:itemTextAppearance="@style/NavDrawerStyle"
-        app:itemTextColor="@color/text_grey"
+        app:itemTextColor="@color/text_ink"
         app:menu="@menu/nav_menu">
 
         <LinearLayout
@@ -157,7 +157,7 @@
                 android:stateListAnimator="@null"
                 android:text="@string/lock_now"
                 android:textAlignment="viewStart"
-                android:textColor="@color/text_grey"
+                android:textColor="@color/text_ink"
                 android:theme="@style/NavDrawerButtonStyle" />
         </LinearLayout>
     </com.google.android.material.navigation.NavigationView>

@@ -14,5 +14,6 @@ data class DialogViewModel(
     @StringRes val message: Int? = null,
     @StringRes val positiveButtonTitle: Int? = null,
     @StringRes val negativeButtonTitle: Int? = null,
-    @ColorRes val positiveButtonColor: Int? = null
+    @ColorRes val positiveButtonColor: Int? = null,
+    @ColorRes val negativeButtonColor: Int? = null
 )

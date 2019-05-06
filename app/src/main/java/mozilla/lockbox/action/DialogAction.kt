@@ -20,7 +20,9 @@ sealed class DialogAction(
             R.string.no_device_security_title,
             R.string.no_device_security_message,
             R.string.set_up_security_button,
-            R.string.cancel
+            R.string.cancel,
+            R.color.violet_70,
+            R.color.violet_70
         ),
         listOf(RouteAction.SystemSetting(SettingIntent.Security))
     )
@@ -30,7 +32,8 @@ sealed class DialogAction(
             R.string.disconnect_disclaimer_message,
             R.string.disconnect,
             R.string.cancel,
-            R.color.red
+            R.color.red,
+            R.color.violet_70
         ),
         listOf(LifecycleAction.UserReset)
     )
@@ -39,7 +42,9 @@ sealed class DialogAction(
                 R.string.secure_your_device,
                 R.string.device_security_description,
                 R.string.set_up_now,
-                R.string.skip_button
+                R.string.skip_button,
+                R.color.violet_70,
+                R.color.violet_70
             ),
             listOf(
                 RouteAction.SystemSetting(SettingIntent.Security),

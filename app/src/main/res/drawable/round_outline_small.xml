@@ -14,7 +14,7 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
        android:shape="oval">
     <solid
-       android:color="@color/dark_gray_background"/>
+       android:color="@color/color_primary_dark"/>
     <size
        android:height="48dp"
        android:width="48dp"/>

@@ -45,6 +45,7 @@
             android:layout_marginTop="12dp"
             android:layout_marginEnd="8dp"
             android:background="@android:color/transparent"
+            android:textColor="@color/text_ink"
             android:fontFamily="sans-serif-medium"
             android:letterSpacing="-0.01"
             android:lineSpacingExtra="7.5sp"

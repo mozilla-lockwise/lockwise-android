@@ -41,14 +41,13 @@
         <item name="android:textColorSecondary">@android:color/white</item>
         <item name="android:background">@android:color/transparent</item>
         <item name="colorPrimary">@color/color_primary</item>
-        <item name="colorPrimaryDark">@color/color_primary_dark</item>
+        <item name="colorPrimaryDark">@color/color_primary</item>
         <item name="android:titleTextAppearance">@style/TextAppearanceWidgetEventToolbarTitle</item>
     </style>
 
     <style name="BackableToolBar" parent="ToolBar">
         <item name="android:background">@color/color_primary</item>
     </style>
-
 
     <style name="TextAppearanceWidgetEventToolbarTitle">
         <item name="android:letterSpacing">0.01</item>
@@ -76,30 +75,30 @@
         <item name="android:textSize">16sp</item>
         <item name="android:fontFamily">sans-serif</item>
         <item name="android:textStyle">normal</item>
-        <item name="android:textColor">@color/black_87_percent</item>
+        <item name="android:textColor">@color/text_ink</item>
         <item name="android:letterSpacing">0.01</item>
         <item name="android:lineSpacingExtra">8sp</item>
-        <item name="android:backgroundTint">@color/white_E4</item>
+        <item name="android:backgroundTint">@color/background_white</item>
     </style>
     <style name="WelcomeScreen" parent="AppTheme">
-        <item name="android:background">@color/background_grey</item>
+        <item name="android:background">@color/color_primary</item>
     </style>
     <style name="AlertDialogStyle" parent="Theme.AppCompat.Light.Dialog">
-        <item name="android:textColorPrimary">@color/black_60_percent</item>
-        <item name="android:textColor">@color/black_87_percent</item>
-        <item name="android:textColorSecondary">@color/black_54_percent</item>
-        <item name="colorAccent">@color/color_primary</item>
+        <item name="android:textColorPrimary">@color/text_ink</item>
+        <item name="android:textColor">@color/text_ink</item>
+        <item name="android:textColorSecondary">@color/text_ink</item>
+        <item name="colorAccent">@color/violet_70</item>
         <item name="buttonBarButtonStyle">@style/AlertButtonStyle</item>
     </style>
     <style name="AlertButtonStyle" parent="Widget.AppCompat.Button.Borderless">
-        <item name="android:textColor">@color/color_primary</item>
+        <item name="android:textColor">@color/violet_70</item>
     </style>
     <style name="NavDrawerStyle" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:textSize">16sp</item>
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textStyle">normal</item>
         <item name="android:lineSpacingExtra">6.5sp</item>
-        <item name="android:drawableTint">@color/dark_gray_background</item>
+        <item name="android:drawableTint">@color/color_primary_dark</item>
     </style>
     <style name="NavDrawerButtonStyle" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:textSize">16sp</item>
@@ -108,7 +107,7 @@
         <item name="android:textStyle">normal</item>
         <item name="android:shadowColor">@color/background_white</item>
         <item name="android:stateListAnimator">@null</item>
-        <item name="android:drawableTint">@color/dark_gray_background</item>
+        <item name="android:drawableTint">@color/color_primary_dark</item>
     </style>
     <style name="NoTitleDialog" parent="@android:style/Theme.Dialog">
         <item name="android:windowFrame">@null</item>
@@ -127,6 +126,6 @@
         <item name="android:layout_marginEnd">20dp</item>
     </style>
     <style name="NoConnectivityWarning">
-        <item name="android:background">@color/gray_73_percent</item>
+        <item name="android:background">@color/color_primary_dark</item>
     </style>
 </resources>

@@ -68,6 +68,10 @@ object AlertDialogHelper {
             viewModel.positiveButtonColor?.let {
                 dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(context.getColor(it))
             }
+
+            viewModel.negativeButtonColor?.let {
+                dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(context.getColor(it))
+            }
         }
     }
 
