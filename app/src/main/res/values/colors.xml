@@ -31,7 +31,7 @@
 
     <color name="green">#12bc00</color>
     <color name="red">#d70022</color>
-    <color name="refresh_blue">#0e89c9</color>
+    <color name="refresh_violet">#45278d</color>
     <color name="selection">#14000000</color>
 
     <!--used in sync bar. do we customize this icon color?-->
