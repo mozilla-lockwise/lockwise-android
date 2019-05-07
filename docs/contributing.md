@@ -14,7 +14,7 @@ Please refer to installation and build instructions in the [documentation](insta
 
 ## LeakCanary
 
-We use [LeakCanary](https://github.com/square/leakcanary/wiki/FAQ) to monitor memory leaks in Debug builds of the Lockbox Android application. Please read the documentation and pay attention to warnings while debugging the application!
+We use [LeakCanary](https://github.com/square/leakcanary/wiki/FAQ) to monitor memory leaks in Debug builds of the Lockwise Android application. Please read the documentation and pay attention to warnings while debugging the application!
 
 ## How to Report Bugs
 

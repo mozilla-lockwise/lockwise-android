@@ -10,7 +10,7 @@ Firefox Lockwise for Android makes extensive use of RxKotlin, an implementation 
 
 In short, Flux architecture design maintains a unidirectional data flow, in which a global Dispatcher receives Actions & dispatches them to appropriate Stores. The Stores, in turn, process data & provide the source of truth for the Views. As users interact with the Views, any updates are made via a dispatched Action and the cycle begins again. See this [flux architecture](https://facebook.github.io/flux/docs/overview.html) writeup for more details on the original Flux architecture scheme.
 
-Lockbox implements a modified version of the described architecture (LockFlux), keeping in mind that the original implementation ignores asynchronous work. In this implementation, all asynchronous work is handled by the Stores as they reduce actions and state updates to their observable state.
+Lockwise implements a modified version of the described architecture (LockFlux), keeping in mind that the original implementation ignores asynchronous work. In this implementation, all asynchronous work is handled by the Stores as they reduce actions and state updates to their observable state.
 
 ### Memory Management
 

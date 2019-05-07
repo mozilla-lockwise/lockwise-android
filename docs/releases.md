@@ -74,7 +74,7 @@ _similar to above, but requires explicit cherry-pick commits on `production` bra
 _all builds must be manually uploaded from bitrise to Play Store Console as an artifact aka "New Release" in the "Preparing" instructions above_
 
 1. Browse to [App Releases][2] in Play Console
-2. Browse to the "Internal test track" (this release should already be uploaded and available to the core Lockbox team)
+2. Browse to the "Internal test track" (this release should already be uploaded and available to the core Lockwise team)
 3. Promote the release to the (internal still) Alpha channel using the "Promote to Alpha" button, complete the questions
 
 ## Distributing through the App Store (Production)
