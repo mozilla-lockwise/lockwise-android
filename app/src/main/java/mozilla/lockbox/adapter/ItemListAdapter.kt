@@ -15,7 +15,6 @@ import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.list_cell_item.view.*
 import kotlinx.android.synthetic.main.list_cell_no_entries.view.*
 import kotlinx.android.synthetic.main.list_cell_no_matching.view.*
 import mozilla.lockbox.R
@@ -64,7 +63,7 @@ class ItemListAdapter(
             NO_ENTRIES_CELL_TYPE -> {
                 val view = inflater.inflate(R.layout.list_cell_no_entries, parent, false)
                 val appName = view.context.resources.getString(R.string.app_name)
-                view.noEntriesDescription.text = view.context.resources.getString(R.string.no_entries_description, appName)
+                view.noEntriesDescription.text = view.context.resources.getString(R.string.no_logins_description, appName)
 
                 view.noEntriesLearnMore
                     .clicks()

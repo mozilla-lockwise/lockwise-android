@@ -43,7 +43,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/entriesView"
-                android:hint="@string/search_your_entries_cap"
+                android:hint="@string/search_logins_cap"
                 tools:ignore="Autofill"/>
 
         <ImageButton

@@ -19,15 +19,14 @@
 
     <ImageView
         android:id="@+id/lockwiseIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/logo_size"
+        android:layout_height="@dimen/logo_size"
         android:background="@null"
         android:src="@drawable/ic_lockwise_glyph"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="216dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="@dimen/logo_top_margin"
         android:contentDescription="@string/app_name"
     />
 
@@ -37,6 +36,7 @@
         android:layout_height="wrap_content"
         android:background="@null"
         android:src="@drawable/ic_title"
+        android:layout_marginTop="12dp"
         app:layout_constraintTop_toBottomOf="@id/lockwiseIcon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -50,15 +50,14 @@
         android:textSize="15sp"
         android:fontFamily="sans-serif"
         android:textStyle="normal"
-        android:textColor="#20123a"
+        android:textColor="@color/text_ink"
         android:letterSpacing="-0.01"
-        android:lineSpacingExtra="7.5sp"
         android:background="@android:color/transparent"
         android:text="@string/app_tagline"
         app:layout_constraintTop_toBottomOf="@id/lockwiseTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="10dp"
     />
 
     <LinearLayout
@@ -88,15 +87,18 @@
 
         <TextView
             android:id="@+id/textViewInstructions"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
             android:text="@string/welcome_instructions"
             android:textColor="@color/text_ink"
             android:background="@android:color/transparent"
+            android:lineSpacingExtra="3.5sp"
             android:textSize="13sp"
             android:textAlignment="center"
-            android:layout_gravity="center"
+            android:gravity="center_horizontal"
         />
 
         <TextView

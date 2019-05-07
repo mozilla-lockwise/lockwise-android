@@ -2,7 +2,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android" android:opacity="opaque">
     <item android:drawable="@color/background_white"/>
 
-    <item android:top="200dp"
+    <item android:top="@dimen/logo_top_margin"
           android:height="@dimen/logo_size"
           android:width="@dimen/logo_size"
           android:background="@null"
@@ -11,7 +11,7 @@
         />
     </item>
 
-    <item android:top="295dp"
+    <item android:top="@dimen/app_name_top_margin"
           android:gravity="top|center_horizontal" >
         <bitmap android:src="@drawable/ic_title"
                 android:gravity="center_horizontal"/>

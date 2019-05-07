@@ -20,7 +20,7 @@
     <!-- This is used as the label on a button on a first-run welcome screen to sign in and start using the application -->
     <string name="welcome_start_btn">Get Started</string>
     <!-- This provides context near a button on the first-run welcome screen to describe application requirements. Firefox Account is to be translated consistently to match use in other Firefox products. %1$s will be replaced with application name. -->
-    <string name="welcome_instructions">To use %1$s, you’ll need a\nFirefox Account with saved logins.</string>
+    <string name="welcome_instructions">To use %1$s, you’ll need a Firefox\nAccount with saved logins.</string>
     <!-- This is the link on the first-run welcome screen to learn more about the requirements of the application -->
     <string name="welcome_learn_more_btn">Learn More</string>
 
@@ -49,29 +49,29 @@
     <string name="unlock_button">Unlock</string>
 
     <!-- This message appears in a toast informing the user it is currently downloading and syncing login (a saved login is basically the URL, username and password) data -->
-    <string name="syncing_entries">Syncing your logins…</string>
+    <string name="syncing_logins">Syncing your logins…</string>
 
     <!-- This is the label used by screenreaders to inform the user the selected menu is for sorting the saved logins in the list -->
     <string name="sort_description">Sort logins</string>
     <!-- This is the label for the sorting option of the list of passwords to be in alphabetical order -->
     <string name="sort_menu_az">Alphabetically</string>
     <!-- This is a corresponding heading to describe the list view is showing all saved logins sorted alphabetically -->
-    <string name="all_entries_a_z">All logins (A-Z)</string>
+    <string name="all_logins_a_z">All logins (A-Z)</string>
     <!-- This is the label for the sorting option of the list of passwords to be in order of recency the item was accessed or used -->
     <string name="sort_menu_recent">Recently Used</string>
     <!-- This is a corresponding heading to describe the list view is showing all saved logins sorted by recent use -->
-    <string name="all_entries_recent">All logins (Recent)</string>
+    <string name="all_logins_recent">All logins (Recent)</string>
     <!-- This is the label used by screenreaders to inform the user the selected text area is used to search the logins in the list -->
     <string name="search_description">Search logins</string>
     <!-- This is the placeholder text to visibly describe a text area is to be used to search all the logins seen in the list view -->
-    <string name="search_your_entries">search logins</string>
+    <string name="search_logins">search logins</string>
     <!-- This is the placeholder text to visibly describe a text area is to be used to search all the logins seen in the list view with the first letter capitalized -->
-    <string name="search_your_entries_cap">Search logins</string>
+    <string name="search_logins_cap">Search logins</string>
     <!-- This is the label used by screenreaders to inform the user the selected button will clear the text currently input in the search area -->
     <string name="search_clear_content_description">Clear search bar text</string>
     <!-- This is shown when a user has entered search terms that have filtered the list of logins to find no results -->
-    <string name="no_matching_entries">No matching logins.</string>
-    <!-- This explains that if no entries are found and were expected, to add new logins through the Firefox desktop browser -->
+    <string name="no_matching_logins">No matching logins.</string>
+    <!-- This explains that if no logins are found and were expected, to add new logins through the Firefox desktop browser -->
     <string name="save_firefox_disclaimer">To see more logins here, you’ll need to save them to Firefox.</string>
 
     <!-- This is a heading that appears above the URL in context of a detailed item entry view -->
@@ -199,15 +199,15 @@
     <string name="network_connection_success">Network connection successful.</string>
 
     <!-- This is used to inform the user that there are no saved logins in the list -->
-    <string name="no_entries_found">No Logins Found</string>
+    <string name="no_logins_found">No Logins Found</string>
     <!-- This explains the steps the user should take, if no saved logins are found: sign in and sync in Firefox. %1$s will be replaced with application name -->
-    <string name="no_entries_description">%1$s lets you access passwords you’ve already saved to Firefox. To
+    <string name="no_logins_description">%1$s lets you access passwords you’ve already saved to Firefox. To
         view your logins here, you’ll need to sign in and sync in Firefox.
     </string>
     <!-- This is the title for the biometric unlock onboarding screen. %1$s will be replaced with application name -->
     <string name="onboarding_unlock_title">Unlock %1$s with your fingerprint.</string>
     <!-- This is the onboarding description for enabling biometric unlock with the fingerprint sensor. %1$s will be replaced with application name -->
-    <string name="onboarding_unlock_description">Give %1$s permission to unlock this app with the fingerprint sensor.</string>
+    <string name="onboarding_unlock_description">Give %1$s permission to unlock this\napp with the fingerprint sensor.</string>
     <!-- This is the description of the button to skip the onboarding for biometric unlock with the fingerprint sensor. -->
     <string name="onboarding_skip">Skip for now</string>
     <!-- This is the description of the fingerprint icon on the onboarding screen -->
@@ -215,7 +215,7 @@
     <!-- This is the title of the autofill onboarding screen. %1$s will be replaced with application name -->
     <string name="onboarding_autofill_title">Let %1$s fill in your passwords for you.</string>
     <!-- This is the onboarding description for enabling the application as an autofill provider through the device's autofill settings. -->
-    <string name="onboarding_autofill_description">Easily fill usernames and passwords  where you need them most.</string>
+    <string name="onboarding_autofill_description">Easily fill usernames and passwords where you need them most.</string>
     <!-- This button will take you to your phone's autofill settings screen. -->
     <string name="go_to_settings">Go to settings</string>
     <!-- This is the content description for the autofill image on the autofill onboarding screen. %1$s will be replaced with application name -->
