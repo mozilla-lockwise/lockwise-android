@@ -35,7 +35,8 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="26dp"
                 android:paddingEnd="16dp"
-                android:paddingBottom="26dp">
+                android:paddingBottom="26dp"
+                tools:ignore="RtlSymmetry">
 
             <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/inputLayoutHostname"
@@ -46,7 +47,8 @@
                     android:contentDescription="@string/launch_hostname_content_description"
                     app:layout_constraintTop_toTopOf="parent"
                     card_view:layout_constraintStart_toStartOf="parent"
-                    card_view:layout_constraintEnd_toEndOf="parent">
+                    card_view:layout_constraintEnd_toEndOf="parent"
+                    tools:ignore="RtlSymmetry">
 
                 <EditText
                         android:id="@+id/inputHostname"
@@ -85,7 +87,8 @@
                     android:textColorHint="@color/black_60_percent"
                     app:layout_constraintTop_toBottomOf="@id/inputLayoutHostname"
                     card_view:layout_constraintStart_toStartOf="parent"
-                    card_view:layout_constraintEnd_toEndOf="parent">
+                    card_view:layout_constraintEnd_toEndOf="parent"
+                    tools:ignore="RtlSymmetry">
 
                 <EditText
                         android:id="@+id/inputUsername"
@@ -126,7 +129,8 @@
                     android:contentDescription="@string/copy_password_content_description"
                     card_view:layout_constraintStart_toStartOf="parent"
                     card_view:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/inputLayoutUsername" >
+                    app:layout_constraintTop_toBottomOf="@id/inputLayoutUsername"
+                    tools:ignore="RtlSymmetry">
                 <EditText
                         android:id="@+id/inputPassword"
                         style="@style/EditTextStyle"
