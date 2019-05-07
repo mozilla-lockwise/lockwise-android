@@ -27,7 +27,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="280dp"
+            android:layout_marginTop="@dimen/lock_icon_top_margin"
             android:contentDescription="@string/lock_icon_description"/>
 
     <ImageView

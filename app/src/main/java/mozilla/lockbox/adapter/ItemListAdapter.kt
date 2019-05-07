@@ -62,8 +62,8 @@ class ItemListAdapter(
             }
             NO_ENTRIES_CELL_TYPE -> {
                 val view = inflater.inflate(R.layout.list_cell_no_entries, parent, false)
-                val appName = view.context.resources.getString(R.string.app_name)
-                view.noEntriesDescription.text = view.context.resources.getString(R.string.no_logins_description, appName)
+                val appLabel = view.context.resources.getString(R.string.app_label)
+                view.noEntriesDescription.text = view.context.resources.getString(R.string.no_logins_description, appLabel)
 
                 view.noEntriesLearnMore
                     .clicks()

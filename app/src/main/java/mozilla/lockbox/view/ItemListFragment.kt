@@ -7,6 +7,7 @@
 package mozilla.lockbox.view
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.navigation.NavigationView
 import com.jakewharton.rxbinding2.support.design.widget.itemSelections
+import com.jakewharton.rxbinding2.support.v4.widget.open
 import com.jakewharton.rxbinding2.support.v4.widget.refreshes
 import com.jakewharton.rxbinding2.support.v7.widget.navigationClicks
 import com.jakewharton.rxbinding2.view.clicks
@@ -84,7 +86,6 @@ class ItemListFragment : Fragment(), ItemListView {
         val sortList = ArrayList<Setting.ItemListSort>()
         sortList.add(Setting.ItemListSort.ALPHABETICALLY)
         sortList.add(Setting.ItemListSort.RECENTLY_USED)
-
         spinner = view.sortButton
         sortItemsAdapter = SortItemAdapter(context!!, android.R.layout.simple_spinner_item, sortList)
         spinner.adapter = sortItemsAdapter

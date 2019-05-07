@@ -20,4 +20,5 @@
     <dimen name="onboarding_max_width">250dp</dimen>
     <dimen name="onboarding_confirmation_margin">42dp</dimen>
     <dimen name="onboarding_text_size">15sp</dimen>
+    <dimen name="lock_icon_top_margin">238dp</dimen>
 </resources>

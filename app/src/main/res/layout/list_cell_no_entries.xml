@@ -40,12 +40,12 @@
             android:fontFamily="sans-serif"
             android:textStyle="normal"
             android:textColor="@color/text_grey"
-            android:lineSpacingExtra="6.5sp"
+            android:lineSpacingExtra="5.5sp"
             android:layout_gravity="center_horizontal"
             android:gravity="center_horizontal"
             android:layout_marginStart="30dp"
             android:layout_marginEnd="30dp"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="5dp"
             android:background="@android:color/transparent"
             android:text="@string/no_logins_description"/>
 

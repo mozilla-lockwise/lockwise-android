@@ -31,11 +31,12 @@
             android:layout_gravity="center_horizontal"
             android:textAlignment="center"
             android:textSize="13sp"
+            android:lineSpacingExtra="6.5sp"
             android:fontFamily="sans-serif"
             android:textStyle="normal"
             android:textColor="@color/text_grey"
             android:background="@color/background_grey"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="5dp"
             android:text="@string/save_firefox_disclaimer"/>
 
     <Button
