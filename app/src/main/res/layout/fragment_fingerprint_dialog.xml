@@ -110,7 +110,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/dialogTitle"
-            tools:text="Give Lockbox permission to unlock this app with the fingerprint sensor." />
+            tools:text="Give Lockwise permission to unlock this app with the fingerprint sensor." />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageView
