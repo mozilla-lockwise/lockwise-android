@@ -66,7 +66,7 @@ The special case in this scenario is view routing. To handle the view-changing c
 
 ### Benefits of Flux
 
-Close readers will note that this document borrows heavily from a similar one in our [iOS application](https://mozilla-lockbox.github.io/lockbox-ios/architecture/).
+Close readers will note that this document borrows heavily from a similar one in our [iOS application](https://mozilla-lockwise.github.io/lockwise-ios/architecture/).
 
 The shared Flux pattern and reactive libraries allow us to "borrow" view-presentation logic from iOS as we move forward on Android.
 
