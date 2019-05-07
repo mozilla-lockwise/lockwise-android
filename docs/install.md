@@ -36,4 +36,4 @@ both.
 The project's [official code coverage rating can be found on codecov.io][codecov],
 which uses the results from jacoco (i.e. the command line).
 
-[codecov]: https://codecov.io/gh/mozilla-lockbox/lockbox-android
+[codecov]: https://codecov.io/gh/mozilla-lockwise/lockwise-android

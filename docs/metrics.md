@@ -1,4 +1,4 @@
-# Firefox Lockbox for Android Metrics Plan
+# Firefox Lockwise for Android Metrics Plan
 
 _Last Updated: Feb 4, 2019_
 

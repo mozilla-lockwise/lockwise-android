@@ -33,7 +33,7 @@ _all commits on all branches and pull requests are automatically built_
   - merge the release notes to `master` branch
   - this will result in a release build matching the build number provided
 2. Create and merge a pull request _from_ `master` _to_ `production` so it tracks the release
-  - https://github.com/mozilla-lockbox/lockbox-android/compare/production...master
+  - https://github.com/mozilla-lockwise/lockwise-android/compare/production...master
 3. Create a tag from `production` matching the format: `major.minor.patch.build`
   - for example: `1.2.1399` is major version 1.2, bitrise build 1399
   - for example: `1.3.1.1624` is major version 1.3 with 1 patch release, (bitrise) build 1624

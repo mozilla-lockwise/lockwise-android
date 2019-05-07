@@ -1,1 +1,1 @@
-Welcome to the Firefox Lockbox for Android documentation!
+Welcome to the Firefox Lockwise for Android documentation!

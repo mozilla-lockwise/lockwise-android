@@ -59,7 +59,7 @@ open class AutofillRoutePresenter(
             .switchMap {
                 if (!IntentBuilder.isSearchRequired(activity.intent)) {
                     // need to account for mismatch between `Unlocked` and the list being "ready"
-                    // see https://github.com/mozilla-lockbox/lockbox-android/issues/464
+                    // see https://github.com/mozilla-lockwise/lockwise-android/issues/464
                     responseBuilder.asyncFilter(pslSupport, dataStore.list.take(1))
                 } else {
                     // the user has pressed search, so we shouldn't filter the list here.

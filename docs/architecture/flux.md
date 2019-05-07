@@ -1,8 +1,8 @@
-# Firefox Lockbox for Android Architecture
+# Firefox Lockwise for Android Architecture
 
 ## RxKotlin
 
-Firefox Lockbox for Android makes extensive use of RxKotlin, an implementation of the Observable pattern from ReactiveX. More information and many marble diagrams can be found in the [ReactiveX documentation](http://reactivex.io/). The rest of this document relies on a basic understanding of the reader of the ReactiveX-style Observer implementation. Their intro document is a [good starting point](http://reactivex.io/intro.html).
+Firefox Lockwise for Android makes extensive use of RxKotlin, an implementation of the Observable pattern from ReactiveX. More information and many marble diagrams can be found in the [ReactiveX documentation](http://reactivex.io/). The rest of this document relies on a basic understanding of the reader of the ReactiveX-style Observer implementation. Their intro document is a [good starting point](http://reactivex.io/intro.html).
 
 ## Flux
 
