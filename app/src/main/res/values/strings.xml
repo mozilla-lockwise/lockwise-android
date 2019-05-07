@@ -74,14 +74,14 @@
     <!-- This explains that if no logins are found and were expected, to add new logins through the Firefox desktop browser -->
     <string name="save_firefox_disclaimer">To see more logins here, you’ll need to save them to Firefox.</string>
 
-    <!-- This is a heading that appears above the URL in context of a detailed item entry view -->
+    <!-- This is a heading that appears above the URL in context of a detailed item view -->
     <string name="hint_hostname">Web address</string>
-    <!-- This is a heading that appears above the username in context of a detailed item entry view -->
+    <!-- This is a heading that appears above the username in context of a detailed item view -->
     <string name="hint_username">Username</string>
-    <!-- This is a heading that appears above a password in context of a detailed item entry view -->
+    <!-- This is a heading that appears above a password in context of a detailed item view -->
     <string name="hint_password">Password</string>
-    <!-- This message appears to link to a web page explaining how to make changes to the entry details -->
-    <string name="learn_to_edit_entry">Learn how to edit this entry</string>
+    <!-- This message appears to link to a web page explaining how to make changes to the details -->
+    <string name="learn_to_edit_login">Learn how to edit this login</string>
 
     <!-- This describes an icon to screenreaders that the button tapped will open the web address in a web browser -->
     <string name="launch_hostname_content_description">Open web address in web browser</string>

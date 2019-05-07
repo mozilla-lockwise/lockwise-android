@@ -1,14 +1,14 @@
 [![Build Status][bitrise-image]][bitrise-link]
 [![codecov][codecov-image]][codecov-link]
 
-# Firefox Lockbox for Android
+# Firefox Lockwise for Android
 
-The Android application repository for [Firefox Lockbox][org-website].
+The Android application repository for [Firefox Lockwise][org-website] (formerly Lockbox).
 
 ## [Documentation][docs-link]
 
-*This is just one component of the Firefox Lockbox product. Please see the
-[Firefox Lockbox website][org-website] for more context.*
+*This is just one component of the Firefox Lockwise product. Please see the
+[Firefox Lockwise website][org-website] for more context.*
 
 For detailed documentation and installation instructions, please see the
 [`docs` directory][docs-link].
@@ -33,10 +33,10 @@ All alternative licenses and the origins of third party code is cited in the [th
 
 [bitrise-image]: https://app.bitrise.io/app/20089a88380dd14d/status.svg?token=41PRDjKSm0fQCUiS2EmCkQ&branch=master
 [bitrise-link]: https://app.bitrise.io/app/20089a88380dd14d
-[codecov-image]: https://codecov.io/gh/mozilla-lockbox/lockbox-android/branch/master/graph/badge.svg
-[codecov-link]: https://codecov.io/gh/mozilla-lockbox/lockbox-android
+[codecov-image]: https://codecov.io/gh/mozilla-lockwise/lockwise-android/branch/master/graph/badge.svg
+[codecov-link]: https://codecov.io/gh/mozilla-lockwise/lockwise-android
 [docs-link]: docs/
-[org-website]: https://lockbox.firefox.com/
+[org-website]: https://lockwise.firefox.com/
 [contributing-link]: docs/contributing.md
 [coc-link]: /CODE_OF_CONDUCT.md
 [security-link]: docs/SECURITY.md

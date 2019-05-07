@@ -1,10 +1,10 @@
 # Test Plan
 
-_Test plan for [Firefox Lockbox for Android][1]_
+_Test plan for [Firefox Lockwise for Android][1]_
 
 ## Overview
 
-Firefox Lockbox for Android is a new mobile app developed with a pre-defined set of P1 "must have" requirements and a target release at the beginning of February 2019 in the Google Play Store.
+Firefox Lockwise for Android is a new mobile app developed with a pre-defined set of P1 "must have" requirements and a target release at the beginning of February 2019 in the Google Play Store.
 
 Mozilla Product Integrity provides embedded QA to work with the team throughout the bi-weekly sprints allowing for ongoing testing and feedback, issue triage, and continuous test plan development and end-to-end regression testing in order to accommodate a quick release schedule.
 
@@ -89,10 +89,10 @@ The interface is legible and tappable by designing and testing for:
 
 ---
 
-[1]: https://github.com/mozilla-lockbox/lockbox-android
+[1]: https://github.com/mozilla-lockwise/lockwise-android
 [2]: https://testrail.stage.mozaws.net/index.php?/suites/view/3060&group_by=cases:section_id&group_order=asc
 [3]: https://docs.google.com/document/d/1FfyD7A0qB-WGT2dx3pA5CzS764DVQyfXLs9RVbEpw0s/edit#heading=h.nz3yfasvpfpu
-[4]: https://github.com/mozilla-lockbox/lockbox-android/issues/202
+[4]: https://github.com/mozilla-lockwise/lockwise-android/issues/202
 [5]: /metrics.md 
 [6]: https://github.com/mozilla-lockbox/lockbox-ios/issues/51
-[7]: https://github.com/mozilla-lockbox/lockbox-android/blob/master/docs/accessibility.md
+[7]: https://github.com/mozilla-lockwise/lockwise-android/blob/master/docs/accessibility.md

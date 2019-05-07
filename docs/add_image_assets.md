@@ -1,6 +1,6 @@
 # Adding icons/images assets into project
 
-Lockbox app uses 2 types of assets for icons/images that are added in the project: Vector Assets and .png raster images. 
+Lockwise app uses 2 types of assets for icons/images that are added in the project: Vector Assets and .png raster images. 
 
 Using vector drawables instead of flat images reduces the size of the APK, the same file is being resized for different screen densities without loss of image quality and also it is easier to maintain one XML file instead of updating multiple raster graphics at various resolutions.
 However, when adding an image asset to the project, we should take into consideration the following aspects:
@@ -9,7 +9,7 @@ However, when adding an image asset to the project, we should take into consider
   - Simple icons with few details that are intended for small display size (max 200x200dp) should use vector assets. 
   - Vector Assets should be added to one the following folders in the application:
     - pp->res->drawable->drawable: for simple icons from Android libraries
-    - pp->res->drawable->drawable-v24: for more complex images (e.g. the Lockbox logo)
+    - pp->res->drawable->drawable-v24: for more complex images (e.g. the Lockwise logo)
   - To open Vector Asset Studio tool, go to the appropriate folder in Android View, right click on drawable folder, and select New -> Vector Asset
   - Vector Asset Studio opens. Select Local file, specify the .svg image file path, override the Size and optionally change icon name. Then select Next and Finish
   - More information related to Vector Drawables and Vector Asset Studio can be found [here](https://developer.android.com/studio/write/vector-asset-studio)
