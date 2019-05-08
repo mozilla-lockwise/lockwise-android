@@ -199,7 +199,7 @@
     <string name="network_connection_success">Network connection successful.</string>
 
     <!-- This is used to inform the user that there are no saved logins in the list -->
-    <string name="no_logins_found">No Logins Found</string>
+    <string name="no_logins_found">No logins found</string>
     <!-- This explains the steps the user should take, if no saved logins are found: sign in and sync in Firefox. %1$s will be replaced with application name -->
     <string name="no_logins_description">%1$s lets you access passwords you’ve already saved to Firefox. To
         view your logins here, you’ll need to sign in and sync in Firefox.
