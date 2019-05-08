@@ -40,7 +40,7 @@
     />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/onboardingBottom"
+            android:id="@+id/onboardingFingerprintDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|center_horizontal"
@@ -81,13 +81,29 @@
                 android:gravity="center_horizontal"
                 android:background="@android:color/transparent"
                 android:layout_marginTop="8dp"
-                android:layout_marginStart="25dp"
-                android:layout_marginEnd="25dp"
+                android:layout_marginStart="26dp"
+                android:layout_marginEnd="26dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
                 android:text="@string/onboarding_unlock_description"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/unlockWithFingerprintTitle"
         />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/fingerprintIllustration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:background="@null"
+            android:layout_marginBottom="78dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/onboardingFingerprintDescription"
+            app:layout_constraintBottom_toBottomOf="parent"
+    >
 
         <ImageView
                 android:id="@+id/iconFingerprint"
@@ -95,12 +111,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="25dp"
-                android:layout_marginBottom="14dp"
                 android:background="@android:color/transparent"
                 app:srcCompat="@drawable/ic_fingerprint"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/unlockDescription"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
         />
 
         <TextView
@@ -113,7 +129,7 @@
                 android:textColor="@color/gray_73_percent"
                 android:lineSpacingExtra="6.5sp"
                 android:gravity="center_horizontal"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="13dp"
                 android:layout_marginBottom="31dp"
                 android:background="@android:color/transparent"
                 app:layout_constraintStart_toStartOf="parent"

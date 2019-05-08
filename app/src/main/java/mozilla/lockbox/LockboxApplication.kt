@@ -40,7 +40,7 @@ import mozilla.lockbox.support.isDebug
 
 sealed class LogProvider {
     companion object {
-        val log: Logger = Logger("Lockbox")
+        val log: Logger = Logger("Lockwise")
     }
 }
 

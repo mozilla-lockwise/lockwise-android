@@ -20,7 +20,7 @@
     <!-- This is used as the label on a button on a first-run welcome screen to sign in and start using the application -->
     <string name="welcome_start_btn">Get Started</string>
     <!-- This provides context near a button on the first-run welcome screen to describe application requirements. Firefox Account is to be translated consistently to match use in other Firefox products. %1$s will be replaced with application name. -->
-    <string name="welcome_instructions">To use %1$s, you’ll need a Firefox\nAccount with saved logins.</string>
+    <string name="welcome_instructions">To use %1$s, you’ll need a Firefox Account with saved logins.</string>
     <!-- This is the link on the first-run welcome screen to learn more about the requirements of the application -->
     <string name="welcome_learn_more_btn">Learn More</string>
 
@@ -207,7 +207,7 @@
     <!-- This is the title for the biometric unlock onboarding screen. %1$s will be replaced with application name -->
     <string name="onboarding_unlock_title">Unlock %1$s with your fingerprint.</string>
     <!-- This is the onboarding description for enabling biometric unlock with the fingerprint sensor. %1$s will be replaced with application name -->
-    <string name="onboarding_unlock_description">Give %1$s permission to unlock this\napp with the fingerprint sensor.</string>
+    <string name="onboarding_unlock_description">Give %1$s permission to unlock this app with the fingerprint sensor.</string>
     <!-- This is the description of the button to skip the onboarding for biometric unlock with the fingerprint sensor. -->
     <string name="onboarding_skip">Skip for now</string>
     <!-- This is the description of the fingerprint icon on the onboarding screen -->
