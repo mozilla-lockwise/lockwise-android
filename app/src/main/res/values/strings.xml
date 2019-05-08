@@ -247,9 +247,9 @@
     <!-- This header appears above the Privacy page of the application website. -->
     <string name="privacy">Privacy</string>
 
-    <!-- This is the prompt when autofill is triggered and the application is locked. %1$s will be replaced with application name -->
+    <!-- This is the prompt when autofill is triggered and the application is locked. It appears on top of the login form as an action available to the user to take. %1$s will be replaced with application name -->
     <string name="autofill_authenticate_cta">Unlock %1$s</string>
-    <!-- This is the prompt when autofill is triggered, application is unlocked, and no passwords are detected. %1$s will be replaced with application name. -->
+    <!-- This is the message suggesting that if the user does not see the matching login to autofill into a form, they can search all their logins by opening this action. %1$s will be replaced with application name. -->
     <string name="autofill_search_cta">Search %1$s</string>
     <!-- This is the error message when autofill is triggered and the application is in an error state. %1$s will be replaced with application name. %2$s refers to the localized error message that will be provided by the system. -->
     <string name="autofill_error_toast">%1$s encountered an error: %2$s</string>
