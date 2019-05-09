@@ -47,6 +47,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
     lintOptions {
+        disable 'GradleDependency'
         lintConfig file("lint-config.xml")
         warningsAsErrors true
         baseline file("lint-baseline.xml")
@@ -83,12 +84,16 @@ configurations.all { config ->
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    //noinspection GradleDependency
     implementation 'androidx.appcompat:appcompat:1.1.0-alpha04'
     implementation 'androidx.cardview:cardview:1.0.0'
+    //noinspection GradleDependency
     implementation 'com.google.android.material:material:1.1.0-alpha05'
+    //noinspection GradleDependency
     implementation "androidx.recyclerview:recyclerview:$recyclerview_version"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.exifinterface:exifinterface:1.0.0'
+    //noinspection GradleDependency
     implementation "androidx.constraintlayout:constraintlayout:${constraintlayout_version}"
     implementation "com.jakewharton.rxbinding2:rxbinding:${rxbinding_version}"
     implementation "com.jakewharton.rxbinding2:rxbinding-design-kotlin:${rxbinding_version}"
@@ -117,7 +122,9 @@ dependencies {
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.2'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.2'
     testImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.2'
+    //noinspection GradleDependency
     implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0-alpha04'
+    //noinspection GradleDependency
     implementation 'androidx.lifecycle:lifecycle-common-java8:2.1.0-alpha04'
     implementation "android.arch.navigation:navigation-fragment:$navigation_version"
     implementation "android.arch.navigation:navigation-ui-ktx:$navigation_version"
@@ -126,6 +133,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:2.24.5'
+    //noinspection GradleDependency
     testImplementation 'org.robolectric:robolectric:4.1'
     testImplementation "org.powermock:powermock-module-junit4:2.0.0-beta.5"
     testImplementation "org.powermock:powermock-api-mockito2:2.0.0-beta.5"
