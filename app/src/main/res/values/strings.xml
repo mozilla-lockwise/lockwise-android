@@ -122,11 +122,11 @@
     <!-- This is a time duration for the automatic application locking setting that means it will never automatically lock -->
     <string name="never">Never</string>
 
-    <!-- This is the title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application -->
+    <!-- This is the title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application. Autofill should match the Android name for this system feature -->
     <string name="autofill">Autofill</string>
     <!-- This is the sub-title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application. %1$s will be replaced with application name -->
     <string name="autofill_summary">Let %1$s fill in logins for you</string>
-    <!-- This is the label a screenreader uses to inform the user they selected the autofill setting toggle -->
+    <!-- This is the label a screenreader uses to inform the user they selected the autofill setting toggle. Autofill should match the Android name for this system feature -->
     <string name="autofill_description">Application autofill setting</string>
 
     <!-- This is the title of a setting that allows the user to enable and disable the sending of telemetry usage data to Mozilla -->
@@ -218,7 +218,7 @@
     <string name="onboarding_autofill_description">Easily fill usernames and passwords where you need them most.</string>
     <!-- This button will take you to your phone's autofill settings screen. -->
     <string name="go_to_settings">Go to settings</string>
-    <!-- This is the content description for the autofill image on the autofill onboarding screen. %1$s will be replaced with application name -->
+    <!-- This is the content description for the autofill image on the autofill onboarding screen. %1$s will be replaced with application name. Autofill should match the Android name for this system feature -->
     <string name="onboarding_autofill_image_description">%1$s Autofill</string>
     <!-- This is the title for the final onboarding screen -->
     <string name="all_set">You’re all set!</string>
