@@ -23,9 +23,7 @@
     <color name="dark_grey">#4a4a4f</color>
     <color name="recyclerview_divider">#26000000</color>
     <color name="switch_activated">#413d7f</color>
-    <color name="link_pressed">#006202ee</color>
-    <!--26-->
-    <!--4922c2-->
+    <!--<color name="link_pressed">#006202ee</color>-->
 
     <color name="green">#12bc00</color>
     <color name="red">#d70022</color>
