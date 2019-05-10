@@ -33,13 +33,10 @@ class AutofillOnboardingFragment : Fragment(), AutofillOnboardingView {
     ): View? {
         presenter = AutofillOnboardingPresenter(this)
         val view = inflater.inflate(R.layout.fragment_autofill_onboarding, container, false)
-
-        val appLabel = getString(R.string.app_label)
-
-        view.iconAutofill.contentDescription = getString(R.string.onboarding_autofill_image_description, appLabel)
-        view.autofillTitle.text = getString(R.string.onboarding_autofill_title, appLabel)
-        view.autofillDescription.text = getString(R.string.onboarding_autofill_description, appLabel)
-
+        val appName = getString(R.string.app_name)
+        view.iconAutofill.contentDescription = getString(R.string.onboarding_autofill_image_description, appName)
+        view.autofillTitle.text = getString(R.string.onboarding_autofill_title, appName)
+        view.autofillDescription.text = getString(R.string.onboarding_autofill_description, appName)
         return view
     }
 }

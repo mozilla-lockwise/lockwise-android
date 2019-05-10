@@ -31,9 +31,9 @@ class AccountSettingFragment : BackableFragment(), AccountSettingView {
         presenter = AccountSettingPresenter(this)
         val view = inflater.inflate(R.layout.fragment_account_setting, container, false)
         view.profileImage.clipToOutline = true
-        val appLabel = getString(R.string.app_label)
-        view.disconnectButton.text = getString(R.string.disconnect_button, appLabel)
-        view.disconnectDisclaimer.text = getString(R.string.disconnect_disclaimer, appLabel)
+        val appName = getString(R.string.app_name)
+        view.disconnectButton.text = getString(R.string.disconnect_button, appName)
+        view.disconnectDisclaimer.text = getString(R.string.disconnect_disclaimer, appName)
         return view
     }
 

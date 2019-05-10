@@ -46,7 +46,7 @@ class AutofillFilterFragment : DialogFragment(), FilterView {
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(STYLE_NORMAL, R.style.NoTitleDialog)
+        setStyle(androidx.fragment.app.DialogFragment.STYLE_NORMAL, R.style.NoTitleDialog)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

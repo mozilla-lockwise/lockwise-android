@@ -1,8 +1,8 @@
-site_name: Firefox Lockwise for Android
-site_description: Documentation for Firefox Lockwise for Android application
+site_name: Firefox Lockbox for Android
+site_description: Documentation for Firefox Lockbox for Android application
 theme: readthedocs
 repo_name: GitHub
-repo_url: https://github.com/mozilla-lockwise/lockwise-android
+repo_url: https://github.com/mozilla-lockbox/lockbox-android
 
 pages:
 - 'Introduction': 'index.md'

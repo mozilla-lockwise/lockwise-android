@@ -5,7 +5,7 @@
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- This string is a promotional sentence used across all the applications to describe the purpose of the application. -->
+    <!-- This string is a promotional or short descriptional sentence to describe the purpose of the application. -->
     <string name="app_tagline">Take your passwords everywhere.</string>
     <!-- This is used for screenreaders to know the application logo image is currently selected. %1$s will be replaced with application name. -->
     <string name="app_logo">%1$s Logo</string>
@@ -20,7 +20,7 @@
     <!-- This is used as the label on a button on a first-run welcome screen to sign in and start using the application -->
     <string name="welcome_start_btn">Get Started</string>
     <!-- This provides context near a button on the first-run welcome screen to describe application requirements. Firefox Account is to be translated consistently to match use in other Firefox products. %1$s will be replaced with application name. -->
-    <string name="welcome_instructions">To use %1$s, you’ll need a Firefox Account with saved logins.</string>
+    <string name="welcome_instructions">To use %1$s, you’ll need a\nFirefox Account with saved logins.</string>
     <!-- This is the link on the first-run welcome screen to learn more about the requirements of the application -->
     <string name="welcome_learn_more_btn">Learn More</string>
 
@@ -48,49 +48,49 @@
     <!-- This is the label for the button to unlock the application for use while on a lock screen -->
     <string name="unlock_button">Unlock</string>
 
-    <!-- This message appears in a toast informing the user it is currently downloading and syncing login (a saved login is basically the URL, username and password) data -->
-    <string name="syncing_logins">Syncing your logins…</string>
+    <!-- This message appears in a toast informing the user it is currently downloading and syncing entry (a saved login "entry" is basically the URL, username and password) data -->
+    <string name="syncing_entries">Syncing your entries…</string>
 
-    <!-- This is the label used by screenreaders to inform the user the selected menu is for sorting the saved logins in the list -->
-    <string name="sort_description">Sort logins</string>
+    <!-- This is the label used by screenreaders to inform the user the selected menu is for sorting the entries in the list -->
+    <string name="sort_description">Sort entries</string>
     <!-- This is the label for the sorting option of the list of passwords to be in alphabetical order -->
     <string name="sort_menu_az">Alphabetically</string>
-    <!-- This is a corresponding heading to describe the list view is showing all saved logins sorted alphabetically -->
-    <string name="all_logins_a_z">All logins (A-Z)</string>
+    <!-- This is a corresponding heading to describe the list view is showing all entries sorted alphabetically -->
+    <string name="all_entries_a_z">All entries (A-Z)</string>
     <!-- This is the label for the sorting option of the list of passwords to be in order of recency the item was accessed or used -->
     <string name="sort_menu_recent">Recently Used</string>
-    <!-- This is a corresponding heading to describe the list view is showing all saved logins sorted by recent use -->
-    <string name="all_logins_recent">All logins (Recent)</string>
-    <!-- This is the label used by screenreaders to inform the user the selected text area is used to search the logins in the list -->
-    <string name="search_description">Search logins</string>
-    <!-- This is the placeholder text to visibly describe a text area is to be used to search all the logins seen in the list view -->
-    <string name="search_logins">search logins</string>
-    <!-- This is the placeholder text to visibly describe a text area is to be used to search all the logins seen in the list view with the first letter capitalized -->
-    <string name="search_logins_cap">Search logins</string>
+    <!-- This is a corresponding heading to describe the list view is showing all entries sorted by recent use -->
+    <string name="all_entries_recent">All entries (Recent)</string>
+    <!-- This is the label used by screenreaders to inform the user the selected text area is used to search the entries in the list -->
+    <string name="search_description">Search entries</string>
+    <!-- This is the placeholder text to visibly describe a text area is to be used to search all the entries seen in the list view -->
+    <string name="search_your_entries">search your entries</string>
+    <!-- This is the placeholder text to visibly describe a text area is to be used to search all the entries seen in the list view with the first letter capitalized -->
+    <string name="search_your_entries_cap">Search your entries</string>
     <!-- This is the label used by screenreaders to inform the user the selected button will clear the text currently input in the search area -->
     <string name="search_clear_content_description">Clear search bar text</string>
-    <!-- This is shown when a user has entered search terms that have filtered the list of logins to find no results -->
-    <string name="no_matching_logins">No matching logins.</string>
-    <!-- This explains that if no logins are found and were expected, to add new logins through the Firefox desktop browser -->
-    <string name="save_firefox_disclaimer">To see more logins here, you’ll need to save them to Firefox.</string>
+    <!-- This is shown when a user has entered search terms that have filtered the list of entries to find no results -->
+    <string name="no_matching_entries">No matching entries.</string>
+    <!-- This explains that if no entries are found and were expected, to add new entries through the Firefox desktop browser -->
+    <string name="save_firefox_disclaimer">To see more entries here, you’ll need to save them to Firefox.</string>
 
-    <!-- This is a heading that appears above the URL in context of a detailed item view -->
+    <!-- This is a heading that appears above the URL in context of a detailed item entry view -->
     <string name="hint_hostname">Web address</string>
-    <!-- This is a heading that appears above the username in context of a detailed item view -->
+    <!-- This is a heading that appears above the username in context of a detailed item entry view -->
     <string name="hint_username">Username</string>
-    <!-- This is a heading that appears above a password in context of a detailed item view -->
+    <!-- This is a heading that appears above a password in context of a detailed item entry view -->
     <string name="hint_password">Password</string>
-    <!-- This message appears to link to a web page explaining how to make changes to the details -->
-    <string name="learn_to_edit_login">Learn how to edit this login</string>
+    <!-- This message appears to link to a web page explaining how to make changes to the entry details -->
+    <string name="learn_to_edit_entry">Learn how to edit this entry</string>
 
     <!-- This describes an icon to screenreaders that the button tapped will open the web address in a web browser -->
     <string name="launch_hostname_content_description">Open web address in web browser</string>
     <!-- This describes an icon to screenreaders that the button tapped will copy the username to the device clipboard to paste and use in another application -->
-    <string name="copy_username_content_description">Copy username</string>
+    <string name="copy_username_content_description">Copy your username</string>
     <!-- This message appears when the user taps to copy the username to the device clipboard -->
     <string name="toast_username_copied">Username copied</string>
     <!-- This describes an icon to screenreaders that the button tapped will copy the password to the device clipboard to paste and use in another application -->
-    <string name="copy_password_content_description">Copy password</string>
+    <string name="copy_password_content_description">Copy your password</string>
     <!-- This message appears when the user taps to copy the password to the device clipboard -->
     <string name="toast_password_copied">Password copied</string>
     <!-- This describes an icon to screenreaders that the button tapped will display the password in plain text for immediate reading or use -->
@@ -122,12 +122,12 @@
     <!-- This is a time duration for the automatic application locking setting that means it will never automatically lock -->
     <string name="never">Never</string>
 
-    <!-- This is the title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application. Autofill should match the Android name for this system feature -->
-    <string name="autofill">Autofill</string>
+    <!-- This is the title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application -->
+     <string name="autofill">Autofill</string>
     <!-- This is the sub-title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application. %1$s will be replaced with application name -->
-    <string name="autofill_summary">Let %1$s fill in logins for you</string>
-    <!-- This is the label a screenreader uses to inform the user they selected the autofill setting toggle. Autofill should match the Android name for this system feature -->
-    <string name="autofill_description">Application autofill setting</string>
+     <string name="autofill_summary">Let %1$s fill in logins for you</string>
+    <!-- This is the label a screenreader uses to inform the user they selected the autofill setting toggle -->
+     <string name="autofill_description">Application autofill setting</string>
 
     <!-- This is the title of a setting that allows the user to enable and disable the sending of telemetry usage data to Mozilla -->
     <string name="send_usage_data">Send usage data</string>
@@ -167,8 +167,8 @@
 
     <!-- This is the title of a dialog displayed to encourage the user to enable security to lock their device and the application -->
     <string name="no_device_security_title">Secure your device.</string>
-    <!-- This is a message displayed requiring the user to enable device-provided security to lock their device and the application. -->
-    <string name="no_device_security_message">In order to set the Auto lock timer, a Pattern, PIN, or Password must be set up on your device.</string>
+    <!-- This is a message displayed requiring the user to enable device-provided security to lock their device and the application. %1$s will be replaced with application name -->
+    <string name="no_device_security_message">In order to lock %1$s, a Pattern, PIN, or Password must be set up on your device. Without this, anyone who has your phone can access the information saved here.</string>
     <!-- This is the message displayed on a button to open the device settings for the user to set up device-provided security protections -->
     <string name="set_up_security_button">Set up Now</string>
 
@@ -179,11 +179,11 @@
     <!-- This is the text on a button to sign out and disconnect the account from the application. %1$s will be replaced with application name -->
     <string name="disconnect_button">Disconnect %1$s</string>
     <!-- This message is displayed near a button to sign out and disconnect the account from the application explaining this does not affect the data stored with Firefox. %1$s will be replaced with application name -->
-    <string name="disconnect_disclaimer">This removes synced logins from %1$s, but will not delete your logins from Firefox.</string>
+    <string name="disconnect_disclaimer">This removes synced entries from %1$s, but will not delete your entries from Firefox.</string>
     <!-- This is the text on a final confirmation button to sign out and disconnect the account from the application. %1$s will be replaced with application name -->
     <string name="disconnect_disclaimer_title">Disconnect %1$s?</string>
     <!-- This message is displayed on a final confirmation dialog to sign out and disconnect their account from the application. Firefox Account is to be translated consistently to match use in other Firefox products. %1$s will be replaced with application name -->
-    <string name="disconnect_disclaimer_message">This will delete your Firefox Account information and all saved logins from %1$s.</string>
+    <string name="disconnect_disclaimer_message">This will delete your Firefox Account information and all saved entries from %1$s.</string>
     <!-- This is the text on a final confirmation button to sign out and disconnect the account from the application -->
     <string name="disconnect">Disconnect</string>
     <!-- This is the hint value for an autofill box that appears when suggesting a value for a password field. It is interpolated with the user's account name. -->
@@ -198,11 +198,11 @@
     <!-- This is used in the app logs to inform that network connectivity has successfully been detected -->
     <string name="network_connection_success">Network connection successful.</string>
 
-    <!-- This is used to inform the user that there are no saved logins in the list -->
-    <string name="no_logins_found">No logins found</string>
-    <!-- This explains the steps the user should take, if no saved logins are found: sign in and sync in Firefox. %1$s will be replaced with application name -->
-    <string name="no_logins_description">%1$s lets you access passwords you’ve already saved to Firefox. To
-        view your logins here, you’ll need to sign in and sync in Firefox.
+    <!-- This is used to inform the user that there are no entries in the list -->
+    <string name="no_entries_found">No Entries Found</string>
+    <!-- This explains the steps the user should take, if no saved entries are found: sign in and sync in Firefox. %1$s will be replaced with application name -->
+    <string name="no_entries_description">%1$s lets you access passwords you’ve already saved to Firefox. To
+        view your entries here, you’ll need to sign in and sync in Firefox.
     </string>
     <!-- This is the title for the biometric unlock onboarding screen. %1$s will be replaced with application name -->
     <string name="onboarding_unlock_title">Unlock %1$s with your fingerprint.</string>
@@ -214,11 +214,11 @@
     <string name="fingerprint_icon_description">Fingerprint image</string>
     <!-- This is the title of the autofill onboarding screen. %1$s will be replaced with application name -->
     <string name="onboarding_autofill_title">Let %1$s fill in your passwords for you.</string>
-    <!-- This is the onboarding description for enabling the application as an autofill provider through the device's autofill settings. -->
-    <string name="onboarding_autofill_description">Easily fill usernames and passwords where you need them most.</string>
+    <!-- This is the onboarding description for enabling the application as an autofill provider through the device's autofill settings. %1$s will be replaced with application name -->
+    <string name="onboarding_autofill_description">Update your device’s Autofill settings to allow %1$s to fill passwords. </string>
     <!-- This button will take you to your phone's autofill settings screen. -->
     <string name="go_to_settings">Go to settings</string>
-    <!-- This is the content description for the autofill image on the autofill onboarding screen. %1$s will be replaced with application name. Autofill should match the Android name for this system feature -->
+    <!-- This is the content description for the autofill image on the autofill onboarding screen. %1$s will be replaced with application name -->
     <string name="onboarding_autofill_image_description">%1$s Autofill</string>
     <!-- This is the title for the final onboarding screen -->
     <string name="all_set">You’re all set!</string>
@@ -238,7 +238,7 @@
     <!-- This is the title of the device security dialog box. -->
     <string name="secure_your_device">Secure your device.</string>
     <!-- This is the description explaining the device security requirements. -->
-    <string name="device_security_description">You should use a Pattern, PIN, or Password to lock your phone. Without this, anyone who has your phone can access the information saved here.</string>
+    <string name="device_security_description">You should use a Pattern, PIN, or Password to lock your phone. Without this, anyone who has your phone can access the information saved here. </string>
     <!-- This is the skip button description on the device security dialog box. -->
     <string name="skip_button">Skip</string>
     <!-- This is the the button description on the device security dialog box which routes to system security settings. -->
@@ -247,11 +247,13 @@
     <!-- This header appears above the Privacy page of the application website. -->
     <string name="privacy">Privacy</string>
 
-    <!-- This is the prompt when autofill is triggered and the application is locked. It appears on top of the login form as an action available to the user to take. %1$s will be replaced with application name -->
+    <!-- This is the prompt when autofill is triggered and the application is locked. %1$s will be replaced with application name -->
     <string name="autofill_authenticate_cta">Unlock %1$s</string>
-    <!-- This is the message suggesting that if the user does not see the matching login to autofill into a form, they can search all their logins by opening this action. %1$s will be replaced with application name. -->
+    <!-- This is the error message when autofill is triggered but no domain is detected. This is unlikely. -->
+    <string name="autofill_error_no_hostname">Unexpected hostname format</string>
+    <!-- This is the prompt when autofill is triggered, application is unlocked, and no passwords are detected. %1$s will be replaced with application name. -->
     <string name="autofill_search_cta">Search %1$s</string>
-    <!-- This is the error message when autofill is triggered and the application is in an error state. %1$s will be replaced with application name. %2$s refers to the localized error message that will be provided by the system. -->
+    <!-- This is the error message when autofill is triggered and the application is in an error state. %1$s will be replaced with application name. %s refers to the localized error message that will be provided by the system. -->
     <string name="autofill_error_toast">%1$s encountered an error: %2$s</string>
 
     <!-- This is the placeholder text for an empty or null username. -->

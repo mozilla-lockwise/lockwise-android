@@ -25,9 +25,8 @@ class WelcomeFragment : Fragment(), WelcomeView {
     ): View? {
         presenter = WelcomePresenter(this)
         val view = inflater.inflate(R.layout.fragment_welcome, container, false)
-        val appLabel = getString(R.string.app_label)
-        view.textViewInstructions.text = getString(R.string.welcome_instructions, appLabel)
-        view.lockwiseIcon.contentDescription = getString(R.string.app_logo, appLabel)
+        val appName = getString(R.string.app_name)
+        view.textViewInstructions.text = getString(R.string.welcome_instructions, appName)
         return view
     }
 

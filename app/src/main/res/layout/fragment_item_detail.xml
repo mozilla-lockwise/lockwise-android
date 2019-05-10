@@ -12,19 +12,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/fragment_item_detail"
-        android:background="@color/background_grey" >
-
+        android:background="@color/background_grey">
     <include layout="@layout/include_backable"/>
     <include layout="@layout/fragment_warning"
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
              app:layout_constraintTop_toBottomOf="@id/toolbar"
-             app:layout_constraintBottom_toTopOf="@id/cardView"
+             app:layout_constraintBottom_toTopOf="@id/card_view"
              tools:text="@string/no_internet_connection"/>
 
     <androidx.cardview.widget.CardView
             xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/cardView"
+            android:id="@+id/card_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -33,22 +32,20 @@
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingStart="16dp"
                 android:paddingTop="26dp"
                 android:paddingEnd="16dp"
-                android:paddingBottom="26dp"
-                tools:ignore="RtlSymmetry">
+                android:paddingBottom="26dp">
 
             <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/inputLayoutHostname"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingStart="16dp"
                     android:textColorHint="@color/black_60_percent"
                     android:contentDescription="@string/launch_hostname_content_description"
                     app:layout_constraintTop_toTopOf="parent"
                     card_view:layout_constraintStart_toStartOf="parent"
-                    card_view:layout_constraintEnd_toEndOf="parent"
-                    tools:ignore="RtlSymmetry">
+                    card_view:layout_constraintEnd_toEndOf="parent">
 
                 <EditText
                         android:id="@+id/inputHostname"
@@ -58,7 +55,7 @@
                         android:hint="@string/hint_hostname"
                         android:inputType="textNoSuggestions"
                         android:singleLine="true"
-                        android:textColor="@color/violet_70"
+                        android:textColor="@color/blue_60_percent"
                         android:clickable="true"
                         android:focusable="true"
                         tools:ignore="Autofill"/>
@@ -83,12 +80,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:paddingStart="16dp"
                     android:textColorHint="@color/black_60_percent"
                     app:layout_constraintTop_toBottomOf="@id/inputLayoutHostname"
                     card_view:layout_constraintStart_toStartOf="parent"
-                    card_view:layout_constraintEnd_toEndOf="parent"
-                    tools:ignore="RtlSymmetry">
+                    card_view:layout_constraintEnd_toEndOf="parent">
 
                 <EditText
                         android:id="@+id/inputUsername"
@@ -119,30 +114,25 @@
 
             <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/inputLayoutPassword"
-                    style="@style/PasswordTextStyle"
+                    android:contentDescription="@string/copy_password_content_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="monospace"
-                    android:paddingStart="16dp"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="16dp"
                     android:textColorHint="@color/black_60_percent"
-                    android:contentDescription="@string/copy_password_content_description"
-                    card_view:layout_constraintStart_toStartOf="parent"
-                    card_view:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/inputLayoutUsername"
-                    tools:ignore="RtlSymmetry">
+                    card_view:layout_constraintStart_toStartOf="parent"
+                    card_view:layout_constraintEnd_toEndOf="parent">
+
                 <EditText
                         android:id="@+id/inputPassword"
                         style="@style/EditTextStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/hint_password"
+                        android:fontFamily="monospace"
                         android:inputType="none|textPassword"
                         android:singleLine="true"
                         android:lineSpacingExtra="8sp"
-                        app:layout_constraintEnd_toEndOf="@id/inputLayoutUsername"
-                        app:layout_constraintStart_toStartOf="@id/inputLayoutUsername"
-                        app:layout_constraintTop_toTopOf="@+id/inputLayoutUsername"
                         tools:ignore="Autofill"/>
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -164,12 +154,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
                     android:padding="8dp"
-                    android:paddingTop="10dp"
                     android:background="@null"
                     android:contentDescription="@string/display_password_content_description"
+                    app:layout_constraintBottom_toBottomOf="@+id/inputLayoutPassword"
                     app:layout_constraintRight_toLeftOf="@+id/btnPasswordCopy"
                     app:layout_constraintTop_toTopOf="@+id/inputLayoutPassword"
-                    app:layout_constraintBottom_toBottomOf="@+id/inputLayoutPassword"
                     app:srcCompat="@drawable/ic_show"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -182,9 +171,9 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="26dp"
             android:background="@color/background_grey"
-            android:text="@string/learn_to_edit_login"
+            android:text="@string/learn_to_edit_entry"
             android:textAllCaps="true"
-            android:textColor="@color/violet_70"
+            android:textColor="@color/blue_60_percent"
             android:textSize="12sp"
             android:fontFamily="sans-serif"
             android:textStyle="bold"

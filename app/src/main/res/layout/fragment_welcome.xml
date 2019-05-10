@@ -7,116 +7,71 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/welcome_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:theme="@style/WelcomeScreen"
+    style="@style/WelcomeScreen"
     >
 
     <include
         android:id="@+id/include"
-        layout="@layout/include_welcome" />
+        layout="@layout/include_nessie"
+        tools:ignore="MissingConstraints" />
 
-    <ImageView
-        android:id="@+id/lockwiseIcon"
-        android:layout_width="@dimen/logo_size"
-        android:layout_height="@dimen/logo_size"
-        android:background="@null"
-        android:src="@drawable/ic_lockwise_glyph"
+    <Button
+        android:id="@+id/buttonGetStarted"
+        android:layout_width="0dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="90dp"
+        android:layout_marginTop="225dp"
+        android:layout_marginEnd="90dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/rounded_corner_selector_white"
+        android:letterSpacing="0.09"
+        android:lineSpacingExtra="2sp"
+        android:text="@string/welcome_start_btn"
+        android:textColor="@color/color_primary"
+        android:textStyle="normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="@dimen/logo_top_margin"
-        android:contentDescription="@string/app_name"
-    />
-
-    <ImageView
-        android:id="@+id/lockwiseTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@null"
-        android:src="@drawable/ic_title"
-        android:layout_marginTop="12dp"
-        app:layout_constraintTop_toBottomOf="@id/lockwiseIcon"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:contentDescription="@string/app_name"
+        tools:ignore="UnknownIdInLayout"
+        android:stateListAnimator="@null"
     />
 
     <TextView
-        android:id="@+id/tagline"
+        android:id="@+id/textViewInstructions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="15sp"
-        android:fontFamily="sans-serif"
-        android:textStyle="normal"
-        android:textColor="@color/text_ink"
-        android:letterSpacing="-0.01"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/welcome_instructions"
         android:background="@android:color/transparent"
-        android:text="@string/app_tagline"
-        app:layout_constraintTop_toBottomOf="@id/lockwiseTitle"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="13sp"
+        android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonGetStarted" />
+
+    <TextView
+        android:id="@+id/textViewLearnMore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="10dp"
-    />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        android:layout_marginTop="40dp"
-        app:layout_constraintTop_toBottomOf="@id/tagline"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginEnd="8dp"
+        android:text="@string/welcome_learn_more_btn"
+        android:textStyle="bold"
+        android:textAllCaps="true"
+        android:background="@android:color/transparent"
+        android:textSize="12sp"
+        android:textAlignment="center"
+        android:letterSpacing="0.04"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:background="@color/background_white">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewInstructions" />
 
-        <Button
-            android:id="@+id/buttonGetStarted"
-            android:layout_width="180dp"
-            android:layout_height="36dp"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/rounded_corner_selector_violet"
-            android:letterSpacing="0.09"
-            android:lineSpacingExtra="2sp"
-            android:text="@string/welcome_start_btn"
-            android:textColor="@color/text_white"
-            android:textStyle="normal"
-            android:layout_gravity="center"
-        />
-
-        <TextView
-            android:id="@+id/textViewInstructions"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginStart="55dp"
-            android:layout_marginEnd="55dp"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"
-            android:text="@string/welcome_instructions"
-            android:textColor="@color/text_ink"
-            android:background="@android:color/transparent"
-            android:lineSpacingExtra="3.5sp"
-            android:textSize="13sp"
-            android:textAlignment="center"
-            android:gravity="center_horizontal"
-        />
-
-        <TextView
-            android:id="@+id/textViewLearnMore"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="@string/welcome_learn_more_btn"
-            android:textStyle="bold"
-            android:textAllCaps="true"
-            android:background="@android:color/transparent"
-            android:textColor="@color/violet_70"
-            android:textSize="12sp"
-            android:textAlignment="center"
-            android:letterSpacing="0.04"
-            android:layout_gravity="center"
-        />
-    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

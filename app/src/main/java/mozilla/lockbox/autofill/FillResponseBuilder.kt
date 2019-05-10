@@ -44,7 +44,7 @@ open class FillResponseBuilder(
     }
 
     fun buildFallbackFillResponse(context: Context): FillResponse? {
-        // See https://github.com/mozilla-lockwise/lockwise-android/issues/421
+        // See https://github.com/mozilla-lockbox/lockbox-android/issues/421
         val builder = FillResponse.Builder()
         addSearchFallback(context) { sender, presentation ->
             builder.setAuthentication(autofillIds(), sender, presentation)
@@ -61,7 +61,7 @@ open class FillResponseBuilder(
             setTextViewText(R.id.autofill_cta, context.getString(R.string.autofill_search_cta, appName))
         }
 
-        // See https://github.com/mozilla-lockwise/lockwise-android/issues/421
+        // See https://github.com/mozilla-lockbox/lockbox-android/issues/421
         val sender = IntentBuilder.getSearchIntentSender(context, this)
         presentationAdder(sender, presentation)
     }

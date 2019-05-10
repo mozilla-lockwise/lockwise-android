@@ -1,4 +1,4 @@
-# Firefox Lockwise for Android Metrics Plan
+# Firefox Lockbox for Android Metrics Plan
 
 _Last Updated: Feb 4, 2019_
 
@@ -12,7 +12,7 @@ _Last Updated: Feb 4, 2019_
 
 <!-- /TOC -->
 
-This is the metrics collection plan for the Lockwise Android app. It documents all events that are currently collected through telemetry. It will be updated periodically to reflect all new and planned data collection. A similar document for the Lockwise for iOS app can be found [here](https://github.com/mozilla-lockbox/lockbox-ios/blob/master/docs/metrics.md).
+This is the metrics collection plan for the Lockbox Android app. It documents all events that are currently collected through telemetry. It will be updated periodically to reflect all new and planned data collection. A similar document for the Lockbox for iOS app can be found [here](https://github.com/mozilla-lockbox/lockbox-ios/blob/master/docs/metrics.md).
 
 ## Analysis
 
@@ -26,33 +26,33 @@ In service to validating the above hypothesis, we plan on answering these specif
 
 *Note that when we refer to retrieval of "credentials", we mean access to usernames, passwords, or both*
 
-* Are users using Lockwise to retrieve credentials?
+* Are users using Lockbox to retrieve credentials?
 	* For different intervals of time (e.g. day, week, month), what is:
 		* The average rate with which a user retrieves a credential or reveals a password
 		* The distribution of above rates across all users
-* How often do users access Lockwise credentials via autofill, versus directly through the credential list provided by the app?
+* How often do users access Lockbox credentials via autofill, versus directly through the credential list provided by the app?
 * Once downloaded, do users continue to use the app? (i.e., how well are they retained?)
 	* We will count a user as retained in a given time interval if they perform one of the following actions:
 		* Display the credential list
 		* Tap a credential in the credential list
 		* Copy a credential to the clipboard
 		* Reveal a password
-		* Autofill a credential stored in Lockwise into another app
+		* Autofill a credential stored in Lockbox into another app
 		* Tap the URI associated with a credential (to open it in an app or browser)
 	* Since they can be performed automatically, we will **not** count a user as retained if they *only* perform the following actions (in absence of any in the list above):
 		* Unlock their credentials
 		* Sync their credentials from the Firefox desktop browser
 * Does requiring a Firefox Account constitute a roadblock to adoption?
-	* What proportion of new Lockwise users are pre-existing Firefox Account users?
+	* What proportion of new Lockbox users are pre-existing Firefox Account users?
 	* What proportion of users start the Account sign-in process but never complete it?
-* Does adoption of Lockwise lead to adoption of Firefox Mobile browsers (e.g. Focus)?
-	* Do users set the default browser in Lockwise to be a Firefox browser?
+* Does adoption of Lockbox lead to adoption of Firefox Mobile browsers (e.g. Focus)?
+	* Do users set the default browser in Lockbox to be a Firefox browser?
 
-In addition to answering the above questions that directly concern actions in the app, we will also analyze telemetry emitted from the password manager that exists in the the Firefox desktop browser. These analyses will primarily examine whether users of Lockwise start active curation of their credentials in the desktop browser (Lockwise users will not be able to edit credentials directly from the app).
+In addition to answering the above questions that directly concern actions in the app, we will also analyze telemetry emitted from the password manager that exists in the the Firefox desktop browser. These analyses will primarily examine whether users of Lockbox start active curation of their credentials in the desktop browser (Lockbox users will not be able to edit credentials directly from the app).
 
 ## Collection
 
-*Note: There is currently a new Mozilla mobile telemetry SDK under development, however it will not ship prior to the Lockwise for Android app. Once the new SDK ships we will evaluate whether or not to tear out the old implementation and replace it with the new SDK.*
+*Note: There is currently a new Mozilla mobile telemetry SDK under development, however it will not ship prior to the Lockbox for Android app. Once the new SDK ships we will evaluate whether or not to tear out the old implementation and replace it with the new SDK.*
 
 Data is collected using this library:
 
@@ -60,7 +60,7 @@ https://github.com/mozilla-mobile/android-components/blob/master/components/serv
 
 We submit two ping types, both of which are implemented by the component above.
 
-First is the [core ping](https://github.com/mozilla-mobile/android-components/blob/master/components/service/telemetry/src/main/java/org/mozilla/telemetry/ping/TelemetryCorePingBuilder.java), which contains information about the Android version, architecture, etc of the device Lockwise has been installed on:
+First is the [core ping](https://github.com/mozilla-mobile/android-components/blob/master/components/service/telemetry/src/main/java/org/mozilla/telemetry/ping/TelemetryCorePingBuilder.java), which contains information about the Android version, architecture, etc of the device Lockbox has been installed on:
 
 https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/data/core-ping.html
 
@@ -182,7 +182,7 @@ https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/c
 
 ## Adjust SDK
 
-The app also includes a version of the [adjust SDK](https://github.com/adjust/android_sdk). Mozilla uses this software to keep track of the number of installations of the Lockwise app, as well the number of new Firefox Accounts registered through the app.
+The app also includes a version of the [adjust SDK](https://github.com/adjust/android_sdk). Mozilla uses this software to keep track of the number of installations of the Lockbox app, as well the number of new Firefox Accounts registered through the app.
 
 ## References
 

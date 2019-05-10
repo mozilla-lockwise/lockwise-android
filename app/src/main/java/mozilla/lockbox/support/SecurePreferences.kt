@@ -75,7 +75,7 @@ open class SecurePreferences(
         editor.apply()
     }
 
-    // these methods won't be used until https://github.com/mozilla-lockwise/lockwise-android/issues/165
+    // these methods won't be used until https://github.com/mozilla-lockbox/lockbox-android/issues/165
     // is addressed.
 //    open fun createEncryptCipher(): Cipher {
 //        verifyKey()

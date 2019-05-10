@@ -44,6 +44,10 @@ class SettingPresenter(
     private val fingerprintStore: FingerprintStore = FingerprintStore.shared
 ) : Presenter() {
 
+    private val versionName = BuildConfig.VERSION_NAME
+
+    private val versionNumber = BuildConfig.VERSION_CODE
+
     private val autoLockTimeClickListener: Consumer<Unit>
         get() = Consumer {
             if (fingerprintStore.isDeviceSecure) {

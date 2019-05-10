@@ -125,7 +125,7 @@ First internal test build for post-launch point release.
 
 _Date: 2019-03-26_
 
-Introducing Firefox Lockwise for Android!
+Introducing Firefox Lockbox for Android!
 
 Minor change since Build 3137:
 
