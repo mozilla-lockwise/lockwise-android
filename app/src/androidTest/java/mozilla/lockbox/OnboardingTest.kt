@@ -31,6 +31,12 @@ open class OnboardingTest {
         navigator.disconnectAccount()
     }
 
+    @Test
+    fun testOnboardingConfirmation() {
+        navigator.gotoOnboardingConfirmation()
+        onboardingConfirmationScreen { clickFinish() }
+    }
+
     @Ignore
     @Test
     fun fingerprintSkipButtonNavigatesToItemList() {

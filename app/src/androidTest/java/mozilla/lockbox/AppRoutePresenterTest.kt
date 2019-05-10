@@ -46,13 +46,6 @@ open class AppRoutePresenterTest {
         }
     }
 
-    @Ignore
-    @Test
-    fun testOnboardingConfirmation() {
-        navigator.gotoOnboardingConfirmation()
-        navigator.checkAtOnboardingConfirmation()
-    }
-
     @Test
     fun testItemList() {
         navigator.gotoItemList(false)
