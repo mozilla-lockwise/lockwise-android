@@ -5,13 +5,13 @@
   ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
   -->
 
-<!-- Search Firefox Lockbox with magnifying glass icon (ic_search) -->
+<!-- Search Firefox Lockwise with magnifying glass icon (ic_search) -->
 
 <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/ghost_white"
+        android:theme="@style/AppTheme"
 >
     <TextView
             android:layout_width="225dp"

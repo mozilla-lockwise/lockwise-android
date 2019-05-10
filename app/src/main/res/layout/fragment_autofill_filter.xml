@@ -43,7 +43,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/entriesView"
-                android:hint="@string/search_your_entries_cap"
+                android:hint="@string/search_logins_cap"
                 tools:ignore="Autofill"/>
 
         <ImageButton
@@ -72,7 +72,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageView
-            android:id="@+id/iconLockbox"
+            android:id="@+id/iconLockwise"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingTop="6dp"
@@ -80,6 +80,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/constraintLayout"
-            app:srcCompat="@drawable/ic_lockbox"
+            app:srcCompat="@drawable/ic_lockwise_bordered"
             tools:ignore="ContentDescription"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

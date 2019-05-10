@@ -19,7 +19,7 @@
         android:textSize="16sp"
         android:fontFamily="sans-serif"
         android:textStyle="normal"
-        android:textColor="@color/black_87_percent"
+        android:textColor="@color/text_ink"
         android:letterSpacing="0.01"
         android:lineSpacingExtra="8sp"
         android:layout_marginStart="16dp"
@@ -46,16 +46,4 @@
         app:layout_constraintBottom_toBottomOf="parent"
         tools:text="asadotzler@example.com"
         tools:ignore="SelectableText" />
-
-    <ImageView
-        android:id="@+id/disclosureIndicator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:alpha="0.54"
-        android:src="@drawable/ic_disclosure"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:ignore="ContentDescription" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,35 +9,43 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:theme="@style/WelcomeScreen">
+
+    <ImageView
+            android:id="@+id/iconLockIllustration"
+            android:contentDescription="@string/lock_icon_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:translationY="-70dp"
+            android:translationX="-30dp"
+            app:srcCompat="@drawable/ic_biometric_illustration"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+    />
+
+    <ImageView
+            android:layout_width="800dp"
+            android:layout_height="800dp"
+            android:src="@drawable/ic_biometric_blob"
+            android:background="@null"
+            android:layout_marginTop="160dp"
+            android:translationX="70dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:contentDescription="@null"
+            android:importantForAccessibility="no"
+    />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/onboardingTop"
-            android:layout_width="match_parent"
-            android:layout_height="220dp"
-            android:backgroundTint="@color/color_primary"
-            app:layout_constraintTop_toTopOf="parent">
-        <ImageView
-                android:id="@+id/iconLock"
-                android:contentDescription="@string/lock_icon_description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/color_primary"
-                app:srcCompat="@drawable/ic_lock_large"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-        />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/onboardingBottom"
+            android:id="@+id/onboardingFingerprintDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|center_horizontal"
-            android:background="@color/background_white"
-            app:layout_constraintTop_toBottomOf="@id/onboardingTop"
+            android:background="@null"
+            app:layout_constraintTop_toBottomOf="@id/iconLockIllustration"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
     >
@@ -48,13 +56,14 @@
                 android:textSize="24sp"
                 android:fontFamily="sans-serif"
                 android:textStyle="normal"
-                android:textColor="@color/text_grey"
+                android:textColor="@color/text_ink"
                 android:lineSpacingExtra="6sp"
                 android:gravity="center_horizontal"
                 android:text="@string/onboarding_unlock_title"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginStart="43dp"
                 android:layout_marginEnd="43dp"
+                android:background="@null"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -64,20 +73,37 @@
                 android:id="@+id/unlockDescription"
                 android:layout_width="310dp"
                 android:layout_height="wrap_content"
-                android:textSize="15sp"
+                android:textSize="@dimen/onboarding_text_size"
                 android:fontFamily="sans-serif"
                 android:textStyle="normal"
-                android:textColor="@color/text_grey"
+                android:textColor="@color/text_ink"
                 android:lineSpacingExtra="5sp"
                 android:gravity="center_horizontal"
+                android:background="@android:color/transparent"
                 android:layout_marginTop="8dp"
-                android:layout_marginStart="25dp"
-                android:layout_marginEnd="25dp"
+                android:layout_marginStart="26dp"
+                android:layout_marginEnd="26dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
                 android:text="@string/onboarding_unlock_description"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/unlockWithFingerprintTitle"
         />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/fingerprintIllustration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:background="@null"
+            android:layout_marginBottom="78dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/onboardingFingerprintDescription"
+            app:layout_constraintBottom_toBottomOf="parent"
+    >
 
         <ImageView
                 android:id="@+id/iconFingerprint"
@@ -85,11 +111,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="25dp"
-                android:layout_marginBottom="14dp"
+                android:background="@android:color/transparent"
                 app:srcCompat="@drawable/ic_fingerprint"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/unlockDescription"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
         />
 
         <TextView
@@ -102,8 +129,9 @@
                 android:textColor="@color/gray_73_percent"
                 android:lineSpacingExtra="6.5sp"
                 android:gravity="center_horizontal"
-                android:layout_marginTop="14dp"
+                android:layout_marginTop="13dp"
                 android:layout_marginBottom="31dp"
+                android:background="@android:color/transparent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/iconFingerprint"
@@ -114,24 +142,24 @@
     <Button
             android:id="@+id/skipButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="36dp"
+            android:gravity="center_horizontal|center_vertical"
             android:text="@string/onboarding_skip"
             android:textAllCaps="true"
             android:textSize="14sp"
             android:fontFamily="sans-serif-medium"
             android:textStyle="normal"
-            android:textColor="@color/color_primary"
+            android:textColor="@color/violet_70"
             android:letterSpacing="0.09"
             android:lineSpacingExtra="2sp"
             android:drawablePadding="10dp"
             android:shadowColor="@color/background_white"
             android:backgroundTint="@color/background_white"
             android:stateListAnimator="@null"
-            android:layout_marginTop="31dp"
             android:layout_marginBottom="26dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
     />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

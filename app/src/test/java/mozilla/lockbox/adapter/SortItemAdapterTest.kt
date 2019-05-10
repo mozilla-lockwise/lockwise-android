@@ -49,7 +49,7 @@ class SortItemAdapterTest {
 
         assertThat(view, instanceOf(TextView::class.java))
         val label = spy(view as TextView)
-        assertEquals(label.text, context.getString(R.string.all_entries_a_z))
+        assertEquals(label.text, context.getString(R.string.all_logins_a_z))
         assertEquals(label.currentTextColor, Color.WHITE)
         assertEquals(label.textSize, 20.0f)
     }

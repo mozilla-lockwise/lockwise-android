@@ -38,8 +38,8 @@ class SettingActionTest {
 
     @Test
     fun itemListSort_titleId() {
-        Assert.assertEquals(R.string.all_entries_a_z, Setting.ItemListSort.ALPHABETICALLY.titleId)
-        Assert.assertEquals(R.string.all_entries_recent, Setting.ItemListSort.RECENTLY_USED.titleId)
+        Assert.assertEquals(R.string.all_logins_a_z, Setting.ItemListSort.ALPHABETICALLY.titleId)
+        Assert.assertEquals(R.string.all_logins_recent, Setting.ItemListSort.RECENTLY_USED.titleId)
     }
 
     @Test

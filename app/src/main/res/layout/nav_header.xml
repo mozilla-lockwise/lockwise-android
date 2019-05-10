@@ -13,7 +13,7 @@
     android:paddingStart="16dp"
     android:paddingEnd="16dp"
     android:theme="@style/AppTheme"
-    android:backgroundTint="@color/dark_gray_background"
+    android:backgroundTint="@color/color_primary_dark"
     android:id="@+id/menuHeader"
     tools:ignore="UseCompoundDrawables">
 
@@ -38,7 +38,7 @@
         android:textStyle="normal"
         android:textColor="@color/text_white"
         android:letterSpacing="0.01"
-        android:backgroundTint="@color/dark_gray_background"
+        android:backgroundTint="@color/color_primary_dark"
         android:text="@string/app_name"
     />
 
@@ -47,7 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="11dp"
-            android:backgroundTint="@color/dark_gray_background"
+            android:backgroundTint="@color/color_primary_dark"
             android:textSize="14sp"
             android:fontFamily="sans-serif"
             android:textStyle="normal"

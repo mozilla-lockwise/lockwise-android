@@ -1,8 +1,8 @@
-# Firefox Lockbox for Android Architecture
+# Firefox Lockwise for Android Architecture
 
 ## RxKotlin
 
-Firefox Lockbox for Android makes extensive use of RxKotlin, an implementation of the Observable pattern from ReactiveX. More information and many marble diagrams can be found in the [ReactiveX documentation](http://reactivex.io/). The rest of this document relies on a basic understanding of the reader of the ReactiveX-style Observer implementation. Their intro document is a [good starting point](http://reactivex.io/intro.html).
+Firefox Lockwise for Android makes extensive use of RxKotlin, an implementation of the Observable pattern from ReactiveX. More information and many marble diagrams can be found in the [ReactiveX documentation](http://reactivex.io/). The rest of this document relies on a basic understanding of the reader of the ReactiveX-style Observer implementation. Their intro document is a [good starting point](http://reactivex.io/intro.html).
 
 ## Flux
 
@@ -10,7 +10,7 @@ Firefox Lockbox for Android makes extensive use of RxKotlin, an implementation o
 
 In short, Flux architecture design maintains a unidirectional data flow, in which a global Dispatcher receives Actions & dispatches them to appropriate Stores. The Stores, in turn, process data & provide the source of truth for the Views. As users interact with the Views, any updates are made via a dispatched Action and the cycle begins again. See this [flux architecture](https://facebook.github.io/flux/docs/overview.html) writeup for more details on the original Flux architecture scheme.
 
-Lockbox implements a modified version of the described architecture (LockFlux), keeping in mind that the original implementation ignores asynchronous work. In this implementation, all asynchronous work is handled by the Stores as they reduce actions and state updates to their observable state.
+Lockwise implements a modified version of the described architecture (LockFlux), keeping in mind that the original implementation ignores asynchronous work. In this implementation, all asynchronous work is handled by the Stores as they reduce actions and state updates to their observable state.
 
 ### Memory Management
 
@@ -66,7 +66,7 @@ The special case in this scenario is view routing. To handle the view-changing c
 
 ### Benefits of Flux
 
-Close readers will note that this document borrows heavily from a similar one in our [iOS application](https://mozilla-lockbox.github.io/lockbox-ios/architecture/).
+Close readers will note that this document borrows heavily from a similar one in our [iOS application](https://mozilla-lockwise.github.io/lockwise-ios/architecture/).
 
 The shared Flux pattern and reactive libraries allow us to "borrow" view-presentation logic from iOS as we move forward on Android.
 

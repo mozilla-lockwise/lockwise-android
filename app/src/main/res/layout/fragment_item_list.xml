@@ -51,6 +51,7 @@
                         android:layout_width="fill_parent"
                         android:layout_height="match_parent"
                         android:drawableEnd="@drawable/ic_search"
+                        android:textSize="20sp"
                         android:contentDescription="@string/search_description"
                         android:layout_marginEnd="16dp"
                         style="@style/ToolbarButton"/>
@@ -116,7 +117,7 @@
                     android:fontFamily="sans-serif"
                     android:letterSpacing="0.02"
                     android:lineSpacingExtra="6sp"
-                    android:text="@string/syncing_entries"
+                    android:text="@string/syncing_logins"
                     android:textColor="@android:color/white"
                     android:textSize="14sp"
                     android:textStyle="normal" />
@@ -133,7 +134,7 @@
         android:theme="@style/NavDrawerStyle"
         app:headerLayout="@layout/nav_header"
         app:itemTextAppearance="@style/NavDrawerStyle"
-        app:itemTextColor="@color/text_grey"
+        app:itemTextColor="@color/text_ink"
         app:menu="@menu/nav_menu">
 
         <LinearLayout
@@ -157,7 +158,7 @@
                 android:stateListAnimator="@null"
                 android:text="@string/lock_now"
                 android:textAlignment="viewStart"
-                android:textColor="@color/text_grey"
+                android:textColor="@color/text_ink"
                 android:theme="@style/NavDrawerButtonStyle" />
         </LinearLayout>
     </com.google.android.material.navigation.NavigationView>

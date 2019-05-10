@@ -1,23 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android" android:opacity="opaque">
+    <item android:drawable="@color/background_white"/>
 
-    <item android:drawable="@color/background_grey"/>
-
-    <item android:top="168dp"
-          android:drawable="@drawable/welcome_gradient"/>
-
-    <item android:top="@dimen/nessie_image_margin_top"
-          android:bottom="@dimen/nessie_image_margin_bottom"
-          android:gravity="top">
-        <bitmap android:src="@drawable/nessie"
-                android:gravity="fill_horizontal|fill_vertical"/>
+    <item android:top="@dimen/logo_top_margin"
+          android:height="@dimen/logo_size"
+          android:width="@dimen/logo_size"
+          android:background="@null"
+          android:gravity="top|center_horizontal" >
+        <bitmap android:src="@drawable/ic_lockwise_glyph"
+        />
     </item>
 
-    <item android:top="250dp"
-          android:start="67dp"
-          android:end="67dp"
-          android:gravity="top|center_horizontal">
-        <bitmap android:src="@drawable/logo"/>
+    <item android:top="@dimen/app_name_top_margin"
+          android:gravity="top|center_horizontal" >
+        <bitmap android:src="@drawable/ic_title"
+                android:gravity="center_horizontal"/>
     </item>
-
 </layer-list>

@@ -21,6 +21,6 @@
             android:textSize="16sp"
             android:fontFamily="sans-serif"
             android:textStyle="normal"
-            android:text="@string/no_entries_found"/>
+            android:text="@string/no_logins_found"/>
 
 </LinearLayout>

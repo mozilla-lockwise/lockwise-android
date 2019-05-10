@@ -1,6 +1,6 @@
 ## Autofill Framework Interaction
 
-Currently, Lockbox for Android only supports the [Autofill Framework](https://developer.android.com/guide/topics/text/autofill.html) as provided by Google. Support for this framework is not universal among apps in the Play store, so autofill will not always behave as expected. Enumerated below are the simple strategies we use and their priorities in determining which views should receive autofill suggestions with Username and Password credentials.
+Currently, Lockwise for Android only supports the [Autofill Framework](https://developer.android.com/guide/topics/text/autofill.html) as provided by Google. Support for this framework is not universal among apps in the Play store, so autofill will not always behave as expected. Enumerated below are the simple strategies we use and their priorities in determining which views should receive autofill suggestions with Username and Password credentials.
 
 ## Heuristics for determining autofill-able views in native applications
 
