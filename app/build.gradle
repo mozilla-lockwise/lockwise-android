@@ -23,7 +23,7 @@ android {
         //noinspection OldTargetApi
         targetSdkVersion 26
         versionCode 3487
-        versionName "1.1.0"
+        versionName "1.0.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         // The following argument makes the Android Test Orchestrator run its
         // "pm clear" command after each test invocation. This command ensures
@@ -47,6 +47,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
     lintOptions {
+        disable 'GradleDependency'
         lintConfig file("lint-config.xml")
         warningsAsErrors true
         baseline file("lint-baseline.xml")
@@ -86,7 +87,8 @@ dependencies {
     //noinspection GradleDependency
     implementation 'androidx.appcompat:appcompat:1.1.0-alpha04'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'com.google.android.material:material:1.1.0-alpha06'
+    //noinspection GradleDependency
+    implementation 'com.google.android.material:material:1.1.0-alpha05'
     //noinspection GradleDependency
     implementation "androidx.recyclerview:recyclerview:$recyclerview_version"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
