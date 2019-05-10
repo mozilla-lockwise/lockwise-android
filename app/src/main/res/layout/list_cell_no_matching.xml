@@ -23,7 +23,7 @@
             android:background="@color/background_grey"
             android:lineSpacingExtra="8.5sp"
             android:layout_marginTop="40dp"
-            android:text="@string/no_matching_entries"/>
+            android:text="@string/no_matching_logins"/>
 
     <TextView
             android:layout_width="220dp"
@@ -31,11 +31,12 @@
             android:layout_gravity="center_horizontal"
             android:textAlignment="center"
             android:textSize="13sp"
+            android:lineSpacingExtra="6.5sp"
             android:fontFamily="sans-serif"
             android:textStyle="normal"
             android:textColor="@color/text_grey"
             android:background="@color/background_grey"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="5dp"
             android:text="@string/save_firefox_disclaimer"/>
 
     <Button
@@ -46,7 +47,7 @@
         android:textSize="12sp"
         android:fontFamily="sans-serif"
         android:textStyle="bold"
-        android:textColor="#0060df"
+        android:textColor="@color/violet_70"
         android:letterSpacing="0.03"
         android:lineSpacingExtra="7.5sp"
         android:background="@null"

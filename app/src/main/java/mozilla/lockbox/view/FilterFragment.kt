@@ -54,8 +54,8 @@ class FilterFragment : BackableFragment(), FilterView {
         super.onResume()
         view!!.filterField.requestFocus()
 
-        val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.showSoftInput(view!!.filterField, InputMethodManager.SHOW_IMPLICIT)
+        val inputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.showSoftInput(view!!.filterField, InputMethodManager.SHOW_IMPLICIT)
     }
 
     override fun onPause() {

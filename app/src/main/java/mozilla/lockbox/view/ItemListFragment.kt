@@ -76,7 +76,7 @@ class ItemListFragment : Fragment(), ItemListView {
         setupNavigationView(navController, view.navView)
         setupListView(view.entriesView)
         setupSpinner(view)
-        view.refreshContainer.setColorSchemeResources(R.color.refresh_blue)
+        view.refreshContainer.setColorSchemeResources(R.color.refresh_violet)
         super.onViewCreated(view, savedInstanceState)
     }
 
@@ -84,7 +84,6 @@ class ItemListFragment : Fragment(), ItemListView {
         val sortList = ArrayList<Setting.ItemListSort>()
         sortList.add(Setting.ItemListSort.ALPHABETICALLY)
         sortList.add(Setting.ItemListSort.RECENTLY_USED)
-
         spinner = view.sortButton
         sortItemsAdapter = SortItemAdapter(context!!, android.R.layout.simple_spinner_item, sortList)
         spinner.adapter = sortItemsAdapter

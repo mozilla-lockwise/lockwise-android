@@ -35,7 +35,7 @@ open class TelemetryWrapper {
     open fun lateinitContext(ctx: Context) {
         val res = ctx.resources
         val config = TelemetryConfiguration(ctx)
-            .setAppName(res.getString(R.string.app_label))
+            .setAppName("Lockbox") // intentionally hard-coded for reporting
             .setServerEndpoint(res.getString(R.string.telemetry_server_endpoint))
             .setUpdateChannel(BuildConfig.BUILD_TYPE)
             .setBuildId(BuildConfig.VERSION_CODE.toString())

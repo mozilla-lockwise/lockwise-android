@@ -133,7 +133,7 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         if (!networkErrorVisibility) {
             errorHelper.showNetworkError(view!!)
         } else {
-            errorHelper.hideNetworkError(view!!, view!!.card_view, R.dimen.hidden_network_error)
+            errorHelper.hideNetworkError(view!!, view!!.cardView, R.dimen.hidden_network_error)
         }
     }
 
