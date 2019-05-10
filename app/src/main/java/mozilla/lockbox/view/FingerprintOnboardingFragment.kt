@@ -31,7 +31,11 @@ class FingerprintOnboardingFragment : Fragment(), FingerprintOnboardingView {
         savedInstanceState: Bundle?
     ): View? {
         presenter = FingerprintOnboardingPresenter(this)
-        return inflater.inflate(R.layout.fragment_fingerprint_onboarding, container, false)
+        val view = inflater.inflate(R.layout.fragment_fingerprint_onboarding, container, false)
+        val appName = getString(R.string.app_name)
+        view.unlockWithFingerprintTitle.text = getString(R.string.onboarding_unlock_title, appName)
+        view.unlockDescription.text = getString(R.string.onboarding_unlock_description, appName)
+        return view
     }
 
     override fun onSucceeded() {

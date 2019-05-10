@@ -6,8 +6,8 @@
 
 package mozilla.lockbox.model
 
-import mozilla.components.service.fxa.AccessTokenInfo
-import mozilla.components.service.fxa.OAuthScopedKey
+import mozilla.components.concept.sync.AccessTokenInfo
+import mozilla.components.concept.sync.OAuthScopedKey
 import mozilla.lockbox.support.DataStoreSupport
 import mozilla.lockbox.support.FixedDataStoreSupport
 import mozilla.lockbox.support.FxASyncDataStoreSupport
@@ -30,7 +30,7 @@ interface SyncCredentials {
 
 class FixedSyncCredentials(
     override val isNew: Boolean,
-    override val accessToken: AccessTokenInfo = AccessTokenInfo(emptyString, null, 0L),
+    override val accessToken: AccessTokenInfo = AccessTokenInfo(emptyString, emptyString, null, 0L),
     override val kid: String = emptyString,
     override val syncKey: String = emptyString,
     override val tokenServerURL: String = emptyString

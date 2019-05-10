@@ -10,6 +10,7 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import mozilla.components.concept.sync.Avatar
 import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.flux.Dispatcher
@@ -19,7 +20,7 @@ import mozilla.lockbox.support.asOptional
 
 interface AccountSettingView {
     fun setDisplayName(text: String)
-    fun setAvatarFromURL(url: String)
+    fun setAvatar(avatar: Avatar)
     val disconnectButtonClicks: Observable<Unit>
 }
 
@@ -46,7 +47,7 @@ class AccountSettingPresenter(
             }
             .filterNotNull()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(view::setAvatarFromURL)
+            .subscribe(view::setAvatar)
             .addTo(compositeDisposable)
 
         view.disconnectButtonClicks

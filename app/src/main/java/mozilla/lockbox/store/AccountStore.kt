@@ -21,10 +21,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.rx2.asMaybe
 import kotlinx.coroutines.rx2.asSingle
-import mozilla.components.service.fxa.AccessTokenInfo
+import mozilla.appservices.fxaclient.FxaException
+import mozilla.components.concept.sync.AccessTokenInfo
+import mozilla.components.concept.sync.Avatar
+import mozilla.components.concept.sync.Profile
 import mozilla.components.service.fxa.Config
 import mozilla.components.service.fxa.FirefoxAccount
-import mozilla.components.service.fxa.Profile
 import mozilla.lockbox.action.AccountAction
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
@@ -40,7 +42,6 @@ import mozilla.lockbox.support.SecurePreferences
 import mozilla.lockbox.support.asOptional
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
-import org.mozilla.fxaclient.internal.FxaException as FxaException
 
 @ExperimentalCoroutinesApi
 open class AccountStore(
@@ -69,7 +70,10 @@ open class AccountStore(
         uid = "test",
         email = "whovian@tardis.net",
         displayName = "Jodie Whittaker",
-        avatar = "https://nerdist.com/wp-content/uploads/2017/11/The-Doctor-Jodie-Whittaker.jpg"
+        avatar = Avatar(
+            url = "https://nerdist.com/wp-content/uploads/2017/11/The-Doctor-Jodie-Whittaker.jpg",
+            isDefault = true
+        )
     )
 
     private val storedAccountJSON: String?
