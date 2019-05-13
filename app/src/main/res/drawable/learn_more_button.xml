@@ -8,7 +8,7 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_pressed="true" >
         <shape>
-            <solid android:color="@color/violet_pressed" />
+            <solid android:color="@color/gray_pressed" />
             <corners android:radius="5dp"/>
             <padding
                     android:top="10dp"
