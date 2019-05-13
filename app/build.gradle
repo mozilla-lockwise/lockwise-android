@@ -264,13 +264,15 @@ import org.gradle.api.internal.artifacts.DefaultModuleIdentifier
 // achieved, minus asserting that the versions of all the megazord components
 // agree.  That assertion could be added if required.
 afterEvaluate {
-    // The definitions of the megazords themselves have evolved; this is now
-    // quite dated and will need to be bumped when `android_components_version`
-    // is rolled forward.
+    // The definitions of the megazords themselves evolve: this set was determined from
+    // https://github.com/mozilla/application-services/blob/v0.27.0/megazords/lockbox/android/build.gradle#L79-L82,
+    // where the version in the URL is the tag corresponding to `mozilla_appservices_version`.  This
+    // will need to be bumped when `android_components_version` (and thus
+    // `mozilla_appservices_version`) is rolled forward.
     def megazord = DefaultModuleIdentifier.newId('org.mozilla.appservices', 'lockbox-megazord')
     def megazordComponents = [
-        DefaultModuleIdentifier.newId('org.mozilla.fxaclient', 'fxaclient'),
-        DefaultModuleIdentifier.newId('org.mozilla.sync15', 'logins'),
+        DefaultModuleIdentifier.newId('org.mozilla.appservices', 'fxaclient'),
+        DefaultModuleIdentifier.newId('org.mozilla.appservices', 'logins'),
         DefaultModuleIdentifier.newId('org.mozilla.appservices', 'rustlog'),
     ]
 
