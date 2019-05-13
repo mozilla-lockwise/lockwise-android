@@ -19,7 +19,7 @@
     <color name="gray_73_percent">#737373</color>
     <color name="gray_divider">#e4e4e4</color>
     <color name="white_60_percent">#99ffffff</color>
-    <color name="gray_pressed">#51ffffff</color>
+    <color name="button_pressed">#51ffffff</color>
     <color name="dark_grey">#4a4a4f</color>
     <color name="recyclerview_divider">#26000000</color>
     <color name="switch_activated">#413d7f</color>
