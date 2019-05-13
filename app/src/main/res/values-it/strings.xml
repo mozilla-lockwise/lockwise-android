@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- This string is a promotional sentence used across all the applications to describe the purpose of the application. -->
+    <string name="app_tagline">Porta le tue password sempre con te.</string>
+    <!-- This is used for screenreaders to know the application logo image is currently selected. %1$s will be replaced with application name. -->
+    <string name="app_logo">Logo di %1$s</string>
+
+    <!-- This is the text on a button to cancel the current operation or request such as unlocking the application with a fingerprint. -->
+    <string name="cancel">Annulla</string>
+    <!-- This is the title of a link for users to tap to open a web page to learn more about a related setting or feature. -->
+    <string name="learn_more">Ulteriori informazioni</string>
+
+    <!-- This is the label a screenreader uses to inform the user they selected a link that will open a webpage to learn more about the feature or setting. -->
+    <string name="learn_more_description">Apre un link con ulteriori informazioni</string>
+
+    <!-- This is used as the label on a button on a first-run welcome screen to sign in and start using the application -->
+    <string name="welcome_start_btn">Per iniziare</string>
+    <!-- This provides context near a button on the first-run welcome screen to describe application requirements. Firefox Account is to be translated consistently to match use in other Firefox products. %1$s will be replaced with application name. -->
+    <string name="welcome_instructions">Per utilizzare %1$s serve un account Firefox con credenziali salvate.</string>
+    <!-- This is the link on the first-run welcome screen to learn more about the requirements of the application -->
+    <string name="welcome_learn_more_btn">Ulteriori informazioni</string>
+
+    <!-- This is the label used for the title in the web view of the account's authentication instances. -->
+    <string name="get_started_title">Per iniziare</string>
+
+    <!-- This is the label used by screenreaders to inform the user the navigation button selected is to go backwards from where they came from -->
+    <string name="backable_description">Indietro</string>
+    <!-- This is the label used by screenreaders to inform the user the button selected is meant to open a navigation menu -->
+    <string name="menu_description">Menu</string>
+
+    <!-- This is the label for the navigation item that opens a Frequently Asked Questions web page -->
+    <string name="nav_menu_faq">FAQ</string>
+    <!-- This is the label for the navigation item that opens a survey or feedback web page to submit to the developers -->
+    <string name="nav_menu_feedback">Comunicaci la tua opinione</string>
+    <!-- This is the label for the navigation item that opens a screen to manage the user account currently signed in to the application -->
+    <string name="nav_menu_account">Account</string>
+    <!-- This is the label for the navigation item that opens a settings screen with options and preferences and more application information -->
+    <string name="nav_menu_settings">Impostazioni</string>
+
+    <!-- This is the label for a button, primarily in the navigation drawer, that securely locks the application requiring the user to unlock it -->
+    <string name="lock_now">Blocca adesso</string>
+
+    <!-- This label is used by screenreaders to inform the user they have selected an image of a lock -->
+    <string name="lock_icon_description">Icona del lucchetto</string>
+    <!-- This is the label for the button to unlock the application for use while on a lock screen -->
+    <string name="unlock_button">Sblocca</string>
+
+    <!-- This message appears in a toast informing the user it is currently downloading and syncing login (a saved login is basically the URL, username and password) data -->
+    <string name="syncing_logins">Sincronizzazione credenziali in corso...</string>
+
+    <!-- This is the label used by screenreaders to inform the user the selected menu is for sorting the saved logins in the list -->
+    <string name="sort_description">Ordina credenziali</string>
+    <!-- This is the label for the sorting option of the list of passwords to be in alphabetical order -->
+    <string name="sort_menu_az">Alfabeticamente</string>
+    <!-- This is a corresponding heading to describe the list view is showing all saved logins sorted alphabetically -->
+    <string name="all_logins_a_z">Tutte le credenziali (A-Z)</string>
+    <!-- This is the label for the sorting option of the list of passwords to be in order of recency the item was accessed or used -->
+    <string name="sort_menu_recent">Utilizzate di recente</string>
+    <!-- This is a corresponding heading to describe the list view is showing all saved logins sorted by recent use -->
+    <string name="all_logins_recent">Tutte le credenziali (recenti)</string>
+    <!-- This is the label used by screenreaders to inform the user the selected text area is used to search the logins in the list -->
+    <string name="search_description">Cerca nelle credenziali</string>
+    <!-- This is the placeholder text to visibly describe a text area is to be used to search all the logins seen in the list view -->
+    <string name="search_logins">cerca credenziali</string>
+    <!-- This is the placeholder text to visibly describe a text area is to be used to search all the logins seen in the list view with the first letter capitalized -->
+    <string name="search_logins_cap">Cerca credenziali</string>
+    <!-- This is the label used by screenreaders to inform the user the selected button will clear the text currently input in the search area -->
+    <string name="search_clear_content_description">Cancella testo nella barra di ricerca</string>
+
+    <!-- This is shown when a user has entered search terms that have filtered the list of logins to find no results -->
+    <string name="no_matching_logins">Nessuna corrispondenza nelle credenziali.</string>
+    <!-- This explains that if no logins are found and were expected, to add new logins through the Firefox desktop browser -->
+    <string name="save_firefox_disclaimer">Per visualizzare ulteriori credenziali in questa sezione è necessario salvarle in Firefox.</string>
+
+    <!-- This is a heading that appears above the URL in context of a detailed item view -->
+    <string name="hint_hostname">Indirizzo web</string>
+
+    <!-- This is a heading that appears above the username in context of a detailed item view -->
+    <string name="hint_username">Nome utente</string>
+    <!-- This is a heading that appears above a password in context of a detailed item view -->
+    <string name="hint_password">Password</string>
+
+    <!-- This message appears to link to a web page explaining how to make changes to the details -->
+    <string name="learn_to_edit_login">Scopri come modificare questa credenziale</string>
+
+    <!-- This describes an icon to screenreaders that the button tapped will open the web address in a web browser -->
+    <string name="launch_hostname_content_description">Apri indirizzo nel browser</string>
+    <!-- This describes an icon to screenreaders that the button tapped will copy the username to the device clipboard to paste and use in another application -->
+    <string name="copy_username_content_description">Copia nome utente</string>
+    <!-- This message appears when the user taps to copy the username to the device clipboard -->
+    <string name="toast_username_copied">Nome utente copiato</string>
+    <!-- This describes an icon to screenreaders that the button tapped will copy the password to the device clipboard to paste and use in another application -->
+    <string name="copy_password_content_description">Copia password</string>
+    <!-- This message appears when the user taps to copy the password to the device clipboard -->
+    <string name="toast_password_copied">Password copiata</string>
+
+    <!-- This describes an icon to screenreaders that the button tapped will display the password in plain text for immediate reading or use -->
+    <string name="display_password_content_description">Mostra la password in chiaro</string>
+
+    <!-- This is a heading that appears above a group of application settings to configure the user experience -->
+    <string name="configuration_title">Configurazione</string>
+    <!-- This is a heading that appears above a group of application settings or links related to what is supported by the application -->
+    <string name="support_title">Supporto</string>
+
+    <!-- This is the title of a setting that allows the user to change the time duration before the application locks and requires unlocking -->
+    <string name="auto_lock">Blocco automatico</string>
+    <!-- This is the label a screenreader uses to inform the user they selected the auto lock setting toggle -->
+    <string name="auto_lock_description">Impostazioni del blocco automatico</string>
+    <!-- This is a time duration for the automatic application locking setting equal to 1 minute -->
+    <string name="one_minute">1 minuto</string>
+    <!-- This is a time duration for the automatic application locking setting equal to 5 minutes -->
+    <string name="five_minutes">5 minuti</string>
+    <!-- This is a time duration for the automatic application locking setting equal to 15 minutes -->
+    <string name="fifteen_minutes">15 minuti</string>
+    <!-- This is a time duration for the automatic application locking setting equal to 30 minutes -->
+    <string name="thirty_minutes">30 minuti</string>
+    <!-- This is a time duration for the automatic application locking setting equal to 1 hour -->
+    <string name="one_hour">1 ora</string>
+    <!-- This is a time duration for the automatic application locking setting equal to 12 hours -->
+    <string name="twelve_hours">12 ore</string>
+    <!-- This is a time duration for the automatic application locking setting equal to 24 hours -->
+    <string name="twenty_four_hours">24 ore</string>
+    <!-- This is a time duration for the automatic application locking setting that means it will never automatically lock -->
+    <string name="never">Mai</string>
+
+    <!-- This is the title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application. Autofill should match the Android name for this system feature -->
+    <string name="autofill">Compilazione automatica</string>
+    <!-- This is the sub-title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application. %1$s will be replaced with application name -->
+    <string name="autofill_summary">Consenti a %1$s di compilare automaticamente le credenziali</string>
+    <!-- This is the label a screenreader uses to inform the user they selected the autofill setting toggle. Autofill should match the Android name for this system feature -->
+    <string name="autofill_description">Impostazione per la compilazione automatica</string>
+
+    <!-- This is the title of a setting that allows the user to enable and disable the sending of telemetry usage data to Mozilla -->
+    <string name="send_usage_data">Invia dati sull’uso</string>
+
+    <!-- This is the sub-title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application -->
+    <string name="send_usage_data_summary">Mozilla si impegna a raccogliere solo i dati necessari a fornire e migliorare Firefox per tutti gli utenti.</string>
+
+    <!-- This is the label a screenreader uses to inform the user they selected a label on the screen that includes the application version number -->
+    <string name="app_version_description">Numero di versione dell’applicazione</string>
+
+    <!-- This is the title of a setting that shows the version and the build number of an app -->
+    <string name="app_version_title">Versione app: %1$s (%2$d)</string>
+
+    <!-- This is the title of a setting that allows the user to use the device fingerprint biometrics to unlock the application -->
+    <string name="unlock">Sblocca con l’impronta digitale</string>
+    <!-- This is the label a screenreader uses to inform the user they selected the fingerprint setting toggle -->
+    <string name="fingerprint_description">Impostazione per l’impronta digitale</string>
+    <!-- This is the title of a dialog that pops up to unlock the application when the unlock with fingerprint setting is enabled. %1$s will be replaced with application name -->
+    <string name="fingerprint_dialog_title">Sblocca %1$s</string>
+    <!-- This is the message displayed to the user to unlock the application. %1$s will be replaced with application name -->
+    <string name="unlock_fallback_title">Sblocca %1$s</string>
+    <!-- This is an instructional message displayed to use the fingerprint sensor to unlock the application -->
+    <string name="touch_fingerprint_sensor">Tocca il sensore per le impronte digitali.</string>
+    <!-- This is the title of a dialog requesting permission for the application to unlock using the device fingerprint sensor -->
+    <string name="enable_fingerprint_dialog_title">Attiva impronta digitale</string>
+    <!-- This is the message requesting permission for the application to unlock using the device fingerprint sensor. %1$s will be replaced with application name -->
+    <string name="enable_fingerprint_dialog_subtitle">Garantisci a %1$s il permesso di sbloccare l’app con il sensore per le impronte digitali.</string>
+    <!-- This is the error displayed when attempting to unlock the application with a fingerprint and the device does not recognize it as a match -->
+    <string name="fingerprint_not_recognized">Non riconosciuta</string>
+    <!-- This is the success message displayed after using the fingerprint sensor to unlock the application -->
+    <string name="fingerprint_success">Sbloccata</string>
+    <!-- This is the error displayed when attempting to unlock the application with a fingerprint and after multiple tries a match is not made -->
+    <string name="fingerprint_error_lockout">Troppi tentativi.</string>
+    <!-- This is the error displayed when attempting to unlock the application with a fingerprint and the device returns a generic error to the application -->
+    <string name="fingerprint_sensor_error">Errore del sensore di impronte digitali</string>
+    <!-- This is an instructional message displayed to use the device-provided unlock features to unlock the application -->
+    <string name="confirm_pattern">Inserisci la sequenza di sblocco, il PIN o la password.</string>
+
+    <!-- This is the title of a dialog displayed to encourage the user to enable security to lock their device and the application -->
+    <string name="no_device_security_title">Proteggi il tuo dispositivo.</string>
+    <!-- This is a message displayed requiring the user to enable device-provided security to lock their device and the application. -->
+    <string name="no_device_security_message">Per impostare il timer del blocco automatico, è necessario configurare una sequenza di sblocco, un PIN o una password sul dispositivo.</string>
+    <!-- This is the message displayed on a button to open the device settings for the user to set up device-provided security protections -->
+    <string name="set_up_security_button">Imposta adesso</string>
+
+    <!-- This is used for screenreaders to inform the user they have selected the account profile image. Firefox Account is to be translated consistently to match use in other Firefox products. -->
+    <string name="profile_image_content_description">Immagine del profilo per Firefox Account</string>
+    <!-- This message is displayed to inform users how to change their Firefox Account profile details on a setting screen. Firefox Account is to be translated consistently to match use in other Firefox products. -->
+    <string name="account_information">Per apportare modifiche all’account, accedi al tuo account Firefox da qualsiasi browser.</string>
+    <!-- This is the text on a button to sign out and disconnect the account from the application. %1$s will be replaced with application name -->
+    <string name="disconnect_button">Disconnetti %1$s</string>
+    <!-- This message is displayed near a button to sign out and disconnect the account from the application explaining this does not affect the data stored with Firefox. %1$s will be replaced with application name -->
+    <string name="disconnect_disclaimer">Questa operazione rimuove le credenziali salvate da %1$s , ma non da Firefox.</string>
+    <!-- This is the text on a final confirmation button to sign out and disconnect the account from the application. %1$s will be replaced with application name -->
+    <string name="disconnect_disclaimer_title">Disconnettere %1$s?</string>
+    <!-- This message is displayed on a final confirmation dialog to sign out and disconnect their account from the application. Firefox Account is to be translated consistently to match use in other Firefox products. %1$s will be replaced with application name -->
+    <string name="disconnect_disclaimer_message">Questa operazione rimuoverà da %1$s le informazioni relative all’account Firefox e tutte le credenziali salvate.</string>
+    <!-- This is the text on a final confirmation button to sign out and disconnect the account from the application -->
+    <string name="disconnect">Disconnetti</string>
+    <!-- This is the hint value for an autofill box that appears when suggesting a value for a password field. It is interpolated with the user's account name. -->
+    <string name="password_for">Password per %1$s</string>
+
+    <!-- This label is used by screenreaders to inform the user that their device is not connected to the internet -->
+    <string name="networkWarningMessage">Attenzione: il dispositivo non è connesso a Internet.</string>
+    <!-- This label is used by screenreaders to inform the user that the message contains an image of a warning icon -->
+    <string name="warningIcon">Icona di avviso</string>
+
+    <!-- This is used as the title for an alert message to inform the user that the app does not detect network connectivity -->
+    <string name="no_internet_connection">Connessione internet assente</string>
+    <!-- This is used in the app logs to inform that network connectivity has successfully been detected -->
+    <string name="network_connection_success">Connessione alla rete stabilita.</string>
+
+    <!-- This is used to inform the user that there are no saved logins in the list -->
+    <string name="no_logins_found">Impossibile trovare la credenziale</string>
+    <!-- This explains the steps the user should take, if no saved logins are found: sign in and sync in Firefox. %1$s will be replaced with application name -->
+    <string name="no_logins_description">%1$s permette di accedere alle password salvate in Firefox. Per visualizzare le credenziali in questa sezione, effettua l’accesso in Firefox e completa la sincronizzazione.</string>
+    <!-- This is the title for the biometric unlock onboarding screen. %1$s will be replaced with application name -->
+    <string name="onboarding_unlock_title">Sblocca %1$s con l’impronta digitale.</string>
+    <!-- This is the onboarding description for enabling biometric unlock with the fingerprint sensor. %1$s will be replaced with application name -->
+    <string name="onboarding_unlock_description">Garantisci a %1$s il permesso di sbloccare questa app con il sensore di impronte digitali.</string>
+    <!-- This is the description of the button to skip the onboarding for biometric unlock with the fingerprint sensor. -->
+    <string name="onboarding_skip">Ignora per il momento</string>
+    <!-- This is the description of the fingerprint icon on the onboarding screen -->
+    <string name="fingerprint_icon_description">Immagine dell’impronta digitale</string>
+    <!-- This is the title of the autofill onboarding screen. %1$s will be replaced with application name -->
+    <string name="onboarding_autofill_title">Consenti a %1$s di compilare automaticamente le password.</string>
+    <!-- This is the onboarding description for enabling the application as an autofill provider through the device's autofill settings. -->
+    <string name="onboarding_autofill_description">Compila facilmente nomi utente e password dove ne hai più bisogno.</string>
+    <!-- This button will take you to your phone's autofill settings screen. -->
+    <string name="go_to_settings">Vai alle impostazioni</string>
+    <!-- This is the content description for the autofill image on the autofill onboarding screen. %1$s will be replaced with application name. Autofill should match the Android name for this system feature -->
+    <string name="onboarding_autofill_image_description">Compilazione automatica %1$s</string>
+    <!-- This is the title for the final onboarding screen -->
+    <string name="all_set">È tutto pronto.</string>
+    <!-- This is the button to dismiss the final onboarding screen -->
+    <string name="finish">Fine</string>
+    <!-- This description of the app functionality is shown on the final onboarding screen -->
+    <string name="access_description">Accedi alle credenziali salvate in Firefox dal tuo telefono</string>
+    <!-- This is an accessible content description for the security information link text. %1$s will be replaced with application name -->
+    <string name="security_content_description">Link a una descrizione delle pratiche di sicurezza in %1$s.</string>
+    <!-- This description of the app security is shown on the final onboarding screen. %s will be replaced with the security link. -->
+    <string name="security_description">Sincronizza in modo sicuro più dispositivi con %s</string>
+    <!-- This text is displayed as a link in the security description. -->
+    <string name="security_link">crittografia a 256 bit</string>
+
+    <!-- This description of the app convenience is shown on the final onboarding screen. -->
+    <string name="convenience_description">Sblocca comodamente l’app utilizzando la tua impronta digitale</string>
+
+    <!-- This is the title of the device security dialog box. -->
+    <string name="secure_your_device">Proteggi il tuo dispositivo.</string>
+    <!-- This is the description explaining the device security requirements. -->
+    <string name="device_security_description">Dovresti utilizzare una sequenza di sblocco, un PIN o una password per bloccare il telefono. Senza questa precauzione, chiunque si impossessi del tuo telefono può accedere alle informazioni salvate.</string>
+    <!-- This is the skip button description on the device security dialog box. -->
+    <string name="skip_button">Ignora</string>
+    <!-- This is the the button description on the device security dialog box which routes to system security settings. -->
+    <string name="set_up_now">Imposta adesso</string>
+
+    <!-- This header appears above the Privacy page of the application website. -->
+    <string name="privacy">Privacy</string>
+
+    <!-- This is the prompt when autofill is triggered and the application is locked. It appears on top of the login form as an action available to the user to take. %1$s will be replaced with application name -->
+    <string name="autofill_authenticate_cta">Sblocca %1$s</string>
+    <!-- This is the message suggesting that if the user does not see the matching login to autofill into a form, they can search all their logins by opening this action. %1$s will be replaced with application name. -->
+    <string name="autofill_search_cta">Cerca in %1$s</string>
+    <!-- This is the error message when autofill is triggered and the application is in an error state. %1$s will be replaced with application name. %2$s refers to the localized error message that will be provided by the system. -->
+    <string name="autofill_error_toast">Si è verificato un errore in %1$s: %2$s</string>
+
+    <!-- This is the placeholder text for an empty or null username. -->
+    <string name="no_username">[nessun nome utente]</string>
+</resources>
