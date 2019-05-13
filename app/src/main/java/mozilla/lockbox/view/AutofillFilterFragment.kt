@@ -14,7 +14,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding2.view.clicks
 import com.jakewharton.rxbinding2.view.visibility
 import com.jakewharton.rxbinding2.widget.textChanges
@@ -22,6 +24,8 @@ import io.reactivex.Observable
 import io.reactivex.functions.Consumer
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_autofill_filter.view.*
+import kotlinx.android.synthetic.main.fragment_autofill_filter.view.entriesView
+import kotlinx.android.synthetic.main.fragment_item_list.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
 import mozilla.lockbox.adapter.ItemListAdapter
@@ -37,13 +41,10 @@ class AutofillFilterFragment : DialogFragment(), FilterView {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         presenter = AutofillFilterPresenter(this)
         val view = inflater.inflate(R.layout.fragment_autofill_filter, container, false)
-
-        val layoutManager = LinearLayoutManager(context)
-        view.entriesView.layoutManager = layoutManager
-        view.entriesView.adapter = adapter
         retainInstance = true
         return view
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, R.style.NoTitleDialog)
@@ -51,7 +52,21 @@ class AutofillFilterFragment : DialogFragment(), FilterView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         dialog?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+        setupListView(view.entriesView)
+
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    private fun setupListView(listView: RecyclerView) {
+        val context = requireContext()
+        val layoutManager = LinearLayoutManager(context)
+        val decoration = DividerItemDecoration(context, layoutManager.orientation)
+        context.getDrawable(R.drawable.inset_divider)?.let {
+            decoration.setDrawable(it)
+            listView.addItemDecoration(decoration)
+        }
+        listView.layoutManager = layoutManager
+        listView.adapter = adapter
     }
 
     override fun onResume() {
