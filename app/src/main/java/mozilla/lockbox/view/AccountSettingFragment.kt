@@ -42,11 +42,16 @@ class AccountSettingFragment : BackableFragment(), AccountSettingView {
     }
 
     override fun setAvatar(avatar: Avatar) {
+        val url =
+            if (avatar.isDefault) {
+                null
+            } else {
+                avatar.url
+            }
+
         Picasso.get()
-            .load(avatar.url)
+            .load(url)
             .placeholder(R.drawable.ic_avatar_placeholder)
-            .resize(80, 80)
-            .transform(CropCircleTransformation())
             .into(view!!.profileImage)
     }
 

@@ -23,6 +23,7 @@
             android:elevation="1dp"
             android:background="@drawable/round_outline"
             android:src="@drawable/ic_avatar_placeholder"
+            android:scaleType="centerCrop"
             android:contentDescription="@string/profile_image_content_description"
     />
 

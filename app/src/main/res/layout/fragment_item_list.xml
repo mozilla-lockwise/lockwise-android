@@ -159,7 +159,8 @@
                 android:text="@string/lock_now"
                 android:textAlignment="viewStart"
                 android:textColor="@color/text_ink"
-                android:theme="@style/NavDrawerButtonStyle" />
+                android:theme="@style/NavDrawerButtonStyle"
+                tools:ignore="RtlSymmetry"/>
         </LinearLayout>
     </com.google.android.material.navigation.NavigationView>
 </androidx.drawerlayout.widget.DrawerLayout>
