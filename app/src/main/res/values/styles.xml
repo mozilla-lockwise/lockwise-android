@@ -96,6 +96,7 @@
         <item name="android:colorBackground">@color/color_primary</item>
     </style>
     <style name="AlertDialogStyle" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowBackground">@drawable/rounded_corner_bg_white</item>
         <item name="android:textColorPrimary">@color/text_ink</item>
         <item name="android:textColor">@color/text_ink</item>
         <item name="android:textColorSecondary">@color/text_ink</item>
