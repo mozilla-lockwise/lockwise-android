@@ -5,4 +5,6 @@
 
     <issue id="GoogleAppIndexingWarning" severity="ignore" />
     <issue id="IconLauncherShape" severity="ignore" />
+    <issue id="MissingTranslation" severity="ignore" />
+    <issue id="TypographyEllipsis" severity="ignore" />
 </lint>
