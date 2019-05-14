@@ -35,7 +35,7 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(androidx.fragment.app.DialogFragment.STYLE_NORMAL, R.style.NoTitleDialog)
+        setStyle(STYLE_NORMAL, R.style.NoTitleDialog)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -45,11 +45,11 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val appName = getString(R.string.app_name)
+        val appLabel = getString(R.string.app_label)
         titleId?.let {
             val title = getString(it)
             if (title.contains("%1\$s")) {
-                view.dialogTitle.text = getString(it, appName)
+                view.dialogTitle.text = getString(it, appLabel)
             } else {
                 view.dialogTitle.text = title
             }
@@ -57,7 +57,7 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
         subtitleId?.let {
             val subtitle = getString(it)
             if (subtitle.contains("%1\$s")) {
-                view.dialogSubtitle.text = getString(it, appName)
+                view.dialogSubtitle.text = getString(it, appLabel)
             } else {
                 view.dialogSubtitle.text = subtitle
             }

@@ -5,8 +5,8 @@
   -->
 
 <resources>
-    <color name="color_primary">#393473</color> <!--background_violet-->
-    <color name="color_primary_dark">#1d1133</color> <!--background_ink-->
+    <color name="color_primary">#393473</color>
+    <color name="color_primary_dark">#1d1133</color>
 
     <color name="text_ink">#20123a</color>
     <color name="violet_70">#592acb</color>
@@ -28,5 +28,4 @@
     <color name="red">#d70022</color>
     <color name="refresh_violet">#45278d</color>
     <color name="selection">#14000000</color>
-
 </resources>
