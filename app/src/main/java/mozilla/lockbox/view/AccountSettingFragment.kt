@@ -13,7 +13,6 @@ import android.view.ViewGroup
 import com.jakewharton.rxbinding2.view.clicks
 import com.squareup.picasso.Picasso
 import io.reactivex.Observable
-import jp.wasabeef.picasso.transformations.CropCircleTransformation
 import kotlinx.android.synthetic.main.fragment_account_setting.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.components.concept.sync.Avatar
