@@ -9,8 +9,11 @@ package mozilla.lockbox.store
 import android.content.Context
 import android.net.Uri
 import android.os.Looper
+import android.text.format.DateUtils
 import android.webkit.CookieManager
 import android.webkit.WebStorage
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -40,6 +43,9 @@ import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.SecurePreferences
 import mozilla.lockbox.support.asOptional
+import java.io.File
+import java.lang.Exception
+import java.util.Date
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 
@@ -63,6 +69,7 @@ open class AccountStore(
             )
         }
 
+    private lateinit var context: Context
     private val coroutineContext: CoroutineContext
         get() = Dispatchers.Default + exceptionHandler
 
@@ -116,7 +123,8 @@ open class AccountStore(
             .addTo(compositeDisposable)
     }
 
-    override fun injectContext(context: Context) {
+    override fun injectContext(con: Context) {
+        context = con
         detectAccount()
     }
 
@@ -224,6 +232,45 @@ open class AccountStore(
 
         this.securePreferences.remove(Constant.Key.firefoxAccount)
         this.generateNewFirefoxAccount()
+
+        clearCaches()
+    }
+
+    private fun clearCaches() {
+        // WebView.clearCache(true) in : /data/data/mozilla.lockbox/cache/org.chromium.android_webview/*
+        // LevelDB log files in : /data/data/mozilla.lockbox/app_webview/Local Storage/leveldb/[0-9]*.log
+
+        val context =
+        log.info("Starting cache prune.")
+        val numDeletedFiles = clearCacheFolder(context.getCacheDir())
+        log.info("Cache pruning completed, $numDeletedFiles files deleted.")
+    }
+
+    // https://stackoverflow.com/questions/2465432/android-webview-completely-clear-the-cache
+    private fun clearCacheFolder(dir: File): Int {
+
+        var deletedFiles = 0
+        if (dir != null && dir.isDirectory) {
+            try {
+                for (child in dir.listFiles()) {
+
+                    //first delete subdirectories recursively
+                    if (child.isDirectory) {
+                        deletedFiles += clearCacheFolder(child)
+                    }
+
+                    //then delete the files and subdirectories in this dir
+                    //only empty directories can be deleted, so subdirs have been done first
+                    if (child.delete()) {
+                        deletedFiles++
+                    }
+                }
+            }
+            catch(exception: Exception) {
+                log.error("Failed to clean the cache.", exception)
+            }
+        }
+        return deletedFiles
     }
 
     private fun pushError(it: Throwable) {

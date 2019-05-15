@@ -11,6 +11,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.components.concept.sync.Avatar
+import mozilla.lockbox.action.AccountAction
 import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.flux.Dispatcher
