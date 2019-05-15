@@ -130,19 +130,12 @@ open class DataStore(
         }
     }
 
-    private fun add(item: AutofillItemViewModel) {
+    private fun add(item: ServerPassword) {
 //         retrieve the save request
 //         add as ServerPassword to list
 
-        val newCredentials = ServerPassword(
-            id = item.autofillId,
-            hostname = item.hostName,
-            username = item.username ?: "",
-            password = item.password ?: ""
-        )
-
-        // nope
-        val newList = listSubject.value + newCredentials
+        // probably don't want to use +=
+        val newList = listSubject.value + item
         listSubject = BehaviorRelay.createDefault(newList)
     }
 

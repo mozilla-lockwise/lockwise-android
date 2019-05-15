@@ -18,6 +18,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.action.AutofillAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.autofill.ClientParser
@@ -139,23 +140,17 @@ class LockboxAutofillService(
 
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onSaveRequest(request: SaveRequest, callback: SaveCallback) {
-        log.info("Save request values: $request")
 
         val clientState = request.clientState
-        log.info("Bundle: $clientState")
-
         val structure = request.fillContexts.last().structure
+
         val activityPackageName = structure.activityComponent.packageName
         if (this.packageName == activityPackageName) {
             callback.onSuccess(null)
             return
         }
 
-        // get ViewNode
-        val nodeNavigator = ViewNodeNavigator(structure, activityPackageName)
-        parsedStructure = ParsedStructureBuilder(nodeNavigator).build() as ParsedStructure
-
-        // get the ids we already know
+        // get the ids we already know - move this above,
         val usernameId: AutofillId? = clientState?.getParcelable("usernameId")
         val passwordId: AutofillId? = clientState?.getParcelable("passwordId")
 
@@ -167,13 +162,11 @@ class LockboxAutofillService(
         val username = usernameNode.autofillValue?.textValue.toString()
         val password = passwordNode.autofillValue?.textValue.toString()
 
-        log.info("ParsedStructure: $parsedStructure")
-
         // questions:
         // what do we want to use as the autofill id?
-        val autofillItem = AutofillItemViewModel(
-            autofillId = activityPackageName,
-            hostName = parsedStructure.webDomain ?: "",
+        val autofillItem = ServerPassword(
+            id = packageName,
+            hostname = parsedStructure.webDomain ?: "", // is this the right place to get the domain?
             username = username,
             password = password
         )
@@ -182,6 +175,8 @@ class LockboxAutofillService(
         callback.onSuccess()
     }
 
+
+    // should this be in the service?
     // better way to do this...
     private fun findNodeByAutofillId(structure: AssistStructure, id: AutofillId?): AssistStructure.ViewNode {
         if(id == null) {
@@ -193,21 +188,21 @@ class LockboxAutofillService(
         var index = 0
         var node: AssistStructure.ViewNode? = null
         while (index < nodes && node == null) {
-            node = parseNode(structure.getWindowNodeAt(index).rootViewNode, id)
+            node = findNode(structure.getWindowNodeAt(index).rootViewNode, id)
             index++
         }
 
         return node!!
     }
 
-    private fun parseNode(root: AssistStructure.ViewNode, id: AutofillId?): AssistStructure.ViewNode {
+    private fun findNode(root: AssistStructure.ViewNode, id: AutofillId?): AssistStructure.ViewNode {
         if (root.autofillId == id) {
             return root
         }
         else {
             val childrenSize = root.childCount
             for (i in 0 until childrenSize) {
-                parseNode(root.getChildAt(i))
+                findNode(root.getChildAt(i))
             }
         }
     }
