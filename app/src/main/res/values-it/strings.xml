@@ -46,7 +46,7 @@
     <string name="unlock_button">Sblocca</string>
 
     <!-- This message appears in a toast informing the user it is currently downloading and syncing login (a saved login is basically the URL, username and password) data -->
-    <string name="syncing_logins">Sincronizzazione credenziali in corso...</string>
+    <string name="syncing_logins">Sincronizzazione credenziali in corso…</string>
 
     <!-- This is the label used by screenreaders to inform the user the selected menu is for sorting the saved logins in the list -->
     <string name="sort_description">Ordina credenziali</string>
