@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- This string is a promotional sentence used across all the applications to describe the purpose of the application. -->
-    <string name="app_tagline">Nehmen Sie Ihre Passwörter überall mit hin.</string>
+    <string name="app_tagline">Nimm deine Passwörter überall mit hin.</string>
     <!-- This is used for screenreaders to know the application logo image is currently selected. %1$s will be replaced with application name. -->
     <string name="app_logo">Grafik: %1$s-Logo</string>
 
     <!-- This is the text on a button to cancel the current operation or request such as unlocking the application with a fingerprint. -->
     <string name="cancel">Abbrechen</string>
     <!-- This is the title of a link for users to tap to open a web page to learn more about a related setting or feature. -->
-    <string name="learn_more">Weitere Informationen</string>
+    <string name="learn_more">Weitere Infos</string>
     <!-- This is the label a screenreader uses to inform the user they selected a link that will open a webpage to learn more about the feature or setting. -->
     <string name="learn_more_description">Einen Link öffnen, um mehr zu erfahren</string>
 
     <!-- This is used as the label on a button on a first-run welcome screen to sign in and start using the application -->
     <string name="welcome_start_btn">Erste Schritte</string>
     <!-- This provides context near a button on the first-run welcome screen to describe application requirements. Firefox Account is to be translated consistently to match use in other Firefox products. %1$s will be replaced with application name. -->
-    <string name="welcome_instructions">Sie benötigen ein Firefox-Konto mit gespeicherten Zugangsdaten, um %1$s zu verwenden.</string>
+    <string name="welcome_instructions">Um %1$s zu verwenden, benötigst du ein Firefox-Konto mit gespeicherten Zugangsdaten.</string>
     <!-- This is the link on the first-run welcome screen to learn more about the requirements of the application -->
-    <string name="welcome_learn_more_btn">Weitere Informationen</string>
+    <string name="welcome_learn_more_btn">Weitere Infos</string>
 
     <!-- This is the label used for the title in the web view of the account's authentication instances. -->
     <string name="get_started_title">Erste Schritte</string>
@@ -68,7 +68,7 @@
     <!-- This is shown when a user has entered search terms that have filtered the list of logins to find no results -->
     <string name="no_matching_logins">Keine passenden Zugangsdaten.</string>
     <!-- This explains that if no logins are found and were expected, to add new logins through the Firefox desktop browser -->
-    <string name="save_firefox_disclaimer">Um hier weitere Zugangsdaten zu sehen, müssen Sie diese in Firefox speichern.</string>
+    <string name="save_firefox_disclaimer">Um hier weitere Zugangsdaten zu sehen, musst du sie erst in Firefox speichern.</string>
 
     <!-- This is a heading that appears above the URL in context of a detailed item view -->
     <string name="hint_hostname">Internetadresse</string>
@@ -77,7 +77,7 @@
     <!-- This is a heading that appears above a password in context of a detailed item view -->
     <string name="hint_password">Passwort</string>
     <!-- This message appears to link to a web page explaining how to make changes to the details -->
-    <string name="learn_to_edit_login">Erfahren Sie, wie Sie diese Zugangsdaten bearbeiten</string>
+    <string name="learn_to_edit_login">Finde heraus, wie du diese Zugangsdaten bearbeiten kannst</string>
 
     <!-- This describes an icon to screenreaders that the button tapped will open the web address in a web browser -->
     <string name="launch_hostname_content_description">Grafik: Internetadresse im Browser öffnen</string>
@@ -90,7 +90,7 @@
     <!-- This message appears when the user taps to copy the password to the device clipboard -->
     <string name="toast_password_copied">Passwort kopiert</string>
     <!-- This describes an icon to screenreaders that the button tapped will display the password in plain text for immediate reading or use -->
-    <string name="display_password_content_description">Ihr Passwort als Klartext anzeigen</string>
+    <string name="display_password_content_description">Dein Passwort als Klartext anzeigen</string>
 
     <!-- This is a heading that appears above a group of application settings to configure the user experience -->
     <string name="configuration_title">Konfiguration</string>
@@ -121,7 +121,7 @@
     <!-- This is the title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application. Autofill should match the Android name for this system feature -->
     <string name="autofill">AutoFill</string>
     <!-- This is the sub-title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application. %1$s will be replaced with application name -->
-    <string name="autofill_summary">Lassen Sie %1$s die Zugangsdaten für Sie ausfüllen</string>
+    <string name="autofill_summary">Lass %1$s die Zugangsdaten für dich ausfüllen</string>
     <!-- This is the label a screenreader uses to inform the user they selected the autofill setting toggle. Autofill should match the Android name for this system feature -->
     <string name="autofill_description">AutoFill-Einstellung</string>
 
@@ -145,7 +145,7 @@
     <!-- This is the message displayed to the user to unlock the application. %1$s will be replaced with application name -->
     <string name="unlock_fallback_title">%1$s entsperren</string>
     <!-- This is an instructional message displayed to use the fingerprint sensor to unlock the application -->
-    <string name="touch_fingerprint_sensor">Berühren Sie den Fingerabdrucksensor.</string>
+    <string name="touch_fingerprint_sensor">Berühre den Fingerabdrucksensor.</string>
     <!-- This is the title of a dialog requesting permission for the application to unlock using the device fingerprint sensor -->
     <string name="enable_fingerprint_dialog_title">Fingerabdruck aktivieren</string>
     <!-- This is the message requesting permission for the application to unlock using the device fingerprint sensor. %1$s will be replaced with application name -->
@@ -159,27 +159,27 @@
     <!-- This is the error displayed when attempting to unlock the application with a fingerprint and the device returns a generic error to the application -->
     <string name="fingerprint_sensor_error">Fingerabdrucksensor-Fehler</string>
     <!-- This is an instructional message displayed to use the device-provided unlock features to unlock the application -->
-    <string name="confirm_pattern">Geben Sie das Muster, die PIN oder das Passwort für das Gerät ein.</string>
+    <string name="confirm_pattern">Gib das Muster, die PIN oder das Passwort für das Gerät ein.</string>
 
     <!-- This is the title of a dialog displayed to encourage the user to enable security to lock their device and the application -->
-    <string name="no_device_security_title">Sichern Sie Ihr Gerät.</string>
+    <string name="no_device_security_title">Sichere dein Gerät.</string>
     <!-- This is a message displayed requiring the user to enable device-provided security to lock their device and the application. -->
-    <string name="no_device_security_message">Um den Timer für die automatische Sperre einzustellen, muss auf Ihrem Gerät ein Muster, eine PIN oder ein Passwort eingerichtet sein.</string>
+    <string name="no_device_security_message">Um den Timer für die automatische Sperre einzustellen, muss auf deinem Gerät ein Muster, eine PIN oder ein Passwort eingerichtet sein.</string>
     <!-- This is the message displayed on a button to open the device settings for the user to set up device-provided security protections -->
     <string name="set_up_security_button">Jetzt einrichten</string>
 
     <!-- This is used for screenreaders to inform the user they have selected the account profile image. Firefox Account is to be translated consistently to match use in other Firefox products. -->
     <string name="profile_image_content_description">Profilbild für Firefox-Konto</string>
     <!-- This message is displayed to inform users how to change their Firefox Account profile details on a setting screen. Firefox Account is to be translated consistently to match use in other Firefox products. -->
-    <string name="account_information">Um Änderungen an Ihrem Konto vorzunehmen, melden Sie sich in einem beliebigen Browser bei Ihrem Firefox-Konto an.</string>
+    <string name="account_information">Um Änderungen an deinem Konto vorzunehmen, melde dich in einem beliebigen Browser bei deinem Firefox-Konto an.</string>
     <!-- This is the text on a button to sign out and disconnect the account from the application. %1$s will be replaced with application name -->
     <string name="disconnect_button">%1$s trennen</string>
     <!-- This message is displayed near a button to sign out and disconnect the account from the application explaining this does not affect the data stored with Firefox. %1$s will be replaced with application name -->
-    <string name="disconnect_disclaimer">Dadurch werden synchronisierte Zugangsdaten von %1$s entfernt, Ihre Zugangsdaten werden jedoch nicht aus Firefox gelöscht.</string>
+    <string name="disconnect_disclaimer">Dadurch werden synchronisierte Zugangsdaten von %1$s entfernt. Deine Zugangsdaten werden jedoch nicht aus Firefox gelöscht.</string>
     <!-- This is the text on a final confirmation button to sign out and disconnect the account from the application. %1$s will be replaced with application name -->
     <string name="disconnect_disclaimer_title">%1$s trennen?</string>
     <!-- This message is displayed on a final confirmation dialog to sign out and disconnect their account from the application. Firefox Account is to be translated consistently to match use in other Firefox products. %1$s will be replaced with application name -->
-    <string name="disconnect_disclaimer_message">Dadurch werden Ihre Firefox-Kontodaten und alle gespeicherten Zugangsdaten von %1$s gelöscht.</string>
+    <string name="disconnect_disclaimer_message">Dadurch werden deine Firefox-Kontodaten und alle gespeicherten Zugangsdaten von %1$s gelöscht.</string>
     <!-- This is the text on a final confirmation button to sign out and disconnect the account from the application -->
     <string name="disconnect">Verbindung trennen</string>
     <!-- This is the hint value for an autofill box that appears when suggesting a value for a password field. It is interpolated with the user's account name. -->
@@ -197,8 +197,8 @@
     <!-- This is used to inform the user that there are no saved logins in the list -->
     <string name="no_logins_found">Keine Zugangsdaten gefunden</string>
     <!-- This explains the steps the user should take, if no saved logins are found: sign in and sync in Firefox. %1$s will be replaced with application name -->
-    <string name="no_logins_description">Mit %1$s können Sie auf Passswörter zugreifen, die Sie bereits in Firefox gespeichert haben.
-        Um Ihre Zugangsdaten hier anzuzeigen, müssen Sie sich in Firefox anmelden und synchronisieren.
+    <string name="no_logins_description">Mit %1$s kannst du auf Passwörter zugreifen, die du bereits in Firefox gespeichert hast.
+        Um deine Zugangsdaten hier anzuzeigen, musst du dich ich in Firefox anmelden und synchronisieren.
     </string>
     <!-- This is the title for the biometric unlock onboarding screen. %1$s will be replaced with application name -->
     <string name="onboarding_unlock_title">%1$s per Fingerabdruck entsperren.</string>
@@ -209,32 +209,32 @@
     <!-- This is the description of the fingerprint icon on the onboarding screen -->
     <string name="fingerprint_icon_description">Grafik: Fingerabdruck</string>
     <!-- This is the title of the autofill onboarding screen. %1$s will be replaced with application name -->
-    <string name="onboarding_autofill_title">Lassen Sie %1$s Ihre Passwörter für Sie ausfüllen.</string>
+    <string name="onboarding_autofill_title">Lass %1$s deine Passwörter für dich ausfüllen.</string>
     <!-- This is the onboarding description for enabling the application as an autofill provider through the device's autofill settings. -->
-    <string name="onboarding_autofill_description">Lassen Sie einfach Benutzernamen und Passwörter dort eintragen, wo Sie sie am dringendsten benötigen.</string>
+    <string name="onboarding_autofill_description">Lass Benutzernamen und Passwörter einfach dort eintragen, wo du sie am dringendsten benötigst.</string>
     <!-- This button will take you to your phone's autofill settings screen. -->
     <string name="go_to_settings">Zu Einstellungen wechseln</string>
     <!-- This is the content description for the autofill image on the autofill onboarding screen. %1$s will be replaced with application name. Autofill should match the Android name for this system feature -->
     <string name="onboarding_autofill_image_description">%1$s AutoFill</string>
     <!-- This is the title for the final onboarding screen -->
-    <string name="all_set">Sie sind fertig!</string>
+    <string name="all_set">Du bist fertig!</string>
     <!-- This is the button to dismiss the final onboarding screen -->
     <string name="finish">Abschließen</string>
     <!-- This description of the app functionality is shown on the final onboarding screen -->
-    <string name="access_description">Greifen Sie über Ihr Handy auf in Firefox gespeicherte Zugangsdaten zu</string>
+    <string name="access_description">Greife über dein Handy auf alle in Firefox gespeicherten Zugangsdaten zu</string>
     <!-- This is an accessible content description for the security information link text. %1$s will be replaced with application name -->
     <string name="security_content_description">Dies ist ein Link zu einer Beschreibung der Sicherheitsmaßnahmen in %1$s.</string>
     <!-- This description of the app security is shown on the final onboarding screen. %s will be replaced with the security link. -->
-    <string name="security_description">Synchronisieren Sie zwischen Geräten mit sicherem %s</string>
+    <string name="security_description">Synchronisiere zwischen Geräten mit sicherem %s</string>
     <!-- This text is displayed as a link in the security description. -->
     <string name="security_link">256-Bit-Verschlüsselung</string>
     <!-- This description of the app convenience is shown on the final onboarding screen. -->
     <string name="convenience_description">Die App einfach per Fingerabdruck entsperren</string>
 
     <!-- This is the title of the device security dialog box. -->
-    <string name="secure_your_device">Sichern Sie Ihr Gerät.</string>
+    <string name="secure_your_device">Sichere dein Gerät.</string>
     <!-- This is the description explaining the device security requirements. -->
-    <string name="device_security_description">Sie sollten ein Muster, eine PIN oder ein Kennwort verwenden, um Ihr Handy zu sperren. Andernfalls kann jeder, der über Ihr Handy verfügt, auf die hier gespeicherten Informationen zugreifen.</string>
+    <string name="device_security_description">Du solltest ein Muster, eine PIN oder ein Kennwort verwenden, um dein Handy zu sperren. Andernfalls kann jeder, der über dein Handy verfügt, auf die hier gespeicherten Informationen zugreifen.</string>
     <!-- This is the skip button description on the device security dialog box. -->
     <string name="skip_button">Überspringen</string>
     <!-- This is the the button description on the device security dialog box which routes to system security settings. -->
