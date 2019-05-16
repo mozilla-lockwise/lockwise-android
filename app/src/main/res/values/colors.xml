@@ -10,6 +10,7 @@
 
     <color name="text_ink">#20123a</color>
     <color name="violet_70">#592acb</color>
+    <color name="violet_60_percent">#99592acb</color>
     <color name="background_grey">#ededf0</color>
     <color name="background_white">#ffffff</color>
     <color name="text_grey">#0c0c0d</color>
@@ -19,13 +20,13 @@
     <color name="gray_73_percent">#737373</color>
     <color name="gray_divider">#e4e4e4</color>
     <color name="white_60_percent">#99ffffff</color>
-    <color name="gray_pressed">#51ffffff</color>
+    <color name="button_pressed">#51ffffff</color>
     <color name="dark_grey">#4a4a4f</color>
     <color name="recyclerview_divider">#26000000</color>
     <color name="switch_activated">#413d7f</color>
+    <color name="refresh_violet">#45278d</color>
 
     <color name="green">#12bc00</color>
     <color name="red">#d70022</color>
-    <color name="refresh_violet">#45278d</color>
     <color name="selection">#14000000</color>
 </resources>
