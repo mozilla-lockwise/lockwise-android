@@ -76,7 +76,7 @@
             android:paddingEnd="40dp"
             android:paddingBottom="10dp"
             android:paddingTop="10dp"
-            android:background="@drawable/rounded_corner_selector_red"
+            android:background="@drawable/button_pressed_red"
             android:textSize="14sp"
             android:fontFamily="sans-serif-medium"
             android:textStyle="normal"

@@ -71,7 +71,7 @@
         android:layout_marginTop="4dp"
         android:paddingTop="4dp"
         android:textStyle="bold"
-        android:textColor="@color/violet_70"
+        android:textColor="@color/link_pressed"
         android:letterSpacing="0.03"
         android:lineSpacingExtra="7.5sp"
         android:background="@null"
