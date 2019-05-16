@@ -14,13 +14,13 @@ import org.mockito.Mockito.`when` as whenCalled
 
 class ParsedStructureTest {
     @Mock
-    val assistStructure: AssistStructure = Mockito.mock(AssistStructure::class.java)
+    val assistStructure: AssistStructure = mock(AssistStructure::class.java)
 
     @Mock
-    val windowNode: AssistStructure.WindowNode = Mockito.mock(AssistStructure.WindowNode::class.java)
+    val windowNode: AssistStructure.WindowNode = mock(AssistStructure.WindowNode::class.java)
 
     @Mock
-    val rootViewNode = Mockito.mock(AssistStructure.ViewNode::class.java)
+    val rootViewNode = mock(AssistStructure.ViewNode::class.java)
 
     @Test
     fun usernameAndPasswordAutofillHintsOnEditText() {
@@ -31,6 +31,7 @@ class ParsedStructureTest {
         whenCalled(usernameViewNode.autofillHints).thenReturn(arrayOf(View.AUTOFILL_HINT_USERNAME))
         whenCalled(usernameViewNode.autofillId).thenReturn(usernameId)
         whenCalled(usernameViewNode.className).thenReturn("android.widget.EditText")
+
         val passwordViewNode = mock(AssistStructure.ViewNode::class.java)
         whenCalled(passwordViewNode.autofillHints).thenReturn(arrayOf(View.AUTOFILL_HINT_PASSWORD))
         whenCalled(passwordViewNode.autofillId).thenReturn(passwordId)
