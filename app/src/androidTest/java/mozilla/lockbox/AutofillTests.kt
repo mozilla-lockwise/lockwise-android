@@ -32,10 +32,10 @@ class AutofillTests {
             .forEach { navigator ->
                 val subject = ParsedStructureBuilder(navigator).build()
 
-                assertNotNull(subject.usernameId)
-                assertTrue("${subject.usernameId!!} starts with u", subject.usernameId!!.startsWith("u"))
-                assertNotNull(subject.passwordId)
-                assertTrue("${subject.passwordId!!} starts with p", subject.passwordId!!.startsWith("p"))
+                assertNotNull(subject.username)
+                assertTrue("${subject.username!!} starts with u", subject.username!!.startsWith("u"))
+                assertNotNull(subject.password)
+                assertTrue("${subject.password!!} starts with p", subject.password!!.startsWith("p"))
             }
     }
 
@@ -59,8 +59,8 @@ class AutofillTests {
                 assertEquals("${fixture.filename} packageName detected", fixture.packageName, subject.packageName)
             }
 
-            assertNotNull(subject.passwordId, "${fixture.filename} password detected")
-            assertNotNull(subject.usernameId, "${fixture.filename} username detected")
+            assertNotNull(subject.password, "${fixture.filename} password detected")
+            assertNotNull(subject.username, "${fixture.filename} username detected")
         }
     }
 }

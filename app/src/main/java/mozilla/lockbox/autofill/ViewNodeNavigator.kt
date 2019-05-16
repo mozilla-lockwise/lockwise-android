@@ -16,6 +16,7 @@ interface AutofillNodeNavigator<T, U> {
     fun isHtmlInputField(node: T): Boolean
     fun packageName(node: T): String?
     fun webDomain(node: T): String?
+    fun currentText(node: T): String?
     fun build(
         usernameId: U?,
         passwordId: U?,
@@ -67,6 +68,14 @@ class ViewNodeNavigator(
     override fun packageName(node: ViewNode): String? = node.idPackage
 
     override fun webDomain(node: ViewNode): String? = node.webDomain
+
+    override fun currentText(node: ViewNode): String? {
+        return if (node.autofillValue?.isText == true) {
+            node.autofillValue?.textValue.toString()
+        } else {
+            null
+        }
+    }
 
     override fun build(
         usernameId: AutofillId?,

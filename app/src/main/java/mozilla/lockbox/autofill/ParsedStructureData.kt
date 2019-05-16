@@ -14,8 +14,8 @@ import android.view.autofill.AutofillId
 import androidx.annotation.RequiresApi
 
 open class ParsedStructureData<Id>(
-    val usernameId: Id? = null,
-    val passwordId: Id? = null,
+    val username: Id? = null,
+    val password: Id? = null,
     val webDomain: String? = null,
     val packageName: String
 ) {
@@ -23,8 +23,8 @@ open class ParsedStructureData<Id>(
         if (this === other) return true
         if (other !is ParsedStructureData<*>) return false
 
-        if (usernameId != other.usernameId) return false
-        if (passwordId != other.passwordId) return false
+        if (username != other.username) return false
+        if (password != other.password) return false
         if (webDomain != other.webDomain) return false
         if (packageName != other.packageName) return false
 
@@ -32,8 +32,8 @@ open class ParsedStructureData<Id>(
     }
 
     override fun hashCode(): Int {
-        var result = usernameId?.hashCode() ?: 0
-        result = 31 * result + (passwordId?.hashCode() ?: 0)
+        var result = username?.hashCode() ?: 0
+        result = 31 * result + (password?.hashCode() ?: 0)
         result = 31 * result + (webDomain?.hashCode() ?: 0)
         result = 31 * result + packageName.hashCode()
         return result
@@ -55,8 +55,8 @@ class ParsedStructure(
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeParcelable(this.usernameId, flags)
-        parcel.writeParcelable(this.passwordId, flags)
+        parcel.writeParcelable(this.username, flags)
+        parcel.writeParcelable(this.password, flags)
         parcel.writeString(this.webDomain)
         parcel.writeString(this.packageName)
     }

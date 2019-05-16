@@ -48,8 +48,8 @@ class ParsedStructureTest {
         val navigator = ViewNodeNavigator(assistStructure, "caller-package-name")
         val subject = ParsedStructureBuilder(navigator).build()
 
-        Assert.assertEquals(usernameId, subject.usernameId)
-        Assert.assertEquals(passwordId, subject.passwordId)
+        Assert.assertEquals(usernameId, subject.username)
+        Assert.assertEquals(passwordId, subject.password)
     }
 
     @Test
@@ -78,8 +78,8 @@ class ParsedStructureTest {
         val navigator = ViewNodeNavigator(assistStructure, "caller-package-name")
         val subject = ParsedStructureBuilder(navigator).build()
 
-        Assert.assertNull(subject.usernameId)
-        Assert.assertNull(subject.passwordId)
+        Assert.assertNull(subject.username)
+        Assert.assertNull(subject.password)
     }
 
     @Test
@@ -108,8 +108,8 @@ class ParsedStructureTest {
         val navigator = ViewNodeNavigator(assistStructure, "caller-package-name")
         val subject = ParsedStructureBuilder(navigator).build()
 
-        Assert.assertEquals(usernameId, subject.usernameId)
-        Assert.assertEquals(passwordId, subject.passwordId)
+        Assert.assertEquals(usernameId, subject.username)
+        Assert.assertEquals(passwordId, subject.password)
     }
 
     @Test
@@ -149,7 +149,7 @@ class ParsedStructureTest {
         val navigator = ViewNodeNavigator(assistStructure, "caller-package-name")
         val subject = ParsedStructureBuilder(navigator).build()
 
-        Assert.assertEquals(usernameId, subject.usernameId)
-        Assert.assertEquals(passwordId, subject.passwordId)
+        Assert.assertEquals(usernameId, subject.username)
+        Assert.assertEquals(passwordId, subject.password)
     }
 }

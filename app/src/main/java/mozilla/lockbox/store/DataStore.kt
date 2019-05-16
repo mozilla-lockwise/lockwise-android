@@ -22,7 +22,6 @@ import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.log
-import mozilla.lockbox.model.AutofillItemViewModel
 import mozilla.lockbox.model.SyncCredentials
 import mozilla.lockbox.support.AutoLockSupport
 import mozilla.lockbox.support.DataStoreSupport
@@ -131,12 +130,14 @@ open class DataStore(
     }
 
     private fun add(item: ServerPassword) {
-//         retrieve the save request
-//         add as ServerPassword to list
-
-        // probably don't want to use +=
-        val newList = listSubject.value + item
-        listSubject = BehaviorRelay.createDefault(newList)
+        val backend = this.backend ?: return notReady()
+        if (!backend.isLocked()) {
+            backend.add(item)
+                .asSingle(coroutineContext)
+                .map { Unit }
+                .subscribe(this::updateList, this::pushError)
+                .addTo(compositeDisposable)
+        }
     }
 
     private fun touch(id: String) {
