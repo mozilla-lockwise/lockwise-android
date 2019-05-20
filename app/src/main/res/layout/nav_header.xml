@@ -5,7 +5,6 @@
    - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -25,7 +24,8 @@
         android:layout_marginTop="40dp"
         android:layout_marginBottom="21dp"
         android:background="@drawable/round_outline_small"
-        app:srcCompat="@mipmap/ic_launcher_round"
+        android:src="@mipmap/ic_launcher_round"
+        android:scaleType="centerCrop"
     />
 
     <TextView

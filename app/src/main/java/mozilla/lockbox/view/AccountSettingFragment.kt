@@ -42,7 +42,7 @@ class AccountSettingFragment : BackableFragment(), AccountSettingView {
 
     override fun setAvatar(avatar: Avatar) {
         val url =
-            if (avatar.isDefault) {
+            if (avatar.url.isNullOrEmpty() || avatar.url == resources.getString(R.string.default_avatar_url)) {
                 null
             } else {
                 avatar.url
