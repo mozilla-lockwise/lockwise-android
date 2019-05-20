@@ -10,6 +10,7 @@ import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import mozilla.appservices.logins.ServerPassword
 import mozilla.appservices.logins.SyncUnlockInfo
 import mozilla.components.concept.sync.AccessTokenInfo
 import mozilla.lockbox.DisposingTest
@@ -58,6 +59,31 @@ class DataStoreTest : DisposingTest() {
     private val autoLockSupport = spy(FakeAutolockSupport())
     private val lifecycleStore = FakeLifecycleStore()
     private val subject = DataStore(dispatcher, support, autoLockSupport, lifecycleStore)
+
+    @Test
+    fun testAddNewEntry() {
+        // set up unlocked store
+        val stateIterator = this.subject.state.blockingIterable().iterator()
+        val listIterator = this.subject.list.blockingIterable().iterator()
+        Assert.assertEquals(0, listIterator.next().size)
+
+        dispatcher.dispatch(DataStoreAction.Unlock)
+        Assert.assertEquals(State.Unlocked, stateIterator.next())
+        Assert.assertEquals(10, listIterator.next().size)
+        clearInvocations(support.storage)
+
+        // create new entry and add
+        val newEntry = ServerPassword(
+            id = "",
+            hostname = "cats.com",
+            username = "feline",
+            password = "iLUVkatz",
+            formSubmitURL = "cats.com"
+        )
+        dispatcher.dispatch(DataStoreAction.Add(newEntry))
+
+        verify(support.storage).add(newEntry)
+    }
 
     @Test
     fun testLockUnlock() {
