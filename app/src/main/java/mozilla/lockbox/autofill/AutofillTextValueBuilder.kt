@@ -10,24 +10,29 @@ import android.app.assist.AssistStructure.ViewNode
 import android.view.autofill.AutofillId
 import mozilla.appservices.logins.ServerPassword
 
-class ServerPasswordBuilder(
-    val parsedStructure: ParsedStructure,
+data class AutofillTextValue(
+    val username: String?,
+    val password: String?
+)
+
+class AutofillTextValueBuilder(
+    private val parsedStructure: ParsedStructure,
     private val navigator: AutofillNodeNavigator<ViewNode, AutofillId>
 ) {
-    fun build(): ServerPassword {
+    fun build(): AutofillTextValue {
         val usernameText = textForAutofillId(parsedStructure.username)
         val passwordText = textForAutofillId(parsedStructure.password)
 
-        val hostname = parsedStructure.webDomain ?: parsedStructure.packageName
-        return ServerPassword("", hostname = hostname, password = passwordText ?: "", username = usernameText)
+        return AutofillTextValue(usernameText, passwordText)
     }
 
     private fun textForAutofillId(id: AutofillId?): String? {
         return findFirst { node ->
             if (navigator.autofillId(node) == id) {
                 navigator.currentText(node)
+            } else {
+                null
             }
-            null
         }
     }
 

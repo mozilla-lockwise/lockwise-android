@@ -10,7 +10,7 @@ import android.app.assist.AssistStructure
 import android.view.autofill.AutofillId
 import mozilla.lockbox.autofill.ParsedStructure
 import mozilla.lockbox.autofill.ParsedStructureBuilder
-import mozilla.lockbox.autofill.ServerPasswordBuilder
+import mozilla.lockbox.autofill.AutofillTextValueBuilder
 import mozilla.lockbox.autofill.ViewNodeNavigator
 import org.junit.Assert
 import org.junit.Test
@@ -18,7 +18,7 @@ import org.mockito.Mock
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when` as whenCalled
 
-class ServerPasswordBuilderTest {
+class AutofillTextValueBuilderTest {
     @Mock
     val assistStructure: AssistStructure = mock(AssistStructure::class.java)
 
@@ -52,7 +52,7 @@ class ServerPasswordBuilderTest {
         val parsedStructure = ParsedStructureBuilder(navigator).build() as ParsedStructure
 
 
-        val subject = ServerPasswordBuilder(parsedStructure, navigator).build()
+        val subject = AutofillTextValueBuilder(parsedStructure, navigator).build()
 
         Assert.assertEquals(null, subject.username) // username is nullable, pw will always exist
         Assert.assertEquals("", subject.password)
