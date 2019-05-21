@@ -29,7 +29,9 @@ open class FillResponseBuilder(
         get() {
             return SaveInfo.Builder(
                 SaveInfo.SAVE_DATA_TYPE_PASSWORD,
-                autofillIds()
+                arrayOf(parsedStructure.password)
+                    .filter { it != null }
+                    .toTypedArray()
             )
                 .build()
         }
