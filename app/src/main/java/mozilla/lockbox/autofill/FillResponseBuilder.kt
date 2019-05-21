@@ -76,7 +76,6 @@ open class FillResponseBuilder(
         return builder.build()
     }
 
-
     private fun addSearchFallback(
         context: Context,
         presentationAdder: (IntentSender, RemoteViews) -> Unit

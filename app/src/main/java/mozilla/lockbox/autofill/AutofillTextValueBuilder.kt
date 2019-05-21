@@ -8,7 +8,6 @@ package mozilla.lockbox.autofill
 
 import android.app.assist.AssistStructure.ViewNode
 import android.view.autofill.AutofillId
-import mozilla.appservices.logins.ServerPassword
 
 data class AutofillTextValue(
     val username: String?,
@@ -59,5 +58,4 @@ class AutofillTextValueBuilder(
             }
         return null
     }
-
 }

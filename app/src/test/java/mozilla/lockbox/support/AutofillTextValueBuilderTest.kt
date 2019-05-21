@@ -9,9 +9,8 @@ package mozilla.lockbox.support
 import android.app.assist.AssistStructure
 import android.view.autofill.AutofillId
 import android.view.autofill.AutofillValue
-import mozilla.lockbox.autofill.ParsedStructure
-import mozilla.lockbox.autofill.ParsedStructureBuilder
 import mozilla.lockbox.autofill.AutofillTextValueBuilder
+import mozilla.lockbox.autofill.ParsedStructure
 import mozilla.lockbox.autofill.ViewNodeNavigator
 import org.junit.Assert
 import org.junit.Test
