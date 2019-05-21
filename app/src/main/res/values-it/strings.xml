@@ -70,7 +70,7 @@
     <!-- This is shown when a user has entered search terms that have filtered the list of logins to find no results -->
     <string name="no_matching_logins">Nessuna corrispondenza nelle credenziali.</string>
     <!-- This explains that if no logins are found and were expected, to add new logins through the Firefox desktop browser -->
-    <string name="save_firefox_disclaimer">Per visualizzare ulteriori credenziali in questa sezione è necessario salvarle in Firefox.</string>
+    <string name="save_firefox_disclaimer">Per visualizzare ulteriori credenziali in questa sezione è necessario salvarle prima in Firefox.</string>
 
     <!-- This is a heading that appears above the URL in context of a detailed item view -->
     <string name="hint_hostname">Indirizzo web</string>
