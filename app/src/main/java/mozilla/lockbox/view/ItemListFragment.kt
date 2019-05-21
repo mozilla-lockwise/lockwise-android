@@ -187,8 +187,6 @@ class ItemListFragment : Fragment(), ItemListView {
             .load(avatarUrl)
             .placeholder(R.drawable.ic_default_avatar)
             .transform(CropCircleTransformation())
-            .resizeDimen(R.dimen.avatar_image_size, R.dimen.avatar_image_size)
-            .centerCrop()
             .into(header.menuHeader.profileImage)
     }
 

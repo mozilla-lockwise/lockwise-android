@@ -16,6 +16,7 @@
 
     <ImageView
             android:id="@+id/profileImage"
+            android:contentDescription="@string/profile_image_content_description"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_marginTop="67dp"
@@ -23,7 +24,7 @@
             android:elevation="1dp"
             android:background="@drawable/round_outline"
             android:src="@drawable/ic_avatar_placeholder"
-            android:contentDescription="@string/profile_image_content_description"
+            android:scaleType="centerCrop"
     />
 
     <TextView
