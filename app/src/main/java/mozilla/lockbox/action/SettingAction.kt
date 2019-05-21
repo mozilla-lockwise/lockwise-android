@@ -42,7 +42,7 @@ class Setting {
     }
 
     enum class ItemListSort(val titleId: Int, val valueId: Int) {
-        ALPHABETICALLY(R.string.all_entries_a_z, R.string.sort_menu_az),
-        RECENTLY_USED(R.string.all_entries_recent, R.string.sort_menu_recent)
+        ALPHABETICALLY(R.string.all_logins_a_z, R.string.sort_menu_az),
+        RECENTLY_USED(R.string.all_logins_recent, R.string.sort_menu_recent)
     }
 }

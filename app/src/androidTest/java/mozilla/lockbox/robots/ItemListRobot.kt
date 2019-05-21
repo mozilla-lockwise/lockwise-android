@@ -13,7 +13,6 @@ import androidx.test.espresso.contrib.NavigationViewActions.navigateTo
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import br.com.concretesolutions.kappuccino.actions.ClickActions.click
 import br.com.concretesolutions.kappuccino.assertions.VisibilityAssertions.displayed
-import kotlinx.android.synthetic.main.fragment_item_list.view.*
 import mozilla.lockbox.R
 
 // ItemList
@@ -31,12 +30,12 @@ class ItemListRobot : BaseTestRobot {
 
     fun spinnerDisplaysFirstItemSelection() = displayed {
         id(R.id.sortButton)
-        text(R.string.all_entries_a_z)
+        text(R.string.all_logins_a_z)
     }
 
     fun spinnerDisplaysSecondItemSelection() = displayed {
         id(R.id.sortButton)
-        text(R.string.all_entries_recent)
+        text(R.string.all_logins_recent)
     }
 
     fun openMenu(): ViewInteraction {

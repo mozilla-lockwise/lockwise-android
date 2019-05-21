@@ -1,5 +1,8 @@
-# lockbox-android code owners
+# lockwise-android code owners
 # https://help.github.com/articles/about-codeowners/
 
-# everything is to be reviewed by the mobile team (for now..)
-* @mozilla-lockbox/mobile-engineering
+app/src/main/res/values/strings.xml                   @mozilla-lockwise/localization
+app/src/main/res/values/non_localizable_strings.xml   @mozilla-lockwise/localization
+
+# everything except strings is to be reviewed by the mobile team
+*                                                     @mozilla-lockwise/mobile-engineering

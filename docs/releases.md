@@ -33,7 +33,7 @@ _all commits on all branches and pull requests are automatically built_
   - merge the release notes to `master` branch
   - this will result in a release build matching the build number provided
 2. Create and merge a pull request _from_ `master` _to_ `production` so it tracks the release
-  - https://github.com/mozilla-lockbox/lockbox-android/compare/production...master
+  - https://github.com/mozilla-lockwise/lockwise-android/compare/production...master
 3. Create a tag from `production` matching the format: `major.minor.patch.build`
   - for example: `1.2.1399` is major version 1.2, bitrise build 1399
   - for example: `1.3.1.1624` is major version 1.3 with 1 patch release, (bitrise) build 1624
@@ -74,7 +74,7 @@ _similar to above, but requires explicit cherry-pick commits on `production` bra
 _all builds must be manually uploaded from bitrise to Play Store Console as an artifact aka "New Release" in the "Preparing" instructions above_
 
 1. Browse to [App Releases][2] in Play Console
-2. Browse to the "Internal test track" (this release should already be uploaded and available to the core Lockbox team)
+2. Browse to the "Internal test track" (this release should already be uploaded and available to the core Lockwise team)
 3. Promote the release to the (internal still) Alpha channel using the "Promote to Alpha" button, complete the questions
 
 ## Distributing through the App Store (Production)

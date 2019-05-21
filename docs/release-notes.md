@@ -1,5 +1,31 @@
 # Release Notes
 
+## 1.0.3 (Build 3819)
+
+_Date 2019-05-10_
+
+**Release Candidate 2**
+
+Minor update that includes more stability and crash fixes.
+
+New since last release candidate:
+
+- fix string interpolation to show product name on fingerprint dialog (#659)
+
+All changes since last version:
+
+- null fragment if fragment list unavailable (#618)
+- fix crash for null className on Android Q (#609)
+- remove deprecated calls (#591)
+- fix keystore crashes during autofill (#624)
+- fix stuck onboarding screen after autofill settings (#642)
+- string updates to prepare for localization (#617)
+- major dependency updates (#600)
+- fix for DumpNode crashes on Q (#623)
+- more reliably clear the clipboard (#644)
+- secure flag on autofill (#647)
+- refactor locked presenters (#643)
+
 ## 1.0.3 (Build 3722)
 
 _Date 2019-05-03_
@@ -125,7 +151,7 @@ First internal test build for post-launch point release.
 
 _Date: 2019-03-26_
 
-Introducing Firefox Lockbox for Android!
+Introducing Firefox Lockwise for Android!
 
 Minor change since Build 3137:
 

@@ -28,6 +28,7 @@ import mozilla.lockbox.store.ClipboardStore
 import mozilla.lockbox.store.ContextStore
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.FingerprintStore
+import mozilla.lockbox.store.LockedStore
 import mozilla.lockbox.store.NetworkStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.store.TelemetryStore
@@ -40,7 +41,7 @@ import mozilla.lockbox.support.isDebug
 
 sealed class LogProvider {
     companion object {
-        val log: Logger = Logger("Lockbox")
+        val log: Logger = Logger("Lockwise")
     }
 }
 
@@ -86,7 +87,8 @@ open class LockboxApplication : Application() {
         val orderedStores = listOf(
             DataStore.shared,
             AccountStore.shared,
-            AutoLockSupport.shared
+            AutoLockSupport.shared,
+            LockedStore.shared
         )
         orderedStores.forEach {
             log.info("${it.javaClass.simpleName} initialized")

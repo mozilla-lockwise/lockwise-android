@@ -1,16 +1,11 @@
-<vector android:height="24dp" android:viewportHeight="48"
-    android:viewportWidth="48" android:width="24dp"
-    xmlns:aapt="http://schemas.android.com/aapt" xmlns:android="http://schemas.android.com/apk/res/android">
-    <path android:fillType="evenOdd" android:pathData="M-12,-12h72v72L-12,60z">
-        <aapt:attr name="android:fillColor">
-            <gradient android:endX="30.7248" android:endY="47.6196"
-                android:startX="21.33384" android:startY="-0.07608" android:type="linear">
-                <item android:color="#FF00C8D7" android:offset="0"/>
-                <item android:color="#FF0060DF" android:offset="1"/>
-            </gradient>
-        </aapt:attr>
-    </path>
-    <path android:fillColor="#000" android:fillType="evenOdd" android:pathData="M23.058,23.196l-1.65,6.821a1.23,1.23 0,0 0,1.188 1.533h3.475c0.1,0 0.2,-0.012 0.297,-0.036a1.235,1.235 0,0 0,0.89 -1.497l-1.65,-6.82a3.64,3.64 0,0 0,-1.275 -7.05,3.64 3.64,0 0,0 -1.275,7.049zM38.383,27.319v2.954c0,1.886 -0.197,2.57 -0.565,3.26 -0.37,0.69 -0.91,1.23 -1.6,1.6 -0.69,0.369 -1.374,0.565 -3.26,0.565h-17.25c-1.886,0 -2.57,-0.196 -3.26,-0.565a3.845,3.845 0,0 1,-1.599 -1.6c-0.369,-0.69 -0.565,-1.374 -0.565,-3.26v-2.954L-12,27.319v-7.11h22.284v-2.784c0,-1.886 0.196,-2.57 0.565,-3.26 0.369,-0.69 0.91,-1.231 1.6,-1.6 0.69,-0.369 1.373,-0.565 3.26,-0.565h17.249c1.886,0 2.57,0.196 3.26,0.565 0.69,0.369 1.23,0.91 1.6,1.6 0.368,0.69 0.565,1.374 0.565,3.26v2.785L60,20.21v7.109L38.383,27.319z"/>
-    <path android:fillAlpha=".95" android:fillColor="#FFF"
-        android:fillType="evenOdd" android:pathData="M23.058,23.196l-1.65,6.821a1.23,1.23 0,0 0,1.188 1.533h3.475c0.1,0 0.2,-0.012 0.297,-0.036a1.235,1.235 0,0 0,0.89 -1.497l-1.65,-6.82a3.64,3.64 0,0 0,-1.275 -7.05,3.64 3.64,0 0,0 -1.275,7.049zM38.383,27.319v2.954c0,1.886 -0.197,2.57 -0.565,3.26 -0.37,0.69 -0.91,1.23 -1.6,1.6 -0.69,0.369 -1.374,0.565 -3.26,0.565h-17.25c-1.886,0 -2.57,-0.196 -3.26,-0.565a3.845,3.845 0,0 1,-1.599 -1.6c-0.369,-0.69 -0.565,-1.374 -0.565,-3.26v-2.954L-12,27.319v-7.11h22.284v-2.784c0,-1.886 0.196,-2.57 0.565,-3.26 0.369,-0.69 0.91,-1.231 1.6,-1.6 0.69,-0.369 1.373,-0.565 3.26,-0.565h17.249c1.886,0 2.57,0.196 3.26,0.565 0.69,0.369 1.23,0.91 1.6,1.6 0.368,0.69 0.565,1.374 0.565,3.26v2.785L60,20.21v7.109L38.383,27.319z"/>
+<!--
+  ~ This Source Code Form is subject to the terms of the Mozilla Public
+  ~ License, v. 2.0. If a copy of the MPL was not distributed with this
+  ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
+  -->
+
+<vector android:alpha="0.75" android:height="48dp"
+    android:viewportHeight="48" android:viewportWidth="48"
+    android:width="48dp" xmlns:android="http://schemas.android.com/apk/res/android">
+    <path android:fillColor="#FFF" android:fillType="nonZero" android:pathData="M24.022,0A24,24 0,1 0,48 24C48,10.753 37.268,0.012 24.022,0zM24.022,6.85c5.676,0.001 10.282,4.594 10.297,10.27 0.016,5.676 -4.564,10.295 -10.24,10.326a10.298,10.298 0,1 1,-0.057 -20.596zM38.112,33.608a16.976,16.976 0,0 1,-28.201 0,3.425 3.425,0 0,1 0.237,-4.2c3.62,-4.31 8.617,1.443 13.874,1.443s10.233,-5.645 13.852,-1.444a3.425,3.425 0,0 1,0.237 4.201z"/>
 </vector>

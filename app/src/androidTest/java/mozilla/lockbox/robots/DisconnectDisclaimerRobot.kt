@@ -12,7 +12,7 @@ import mozilla.lockbox.R
 
 // DisconnectDisclaimer
 class DisconnectDisclaimerRobot : BaseTestRobot {
-    override fun exists() = displayed { text(R.string.disconnect_disclaimer_title) }
+    override fun exists() = displayed { text(R.string.disconnect) }
 
     fun tapDisconnect() = click { text(R.string.disconnect) }
 

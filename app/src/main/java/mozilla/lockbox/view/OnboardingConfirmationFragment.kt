@@ -6,12 +6,14 @@
 
 package mozilla.lockbox.view
 
+import android.graphics.Typeface
 import android.os.Bundle
-import android.text.Spannable
 import android.text.SpannableString
+import android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,7 +37,7 @@ class OnboardingConfirmationFragment : Fragment(), OnboardingConfirmationView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val linkColor = resources.getColor(R.color.blue_60_percent, null)
+        val linkColor = resources.getColor(R.color.violet_70, null)
         val securityLink = getString(R.string.security_link)
         val securityText = String.format(getString(R.string.security_description), securityLink)
         val spannableSecurityText = SpannableString(securityText)
@@ -58,7 +60,14 @@ class OnboardingConfirmationFragment : Fragment(), OnboardingConfirmationView {
             clickableSpan,
             securityLinkStart,
             securityLinkStart + securityLink.length,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        spannableSecurityText.setSpan(
+            StyleSpan(Typeface.BOLD),
+            securityLinkStart,
+            securityLinkStart + securityLink.length,
+            SPAN_EXCLUSIVE_EXCLUSIVE
         )
 
         view.encryptionText.text = spannableSecurityText

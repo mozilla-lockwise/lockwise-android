@@ -12,7 +12,7 @@
         android:textSize="13sp"
         android:fontFamily="sans-serif"
         android:textStyle="bold"
-        android:textColor="#0e89c9"
+        android:textColor="@color/text_ink"
         android:lineSpacingExtra="6.5sp"
         android:layout_marginStart="16dp"
         android:layout_marginBottom="16dp"

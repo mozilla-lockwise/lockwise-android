@@ -26,4 +26,4 @@ _(Optional: to clearly demonstrate the feature or fix to help with testing and r
 - consider running this branch in a debug simulator and check for memory leak notifications or any warnings
 - [ ] request the "UX" team perform a design review (if/when applicable)
 - [ ] make sure CI builds are passing (e.g.: fix lint and other errors)
-- [ ] check on the [accessibility](https://mozilla-lockbox.github.io/lockbox-android/accessibility/) of any added UI
+- [ ] check on the [accessibility](https://mozilla-lockwise.github.io/lockwise-android/accessibility/) of any added UI

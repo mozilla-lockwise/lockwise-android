@@ -13,7 +13,6 @@ import android.view.ViewGroup
 import com.jakewharton.rxbinding2.view.clicks
 import com.squareup.picasso.Picasso
 import io.reactivex.Observable
-import jp.wasabeef.picasso.transformations.CropCircleTransformation
 import kotlinx.android.synthetic.main.fragment_account_setting.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.components.concept.sync.Avatar
@@ -31,9 +30,9 @@ class AccountSettingFragment : BackableFragment(), AccountSettingView {
         presenter = AccountSettingPresenter(this)
         val view = inflater.inflate(R.layout.fragment_account_setting, container, false)
         view.profileImage.clipToOutline = true
-        val appName = getString(R.string.app_name)
-        view.disconnectButton.text = getString(R.string.disconnect_button, appName)
-        view.disconnectDisclaimer.text = getString(R.string.disconnect_disclaimer, appName)
+        val appLabel = getString(R.string.app_label)
+        view.disconnectButton.text = getString(R.string.disconnect_button, appLabel)
+        view.disconnectDisclaimer.text = getString(R.string.disconnect_disclaimer, appLabel)
         return view
     }
 
@@ -42,11 +41,16 @@ class AccountSettingFragment : BackableFragment(), AccountSettingView {
     }
 
     override fun setAvatar(avatar: Avatar) {
+        val url =
+            if (avatar.url.isNullOrEmpty() || avatar.url == resources.getString(R.string.default_avatar_url)) {
+                null
+            } else {
+                avatar.url
+            }
+
         Picasso.get()
-            .load(avatar.url)
+            .load(url)
             .placeholder(R.drawable.ic_avatar_placeholder)
-            .resize(80, 80)
-            .transform(CropCircleTransformation())
             .into(view!!.profileImage)
     }
 
