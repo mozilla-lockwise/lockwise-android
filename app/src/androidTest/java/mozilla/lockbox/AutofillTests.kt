@@ -75,6 +75,11 @@ class DOMNavigator(
     filename: String,
     override val activityPackageName: String
 ) : AutofillNodeNavigator<Element, String> {
+
+    override fun currentText(node: Element): String? {
+        return node.getAttribute("autofillValue")
+    }
+
     private val document: Document
 
     init {
