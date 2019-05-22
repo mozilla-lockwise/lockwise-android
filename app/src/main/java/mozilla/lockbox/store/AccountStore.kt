@@ -237,9 +237,9 @@ open class AccountStore(
     }
 
     private fun clearLogs() {
-        log.info("Starting cache prune.")
+        log.info("Starting log prune.")
         val numDeletedFiles = clearLogFolder(logDirectory)
-        log.info("Cache pruning completed, $numDeletedFiles files deleted.")
+        log.info("Log pruning completed, $numDeletedFiles files deleted.")
     }
 
     private fun clearLogFolder(dir: File): Int {
