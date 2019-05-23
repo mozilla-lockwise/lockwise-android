@@ -19,7 +19,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@Ignore
+@Ignore("589-UItests-update (#590)")
 class TestLockingSupport() : LockingSupport {
     override var systemTimeElapsed: Long = 0L
 
@@ -35,7 +35,7 @@ class TestLockingSupport() : LockingSupport {
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 @LargeTest
-@Ignore
+@Ignore("589-UItests-update (#590)")
 open class AutoLockTest {
     private val navigator = Navigator()
     private val testLockingSupport = TestLockingSupport(AutoLockSupport.shared.lockingSupport)

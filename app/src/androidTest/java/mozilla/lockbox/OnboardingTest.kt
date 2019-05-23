@@ -10,11 +10,11 @@ import mozilla.lockbox.robots.onboardingConfirmationScreen
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.view.RootActivity
+import org.junit.Before
 import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import kotlin.test.BeforeTest
 
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
@@ -26,7 +26,7 @@ open class OnboardingTest {
     @JvmField
     val activityRule: ActivityTestRule<RootActivity> = ActivityTestRule(RootActivity::class.java)
 
-    @BeforeTest
+    @Before
     fun setUp() {
         navigator.disconnectAccount()
     }
@@ -37,7 +37,7 @@ open class OnboardingTest {
         onboardingConfirmationScreen { clickFinish() }
     }
 
-    @Ignore
+    @Ignore("589-UItests-update (#590)")
     @Test
     fun fingerprintSkipButtonNavigatesToItemList() {
         navigator.gotoFingerprintOnboarding()
@@ -45,7 +45,7 @@ open class OnboardingTest {
         navigator.checkAtItemList()
     }
 
-    @Ignore
+    @Ignore("589-UItests-update (#590)")
     @Test
     fun fingerprintSuccessNavigatesToItemList() {
         navigator.gotoFingerprintOnboarding()
@@ -65,7 +65,7 @@ open class OnboardingTest {
         onboardingConfirmationScreen { clickFinish() }
     }
 
-    @Ignore
+    @Ignore("589-UItests-update (#590)")
     @Test
     fun autofillGoToSettingsNavigatesToSystemSettings() {
         navigator.gotoAutofillOnboarding()

@@ -6,6 +6,7 @@
 
 package mozilla.lockbox.store
 
+import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
@@ -23,11 +24,12 @@ import mozilla.lockbox.support.SystemLockingSupport
 
 open class ClipboardStore(
     val dispatcher: Dispatcher = Dispatcher.shared,
-    val timerSupport: LockingSupport = SystemLockingSupport()
+    private val timerSupport: LockingSupport = SystemLockingSupport()
 ) : ContextStore {
     internal val compositeDisposable = CompositeDisposable()
 
     companion object {
+        @SuppressLint("StaticFieldLeak")
         val shared = ClipboardStore()
     }
 

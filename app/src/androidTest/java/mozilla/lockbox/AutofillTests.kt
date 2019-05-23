@@ -7,6 +7,7 @@ import mozilla.lockbox.autofill.AutofillNodeNavigator
 import mozilla.lockbox.autofill.ParsedStructureBuilder
 import mozilla.lockbox.autofill.ParsedStructureData
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Ignore
 import org.junit.Rule
@@ -15,10 +16,9 @@ import org.junit.runner.RunWith
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import javax.xml.parsers.DocumentBuilderFactory
-import kotlin.test.assertNotNull
 
 @RunWith(AndroidJUnit4::class)
-@Ignore
+@Ignore("619-ui-tests-bitrise (#620)")
 class AutofillTests {
 
     @get:Rule

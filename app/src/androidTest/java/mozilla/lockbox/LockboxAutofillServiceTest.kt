@@ -16,14 +16,8 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 @ExperimentalCoroutinesApi
-@Ignore
+@Ignore("589-UItests-update (#590)")
 class LockboxAutofillServiceTest {
-    val twitterCredential = ServerPassword(
-        "kjlfdsjlkf",
-        "twitter.com",
-        "cats@cats.com",
-        "dawgzone"
-    )
 
     private val dispatcher = Dispatcher()
 

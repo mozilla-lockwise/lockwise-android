@@ -37,7 +37,7 @@ open class AppRoutePresenterTest {
         navigator.gotoFxALogin()
     }
 
-    @Ignore
+    @Ignore("619-ui-tests-bitrise (#620)")
     @Test
     fun testFingerprintOnboarding() {
         if (FingerprintStore.shared.isFingerprintAuthAvailable) {
@@ -93,7 +93,7 @@ open class AppRoutePresenterTest {
         navigator.back()
     }
 
-    @Ignore
+    @Ignore("619-ui-tests-bitrise (#620)")
     @Test
     fun testDisconnecting() {
         navigator.gotoDisconnectDisclaimer()
@@ -115,7 +115,7 @@ open class AppRoutePresenterTest {
         navigator.checkAtItemList()
     }
 
-    @Ignore
+    @Ignore("619-ui-tests-bitrise (#620)")
     @Test
     fun testNoSecurityDialogSetupSecurity() {
 //        navigator.goToSecuritySettings()
