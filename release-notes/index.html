@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Release Notes - Firefox Lockbox for Android</title>
+  <title>Release Notes - Firefox Lockwise for Android</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -36,7 +36,7 @@
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
       <div class="wy-side-nav-search">
-        <a href=".." class="icon icon-home"> Firefox Lockbox for Android</a>
+        <a href=".." class="icon icon-home"> Firefox Lockwise for Android</a>
         <div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
@@ -61,6 +61,16 @@
     <li class="toctree-l2"><a href="#release-notes">Release Notes</a></li>
     
         <ul>
+        
+            <li><a class="toctree-l3" href="#110-build-3951">1.1.0 (Build 3951)</a></li>
+        
+            <li><a class="toctree-l3" href="#103-build-3819">1.0.3 (Build 3819)</a></li>
+        
+            <li><a class="toctree-l3" href="#103-build-3722">1.0.3 (Build 3722)</a></li>
+        
+            <li><a class="toctree-l3" href="#103-build-3522">1.0.3 (Build 3522)</a></li>
+        
+            <li><a class="toctree-l3" href="#102-build-3428">1.0.2 (Build 3428)</a></li>
         
             <li><a class="toctree-l3" href="#102-build-3417">1.0.2 (Build 3417)</a></li>
         
@@ -149,7 +159,7 @@
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
         <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="..">Firefox Lockbox for Android</a>
+        <a href="..">Firefox Lockwise for Android</a>
       </nav>
 
       
@@ -164,7 +174,7 @@
     <li>Release Notes</li>
     <li class="wy-breadcrumbs-aside">
       
-        <a href="https://github.com/mozilla-lockbox/lockbox-android/edit/master/docs/release-notes.md"
+        <a href="https://github.com/mozilla-lockwise/lockwise-android/edit/master/docs/release-notes.md"
           class="icon icon-github"> Edit on GitHub</a>
       
     </li>
@@ -175,7 +185,73 @@
             <div class="section">
               
                 <h1 id="release-notes">Release Notes</h1>
+<h2 id="110-build-3951">1.1.0 (Build 3951)</h2>
+<p><em>Date: 2019-05-21</em></p>
+<p>Firefox Lockbox is now Firefox Lockwise! With the new name also comes a new look!</p>
+<p>Changes since the last release:</p>
+<ul>
+<li>Rebrand Lockbox to new Lockwise brand, name, colors, etc. (#653 #669 #677 #676 #679)</li>
+<li>Minify and shrink release APK (#664) </li>
+<li>Import localized strings: fr, de, it, es (#674 #686 #687 #691)</li>
+</ul>
+<h2 id="103-build-3819">1.0.3 (Build 3819)</h2>
+<p><em>Date 2019-05-10</em></p>
+<p>Minor update that includes more stability and crash fixes.</p>
+<p>New since last release candidate:</p>
+<ul>
+<li>fix string interpolation to show product name on fingerprint dialog (#659)</li>
+</ul>
+<p>All changes since last version:</p>
+<ul>
+<li>null fragment if fragment list unavailable (#618)</li>
+<li>fix crash for null className on Android Q (#609)</li>
+<li>remove deprecated calls (#591)</li>
+<li>fix keystore crashes during autofill (#624)</li>
+<li>fix stuck onboarding screen after autofill settings (#642)</li>
+<li>string updates to prepare for localization (#617)</li>
+<li>major dependency updates (#600)</li>
+<li>fix for DumpNode crashes on Q (#623)</li>
+<li>more reliably clear the clipboard (#644)</li>
+<li>secure flag on autofill (#647)</li>
+<li>refactor locked presenters (#643)</li>
+</ul>
+<h2 id="103-build-3722">1.0.3 (Build 3722)</h2>
+<p><em>Date 2019-05-03</em></p>
+<p>Minor update that includes more stability and crash fixes.</p>
+<ul>
+<li>null fragment if fragment list unavailable (#618)</li>
+<li>fix crash for null className on Android Q (#609)</li>
+<li>remove deprecated calls (#591)</li>
+</ul>
+<p>New since last build:</p>
+<ul>
+<li>fix keystore crashes during autofill (#624)</li>
+<li>fix stuck onboarding screen after autofill settings (#642)</li>
+<li>string updates to prepare for localization (#617)</li>
+<li>major dependency updates (#600)</li>
+<li>fix for DumpNode crashes on Q (#623)</li>
+<li>more reliably clear the clipboard (#644)</li>
+<li>secure flag on autofill (#647)</li>
+<li>refactor locked presenters (#643)</li>
+</ul>
+<h2 id="103-build-3522">1.0.3 (Build 3522)</h2>
+<p><em>Date: 2019-04-26</em></p>
+<p>First Alpha build with crash fixes.</p>
+<ul>
+<li>null fragment if fragment list unavailable (#618)</li>
+<li>fix crash for null className on Android Q (#609)</li>
+<li>remove deprecated calls (#591)</li>
+</ul>
+<h2 id="102-build-3428">1.0.2 (Build 3428)</h2>
+<p><em>Date: 2019-04-19</em></p>
+<p>Second Alpha/Beta build with a fix for autofill crashes and proper version number in-app.</p>
+<p>Additional changes since 3417:</p>
+<ul>
+<li>set version name (number) to 1.0.2 (#605)</li>
+<li>fix for an IllegalStateException autofill crash (#548)</li>
+</ul>
 <h2 id="102-build-3417">1.0.2 (Build 3417)</h2>
+<p><em>Date: 2019-04-19</em></p>
 <p>First Alpha/Beta build with dependency updates, paving way for more crash reporting and fixes coming soon.</p>
 <ul>
 <li>update constraintlayout dependency (#578) </li>
@@ -243,7 +319,7 @@
 </ul>
 <h2 id="100-build-3171">1.0.0 (Build 3171)</h2>
 <p><em>Date: 2019-03-26</em></p>
-<p>Introducing Firefox Lockbox for Android!</p>
+<p>Introducing Firefox Lockwise for Android!</p>
 <p>Minor change since Build 3137:</p>
 <ul>
 <li>add error handler to filtering to prevent crashes on autofill (#526)</li>
@@ -349,7 +425,7 @@
   <div class="rst-versions" role="note" style="cursor: pointer">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
-          <a href="https://github.com/mozilla-lockbox/lockbox-android/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+          <a href="https://github.com/mozilla-lockwise/lockwise-android/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
         <span><a href=".." style="color: #fcfcfc;">&laquo; Previous</a></span>

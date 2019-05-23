@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Telemetry and Metrics - Firefox Lockbox for Android</title>
+  <title>Telemetry and Metrics - Firefox Lockwise for Android</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -36,7 +36,7 @@
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
       <div class="wy-side-nav-search">
-        <a href=".." class="icon icon-home"> Firefox Lockbox for Android</a>
+        <a href=".." class="icon icon-home"> Firefox Lockwise for Android</a>
         <div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
@@ -74,7 +74,7 @@
     <a class="current" href="./">Telemetry and Metrics</a>
     <ul class="subnav">
             
-    <li class="toctree-l2"><a href="#firefox-lockbox-for-android-metrics-plan">Firefox Lockbox for Android Metrics Plan</a></li>
+    <li class="toctree-l2"><a href="#firefox-lockwise-for-android-metrics-plan">Firefox Lockwise for Android Metrics Plan</a></li>
     
         <ul>
         
@@ -135,7 +135,7 @@
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
         <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="..">Firefox Lockbox for Android</a>
+        <a href="..">Firefox Lockwise for Android</a>
       </nav>
 
       
@@ -150,7 +150,7 @@
     <li>Telemetry and Metrics</li>
     <li class="wy-breadcrumbs-aside">
       
-        <a href="https://github.com/mozilla-lockbox/lockbox-android/edit/master/docs/metrics.md"
+        <a href="https://github.com/mozilla-lockwise/lockwise-android/edit/master/docs/metrics.md"
           class="icon icon-github"> Edit on GitHub</a>
       
     </li>
@@ -160,7 +160,7 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="firefox-lockbox-for-android-metrics-plan">Firefox Lockbox for Android Metrics Plan</h1>
+                <h1 id="firefox-lockwise-for-android-metrics-plan">Firefox Lockwise for Android Metrics Plan</h1>
 <p><em>Last Updated: Feb 4, 2019</em></p>
 <!-- TOC depthFrom:2 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
@@ -173,7 +173,7 @@
 </ul>
 <!-- /TOC -->
 
-<p>This is the metrics collection plan for the Lockbox Android app. It documents all events that are currently collected through telemetry. It will be updated periodically to reflect all new and planned data collection. A similar document for the Lockbox for iOS app can be found <a href="https://github.com/mozilla-lockbox/lockbox-ios/blob/master/docs/metrics.md">here</a>.</p>
+<p>This is the metrics collection plan for the Lockwise Android app. It documents all events that are currently collected through telemetry. It will be updated periodically to reflect all new and planned data collection. A similar document for the Lockwise for iOS app can be found <a href="https://github.com/mozilla-lockbox/lockbox-ios/blob/master/docs/metrics.md">here</a>.</p>
 <h2 id="analysis">Analysis</h2>
 <p>Data collection is done solely for the purpose of product development, improvement and maintenance.</p>
 <p>We analyze the data described in this doc <em>primarily</em> with the purpose of (dis)confirming the following hypothesis:</p>
@@ -181,7 +181,7 @@
 <p>In service to validating the above hypothesis, we plan on answering these specific questions, given the data we collect (see <a href="#list-of-implemented-events">List of Implemented Events</a>):</p>
 <p><em>Note that when we refer to retrieval of "credentials", we mean access to usernames, passwords, or both</em></p>
 <ul>
-<li>Are users using Lockbox to retrieve credentials?<ul>
+<li>Are users using Lockwise to retrieve credentials?<ul>
 <li>For different intervals of time (e.g. day, week, month), what is:<ul>
 <li>The average rate with which a user retrieves a credential or reveals a password</li>
 <li>The distribution of above rates across all users</li>
@@ -189,14 +189,14 @@
 </li>
 </ul>
 </li>
-<li>How often do users access Lockbox credentials via autofill, versus directly through the credential list provided by the app?</li>
+<li>How often do users access Lockwise credentials via autofill, versus directly through the credential list provided by the app?</li>
 <li>Once downloaded, do users continue to use the app? (i.e., how well are they retained?)<ul>
 <li>We will count a user as retained in a given time interval if they perform one of the following actions:<ul>
 <li>Display the credential list</li>
 <li>Tap a credential in the credential list</li>
 <li>Copy a credential to the clipboard</li>
 <li>Reveal a password</li>
-<li>Autofill a credential stored in Lockbox into another app</li>
+<li>Autofill a credential stored in Lockwise into another app</li>
 <li>Tap the URI associated with a credential (to open it in an app or browser)</li>
 </ul>
 </li>
@@ -208,22 +208,22 @@
 </ul>
 </li>
 <li>Does requiring a Firefox Account constitute a roadblock to adoption?<ul>
-<li>What proportion of new Lockbox users are pre-existing Firefox Account users?</li>
+<li>What proportion of new Lockwise users are pre-existing Firefox Account users?</li>
 <li>What proportion of users start the Account sign-in process but never complete it?</li>
 </ul>
 </li>
-<li>Does adoption of Lockbox lead to adoption of Firefox Mobile browsers (e.g. Focus)?<ul>
-<li>Do users set the default browser in Lockbox to be a Firefox browser?</li>
+<li>Does adoption of Lockwise lead to adoption of Firefox Mobile browsers (e.g. Focus)?<ul>
+<li>Do users set the default browser in Lockwise to be a Firefox browser?</li>
 </ul>
 </li>
 </ul>
-<p>In addition to answering the above questions that directly concern actions in the app, we will also analyze telemetry emitted from the password manager that exists in the the Firefox desktop browser. These analyses will primarily examine whether users of Lockbox start active curation of their credentials in the desktop browser (Lockbox users will not be able to edit credentials directly from the app).</p>
+<p>In addition to answering the above questions that directly concern actions in the app, we will also analyze telemetry emitted from the password manager that exists in the the Firefox desktop browser. These analyses will primarily examine whether users of Lockwise start active curation of their credentials in the desktop browser (Lockwise users will not be able to edit credentials directly from the app).</p>
 <h2 id="collection">Collection</h2>
-<p><em>Note: There is currently a new Mozilla mobile telemetry SDK under development, however it will not ship prior to the Lockbox for Android app. Once the new SDK ships we will evaluate whether or not to tear out the old implementation and replace it with the new SDK.</em></p>
+<p><em>Note: There is currently a new Mozilla mobile telemetry SDK under development, however it will not ship prior to the Lockwise for Android app. Once the new SDK ships we will evaluate whether or not to tear out the old implementation and replace it with the new SDK.</em></p>
 <p>Data is collected using this library:</p>
 <p>https://github.com/mozilla-mobile/android-components/blob/master/components/service/telemetry/README.md</p>
 <p>We submit two ping types, both of which are implemented by the component above.</p>
-<p>First is the <a href="https://github.com/mozilla-mobile/android-components/blob/master/components/service/telemetry/src/main/java/org/mozilla/telemetry/ping/TelemetryCorePingBuilder.java">core ping</a>, which contains information about the Android version, architecture, etc of the device Lockbox has been installed on:</p>
+<p>First is the <a href="https://github.com/mozilla-mobile/android-components/blob/master/components/service/telemetry/src/main/java/org/mozilla/telemetry/ping/TelemetryCorePingBuilder.java">core ping</a>, which contains information about the Android version, architecture, etc of the device Lockwise has been installed on:</p>
 <p>https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/data/core-ping.html</p>
 <p>The second is the <a href="https://github.com/mozilla-mobile/android-components/blob/master/components/service/telemetry/src/main/java/org/mozilla/telemetry/ping/TelemetryEventPingBuilder.java">event ping</a> which allows us to record event telemetry:</p>
 <p>https://github.com/mozilla-mobile/focus-android/wiki/Event-Tracking-with-Mozilla%27s-Telemetry-Service</p>
@@ -376,7 +376,7 @@
 </li>
 </ol>
 <h2 id="adjust-sdk">Adjust SDK</h2>
-<p>The app also includes a version of the <a href="https://github.com/adjust/android_sdk">adjust SDK</a>. Mozilla uses this software to keep track of the number of installations of the Lockbox app, as well the number of new Firefox Accounts registered through the app.</p>
+<p>The app also includes a version of the <a href="https://github.com/adjust/android_sdk">adjust SDK</a>. Mozilla uses this software to keep track of the number of installations of the Lockwise app, as well the number of new Firefox Accounts registered through the app.</p>
 <h2 id="references">References</h2>
 <p><a href="https://github.com/mozilla-mobile/android-components/blob/master/components/service/telemetry/README.md">Library used to collect and send telemetry on Android</a></p>
 <p><a href="https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/data/core-ping.html">Description of the "Core" ping</a></p>
@@ -417,7 +417,7 @@
   <div class="rst-versions" role="note" style="cursor: pointer">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
-          <a href="https://github.com/mozilla-lockbox/lockbox-android/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+          <a href="https://github.com/mozilla-lockwise/lockwise-android/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
         <span><a href="../contributing/" style="color: #fcfcfc;">&laquo; Previous</a></span>

@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Accessibility - Firefox Lockbox for Android</title>
+  <title>Accessibility - Firefox Lockwise for Android</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -36,7 +36,7 @@
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
       <div class="wy-side-nav-search">
-        <a href=".." class="icon icon-home"> Firefox Lockbox for Android</a>
+        <a href=".." class="icon icon-home"> Firefox Lockwise for Android</a>
         <div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
@@ -95,7 +95,7 @@
     <a class="current" href="./">Accessibility</a>
     <ul class="subnav">
             
-    <li class="toctree-l3"><a href="#accessibility-on-lockbox-for-android">Accessibility on Lockbox for Android</a></li>
+    <li class="toctree-l3"><a href="#accessibility-on-lockwise-for-android">Accessibility on Lockwise for Android</a></li>
     
         <ul>
         
@@ -129,7 +129,7 @@
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
         <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="..">Firefox Lockbox for Android</a>
+        <a href="..">Firefox Lockwise for Android</a>
       </nav>
 
       
@@ -148,7 +148,7 @@
     <li>Accessibility</li>
     <li class="wy-breadcrumbs-aside">
       
-        <a href="https://github.com/mozilla-lockbox/lockbox-android/edit/master/docs/accessibility.md"
+        <a href="https://github.com/mozilla-lockwise/lockwise-android/edit/master/docs/accessibility.md"
           class="icon icon-github"> Edit on GitHub</a>
       
     </li>
@@ -158,13 +158,13 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="accessibility-on-lockbox-for-android">Accessibility on Lockbox for Android</h1>
-<p>On Lockbox for Android, we implement two forms of automatic testing and
+                <h1 id="accessibility-on-lockwise-for-android">Accessibility on Lockwise for Android</h1>
+<p>On Lockwise for Android, we implement two forms of automatic testing and
 encourage developers and testers to use the <a href="/test-plan.md#accessibility">recommended forms of manual testing</a>
 to ensure that our application is accessible to every possible user.</p>
 <h2 id="automatic-accessibility">Automatic Accessibility</h2>
 <h3 id="lint-checks">Lint Checks</h3>
-<p>These are fairly simple static analysis checks. You're probably familiar with warning pop-ups when you have small code style issues; in Lockbox for Android, the build will fail if you do not address these warnings!</p>
+<p>These are fairly simple static analysis checks. You're probably familiar with warning pop-ups when you have small code style issues; in Lockwise for Android, the build will fail if you do not address these warnings!</p>
 <p>The most important accessibility warning is the <code>contentDescription</code> warning on images. This warning will appear when the <code>contentDescription</code> attribute-- the text description of the image --has not been set.</p>
 <h3 id="espresso-tests">Espresso Tests</h3>
 <p><code>AccessibilityChecks.enable()</code> -- This should be added in setup methods for your Espresso tests.</p>
@@ -217,7 +217,7 @@ method call in the <a href="https://developer.android.com/reference/androidx.tes
   <div class="rst-versions" role="note" style="cursor: pointer">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
-          <a href="https://github.com/mozilla-lockbox/lockbox-android/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+          <a href="https://github.com/mozilla-lockwise/lockwise-android/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
         <span><a href="../architecture/sec-apis/" style="color: #fcfcfc;">&laquo; Previous</a></span>
