@@ -16,6 +16,7 @@ import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.SettingIntent
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
+import java.util.concurrent.TimeUnit
 
 interface AutofillOnboardingView {
     val onSkipClick: Observable<Unit>
@@ -46,6 +47,11 @@ class AutofillOnboardingPresenter(
     }
 
     private fun triggerNextOnboarding() {
-        dispatcher.dispatch(RouteAction.Onboarding.Confirmation)
+        Observable.just(Unit)
+            .delay(2, TimeUnit.SECONDS)
+            .subscribe {
+                dispatcher.dispatch(RouteAction.Onboarding.Confirmation)
+            }
+            .addTo(compositeDisposable)
     }
 }
