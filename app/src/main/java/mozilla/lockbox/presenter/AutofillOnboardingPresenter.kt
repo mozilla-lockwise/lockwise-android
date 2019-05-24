@@ -41,14 +41,15 @@ class AutofillOnboardingPresenter(
         view.onGoToSettingsClick
             .subscribe {
                 dispatcher.dispatch(RouteAction.SystemSetting(SettingIntent.Autofill))
-                triggerNextOnboarding()
+                triggerNextOnboarding(delayed = true)
             }
             .addTo(compositeDisposable)
     }
 
-    private fun triggerNextOnboarding() {
+    private fun triggerNextOnboarding(delayed: Boolean = false) {
+        val delayDuration: Long = if (delayed) 750 else 0
         Observable.just(Unit)
-            .delay(2, TimeUnit.SECONDS)
+            .delay(delayDuration, TimeUnit.MILLISECONDS)
             .subscribe {
                 dispatcher.dispatch(RouteAction.Onboarding.Confirmation)
             }
