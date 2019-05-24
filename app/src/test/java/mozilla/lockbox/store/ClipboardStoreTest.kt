@@ -29,7 +29,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.mockito.Mockito.`when` as whenCalled
 
-@Ignore
+@Ignore("More reliably clear the clipboard (#644)")
 class TestSystemTimeSupport : LockingSupport {
     override val systemTimeElapsed: Long = 2000L
 }

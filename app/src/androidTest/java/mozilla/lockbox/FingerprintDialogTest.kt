@@ -25,7 +25,7 @@ open class FingerprintDialogTest {
     @JvmField
     val activityRule = ActivityTestRule(UITestActivity::class.java)
 
-    @Ignore
+    @Ignore("619-ui-tests-bitrise (#620)")
     @Test
     fun testLaunchRobot() {
         uiComponents {
@@ -42,7 +42,7 @@ open class FingerprintDialogTest {
             exists()
         }
     }
-    @Ignore
+    @Ignore("619-ui-tests-bitrise (#620)")
     @Test
     fun testLaunchEnableFingerprintRobot() {
         uiComponents {
