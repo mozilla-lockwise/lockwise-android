@@ -163,7 +163,7 @@ class AutoLockSupportTest {
     @Test
     fun `when the saved autolocktimerdate is later than the current system time`() {
         dispatcher.dispatch(DataStoreAction.UpdateCredentials(FixedSyncCredentials(false)))
-        mockSavedValues(lockingSupport.systemTimeElapsed + 600000)
+        mockSavedAutoLockTime(lockingSupport.systemTimeElapsed + 600000)
 
         Assert.assertFalse(subject.shouldLock)
     }
@@ -171,7 +171,7 @@ class AutoLockSupportTest {
     @Test
     fun `foregrounding lifecycle actions when the saved autolocktimerdate is earlier than the current system time`() {
         dispatcher.dispatch(DataStoreAction.UpdateCredentials(FixedSyncCredentials(false)))
-        mockSavedValues(lockingSupport.systemTimeElapsed - 600000)
+        mockSavedAutoLockTime(lockingSupport.systemTimeElapsed - Constant.Common.startUpLockTime)
 
         Assert.assertTrue(subject.shouldLock)
     }
@@ -194,9 +194,7 @@ class AutoLockSupportTest {
         verify(editor).apply()
     }
 
-    private fun mockSavedValues(
-        autoLockTimerDate: Long
-    ) {
+    private fun mockSavedAutoLockTime(autoLockTimerDate: Long) {
         whenCalled(preferences.getLong(anyString(), anyLong())).thenReturn(autoLockTimerDate)
 
         PowerMockito.mockStatic(PreferenceManager::class.java)
