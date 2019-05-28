@@ -125,7 +125,7 @@ open class AccountStore(
     override fun injectContext(context: Context) {
         detectAccount()
         webView = WebView(context)
-        logDirectory = context.dataDir
+        logDirectory = context.getDir("webview", Context.MODE_PRIVATE)
     }
 
     private fun detectAccount() {
@@ -240,28 +240,33 @@ open class AccountStore(
     }
 
     private fun clearLogs() {
-        log.info("Starting log prune.")
-        val numDeletedFiles = clearLogFolder(logDirectory)
-        log.info("Log pruning completed, $numDeletedFiles files deleted.")
+        clearLogFolder(logDirectory)
+        log.info("Log pruning completed.")
     }
 
-    private fun clearLogFolder(dir: File): Int {
-        var deletedFiles = 0
+    private fun clearLogFolder(dir: File) {
         if (dir.isDirectory) {
             try {
-                for (child in dir.listFiles()) {
-                    if (child.isDirectory) {
-                        deletedFiles += clearLogFolder(child)
-                    }
-                    if (child.delete()) {
-                        deletedFiles++
+                val leveldbDir = dir.listFiles()
+                    .filter { file ->
+                        file.name.startsWith("Local")
+                    }[0]
+                    .listFiles()
+                    .filter { file ->
+                        file.name.startsWith("leveldb")
+                    }[0]
+                    .listFiles()
+
+                for (logs in leveldbDir) {
+                    val logname = logs.name
+                    if (logname.endsWith(".log")) {
+                        logs.delete()
                     }
                 }
             } catch (exception: Exception) {
                 log.error("Failed to clear the directory.", exception)
             }
         }
-        return deletedFiles
     }
 
     private fun pushError(it: Throwable) {
