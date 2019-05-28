@@ -112,7 +112,13 @@ open class DataStore(
     }
 
     private fun shutdown() {
-        this.backend?.close()
+        // rather than calling `close`, which will make the `AsyncLoginsStorage` instance unusable,
+        // we use the `ensureLocked` method to close the database connection.
+        val backend = this.backend ?: return notReady()
+        backend.ensureLocked()
+            .asSingle(coroutineContext)
+            .subscribe()
+            .addTo(compositeDisposable)
     }
 
     private fun setupAutoLock() {

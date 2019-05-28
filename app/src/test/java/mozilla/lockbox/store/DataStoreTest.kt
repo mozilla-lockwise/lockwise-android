@@ -240,7 +240,7 @@ class DataStoreTest : DisposingTest() {
 
         (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Background)
         verify(autoLockSupport).storeNextAutoLockTime()
-        verify(support.storage).close()
+        verify(support.storage).ensureLocked()
     }
 
     @Test
@@ -256,10 +256,11 @@ class DataStoreTest : DisposingTest() {
         dispatcher.dispatch(DataStoreAction.Lock)
         verify(autoLockSupport).backdateNextLockTime()
         Assert.assertEquals(State.Locked, stateIterator.next())
+        clearInvocations(support.storage)
 
         (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Background)
         verify(autoLockSupport, never()).storeNextAutoLockTime()
-        verify(support.storage).close()
+        verify(support.storage).ensureLocked()
     }
 
     @Test
