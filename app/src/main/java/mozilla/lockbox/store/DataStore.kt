@@ -72,6 +72,9 @@ open class DataStore(
 
     private var backend: AsyncLoginsStorage?
 
+    private val foreground = arrayOf(LifecycleAction.Foreground, LifecycleAction.AutofillStart)
+    private val background = arrayOf(LifecycleAction.Background, LifecycleAction.AutofillEnd)
+
     init {
         backend = support?.createLoginsStorage()
         // handle state changes
@@ -100,25 +103,29 @@ open class DataStore(
             }
             .addTo(compositeDisposable)
 
+        lifecycleStore.lifecycleEvents
+            .filter { this.background.contains(it) }
+            .subscribe { this.shutdown() }
+            .addTo(compositeDisposable)
+
         setupAutoLock()
     }
 
-    private fun setupAutoLock() {
-        val foreground = arrayOf(LifecycleAction.Foreground, LifecycleAction.AutofillStart)
-        val background = arrayOf(LifecycleAction.Background, LifecycleAction.AutofillEnd)
+    private fun shutdown() {
+        this.backend?.close()
+    }
 
+    private fun setupAutoLock() {
         lifecycleStore.lifecycleEvents
-            .filter { background.contains(it) && stateSubject.value == State.Unlocked }
+            .filter { this.background.contains(it) && stateSubject.value == State.Unlocked }
             .subscribe {
                 autoLockSupport.storeNextAutoLockTime()
             }
             .addTo(compositeDisposable)
 
         lifecycleStore.lifecycleEvents
-            .filter { foreground.contains(it) }
-            .map { autoLockSupport.shouldLock }
-            .filter { it }
-            .subscribe { lockInternal() }
+            .filter { this.foreground.contains(it) && stateSubject.value != State.Unprepared }
+            .subscribe { this.handleLock() }
             .addTo(compositeDisposable)
     }
 
@@ -176,6 +183,14 @@ open class DataStore(
             .map { State.Locked }
             .subscribe(stateSubject::onNext, this::pushError)
             .addTo(compositeDisposable)
+    }
+
+    private fun handleLock() {
+        if (autoLockSupport.shouldLock) {
+            this.lockInternal()
+        } else {
+            this.unlockInternal()
+        }
     }
 
     private fun sync() {
@@ -248,11 +263,7 @@ open class DataStore(
         }
 
         if (!credentials.isNew) {
-            if (autoLockSupport.shouldLock) {
-                lockInternal()
-            } else {
-                unlockInternal()
-            }
+            this.handleLock()
             return
         }
 
