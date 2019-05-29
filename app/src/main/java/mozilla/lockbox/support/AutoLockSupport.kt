@@ -62,7 +62,7 @@ open class AutoLockSupport(
 
     private fun lockCurrentlyRequired(): Boolean {
         val currentSystemTime = lockingSupport.systemTimeElapsed
-        return if (currentSystemTime <= Constant.Common.startUpLockTime) {
+        return if (currentSystemTime <= Constant.Common.sixtySeconds) {
             true
         } else {
             autoLockTimeElapsed()

@@ -171,7 +171,7 @@ class AutoLockSupportTest {
     @Test
     fun `foregrounding lifecycle actions when the saved autolocktimerdate is earlier than the current system time`() {
         dispatcher.dispatch(DataStoreAction.UpdateCredentials(FixedSyncCredentials(false)))
-        mockSavedAutoLockTime(lockingSupport.systemTimeElapsed - Constant.Common.startUpLockTime)
+        mockSavedAutoLockTime(lockingSupport.systemTimeElapsed - Constant.Common.sixtySeconds)
 
         Assert.assertTrue(subject.shouldLock)
     }
