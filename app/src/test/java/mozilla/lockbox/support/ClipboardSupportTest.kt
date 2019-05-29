@@ -16,9 +16,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
-import org.mockito.Mockito.`when` as whenCalled
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
+import org.mockito.Mockito.`when` as whenCalled
 
 @RunWith(RobolectricTestRunner::class)
 @Config(packageName = "mozilla.lockbox")
@@ -42,8 +42,7 @@ class ClipboardSupportTest {
     fun `pastes to clipboard`() {
         val testValue = "pasted"
         subject.paste("label", testValue)
-        val clip = clipboardManager.primaryClip?.getItemAt(0) ?:
-            throw AssertionError("PrimaryClip must not be null")
+        val clip = clipboardManager.primaryClip?.getItemAt(0) ?: throw AssertionError("PrimaryClip must not be null")
 
         Assert.assertEquals(testValue, clip.text)
     }
@@ -53,8 +52,7 @@ class ClipboardSupportTest {
         subject.paste("label", "was pasted")
 
         subject.clear("was pasted")
-        val clip = clipboardManager.primaryClip?.getItemAt(0) ?:
-            throw AssertionError("PrimaryClip must not be null")
+        val clip = clipboardManager.primaryClip?.getItemAt(0) ?: throw AssertionError("PrimaryClip must not be null")
 
         Assert.assertEquals(emptyString, clip.text)
     }
@@ -64,8 +62,7 @@ class ClipboardSupportTest {
         subject.paste("label", "was actually pasted")
 
         subject.clear("was pasted")
-        val clip = clipboardManager.primaryClip?.getItemAt(0) ?:
-            throw AssertionError("PrimaryClip must not be null")
+        val clip = clipboardManager.primaryClip?.getItemAt(0) ?: throw AssertionError("PrimaryClip must not be null")
 
         Assert.assertEquals("was actually pasted", clip.text)
     }

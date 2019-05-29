@@ -16,10 +16,8 @@ import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.LockedStore
 import mozilla.lockbox.store.SettingStore
 import org.junit.Test
-import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
-import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 @Config(packageName = "mozilla.lockbox")
