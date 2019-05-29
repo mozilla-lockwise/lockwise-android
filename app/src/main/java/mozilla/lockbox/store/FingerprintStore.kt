@@ -25,6 +25,7 @@ import mozilla.lockbox.R
 import mozilla.lockbox.action.FingerprintSensorAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.log
 import java.io.IOException
 import java.security.InvalidAlgorithmParameterException
 import java.security.InvalidKeyException
@@ -191,13 +192,16 @@ open class FingerprintStore(
                 init(builder.build())
                 generateKey()
             }
-        } catch (e: Exception) {
-            when (e) {
+        } catch (exception: Exception) {
+            when (exception) {
                 is NoSuchAlgorithmException,
-                is InvalidAlgorithmParameterException,
+                is InvalidAlgorithmParameterException -> {
+                    log.error("Unable to create keys. ", exception)
+                    throw exception
+                }
                 is CertificateException,
-                is IOException -> throw RuntimeException(e)
-                else -> throw e
+                is IOException -> throw RuntimeException(exception)
+                else -> throw exception
             }
         }
     }
