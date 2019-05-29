@@ -257,10 +257,10 @@ open class AccountStore(
                     }[0]
                     .listFiles()
 
-                for (logs in leveldbDir) {
-                    val logname = logs.name
+                for (file in leveldbDir) {
+                    val logname = file.name
                     if (logname.endsWith(".log")) {
-                        logs.delete()
+                        file.delete()
                     }
                 }
             } catch (exception: Exception) {
