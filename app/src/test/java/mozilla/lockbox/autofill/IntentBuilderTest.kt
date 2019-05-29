@@ -22,10 +22,10 @@ import org.robolectric.RobolectricTestRunner
 @ExperimentalCoroutinesApi
 @RunWith(RobolectricTestRunner::class)
 class IntentBuilderTest {
-    val usernameId = mock(AutofillId::class.java)
-    val passwordId = mock(AutofillId::class.java)
-    val parsedStructure = ParsedStructure(usernameId, passwordId, "webDomain", "packageName")
-    val fillResponseBuilder = FillResponseBuilder(parsedStructure)
+    private val usernameId: AutofillId = mock(AutofillId::class.java)
+    private val passwordId: AutofillId = mock(AutofillId::class.java)
+    private val parsedStructure = ParsedStructure(usernameId, passwordId, "webDomain", "packageName")
+    private val fillResponseBuilder = FillResponseBuilder(parsedStructure)
     val context: Context = ApplicationProvider.getApplicationContext()
 
     @Test

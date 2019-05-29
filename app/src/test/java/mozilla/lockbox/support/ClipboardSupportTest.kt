@@ -27,7 +27,8 @@ class ClipboardSupportTest {
     private val context: Context = Mockito.mock(Context::class.java)
 
     private val clipboardManager =
-        ApplicationProvider.getApplicationContext<Context>().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        ApplicationProvider.getApplicationContext<Context>()
+            .getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
     private lateinit var subject: ClipboardSupport
 
@@ -39,9 +40,11 @@ class ClipboardSupportTest {
 
     @Test
     fun `pastes to clipboard`() {
-        var testValue = "pasted"
+        val testValue = "pasted"
         subject.paste("label", testValue)
-        val clip = clipboardManager.primaryClip?.getItemAt(0) ?: throw AssertionError("PrimaryClip must not be null")
+        val clip = clipboardManager.primaryClip?.getItemAt(0) ?:
+            throw AssertionError("PrimaryClip must not be null")
+
         Assert.assertEquals(testValue, clip.text)
     }
 
@@ -50,7 +53,9 @@ class ClipboardSupportTest {
         subject.paste("label", "was pasted")
 
         subject.clear("was pasted")
-        val clip = clipboardManager.primaryClip?.getItemAt(0) ?: throw AssertionError("PrimaryClip must not be null")
+        val clip = clipboardManager.primaryClip?.getItemAt(0) ?:
+            throw AssertionError("PrimaryClip must not be null")
+
         Assert.assertEquals(emptyString, clip.text)
     }
 
@@ -59,7 +64,9 @@ class ClipboardSupportTest {
         subject.paste("label", "was actually pasted")
 
         subject.clear("was pasted")
-        val clip = clipboardManager.primaryClip?.getItemAt(0) ?: throw AssertionError("PrimaryClip must not be null")
+        val clip = clipboardManager.primaryClip?.getItemAt(0) ?:
+            throw AssertionError("PrimaryClip must not be null")
+
         Assert.assertEquals("was actually pasted", clip.text)
     }
 }

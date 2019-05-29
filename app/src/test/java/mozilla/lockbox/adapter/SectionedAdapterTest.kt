@@ -34,7 +34,6 @@ class SectionedAdapterTest {
 
     @Before
     fun setUp() {
-
         context = ApplicationProvider.getApplicationContext()
         parent = RecyclerView(context)
         parent.layoutManager = LinearLayoutManager(context)
@@ -73,7 +72,7 @@ class SectionedAdapterTest {
         val subject = testHelper.createSectionedAdapter(settingAdapter)
         subject.setSections(sections)
 
-        val count = subject.getItemCount()
+        val count = subject.itemCount
         Assert.assertEquals(4, count)
     }
 

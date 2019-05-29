@@ -53,7 +53,7 @@ class SettingListAdapterTest {
     }
 
     @Test
-    fun getItemCountTest() {
+    fun `get item count`() {
         val sectionConfig = testHelper.createListOfSettings()
         val size = sectionConfig.size
         subject.setItems(sectionConfig)
@@ -61,7 +61,7 @@ class SettingListAdapterTest {
     }
 
     @Test
-    fun getItemViewTypeTest_WithValidViewTypes() {
+    fun `get view type with valid type`() {
         val sectionConfig = testHelper.createListOfSettings()
 
         subject.setItems(sectionConfig)
@@ -71,7 +71,7 @@ class SettingListAdapterTest {
     }
 
     @Test
-    fun getItemViewTypeTest_WithInvalidViewType() {
+    fun `get view type with invalid type`() {
         val sectionConfig = listOf(
             SettingCellConfigFake()
         )
@@ -86,25 +86,25 @@ class SettingListAdapterTest {
     }
 
     @Test
-    fun onCreateViewHolderTest_textSettingCell() {
+    fun `create view with textSettingCell`() {
         val textViewHolder = subject.onCreateViewHolder(parent, 0)
         assertThat(textViewHolder, instanceOf(TextSettingViewHolder::class.java))
     }
 
     @Test
-    fun onCreateViewHolderTest_toggleSettingCell() {
+    fun `create view with toggleSettingCell`() {
         val toggleViewHolder = subject.onCreateViewHolder(parent, 1)
         assertThat(toggleViewHolder, instanceOf(ToggleSettingViewHolder::class.java))
     }
 
     @Test
-    fun onCreateViewHolderTest_appVersionSettingCell() {
+    fun `create view with appVersionSettingCell`() {
         val toggleViewHolder = subject.onCreateViewHolder(parent, 2)
         assertThat(toggleViewHolder, instanceOf(AppVersionSettingViewHolder::class.java))
     }
 
     @Test
-    fun onCreateViewHolderTest_WithInvalidViewType() {
+    fun `create view with invalid view type`() {
         val exception = Assertions.assertThrows(IllegalStateException::class.java) {
             subject.onCreateViewHolder(parent, 5)
         }
@@ -114,7 +114,7 @@ class SettingListAdapterTest {
     }
 
     @Test
-    fun onBindViewHolderTest_textSettingCell() {
+    fun `on bind view with textSettingCell`() {
         val expectedTitle = R.string.auto_lock
         val expectedDetailText = R.string.five_minutes
 
@@ -132,7 +132,7 @@ class SettingListAdapterTest {
     }
 
     @Test
-    fun onBindViewHolderTest_toggleSettingCell() {
+    fun `on bind view with toggleSettingCell`() {
         val expectedTitle = context.getString(R.string.unlock)
         val expectedToggleValue = false
 
@@ -150,7 +150,7 @@ class SettingListAdapterTest {
     }
 
     @Test
-    fun onBindViewHolderTest_appVersionSettingCell() {
+    fun `on bind view with appVersionSettingCell`() {
         val expectedTitle = "App Version: $expectedVersionNumber ($expectedBuildNumber)"
 
         val sectionConfig = listOf(

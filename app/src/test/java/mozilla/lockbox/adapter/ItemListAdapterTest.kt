@@ -52,7 +52,7 @@ class ItemListAdapterTest {
     }
 
     @Test
-    fun onBindViewHolder_mapEmptyUsernameToPlaceholder() {
+    fun `on bind view map empty username to placeholder`() {
         setupSubject(ItemListAdapterType.ItemList)
         val viewHolder = subject.onCreateViewHolder(parent, 0) as ItemViewHolder
 
@@ -61,7 +61,7 @@ class ItemListAdapterTest {
     }
 
     @Test
-    fun onBindViewHolder_populatedList() {
+    fun `on bind with populated list`() {
         setupSubject(ItemListAdapterType.ItemList)
         val viewHolder = subject.onCreateViewHolder(parent, 0) as ItemViewHolder
 
@@ -71,7 +71,7 @@ class ItemListAdapterTest {
     }
 
     @Test
-    fun onBindViewHolder_emptyEntriesList() {
+    fun `on bind with empty entries list`() {
         setupSubject(ItemListAdapterType.ItemList)
         subject.updateItems(emptyList())
         val viewHolder = subject.onCreateViewHolder(parent, 2)
@@ -80,7 +80,7 @@ class ItemListAdapterTest {
     }
 
     @Test
-    fun onBindViewHolder_emptyFilteringList() {
+    fun `on bind with empty filtered list`() {
         setupSubject(ItemListAdapterType.Filter)
         subject.updateItems(emptyList())
         val viewHolder = subject.onCreateViewHolder(parent, 1)
@@ -89,7 +89,7 @@ class ItemListAdapterTest {
     }
 
     @Test
-    fun onBindViewHolder_emptyAutofillFilteringListWithText() {
+    fun `on bind with empty autofill filtered list with text`() {
         setupSubject(ItemListAdapterType.AutofillFilter)
         subject.displayNoEntries(true)
         subject.updateItems(emptyList())
@@ -99,7 +99,7 @@ class ItemListAdapterTest {
     }
 
     @Test
-    fun onBindViewHolder_emptyAutofillFilteringListWithoutText() {
+    fun `on bind with empty autofill filtered list without text`() {
         setupSubject(ItemListAdapterType.AutofillFilter)
         subject.updateItems(emptyList())
         subject.displayNoEntries(false)
@@ -109,7 +109,7 @@ class ItemListAdapterTest {
     }
 
     @Test
-    fun onBindViewHolder_populatedList_clicks() {
+    fun `on bind with click on populated list`() {
         setupSubject(ItemListAdapterType.ItemList)
         val viewHolder = subject.onCreateViewHolder(parent, 0) as ItemViewHolder
         val indexOfItem = 1
@@ -125,7 +125,7 @@ class ItemListAdapterTest {
     }
 
     @Test
-    fun onBindViewHolder_emptyList_clicks() {
+    fun `on bind with click on empty list`() {
         setupSubject(ItemListAdapterType.ItemList)
         subject.updateItems(emptyList())
         val viewHolder = subject.onCreateViewHolder(parent, 2)
@@ -138,7 +138,7 @@ class ItemListAdapterTest {
     }
 
     @Test
-    fun onBindViewHolder_emptyFilteringList_clicks() {
+    fun `on bind with click on empty filtered list`() {
         setupSubject(ItemListAdapterType.Filter)
         subject.updateItems(emptyList())
         val viewHolder = subject.onCreateViewHolder(parent, 1)
@@ -187,13 +187,13 @@ class ItemListAdapterTest {
     }
 
     @Test
-    fun getItemViewType_populatedList() {
+    fun `get view type on populated list`() {
         setupSubject(ItemListAdapterType.ItemList)
         Assert.assertEquals(subject.getItemViewType(0), 0)
     }
 
     @Test
-    fun getItemViewType_emptyFilteringList() {
+    fun `get view type on empty filtered list`() {
         setupSubject(ItemListAdapterType.Filter)
         subject.updateItems(emptyList())
 
@@ -201,7 +201,7 @@ class ItemListAdapterTest {
     }
 
     @Test
-    fun getItemViewType_emptyList() {
+    fun `get view type on empty list`() {
         setupSubject(ItemListAdapterType.ItemList)
         subject.updateItems(emptyList())
 

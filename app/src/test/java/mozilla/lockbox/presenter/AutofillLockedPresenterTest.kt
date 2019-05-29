@@ -22,7 +22,6 @@ import org.mockito.Mockito
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
-@RunWith(RobolectricTestRunner::class)
 @Config(packageName = "mozilla.lockbox")
 class AutofillLockedPresenterTest : DisposingTest() {
 
@@ -32,7 +31,7 @@ class AutofillLockedPresenterTest : DisposingTest() {
     }
 
     @Mock
-    val view = Mockito.mock(LockedView::class.java)
+    val view: LockedView = Mockito.mock(LockedView::class.java)
 
     @Mock
     private val fingerprintStore = Mockito.mock(FingerprintStore::class.java)
