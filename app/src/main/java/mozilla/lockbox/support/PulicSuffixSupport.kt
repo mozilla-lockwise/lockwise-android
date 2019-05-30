@@ -20,6 +20,7 @@ import mozilla.appservices.logins.ServerPassword
 import mozilla.components.lib.publicsuffixlist.PublicSuffixList
 import mozilla.lockbox.log
 import mozilla.lockbox.store.ContextStore
+import java.lang.IllegalArgumentException
 import java.net.URI
 import kotlin.coroutines.CoroutineContext
 
