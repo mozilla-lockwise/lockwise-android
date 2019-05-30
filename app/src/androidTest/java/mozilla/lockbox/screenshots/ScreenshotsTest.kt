@@ -24,9 +24,9 @@ import org.junit.runner.RunWith
 
 import br.com.concretesolutions.kappuccino.custom.recyclerView.RecyclerViewInteractions.recyclerView
 
-import tools.fastlane.screengrab.Screengrab;
-import tools.fastlane.screengrab.locale.LocaleTestRule;
-import tools.fastlane.screengrab.UiAutomatorScreenshotStrategy;
+import tools.fastlane.screengrab.Screengrab
+import tools.fastlane.screengrab.locale.LocaleTestRule
+import tools.fastlane.screengrab.UiAutomatorScreenshotStrategy
 
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
@@ -42,50 +42,49 @@ open class ScreenshotsTest {
 
     @Test
     fun testCompleteOnboarding() {
-        //activityRule.launchActivity(null)
 
-        Screengrab.setDefaultScreenshotStrategy(UiAutomatorScreenshotStrategy());
+        Screengrab.setDefaultScreenshotStrategy(UiAutomatorScreenshotStrategy())
         onView(withId(R.id.buttonGetStarted))
-                .check(matches(isDisplayed()));
+                .check(matches(isDisplayed()))
 
-        Screengrab.screenshot("get-started");
+        Screengrab.screenshot("get-started")
 
-        onView(withId(R.id.buttonGetStarted)).perform(click());
-        Screengrab.screenshot("secure-device-screen");
+        onView(withId(R.id.buttonGetStarted)).perform(click())
+        Screengrab.screenshot("secure-device-screen")
 
-        onView(withId(android.R.id.button2)).perform(click());
+        onView(withId(android.R.id.button2)).perform(click())
         onView(withId(R.id.skipFxA))
-                .check(matches(isDisplayed()));
+                .check(matches(isDisplayed()))
         sleep(5000)
-        Screengrab.screenshot("enter-email-screen");
+        Screengrab.screenshot("enter-email-screen")
 
-        onView(withId(R.id.skipFxA)).perform(click());
+        onView(withId(R.id.skipFxA)).perform(click())
         onView(withId(R.id.skipButton))
-                .check(matches(isDisplayed()));
-        Screengrab.screenshot("autofill-onboarding-screen");
+                .check(matches(isDisplayed()))
+        Screengrab.screenshot("autofill-onboarding-screen")
 
-        onView(withId(R.id.skipButton)).perform(click());
-        Screengrab.screenshot("allset-screen");
+        onView(withId(R.id.skipButton)).perform(click())
+        Screengrab.screenshot("allset-screen")
 
-        onView(withId(R.id.finishButton)).perform(click());
+        onView(withId(R.id.finishButton)).perform(click())
         onView(withId(R.id.sortButton))
-                .check(matches(isDisplayed()));
-        Screengrab.screenshot("all-logins-screen");
+                .check(matches(isDisplayed()))
+        Screengrab.screenshot("all-logins-screen")
 
         selectItem(1)
         onView(withId(R.id.inputHostname))
-                .check(matches(isDisplayed()));
-        Screengrab.screenshot("item-detail-screen");
+                .check(matches(isDisplayed()))
+        Screengrab.screenshot("item-detail-screen")
 
         onView(withId(R.id.inputUsername)).perform(click())
-        Screengrab.screenshot("username-copied-screen");
+        Screengrab.screenshot("username-copied-screen")
 
         onView(withId(R.id.inputPassword)).perform(click())
-        Screengrab.screenshot("password-copied-screen");
+        Screengrab.screenshot("password-copied-screen")
         pressBack()
 
-        onView(withId(R.id.sortButton)).perform(click());
-        Screengrab.screenshot("sorting-options-screen");
+        onView(withId(R.id.sortButton)).perform(click())
+        Screengrab.screenshot("sorting-options-screen")
         pressBack()
 /*
         onView(withId(R.id.filterButton)).perform(click());
@@ -94,25 +93,25 @@ open class ScreenshotsTest {
         pressBack()
 */
         onView(withId(R.id.appDrawer)).perform(DrawerActions.open())
-        Screengrab.screenshot("app-menu-screen");
+        Screengrab.screenshot("app-menu-screen")
 
-        onView(withId(R.id.lockNow)).perform(click());
-        Screengrab.screenshot("lock-now-screen");
+        onView(withId(R.id.lockNow)).perform(click())
+        Screengrab.screenshot("lock-now-screen")
         pressBack()
 
         tapSettings()
         onView(withId(R.id.settingList))
-                .check(matches(isDisplayed()));
-        Screengrab.screenshot("settings-menu-screen");
+                .check(matches(isDisplayed()))
+        Screengrab.screenshot("settings-menu-screen")
         pressBack()
 
         tapAccountSetting()
         onView(withId(R.id.disconnectButton))
-                .check(matches(isDisplayed()));
-        Screengrab.screenshot("settings-account-screen");
+                .check(matches(isDisplayed()))
+        Screengrab.screenshot("settings-account-screen")
 
-        onView(withId(R.id.disconnectButton)).perform(click());
-        Screengrab.screenshot("disconnect-account-screen");
+        onView(withId(R.id.disconnectButton)).perform(click())
+        Screengrab.screenshot("disconnect-account-screen")
         pressBack()
     }
 }
