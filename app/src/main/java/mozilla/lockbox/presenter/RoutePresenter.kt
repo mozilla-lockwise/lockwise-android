@@ -30,8 +30,6 @@ import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.view.DialogFragment
-import java.lang.IllegalArgumentException
-import java.lang.RuntimeException
 
 @ExperimentalCoroutinesApi
 abstract class RoutePresenter(

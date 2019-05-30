@@ -21,6 +21,7 @@ object Constant {
         const val appToken = "383z4i46o48w"
 
         val delay: Long = if (isTesting()) 0 else 1
+        val syncTimeout: Long = 20
     }
 
     object FxA {
