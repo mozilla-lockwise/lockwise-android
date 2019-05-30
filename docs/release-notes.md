@@ -1,10 +1,20 @@
 # Release Notes
 
+## 1.1.0 (Build 3951)
+
+_Date: 2019-05-21_
+
+Firefox Lockbox is now Firefox Lockwise! With the new name also comes a new look!
+
+Changes since the last release:
+
+- Rebrand Lockbox to new Lockwise brand, name, colors, etc. (#653 #669 #677 #676 #679)
+- Minify and shrink release APK (#664) 
+- Import localized strings: fr, de, it, es (#674 #686 #687 #691)
+
 ## 1.0.3 (Build 3819)
 
 _Date 2019-05-10_
-
-**Release Candidate 2**
 
 Minor update that includes more stability and crash fixes.
 
@@ -29,8 +39,6 @@ All changes since last version:
 ## 1.0.3 (Build 3722)
 
 _Date 2019-05-03_
-
-**Release Candidate**
 
 Minor update that includes more stability and crash fixes.
 

@@ -240,6 +240,7 @@ class DataStoreTest : DisposingTest() {
 
         (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Background)
         verify(autoLockSupport).storeNextAutoLockTime()
+        verify(support.storage).ensureLocked()
     }
 
     @Test
@@ -255,9 +256,11 @@ class DataStoreTest : DisposingTest() {
         dispatcher.dispatch(DataStoreAction.Lock)
         verify(autoLockSupport).backdateNextLockTime()
         Assert.assertEquals(State.Locked, stateIterator.next())
+        clearInvocations(support.storage)
 
         (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Background)
         verify(autoLockSupport, never()).storeNextAutoLockTime()
+        verify(support.storage).ensureLocked()
     }
 
     @Test
@@ -283,8 +286,11 @@ class DataStoreTest : DisposingTest() {
 
         dispatcher.dispatch(DataStoreAction.Unlock)
         Assert.assertEquals(State.Unlocked, stateIterator.next())
+        clearInvocations(support.storage)
         autoLockSupport.shouldLockStub = false
         (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Foreground)
+        Assert.assertEquals(State.Unlocked, stateIterator.next())
+        verify(support.storage).ensureUnlocked(support.encryptionKey)
     }
 
     @Test

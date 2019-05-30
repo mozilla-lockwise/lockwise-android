@@ -11,6 +11,7 @@ import mozilla.lockbox.action.Setting
 object Constant {
     object Common {
         const val emptyString = ""
+        const val sixtySeconds: Long = 60000
     }
 
     object App {
