@@ -30,6 +30,7 @@ import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.LockedStore
 import mozilla.lockbox.store.NetworkStore
+import mozilla.lockbox.store.SentryStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.store.TelemetryStore
 import mozilla.lockbox.support.AdjustSupport
@@ -61,7 +62,6 @@ open class LockboxApplication : Application() {
         setupDataStoreSupport()
         injectContext()
         setupLifecycleListener()
-        setupSentry()
 
         // Adjust Integration
         val appToken = Constant.App.appToken
@@ -106,19 +106,13 @@ open class LockboxApplication : Application() {
             AutoLockSupport.shared,
             AccountStore.shared,
             TelemetryStore.shared,
+            SentryStore.shared,
             PublicSuffixSupport.shared
         )
 
         contextStoreList.forEach {
             it.injectContext(this)
         }
-    }
-
-    private fun setupSentry() {
-        // Set up Sentry using DSN (client key)
-        val ctx = this.applicationContext
-        val sentryDsn = Constant.Sentry.dsn
-        Sentry.init(sentryDsn, AndroidSentryClientFactory(ctx))
     }
 
     private fun setupLifecycleListener() {
