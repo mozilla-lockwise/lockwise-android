@@ -67,7 +67,8 @@ _similar to above, but requires explicit cherry-pick commits on `production` bra
 9. Upload the `-signed.apk` (from bitrise) to the [Play Console][2]:
   - browse to "Release Management" > "App Releases" > "Internal test track" > "Manage"
   - "Create Release" and upload the signed APK, set the version to match the tag (for example: `1.2.1339`) then "Review" and the build will be immediately available to the core team
-10. Continue the "Distributing..." instructions
+10. Browse to "Android Vitals" and "Deobfusication files" and upload the `app-mapping.txt` file from bitrise.io
+11. Continue the "Distributing..." instructions
 
 ## Distributing Builds through Play Store (Internal, Alpha)
 

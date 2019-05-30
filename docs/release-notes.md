@@ -1,5 +1,21 @@
 # Release Notes
 
+## 1.1.1 (Build 4053)
+
+_Date: 2019-05-30_
+
+We fixed a handful of bugs and improved the overall security and stability of the app including signing in and syncing.
+
+Changes since version 1.1.0:
+
+- added a small delay to navigate to the confirmation screen (#709)
+- update application-services and android-components (#712)
+- adjust to not duplicate the top fragment and require two back taps (#710)
+- close db when going to the background (#713)
+- simply unlock when no device security present (#718) 
+- disconnect account security bugs (#694)
+- check system elapsed time on startup (#715)
+
 ## 1.1.0 (Build 3951)
 
 _Date: 2019-05-21_
