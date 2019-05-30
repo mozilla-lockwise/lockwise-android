@@ -30,6 +30,7 @@ import mozilla.components.service.fxa.FirefoxAccount
 import mozilla.lockbox.action.AccountAction
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
+import mozilla.lockbox.action.SentryAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.log
@@ -236,5 +237,7 @@ open class AccountStore(
             is FxaException.Network -> log.error("FxA network error. Message: " + it.message, it)
             is FxaException.Panic -> log.error("FxA error. Message: " + it.message, it)
         }
+
+        dispatcher.dispatch(SentryAction(it))
     }
 }

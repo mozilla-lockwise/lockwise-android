@@ -14,11 +14,13 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.rx2.asSingle
+import mozilla.appservices.logins.LoginsStorageException
 import mozilla.appservices.logins.ServerPassword
 import mozilla.appservices.logins.SyncUnlockInfo
 import mozilla.components.service.sync.logins.AsyncLoginsStorage
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
+import mozilla.lockbox.action.SentryAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.log
@@ -286,6 +288,7 @@ open class DataStore(
 
     private fun pushError(e: Throwable) {
         this.stateSubject.onNext(State.Errored(e))
+        dispatcher.dispatch(SentryAction(e))
     }
 
     // Warning: this is testing code.
