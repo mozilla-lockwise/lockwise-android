@@ -22,6 +22,6 @@
         android:textAlignment="center"
         android:lineSpacingExtra="6sp"
         android:layout_marginTop="16dp"
-        tools:text="App Version: 1.1.1"/>
+        tools:text="App Version: 1.1.2"/>
     <!-- Set the tools:text value to match versionName from build.gradle -->
 </LinearLayout>
