@@ -115,9 +115,12 @@ abstract class RoutePresenter(
     fun navigateToFragment(@IdRes destinationId: Int, args: Bundle? = null) {
         val src = navController.currentDestination ?: return
         val srcId = src.id
-        if (srcId == destinationId && args == null) {
-            // No point in navigating if nothing has changed.
-            return
+        if (srcId == destinationId) {
+            val currentScreenArgs = navHostFragmentManager.fragments.lastOrNull()?.arguments
+            if (args hasSameContentOf currentScreenArgs) {
+                // No point in navigating if nothing has changed.
+                return
+            }
         }
 
         val transition = findTransitionId(srcId, destinationId) ?: destinationId
@@ -167,6 +170,20 @@ abstract class RoutePresenter(
             currentFragment?.startActivityForResult(intent, action.requestCode)
         } catch (e: Exception) {
             log.error("Unlock fallback failed: ", e)
+        }
+    }
+
+    private infix fun Bundle?.hasSameContentOf(another: Bundle?): Boolean {
+        if (this == null) {
+            return another == null || another.isEmpty
+        }
+
+        if (size() != another?.size()) {
+            return false
+        }
+
+        return keySet().all { key ->
+            get(key) == another.get(key)
         }
     }
 }
