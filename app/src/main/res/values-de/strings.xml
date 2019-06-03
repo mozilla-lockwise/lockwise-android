@@ -179,7 +179,7 @@
     <!-- This is the text on a final confirmation button to sign out and disconnect the account from the application. %1$s will be replaced with application name -->
     <string name="disconnect_disclaimer_title">%1$s trennen?</string>
     <!-- This message is displayed on a final confirmation dialog to sign out and disconnect their account from the application. Firefox Account is to be translated consistently to match use in other Firefox products. %1$s will be replaced with application name -->
-    <string name="disconnect_disclaimer_message">Dadurch werden deine Firefox-Kontodaten und alle gespeicherten Zugangsdaten von %1$s gelöscht.</string>
+    <string name="disconnect_disclaimer_message">Dadurch werden deine Firefox-Kontodaten und alle gespeicherten Zugangsdaten aus %1$s gelöscht.</string>
     <!-- This is the text on a final confirmation button to sign out and disconnect the account from the application -->
     <string name="disconnect">Verbindung trennen</string>
     <!-- This is the hint value for an autofill box that appears when suggesting a value for a password field. It is interpolated with the user's account name. -->
@@ -211,9 +211,9 @@
     <!-- This is the title of the autofill onboarding screen. %1$s will be replaced with application name -->
     <string name="onboarding_autofill_title">Lass %1$s deine Passwörter für dich ausfüllen.</string>
     <!-- This is the onboarding description for enabling the application as an autofill provider through the device's autofill settings. -->
-    <string name="onboarding_autofill_description">Lass Benutzernamen und Passwörter einfach dort eintragen, wo du sie am dringendsten benötigst.</string>
+    <string name="onboarding_autofill_description">Benutzernamen und Passwörter werden einfach dort eintragen, wo du sie am dringendsten benötigst.</string>
     <!-- This button will take you to your phone's autofill settings screen. -->
-    <string name="go_to_settings">Zu Einstellungen wechseln</string>
+    <string name="go_to_settings">Einstellungen öffnen</string>
     <!-- This is the content description for the autofill image on the autofill onboarding screen. %1$s will be replaced with application name. Autofill should match the Android name for this system feature -->
     <string name="onboarding_autofill_image_description">%1$s AutoFill</string>
     <!-- This is the title for the final onboarding screen -->
@@ -225,11 +225,11 @@
     <!-- This is an accessible content description for the security information link text. %1$s will be replaced with application name -->
     <string name="security_content_description">Dies ist ein Link zu einer Beschreibung der Sicherheitsmaßnahmen in %1$s.</string>
     <!-- This description of the app security is shown on the final onboarding screen. %s will be replaced with the security link. -->
-    <string name="security_description">Synchronisiere zwischen Geräten mit sicherem %s</string>
+    <string name="security_description">Synchronisiere zwischen Geräten mit sicherer %s</string>
     <!-- This text is displayed as a link in the security description. -->
     <string name="security_link">256-Bit-Verschlüsselung</string>
     <!-- This description of the app convenience is shown on the final onboarding screen. -->
-    <string name="convenience_description">Die App einfach per Fingerabdruck entsperren</string>
+    <string name="convenience_description">Entsperre die App einfach per Fingerabdruck</string>
 
     <!-- This is the title of the device security dialog box. -->
     <string name="secure_your_device">Sichere dein Gerät.</string>
