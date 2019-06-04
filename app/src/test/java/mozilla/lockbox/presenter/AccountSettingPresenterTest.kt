@@ -50,7 +50,7 @@ class AccountSettingPresenterTest {
     }
 
     @Mock
-    val accountStore = PowerMockito.mock(AccountStore::class.java)
+    val accountStore: AccountStore = PowerMockito.mock(AccountStore::class.java)
 
     private val view = FakeAccountSettingView()
 
@@ -74,6 +74,7 @@ class AccountSettingPresenterTest {
         val displayName = "TROGDOR"
         val email = "sample@sample.com"
         val avatar = Avatar(url = "www.mozilla.org/pix.png", isDefault = true)
+
         profileStub.onNext(
             Profile("lkjkhjlfdshkjljkafds", email, avatar, displayName).asOptional()
         )
@@ -86,6 +87,7 @@ class AccountSettingPresenterTest {
         val displayName = "TROGDOR"
         val email = null
         val avatar = Avatar(url = "www.mozilla.org/pix.png", isDefault = true)
+
         profileStub.onNext(
             Profile("lkjkhjlfdshkjljkafds", email, avatar, displayName).asOptional()
         )
@@ -98,6 +100,7 @@ class AccountSettingPresenterTest {
         val displayName = null
         val email = "sample@sample.com"
         val avatar = Avatar(url = "www.mozilla.org/pix.png", isDefault = true)
+
         profileStub.onNext(
             Profile("lkjkhjlfdshkjljkafds", email, avatar, displayName).asOptional()
         )
@@ -110,6 +113,7 @@ class AccountSettingPresenterTest {
         val displayName = null
         val email = null
         val avatar = Avatar(url = "www.mozilla.org/pix.png", isDefault = true)
+
         profileStub.onNext(
             Profile("lkjkhjlfdshkjljkafds", email, avatar, displayName).asOptional()
         )
@@ -122,6 +126,7 @@ class AccountSettingPresenterTest {
         val displayName = "TROGDOR"
         val email = "sample@sample.com"
         val avatar = Avatar(url = "www.mozilla.org/pix.png", isDefault = true)
+
         profileStub.onNext(
             Profile("lkjkhjlfdshkjljkafds", email, avatar, displayName).asOptional()
         )
@@ -134,6 +139,7 @@ class AccountSettingPresenterTest {
         val displayName = "TROGDOR"
         val email = "sample@sample.com"
         val avatar = null
+
         profileStub.onNext(
             Profile("lkjkhjlfdshkjljkafds", email, avatar, displayName).asOptional()
         )
@@ -150,9 +156,8 @@ class AccountSettingPresenterTest {
     }
 
     @Test
-    fun disconnectButtonClicks() {
+    fun `disconnect button clicks`() {
         (view.disconnectButtonClicks as Subject).onNext(Unit)
-
         dispatcherObserver.assertValue(DialogAction.UnlinkDisclaimer)
     }
 }

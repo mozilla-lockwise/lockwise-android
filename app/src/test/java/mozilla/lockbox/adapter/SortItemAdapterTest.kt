@@ -43,7 +43,7 @@ class SortItemAdapterTest {
     }
 
     @Test
-    fun `test getView`() {
+    fun `get view`() {
         val parent = ListView(context)
         val view = subject.getView(0, null, parent)
 
@@ -55,7 +55,7 @@ class SortItemAdapterTest {
     }
 
     @Test
-    fun `test getDropDownView`() {
+    fun `get dropdown view`() {
         val parent = ListView(context)
         val view = subject.getDropDownView(0, null, parent)
 
