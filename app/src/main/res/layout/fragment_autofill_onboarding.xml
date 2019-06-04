@@ -84,7 +84,7 @@
     <Button
             android:id="@+id/goToSettings"
             android:layout_width="180dp"
-            android:layout_height="36dp"
+            android:layout_height="wrap_content"
             android:text="@string/go_to_settings"
             android:textColor="@color/text_white"
             android:textSize="14sp"
@@ -97,6 +97,8 @@
             android:textAllCaps="true"
             android:elevation="1dp"
             android:paddingStart="18dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
             android:paddingEnd="18dp"
             android:layout_marginBottom="20dp"
             app:layout_constraintStart_toStartOf="parent"

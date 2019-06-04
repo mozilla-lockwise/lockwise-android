@@ -16,13 +16,10 @@ import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.LockedStore
 import mozilla.lockbox.store.SettingStore
 import org.junit.Test
-import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
-import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
-@RunWith(RobolectricTestRunner::class)
 @Config(packageName = "mozilla.lockbox")
 class AutofillLockedPresenterTest : DisposingTest() {
 
@@ -32,7 +29,7 @@ class AutofillLockedPresenterTest : DisposingTest() {
     }
 
     @Mock
-    val view = Mockito.mock(LockedView::class.java)
+    val view: LockedView = Mockito.mock(LockedView::class.java)
 
     @Mock
     private val fingerprintStore = Mockito.mock(FingerprintStore::class.java)

@@ -11,6 +11,7 @@ import android.net.Uri
 import android.os.Looper
 import android.webkit.CookieManager
 import android.webkit.WebStorage
+import android.webkit.WebView
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -41,6 +42,7 @@ import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.SecurePreferences
 import mozilla.lockbox.support.asOptional
+import java.io.File
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 
@@ -83,8 +85,12 @@ open class AccountStore(
     private var fxa: FirefoxAccount? = null
 
     open val loginURL: Observable<String> = ReplaySubject.createWithSize(1)
+
     private val syncCredentials: Observable<Optional<SyncCredentials>> = ReplaySubject.createWithSize(1)
     open val profile: Observable<Optional<Profile>> = ReplaySubject.createWithSize(1)
+
+    private lateinit var webView: WebView
+    private lateinit var logDirectory: File
 
     init {
         val resetObservable = lifecycleStore.lifecycleEvents
@@ -120,6 +126,8 @@ open class AccountStore(
 
     override fun injectContext(context: Context) {
         detectAccount()
+        webView = WebView(context)
+        logDirectory = context.getDir("webview", Context.MODE_PRIVATE)
     }
 
     private fun detectAccount() {
@@ -226,6 +234,41 @@ open class AccountStore(
 
         this.securePreferences.remove(Constant.Key.firefoxAccount)
         this.generateNewFirefoxAccount()
+
+        webView.clearCache(true)
+        clearLogs()
+
+        dispatcher.dispatch(DataStoreAction.Reset)
+    }
+
+    private fun clearLogs() {
+        clearLogFolder(logDirectory)
+        log.info("Log pruning completed.")
+    }
+
+    private fun clearLogFolder(dir: File) {
+        if (dir.isDirectory) {
+            try {
+                val leveldbDir = dir.listFiles()
+                    .filter { file ->
+                        file.name.startsWith("Local")
+                    }[0]
+                    .listFiles()
+                    .filter { file ->
+                        file.name.startsWith("leveldb")
+                    }[0]
+                    .listFiles()
+
+                for (file in leveldbDir) {
+                    val logname = file.name
+                    if (logname.endsWith(".log")) {
+                        file.delete()
+                    }
+                }
+            } catch (exception: Exception) {
+                log.error("Failed to clear the directory.", exception)
+            }
+        }
     }
 
     private fun pushError(it: Throwable) {
