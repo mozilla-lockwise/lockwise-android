@@ -243,17 +243,17 @@ open class AccountStore(
     }
 
     private fun removeDeviceFromFxA() {
-        if(fxa != null) {
-            val account = mozilla.appservices.fxaclient.FirefoxAccount.fromJSONString(fxa!!.toJSONString())
-            val registeredDevices = account.getDevices()
+        val account = mozilla.appservices.fxaclient.FirefoxAccount
+            .fromJSONString(
+                fxa?.toJSONString() ?: ""
+            )
+        
+        val registeredDevices = account.getDevices()
 
-            for (device in registeredDevices) {
-                if(device.isCurrentDevice) {
-                    account.destroyDevice(device.id)
-                }
+        for (device in registeredDevices) {
+            if(device.isCurrentDevice) {
+                account.destroyDevice(device.id)
             }
-        } else {
-            log.info("FxA is null. ")
         }
     }
 
