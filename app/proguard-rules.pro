@@ -38,3 +38,5 @@
     java.lang.String getId();
     boolean isLimitAdTrackingEnabled();
 }
+
+-keep class androidx.core.app.CoreComponentFactory { *; }
