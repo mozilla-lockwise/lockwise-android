@@ -13,7 +13,10 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.rx2.asSingle
+import mozilla.appservices.logins.InvalidKeyException
+import mozilla.appservices.logins.LoginsStorageException
 import mozilla.appservices.logins.ServerPassword
+import mozilla.appservices.logins.SyncAuthInvalidException
 import mozilla.appservices.logins.SyncUnlockInfo
 import mozilla.components.service.sync.logins.AsyncLoginsStorage
 import mozilla.lockbox.action.DataStoreAction
@@ -46,7 +49,7 @@ open class DataStore(
         object Unprepared : State()
         object Locked : State()
         object Unlocked : State()
-        data class Errored(val error: Throwable) : State()
+        data class Errored(val error: LoginsStorageException) : State()
     }
 
     enum class SyncState {
@@ -203,13 +206,11 @@ open class DataStore(
     }
 
     private fun sync() {
-        val syncConfig = support?.syncConfig ?: return {
-            val throwable = IllegalStateException("syncConfig should already be defined")
-            pushError(throwable)
-        }()
+        val syncConfig = support?.syncConfig ?: return notReady()
 
         val backend = this.backend ?: return notReady()
 
+        // ideally, we don't sync unless we are connected to the network
         syncStateSubject.accept(SyncState.Syncing)
 
         backend.sync(syncConfig)
@@ -252,7 +253,8 @@ open class DataStore(
                 backend?.let { backend ->
                     backend.wipeLocal()
                         .asSingle(coroutineContext)
-                        .subscribe(null, this::pushError)
+                        .map { State.Unprepared }
+                        .subscribe(this.stateSubject::accept, this::pushError)
                         .addTo(compositeDisposable)
                 } ?: stateSubject.accept(State.Unprepared)
             }
@@ -284,16 +286,23 @@ open class DataStore(
     }
 
     private fun notReady() {
-        pushError(IllegalStateException("DataStore backend is not set"))
+        pushError(IllegalStateException("Credentials for syncing unavailable at this time"))
     }
 
     private fun pushError(e: Throwable) {
-        this.stateSubject.accept(State.Errored(e))
         dispatcher.dispatch(SentryAction(e))
+
+        val loginsException = e as? LoginsStorageException
+
+        loginsException?.let {
+            this.stateSubject.accept(DataStore.State.Errored(it))
+        }
+
+        when (loginsException) {
+            is SyncAuthInvalidException, is InvalidKeyException -> dispatcher.dispatch(LifecycleAction.UserReset)
+        }
     }
 
-    // Warning: this is testing code.
-    // It's only called immediately after the user has pressed "Use Test Data".
     fun resetSupport(support: DataStoreSupport) {
         if (support == this.support) {
             return
@@ -305,7 +314,7 @@ open class DataStore(
             backend?.let {
                 it.wipeLocal()
                     .asSingle(coroutineContext)
-                    .subscribe(null, this::pushError)
+                    .subscribe({}, this::pushError)
                     .addTo(compositeDisposable)
             }
         }

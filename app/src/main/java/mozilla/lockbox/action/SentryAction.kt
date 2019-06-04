@@ -10,4 +10,4 @@ import mozilla.lockbox.flux.Action
 
 data class SentryAction(
     val error: Throwable
-): Action
+) : Action

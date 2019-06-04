@@ -7,13 +7,11 @@
 package mozilla.lockbox
 
 import android.app.Application
-import androidx.lifecycle.ProcessLifecycleOwner
 import android.os.Build
+import androidx.lifecycle.ProcessLifecycleOwner
 import com.adjust.sdk.Adjust
 import com.adjust.sdk.AdjustConfig
 import com.squareup.leakcanary.LeakCanary
-import io.sentry.Sentry
-import io.sentry.android.AndroidSentryClientFactory
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.LockboxMegazord
 import mozilla.components.lib.fetch.httpurlconnection.HttpURLConnectionClient
@@ -23,7 +21,6 @@ import mozilla.components.support.base.log.sink.AndroidLogSink
 import mozilla.components.support.rustlog.RustLog
 import mozilla.lockbox.presenter.ApplicationPresenter
 import mozilla.lockbox.store.AccountStore
-import mozilla.lockbox.support.AutoLockSupport
 import mozilla.lockbox.store.ClipboardStore
 import mozilla.lockbox.store.ContextStore
 import mozilla.lockbox.store.DataStore
@@ -34,6 +31,7 @@ import mozilla.lockbox.store.SentryStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.store.TelemetryStore
 import mozilla.lockbox.support.AdjustSupport
+import mozilla.lockbox.support.AutoLockSupport
 import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.FxASyncDataStoreSupport
 import mozilla.lockbox.support.PublicSuffixSupport

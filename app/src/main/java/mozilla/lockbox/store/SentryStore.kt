@@ -18,7 +18,7 @@ import mozilla.lockbox.support.Constant
 
 class SentryStore(
     dispatcher: Dispatcher = Dispatcher.shared
-): ContextStore {
+) : ContextStore {
     private val compositeDisposable = CompositeDisposable()
 
     companion object {
