@@ -62,7 +62,7 @@ class TelemetryStoreTest : DisposingTest() {
     val subject = TelemetryStore(dispatcher, settingStore, wrapper)
 
     @Test
-    fun testApplyConfig() {
+    fun `apply config`() {
         val applyObserver = createTestObserver<Context>()
         val context: Context = ApplicationProvider.getApplicationContext()
         wrapper.applySubject.subscribe(applyObserver)
@@ -71,7 +71,7 @@ class TelemetryStoreTest : DisposingTest() {
     }
 
     @Test
-    fun testActionHandling() {
+    fun `action handling`() {
         val eventsObserver = createTestObserver<TelemetryEvent>()
         val uploadObserver = createTestObserver<Int>()
         wrapper.eventsSubject.subscribe(eventsObserver)
@@ -106,7 +106,7 @@ class TelemetryStoreTest : DisposingTest() {
     }
 
     @Test
-    fun testNoLeaks() {
+    fun `no leaks`() {
         val testUsername = "lockie"
         val testPassword = "lockie123"
         var action: TelemetryAction = ClipboardAction.CopyUsername(testUsername)

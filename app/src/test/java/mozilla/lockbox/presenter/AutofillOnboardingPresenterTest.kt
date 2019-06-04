@@ -10,13 +10,10 @@ import mozilla.lockbox.flux.Dispatcher
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
 import org.mockito.Mockito
-import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 @ExperimentalCoroutinesApi
-@RunWith(RobolectricTestRunner::class)
 @Config(application = TestApplication::class)
 class AutofillOnboardingPresenterTest {
 

@@ -18,16 +18,13 @@ import mozilla.lockbox.store.FingerprintStore
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.powermock.api.mockito.PowerMockito
-import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.mockito.Mockito.`when` as whenCalled
 
 @ExperimentalCoroutinesApi
-@RunWith(RobolectricTestRunner::class)
 @Config(application = TestApplication::class)
 class FingerprintOnboardingPresenterTest {
     open class FakeOnboardingView : FingerprintOnboardingView {
