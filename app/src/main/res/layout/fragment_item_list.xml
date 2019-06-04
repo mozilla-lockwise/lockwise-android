@@ -25,37 +25,52 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
                 android:theme="@style/ToolBar">
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
-                <Spinner
-                        android:id="@+id/sortButton"
+                <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="66dp"
+                        app:layout_constraintStart_toStartOf="parent">
+                    <Spinner
+                            android:id="@+id/sortButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:textAllCaps="false"
+                            android:drawableEnd="@drawable/ic_down_caret"
+                            android:contentDescription="@string/sort_description"
+                            android:overlapAnchor="false"
+                            android:popupElevation="8dp"
+                            android:dropDownWidth="150dp"
+                            android:dropDownSelector="@color/selection"
+                            android:spinnerMode="dropdown"
+                            android:popupBackground="@drawable/sort_menu_bg"
+                            android:textSize="20sp"
+                            style="@style/PopupTheme"
+                            android:background="@null"/>
+                </LinearLayout>
+                <LinearLayout
+                        android:orientation="horizontal"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:textAllCaps="false"
-                        android:drawableEnd="@drawable/ic_down_caret"
-                        android:contentDescription="@string/sort_description"
-                        android:overlapAnchor="false"
-                        android:popupElevation="8dp"
-                        android:dropDownWidth="128dp"
-                        android:dropDownSelector="@color/selection"
-                        android:spinnerMode="dropdown"
-                        android:gravity="start"
-                        android:popupBackground="@drawable/sort_menu_bg"
-                        android:textSize="20sp"
-                        style="@style/PopupTheme"
-                        android:background="@null"/>
-                <Button
-                        android:id="@+id/filterButton"
-                        android:layout_width="fill_parent"
-                        android:layout_height="match_parent"
-                        android:drawableEnd="@drawable/ic_search"
-                        android:textSize="20sp"
-                        android:contentDescription="@string/search_description"
-                        android:layout_marginEnd="16dp"
-                        style="@style/ToolbarButton"/>
-            </LinearLayout>
+                        app:layout_constraintEnd_toEndOf="parent">
+                    <Button
+                            android:id="@+id/filterButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:drawableEnd="@drawable/ic_search"
+                            android:drawablePadding="16dp"
+                            android:paddingEnd="16dp"
+                            android:textSize="20sp"
+                            android:contentDescription="@string/search_description"
+                            style="@style/ToolbarButton"
+                            tools:ignore="RtlSymmetry"/>
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
         </androidx.appcompat.widget.Toolbar>
 
         <include layout="@layout/fragment_warning"
