@@ -54,9 +54,7 @@
                 </LinearLayout>
                 <LinearLayout
                         android:orientation="horizontal"
-                        android:
-
-                        layout_width="wrap_content"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         app:layout_constraintEnd_toEndOf="parent">
                     <Button
@@ -68,7 +66,8 @@
                             android:paddingEnd="16dp"
                             android:textSize="20sp"
                             android:contentDescription="@string/search_description"
-                            style="@style/ToolbarButton"/>
+                            style="@style/ToolbarButton"
+                            tools:ignore="RtlSymmetry"/>
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
