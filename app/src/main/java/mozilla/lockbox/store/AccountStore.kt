@@ -229,6 +229,8 @@ open class AccountStore(
     }
 
     private fun clear() {
+        removeDeviceFromFxA()
+
         if (Looper.myLooper() != null) {
             CookieManager.getInstance().removeAllCookies { }
             WebStorage.getInstance().deleteAllData()
@@ -239,7 +241,6 @@ open class AccountStore(
 
         webView.clearCache(true)
         clearLogs()
-        removeDeviceFromFxA()
     }
 
     private fun removeDeviceFromFxA() {
@@ -247,7 +248,7 @@ open class AccountStore(
             .fromJSONString(
                 fxa?.toJSONString() ?: ""
             )
-        
+
         val registeredDevices = account.getDevices()
 
         for (device in registeredDevices) {
