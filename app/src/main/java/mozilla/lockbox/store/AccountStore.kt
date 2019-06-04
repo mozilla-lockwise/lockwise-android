@@ -28,8 +28,6 @@ import mozilla.components.concept.sync.Avatar
 import mozilla.components.concept.sync.Profile
 import mozilla.components.service.fxa.Config
 import mozilla.components.service.fxa.FirefoxAccount
-import mozilla.components.service.fxa.FxaDeviceConstellation
-import mozilla.components.service.fxa.manager.FxaAccountManager
 import mozilla.lockbox.action.AccountAction
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
@@ -252,7 +250,7 @@ open class AccountStore(
         val registeredDevices = account.getDevices()
 
         for (device in registeredDevices) {
-            if(device.isCurrentDevice) {
+            if (device.isCurrentDevice) {
                 account.destroyDevice(device.id)
             }
         }
