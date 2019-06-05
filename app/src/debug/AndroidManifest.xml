@@ -5,8 +5,17 @@
   ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
   -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="mozilla.lockbox">
+          package="mozilla.lockbox" xmlns:tools="http://schemas.android.com/tools">
+    <!-- Allows unlocking your device and activating its screen so UI tests can succeed -->
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
+    <!-- Allows for storing and retrieving screenshots -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
+    <!-- Allows changing locales -->
+    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" tools:ignore="ProtectedPermissions"/>
     <application android:fullBackupContent="false">
         <activity android:name=".view.UITestActivity" android:label="@string/activityName">
             <!-- You can add this as a launcher, but we should probably have it disabled by default. -->
@@ -18,5 +27,4 @@
             -->
         </activity>
     </application>
-
 </manifest>

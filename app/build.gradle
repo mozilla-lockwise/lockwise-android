@@ -156,6 +156,7 @@ dependencies {
     }
     androidTestImplementation 'br.com.concretesolutions:kappuccino:1.2.1'
     ktlint "com.github.shyiko:ktlint:0.28.0"
+    androidTestImplementation "tools.fastlane:screengrab:1.2.0"
 }
 
 sentry {
