@@ -10,6 +10,7 @@ import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import mozilla.appservices.logins.LoginsStorageException
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.OnboardingStatusAction
 import mozilla.lockbox.action.RouteAction
@@ -81,7 +82,7 @@ class RouteStoreTest {
     fun `dispatched on datastore`() {
         dispatcher.dispatch(OnboardingStatusAction(false))
 
-        dataStore.stateStub.onNext(DataStore.State.Errored(Exception("Fake exception for testing purpose")))
+        dataStore.stateStub.onNext(DataStore.State.Errored(LoginsStorageException("Fake exception for testing purpose")))
         routeObserver.assertEmpty()
 
         dataStore.stateStub.onNext(DataStore.State.Unprepared)

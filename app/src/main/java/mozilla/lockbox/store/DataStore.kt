@@ -5,28 +5,33 @@
 package mozilla.lockbox.store
 
 import com.jakewharton.rxrelay2.BehaviorRelay
+import com.jakewharton.rxrelay2.ReplayRelay
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
-import io.reactivex.subjects.ReplaySubject
-import io.reactivex.subjects.Subject
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.rx2.asSingle
+import mozilla.appservices.logins.InvalidKeyException
+import mozilla.appservices.logins.LoginsStorageException
 import mozilla.appservices.logins.ServerPassword
+import mozilla.appservices.logins.SyncAuthInvalidException
 import mozilla.appservices.logins.SyncUnlockInfo
 import mozilla.components.service.sync.logins.AsyncLoginsStorage
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
+import mozilla.lockbox.action.SentryAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.log
 import mozilla.lockbox.model.SyncCredentials
 import mozilla.lockbox.support.AutoLockSupport
+import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.DataStoreSupport
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.asOptional
+import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 
 @ExperimentalCoroutinesApi
@@ -44,7 +49,7 @@ open class DataStore(
         object Unprepared : State()
         object Locked : State()
         object Unlocked : State()
-        data class Errored(val error: Throwable) : State()
+        data class Errored(val error: LoginsStorageException) : State()
     }
 
     enum class SyncState {
@@ -52,11 +57,12 @@ open class DataStore(
     }
 
     internal val compositeDisposable = CompositeDisposable()
-    private val stateSubject = ReplaySubject.createWithSize<State>(1)
+    private val stateSubject = ReplayRelay.createWithSize<State>(1)
+    private val syncStateSubject = ReplayRelay.createWithSize<SyncState>(1)
     private val listSubject: BehaviorRelay<List<ServerPassword>> = BehaviorRelay.createDefault(emptyList())
 
     open val state: Observable<State> = stateSubject
-    open val syncState: Observable<SyncState> = ReplaySubject.create()
+    open val syncState: Observable<SyncState> = syncStateSubject
     open val list: Observable<List<ServerPassword>> get() = listSubject
 
     private val exceptionHandler: CoroutineExceptionHandler
@@ -173,7 +179,7 @@ open class DataStore(
             // once we get an "updated" list, we are done + can update the state
             .take(1)
             .map { State.Unlocked }
-            .subscribe(stateSubject::onNext, this::pushError)
+            .subscribe(stateSubject::accept, this::pushError)
             .addTo(compositeDisposable)
     }
 
@@ -187,7 +193,7 @@ open class DataStore(
         backend.ensureLocked()
             .asSingle(coroutineContext)
             .map { State.Locked }
-            .subscribe(stateSubject::onNext, this::pushError)
+            .subscribe(stateSubject::accept, this::pushError)
             .addTo(compositeDisposable)
     }
 
@@ -200,19 +206,18 @@ open class DataStore(
     }
 
     private fun sync() {
-        val syncConfig = support?.syncConfig ?: return {
-            val throwable = IllegalStateException("syncConfig should already be defined")
-            pushError(throwable)
-        }()
+        val syncConfig = support?.syncConfig ?: return notReady()
 
         val backend = this.backend ?: return notReady()
 
-        (syncState as Subject).onNext(SyncState.Syncing)
+        // ideally, we don't sync unless we are connected to the network
+        syncStateSubject.accept(SyncState.Syncing)
 
         backend.sync(syncConfig)
             .asSingle(coroutineContext)
+            .timeout(Constant.App.syncTimeout, TimeUnit.SECONDS)
             .doOnEvent { _, _ ->
-                (syncState as Subject).onNext(SyncState.NotSyncing)
+                syncStateSubject.accept(SyncState.NotSyncing)
             }
             .subscribe(this::updateList, this::pushError)
             .addTo(compositeDisposable)
@@ -223,7 +228,7 @@ open class DataStore(
         this.listSubject.accept(emptyList())
     }
 
-    // Parameter x is needed to ensure that the function is indeed a Consumer so that it can be used in a suscribe-call
+    // Parameter x is needed to ensure that the function is indeed a Consumer so that it can be used in a subscribe-call
     // there's probably a slicker way to do this `Unit` thing...
     @Suppress("UNUSED_PARAMETER")
     private fun updateList(x: Unit) {
@@ -239,7 +244,7 @@ open class DataStore(
     private fun reset() {
         when (stateSubject.value) {
             null -> {
-                stateSubject.onNext(State.Unprepared)
+                stateSubject.accept(State.Unprepared)
                 return
             }
             State.Unprepared -> return
@@ -249,9 +254,9 @@ open class DataStore(
                     backend.wipeLocal()
                         .asSingle(coroutineContext)
                         .map { State.Unprepared }
-                        .subscribe(stateSubject::onNext, this::pushError)
+                        .subscribe(this.stateSubject::accept, this::pushError)
                         .addTo(compositeDisposable)
-                } ?: stateSubject.onNext(State.Unprepared)
+                } ?: stateSubject.accept(State.Unprepared)
             }
         }
     }
@@ -276,20 +281,28 @@ open class DataStore(
         if (backend.isLocked()) {
             unlockInternal()
         } else {
-            stateSubject.onNext(State.Unlocked)
+            stateSubject.accept(State.Unlocked)
         }
     }
 
     private fun notReady() {
-        pushError(IllegalStateException("DataStore backend is not set"))
+        pushError(IllegalStateException("Credentials for syncing unavailable at this time"))
     }
 
     private fun pushError(e: Throwable) {
-        this.stateSubject.onNext(State.Errored(e))
+        dispatcher.dispatch(SentryAction(e))
+
+        val loginsException = e as? LoginsStorageException
+
+        loginsException?.let {
+            this.stateSubject.accept(DataStore.State.Errored(it))
+        }
+
+        when (loginsException) {
+            is SyncAuthInvalidException, is InvalidKeyException -> dispatcher.dispatch(LifecycleAction.UserReset)
+        }
     }
 
-    // Warning: this is testing code.
-    // It's only called immediately after the user has pressed "Use Test Data".
     fun resetSupport(support: DataStoreSupport) {
         if (support == this.support) {
             return
@@ -298,10 +311,10 @@ open class DataStore(
         if (stateSubject.value != State.Unprepared &&
             stateSubject.value != null
         ) {
-            backend?.run {
-                wipeLocal()
+            backend?.let {
+                it.wipeLocal()
                     .asSingle(coroutineContext)
-                    .subscribe()
+                    .subscribe({}, this::pushError)
                     .addTo(compositeDisposable)
             }
         }
