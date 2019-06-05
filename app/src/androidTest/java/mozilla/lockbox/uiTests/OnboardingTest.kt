@@ -7,6 +7,7 @@ import mozilla.lockbox.robots.autofillOnboardingScreen
 import mozilla.lockbox.robots.fingerprintOnboardingScreen
 import mozilla.lockbox.robots.fxaLogin
 import mozilla.lockbox.robots.onboardingConfirmationScreen
+import mozilla.lockbox.robots.disconnectDisclaimer
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.view.RootActivity
