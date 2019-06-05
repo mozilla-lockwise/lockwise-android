@@ -12,14 +12,15 @@ import android.app.KeyguardManager
 import android.content.Context
 import android.hardware.fingerprint.FingerprintManager
 import android.hardware.fingerprint.FingerprintManager.FINGERPRINT_ERROR_LOCKOUT
+import android.hardware.fingerprint.FingerprintManager.FINGERPRINT_ERROR_TIMEOUT
 import android.os.CancellationSignal
-import android.preference.PreferenceManager
-import android.util.Base64
 import io.reactivex.observers.TestObserver
 import mozilla.components.lib.dataprotect.Keystore
+import mozilla.lockbox.R
 import mozilla.lockbox.action.FingerprintSensorAction
 import mozilla.lockbox.flux.Dispatcher
 import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -28,12 +29,9 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.eq
 import org.mockito.Mock
 import org.mockito.Mockito
-import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.verifyZeroInteractions
 import org.powermock.api.mockito.PowerMockito
-import org.powermock.api.mockito.PowerMockito.doReturn
-import org.powermock.api.mockito.PowerMockito.verifyStatic
 import org.powermock.core.classloader.annotations.PrepareForTest
 import org.powermock.modules.junit4.PowerMockRunner
 import javax.crypto.Cipher
@@ -121,11 +119,12 @@ class FingerprintStoreTest {
 
         callbackCaptor.value.onAuthenticationError(FINGERPRINT_ERROR_LOCKOUT, null)
 
-        
+        val lockoutString = context.getString(R.string.fingerprint_error_lockout)
+        assertEquals(stateObserver.values().first(), FingerprintStore.AuthenticationState.Error(lockoutString))
     }
 
     @Test
-    fun `callbacks with authentication succeeded`() {
+    fun `callbacks with other errors`() {
         whenCalled(fingerprintManager.isHardwareDetected).thenReturn(true)
         whenCalled(fingerprintManager.hasEnrolledFingerprints()).thenReturn(true)
         applyMockContext()
@@ -142,6 +141,71 @@ class FingerprintStoreTest {
             callbackCaptor.capture(),
             eq(null)
         )
+
+        val stateObserver = TestObserver.create<FingerprintStore.AuthenticationState>()
+        subject.authState.subscribe(stateObserver)
+
+        val errString = "user cancelled"
+        callbackCaptor.value.onAuthenticationError(FINGERPRINT_ERROR_TIMEOUT, errString)
+
+        assertEquals(stateObserver.values().first(), FingerprintStore.AuthenticationState.Error(errString))
+    }
+
+    @Test
+    fun `callbacks with other errors after user cancellation`() {
+        whenCalled(fingerprintManager.isHardwareDetected).thenReturn(true)
+        whenCalled(fingerprintManager.hasEnrolledFingerprints()).thenReturn(true)
+        applyMockContext()
+
+        val callbackCaptor = ArgumentCaptor.forClass(FingerprintStore.AuthenticationCallback::class.java)
+
+        dispatcher.dispatch(FingerprintSensorAction.Start)
+
+        verify(keystore).createEncryptCipher()
+        verify(fingerprintManager).authenticate(
+            any(FingerprintManager.CryptoObject::class.java),
+            any(CancellationSignal::class.java),
+            eq(0),
+            callbackCaptor.capture(),
+            eq(null)
+        )
+
+        dispatcher.dispatch(FingerprintSensorAction.Stop)
+
+        val stateObserver = TestObserver.create<FingerprintStore.AuthenticationState>()
+        subject.authState.subscribe(stateObserver)
+
+        val errString = "user cancelled"
+        callbackCaptor.value.onAuthenticationError(FINGERPRINT_ERROR_TIMEOUT, errString)
+
+        assertEquals(stateObserver.values().size, 0)
+    }
+
+    @Test
+    fun `callbacks with auth succeeded`() {
+        whenCalled(fingerprintManager.isHardwareDetected).thenReturn(true)
+        whenCalled(fingerprintManager.hasEnrolledFingerprints()).thenReturn(true)
+        applyMockContext()
+
+        val callbackCaptor = ArgumentCaptor.forClass(FingerprintStore.AuthenticationCallback::class.java)
+
+        dispatcher.dispatch(FingerprintSensorAction.Start)
+
+        verify(keystore).createEncryptCipher()
+        verify(fingerprintManager).authenticate(
+            any(FingerprintManager.CryptoObject::class.java),
+            any(CancellationSignal::class.java),
+            eq(0),
+            callbackCaptor.capture(),
+            eq(null)
+        )
+
+        val stateObserver = TestObserver.create<FingerprintStore.AuthenticationState>()
+        subject.authState.subscribe(stateObserver)
+
+        callbackCaptor.value.onAuthenticationSucceeded(null)
+
+        assertEquals(stateObserver.values().first(), FingerprintStore.AuthenticationState.Succeeded)
     }
 
     @Test
@@ -162,6 +226,14 @@ class FingerprintStoreTest {
             callbackCaptor.capture(),
             eq(null)
         )
+
+        val stateObserver = TestObserver.create<FingerprintStore.AuthenticationState>()
+        subject.authState.subscribe(stateObserver)
+
+        val helpString = "help me"
+        callbackCaptor.value.onAuthenticationHelp(-1, helpString)
+
+        assertEquals(stateObserver.values().first(), FingerprintStore.AuthenticationState.Failed(helpString))
     }
 
     @Test
@@ -182,6 +254,14 @@ class FingerprintStoreTest {
             callbackCaptor.capture(),
             eq(null)
         )
+
+        val stateObserver = TestObserver.create<FingerprintStore.AuthenticationState>()
+        subject.authState.subscribe(stateObserver)
+
+        callbackCaptor.value.onAuthenticationFailed()
+
+        val failureString = context.getString(R.string.fingerprint_not_recognized)
+        assertEquals(stateObserver.values().first(), FingerprintStore.AuthenticationState.Failed(failureString))
     }
 
     @Test
