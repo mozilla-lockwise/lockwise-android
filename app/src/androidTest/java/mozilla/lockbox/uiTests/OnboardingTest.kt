@@ -28,7 +28,11 @@ open class OnboardingTest {
 
     @Before
     fun setUp() {
-        navigator.disconnectAccount()
+        navigator.gotoAccountSetting()
+        disconnectDisclaimer {
+            tapDisconnect()
+            acceptDisconnect()
+        }
     }
 
     @Test
