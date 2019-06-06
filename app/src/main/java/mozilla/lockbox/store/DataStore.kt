@@ -20,6 +20,7 @@ import mozilla.appservices.logins.SyncAuthInvalidException
 import mozilla.appservices.logins.SyncUnlockInfo
 import mozilla.components.service.sync.logins.AsyncLoginsStorage
 import mozilla.lockbox.action.DataStoreAction
+import mozilla.lockbox.action.ItemDetailAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.SentryAction
 import mozilla.lockbox.extensions.filterByType
@@ -125,6 +126,8 @@ open class DataStore(
             .asSingle(coroutineContext)
             .subscribe()
             .addTo(compositeDisposable)
+        // ensure that the password field is not visible when backgrounded
+        dispatcher.dispatch(ItemDetailAction.TogglePassword(false))
     }
 
     private fun setupAutoLock() {
