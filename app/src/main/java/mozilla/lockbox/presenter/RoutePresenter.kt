@@ -152,8 +152,8 @@ abstract class RoutePresenter(
 
         try {
             navController.navigate(destinationId, args, navOptions)
-        } catch (e: Throwable) {
-            log.error("This appears to be a bug in navController", e)
+        } catch (e: RuntimeException) {
+            log.error(e.localizedMessage)
             navController.navigate(destinationId, args)
         }
     }
@@ -168,7 +168,7 @@ abstract class RoutePresenter(
         )
         try {
             currentFragment?.startActivityForResult(intent, action.requestCode)
-        } catch (e: Exception) {
+        } catch (e: RuntimeException) {
             log.error("Unlock fallback failed: ", e)
         }
     }

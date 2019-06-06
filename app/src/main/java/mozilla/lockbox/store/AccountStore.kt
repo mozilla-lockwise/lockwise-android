@@ -31,6 +31,7 @@ import mozilla.components.service.fxa.FirefoxAccount
 import mozilla.lockbox.action.AccountAction
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
+import mozilla.lockbox.action.SentryAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.log
@@ -114,10 +115,11 @@ open class AccountStore(
             .addTo(compositeDisposable)
 
         // Moves credentials from the AccountStore, into the DataStore.
-        syncCredentials.map {
-            it.value?.let { credentials -> DataStoreAction.UpdateCredentials(credentials) }
-                ?: DataStoreAction.Reset
-        }
+        syncCredentials
+            .map {
+                it.value?.let { credentials -> DataStoreAction.UpdateCredentials(credentials) }
+                    ?: DataStoreAction.Reset
+            }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
     }
@@ -279,5 +281,7 @@ open class AccountStore(
             is FxaException.Network -> log.error("FxA network error. Message: " + it.message, it)
             is FxaException.Panic -> log.error("FxA error. Message: " + it.message, it)
         }
+
+        dispatcher.dispatch(SentryAction(it))
     }
 }

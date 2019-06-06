@@ -92,9 +92,10 @@ class LockboxAutofillService(
                     is DataStore.State.Locked -> AutofillAction.Authenticate
                     is DataStore.State.Unlocked -> AutofillAction.CompleteMultiple(latest.second)
                     is DataStore.State.Unprepared -> AutofillAction.Cancel // we might consider onboarding here.
-                    is DataStore.State.Errored -> AutofillAction.Error(state.error)
-                }
+                    is DataStore.State.Errored -> null
+                }.asOptional()
             }
+            .filterNotNull()
             .onErrorReturnItem(AutofillAction.SearchFallback)
             .subscribe(dispatcher::dispatch) {
                 log.error(throwable = it)
