@@ -22,7 +22,6 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.LockedStore
-import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.support.Constant
 import java.util.concurrent.TimeUnit
 
@@ -35,8 +34,7 @@ abstract class LockedPresenter(
     val lockedView: LockedView,
     open val dispatcher: Dispatcher,
     open val fingerprintStore: FingerprintStore,
-    open val lockedStore: LockedStore,
-    open val settingStore: SettingStore
+    open val lockedStore: LockedStore
 ) : Presenter() {
 
     abstract fun Observable<Unit>.unlockAuthenticationObservable(): Observable<Boolean>

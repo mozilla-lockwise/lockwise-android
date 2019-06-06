@@ -94,7 +94,7 @@ class AppLockedPresenterTest {
     @Test
     fun `unlock button tap fallback if no fingerprint`() {
         whenCalled(fingerprintStore.isFingerprintAuthAvailable).thenReturn(false)
-        whenCalled(fingerprintStore.isKeyguardDeviceSecure).thenReturn(true)
+        whenCalled(fingerprintStore.isDeviceSecure).thenReturn(true)
 
         val dispatchIterator = dispatcher.register.blockingIterable().iterator()
         view.unlockButtonTaps.onNext(Unit)
@@ -131,7 +131,7 @@ class AppLockedPresenterTest {
     @Test
     fun `onviewready when can launch authentication if no fingerprint`() {
         whenCalled(fingerprintStore.isFingerprintAuthAvailable).thenReturn(false)
-        whenCalled(fingerprintStore.isKeyguardDeviceSecure).thenReturn(true)
+        whenCalled(fingerprintStore.isDeviceSecure).thenReturn(true)
 
         val dispatchIterator = dispatcher.register.blockingIterable().iterator()
         (lockedStore.canLaunchAuthenticationOnForeground as Subject).onNext(true)

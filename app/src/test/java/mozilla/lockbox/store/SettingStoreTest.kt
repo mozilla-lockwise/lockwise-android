@@ -280,18 +280,21 @@ class SettingStoreTest : DisposingTest() {
 
     @Test
     fun `default value for autolock time when device is secure`() {
+        clearInvocations(rxSharedPreferences)
         whenCalled(fingerprintStore.isDeviceSecure).thenReturn(true)
+        subject.injectContext(context)
 
         subject.autoLockTime.subscribe(autoLockTime)
 
         val defaultValue = Constant.SettingDefault.autoLockTime
+        verify(rxSharedPreferences).getString(SettingStore.Keys.ITEM_LIST_SORT_ORDER, Constant.SettingDefault.itemListSort.name)
         verify(rxSharedPreferences).getString(SettingStore.Keys.AUTO_LOCK_TIME, defaultValue.name)
         verify(rxSharedPreferences).getBoolean(SettingStore.Keys.DEVICE_SECURITY_PRESENT, fingerprintStore.isDeviceSecure)
 
         autoLockSetting.onNext(defaultValue.name)
         deviceWasSecure.onNext(true)
 
-        autoLockTime.assertValue(defaultValue)
+        autoLockTime.assertLastValue(defaultValue)
     }
 
     @Test
@@ -336,11 +339,13 @@ class SettingStoreTest : DisposingTest() {
 
     @Test
     fun `default value for autolock time when device is not secure`() {
+        clearInvocations(rxSharedPreferences)
         whenCalled(fingerprintStore.isDeviceSecure).thenReturn(false)
         val defaultValue = Constant.SettingDefault.noSecurityAutoLockTime
 
         subject.injectContext(context)
 
+        verify(rxSharedPreferences).getString(SettingStore.Keys.ITEM_LIST_SORT_ORDER, Constant.SettingDefault.itemListSort.name)
         verify(rxSharedPreferences).getString(SettingStore.Keys.AUTO_LOCK_TIME, defaultValue.name)
         verify(rxSharedPreferences).getBoolean(SettingStore.Keys.DEVICE_SECURITY_PRESENT, false)
 

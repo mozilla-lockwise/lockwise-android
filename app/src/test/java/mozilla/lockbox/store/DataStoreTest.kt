@@ -255,7 +255,7 @@ class DataStoreTest : DisposingTest() {
         Assert.assertEquals(State.Locked, stateIterator.next())
         clearInvocations(support.storage)
 
-        (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Background)
+        (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.AutofillEnd)
         verify(autoLockSupport, never()).storeNextAutoLockTime()
         verify(support.storage).ensureLocked()
     }
