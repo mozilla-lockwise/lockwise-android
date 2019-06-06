@@ -17,8 +17,8 @@ open class AutofillLockedPresenter(
     override val dispatcher: Dispatcher = Dispatcher.shared,
     override val fingerprintStore: FingerprintStore = FingerprintStore.shared,
     override val lockedStore: LockedStore = LockedStore.shared,
-    override val settingStore: SettingStore = SettingStore.shared
-) : LockedPresenter(lockedView, dispatcher, fingerprintStore, lockedStore, settingStore) {
+    open val settingStore: SettingStore = SettingStore.shared
+) : LockedPresenter(lockedView, dispatcher, fingerprintStore, lockedStore) {
 
     override fun Observable<Unit>.unlockAuthenticationObservable(): Observable<Boolean> {
         return this.flatMap { settingStore.unlockWithFingerprint.take(1) }

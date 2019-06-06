@@ -44,7 +44,7 @@ import org.robolectric.util.ReflectionHelpers
 import org.mockito.Mockito.`when` as whenCalled
 
 @RunWith(PowerMockRunner::class)
-@PrepareForTest(PreferenceManager::class, RxSharedPreferences::class)
+@PrepareForTest(PreferenceManager::class, RxSharedPreferences::class, FingerprintStore::class)
 class SettingStoreTest : DisposingTest() {
     @Mock
     val context: Context = Mockito.mock(Context::class.java)
@@ -61,11 +61,8 @@ class SettingStoreTest : DisposingTest() {
     @Mock
     val autofillManager: AutofillManager = Mockito.mock(AutofillManager::class.java)
 
-    class FakeFingerprintStore : FingerprintStore() {
-        var deviceSecureStub: Boolean = true
-        override val isDeviceSecure: Boolean
-            get() = deviceSecureStub
-    }
+    @Mock
+    val fingerprintStore: FingerprintStore = PowerMockito.mock(FingerprintStore::class.java)
 
     private val autoLockSetting = PublishSubject.create<String>()
     private val autoLockStub = object : Preference<String> {
@@ -158,7 +155,6 @@ class SettingStoreTest : DisposingTest() {
     }
 
     private val dispatcher = Dispatcher()
-    private val fingerprintStore = FakeFingerprintStore()
     var subject = SettingStore(dispatcher, fingerprintStore)
     private val sendUsageDataObserver = TestObserver<Boolean>()
     private val itemListSortOrder = TestObserver<Setting.ItemListSort>()
@@ -284,23 +280,26 @@ class SettingStoreTest : DisposingTest() {
 
     @Test
     fun `default value for autolock time when device is secure`() {
-        fingerprintStore.deviceSecureStub = true
+        clearInvocations(rxSharedPreferences)
+        whenCalled(fingerprintStore.isDeviceSecure).thenReturn(true)
+        subject.injectContext(context)
 
         subject.autoLockTime.subscribe(autoLockTime)
 
         val defaultValue = Constant.SettingDefault.autoLockTime
+        verify(rxSharedPreferences).getString(SettingStore.Keys.ITEM_LIST_SORT_ORDER, Constant.SettingDefault.itemListSort.name)
         verify(rxSharedPreferences).getString(SettingStore.Keys.AUTO_LOCK_TIME, defaultValue.name)
         verify(rxSharedPreferences).getBoolean(SettingStore.Keys.DEVICE_SECURITY_PRESENT, fingerprintStore.isDeviceSecure)
 
         autoLockSetting.onNext(defaultValue.name)
         deviceWasSecure.onNext(true)
 
-        autoLockTime.assertValue(defaultValue)
+        autoLockTime.assertLastValue(defaultValue)
     }
 
     @Test
     fun `getting new values for autolock time when device is secure`() {
-        fingerprintStore.deviceSecureStub = true
+        whenCalled(fingerprintStore.isDeviceSecure).thenReturn(true)
 
         subject.autoLockTime.subscribe(autoLockTime)
         val newValue = Setting.AutoLockTime.OneHour
@@ -323,7 +322,7 @@ class SettingStoreTest : DisposingTest() {
         subject.autoLockTime.subscribe(autoLockTime)
         val defaultValue = Constant.SettingDefault.autoLockTime
         val noSecurityAutoLockTime = Constant.SettingDefault.noSecurityAutoLockTime
-        fingerprintStore.deviceSecureStub = false
+        whenCalled(fingerprintStore.isDeviceSecure).thenReturn(false)
 
         autoLockSetting.onNext(defaultValue.name)
         deviceWasSecure.onNext(true)
@@ -340,11 +339,13 @@ class SettingStoreTest : DisposingTest() {
 
     @Test
     fun `default value for autolock time when device is not secure`() {
-        fingerprintStore.deviceSecureStub = false
+        clearInvocations(rxSharedPreferences)
+        whenCalled(fingerprintStore.isDeviceSecure).thenReturn(false)
         val defaultValue = Constant.SettingDefault.noSecurityAutoLockTime
 
         subject.injectContext(context)
 
+        verify(rxSharedPreferences).getString(SettingStore.Keys.ITEM_LIST_SORT_ORDER, Constant.SettingDefault.itemListSort.name)
         verify(rxSharedPreferences).getString(SettingStore.Keys.AUTO_LOCK_TIME, defaultValue.name)
         verify(rxSharedPreferences).getBoolean(SettingStore.Keys.DEVICE_SECURITY_PRESENT, false)
 
@@ -359,7 +360,7 @@ class SettingStoreTest : DisposingTest() {
     @Test
     fun `changing device from insecure to secure`() {
         subject.autoLockTime.subscribe(autoLockTime)
-        fingerprintStore.deviceSecureStub = true
+        whenCalled(fingerprintStore.isDeviceSecure).thenReturn(true)
         val defaultValue = Constant.SettingDefault.noSecurityAutoLockTime
         val defaultSecureValue = Constant.SettingDefault.autoLockTime
 

@@ -25,13 +25,13 @@ import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.LockedStore
-import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.support.Constant
 import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito
+import org.powermock.api.mockito.PowerMockito
 
 class LockedPresenterTest {
 
@@ -49,9 +49,8 @@ class LockedPresenterTest {
         view: FakeView,
         dispatcher: Dispatcher,
         fingerprintStore: FingerprintStore,
-        settingStore: SettingStore,
         lockedStore: LockedStore
-    ) : LockedPresenter(view, dispatcher, fingerprintStore, settingStore = settingStore, lockedStore = lockedStore) {
+    ) : LockedPresenter(view, dispatcher, fingerprintStore, lockedStore = lockedStore) {
         override fun Observable<Unit>.unlockAuthenticationObservable(): Observable<Boolean> {
             return this.map { true }
         }
@@ -75,24 +74,21 @@ class LockedPresenterTest {
         override val canLaunchAuthenticationOnForeground: Observable<Boolean> = PublishSubject.create()
     }
 
-    class FakeSettingStore : SettingStore() {
-        val unlockWithFingerprintStub = PublishSubject.create<Boolean>()
-        override var unlockWithFingerprint: Observable<Boolean> = unlockWithFingerprintStub
-    }
-
     @Mock
     private val fingerprintStore = Mockito.mock(FingerprintStore::class.java)
-    private val settingStore = FakeSettingStore()
     private val lockedStore = FakeLockedStore()
 
     private val dispatcher = Dispatcher()
     private val dispatcherObserver: TestObserver<Action> = TestObserver.create()
     val view = FakeView()
 
-    val subject = FakeLockedPresenter(view, dispatcher, fingerprintStore, settingStore, lockedStore)
+    lateinit var subject: FakeLockedPresenter
 
     @Before
     fun setUp() {
+        PowerMockito.whenNew(FingerprintStore::class.java).withAnyArguments().thenReturn(fingerprintStore)
+
+        subject = FakeLockedPresenter(view, dispatcher, fingerprintStore, lockedStore)
         dispatcher.register.subscribe(dispatcherObserver)
         subject.onViewReady()
     }

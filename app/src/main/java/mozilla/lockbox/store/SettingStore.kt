@@ -32,7 +32,7 @@ open class SettingStore(
     val fingerprintStore: FingerprintStore = FingerprintStore.shared
 ) : ContextStore {
     companion object {
-        val shared = SettingStore()
+        val shared by lazy { SettingStore() }
     }
 
     object Keys {

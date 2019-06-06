@@ -42,7 +42,7 @@ open class DataStore(
     private val lifecycleStore: LifecycleStore = LifecycleStore.shared
 ) {
     companion object {
-        val shared = DataStore()
+        val shared by lazy { DataStore() }
     }
 
     sealed class State {
