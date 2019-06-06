@@ -17,19 +17,20 @@ import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.asOptional
 import org.junit.Assert
+import org.junit.Before
 import org.junit.Test
+import org.mockito.ArgumentMatchers.anyString
+import org.mockito.Mock
+import org.mockito.Mockito.verify
+import org.powermock.api.mockito.PowerMockito
+import org.powermock.api.mockito.PowerMockito.`when` as whenCalled
 
 @ExperimentalCoroutinesApi
 class AutofillFilterPresenterTest {
-    class FakeDataStore : DataStore() {
-        val getStub = PublishSubject.create<Optional<ServerPassword>>()
-        var getArgument: String? = null
+    @Mock
+    val dataStore = PowerMockito.mock(DataStore::class.java)
 
-        override fun get(id: String): Observable<Optional<ServerPassword>> {
-            getArgument = id
-            return getStub
-        }
-    }
+    val getStub = PublishSubject.create<Optional<ServerPassword>>()
 
     class ExercisingFake(
         override val view: FilterView,
@@ -46,10 +47,17 @@ class AutofillFilterPresenterTest {
     }
 
     private val view = FilterPresenterTest.FakeFilterView()
-    private val dataStore = FakeDataStore()
-    val subject = ExercisingFake(view, dataStore)
+    lateinit var subject: ExercisingFake
     private val id = "jnewkdiou"
     private val itemViewModel = ItemViewModel("mozilla", "cats@cats.com", id)
+
+    @Before
+    fun setUp() {
+        whenCalled(dataStore.get(anyString())).thenReturn(getStub)
+        PowerMockito.whenNew(DataStore::class.java).withAnyArguments().thenReturn(dataStore)
+
+        subject = ExercisingFake(view, dataStore)
+    }
 
     @Test
     fun `item selection with null item`() {
@@ -60,8 +68,8 @@ class AutofillFilterPresenterTest {
             .blockingIterable()
             .iterator()
 
-        Assert.assertEquals(id, dataStore.getArgument)
-        dataStore.getStub.onNext(Optional(null))
+        verify(dataStore).get(id)
+        getStub.onNext(Optional(null))
 
         Assert.assertEquals(AutofillAction.Cancel, action.next())
     }
@@ -75,9 +83,9 @@ class AutofillFilterPresenterTest {
             .blockingIterable()
             .iterator()
 
-        Assert.assertEquals(id, dataStore.getArgument)
+        verify(dataStore).get(id)
         val serverPassword = ServerPassword(id, "www.mozilla.org", password = "dawgz")
-        dataStore.getStub.onNext(serverPassword.asOptional())
+        getStub.onNext(serverPassword.asOptional())
 
         Assert.assertEquals(AutofillAction.Complete(serverPassword), action.next())
     }

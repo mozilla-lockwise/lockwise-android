@@ -81,7 +81,7 @@ open class TelemetryStore(
     private val wrapper: TelemetryWrapper = TelemetryWrapper()
 ) : ContextStore {
     companion object {
-        val shared = TelemetryStore()
+        val shared by lazy { TelemetryStore() }
     }
 
     internal val compositeDisposable = CompositeDisposable()

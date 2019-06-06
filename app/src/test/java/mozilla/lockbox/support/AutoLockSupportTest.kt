@@ -12,7 +12,6 @@ import android.os.SystemClock
 import android.preference.PreferenceManager
 import com.jakewharton.rxrelay2.BehaviorRelay
 import com.jakewharton.rxrelay2.Relay
-import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.DataStoreAction
@@ -46,7 +45,7 @@ class TestLockingSupport : LockingSupport {
 
 @ExperimentalCoroutinesApi
 @RunWith(PowerMockRunner::class)
-@PrepareForTest(PreferenceManager::class, SimpleFileReader::class, AutoLockSupport::class)
+@PrepareForTest(PreferenceManager::class, SimpleFileReader::class)
 class AutoLockSupportTest {
     @Mock
     val editor: SharedPreferences.Editor = Mockito.mock(SharedPreferences.Editor::class.java)
@@ -60,12 +59,11 @@ class AutoLockSupportTest {
     @Mock
     private val fileReader = PowerMockito.mock(SimpleFileReader::class.java)
 
-    class FakeSettingStore : SettingStore() {
-        override var autoLockTime: Observable<Setting.AutoLockTime> =
-            BehaviorRelay.createDefault(Constant.SettingDefault.autoLockTime)
-    }
+    @Mock
+    val settingStore = PowerMockito.mock(SettingStore::class.java)
 
-    private val settingStore = FakeSettingStore()
+    var autoLockTimeStub = BehaviorRelay.createDefault(Constant.SettingDefault.autoLockTime)
+
     private val dispatcher = Dispatcher()
 
     private var bootID = ";kl;jjkloi;kljhafshjkadfsmn"
@@ -74,9 +72,7 @@ class AutoLockSupportTest {
 
     private val lockingSupport = spy(TestLockingSupport())
 
-    val subject = AutoLockSupport(
-        settingStore = settingStore
-    )
+    lateinit var subject: AutoLockSupport
 
     @Before
     fun setUp() {
@@ -90,6 +86,10 @@ class AutoLockSupportTest {
         whenCalled(fileReader.readContents(Constant.App.bootIDPath)).thenReturn(bootID)
         PowerMockito.whenNew(SimpleFileReader::class.java).withAnyArguments().thenReturn(fileReader)
 
+        whenCalled(settingStore.autoLockTime).thenReturn(autoLockTimeStub)
+        PowerMockito.whenNew(SettingStore::class.java).withAnyArguments().thenReturn(settingStore)
+
+        subject = AutoLockSupport(settingStore)
         subject.injectContext(context)
         subject.lockingSupport = lockingSupport
     }

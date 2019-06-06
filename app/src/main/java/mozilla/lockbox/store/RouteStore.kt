@@ -29,7 +29,7 @@ open class RouteStore(
     dataStore: DataStore = DataStore.shared
 ) {
     companion object {
-        val shared = RouteStore()
+        val shared by lazy { RouteStore() }
     }
 
     internal val compositeDisposable = CompositeDisposable()
