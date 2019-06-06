@@ -40,7 +40,8 @@ open class DataStore(
     val dispatcher: Dispatcher = Dispatcher.shared,
     var support: DataStoreSupport? = null,
     private val autoLockSupport: AutoLockSupport = AutoLockSupport.shared,
-    private val lifecycleStore: LifecycleStore = LifecycleStore.shared
+    private val lifecycleStore: LifecycleStore = LifecycleStore.shared,
+    private val itemDetailStore: ItemDetailStore = ItemDetailStore.shared
 ) {
     companion object {
         val shared by lazy { DataStore() }
@@ -119,6 +120,13 @@ open class DataStore(
     }
 
     private fun shutdown() {
+
+        log.error("BACKGROUND")
+
+        // ensure that the password field is not visible when backgrounded
+        dispatcher.dispatch(ItemDetailAction.TogglePassword(false))
+
+
         // rather than calling `close`, which will make the `AsyncLoginsStorage` instance unusable,
         // we use the `ensureLocked` method to close the database connection.
         val backend = this.backend ?: return notReady()
@@ -126,8 +134,6 @@ open class DataStore(
             .asSingle(coroutineContext)
             .subscribe()
             .addTo(compositeDisposable)
-        // ensure that the password field is not visible when backgrounded
-        dispatcher.dispatch(ItemDetailAction.TogglePassword(false))
     }
 
     private fun setupAutoLock() {
