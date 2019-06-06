@@ -6,7 +6,6 @@
 
 package mozilla.lockbox.presenter
 
-import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
@@ -33,8 +32,10 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.Mockito.mock
+import org.powermock.api.mockito.PowerMockito
 import org.robolectric.RobolectricTestRunner
 import org.mockito.Mockito.`when` as whenCalled
 
@@ -53,49 +54,51 @@ class SettingPresenterTest {
         }
     }
 
-    class FakeSettingStore : SettingStore() {
-        override var sendUsageData: Observable<Boolean> = PublishSubject.create<Boolean>()
-        override var itemListSortOrder: Observable<Setting.ItemListSort> = PublishSubject.create<Setting.ItemListSort>()
-        val unlockWithFingerprintStub = PublishSubject.create<Boolean>()
-        override var unlockWithFingerprint: Observable<Boolean> = unlockWithFingerprintStub
-        override var unlockWithFingerprintPendingAuth: Observable<Boolean> = PublishSubject.create<Boolean>()
-        override var autoLockTime: Observable<Setting.AutoLockTime> = PublishSubject.create<Setting.AutoLockTime>()
+    private val unlockWithFingerprintStub = PublishSubject.create<Boolean>()
+    private val sendUsageDataStub = PublishSubject.create<Boolean>()
+    private val itemListSortOrderStub = PublishSubject.create<Setting.ItemListSort>()
+    private val unlockWithFingerprintPendingAuthStub = PublishSubject.create<Boolean>()
+    private val autoLockTimeStub = PublishSubject.create<Setting.AutoLockTime>()
+    private val onEnablingFingerprintStub = PublishSubject.create<FingerprintAuthAction>()
 
-        override val onEnablingFingerprint: Observable<FingerprintAuthAction> = PublishSubject.create()
-
-        var autofillAvailableStub: Boolean = false
-        override val autofillAvailable: Boolean
-            get() = autofillAvailableStub
-
-        override val isCurrentAutofillProvider: Boolean
-            get() = false
-    }
+    @Mock
+    val settingStore = PowerMockito.mock(SettingStore::class.java)
 
     private lateinit var testHelper: ListAdapterTestHelper
     private val view = SettingViewFake()
     private val fingerprintStore = mock(FingerprintStore::class.java)
-    private val settingStore = FakeSettingStore()
     private val dispatcher = Dispatcher()
     private val dispatcherObserver = TestObserver.create<Action>()
 
-    val subject = SettingPresenter(
-        view,
-        dispatcher,
-        settingStore,
-        fingerprintStore
-    )
+    lateinit var subject: SettingPresenter
 
     @Before
     fun setUp() {
+        whenCalled(settingStore.autoLockTime).thenReturn(autoLockTimeStub)
+        whenCalled(settingStore.unlockWithFingerprint).thenReturn(unlockWithFingerprintStub)
+        whenCalled(settingStore.unlockWithFingerprintPendingAuth).thenReturn(unlockWithFingerprintPendingAuthStub)
+        whenCalled(settingStore.sendUsageData).thenReturn(sendUsageDataStub)
+        whenCalled(settingStore.itemListSortOrder).thenReturn(itemListSortOrderStub)
+        whenCalled(settingStore.onEnablingFingerprint).thenReturn(onEnablingFingerprintStub)
+
+        PowerMockito.whenNew(SettingStore::class.java).withAnyArguments().thenReturn(settingStore)
+
         dispatcher.register.subscribe(dispatcherObserver)
         testHelper = ListAdapterTestHelper()
+        subject = SettingPresenter(
+            view,
+            dispatcher,
+            settingStore,
+            fingerprintStore
+        )
+
         subject.onViewReady()
     }
 
     @Test
     fun `update settings when fingerprint available and autofill unavailable`() {
         whenCalled(fingerprintStore.isFingerprintAuthAvailable).thenReturn(true)
-        settingStore.autofillAvailableStub = false
+        whenCalled(settingStore.autofillAvailable).thenReturn(false)
         val expectedSettings = testHelper.createAccurateListOfSettings(true, false)
 
         val expectedSections = listOf(
@@ -120,7 +123,7 @@ class SettingPresenterTest {
     @Test
     fun `update settings when fingerprint unavailable and autofill unavailable`() {
         whenCalled(fingerprintStore.isFingerprintAuthAvailable).thenReturn(false)
-        settingStore.autofillAvailableStub = false
+        whenCalled(settingStore.autofillAvailable).thenReturn(false)
         val expectedSettings = testHelper.createAccurateListOfSettings(false, false)
 
         val expectedSections = listOf(
@@ -144,7 +147,7 @@ class SettingPresenterTest {
     @Test
     fun `update settings when fingerprint available and autofill available`() {
         whenCalled(fingerprintStore.isFingerprintAuthAvailable).thenReturn(true)
-        settingStore.autofillAvailableStub = true
+        whenCalled(settingStore.autofillAvailable).thenReturn(true)
         val expectedSettings = testHelper.createAccurateListOfSettings(true, true)
 
         val expectedSections = listOf(
@@ -169,7 +172,7 @@ class SettingPresenterTest {
     @Test
     fun `update settings when fingerprint unavailable and autofill available`() {
         whenCalled(fingerprintStore.isFingerprintAuthAvailable).thenReturn(false)
-        settingStore.autofillAvailableStub = true
+        whenCalled(settingStore.autofillAvailable).thenReturn(true)
         val expectedSettings = testHelper.createAccurateListOfSettings(false, true)
 
         val expectedSections = listOf(
@@ -208,7 +211,7 @@ class SettingPresenterTest {
         whenCalled(fingerprintStore.isFingerprintAuthAvailable).thenReturn(true)
         subject.onResume()
         (view.settingItem!![0] as ToggleSettingConfiguration).toggleObserver.accept(false)
-        settingStore.unlockWithFingerprintStub.onNext(false)
+        unlockWithFingerprintStub.onNext(false)
         dispatcherObserver.assertLastValue(SettingAction.UnlockWithFingerprint(false))
     }
 
@@ -305,7 +308,7 @@ class SettingPresenterTest {
     @Test
     fun `autofill provider enabled`() {
         Mockito.`when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(false)
-        settingStore.autofillAvailableStub = true
+        whenCalled(settingStore.autofillAvailable).thenReturn(true)
         subject.onResume()
 
         (view.settingItem!![1] as ToggleSettingConfiguration).toggleObserver.accept(true)
@@ -316,7 +319,7 @@ class SettingPresenterTest {
     @Test
     fun `autofill provider disabled`() {
         Mockito.`when`(fingerprintStore.isFingerprintAuthAvailable).thenReturn(false)
-        settingStore.autofillAvailableStub = true
+        whenCalled(settingStore.autofillAvailable).thenReturn(true)
         subject.onResume()
 
         (view.settingItem!![1] as ToggleSettingConfiguration).toggleObserver.accept(false)

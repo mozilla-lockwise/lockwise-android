@@ -2,7 +2,6 @@
 
 package mozilla.lockbox.presenter
 
-import android.hardware.fingerprint.FingerprintManager
 import android.view.autofill.AutofillManager
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
@@ -51,23 +50,13 @@ class FingerprintOnboardingPresenterTest {
         override val onSkipClick = PublishSubject.create<Unit>()
     }
 
-    open class FakeFingerprintStore : FingerprintStore() {
-        val authStateStub = PublishSubject.create<FingerprintStore.AuthenticationState>()
-        override val authState: Observable<FingerprintStore.AuthenticationState>
-            get() = authStateStub
-
-        private val isFingerprintAuthAvailableStub: Boolean = true
-        override val isFingerprintAuthAvailable: Boolean
-            get() = isFingerprintAuthAvailableStub
-    }
+    val authStateStub = PublishSubject.create<FingerprintStore.AuthenticationState>()
 
     val dispatcher = Dispatcher()
     private val view = Mockito.spy(FakeOnboardingView())
 
-    private val fingerprintStore = FakeFingerprintStore()
-
     @Mock
-    private val fingerprintManager = PowerMockito.mock(FingerprintManager::class.java)
+    val fingerprintStore = PowerMockito.mock(FingerprintStore::class.java)
 
     @Mock
     private val autofillManager = PowerMockito.mock(AutofillManager::class.java)
@@ -76,32 +65,34 @@ class FingerprintOnboardingPresenterTest {
 
     private val dispatcherObserver = TestObserver.create<Action>()
 
-    val subject = FingerprintOnboardingPresenter(view, dispatcher, fingerprintStore)
+    lateinit var subject: FingerprintOnboardingPresenter
 
     @Before
     fun setUp() {
-        fingerprintStore.fingerprintManager = fingerprintManager
         dispatcher.register.subscribe(dispatcherObserver)
         whenCalled(autofillManager.isAutofillSupported).thenReturn(autofillAvailableStub)
         whenCalled(autofillManager.hasEnabledAutofillServices()).thenReturn(hasEnabledAutofillServicesStub)
+        whenCalled(fingerprintStore.authState).thenReturn(authStateStub)
+        PowerMockito.whenNew(FingerprintStore::class.java).withAnyArguments().thenReturn(fingerprintStore)
+        subject = FingerprintOnboardingPresenter(view, dispatcher, fingerprintStore)
         subject.onViewReady()
     }
 
     @Test
     fun `update on succeeded state`() {
-        fingerprintStore.authStateStub.onNext(FingerprintStore.AuthenticationState.Succeeded)
+        authStateStub.onNext(FingerprintStore.AuthenticationState.Succeeded)
         Assert.assertEquals(true, view.success)
     }
 
     @Test
     fun `update on failed state`() {
-        fingerprintStore.authStateStub.onNext(FingerprintStore.AuthenticationState.Failed("error"))
+        authStateStub.onNext(FingerprintStore.AuthenticationState.Failed("error"))
         Assert.assertEquals(true, view.failure)
     }
 
     @Test
     fun `update on error state`() {
-        fingerprintStore.authStateStub.onNext(FingerprintStore.AuthenticationState.Error("error"))
+        authStateStub.onNext(FingerprintStore.AuthenticationState.Error("error"))
         Assert.assertEquals(true, view.errors)
     }
 

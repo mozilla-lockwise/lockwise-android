@@ -24,7 +24,10 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.powermock.api.mockito.PowerMockito
 import org.robolectric.RobolectricTestRunner
+import org.powermock.api.mockito.PowerMockito.`when` as whenCalled
 
 @ExperimentalCoroutinesApi
 @RunWith(RobolectricTestRunner::class)
@@ -72,15 +75,13 @@ class FilterPresenterTest {
         }
     }
 
-    class FakeDataStore : DataStore() {
-        val listStub = PublishSubject.create<List<ServerPassword>>()
-        override val list = listStub
-    }
+    private val listStub = PublishSubject.create<List<ServerPassword>>()
+    @Mock
+    val dataStore = PowerMockito.mock(DataStore::class.java)!!
 
     val view = FakeFilterView()
     val dispatcher = Dispatcher()
-    private val dataStore = FakeDataStore()
-    val subject = FakeFilterPresenter(view, dispatcher, dataStore)
+    lateinit var subject: FakeFilterPresenter
 
     val dispatcherObserver: TestObserver<Action> = TestObserver.create<Action>()
 
@@ -102,9 +103,12 @@ class FilterPresenterTest {
     @Before
     fun setUp() {
         dispatcher.register.subscribe(dispatcherObserver)
+        whenCalled(dataStore.list).thenReturn(listStub)
+        PowerMockito.whenNew(DataStore::class.java).withAnyArguments().thenReturn(dataStore)
 
+        subject = FakeFilterPresenter(view, dispatcher, dataStore)
         subject.onViewReady()
-        dataStore.listStub.onNext(items)
+        listStub.onNext(items)
     }
 
     @Test
