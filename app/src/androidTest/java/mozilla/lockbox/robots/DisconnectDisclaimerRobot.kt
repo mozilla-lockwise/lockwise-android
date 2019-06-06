@@ -14,7 +14,8 @@ import mozilla.lockbox.R
 class DisconnectDisclaimerRobot : BaseTestRobot {
     override fun exists() = displayed { text(R.string.disconnect) }
 
-    fun tapDisconnect() = click { text(R.string.disconnect) }
+    fun tapDisconnect() = click { text("Disconnect Lockwise") }
+    fun acceptDisconnect() = click { text("Disconnect") }
 
     fun cancel() = click { text(R.string.cancel) }
 }
