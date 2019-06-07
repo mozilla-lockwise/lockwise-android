@@ -7,6 +7,7 @@
 package mozilla.lockbox.presenter
 
 import androidx.annotation.IdRes
+import androidx.annotation.StringRes
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.Observables
@@ -49,6 +50,7 @@ interface ItemListView {
     val refreshItemList: Observable<Unit>
     val isRefreshing: Boolean
     fun stopRefreshing()
+    fun showToastNotification(@StringRes strId: Int)
 }
 
 @ExperimentalCoroutinesApi
@@ -68,7 +70,7 @@ class ItemListPresenter(
             .map {
                 when (it) {
                     DataStore.SyncState.Syncing -> true
-                    DataStore.SyncState.NotSyncing -> false
+                    DataStore.SyncState.NotSyncing, DataStore.SyncState.TimedOut -> false
                 }
             }
             .subscribe { syncing ->
@@ -79,6 +81,13 @@ class ItemListPresenter(
                     false -> view.loading(syncing)
                 }
             }
+            .addTo(compositeDisposable)
+
+        dataStore.syncState
+            .filter { it == DataStore.SyncState.TimedOut }
+            .map { R.string.sync_timed_out }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(view::showToastNotification)
             .addTo(compositeDisposable)
 
         Observables.combineLatest(dataStore.list, settingStore.itemListSortOrder)
