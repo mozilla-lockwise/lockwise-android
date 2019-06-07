@@ -53,6 +53,16 @@ class ItemDetailPresenter(
 
     private var credentials: ServerPassword? = null
 
+    override fun onPause() {
+        dispatcher.dispatch(ItemDetailAction.TogglePassword(false))
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        dispatcher.dispatch(ItemDetailAction.TogglePassword(false))
+        super.onDestroy()
+    }
+
     override fun onViewReady() {
         handleClicks(view.usernameCopyClicks) {
             if (!it.username.isNullOrBlank()) {
@@ -114,8 +124,8 @@ class ItemDetailPresenter(
 
     private fun handleClicks(clicks: Observable<Unit>, withServerPassword: (ServerPassword) -> Unit) {
         clicks.subscribe {
-                this.credentials?.let { password -> withServerPassword(password) }
-            }
+            this.credentials?.let { password -> withServerPassword(password) }
+        }
             .addTo(compositeDisposable)
     }
 }

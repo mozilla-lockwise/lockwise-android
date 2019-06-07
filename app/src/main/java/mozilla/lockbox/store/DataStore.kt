@@ -20,7 +20,6 @@ import mozilla.appservices.logins.SyncAuthInvalidException
 import mozilla.appservices.logins.SyncUnlockInfo
 import mozilla.components.service.sync.logins.AsyncLoginsStorage
 import mozilla.lockbox.action.DataStoreAction
-import mozilla.lockbox.action.ItemDetailAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.SentryAction
 import mozilla.lockbox.extensions.filterByType
@@ -120,13 +119,6 @@ open class DataStore(
     }
 
     private fun shutdown() {
-
-        log.error("BACKGROUND")
-
-        // ensure that the password field is not visible when backgrounded
-        dispatcher.dispatch(ItemDetailAction.TogglePassword(false))
-
-
         // rather than calling `close`, which will make the `AsyncLoginsStorage` instance unusable,
         // we use the `ensureLocked` method to close the database connection.
         val backend = this.backend ?: return notReady()

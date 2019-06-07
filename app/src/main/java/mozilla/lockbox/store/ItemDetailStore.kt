@@ -13,9 +13,7 @@ import io.reactivex.subjects.BehaviorSubject
 import mozilla.lockbox.action.ItemDetailAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.filterByType
-import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
-import mozilla.lockbox.log
 
 class ItemDetailStore(
     val dispatcher: Dispatcher = Dispatcher.shared
@@ -44,14 +42,9 @@ class ItemDetailStore(
             .filterByType(ItemDetailAction::class.java)
             .subscribe { action ->
                 when (action) {
-                    is ItemDetailAction.TogglePassword -> doNextThing(action.displayed)
+                    is ItemDetailAction.TogglePassword -> _passwordVisible.onNext(action.displayed)
                 }
             }
             .addTo(compositeDisposable)
-    }
-
-    private fun doNextThing(displayed: Boolean) {
-        log.error("STORE - SET PASSWORD VAR TO: $displayed")
-        _passwordVisible.onNext(displayed)
     }
 }

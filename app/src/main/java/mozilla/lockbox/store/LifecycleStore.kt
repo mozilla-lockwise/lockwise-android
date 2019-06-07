@@ -8,6 +8,7 @@ package mozilla.lockbox.store
 
 import io.reactivex.Observable
 import mozilla.lockbox.action.LifecycleAction
+import mozilla.lockbox.extensions.debug
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 
