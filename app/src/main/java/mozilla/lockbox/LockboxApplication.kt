@@ -80,6 +80,8 @@ open class LockboxApplication : Application() {
         LockboxMegazord.init(lazy { HttpURLConnectionClient() })
         RustLog.enable()
 
+        FxASyncDataStoreSupport.shared.injectContext(this)
+
         // This list of stores need to be constructed
         // in the given order. e.g. AccountStore dispatches DataStoreActions.
         val orderedStores = listOf(
@@ -98,7 +100,6 @@ open class LockboxApplication : Application() {
             FingerprintStore.shared,
             SettingStore.shared,
             SecurePreferences.shared,
-            FxASyncDataStoreSupport.shared,
             ClipboardStore.shared,
             NetworkStore.shared,
             TimingSupport.shared,
