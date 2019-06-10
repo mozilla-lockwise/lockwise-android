@@ -40,7 +40,8 @@ open class DataStore(
     val dispatcher: Dispatcher = Dispatcher.shared,
     var support: DataStoreSupport? = null,
     private val autoLockSupport: AutoLockSupport = AutoLockSupport.shared,
-    private val lifecycleStore: LifecycleStore = LifecycleStore.shared
+    private val lifecycleStore: LifecycleStore = LifecycleStore.shared,
+    private val itemDetailStore: ItemDetailStore = ItemDetailStore.shared
 ) {
     companion object {
         val shared by lazy { DataStore() }
