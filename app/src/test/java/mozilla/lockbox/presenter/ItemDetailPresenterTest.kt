@@ -11,7 +11,6 @@ import androidx.annotation.StringRes
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.R
@@ -19,7 +18,6 @@ import mozilla.lockbox.action.AppWebPageAction
 import mozilla.lockbox.action.ClipboardAction
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.ItemDetailAction
-import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.flux.Action
@@ -27,7 +25,6 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.ItemDetailStore
-import mozilla.lockbox.store.LifecycleStore
 import mozilla.lockbox.store.NetworkStore
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.asOptional
@@ -40,7 +37,6 @@ import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers
 import org.mockito.Mock
 import org.mockito.Mockito
-import org.mockito.Mockito.anyString
 import org.mockito.Mockito.clearInvocations
 import org.mockito.Mockito.spy
 import org.mockito.Mockito.verify
@@ -103,7 +99,7 @@ class ItemDetailPresenterTest {
     val networkStore = PowerMockito.mock(NetworkStore::class.java)!!
 
     private var isConnected: Observable<Boolean> = PublishSubject.create()
-    var isConnectedObserver = TestObserver.create<Boolean>()
+    var isConnectedObserver: TestObserver<Boolean> = TestObserver.create<Boolean>()
 
     @Mock
     private val connectivityManager = PowerMockito.mock(ConnectivityManager::class.java)
@@ -285,12 +281,6 @@ class ItemDetailPresenterTest {
         )
         Assert.assertFalse(view.isPasswordVisible)
     }
-
-    class FakeLifecycleStore : LifecycleStore() {
-        override val lifecycleEvents: Observable<LifecycleAction> = PublishSubject.create()
-    }
-
-    private val lifecycleStore = FakeLifecycleStore()
 
     @Test
     fun `password visibility when app is paused in background`() {

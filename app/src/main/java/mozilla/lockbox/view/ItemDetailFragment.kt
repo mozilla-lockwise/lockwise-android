@@ -8,6 +8,7 @@ package mozilla.lockbox.view
 
 import android.os.Bundle
 import android.text.InputType
+import androidx.annotation.StringRes
 import android.text.method.PasswordTransformationMethod
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -16,7 +17,6 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.StringRes
 import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
 import kotlinx.android.synthetic.main.fragment_item_detail.*

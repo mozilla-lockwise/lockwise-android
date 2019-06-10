@@ -117,8 +117,8 @@ class ItemDetailPresenter(
 
     private fun handleClicks(clicks: Observable<Unit>, withServerPassword: (ServerPassword) -> Unit) {
         clicks.subscribe {
-            this.credentials?.let { password -> withServerPassword(password) }
-        }
+                this.credentials?.let { password -> withServerPassword(password) }
+            }
             .addTo(compositeDisposable)
     }
 }
