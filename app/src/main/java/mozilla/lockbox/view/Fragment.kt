@@ -33,6 +33,11 @@ open class Fragment : AndroidFragment() {
         presenter.onResume()
     }
 
+    override fun onPause() {
+        super.onPause()
+        presenter.onPause()
+    }
+
     override fun onCreateAnimation(transit: Int, enter: Boolean, nextAnim: Int): Animation? {
         if (nextAnim == R.anim.slide_in_bottom) {
             val nextAnimation = AnimationUtils.loadAnimation(context, nextAnim)

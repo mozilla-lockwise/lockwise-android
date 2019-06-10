@@ -99,7 +99,7 @@ class ItemDetailPresenterTest {
     val networkStore = PowerMockito.mock(NetworkStore::class.java)!!
 
     private var isConnected: Observable<Boolean> = PublishSubject.create()
-    var isConnectedObserver = TestObserver.create<Boolean>()
+    var isConnectedObserver: TestObserver<Boolean> = TestObserver.create<Boolean>()
 
     @Mock
     private val connectivityManager = PowerMockito.mock(ConnectivityManager::class.java)
@@ -279,6 +279,24 @@ class ItemDetailPresenterTest {
         dispatcherObserver.assertValueSequence(
             listOf(ItemDetailAction.TogglePassword(false))
         )
+        Assert.assertFalse(view.isPasswordVisible)
+    }
+
+    @Test
+    fun `password visibility when app is paused in background`() {
+        setUpTestSubject(fakeCredential.asOptional())
+        // set password as visible
+        view.togglePasswordClicks.onNext(Unit)
+
+        dispatcherObserver.assertValueSequence(
+            listOf(ItemDetailAction.TogglePassword(true))
+        )
+
+        Assert.assertTrue(view.isPasswordVisible)
+
+        // pause background the app
+        subject.onPause()
+
         Assert.assertFalse(view.isPasswordVisible)
     }
 

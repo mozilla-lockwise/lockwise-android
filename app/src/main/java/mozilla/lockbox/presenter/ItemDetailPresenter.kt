@@ -52,6 +52,11 @@ class ItemDetailPresenter(
 
     private var credentials: ServerPassword? = null
 
+    override fun onPause() {
+        super.onPause()
+        dispatcher.dispatch(ItemDetailAction.TogglePassword(false))
+    }
+
     override fun onViewReady() {
         handleClicks(view.usernameCopyClicks) {
             if (!it.username.isNullOrBlank()) {
