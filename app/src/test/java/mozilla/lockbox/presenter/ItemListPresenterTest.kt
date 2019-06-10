@@ -350,7 +350,7 @@ open class ItemListPresenterTest {
 
     @Test
     fun `sync timeout indicator`() {
-        dataStore.syncStateStub.onNext(DataStore.SyncState.TimedOut)
+        syncStateStub.onNext(DataStore.SyncState.TimedOut)
         Assert.assertEquals(false, view.isLoading)
         Assert.assertEquals(R.string.sync_timed_out, view.toastNotificationArg)
     }
