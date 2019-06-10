@@ -53,13 +53,8 @@ class ItemDetailPresenter(
     private var credentials: ServerPassword? = null
 
     override fun onPause() {
-        dispatcher.dispatch(ItemDetailAction.TogglePassword(false))
         super.onPause()
-    }
-
-    override fun onDestroy() {
         dispatcher.dispatch(ItemDetailAction.TogglePassword(false))
-        super.onDestroy()
     }
 
     override fun onViewReady() {
