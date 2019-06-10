@@ -6,6 +6,9 @@
 
 package mozilla.lockbox.store
 
+import android.content.Context
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.OnBackPressedDispatcher
 import com.jakewharton.rxrelay2.BehaviorRelay
 import com.jakewharton.rxrelay2.Relay
 import io.reactivex.Observable
@@ -37,6 +40,7 @@ open class RouteStore(
     private val onboarding: Observable<Boolean> = BehaviorRelay.createDefault(false)
     private val _routes = StackReplaySubject.create<RouteAction>()
     open val routes: Observable<RouteAction> = _routes
+    private val backPressedDispatcher = OnBackPressedDispatcher()
 
     init {
         dispatcher.register
