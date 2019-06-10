@@ -69,16 +69,6 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
             updatePasswordVisibility(value)
         }
 
-    override fun onPause() {
-        super.onPause()
-        presenter.onPause()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        presenter.onDestroy()
-    }
-
     private fun updatePasswordVisibility(visible: Boolean) {
         if (visible) {
             inputPassword.transformationMethod = null

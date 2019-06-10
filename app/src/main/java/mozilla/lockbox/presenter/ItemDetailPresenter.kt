@@ -18,7 +18,6 @@ import mozilla.lockbox.action.ClipboardAction
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.ItemDetailAction
 import mozilla.lockbox.action.RouteAction
-import mozilla.lockbox.extensions.debug
 import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.extensions.toDetailViewModel
 import mozilla.lockbox.flux.Dispatcher
@@ -113,7 +112,6 @@ class ItemDetailPresenter(
             .addTo(compositeDisposable)
 
         itemDetailStore.isPasswordVisible
-            .debug("SUBSCRIBE TO STORE")
             .subscribe { view.isPasswordVisible = it }
             .addTo(compositeDisposable)
 
