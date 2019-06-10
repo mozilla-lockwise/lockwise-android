@@ -20,7 +20,6 @@ import io.reactivex.subjects.Subject
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.asMaybe
 import kotlinx.coroutines.rx2.asSingle
 import mozilla.appservices.fxaclient.FxaException
@@ -243,8 +242,14 @@ open class AccountStore(
     }
 
     private fun removeDeviceFromFxA() {
-        runBlocking {
-            fxa?.deviceConstellation()?.destroyCurrentDeviceAsync()?.await()
+        if (fxa != null) {
+            fxa!!.deviceConstellation()
+                .destroyCurrentDeviceAsync()
+                .asSingle(coroutineContext)
+                .subscribe()
+                .addTo(compositeDisposable)
+        } else {
+            log.info("FxA is null. No devices to disconnect.")
         }
     }
 

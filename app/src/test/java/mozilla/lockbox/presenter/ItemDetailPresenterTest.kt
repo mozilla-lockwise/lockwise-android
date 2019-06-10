@@ -37,7 +37,6 @@ import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers
 import org.mockito.Mock
 import org.mockito.Mockito
-import org.mockito.Mockito.anyString
 import org.mockito.Mockito.clearInvocations
 import org.mockito.Mockito.spy
 import org.mockito.Mockito.verify
@@ -231,7 +230,7 @@ class ItemDetailPresenterTest {
             )
         )
 
-        Assert.assertEquals(R.string.toast_username_copied, view.toastNotificationArgument)
+        assertEquals(R.string.toast_username_copied, view.toastNotificationArgument)
     }
 
     @Test
@@ -244,7 +243,7 @@ class ItemDetailPresenterTest {
             emptyList()
         )
 
-        Assert.assertEquals(null, view.toastNotificationArgument)
+        assertEquals(null, view.toastNotificationArgument)
     }
 
     @Test
@@ -260,7 +259,7 @@ class ItemDetailPresenterTest {
             )
         )
 
-        Assert.assertEquals(R.string.toast_password_copied, view.toastNotificationArgument)
+        assertEquals(R.string.toast_password_copied, view.toastNotificationArgument)
     }
 
     @Test
