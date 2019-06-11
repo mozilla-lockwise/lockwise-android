@@ -197,7 +197,7 @@ class DataStoreTest : DisposingTest() {
 
         dispatcher.dispatch(DataStoreAction.Sync)
         Assert.assertEquals(DataStore.SyncState.Syncing, syncIterator.next())
-        Assert.assertEquals(DataStore.SyncState.NotSyncing, syncIterator.next())
+        Assert.assertEquals(DataStore.SyncState.TimedOut, syncIterator.next())
     }
 
     @Test
