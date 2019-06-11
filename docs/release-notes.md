@@ -1,5 +1,22 @@
 # Release Notes
 
+## 1.1.2 (Build 4259)
+
+_Date: 2019-06-11_
+
+We fixed more bugs to help stabilize sign in and sync for some users. We also hardened the security of the app even more.
+
+Changes since version 1.1.1:
+
+- additional changes to translated strings (#730)
+- made sure the search icon is visible for all languages (#737)
+- added error handling and reporting improvements for troubleshooting (#722)
+- changed to use dataprotect for fingerprint interactions (#741) 
+- explicitly set theme in item list to not show the wrong background on some screens (#743) 
+- updated android-components and application-services dependencies (#751)
+- hide the password when browsing away from entry (#685)
+- add a timeout for when sync does not complete (#747)
+
 ## 1.1.1 (Build 4053)
 
 _Date: 2019-05-30_
