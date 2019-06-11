@@ -15,7 +15,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.Navigation
-import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.disposables.Disposable
@@ -97,11 +96,9 @@ class RoutePresenterTest {
     @Mock
     val keyguardManager = Mockito.mock(KeyguardManager::class.java)
 
-    class FakeRouteStore : RouteStore() {
-        val routeStub = PublishSubject.create<RouteAction>()
-        override val routes: Observable<RouteAction>
-            get() = routeStub
-    }
+    val routeStub = PublishSubject.create<RouteAction>()
+    @Mock
+    val routeStore = PowerMockito.mock(RouteStore::class.java)
 
     private val immediate = object : Scheduler() {
         override fun scheduleDirect(
@@ -120,7 +117,6 @@ class RoutePresenterTest {
 
     private val dispatcher = Dispatcher()
     private val dispatcherObserver = TestObserver.create<Action>()
-    private val routeStore = FakeRouteStore()
     val callingIntent = Intent()
     val credentialIntent = Intent()
 
@@ -160,6 +156,7 @@ class RoutePresenterTest {
         whenCalled(activity.applicationContext).thenReturn(context)
         whenCalled(navDestination.id).thenReturn(R.id.fragment_null)
         whenCalled(navController.currentDestination).thenReturn(navDestination)
+        whenCalled(routeStore.routes).thenReturn(routeStub)
 
         PowerMockito.mockStatic(Navigation::class.java)
         PowerMockito.mockStatic(AlertDialogHelper::class.java)
@@ -167,6 +164,8 @@ class RoutePresenterTest {
             .thenReturn(intent)
         PowerMockito.whenNew(AlertDialogHelper::class.java).withNoArguments()
             .thenReturn(dialogHelper)
+        PowerMockito.whenNew(RouteStore::class.java).withNoArguments()
+            .thenReturn(routeStore)
 
         whenCalled(activity.getString(anyInt())).thenReturn("hello")
 

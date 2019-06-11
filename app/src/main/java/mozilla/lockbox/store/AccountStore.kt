@@ -31,6 +31,7 @@ import mozilla.components.service.fxa.FirefoxAccount
 import mozilla.lockbox.action.AccountAction
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
+import mozilla.lockbox.action.SentryAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.log
@@ -114,10 +115,11 @@ open class AccountStore(
             .addTo(compositeDisposable)
 
         // Moves credentials from the AccountStore, into the DataStore.
-        syncCredentials.map {
-            it.value?.let { credentials -> DataStoreAction.UpdateCredentials(credentials) }
-                ?: DataStoreAction.Reset
-        }
+        syncCredentials
+            .map {
+                it.value?.let { credentials -> DataStoreAction.UpdateCredentials(credentials) }
+                    ?: DataStoreAction.Reset
+            }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
     }
@@ -162,14 +164,14 @@ open class AccountStore(
         val fxa = fxa ?: return
         securePreferences.putString(Constant.Key.firefoxAccount, fxa.toJSONString())
 
-        fxa.getProfile()
-            .asSingle(coroutineContext)
+        fxa.getProfileAsync()
+            .asMaybe(coroutineContext)
             .delay(1L, TimeUnit.SECONDS)
             .map { it.asOptional() }
             .subscribe(profileSubject::onNext, this::pushError)
             .addTo(compositeDisposable)
 
-        fxa.getAccessToken(Constant.FxA.oldSyncScope)
+        fxa.getAccessTokenAsync(Constant.FxA.oldSyncScope)
             .asMaybe(coroutineContext)
             .delay(1L, TimeUnit.SECONDS)
             .map {
@@ -200,8 +202,8 @@ open class AccountStore(
     private fun generateLoginURL() {
         val fxa = fxa ?: return
 
-        fxa.beginOAuthFlow(Constant.FxA.scopes, true)
-            .asSingle(coroutineContext)
+        fxa.beginOAuthFlowAsync(Constant.FxA.scopes, true)
+            .asMaybe(coroutineContext)
             .subscribe((this.loginURL as Subject)::onNext, this::pushError)
             .addTo(compositeDisposable)
     }
@@ -215,7 +217,7 @@ open class AccountStore(
 
         codeQP?.let { code ->
             stateQP?.let { state ->
-                fxa.completeOAuthFlow(code, state)
+                fxa.completeOAuthFlowAsync(code, state)
                     .asSingle(coroutineContext)
                     .map { true }
                     .subscribe(this::populateAccountInformation, this::pushError)
@@ -279,5 +281,7 @@ open class AccountStore(
             is FxaException.Network -> log.error("FxA network error. Message: " + it.message, it)
             is FxaException.Panic -> log.error("FxA error. Message: " + it.message, it)
         }
+
+        dispatcher.dispatch(SentryAction(it))
     }
 }

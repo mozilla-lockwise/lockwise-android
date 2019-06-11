@@ -37,7 +37,6 @@ import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.powermock.api.mockito.PowerMockito
-import org.powermock.core.classloader.annotations.PrepareForTest
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.robolectric.util.ReflectionHelpers
@@ -45,7 +44,6 @@ import org.mockito.Mockito.`when` as whenCalled
 
 @ExperimentalCoroutinesApi
 @RunWith(RobolectricTestRunner::class)
-@PrepareForTest(AccountStore::class)
 @Config(application = TestApplication::class)
 class FxALoginPresenterTest : DisposingTest() {
     class FakeFxALoginView(
@@ -78,25 +76,7 @@ class FxALoginPresenterTest : DisposingTest() {
         }
     }
 
-    class FakeFingerprintStore : FingerprintStore() {
-        var fingerprintAvailableStub = false
-        override val isFingerprintAuthAvailable: Boolean
-            get() = fingerprintAvailableStub
-    }
-
-    class FakeSettingStore : SettingStore() {
-        private val isAutofillAvailableStub: Boolean = true
-        private val hasEnabledAutofillServicesStub: Boolean = true
-
-        override val autofillAvailable: Boolean
-            get() = isAutofillAvailableStub
-
-        override val isCurrentAutofillProvider: Boolean
-            get() = hasEnabledAutofillServicesStub
-    }
-
     val view = FakeFxALoginView(disposer)
-    val fingerprintStore = FakeFingerprintStore()
 
     val dispatcher = Dispatcher()
     private var isConnected: Observable<Boolean> = PublishSubject.create()
@@ -104,13 +84,17 @@ class FxALoginPresenterTest : DisposingTest() {
     private val dispatcherObserver = TestObserver.create<Action>()
     private val loginURLSubject = PublishSubject.create<String>()
 
-    val settingStore = FakeSettingStore()
+    @Mock
+    val settingStore = PowerMockito.mock(SettingStore::class.java)!!
 
     @Mock
     val autofillManager: AutofillManager = Mockito.mock(AutofillManager::class.java)
 
     @Mock
     val accountStore = PowerMockito.mock(AccountStore::class.java)!!
+
+    @Mock
+    val fingerprintStore = PowerMockito.mock(FingerprintStore::class.java)!!
 
     @Mock
     val networkStore = PowerMockito.mock(NetworkStore::class.java)!!
@@ -130,11 +114,11 @@ class FxALoginPresenterTest : DisposingTest() {
         whenCalled(networkStore.isConnected).thenReturn(isConnected)
         whenCalled(accountStore.loginURL).thenReturn(loginURLSubject)
 
-        whenCalled(autofillManager.isAutofillSupported).thenReturn(settingStore.autofillAvailable)
-        whenCalled(autofillManager.hasEnabledAutofillServices()).thenReturn(settingStore.isCurrentAutofillProvider)
         whenCalled(context.getSystemService(AutofillManager::class.java)).thenReturn(autofillManager)
 
         PowerMockito.whenNew(AccountStore::class.java).withAnyArguments().thenReturn(accountStore)
+        PowerMockito.whenNew(FingerprintStore::class.java).withAnyArguments().thenReturn(fingerprintStore)
+        PowerMockito.whenNew(SettingStore::class.java).withAnyArguments().thenReturn(settingStore)
 
         dispatcher.register.subscribe(dispatcherObserver)
 
@@ -165,7 +149,8 @@ class FxALoginPresenterTest : DisposingTest() {
 
     @Test
     fun `onViewReady, when the webview redirects to a URL starting with the expected redirect and the device has fingerprints`() {
-        fingerprintStore.fingerprintAvailableStub = true
+        whenCalled(fingerprintStore.isDeviceSecure).thenReturn(true)
+        whenCalled(fingerprintStore.isFingerprintAuthAvailable).thenReturn(true)
         val url = Uri.parse(Constant.FxA.redirectUri + "?moz_fake")
         view.webViewRedirectTo.onNext(url)
 
@@ -179,7 +164,7 @@ class FxALoginPresenterTest : DisposingTest() {
     fun `onViewReady, when the webview redirects to onboarding confirmation when autofill is not supported and the device has no fingerprints`() {
         ReflectionHelpers.setStaticField(Build.VERSION::class.java, "SDK_INT", 15)
 
-        fingerprintStore.fingerprintAvailableStub = false
+        whenCalled(fingerprintStore.isDeviceSecure).thenReturn(false)
         val url = Uri.parse(Constant.FxA.redirectUri + "?moz_fake")
         view.webViewRedirectTo.onNext(url)
 
@@ -191,8 +176,8 @@ class FxALoginPresenterTest : DisposingTest() {
 
     @Test
     fun `onViewReady, when the webview redirects to autofill onboarding screen when the device has no fingerprints and build number is supported for autofill`() {
-
-        fingerprintStore.fingerprintAvailableStub = false
+        whenCalled(fingerprintStore.isDeviceSecure).thenReturn(false)
+        whenCalled(settingStore.autofillAvailable).thenReturn(true)
         val url = Uri.parse(Constant.FxA.redirectUri + "?moz_fake")
         view.webViewRedirectTo.onNext(url)
 

@@ -21,13 +21,13 @@ import org.robolectric.RobolectricTestRunner
 class FillResponseBuilderTest {
 
     @Mock
-    val usernameId = mock(AutofillId::class.java)
+    val usernameId: AutofillId = mock(AutofillId::class.java)
 
     @Mock
-    val passwordId = mock(AutofillId::class.java)
+    val passwordId: AutofillId = mock(AutofillId::class.java)
 
     val context: Context = ApplicationProvider.getApplicationContext()
-    val parsedStructure = ParsedStructure(usernameId = usernameId, passwordId = passwordId, packageName = "mozilla.lockbox")
+    private val parsedStructure = ParsedStructure(usernameId, passwordId, packageName = "mozilla.lockbox")
     val subject = FillResponseBuilder(parsedStructure)
 
     @Test

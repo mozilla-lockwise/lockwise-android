@@ -1,4 +1,4 @@
-package mozilla.lockbox
+package mozilla.lockbox.uiTests
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
@@ -42,11 +42,11 @@ class AutofillTests {
     @Test
     fun testRealFixtures() {
         val fixtures = listOf(
-            Fixture("app_twitter", null, "com.twitter.android"),
-            Fixture("html_twitter", "mobile.twitter.com", ""),
-            Fixture("html_facebook", "m.facebook.com", ""),
-            Fixture("html_gmail_1", "accounts.google.com", ""),
-            Fixture("html_gmail_2", "accounts.google.com", "")
+                Fixture("app_twitter", null, "com.twitter.android"),
+                Fixture("html_twitter", "mobile.twitter.com", ""),
+                Fixture("html_facebook", "m.facebook.com", ""),
+                Fixture("html_gmail_1", "accounts.google.com", ""),
+                Fixture("html_gmail_2", "accounts.google.com", "")
         )
 
         fixtures.forEach { fixture ->

@@ -6,10 +6,10 @@
 
 package mozilla.lockbox.store
 
-import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import mozilla.appservices.logins.LoginsStorageException
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.OnboardingStatusAction
 import mozilla.lockbox.action.RouteAction
@@ -19,26 +19,27 @@ import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import org.junit.Before
 import org.junit.Test
+import org.mockito.Mock
+import org.powermock.api.mockito.PowerMockito
+import org.powermock.api.mockito.PowerMockito.`when` as whenCalled
 
 @ExperimentalCoroutinesApi
 class RouteStoreTest {
-
-    class FakeDataStore : DataStore() {
-        val stateStub = PublishSubject.create<DataStore.State>()
-
-        override val state: Observable<State>
-            get() = stateStub
-    }
+    @Mock
+    val dataStore = PowerMockito.mock(DataStore::class.java)!!
+    private val stateStub = PublishSubject.create<DataStore.State>()
 
     val dispatcher = Dispatcher()
     private val dispatcherObserver = TestObserver.create<Action>()
     private val routeObserver = TestObserver.create<RouteAction>()
-    private val dataStore = FakeDataStore()
 
     lateinit var subject: RouteStore
 
     @Before
     fun setUp() {
+        whenCalled(dataStore.state).thenReturn(stateStub)
+        PowerMockito.whenNew(DataStore::class.java).withAnyArguments().thenReturn(dataStore)
+
         subject = RouteStore(dispatcher, dataStore)
 
         subject.routes.subscribe(routeObserver)
@@ -81,16 +82,16 @@ class RouteStoreTest {
     fun `dispatched on datastore`() {
         dispatcher.dispatch(OnboardingStatusAction(false))
 
-        dataStore.stateStub.onNext(DataStore.State.Errored(Exception("Fake exception for testing purpose")))
+        stateStub.onNext(DataStore.State.Errored(LoginsStorageException("Fake exception for testing purpose")))
         routeObserver.assertEmpty()
 
-        dataStore.stateStub.onNext(DataStore.State.Unprepared)
+        stateStub.onNext(DataStore.State.Unprepared)
         routeObserver.assertLastValue(RouteAction.Welcome)
 
-        dataStore.stateStub.onNext(DataStore.State.Unlocked)
+        stateStub.onNext(DataStore.State.Unlocked)
         routeObserver.assertLastValue(RouteAction.ItemList)
 
-        dataStore.stateStub.onNext(DataStore.State.Locked)
+        stateStub.onNext(DataStore.State.Locked)
         routeObserver.assertLastValue(RouteAction.LockScreen)
     }
 }

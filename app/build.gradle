@@ -21,8 +21,8 @@ android {
         minSdkVersion 24
         //noinspection OldTargetApi
         targetSdkVersion 26
-        versionCode 3998
-        versionName "1.1.1"
+        versionCode 4103
+        versionName "1.1.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         // The following argument makes the Android Test Orchestrator run its
         // "pm clear" command after each test invocation. This command ensures
@@ -156,6 +156,7 @@ dependencies {
     }
     androidTestImplementation 'br.com.concretesolutions:kappuccino:1.2.1'
     ktlint "com.github.shyiko:ktlint:0.28.0"
+    androidTestImplementation "tools.fastlane:screengrab:1.2.0"
 }
 
 sentry {

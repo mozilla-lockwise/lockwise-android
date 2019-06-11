@@ -7,11 +7,15 @@
 package mozilla.lockbox.view
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.Spinner
+import android.widget.TextView
+import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -45,6 +49,7 @@ import mozilla.lockbox.model.AccountViewModel
 import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.presenter.ItemListPresenter
 import mozilla.lockbox.presenter.ItemListView
+import mozilla.lockbox.support.assertOnUiThread
 import mozilla.lockbox.support.showAndRemove
 
 @ExperimentalCoroutinesApi
@@ -127,6 +132,7 @@ class ItemListFragment : Fragment(), ItemListView {
         toolbar.navigationIcon = resources.getDrawable(R.drawable.ic_menu, null)
         toolbar.setNavigationContentDescription(R.string.menu_description)
         toolbar.elevation = resources.getDimension(R.dimen.toolbar_elevation)
+        toolbar.contentInsetStartWithNavigation = 0
         toolbar.navigationClicks().subscribe { drawerLayout.openDrawer(GravityCompat.START) }
             .addTo(compositeDisposable)
     }
@@ -221,6 +227,17 @@ class ItemListFragment : Fragment(), ItemListView {
         } else {
             errorHelper.hideNetworkError(parent = view!!, child = view!!.refreshContainer.entriesView)
         }
+    }
+
+    override fun showToastNotification(@StringRes strId: Int) {
+        assertOnUiThread()
+        val toast = Toast(activity)
+        toast.duration = Toast.LENGTH_SHORT
+        toast.view = layoutInflater.inflate(R.layout.toast_view, this.view as ViewGroup, false)
+        toast.setGravity(Gravity.FILL_HORIZONTAL or Gravity.BOTTOM, 0, 0)
+        val v = toast.view.findViewById(R.id.message) as TextView
+        v.text = resources.getString(strId)
+        toast.show()
     }
 
 //    override val retryNetworkConnectionClicks: Observable<Unit>

@@ -44,7 +44,6 @@ import org.mockito.Mockito
 import org.mockito.Mockito.spy
 import org.mockito.Mockito.verify
 import org.powermock.api.mockito.PowerMockito
-import org.powermock.core.classloader.annotations.PrepareForTest
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.mockito.Mockito.`when` as whenCalled
@@ -83,7 +82,6 @@ private val item3 = ServerPassword(
 
 @ExperimentalCoroutinesApi
 @RunWith(RobolectricTestRunner::class)
-@PrepareForTest(AccountStore::class)
 @Config(application = TestApplication::class)
 open class ItemListPresenterTest {
     class FakeView : ItemListView {
@@ -101,6 +99,7 @@ open class ItemListPresenterTest {
         var updateItemsArgument: List<ItemViewModel>? = null
         var itemListSort: Setting.ItemListSort? = null
         var isLoading: Boolean? = null
+        var toastNotificationArg: Int? = null
         val menuItemSelectionStub = PublishSubject.create<Int>()
         val itemSelectedStub = PublishSubject.create<ItemViewModel>()
         val filterClickStub = PublishSubject.create<Unit>()
@@ -155,32 +154,30 @@ open class ItemListPresenterTest {
 
         override fun stopRefreshing() {
         }
+
+        override fun showToastNotification(strId: Int) {
+            toastNotificationArg = strId
+        }
     }
 
-    class FakeDataStore : DataStore() {
-
-        val listStub = PublishSubject.create<List<ServerPassword>>()
-        val syncStateStub = PublishSubject.create<SyncState>()
-        override val list: Observable<List<ServerPassword>>
-            get() = listStub
-
-        override val syncState: Observable<SyncState> get() = syncStateStub
-    }
-
-    class FakeSettingStore : SettingStore() {
-
-        val itemListSortStub = BehaviorSubject.createDefault(Setting.ItemListSort.ALPHABETICALLY)
-        override var itemListSortOrder: Observable<Setting.ItemListSort> = itemListSortStub
-    }
+    val listStub = PublishSubject.create<List<ServerPassword>>()
+    val syncStateStub = PublishSubject.create<DataStore.SyncState>()
+    val itemListSortStub = BehaviorSubject.createDefault(Setting.ItemListSort.ALPHABETICALLY)
 
     @Mock
-    val fingerprintStore = PowerMockito.mock(FingerprintStore::class.java)
+    val settingStore = PowerMockito.mock(SettingStore::class.java)!!
 
     @Mock
-    val accountStore = PowerMockito.mock(AccountStore::class.java)
+    val fingerprintStore = PowerMockito.mock(FingerprintStore::class.java)!!
+
+    @Mock
+    val accountStore = PowerMockito.mock(AccountStore::class.java)!!
 
     @Mock
     val networkStore = PowerMockito.mock(NetworkStore::class.java)!!
+
+    @Mock
+    val dataStore = PowerMockito.mock(DataStore::class.java)!!
 
     private var isConnected: Observable<Boolean> = PublishSubject.create()
     var isConnectedObserver = TestObserver.create<Boolean>()
@@ -188,8 +185,6 @@ open class ItemListPresenterTest {
     @Mock
     private val connectivityManager = PowerMockito.mock(ConnectivityManager::class.java)
 
-    private val dataStore = FakeDataStore()
-    private val settingStore = FakeSettingStore()
     private val profileStub = PublishSubject.create<Optional<Profile>>()
 
     val view: ItemListPresenterTest.FakeView = spy(ItemListPresenterTest.FakeView())
@@ -200,8 +195,26 @@ open class ItemListPresenterTest {
     @Mock
     val context: Context = Mockito.mock(Context::class.java)
 
-    val subject =
-        ItemListPresenter(
+    lateinit var subject: ItemListPresenter
+
+    @Before
+    fun setUp() {
+        whenCalled(networkStore.isConnected).thenReturn(isConnected)
+
+        PowerMockito.`when`(accountStore.profile).thenReturn(profileStub)
+        PowerMockito.`when`(settingStore.itemListSortOrder).thenReturn(itemListSortStub)
+        PowerMockito.`when`(dataStore.list).thenReturn(listStub)
+        PowerMockito.`when`(dataStore.syncState).thenReturn(syncStateStub)
+
+        PowerMockito.whenNew(AccountStore::class.java).withAnyArguments().thenReturn(accountStore)
+        PowerMockito.whenNew(SettingStore::class.java).withAnyArguments().thenReturn(settingStore)
+        PowerMockito.whenNew(DataStore::class.java).withAnyArguments().thenReturn(dataStore)
+        dispatcher.register.subscribe(dispatcherObserver)
+
+        networkStore.connectivityManager = connectivityManager
+        view.networkAvailable.subscribe(isConnectedObserver)
+
+        subject = ItemListPresenter(
             view,
             dispatcher,
             dataStore,
@@ -210,17 +223,6 @@ open class ItemListPresenterTest {
             networkStore,
             accountStore
         )
-
-    @Before
-    fun setUp() {
-        whenCalled(networkStore.isConnected).thenReturn(isConnected)
-
-        PowerMockito.`when`(accountStore.profile).thenReturn(profileStub)
-        PowerMockito.whenNew(AccountStore::class.java).withAnyArguments().thenReturn(accountStore)
-        dispatcher.register.subscribe(dispatcherObserver)
-
-        networkStore.connectivityManager = connectivityManager
-        view.networkAvailable.subscribe(isConnectedObserver)
 
         subject.onViewReady()
     }
@@ -251,7 +253,7 @@ open class ItemListPresenterTest {
         val list = listOf(item1, item2, item3)
         val expectedList = listOf(item2, item3, item1).map { it.toViewModel() }
 
-        dataStore.listStub.onNext(list)
+        listStub.onNext(list)
 
         Assert.assertEquals(expectedList, view.updateItemsArgument)
         Assert.assertEquals(Setting.ItemListSort.ALPHABETICALLY, view.itemListSort)
@@ -260,7 +262,7 @@ open class ItemListPresenterTest {
     @Test
     fun `updates sort order of list when item sort order menu changes`() {
         val list = listOf(item1, item2, item3)
-        dataStore.listStub.onNext(list)
+        listStub.onNext(list)
         val alphabetically = listOf(item2, item3, item1).map { it.toViewModel() }
         val lastUsed = listOf(item3, item2, item1).map { it.toViewModel() }
 
@@ -273,7 +275,7 @@ open class ItemListPresenterTest {
         view.sortItemSelectionStub.onNext(sortOrder)
         dispatcherObserver.assertLastValue(SettingAction.ItemListSortOrder(sortOrder))
 
-        settingStore.itemListSortStub.onNext(sortOrder)
+        itemListSortStub.onNext(sortOrder)
         Assert.assertEquals(sortOrder, view.itemListSort)
         Assert.assertEquals(lastUsed, view.updateItemsArgument)
 
@@ -282,14 +284,14 @@ open class ItemListPresenterTest {
         view.sortItemSelectionStub.onNext(sortOrder)
         dispatcherObserver.assertLastValue(SettingAction.ItemListSortOrder(sortOrder))
 
-        settingStore.itemListSortStub.onNext(sortOrder)
+        itemListSortStub.onNext(sortOrder)
         Assert.assertEquals(sortOrder, view.itemListSort)
         Assert.assertEquals(alphabetically, view.updateItemsArgument)
     }
 
     @Test
     fun receivingPasswordList_empty() {
-        dataStore.listStub.onNext(emptyList())
+        listStub.onNext(emptyList())
         Assert.assertEquals(emptyList<ItemViewModel>(), view.updateItemsArgument)
     }
 
@@ -336,20 +338,27 @@ open class ItemListPresenterTest {
 
     @Test
     fun `show sync loading indicator`() {
-        dataStore.syncStateStub.onNext(DataStore.SyncState.Syncing)
+        syncStateStub.onNext(DataStore.SyncState.Syncing)
         Assert.assertEquals(true, view.isLoading)
     }
 
     @Test
     fun `remove sync loading indicator`() {
-        dataStore.syncStateStub.onNext(DataStore.SyncState.NotSyncing)
+        syncStateStub.onNext(DataStore.SyncState.NotSyncing)
         Assert.assertEquals(false, view.isLoading)
+    }
+
+    @Test
+    fun `sync timeout indicator`() {
+        syncStateStub.onNext(DataStore.SyncState.TimedOut)
+        Assert.assertEquals(false, view.isLoading)
+        Assert.assertEquals(R.string.sync_timed_out, view.toastNotificationArg)
     }
 
     @Test
     fun `stop refreshing when stop syncing after pull to refresh`() {
         whenCalled(view.isRefreshing).thenReturn(true)
-        dataStore.syncStateStub.onNext(DataStore.SyncState.NotSyncing)
+        syncStateStub.onNext(DataStore.SyncState.NotSyncing)
         verify(view).stopRefreshing()
     }
 

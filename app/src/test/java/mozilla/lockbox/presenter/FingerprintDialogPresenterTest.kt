@@ -13,14 +13,14 @@ import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.FingerprintStore.AuthenticationState
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.mockito.Mockito.`when` as whenCalled
 import org.mockito.Mockito.spy
 import org.mockito.Mockito.verify
-import org.robolectric.RobolectricTestRunner
+import org.powermock.api.mockito.PowerMockito
 import org.robolectric.annotation.Config
 
 @ExperimentalCoroutinesApi
-@RunWith(RobolectricTestRunner::class)
 @Config(application = TestApplication::class)
 class FingerprintDialogPresenterTest {
 
@@ -41,39 +41,40 @@ class FingerprintDialogPresenterTest {
         override val onDismiss = PublishSubject.create<Unit>()
     }
 
-    open class FakeFingerprintStore : FingerprintStore() {
-        val authStateStub = PublishSubject.create<AuthenticationState>()
-        override val authState: Observable<AuthenticationState>
-            get() = authStateStub
-    }
+    val authStateStub = PublishSubject.create<AuthenticationState>()
+    @Mock
+    val fingerprintStore = PowerMockito.mock(FingerprintStore::class.java)
 
     val dispatcher = Dispatcher()
     private val view = spy(FakeView())
-    private val fingerprintStore = spy(FakeFingerprintStore())
     private val dispatcherObserver = TestObserver.create<Action>()
-    val subject = FingerprintDialogPresenter(view, dispatcher, fingerprintStore)
+    lateinit var subject: FingerprintDialogPresenter
 
     @Before
     fun setUp() {
+        PowerMockito.whenNew(FingerprintStore::class.java).withAnyArguments().thenReturn(fingerprintStore)
+        whenCalled(fingerprintStore.authState).thenReturn(authStateStub)
+
         dispatcher.register.subscribe(dispatcherObserver)
+        subject = FingerprintDialogPresenter(view, dispatcher, fingerprintStore)
         subject.onViewReady()
     }
 
     @Test
     fun `update on succeeded state`() {
-        fingerprintStore.authStateStub.onNext(AuthenticationState.Succeeded)
+        authStateStub.onNext(AuthenticationState.Succeeded)
         verify(view).onSucceeded()
     }
 
     @Test
     fun `update on failed state`() {
-        fingerprintStore.authStateStub.onNext(AuthenticationState.Failed("error"))
+        authStateStub.onNext(AuthenticationState.Failed("error"))
         verify(view).onFailed("error")
     }
 
     @Test
     fun `update on error state`() {
-        fingerprintStore.authStateStub.onNext(AuthenticationState.Error("error"))
+        authStateStub.onNext(AuthenticationState.Error("error"))
         verify(view).onError("error")
     }
 

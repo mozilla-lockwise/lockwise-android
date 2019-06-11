@@ -24,7 +24,10 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.powermock.api.mockito.PowerMockito
 import org.robolectric.RobolectricTestRunner
+import org.powermock.api.mockito.PowerMockito.`when` as whenCalled
 
 @ExperimentalCoroutinesApi
 @RunWith(RobolectricTestRunner::class)
@@ -72,15 +75,13 @@ class FilterPresenterTest {
         }
     }
 
-    class FakeDataStore : DataStore() {
-        val listStub = PublishSubject.create<List<ServerPassword>>()
-        override val list = listStub
-    }
+    private val listStub = PublishSubject.create<List<ServerPassword>>()
+    @Mock
+    val dataStore = PowerMockito.mock(DataStore::class.java)!!
 
     val view = FakeFilterView()
     val dispatcher = Dispatcher()
-    val dataStore = FakeDataStore()
-    val subject = FakeFilterPresenter(view, dispatcher, dataStore)
+    lateinit var subject: FakeFilterPresenter
 
     val dispatcherObserver: TestObserver<Action> = TestObserver.create<Action>()
 
@@ -96,18 +97,22 @@ class FilterPresenterTest {
             username = "dogs@dogs.com",
             password = "meow"
     )
-    val items = listOf(serverPassword1, serverPassword2)
+
+    private val items = listOf(serverPassword1, serverPassword2)
 
     @Before
     fun setUp() {
         dispatcher.register.subscribe(dispatcherObserver)
+        whenCalled(dataStore.list).thenReturn(listStub)
+        PowerMockito.whenNew(DataStore::class.java).withAnyArguments().thenReturn(dataStore)
 
+        subject = FakeFilterPresenter(view, dispatcher, dataStore)
         subject.onViewReady()
-        dataStore.listStub.onNext(items)
+        listStub.onNext(items)
     }
 
     @Test
-    fun filterText_empty() {
+    fun `filter text is empty`() {
         view.filterTextEnteredStub.onNext("")
 
         Assert.assertEquals(view.updateItemsArgument, items.map { it.toViewModel() })
@@ -115,7 +120,7 @@ class FilterPresenterTest {
     }
 
     @Test
-    fun filterText_populated_matchesUsername() {
+    fun `filter text with matching username`() {
         view.filterTextEnteredStub.onNext("cat")
 
         Assert.assertEquals(view.updateItemsArgument, listOf(serverPassword1.toViewModel()))
@@ -123,7 +128,7 @@ class FilterPresenterTest {
     }
 
     @Test
-    fun filterText_populated_matchesPassword() {
+    fun `filter text with matching password`() {
         view.filterTextEnteredStub.onNext("woo")
 
         Assert.assertEquals(view.updateItemsArgument, emptyList<ItemViewModel>())
@@ -131,7 +136,7 @@ class FilterPresenterTest {
     }
 
     @Test
-    fun filterText_populated_matchesDomain() {
+    fun `filter text with matching domain`() {
         view.filterTextEnteredStub.onNext("neo")
 
         Assert.assertEquals(view.updateItemsArgument, listOf(serverPassword2.toViewModel()))
@@ -139,7 +144,7 @@ class FilterPresenterTest {
     }
 
     @Test
-    fun filterText_populated_matchesGuid() {
+    fun `filter text populated with matching guid`() {
         view.filterTextEnteredStub.onNext("ljk")
 
         Assert.assertEquals(view.updateItemsArgument, emptyList<ItemViewModel>())
@@ -147,7 +152,7 @@ class FilterPresenterTest {
     }
 
     @Test
-    fun filterText_populated_matchesUneditedHostname() {
+    fun `filter text populated with matching unedited hostname`() {
         view.filterTextEnteredStub.onNext("www")
 
         Assert.assertEquals(view.updateItemsArgument, emptyList<ItemViewModel>())
@@ -155,14 +160,13 @@ class FilterPresenterTest {
     }
 
     @Test
-    fun cancelButtonClicks() {
+    fun `cancel button clicks`() {
         view.cancelButtonStub.onNext(Unit)
-
         view.filterTextSetStub.assertValue("")
     }
 
     @Test
-    fun itemSelection() {
+    fun `select item from filter`() {
         val guid = "fdssdfsdf"
         val model = ItemViewModel("mozilla.org", "cats@cats.com", guid)
         view.itemSelectionStub.onNext(model)
@@ -174,9 +178,8 @@ class FilterPresenterTest {
     }
 
     @Test
-    fun noMatchingClicks() {
+    fun `no matching items clicks`() {
         view.noMatchingClickStub.onNext(Unit)
-
         dispatcherObserver.assertValue(AppWebPageAction.FaqCreate)
     }
 }

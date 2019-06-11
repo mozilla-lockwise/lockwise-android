@@ -11,14 +11,19 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.model.ItemViewModel
+import mozilla.lockbox.store.DataStore
 import org.junit.Assert
+import org.junit.Before
 import org.junit.Test
+import org.mockito.Mock
+import org.powermock.api.mockito.PowerMockito
 
 @ExperimentalCoroutinesApi
 class AppFilterPresenterTest {
     class ExercisingFake(
-        override val view: FilterView
-    ) : AppFilterPresenter(view) {
+        override val view: FilterView,
+        override val dataStore: DataStore
+    ) : AppFilterPresenter(view = view, dataStore = dataStore) {
 
         fun exerciseItemSelectionActionMap(original: Observable<ItemViewModel>): Observable<Action> {
             return original.itemSelectionActionMap()
@@ -29,10 +34,20 @@ class AppFilterPresenterTest {
         }
     }
 
+    @Mock
+    val dataStore = PowerMockito.mock(DataStore::class.java)
+
     private val view = FilterPresenterTest.FakeFilterView()
-    val subject = ExercisingFake(view)
+    lateinit var subject: ExercisingFake
     private val id = "jnewkdiou"
     private val itemViewModel = ItemViewModel("mozilla", "cats@cats.com", id)
+
+    @Before
+    fun setUp() {
+        PowerMockito.whenNew(DataStore::class.java).withAnyArguments().thenReturn(dataStore)
+
+        subject = ExercisingFake(view, dataStore)
+    }
 
     @Test
     fun `item selection`() {

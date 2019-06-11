@@ -34,10 +34,12 @@ import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.Mockito.clearInvocations
 import org.mockito.Mockito.spy
+import org.mockito.Mockito.verify
 import org.mockito.Mockito.verifyZeroInteractions
 import org.powermock.api.mockito.PowerMockito
 import org.robolectric.RobolectricTestRunner
@@ -83,15 +85,9 @@ class ItemDetailPresenterTest {
         }
     }
 
-    class FakeDataStore : DataStore() {
-        var idArg: String? = null
-        val getStub = PublishSubject.create<Optional<ServerPassword>>()
-
-        override fun get(id: String): Observable<Optional<ServerPassword>> {
-            idArg = id
-            return getStub
-        }
-    }
+    private val getStub = PublishSubject.create<Optional<ServerPassword>>()
+    @Mock
+    val dataStore = PowerMockito.mock(DataStore::class.java)!!
 
     val dispatcher = Dispatcher()
     val dispatcherObserver = TestObserver.create<Action>()!!
@@ -103,7 +99,7 @@ class ItemDetailPresenterTest {
     val networkStore = PowerMockito.mock(NetworkStore::class.java)!!
 
     private var isConnected: Observable<Boolean> = PublishSubject.create()
-    var isConnectedObserver = TestObserver.create<Boolean>()
+    var isConnectedObserver: TestObserver<Boolean> = TestObserver.create<Boolean>()
 
     @Mock
     private val connectivityManager = PowerMockito.mock(ConnectivityManager::class.java)
@@ -134,23 +130,24 @@ class ItemDetailPresenterTest {
         )
     }
 
-    lateinit var dataStore: FakeDataStore
     lateinit var subject: ItemDetailPresenter
 
     @Before
     fun setUp() {
+        PowerMockito.whenNew(DataStore::class.java).withAnyArguments().thenReturn(dataStore)
+
         dispatcher.register.subscribe(dispatcherObserver)
         Mockito.`when`(networkStore.isConnected).thenReturn(isConnected)
+        Mockito.`when`(dataStore.get(ArgumentMatchers.anyString())).thenReturn(getStub)
         networkStore.connectivityManager = connectivityManager
         view.networkAvailable.subscribe(isConnectedObserver)
     }
 
     private fun setUpTestSubject(item: Optional<ServerPassword>) {
-        dataStore = FakeDataStore()
         subject = ItemDetailPresenter(view, item.value?.id, dispatcher, networkStore, dataStore, itemDetailStore)
         subject.onViewReady()
 
-        dataStore.getStub.onNext(item)
+        getStub.onNext(item)
     }
 
     @Test
@@ -179,7 +176,7 @@ class ItemDetailPresenterTest {
             )
         )
 
-        Assert.assertEquals(fakeCredentialNoUsername.id, dataStore.idArg)
+        verify(dataStore).get(fakeCredentialNoUsername.id)
 
         val obs = view.item ?: return fail("Expected an item")
         assertEquals(fakeCredentialNoUsername.hostname, obs.hostname)
@@ -202,11 +199,11 @@ class ItemDetailPresenterTest {
 
     @Test
     fun `doesn't update UI when credential becomes null`() {
-        setUpTestSubject(Optional<ServerPassword>(null))
+        setUpTestSubject(Optional(null))
 
         clearInvocations(view)
 
-        dataStore.getStub.onNext(Optional<ServerPassword>(null))
+        getStub.onNext(Optional(null))
 
         verifyZeroInteractions(view)
     }
@@ -233,7 +230,7 @@ class ItemDetailPresenterTest {
             )
         )
 
-        Assert.assertEquals(R.string.toast_username_copied, view.toastNotificationArgument)
+        assertEquals(R.string.toast_username_copied, view.toastNotificationArgument)
     }
 
     @Test
@@ -246,7 +243,7 @@ class ItemDetailPresenterTest {
             emptyList()
         )
 
-        Assert.assertEquals(null, view.toastNotificationArgument)
+        assertEquals(null, view.toastNotificationArgument)
     }
 
     @Test
@@ -262,7 +259,7 @@ class ItemDetailPresenterTest {
             )
         )
 
-        Assert.assertEquals(R.string.toast_password_copied, view.toastNotificationArgument)
+        assertEquals(R.string.toast_password_copied, view.toastNotificationArgument)
     }
 
     @Test
@@ -282,6 +279,24 @@ class ItemDetailPresenterTest {
         dispatcherObserver.assertValueSequence(
             listOf(ItemDetailAction.TogglePassword(false))
         )
+        Assert.assertFalse(view.isPasswordVisible)
+    }
+
+    @Test
+    fun `password visibility when app is paused in background`() {
+        setUpTestSubject(fakeCredential.asOptional())
+        // set password as visible
+        view.togglePasswordClicks.onNext(Unit)
+
+        dispatcherObserver.assertValueSequence(
+            listOf(ItemDetailAction.TogglePassword(true))
+        )
+
+        Assert.assertTrue(view.isPasswordVisible)
+
+        // pause background the app
+        subject.onPause()
+
         Assert.assertFalse(view.isPasswordVisible)
     }
 

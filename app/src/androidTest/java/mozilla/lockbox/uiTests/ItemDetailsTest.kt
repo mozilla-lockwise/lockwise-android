@@ -1,8 +1,9 @@
-package mozilla.lockbox
+package mozilla.lockbox.uiTests
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import mozilla.lockbox.R
 import mozilla.lockbox.robots.itemDetail
 import mozilla.lockbox.robots.itemList
 import mozilla.lockbox.view.RootActivity

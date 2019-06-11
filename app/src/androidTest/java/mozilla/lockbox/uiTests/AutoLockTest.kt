@@ -1,4 +1,4 @@
-package mozilla.lockbox
+package mozilla.lockbox.uiTests
 
 import android.content.Intent
 import androidx.test.rule.ActivityTestRule
