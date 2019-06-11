@@ -32,6 +32,7 @@ import mozilla.lockbox.support.DataStoreSupport
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.asOptional
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
 import kotlin.coroutines.CoroutineContext
 
 @ExperimentalCoroutinesApi
@@ -54,7 +55,7 @@ open class DataStore(
     }
 
     enum class SyncState {
-        Syncing, NotSyncing
+        Syncing, NotSyncing, TimedOut
     }
 
     internal val compositeDisposable = CompositeDisposable()
@@ -217,8 +218,12 @@ open class DataStore(
         backend.sync(syncConfig)
             .asSingle(coroutineContext)
             .timeout(Constant.App.syncTimeout, TimeUnit.SECONDS)
-            .doOnEvent { _, _ ->
-                syncStateSubject.accept(SyncState.NotSyncing)
+            .doOnEvent { _, err ->
+                (err as? TimeoutException).let {
+                    syncStateSubject.accept(SyncState.TimedOut)
+                }.run {
+                    syncStateSubject.accept(SyncState.NotSyncing)
+                }
             }
             .subscribe(this::updateList, this::pushError)
             .addTo(compositeDisposable)

@@ -99,6 +99,7 @@ open class ItemListPresenterTest {
         var updateItemsArgument: List<ItemViewModel>? = null
         var itemListSort: Setting.ItemListSort? = null
         var isLoading: Boolean? = null
+        var toastNotificationArg: Int? = null
         val menuItemSelectionStub = PublishSubject.create<Int>()
         val itemSelectedStub = PublishSubject.create<ItemViewModel>()
         val filterClickStub = PublishSubject.create<Unit>()
@@ -152,6 +153,10 @@ open class ItemListPresenterTest {
         override val isRefreshing: Boolean = false
 
         override fun stopRefreshing() {
+        }
+
+        override fun showToastNotification(strId: Int) {
+            toastNotificationArg = strId
         }
     }
 
@@ -341,6 +346,13 @@ open class ItemListPresenterTest {
     fun `remove sync loading indicator`() {
         syncStateStub.onNext(DataStore.SyncState.NotSyncing)
         Assert.assertEquals(false, view.isLoading)
+    }
+
+    @Test
+    fun `sync timeout indicator`() {
+        syncStateStub.onNext(DataStore.SyncState.TimedOut)
+        Assert.assertEquals(false, view.isLoading)
+        Assert.assertEquals(R.string.sync_timed_out, view.toastNotificationArg)
     }
 
     @Test
