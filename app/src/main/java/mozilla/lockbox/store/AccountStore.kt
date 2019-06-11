@@ -163,7 +163,7 @@ open class AccountStore(
         val syncCredentialSubject = syncCredentials as Subject
         val fxa = fxa ?: return
         securePreferences.putString(Constant.Key.firefoxAccount, fxa.toJSONString())
-        
+
         fxa.getProfileAsync()
             .asMaybe(coroutineContext)
             .delay(1L, TimeUnit.SECONDS)
@@ -201,7 +201,6 @@ open class AccountStore(
 
     private fun generateLoginURL() {
         val fxa = fxa ?: return
-
 
         fxa.beginOAuthFlowAsync(Constant.FxA.scopes, true)
             .asMaybe(coroutineContext)
