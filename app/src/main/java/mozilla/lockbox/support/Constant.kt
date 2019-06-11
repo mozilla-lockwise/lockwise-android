@@ -32,7 +32,7 @@ object Constant {
         const val lockboxScope = "https://identity.mozilla.com/apps/lockbox"
         const val profileScope = "profile"
 
-        val scopes = arrayOf(profileScope, lockboxScope, oldSyncScope)
+        val scopes = setOf(profileScope, lockboxScope, oldSyncScope)
     }
 
     object Faq {

@@ -164,14 +164,14 @@ open class AccountStore(
         val fxa = fxa ?: return
         securePreferences.putString(Constant.Key.firefoxAccount, fxa.toJSONString())
 
-        fxa.getProfile()
-            .asSingle(coroutineContext)
+        fxa.getProfileAsync()
+            .asMaybe(coroutineContext)
             .delay(1L, TimeUnit.SECONDS)
             .map { it.asOptional() }
             .subscribe(profileSubject::onNext, this::pushError)
             .addTo(compositeDisposable)
 
-        fxa.getAccessToken(Constant.FxA.oldSyncScope)
+        fxa.getAccessTokenAsync(Constant.FxA.oldSyncScope)
             .asMaybe(coroutineContext)
             .delay(1L, TimeUnit.SECONDS)
             .map {
@@ -202,8 +202,8 @@ open class AccountStore(
     private fun generateLoginURL() {
         val fxa = fxa ?: return
 
-        fxa.beginOAuthFlow(Constant.FxA.scopes, true)
-            .asSingle(coroutineContext)
+        fxa.beginOAuthFlowAsync(Constant.FxA.scopes, true)
+            .asMaybe(coroutineContext)
             .subscribe((this.loginURL as Subject)::onNext, this::pushError)
             .addTo(compositeDisposable)
     }
@@ -217,7 +217,7 @@ open class AccountStore(
 
         codeQP?.let { code ->
             stateQP?.let { state ->
-                fxa.completeOAuthFlow(code, state)
+                fxa.completeOAuthFlowAsync(code, state)
                     .asSingle(coroutineContext)
                     .map { true }
                     .subscribe(this::populateAccountInformation, this::pushError)
