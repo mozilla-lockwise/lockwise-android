@@ -6,9 +6,6 @@
 
 package mozilla.lockbox.store
 
-import android.content.Context
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.OnBackPressedDispatcher
 import com.jakewharton.rxrelay2.BehaviorRelay
 import com.jakewharton.rxrelay2.Relay
 import io.reactivex.Observable

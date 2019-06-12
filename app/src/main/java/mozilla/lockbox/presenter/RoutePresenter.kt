@@ -54,7 +54,7 @@ abstract class RoutePresenter(
     class BackPressedCallback(
         val enabled: Boolean = false,
         val dispatcher: Dispatcher
-    ): OnBackPressedCallback(enabled) {
+    ) : OnBackPressedCallback(enabled) {
         override fun handleOnBackPressed() {
             dispatcher.dispatch(RouteAction.InternalBack)
         }
