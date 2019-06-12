@@ -40,7 +40,6 @@ open class RouteStore(
     private val onboarding: Observable<Boolean> = BehaviorRelay.createDefault(false)
     private val _routes = StackReplaySubject.create<RouteAction>()
     open val routes: Observable<RouteAction> = _routes
-    private val backPressedDispatcher = OnBackPressedDispatcher()
 
     init {
         dispatcher.register
