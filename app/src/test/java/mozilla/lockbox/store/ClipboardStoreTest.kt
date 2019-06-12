@@ -14,7 +14,7 @@ import androidx.test.core.app.ApplicationProvider
 import mozilla.lockbox.DisposingTest
 import mozilla.lockbox.action.ClipboardAction
 import mozilla.lockbox.flux.Dispatcher
-import mozilla.lockbox.support.LockingSupport
+import mozilla.lockbox.support.SystemTimingSupport
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Ignore
@@ -30,7 +30,7 @@ import org.robolectric.annotation.Config
 import org.mockito.Mockito.`when` as whenCalled
 
 @Ignore("More reliably clear the clipboard (#644)")
-class TestSystemTimeSupport : LockingSupport {
+class TestSystemTimeSupport : SystemTimingSupport {
     override val systemTimeElapsed: Long = 2000L
 }
 

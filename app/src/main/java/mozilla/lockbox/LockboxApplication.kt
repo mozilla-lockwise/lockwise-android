@@ -31,7 +31,7 @@ import mozilla.lockbox.store.SentryStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.store.TelemetryStore
 import mozilla.lockbox.support.AdjustSupport
-import mozilla.lockbox.support.AutoLockSupport
+import mozilla.lockbox.support.TimingSupport
 import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.FxASyncDataStoreSupport
 import mozilla.lockbox.support.PublicSuffixSupport
@@ -85,7 +85,7 @@ open class LockboxApplication : Application() {
         val orderedStores = listOf(
             DataStore.shared,
             AccountStore.shared,
-            AutoLockSupport.shared,
+            TimingSupport.shared,
             LockedStore.shared
         )
         orderedStores.forEach {
@@ -101,7 +101,7 @@ open class LockboxApplication : Application() {
             FxASyncDataStoreSupport.shared,
             ClipboardStore.shared,
             NetworkStore.shared,
-            AutoLockSupport.shared,
+            TimingSupport.shared,
             AccountStore.shared,
             TelemetryStore.shared,
             SentryStore.shared,
