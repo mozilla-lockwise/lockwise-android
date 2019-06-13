@@ -62,7 +62,6 @@ abstract class RoutePresenter(
 
     private val onBackPressedDispatcher = activity.onBackPressedDispatcher
 
-    // enabled is defaulted to true. Do we want this?
     private val callback = BackPressedCallback(false, dispatcher)
 
     override fun onViewReady() {
