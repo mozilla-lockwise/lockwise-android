@@ -62,6 +62,10 @@
     
         <ul>
         
+            <li><a class="toctree-l3" href="#112-build-4259">1.1.2 (Build 4259)</a></li>
+        
+            <li><a class="toctree-l3" href="#111-build-4053">1.1.1 (Build 4053)</a></li>
+        
             <li><a class="toctree-l3" href="#110-build-3951">1.1.0 (Build 3951)</a></li>
         
             <li><a class="toctree-l3" href="#103-build-3819">1.0.3 (Build 3819)</a></li>
@@ -185,6 +189,33 @@
             <div class="section">
               
                 <h1 id="release-notes">Release Notes</h1>
+<h2 id="112-build-4259">1.1.2 (Build 4259)</h2>
+<p><em>Date: 2019-06-11</em></p>
+<p>We fixed more bugs to help stabilize sign in and sync for some users. We also hardened the security of the app even more.</p>
+<p>Changes since version 1.1.1:</p>
+<ul>
+<li>additional changes to translated strings (#730)</li>
+<li>made sure the search icon is visible for all languages (#737)</li>
+<li>added error handling and reporting improvements for troubleshooting (#722)</li>
+<li>changed to use dataprotect for fingerprint interactions (#741) </li>
+<li>explicitly set theme in item list to not show the wrong background on some screens (#743) </li>
+<li>updated android-components and application-services dependencies (#751)</li>
+<li>hide the password when browsing away from entry (#685)</li>
+<li>add a timeout for when sync does not complete (#747)</li>
+</ul>
+<h2 id="111-build-4053">1.1.1 (Build 4053)</h2>
+<p><em>Date: 2019-05-30</em></p>
+<p>We fixed a handful of bugs and improved the overall security and stability of the app including signing in and syncing.</p>
+<p>Changes since version 1.1.0:</p>
+<ul>
+<li>added a small delay to navigate to the confirmation screen (#709)</li>
+<li>update application-services and android-components (#712)</li>
+<li>adjust to not duplicate the top fragment and require two back taps (#710)</li>
+<li>close db when going to the background (#713)</li>
+<li>simply unlock when no device security present (#718) </li>
+<li>disconnect account security bugs (#694)</li>
+<li>check system elapsed time on startup (#715)</li>
+</ul>
 <h2 id="110-build-3951">1.1.0 (Build 3951)</h2>
 <p><em>Date: 2019-05-21</em></p>
 <p>Firefox Lockbox is now Firefox Lockwise! With the new name also comes a new look!</p>

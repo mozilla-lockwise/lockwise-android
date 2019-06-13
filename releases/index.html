@@ -113,9 +113,9 @@
         
             <li><a class="toctree-l4" href="#distributing-builds-through-play-store-internal-alpha">Distributing Builds through Play Store (Internal, Alpha)</a></li>
         
-            <li><a class="toctree-l4" href="#distributing-through-the-app-store-production">Distributing through the App Store (Production)</a></li>
+            <li><a class="toctree-l4" href="#distributing-through-the-play-store-production">Distributing through the Play Store (Production)</a></li>
         
-            <li><a class="toctree-l4" href="#updating-the-version">Updating the version</a></li>
+            <li><a class="toctree-l4" href="#preparation-before-and-after-a-release">Preparation before and after a release</a></li>
         
         </ul>
     
@@ -209,6 +209,17 @@
 <li>Upload the <code>-signed.apk</code> (from bitrise) to the <a href="https://play.google.com/apps/publish/?account=7083182635971239206#ManageReleasesPlace:p=mozilla.lockbox&amp;appid=4972100280256015711">Play Console</a>:</li>
 <li>browse to "Release Management" &gt; "App Releases" &gt; "Internal test track" &gt; "Manage"</li>
 <li>"Create Release" and upload the signed APK, set the version to match the tag (for example: <code>1.2.1339</code>) then "Review" and the build will be immediately available to the core team</li>
+<li>Browse to </li>
+<li>Download the <code>app-mapping.txt</code> (ProGuard rules) from bitrise and create an <code>AndroidManifest.xml</code> to map the file to the specific build:
+  <code>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+  &lt;manifest xmlns:android="http://schemas.android.com/apk/res/android"
+      package="mozilla.lockbox"
+      android:versionCode="4053"
+      android:versionName="1.1.1" &gt;
+  &lt;/manifest&gt;</code></li>
+<li>Browse to "Android Vitals" and "Deobfusication files" and upload the <code>app-mapping.txt</code> file from bitrise.io</li>
+<li>Upload the mapping and manifest to Sentry using <code>sentry-cli</code> and following [these instructions](https://docs.sentry.io/cli/dif/proguard/](https://docs.sentry.io/cli/dif/proguard/)</li>
+<li>HINT: if you get a 411 "content-length" error, you may need to add the <code>--no-reprocessing</code> flag due to a bug with GCP and the <code>sentry-cli</code></li>
 <li>Continue the "Distributing..." instructions</li>
 </ol>
 <h3 id="in-case-of-emergency-release">In Case of Emergency (Release)</h3>
@@ -225,30 +236,35 @@
 <li>Push the tag to GitHub and create a corresponding "Release" on GitHub.com</li>
 <li>copy the release notes to the "Release" on GitHub</li>
 <li>Browse to bitrise and find the desired <code>production</code> branch build to distribute</li>
-<li>download the <code>.signed-apk</code> and attach it to the Release on GitHub</li>
-<li><strong>open the <code>-signed.apk</code> and confirm release build does not allow screenshots and does not expose the contents of the app in the switcher</strong></li>
-<li>Upload the <code>-signed.apk</code> (from bitrise) to the <a href="https://play.google.com/apps/publish/?account=7083182635971239206#ManageReleasesPlace:p=mozilla.lockbox&amp;appid=4972100280256015711">Play Console</a>:</li>
-<li>browse to "Release Management" &gt; "App Releases" &gt; "Internal test track" &gt; "Manage"</li>
-<li>"Create Release" and upload the signed APK, set the version to match the tag (for example: <code>1.2.1339</code>) then "Review" and the build will be immediately available to the core team</li>
+<li>Follow the same instructions above starting at <em>Step 5</em>.</li>
 <li>Continue the "Distributing..." instructions</li>
 </ol>
 <h2 id="distributing-builds-through-play-store-internal-alpha">Distributing Builds through Play Store (Internal, Alpha)</h2>
-<p><em>all builds must be manually uploaded from bitrise to Play Store Console as an artifact aka "New Release" in the "Preparing" instructions above</em></p>
+<p><em>All builds must be manually uploaded from bitrise to Play Store Console as an artifact aka "New Release" in the "Preparing" instructions above. Only mobile engineering managers and Release Management team members (See #release-coordination) have access to create new non-production releases.</em></p>
 <ol>
 <li>Browse to <a href="https://play.google.com/apps/publish/?account=7083182635971239206#ManageReleasesPlace:p=mozilla.lockbox&amp;appid=4972100280256015711">App Releases</a> in Play Console</li>
 <li>Browse to the "Internal test track" (this release should already be uploaded and available to the core Lockwise team)</li>
-<li>Promote the release to the (internal still) Alpha channel using the "Promote to Alpha" button, complete the questions</li>
+<li>Promote the release to the (internal, still) Alpha channel using the "Promote to Alpha" button, complete the questions</li>
 </ol>
-<h2 id="distributing-through-the-app-store-production">Distributing through the App Store (Production)</h2>
+<h2 id="distributing-through-the-play-store-production">Distributing through the Play Store (Production)</h2>
+<p><em>Only Release Management team members (see private #release-coordination channel in Mozilla Slack) have access to distribute production releases through the Play Store.</em></p>
 <ol>
-<li>Contact release management...</li>
+<li>Contact release management by filing a bug under <strong><a href="https://bugzilla.mozilla.org/enter_bug.cgi?product=Release%20Engineering&amp;component=Release%20Requests">Release Engineering: Release Requests</a></strong></li>
+<li>Note the expected version, build and which channel it is in (internal? Alpha? Beta?). <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1555746">For example</a>:</li>
+<li>Summary: Promote Lockwise Android 1.1.1 from Beta to Production channel in Play Store</li>
+<li>Description: We have a minor release to promote from Beta to Production by Tuesday (pending QA approval). APK: the version 1.1.1 (build 4057) in the Internal, Alpha, and Beta tracks is the current release candidate, but a newer build may be created in case of any potential "show stopper" bugs filed in the coming days.</li>
 </ol>
 <p>NOTE: <em>brand new</em> apps may take 1 or more hours to appear in the Play Store whereas existing app (updates) can appear within minutes. Schedule accordingly!</p>
-<h2 id="updating-the-version">Updating the version</h2>
-<p><em>Once a version has been merged or released, the major app version should be increased</em></p>
+<h2 id="preparation-before-and-after-a-release">Preparation before and after a release</h2>
 <ul>
+<li><strong>Before testing or distributing a release</strong>: make sure the release number is still what you want and expect it to be, especially if major (versus minor) changes were made. (see below on how to <em>"change the version"</em>).</li>
+<li><strong>Before public release</strong>: make sure no open "localization strings" Pull Requests are open</li>
+<li><strong>After public release</strong>: consider filing an issue for the next sprint/release to update to the latest dependencies (application-services, for example)</li>
+<li><strong>After public release</strong>: consider running <code>mkdocs gh-deploy</code> so the latest <code>docs</code> are also published to the GitHub pages website</li>
+<li><strong>After public release</strong>: <em>change the version</em> to a major or minor update depending on the future plans.</li>
 <li>Update the <code>versionName</code> value (and <code>versionCode</code> if applicable) in <code>app/build.gradle</code></li>
 <li>Also update the value in the <code>list_cell_setting_appversion.xml</code> layout to <em>the exact same version</em></li>
+<li><strong>After public release</strong>: make sure the <code>app-mapping.txt</code> (ProGuard rules) is uploaded to Sentry as part of the process earlier, do it now if not so your error reports are legible.</li>
 </ul>
               
             </div>
