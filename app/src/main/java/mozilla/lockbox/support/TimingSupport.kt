@@ -45,9 +45,9 @@ open class TimingSupport(
         val currentSystemTime = systemTimingSupport.systemTimeElapsed
 
         // this will be triggered when the system time is very low due to device restarts
-        val currentTimeTooEarly = (syncTimerDate - currentSystemTime) > Constant.Common.twentyFourHours
+        val followingDeviceReboot = (syncTimerDate - currentSystemTime) > Constant.Common.twentyFourHours
 
-        return syncTimerDate < currentSystemTime || currentTimeTooEarly
+        return syncTimerDate < currentSystemTime || followingDeviceReboot
     }
 
     open fun storeNextAutoLockTime() {
