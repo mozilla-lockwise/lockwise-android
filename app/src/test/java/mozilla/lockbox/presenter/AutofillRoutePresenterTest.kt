@@ -12,6 +12,7 @@ import android.content.Context
 import android.content.Intent
 import android.service.autofill.FillResponse
 import android.view.autofill.AutofillManager
+import androidx.activity.OnBackPressedDispatcher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -50,7 +51,6 @@ import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.eq
 import org.mockito.Mock
-import org.mockito.Mockito
 import org.mockito.Mockito.any
 import org.mockito.Mockito.anyString
 import org.mockito.Mockito.mock
@@ -107,16 +107,19 @@ class AutofillRoutePresenterTest {
     val intent: Intent = PowerMockito.mock(Intent::class.java)
 
     @Mock
-    val keyguardManager = Mockito.mock(KeyguardManager::class.java)!!
+    val keyguardManager = mock(KeyguardManager::class.java)!!
 
     @Mock
     val routeStore = PowerMockito.mock(RouteStore::class.java)!!
 
     @Mock
+    val onBackPressedDispatcher: OnBackPressedDispatcher = mock(OnBackPressedDispatcher::class.java)
+
+    @Mock
     val dataStore = PowerMockito.mock(DataStore::class.java)!!
 
-    val callingIntent = Intent()
-    val credentialIntent = Intent()
+    private val callingIntent = Intent()
+    private val credentialIntent = Intent()
 
     class FakeResponseBuilder : FillResponseBuilder(ParsedStructure(packageName = "meow")) {
         @Mock
@@ -142,8 +145,8 @@ class AutofillRoutePresenterTest {
         }
     }
 
-    val routeStub = PublishSubject.create<RouteAction>()
-    val stateStub = PublishSubject.create<DataStore.State>()
+    private val routeStub = PublishSubject.create<RouteAction>()
+    private val stateStub = PublishSubject.create<DataStore.State>()
 
     class FakeAutofillStore : AutofillStore() {
         val autofillActionStub = PublishSubject.create<AutofillAction>()
@@ -217,6 +220,7 @@ class AutofillRoutePresenterTest {
         whenCalled(navController.currentDestination).thenReturn(navDestination)
         PowerMockito.mockStatic(Navigation::class.java)
         whenCalled(Navigation.findNavController(activity, R.id.autofill_fragment_nav_host)).thenReturn(navController)
+        whenCalled(activity.onBackPressedDispatcher).thenReturn(onBackPressedDispatcher)
 
         subject = AutofillRoutePresenter(
             activity,
