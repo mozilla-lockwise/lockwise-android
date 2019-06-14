@@ -1,14 +1,10 @@
 package mozilla.lockbox.uiTests
 
-import androidx.test.rule.ServiceTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
+import androidx.test.rule.ServiceTestRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.LockboxAutofillService
 import mozilla.lockbox.flux.Dispatcher
-import mozilla.lockbox.store.DataStore
 import org.junit.After
 import org.junit.Before
 import org.junit.Ignore
@@ -22,12 +18,6 @@ class LockboxAutofillServiceTest {
 
     private val dispatcher = Dispatcher()
 
-    class FakeDataStore(dispatcher: Dispatcher) : DataStore(dispatcher = dispatcher) {
-        override val list: Observable<List<ServerPassword>> = PublishSubject.create()
-    }
-
-    private val dataStore = FakeDataStore(dispatcher)
-
     @get:Rule
     val serviceRule = ServiceTestRule()
 
@@ -35,7 +25,7 @@ class LockboxAutofillServiceTest {
 
     @Before
     fun setUp() {
-        subject = LockboxAutofillService(dataStore = dataStore, dispatcher = dispatcher)
+        subject = LockboxAutofillService(dispatcher = dispatcher)
         subject.onConnected()
     }
 
