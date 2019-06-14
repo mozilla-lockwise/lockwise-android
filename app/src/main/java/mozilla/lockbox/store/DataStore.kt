@@ -26,10 +26,10 @@ import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.log
 import mozilla.lockbox.model.SyncCredentials
-import mozilla.lockbox.support.AutoLockSupport
 import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.DataStoreSupport
 import mozilla.lockbox.support.Optional
+import mozilla.lockbox.support.TimingSupport
 import mozilla.lockbox.support.asOptional
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
@@ -39,9 +39,8 @@ import kotlin.coroutines.CoroutineContext
 open class DataStore(
     val dispatcher: Dispatcher = Dispatcher.shared,
     var support: DataStoreSupport? = null,
-    private val autoLockSupport: AutoLockSupport = AutoLockSupport.shared,
-    private val lifecycleStore: LifecycleStore = LifecycleStore.shared,
-    private val itemDetailStore: ItemDetailStore = ItemDetailStore.shared
+    private val timingSupport: TimingSupport = TimingSupport.shared,
+    private val lifecycleStore: LifecycleStore = LifecycleStore.shared
 ) {
     companion object {
         val shared by lazy { DataStore() }
@@ -60,7 +59,7 @@ open class DataStore(
 
     internal val compositeDisposable = CompositeDisposable()
     private val stateSubject = ReplayRelay.createWithSize<State>(1)
-    private val syncStateSubject = ReplayRelay.createWithSize<SyncState>(1)
+    private val syncStateSubject = BehaviorRelay.createDefault<SyncState>(SyncState.NotSyncing)
     private val listSubject: BehaviorRelay<List<ServerPassword>> = BehaviorRelay.createDefault(emptyList())
 
     open val state: Observable<State> = stateSubject
@@ -90,7 +89,7 @@ open class DataStore(
             .subscribe { state ->
                 when (state) {
                     is State.Locked -> clearList()
-                    is State.Unlocked -> sync()
+                    is State.Unlocked -> syncIfRequired()
                     else -> Unit
                 }
             }
@@ -133,7 +132,7 @@ open class DataStore(
         lifecycleStore.lifecycleEvents
             .filter { this.background.contains(it) && stateSubject.value == State.Unlocked }
             .subscribe {
-                autoLockSupport.storeNextAutoLockTime()
+                timingSupport.storeNextAutoLockTime()
             }
             .addTo(compositeDisposable)
 
@@ -163,7 +162,7 @@ open class DataStore(
         // when we receive an external unlock action, assume it's not coming from autolock
         // and adjust our next autolocktime to avoid race condition with foregrounding / unlocking
         unlockInternal()
-        autoLockSupport.forwardDateNextLockTime()
+        timingSupport.forwardDateNextLockTime()
     }
 
     private fun unlockInternal() {
@@ -187,7 +186,7 @@ open class DataStore(
 
     private fun lock() {
         lockInternal()
-        autoLockSupport.backdateNextLockTime()
+        timingSupport.backdateNextLockTime()
     }
 
     private fun lockInternal() {
@@ -200,10 +199,17 @@ open class DataStore(
     }
 
     private fun handleLock() {
-        if (autoLockSupport.shouldLock) {
+        if (timingSupport.shouldLock) {
             this.lockInternal()
         } else {
             this.unlockInternal()
+        }
+    }
+
+    private fun syncIfRequired() {
+        if (timingSupport.shouldSync) {
+            this.sync()
+            timingSupport.storeNextSyncTime()
         }
     }
 
