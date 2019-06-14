@@ -12,6 +12,7 @@ object Constant {
     object Common {
         const val emptyString = ""
         const val sixtySeconds: Long = 60000
+        const val twentyFourHours: Long = 60 * 60 * 24 * 1000
     }
 
     object App {
@@ -65,6 +66,7 @@ object Constant {
         const val firefoxAccount = "firefox-account"
         const val encryptionKey = "database-encryption-key"
         const val autoLockTimerDate = "auto-lock-timer-date"
+        const val syncTimerDate = "sync-timer-date"
         const val bootCompletedIntent = "android.intent.action.BOOT_COMPLETED"
         const val clearClipboardIntent = "mozilla.lockbox.intent.CLEAR_CLIPBOARD"
         const val clipboardDirtyExtra = "clipboard-dirty"

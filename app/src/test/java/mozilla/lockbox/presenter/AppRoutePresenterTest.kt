@@ -9,6 +9,7 @@ package mozilla.lockbox.presenter
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.OnBackPressedDispatcher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
@@ -59,11 +60,14 @@ class AppRoutePresenterTest {
     @Mock
     private val settingStore = Mockito.mock(SettingStore::class.java)
 
-    private val routeStub = PublishSubject.create<RouteAction>()
+    @Mock
+    val onBackPressedDispatcher: OnBackPressedDispatcher = Mockito.mock(OnBackPressedDispatcher::class.java)
+
     @Mock
     val routeStore = Mockito.mock(RouteStore::class.java)!!
 
     private val dispatcher = Dispatcher()
+    private val routeStub = PublishSubject.create<RouteAction>()
     private val dispatcherObserver = TestObserver.create<Action>()
 
     lateinit var subject: AppRoutePresenter
@@ -77,6 +81,7 @@ class AppRoutePresenterTest {
 
         PowerMockito.mockStatic(Navigation::class.java)
         PowerMockito.whenNew(RouteStore::class.java).withAnyArguments().thenReturn(routeStore)
+        PowerMockito.`when`(activity.onBackPressedDispatcher).thenReturn(onBackPressedDispatcher)
 
         subject = AppRoutePresenter(
             activity,

@@ -19,7 +19,7 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.mocks.MockDataStoreSupport
 import mozilla.lockbox.model.FixedSyncCredentials
 import mozilla.lockbox.store.DataStore.State
-import mozilla.lockbox.support.AutoLockSupport
+import mozilla.lockbox.support.TimingSupport
 import mozilla.lockbox.support.asOptional
 import org.junit.Assert
 import org.junit.Before
@@ -42,7 +42,7 @@ class DataStoreTest : DisposingTest() {
     }
 
     @Mock
-    val autoLockSupport = PowerMockito.mock(AutoLockSupport::class.java)!!
+    val timingSupport = PowerMockito.mock(TimingSupport::class.java)!!
 
     private val support = MockDataStoreSupport()
     private val dispatcher = Dispatcher()
@@ -51,17 +51,18 @@ class DataStoreTest : DisposingTest() {
 
     @Before
     fun setUp() {
-        PowerMockito.whenNew(AutoLockSupport::class.java).withAnyArguments().thenReturn(autoLockSupport)
+        PowerMockito.whenNew(TimingSupport::class.java).withAnyArguments().thenReturn(timingSupport)
 
-        subject = DataStore(dispatcher, support, autoLockSupport, lifecycleStore)
+        subject = DataStore(dispatcher, support, timingSupport, lifecycleStore)
     }
 
     @Test
-    fun testLockUnlock() {
+    fun testLockUnlock_shouldSync() {
         val stateIterator = this.subject.state.blockingIterable().iterator()
         val listIterator = this.subject.list.blockingIterable().iterator()
         Assert.assertEquals(0, listIterator.next().size)
         clearInvocations(support.storage)
+        whenCalled(timingSupport.shouldSync).thenReturn(true)
 
         dispatcher.dispatch(DataStoreAction.Unlock)
         Assert.assertEquals(State.Unlocked, stateIterator.next())
@@ -70,6 +71,27 @@ class DataStoreTest : DisposingTest() {
         Assert.assertEquals(10, listIterator.next().size)
         verify(support.storage).sync(support.syncConfig!!)
         verify(support.storage, times(3)).list()
+        verify(timingSupport).storeNextSyncTime()
+
+        dispatcher.dispatch(DataStoreAction.Lock)
+        Assert.assertEquals(State.Locked, stateIterator.next())
+        Assert.assertEquals(0, listIterator.next().size)
+    }
+
+    @Test
+    fun testLockUnlock_shouldNotSync() {
+        val stateIterator = this.subject.state.blockingIterable().iterator()
+        val listIterator = this.subject.list.blockingIterable().iterator()
+        Assert.assertEquals(0, listIterator.next().size)
+        clearInvocations(support.storage)
+        whenCalled(timingSupport.shouldSync).thenReturn(false)
+
+        dispatcher.dispatch(DataStoreAction.Unlock)
+        Assert.assertEquals(State.Unlocked, stateIterator.next())
+        Assert.assertEquals(10, listIterator.next().size)
+        Assert.assertEquals(10, listIterator.next().size)
+        verify(support.storage, times(2)).list()
+        verify(timingSupport, never()).storeNextSyncTime()
 
         dispatcher.dispatch(DataStoreAction.Lock)
         Assert.assertEquals(State.Locked, stateIterator.next())
@@ -111,7 +133,6 @@ class DataStoreTest : DisposingTest() {
 
         dispatcher.dispatch(DataStoreAction.Unlock)
         Assert.assertEquals(State.Unlocked, stateIterator.next())
-        Assert.assertEquals(10, listIterator.next().size)
         Assert.assertEquals(10, listIterator.next().size)
         Assert.assertEquals(10, listIterator.next().size)
 
@@ -194,6 +215,7 @@ class DataStoreTest : DisposingTest() {
     @Test
     fun testSync() {
         val syncIterator = this.subject.syncState.blockingIterable().iterator()
+        Assert.assertEquals(DataStore.SyncState.NotSyncing, syncIterator.next())
 
         dispatcher.dispatch(DataStoreAction.Sync)
         Assert.assertEquals(DataStore.SyncState.Syncing, syncIterator.next())
@@ -233,10 +255,10 @@ class DataStoreTest : DisposingTest() {
 
         dispatcher.dispatch(DataStoreAction.Unlock)
         Assert.assertEquals(State.Unlocked, stateIterator.next())
-        verify(autoLockSupport).forwardDateNextLockTime()
+        verify(timingSupport).forwardDateNextLockTime()
 
         (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Background)
-        verify(autoLockSupport).storeNextAutoLockTime()
+        verify(timingSupport).storeNextAutoLockTime()
         verify(support.storage).ensureLocked()
     }
 
@@ -248,15 +270,15 @@ class DataStoreTest : DisposingTest() {
 
         dispatcher.dispatch(DataStoreAction.Unlock)
         Assert.assertEquals(State.Unlocked, stateIterator.next())
-        verify(autoLockSupport).forwardDateNextLockTime()
+        verify(timingSupport).forwardDateNextLockTime()
 
         dispatcher.dispatch(DataStoreAction.Lock)
-        verify(autoLockSupport).backdateNextLockTime()
+        verify(timingSupport).backdateNextLockTime()
         Assert.assertEquals(State.Locked, stateIterator.next())
         clearInvocations(support.storage)
 
         (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.AutofillEnd)
-        verify(autoLockSupport, never()).storeNextAutoLockTime()
+        verify(timingSupport, never()).storeNextAutoLockTime()
         verify(support.storage).ensureLocked()
     }
 
@@ -268,7 +290,7 @@ class DataStoreTest : DisposingTest() {
 
         dispatcher.dispatch(DataStoreAction.Unlock)
         Assert.assertEquals(State.Unlocked, stateIterator.next())
-        whenCalled(autoLockSupport.shouldLock).thenReturn(true)
+        whenCalled(timingSupport.shouldLock).thenReturn(true)
 
         (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Foreground)
 
@@ -284,7 +306,7 @@ class DataStoreTest : DisposingTest() {
         dispatcher.dispatch(DataStoreAction.Unlock)
         Assert.assertEquals(State.Unlocked, stateIterator.next())
         clearInvocations(support.storage)
-        whenCalled(autoLockSupport.shouldLock).thenReturn(false)
+        whenCalled(timingSupport.shouldLock).thenReturn(false)
         (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Foreground)
         Assert.assertEquals(State.Unlocked, stateIterator.next())
         verify(support.storage).ensureUnlocked(support.encryptionKey)
@@ -298,10 +320,10 @@ class DataStoreTest : DisposingTest() {
 
         dispatcher.dispatch(DataStoreAction.Unlock)
         Assert.assertEquals(State.Unlocked, stateIterator.next())
-        verify(autoLockSupport).forwardDateNextLockTime()
+        verify(timingSupport).forwardDateNextLockTime()
 
         (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.AutofillEnd)
-        verify(autoLockSupport).storeNextAutoLockTime()
+        verify(timingSupport).storeNextAutoLockTime()
     }
 
     @Ignore("Todo: this test is failing.")
@@ -313,13 +335,13 @@ class DataStoreTest : DisposingTest() {
 
         dispatcher.dispatch(DataStoreAction.Unlock)
         Assert.assertEquals(State.Unlocked, stateIterator.next())
-        verify(autoLockSupport).forwardDateNextLockTime()
+        verify(timingSupport).forwardDateNextLockTime()
 
         dispatcher.dispatch(DataStoreAction.Lock)
-        verify(autoLockSupport).backdateNextLockTime()
+        verify(timingSupport).backdateNextLockTime()
 
         (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.AutofillEnd)
-        verify(autoLockSupport, never()).storeNextAutoLockTime()
+        verify(timingSupport, never()).storeNextAutoLockTime()
     }
 
     @Test
@@ -330,7 +352,7 @@ class DataStoreTest : DisposingTest() {
 
         dispatcher.dispatch(DataStoreAction.Unlock)
         Assert.assertEquals(State.Unlocked, stateIterator.next())
-        whenCalled(autoLockSupport.shouldLock).thenReturn(true)
+        whenCalled(timingSupport.shouldLock).thenReturn(true)
 
         (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.AutofillStart)
 
@@ -345,7 +367,7 @@ class DataStoreTest : DisposingTest() {
 
         dispatcher.dispatch(DataStoreAction.Unlock)
         Assert.assertEquals(State.Unlocked, stateIterator.next())
-        whenCalled(autoLockSupport.shouldLock).thenReturn(false)
+        whenCalled(timingSupport.shouldLock).thenReturn(false)
         (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.AutofillStart)
     }
 }
