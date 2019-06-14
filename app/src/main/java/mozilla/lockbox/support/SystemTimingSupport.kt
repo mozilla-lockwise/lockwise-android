@@ -2,11 +2,11 @@ package mozilla.lockbox.support
 
 import android.os.SystemClock
 
-interface LockingSupport {
+interface SystemTimingSupport {
     val systemTimeElapsed: Long
 }
 
-class SystemLockingSupport : LockingSupport {
+class SystemSystemTimingSupport : SystemTimingSupport {
     override val systemTimeElapsed: Long
         get() = SystemClock.elapsedRealtime()
 }

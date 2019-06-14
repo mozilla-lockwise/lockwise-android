@@ -17,24 +17,37 @@ import mozilla.lockbox.store.ContextStore
 import mozilla.lockbox.store.SettingStore
 
 @ExperimentalCoroutinesApi
-open class AutoLockSupport(
+open class TimingSupport(
     val settingStore: SettingStore = SettingStore.shared
 ) : ContextStore {
 
     companion object {
-        val shared by lazy { AutoLockSupport() }
+        val shared by lazy { TimingSupport() }
     }
 
     private val compositeDisposable = CompositeDisposable()
     private lateinit var preferences: SharedPreferences
 
-    var lockingSupport: LockingSupport = SystemLockingSupport()
+    var systemTimingSupport: SystemTimingSupport = SystemSystemTimingSupport()
 
     open val shouldLock: Boolean
         get() = lockCurrentlyRequired()
 
+    open val shouldSync: Boolean
+        get() = syncCurrentlyRequired()
+
     override fun injectContext(context: Context) {
         preferences = PreferenceManager.getDefaultSharedPreferences(context)
+    }
+
+    private fun syncCurrentlyRequired(): Boolean {
+        val syncTimerDate = preferences.getLong(Constant.Key.syncTimerDate, Long.MAX_VALUE)
+        val currentSystemTime = systemTimingSupport.systemTimeElapsed
+
+        // this will be triggered when the system time is very low due to device restarts
+        val followingDeviceReboot = (syncTimerDate - currentSystemTime) > Constant.Common.twentyFourHours
+
+        return syncTimerDate < currentSystemTime || followingDeviceReboot
     }
 
     open fun storeNextAutoLockTime() {
@@ -42,6 +55,10 @@ open class AutoLockSupport(
             .take(1)
             .subscribe(this::updateNextLockTime)
             .addTo(compositeDisposable)
+    }
+
+    open fun storeNextSyncTime() {
+        storeSyncTimerDate(systemTimingSupport.systemTimeElapsed + Constant.Common.twentyFourHours)
     }
 
     open fun backdateNextLockTime() {
@@ -56,12 +73,12 @@ open class AutoLockSupport(
         if (autoLockTime == Setting.AutoLockTime.Never) {
             storeAutoLockTimerDate(Long.MAX_VALUE)
         } else {
-            storeAutoLockTimerDate(lockingSupport.systemTimeElapsed + autoLockTime.ms)
+            storeAutoLockTimerDate(systemTimingSupport.systemTimeElapsed + autoLockTime.ms)
         }
     }
 
     private fun lockCurrentlyRequired(): Boolean {
-        val currentSystemTime = lockingSupport.systemTimeElapsed
+        val currentSystemTime = systemTimingSupport.systemTimeElapsed
         return if (currentSystemTime <= Constant.Common.sixtySeconds) {
             true
         } else {
@@ -71,9 +88,16 @@ open class AutoLockSupport(
 
     private fun autoLockTimeElapsed(): Boolean {
         val autoLockTimerDate = preferences.getLong(Constant.Key.autoLockTimerDate, Long.MAX_VALUE)
-        val currentSystemTime = lockingSupport.systemTimeElapsed
+        val currentSystemTime = systemTimingSupport.systemTimeElapsed
 
         return autoLockTimerDate <= currentSystemTime
+    }
+
+    private fun storeSyncTimerDate(dateTime: Long) {
+        preferences
+            .edit()
+            .putLong(Constant.Key.syncTimerDate, dateTime)
+            .apply()
     }
 
     private fun storeAutoLockTimerDate(dateTime: Long) {
