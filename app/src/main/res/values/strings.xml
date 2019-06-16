@@ -256,5 +256,16 @@
 
     <!-- This is the placeholder text for an empty or null username. -->
     <string name="no_username">(no username)</string>
+
+    <!-- This is the message displayed when sync has timed out. -->
     <string name="sync_timed_out">Syncing has timed out</string>
+
+    <!-- This is the description for the kebab menu in the item detail toolbar. -->
+    <string name="kebab_menu">More options</string>
+    <!-- This is the text on a button to delete a login. -->
+    <string name="delete">Delete</string>
+    <!-- This is the confirmation message title seen when attempting to delete a login. -->
+    <string name="delete_confirmation">Delete this login?</string>
+    <!-- This is the description for the deletion dialog. -->
+    <string name="delete_description">This will delete the login from both Lockwise and Firefox.</string>
 </resources>

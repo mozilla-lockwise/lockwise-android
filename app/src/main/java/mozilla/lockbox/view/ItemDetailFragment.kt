@@ -21,14 +21,15 @@ import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
 import kotlinx.android.synthetic.main.fragment_item_detail.*
 import kotlinx.android.synthetic.main.fragment_item_detail.view.*
-import kotlinx.android.synthetic.main.include_backable.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
+import mozilla.lockbox.action.Setting
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.presenter.ItemDetailPresenter
 import mozilla.lockbox.presenter.ItemDetailView
 import mozilla.lockbox.support.assertOnUiThread
 
+@Suppress("DEPRECATION")
 @ExperimentalCoroutinesApi
 class ItemDetailFragment : BackableFragment(), ItemDetailView {
     override fun onCreateView(
@@ -62,6 +63,9 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
     override val learnMoreClicks: Observable<Unit>
         get() = view!!.detailLearnMore.clicks()
 
+    override val kebabMenuClicks: Observable<Unit>
+        get() = view!!.toolbar.kebabMenu.clicks()
+
     override var isPasswordVisible: Boolean = false
         set(value) {
             assertOnUiThread()
@@ -79,9 +83,18 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         }
     }
 
+    override fun updateKebabMenu() {
+//        sortItemsAdapter.setSelection(sortMenuOptions.indexOf(sort))
+        spinner.setSelection(0, false)
+//        scrollToTop()
+    }
+
     override fun updateItem(item: ItemDetailViewModel) {
         assertOnUiThread()
+        toolbar.elevation = resources.getDimension(R.dimen.larger_toolbar_elevation)
         toolbar.title = item.title
+//        val menuIcon = resources.getDrawable(R.drawable.ic_menu_kebab)
+//        toolbar.kebabMenu.
 
         inputLayoutHostname.isHintAnimationEnabled = false
         inputLayoutUsername.isHintAnimationEnabled = false

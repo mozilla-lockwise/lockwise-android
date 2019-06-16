@@ -14,13 +14,45 @@
         android:id="@+id/fragment_item_detail"
         android:background="@color/background_grey" >
 
-    <include layout="@layout/include_backable"/>
     <include layout="@layout/fragment_warning"
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
              app:layout_constraintTop_toBottomOf="@id/toolbar"
              app:layout_constraintBottom_toTopOf="@id/cardView"
              tools:text="@string/no_internet_connection"/>
+    <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:theme="@style/ToolBar"
+            app:layout_constraintTop_toTopOf="parent">
+        <!--<LinearLayout-->
+                <!--android:orientation="horizontal"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_marginStart="250dp">-->
+            <!--<Spinner-->
+                    <!--android:id="@+id/kebabMenu"-->
+                    <!--android:layout_width="100dp"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:textAllCaps="false"-->
+                    <!--android:drawableEnd="@drawable/ic_menu_kebab"-->
+                    <!--android:paddingStart="160dp"-->
+                    <!--android:paddingEnd="16dp"-->
+                    <!--android:contentDescription="@string/kebab_menu"-->
+                    <!--android:overlapAnchor="false"-->
+                    <!--android:popupElevation="8dp"-->
+                    <!--android:dropDownWidth="150dp"-->
+                    <!--android:dropDownSelector="@color/selection"-->
+                    <!--android:spinnerMode="dropdown"-->
+                    <!--android:popupBackground="@drawable/sort_menu_bg"-->
+                    <!--android:textSize="20sp"-->
+                    <!--android:background="@null"-->
+                    <!--style="@style/PopupTheme"/>-->
+        <!--</LinearLayout>-->
+
+    </androidx.appcompat.widget.Toolbar>
 
     <androidx.cardview.widget.CardView
             xmlns:card_view="http://schemas.android.com/apk/res-auto"
