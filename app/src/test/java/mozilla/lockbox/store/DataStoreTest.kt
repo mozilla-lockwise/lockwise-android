@@ -23,7 +23,6 @@ import mozilla.lockbox.support.TimingSupport
 import mozilla.lockbox.support.asOptional
 import org.junit.Assert
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito
@@ -326,7 +325,6 @@ class DataStoreTest : DisposingTest() {
         verify(timingSupport).storeNextAutoLockTime()
     }
 
-    @Ignore("Todo: this test is failing.")
     @Test
     fun `receiving autofill end actions when locked`() {
         val stateIterator = this.subject.state.blockingIterable().iterator()

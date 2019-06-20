@@ -25,9 +25,11 @@ import mozilla.lockbox.autofill.ViewNodeNavigator
 import mozilla.lockbox.extensions.dump
 import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.AutofillStore
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.TelemetryStore
+import mozilla.lockbox.support.FxASyncDataStoreSupport
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.PublicSuffixSupport
 import mozilla.lockbox.support.asOptional
@@ -36,7 +38,8 @@ import mozilla.lockbox.support.isDebug
 @RequiresApi(Build.VERSION_CODES.O)
 @ExperimentalCoroutinesApi
 class LockboxAutofillService(
-    val dataStore: DataStore = DataStore.shared,
+    private val accountStore: AccountStore = AccountStore.shared,
+    private val fxaSupport: FxASyncDataStoreSupport = FxASyncDataStoreSupport.shared,
     private val telemetryStore: TelemetryStore = TelemetryStore.shared,
     private val autofillStore: AutofillStore = AutofillStore.shared,
     val dispatcher: Dispatcher = Dispatcher.shared
@@ -44,10 +47,14 @@ class LockboxAutofillService(
 
     private var compositeDisposable = CompositeDisposable()
     private val pslSupport = PublicSuffixSupport.shared
+    lateinit var dataStore: DataStore
 
     override fun onConnected() {
         dispatcher.dispatch(LifecycleAction.AutofillStart)
         telemetryStore.injectContext(this)
+        accountStore.injectContext(this)
+        fxaSupport.injectContext(this)
+        dataStore = DataStore.shared
     }
 
     override fun onDisconnected() {
