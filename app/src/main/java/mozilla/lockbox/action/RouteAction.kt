@@ -35,8 +35,11 @@ open class RouteAction(
         @StringRes val dialogTitle: Int,
         @StringRes val dialogSubtitle: Int? = null
     ) : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.dialog) {
-        class FingerprintDialog(@StringRes title: Int, @StringRes subtitle: Int? = null) :
-            DialogFragment(dialogTitle = title, dialogSubtitle = subtitle)
+        class FingerprintDialog(@StringRes title: Int, @StringRes subtitle: Int? = null)
+            : DialogFragment(dialogTitle = title, dialogSubtitle = subtitle)
+
+        class DeleteConfirmationDialog(@StringRes title: Int, @StringRes subtitle: Int? = null)
+            : DialogFragment(dialogTitle = title, dialogSubtitle = subtitle)
 
         object AutofillSearchDialog : DialogFragment(R.string.autofill)
     }

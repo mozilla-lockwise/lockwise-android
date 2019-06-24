@@ -17,7 +17,7 @@ interface TelemetryAction : Action {
     val extras: Map<String, Any>?
         get() = null
 
-    open fun createEvent(category: String = "action"): TelemetryEvent {
+    fun createEvent(category: String = "action"): TelemetryEvent {
         val evt = TelemetryEvent.create(
                 category,
                 eventMethod.name,
@@ -93,5 +93,6 @@ enum class TelemetryEventObject {
     filter,
     back,
     dialog,
-    datastore
+    datastore,
+    delete_credential
 }

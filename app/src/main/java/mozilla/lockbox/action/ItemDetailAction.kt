@@ -6,10 +6,15 @@
 
 package mozilla.lockbox.action
 
+import mozilla.appservices.logins.ServerPassword
+
 sealed class ItemDetailAction(
     override val eventMethod: TelemetryEventMethod,
     override val eventObject: TelemetryEventObject
 ) : TelemetryAction {
+
     data class TogglePassword(val displayed: Boolean)
         : ItemDetailAction(TelemetryEventMethod.tap, TelemetryEventObject.reveal_password)
+    data class Delete(val itemId: String?)
+        : ItemDetailAction(TelemetryEventMethod.tap, TelemetryEventObject.delete_credential)
 }

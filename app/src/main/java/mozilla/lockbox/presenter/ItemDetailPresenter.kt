@@ -84,13 +84,13 @@ class ItemDetailPresenter(
             }
         }
 
-        this.view.kebabMenuClicks
-            .map { ItemDetailAction.Delete }
-            .subscribe {
-                view.updateKebabMenu()
-                dispatcher.dispatch(RouteAction.DialogFragment.DeleteConfirmation)
-            }
-            .addTo(compositeDisposable)
+//        this.view.kebabMenuClicks
+//            .map { ItemDetailAction.Delete(itemId) }
+//            .subscribe {
+//                view.updateKebabMenu()
+//                dispatcher.dispatch(RouteAction.DialogFragment.DeleteConfirmationDialog(R.string.delete, R.string.delete_confirmation))
+//            }
+//            .addTo(compositeDisposable)
 
         this.view.learnMoreClicks
             .map { AppWebPageAction.FaqEdit }

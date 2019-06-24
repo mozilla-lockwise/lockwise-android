@@ -20,38 +20,65 @@
              app:layout_constraintTop_toBottomOf="@id/toolbar"
              app:layout_constraintBottom_toTopOf="@id/cardView"
              tools:text="@string/no_internet_connection"/>
+
     <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             android:theme="@style/ToolBar"
-            app:layout_constraintTop_toTopOf="parent">
-        <!--<LinearLayout-->
-                <!--android:orientation="horizontal"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:layout_marginStart="250dp">-->
-            <!--<Spinner-->
-                    <!--android:id="@+id/kebabMenu"-->
-                    <!--android:layout_width="100dp"-->
-                    <!--android:layout_height="match_parent"-->
-                    <!--android:textAllCaps="false"-->
-                    <!--android:drawableEnd="@drawable/ic_menu_kebab"-->
-                    <!--android:paddingStart="160dp"-->
-                    <!--android:paddingEnd="16dp"-->
-                    <!--android:contentDescription="@string/kebab_menu"-->
-                    <!--android:overlapAnchor="false"-->
-                    <!--android:popupElevation="8dp"-->
-                    <!--android:dropDownWidth="150dp"-->
-                    <!--android:dropDownSelector="@color/selection"-->
-                    <!--android:spinnerMode="dropdown"-->
-                    <!--android:popupBackground="@drawable/sort_menu_bg"-->
-                    <!--android:textSize="20sp"-->
-                    <!--android:background="@null"-->
-                    <!--style="@style/PopupTheme"/>-->
-        <!--</LinearLayout>-->
-
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent">
+                <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/entryTitle"
+                        android:textSize="20sp"
+                        android:fontFamily="sans-serif-medium"
+                        android:textStyle="normal"
+                        android:textColor="@color/text_white"
+                        android:letterSpacing="0.01"
+                        android:layout_gravity="center_vertical"
+                        app:layout_constraintStart_toStartOf="@id/toolbar"
+                        app:layout_constraintEnd_toStartOf="@id/kebabMenu"
+                        app:layout_constraintTop_toTopOf="@id/toolbar"
+                        app:layout_constraintBottom_toBottomOf="@id/toolbar"
+                />
+                <Spinner
+                        android:id="@+id/kebabMenu"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:textAllCaps="false"
+                        android:drawableEnd="@drawable/ic_menu_kebab"
+                        android:paddingStart="160dp"
+                        android:paddingEnd="16dp"
+                        android:contentDescription="@string/kebab_menu"
+                        android:overlapAnchor="false"
+                        android:popupElevation="8dp"
+                        android:dropDownWidth="150dp"
+                        android:dropDownSelector="@color/selection"
+                        android:spinnerMode="dropdown"
+                        android:popupBackground="@drawable/sort_menu_bg"
+                        android:textSize="20sp"
+                        android:background="@null"
+                        style="@style/PopupTheme"
+                        app:layout_constraintStart_toEndOf="@id/entryTitle"
+                        app:layout_constraintEnd_toEndOf="@id/toolbar"
+                />
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.appcompat.widget.Toolbar>
 
     <androidx.cardview.widget.CardView

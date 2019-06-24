@@ -24,6 +24,7 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.view.AppWebPageFragmentArgs
+import mozilla.lockbox.view.DeleteDialogFragment
 import mozilla.lockbox.view.FingerprintAuthDialogFragment
 import mozilla.lockbox.view.ItemDetailFragmentArgs
 
@@ -88,6 +89,8 @@ class AppRoutePresenter(
             is RouteAction.AutoLockSetting -> showAutoLockSelections()
             is RouteAction.DialogFragment.FingerprintDialog ->
                 showDialogFragment(FingerprintAuthDialogFragment(), action)
+            is RouteAction.DialogFragment.DeleteConfirmationDialog ->
+                showDialogFragment(DeleteDialogFragment(), action)
             is DialogAction -> showDialog(action)
             is AppWebPageAction -> navigateToFragment(R.id.fragment_webview, bundle(action))
         }

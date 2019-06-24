@@ -14,16 +14,20 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.EditText
+import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
 import kotlinx.android.synthetic.main.fragment_item_detail.*
 import kotlinx.android.synthetic.main.fragment_item_detail.view.*
+import kotlinx.android.synthetic.main.fragment_item_list.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
 import mozilla.lockbox.action.Setting
+import mozilla.lockbox.adapter.SortItemAdapter
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.presenter.ItemDetailPresenter
 import mozilla.lockbox.presenter.ItemDetailView
@@ -45,6 +49,13 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         presenter = ItemDetailPresenter(this, itemId)
         return inflater.inflate(R.layout.fragment_item_detail, container, false)
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupSpinner(view)
+    }
+
+    private lateinit var spinner: Spinner
 
     private val errorHelper = NetworkErrorHelper()
 
@@ -73,6 +84,33 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
             updatePasswordVisibility(value)
         }
 
+    private fun setupSpinner(view: View) {
+//        val sortList = ArrayList<Setting.ItemListSort>()
+//        sortList.add(Setting.ItemListSort.ALPHABETICALLY)
+//        sortList.add(Setting.ItemListSort.RECENTLY_USED)
+        spinner = view.kebabMenu
+//        sortItemsAdapter = SortItemAdapter(context!!, android.R.layout.simple_spinner_item, sortList)
+//        spinner.adapter = sortItemsAdapter
+        spinner.setPopupBackgroundResource(R.drawable.sort_menu_bg)
+
+        // added because different events can trigger onItemSelectedListener
+//        spinner.setOnTouchListener { _, _ ->
+//            userSelection = true
+//            false
+//        }
+//        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+//            override fun onNothingSelected(parent: AdapterView<*>?) {
+//            }
+//
+//            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+//                if (userSelection) {
+//                    sortItemsAdapter.setSelection(position)
+//                    _sortItemSelection.onNext(sortMenuOptions[position])
+//                }
+//            }
+//        }
+    }
+
     private fun updatePasswordVisibility(visible: Boolean) {
         if (visible) {
             inputPassword.transformationMethod = null
@@ -93,6 +131,8 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         assertOnUiThread()
         toolbar.elevation = resources.getDimension(R.dimen.larger_toolbar_elevation)
         toolbar.title = item.title
+        toolbar.entryTitle.text = item.title
+        toolbar.entryTitle.gravity = Gravity.CENTER_VERTICAL
 //        val menuIcon = resources.getDrawable(R.drawable.ic_menu_kebab)
 //        toolbar.kebabMenu.
 
