@@ -142,7 +142,7 @@
     <Button
             android:id="@+id/skipButton"
             android:layout_width="wrap_content"
-            android:layout_height="36dp"
+            android:layout_height="wrap_content"
             android:gravity="center_horizontal|center_vertical"
             android:text="@string/onboarding_skip"
             android:textAllCaps="true"
