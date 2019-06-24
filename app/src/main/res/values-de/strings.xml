@@ -252,4 +252,5 @@
 
     <!-- This is the placeholder text for an empty or null username. -->
     <string name="no_username">(Kein Benutzername)</string>
+    <string name="sync_timed_out">Zeitüberschreitung bei Synchronisation</string>
 </resources>

@@ -250,4 +250,5 @@
 
     <!-- This is the placeholder text for an empty or null username. -->
     <string name="no_username">(aucun nom d’utilisateur)</string>
+    <string name="sync_timed_out">Délai de synchronisation dépassé</string>
 </resources>
