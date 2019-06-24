@@ -227,6 +227,8 @@ open class AccountStore(
     }
 
     private fun clear() {
+        removeDeviceFromFxA()
+
         if (Looper.myLooper() != null) {
             CookieManager.getInstance().removeAllCookies { }
             WebStorage.getInstance().deleteAllData()
@@ -237,8 +239,18 @@ open class AccountStore(
 
         webView.clearCache(true)
         clearLogs()
+    }
 
-        dispatcher.dispatch(DataStoreAction.Reset)
+    private fun removeDeviceFromFxA() {
+        if (fxa != null) {
+            fxa!!.deviceConstellation()
+                .destroyCurrentDeviceAsync()
+                .asSingle(coroutineContext)
+                .subscribe()
+                .addTo(compositeDisposable)
+        } else {
+            log.info("FxA is null. No devices to disconnect.")
+        }
     }
 
     private fun clearLogs() {

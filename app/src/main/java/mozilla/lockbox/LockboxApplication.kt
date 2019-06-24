@@ -31,7 +31,7 @@ import mozilla.lockbox.store.SentryStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.store.TelemetryStore
 import mozilla.lockbox.support.AdjustSupport
-import mozilla.lockbox.support.AutoLockSupport
+import mozilla.lockbox.support.TimingSupport
 import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.FxASyncDataStoreSupport
 import mozilla.lockbox.support.PublicSuffixSupport
@@ -80,12 +80,14 @@ open class LockboxApplication : Application() {
         LockboxMegazord.init(lazy { HttpURLConnectionClient() })
         RustLog.enable()
 
+        FxASyncDataStoreSupport.shared.injectContext(this)
+
         // This list of stores need to be constructed
         // in the given order. e.g. AccountStore dispatches DataStoreActions.
         val orderedStores = listOf(
             DataStore.shared,
             AccountStore.shared,
-            AutoLockSupport.shared,
+            TimingSupport.shared,
             LockedStore.shared
         )
         orderedStores.forEach {
@@ -98,10 +100,9 @@ open class LockboxApplication : Application() {
             FingerprintStore.shared,
             SettingStore.shared,
             SecurePreferences.shared,
-            FxASyncDataStoreSupport.shared,
             ClipboardStore.shared,
             NetworkStore.shared,
-            AutoLockSupport.shared,
+            TimingSupport.shared,
             AccountStore.shared,
             TelemetryStore.shared,
             SentryStore.shared,

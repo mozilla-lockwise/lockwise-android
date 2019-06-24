@@ -14,7 +14,6 @@ import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.arch.core.util.Cancellable
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
@@ -37,6 +36,7 @@ abstract class RoutePresenter(
     private val dispatcher: Dispatcher,
     private val routeStore: RouteStore
 ) : Presenter() {
+
     lateinit var navController: NavController
 
     open val navHostFragmentManager: FragmentManager
@@ -51,23 +51,32 @@ abstract class RoutePresenter(
             return navHostFragmentManager.fragments.lastOrNull()
         }
 
-    private val backListener = OnBackPressedCallback {
-        dispatcher.dispatch(RouteAction.InternalBack)
-        false
+    class BackPressedCallback(
+        val enabled: Boolean = false,
+        val dispatcher: Dispatcher
+    ) : OnBackPressedCallback(enabled) {
+        override fun handleOnBackPressed() {
+            dispatcher.dispatch(RouteAction.InternalBack)
+        }
     }
 
-    private var backListenerCancellable: Cancellable? = null
+    private val onBackPressedDispatcher = activity.onBackPressedDispatcher
+
+    private val callback = BackPressedCallback(false, dispatcher)
+
+    override fun onViewReady() {
+        super.onViewReady()
+        onBackPressedDispatcher.addCallback(activity, callback)
+    }
 
     override fun onPause() {
         super.onPause()
-        backListenerCancellable?.cancel()
-        backListenerCancellable = null
         compositeDisposable.clear()
     }
 
     override fun onResume() {
         super.onResume()
-        backListenerCancellable = activity.onBackPressedDispatcher.addCallback(activity, backListener)
+        onBackPressedDispatcher.addCallback(activity, callback)
     }
 
     protected abstract fun route(action: RouteAction)
