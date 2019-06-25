@@ -10,10 +10,6 @@ sealed class ItemDetailAction(
     override val eventMethod: TelemetryEventMethod,
     override val eventObject: TelemetryEventObject
 ) : TelemetryAction {
-
     data class TogglePassword(val displayed: Boolean)
         : ItemDetailAction(TelemetryEventMethod.tap, TelemetryEventObject.reveal_password)
-
-    data class EntryMenu(val itemId: Setting.EditItemMenu)
-        : ItemDetailAction(TelemetryEventMethod.tap, TelemetryEventObject.entry_kebab)
 }

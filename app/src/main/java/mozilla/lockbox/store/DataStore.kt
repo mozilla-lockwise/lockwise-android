@@ -4,7 +4,6 @@
 
 package mozilla.lockbox.store
 
-import androidx.annotation.StringRes
 import com.jakewharton.rxrelay2.BehaviorRelay
 import com.jakewharton.rxrelay2.ReplayRelay
 import io.reactivex.Observable
@@ -21,11 +20,9 @@ import mozilla.appservices.logins.SyncAuthInvalidException
 import mozilla.appservices.logins.SyncUnlockInfo
 import mozilla.components.service.sync.logins.AsyncLoginsStorage
 import mozilla.lockbox.action.DataStoreAction
-import mozilla.lockbox.action.ItemDetailAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.SentryAction
-import mozilla.lockbox.action.Setting
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.log
@@ -122,27 +119,16 @@ open class DataStore(
             .addTo(compositeDisposable)
 
         setupAutoLock()
-
-        dispatcher.register
-            .filterByType(ItemDetailAction.EntryMenu::class.java)
-            .subscribe {
-                when (it.itemId) {
-                    Setting.EditItemMenu.DELETE -> {
-
-                        deleteCredentials(it.itemId.titleId)
-                    }
-                    Setting.EditItemMenu.EDIT -> editEntry()
-                }
-            }
-            .addTo(compositeDisposable)
     }
 
-    private fun deleteCredentials(@StringRes itemId: Int) {
+    private fun deleteCredentials(itemId: String?) {
         try {
-            backend.delete(itemId)
-                .asSingle(coroutineContext)
-                .subscribe()
-                .addTo(compositeDisposable)
+            if (itemId != null) {
+                backend.delete(itemId)
+                    .asSingle(coroutineContext)
+                    .subscribe()
+                    .addTo(compositeDisposable)
+            }
         } catch (loginsStorageException: LoginsStorageException) {
             log.error("Exception: ", loginsStorageException)
         }

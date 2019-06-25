@@ -3,17 +3,17 @@ package mozilla.lockbox.adapter
 import android.content.Context
 import android.graphics.Color
 import android.view.View
-import android.widget.TextView
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.TextView
 import mozilla.lockbox.R
-import mozilla.lockbox.action.Setting
+import mozilla.lockbox.action.RouteAction
 
 class DeleteItemAdapter(
     context: Context,
     textViewResourceId: Int,
-    val values: ArrayList<Setting.EditItemMenu>
-) : ArrayAdapter<Setting.EditItemMenu>(context, textViewResourceId, values) {
+    val values: ArrayList<RouteAction.EditItemMenu>
+) : ArrayAdapter<RouteAction.EditItemMenu>(context, textViewResourceId, values) {
 
     private var selectedIndex = -1
 

@@ -35,10 +35,15 @@ open class RouteAction(
         @StringRes val dialogTitle: Int,
         @StringRes val dialogSubtitle: Int? = null
     ) : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.dialog) {
-        class FingerprintDialog(@StringRes title: Int, @StringRes subtitle: Int? = null)
-            : DialogFragment(dialogTitle = title, dialogSubtitle = subtitle)
+        class FingerprintDialog(@StringRes title: Int, @StringRes subtitle: Int? = null) :
+            DialogFragment(dialogTitle = title, dialogSubtitle = subtitle)
 
         object AutofillSearchDialog : DialogFragment(R.string.autofill)
+    }
+
+    enum class EditItemMenu(@StringRes val titleId: Int) {
+        EDIT(R.string.edit),
+        DELETE(R.string.delete)
     }
 
     open class SystemIntent(

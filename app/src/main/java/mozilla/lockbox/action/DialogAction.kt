@@ -47,7 +47,9 @@ sealed class DialogAction(
             ),
             listOf(RouteAction.Login)
     )
-    object DeleteConfirmationDialog : DialogAction(
+    data class DeleteConfirmationDialog(
+        val itemId: String?
+    ) : DialogAction(
             DialogViewModel(
                 R.string.delete_this_login,
                 R.string.delete_description,
@@ -55,11 +57,8 @@ sealed class DialogAction(
                 R.string.delete
             ),
             listOf(
-
-            ),
-            listOf(
-                DataStoreAction.Delete,
-                RouteAction.ItemList
+                DataStoreAction.Delete(itemId),
+                ItemList
             )
     )
 }

@@ -6,7 +6,6 @@
 
 package mozilla.lockbox.presenter
 
-import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
@@ -17,14 +16,13 @@ import mozilla.lockbox.R
 import mozilla.lockbox.action.AppWebPageAction
 import mozilla.lockbox.action.ClipboardAction
 import mozilla.lockbox.action.DataStoreAction
+import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.ItemDetailAction
 import mozilla.lockbox.action.RouteAction
-import mozilla.lockbox.action.Setting
 import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.extensions.toDetailViewModel
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
-import mozilla.lockbox.log
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.ItemDetailStore
@@ -41,10 +39,11 @@ interface ItemDetailView {
     fun updateItem(item: ItemDetailViewModel)
     fun showToastNotification(@StringRes strId: Int)
     fun handleNetworkError(networkErrorVisibility: Boolean)
-    fun updateKebabMenu(sort: Setting.EditItemMenu)
-    val menuItemSelection: Observable<Setting.EditItemMenu>
+    fun updateKebabMenu(sort: RouteAction.EditItemMenu)
+    val menuItemSelection: Observable<RouteAction.EditItemMenu>
     //    val retryNetworkConnectionClicks: Observable<Unit>
 }
+
 @ExperimentalCoroutinesApi
 class ItemDetailPresenter(
     private val view: ItemDetailView,
@@ -86,19 +85,11 @@ class ItemDetailPresenter(
         }
 
         view.menuItemSelection
-            .map {menuItem ->
-                ItemDetailAction.EntryMenu(menuItem)
+            .map {
+                DialogAction.DeleteConfirmationDialog(itemId)
             }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
-
-//        this.view.kebabMenuClicks
-//            .map { ItemDetailAction.Delete(itemId) }
-//            .subscribe {
-//                view.updateKebabMenu()
-//                dispatcher.dispatch(RouteAction.DialogFragment.DeleteConfirmationDialog(R.string.delete, R.string.delete_confirmation))
-//            }
-//            .addTo(compositeDisposable)
 
         this.view.learnMoreClicks
             .map { AppWebPageAction.FaqEdit }
@@ -141,6 +132,4 @@ class ItemDetailPresenter(
         }
             .addTo(compositeDisposable)
     }
-
 }
-
