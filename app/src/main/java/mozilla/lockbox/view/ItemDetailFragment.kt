@@ -21,13 +21,13 @@ import android.widget.TextView
 import android.widget.Toast
 import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_item_detail.*
 import kotlinx.android.synthetic.main.fragment_item_detail.view.*
-import kotlinx.android.synthetic.main.fragment_item_list.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
 import mozilla.lockbox.action.Setting
-import mozilla.lockbox.adapter.SortItemAdapter
+import mozilla.lockbox.adapter.DeleteItemAdapter
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.presenter.ItemDetailPresenter
 import mozilla.lockbox.presenter.ItemDetailView
@@ -56,6 +56,8 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
     }
 
     private lateinit var spinner: Spinner
+    private lateinit var itemAdapter: DeleteItemAdapter
+    private var userSelection = false
 
     private val errorHelper = NetworkErrorHelper()
 
@@ -84,31 +86,37 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
             updatePasswordVisibility(value)
         }
 
+    private var _menuItemSelection = PublishSubject.create<Setting.EditItemMenu>()
+    override val menuItemSelection: Observable<Setting.EditItemMenu> = _menuItemSelection
+
+    private val menuOptions: Array<Setting.EditItemMenu>
+        get() = Setting.EditItemMenu.values()
+
     private fun setupSpinner(view: View) {
-//        val sortList = ArrayList<Setting.ItemListSort>()
-//        sortList.add(Setting.ItemListSort.ALPHABETICALLY)
-//        sortList.add(Setting.ItemListSort.RECENTLY_USED)
+        val sortList = ArrayList<Setting.EditItemMenu>()
+        sortList.add(Setting.EditItemMenu.EDIT)
+        sortList.add(Setting.EditItemMenu.DELETE)
         spinner = view.kebabMenu
-//        sortItemsAdapter = SortItemAdapter(context!!, android.R.layout.simple_spinner_item, sortList)
-//        spinner.adapter = sortItemsAdapter
+        itemAdapter = DeleteItemAdapter(context!!, android.R.layout.simple_spinner_item, sortList)
+        spinner.adapter = itemAdapter
         spinner.setPopupBackgroundResource(R.drawable.sort_menu_bg)
 
         // added because different events can trigger onItemSelectedListener
-//        spinner.setOnTouchListener { _, _ ->
-//            userSelection = true
-//            false
-//        }
-//        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-//            override fun onNothingSelected(parent: AdapterView<*>?) {
-//            }
-//
-//            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-//                if (userSelection) {
-//                    sortItemsAdapter.setSelection(position)
-//                    _sortItemSelection.onNext(sortMenuOptions[position])
-//                }
-//            }
-//        }
+        spinner.setOnTouchListener { _, _ ->
+            userSelection = true
+            false
+        }
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                if (userSelection) {
+                    itemAdapter.setSelection(position)
+                    _menuItemSelection.onNext(menuOptions[position])
+                }
+            }
+        }
     }
 
     private fun updatePasswordVisibility(visible: Boolean) {
@@ -121,10 +129,9 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         }
     }
 
-    override fun updateKebabMenu() {
-//        sortItemsAdapter.setSelection(sortMenuOptions.indexOf(sort))
+    override fun updateKebabMenu(sort: Setting.EditItemMenu) {
+        itemAdapter.setSelection(menuOptions.indexOf(sort))
         spinner.setSelection(0, false)
-//        scrollToTop()
     }
 
     override fun updateItem(item: ItemDetailViewModel) {
@@ -133,8 +140,6 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         toolbar.title = item.title
         toolbar.entryTitle.text = item.title
         toolbar.entryTitle.gravity = Gravity.CENTER_VERTICAL
-//        val menuIcon = resources.getDrawable(R.drawable.ic_menu_kebab)
-//        toolbar.kebabMenu.
 
         inputLayoutHostname.isHintAnimationEnabled = false
         inputLayoutUsername.isHintAnimationEnabled = false

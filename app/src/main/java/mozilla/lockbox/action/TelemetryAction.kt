@@ -53,7 +53,9 @@ enum class TelemetryEventMethod {
     autofill_multiple,
     autofill_cancel,
     autofill_error,
-    autofill_filter
+    autofill_filter,
+    delete,
+    edit
 }
 
 enum class TelemetryEventObject {
@@ -94,5 +96,7 @@ enum class TelemetryEventObject {
     back,
     dialog,
     datastore,
-    delete_credential
+    delete_credential,
+    edit_credential,
+    entry_kebab
 }

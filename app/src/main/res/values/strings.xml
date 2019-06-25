@@ -265,7 +265,8 @@
     <!-- This is the text on a button to delete a login. -->
     <string name="delete">Delete</string>
     <!-- This is the confirmation message title seen when attempting to delete a login. -->
-    <string name="delete_confirmation">Delete this login?</string>
+    <string name="delete_this_login">Delete this login?</string>
     <!-- This is the description for the deletion dialog. -->
     <string name="delete_description">This will delete the login from both Lockwise and Firefox.</string>
+    <string name="edit">Edit</string>
 </resources>

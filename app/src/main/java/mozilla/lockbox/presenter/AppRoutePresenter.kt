@@ -89,8 +89,6 @@ class AppRoutePresenter(
             is RouteAction.AutoLockSetting -> showAutoLockSelections()
             is RouteAction.DialogFragment.FingerprintDialog ->
                 showDialogFragment(FingerprintAuthDialogFragment(), action)
-            is RouteAction.DialogFragment.DeleteConfirmationDialog ->
-                showDialogFragment(DeleteDialogFragment(), action)
             is DialogAction -> showDialog(action)
             is AppWebPageAction -> navigateToFragment(R.id.fragment_webview, bundle(action))
         }

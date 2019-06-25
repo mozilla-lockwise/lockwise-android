@@ -24,17 +24,13 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_fingerprint_dialog.view.*
 import mozilla.lockbox.R
-import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.presenter.DeleteDialogPresenter
 import mozilla.lockbox.presenter.DeleteDialogView
-import mozilla.lockbox.presenter.FingerprintDialogPresenter
-import mozilla.lockbox.presenter.FingerprintDialogView
-import mozilla.lockbox.support.Constant
 
 class DeleteDialogFragment : DialogFragment(), DeleteDialogView {
     private val compositeDisposable = CompositeDisposable()
     private val _dismiss = PublishSubject.create<Unit>()
-//    override val onDismiss: Observable<Unit> get() = _dismiss
+    override val onDismiss: Observable<Unit> get() = _dismiss
     private var titleId: Int? = null
     private var subtitleId: Int? = null
 
@@ -81,4 +77,41 @@ class DeleteDialogFragment : DialogFragment(), DeleteDialogView {
         this.subtitleId = subtitleId
     }
 
+    override fun onSucceeded() {
+//        view!!.fingerprintStatus.run {
+//            removeCallbacks(resetErrorTextRunnable)
+//            setTextColor(resources.getColor(R.color.green, null))
+//            text = getString(R.string.fingerprint_success)
+//        }
+//        view!!.imageView.run {
+//            setImageResource(R.drawable.ic_fingerprint_success)
+//            postDelayed({
+//                _authCallback.onNext(FingerprintAuthAction.OnSuccess)
+//                isEnablingDismissed = false
+//                dismissAllowingStateLoss()
+//            }, Constant.FingerprintTimeout.successDelayMillis)
+//        }
+    }
+
+    override fun onFailed(error: String?) {
+//        showError(error ?: getString(R.string.fingerprint_not_recognized))
+    }
+
+//    private fun showError(error: CharSequence) {
+//        view!!.imageView.setImageResource(R.drawable.ic_fingerprint_fail)
+//        view!!.fingerprintStatus.run {
+//            text = error
+//            setTextColor(resources.getColor(R.color.red, null))
+//            removeCallbacks(resetErrorTextRunnable)
+//            postDelayed(resetErrorTextRunnable, Constant.FingerprintTimeout.errorTimeoutMillis)
+//        }
+//    }
+
+    override fun onError(error: String?) {
+//        showError(error ?: getString(R.string.fingerprint_sensor_error))
+//        view!!.imageView.postDelayed({
+//            _authCallback.onNext(FingerprintAuthAction.OnError)
+//            dismiss()
+//        }, Constant.FingerprintTimeout.errorTimeoutMillis)
+    }
 }

@@ -8,26 +8,30 @@ package mozilla.lockbox.presenter
 
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.FingerprintAuthAction
 import mozilla.lockbox.action.FingerprintSensorAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
+import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.FingerprintStore.AuthenticationState
+import mozilla.lockbox.store.ItemDetailStore
+import mozilla.lockbox.store.RouteStore
 
 interface DeleteDialogView {
-//    fun onSucceeded()
-//    fun onFailed(error: String?)
-//    fun onError(error: String?)
+    fun onSucceeded()
+    fun onFailed(error: String?)
+    fun onError(error: String?)
 //    val authCallback: Observable<FingerprintAuthAction>
-//    val onDismiss: Observable<Unit>
+    val onDismiss: Observable<Unit>
 }
 
+@ExperimentalCoroutinesApi
 class DeleteDialogPresenter(
     private val view: DeleteDialogView,
-    private val dispatcher: Dispatcher = Dispatcher.shared
-//    ,
-//    private val fingerprintStore: FingerprintStore = FingerprintStore.shared
+    private val dispatcher: Dispatcher = Dispatcher.shared,
+    private val dataStore: DataStore.Companion
 ) : Presenter() {
 
     override fun onViewReady() {
@@ -39,9 +43,12 @@ class DeleteDialogPresenter(
 //            .subscribe(dispatcher::dispatch)
 //            .addTo(compositeDisposable)
 //
-//        view.onDismiss
-//            .subscribe { dispatcher.dispatch(FingerprintAuthAction.OnCancel) }
-//            .addTo(compositeDisposable)
+        view.onDismiss
+            .subscribe { dispatcher.dispatch(FingerprintAuthAction.OnCancel) }
+            .addTo(compositeDisposable)
+
+        view.onSucceeded()
+            .subscribe()
     }
 
     override fun onResume() {
@@ -54,11 +61,11 @@ class DeleteDialogPresenter(
         dispatcher.dispatch(FingerprintSensorAction.Stop)
     }
 
-//    private fun updateState(state: AuthenticationState) {
-//        when (state) {
-//            is AuthenticationState.Succeeded -> view.onSucceeded()
-//            is AuthenticationState.Failed -> view.onFailed(state.error)
-//            is AuthenticationState.Error -> view.onError(state.error)
-//        }
-//    }
+    private fun updateState(state: AuthenticationState) {
+        when (state) {
+            is AuthenticationState.Succeeded -> view.onSucceeded()
+            is AuthenticationState.Failed -> view.onFailed(state.error)
+            is AuthenticationState.Error -> view.onError(state.error)
+        }
+    }
 }

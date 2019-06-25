@@ -36,7 +36,7 @@
             android:layout_marginEnd="51dp"
             android:fontFamily="sans-serif"
             android:lineSpacingExtra="8.5sp"
-            android:text="@string/delete_confirmation"
+            android:text="@string/delete_this_login"
             android:textColor="@color/text_ink"
             android:textSize="17sp"
             android:textStyle="normal"

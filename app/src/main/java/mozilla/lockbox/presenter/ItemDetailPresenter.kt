@@ -6,6 +6,7 @@
 
 package mozilla.lockbox.presenter
 
+import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
@@ -23,6 +24,7 @@ import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.extensions.toDetailViewModel
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
+import mozilla.lockbox.log
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.ItemDetailStore
@@ -39,11 +41,10 @@ interface ItemDetailView {
     fun updateItem(item: ItemDetailViewModel)
     fun showToastNotification(@StringRes strId: Int)
     fun handleNetworkError(networkErrorVisibility: Boolean)
-    fun updateKebabMenu()
-
+    fun updateKebabMenu(sort: Setting.EditItemMenu)
+    val menuItemSelection: Observable<Setting.EditItemMenu>
     //    val retryNetworkConnectionClicks: Observable<Unit>
 }
-
 @ExperimentalCoroutinesApi
 class ItemDetailPresenter(
     private val view: ItemDetailView,
@@ -83,6 +84,13 @@ class ItemDetailPresenter(
                 dispatcher.dispatch(RouteAction.OpenWebsite(it.hostname))
             }
         }
+
+        view.menuItemSelection
+            .map {menuItem ->
+                ItemDetailAction.EntryMenu(menuItem)
+            }
+            .subscribe(dispatcher::dispatch)
+            .addTo(compositeDisposable)
 
 //        this.view.kebabMenuClicks
 //            .map { ItemDetailAction.Delete(itemId) }
@@ -129,8 +137,10 @@ class ItemDetailPresenter(
 
     private fun handleClicks(clicks: Observable<Unit>, withServerPassword: (ServerPassword) -> Unit) {
         clicks.subscribe {
-                this.credentials?.let { password -> withServerPassword(password) }
-            }
+            this.credentials?.let { password -> withServerPassword(password) }
+        }
             .addTo(compositeDisposable)
     }
+
 }
+

@@ -46,5 +46,20 @@ sealed class DialogAction(
                 RouteAction.Login
             ),
             listOf(RouteAction.Login)
-        )
+    )
+    object DeleteConfirmationDialog : DialogAction(
+            DialogViewModel(
+                R.string.delete_this_login,
+                R.string.delete_description,
+                R.string.cancel,
+                R.string.delete
+            ),
+            listOf(
+
+            ),
+            listOf(
+                DataStoreAction.Delete,
+                RouteAction.ItemList
+            )
+    )
 }

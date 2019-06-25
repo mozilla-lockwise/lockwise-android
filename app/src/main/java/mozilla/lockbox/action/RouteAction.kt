@@ -38,9 +38,6 @@ open class RouteAction(
         class FingerprintDialog(@StringRes title: Int, @StringRes subtitle: Int? = null)
             : DialogFragment(dialogTitle = title, dialogSubtitle = subtitle)
 
-        class DeleteConfirmationDialog(@StringRes title: Int, @StringRes subtitle: Int? = null)
-            : DialogFragment(dialogTitle = title, dialogSubtitle = subtitle)
-
         object AutofillSearchDialog : DialogFragment(R.string.autofill)
     }
 
