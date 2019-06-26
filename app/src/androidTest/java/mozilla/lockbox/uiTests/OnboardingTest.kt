@@ -37,6 +37,12 @@ open class OnboardingTest {
     }
 
     @Test
+    fun testFxALogin() {
+        // There is a check that the view is correct
+        navigator.gotoFxALogin()
+    }
+
+    @Test
     fun testOnboardingConfirmation() {
         navigator.gotoOnboardingConfirmation()
         onboardingConfirmationScreen { clickFinish() }
