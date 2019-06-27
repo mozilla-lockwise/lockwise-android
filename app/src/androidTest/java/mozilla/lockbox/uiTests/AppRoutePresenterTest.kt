@@ -31,12 +31,6 @@ open class AppRoutePresenterTest {
     @Rule @JvmField
     val activityRule: ActivityTestRule<RootActivity> = ActivityTestRule(RootActivity::class.java)
 
-    @Test
-    fun testFxALogin() {
-        // There is a check that the view is correct
-        navigator.gotoFxALogin()
-    }
-
     @Ignore("619-ui-tests-bitrise (#620)")
     @Test
     fun testFingerprintOnboarding() {
@@ -89,8 +83,6 @@ open class AppRoutePresenterTest {
         navigator.gotoDisconnectDisclaimer()
         navigator.back()
         navigator.checkAtAccountSetting()
-        navigator.back()
-        navigator.back()
     }
 
     @Ignore("619-ui-tests-bitrise (#620)")

@@ -1,5 +1,33 @@
 # Release Notes
 
+## 1.1.2 (Build 4405)
+
+We fixed more bugs to help stabilize sign in and sync for some users. We also hardened the security of the app even more.
+
+Changes since the last build:
+
+- Import strings from android-l10n (#769)
+- Bottom text is cut from the screen (#771)
+- Update A-C (1.0.0) and AS (0.32.0) to latest versions (#774)
+
+All changes since version 1.1.1:
+
+- additional changes to translated strings (#730)
+- made sure the search icon is visible for all languages (#737)
+- added error handling and reporting improvements for troubleshooting (#722)
+- changed to use dataprotect for fingerprint interactions (#741)
+- explicitly set theme in item list to not show the wrong background on some screens (#743)
+- updated android-components and application-services dependencies (#751)
+- hide the password when browsing away from entry (#685)
+- add a timeout for when sync does not complete (#747)
+- Remove registered device from AS device list (#732)
+- implement sync interval every 24 hours (#756)
+- update ignored gradle dependencies (#755)
+- Fix DataStore backend not set error (#738)
+- Import strings from android-l10n (#769)
+- Bottom text is cut from the screen (#771)
+- Update A-C (1.0.0) and AS (0.32.0) to latest versions (#774)
+
 ## 1.1.2 (Build 4342)
 
 _Date: 2019-06-24_
