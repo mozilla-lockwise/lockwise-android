@@ -37,7 +37,7 @@ class DeleteItemAdapter(
         val label = super.getDropDownView(position, convertView, parent) as TextView
         label.setTextAppearance(R.style.TextAppearanceSortMenuItem)
         label.text = context.resources.getString(values[position].titleId)
-        label.setBackgroundColor(Color.WHITE)
+        label.background = context.resources.getDrawable(R.drawable.button_pressed_white, null)
         val padding = label.resources.getDimensionPixelSize(R.dimen.sort_item_padding)
         label.setPadding(padding, padding, padding, padding)
 

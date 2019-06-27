@@ -10,6 +10,7 @@ import android.os.Bundle
 import androidx.annotation.StringRes
 import androidx.fragment.app.DialogFragment as AndroidDialogFragment
 import android.view.View
+import mozilla.lockbox.R
 import mozilla.lockbox.flux.Presenter
 
 open class DialogFragment : AndroidDialogFragment() {

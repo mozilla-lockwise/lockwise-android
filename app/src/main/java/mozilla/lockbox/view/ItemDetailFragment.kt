@@ -33,7 +33,6 @@ import mozilla.lockbox.presenter.ItemDetailPresenter
 import mozilla.lockbox.presenter.ItemDetailView
 import mozilla.lockbox.support.assertOnUiThread
 
-@Suppress("DEPRECATION")
 @ExperimentalCoroutinesApi
 class ItemDetailFragment : BackableFragment(), ItemDetailView {
     override fun onCreateView(
@@ -131,7 +130,6 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
 
     override fun updateKebabMenu(sort: RouteAction.EditItemMenu) {
         itemAdapter.setSelection(menuOptions.indexOf(sort))
-        spinner.setSelection(0, false)
     }
 
     override fun updateItem(item: ItemDetailViewModel) {
