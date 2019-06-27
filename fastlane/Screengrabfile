@@ -1,6 +1,6 @@
 # remove the leading '#' to uncomment lines
 
-app_package_name 'mozilla.lockbox.coverage'
+app_package_name 'mozilla.lockbox'
 use_tests_in_packages ['mozilla.lockbox.screenshots']
 
 reinstall_app(true)
