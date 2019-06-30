@@ -31,6 +31,14 @@ android {
 
         buildConfigField "int", "BITRISE_BUILD_NUMBER", System.getenv("BITRISE_BUILD_NUMBER") ?: "0"
     }
+    splits {
+        abi {
+            enable true
+            reset()
+            include "x86", "armeabi-v7a", "arm64-v8a", "x86_64"
+            universalApk false
+        }
+    }
     buildTypes {
         debug {
             debuggable true
