@@ -38,7 +38,10 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
+                        android:ellipsize="end"
                         android:id="@+id/entryTitle"
+                        android:paddingEnd="50dp"
+                        android:maxLines="1"
                         android:textSize="20sp"
                         android:fontFamily="sans-serif-medium"
                         android:textStyle="normal"
@@ -48,7 +51,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
-                />
+                        tools:ignore="RtlSymmetry"/>
                 <Spinner
                         android:id="@+id/kebabMenu"
                         android:layout_width="50dp"
