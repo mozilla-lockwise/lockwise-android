@@ -17,7 +17,7 @@ sealed class ItemDetailAction(
         : ItemDetailAction(TelemetryEventMethod.tap, TelemetryEventObject.reveal_password)
 
     enum class EditItemMenu(@StringRes val titleId: Int) {
-        //        EDIT(R.string.edit),
+        EDIT(R.string.edit),
         DELETE(R.string.delete)
     }
 }

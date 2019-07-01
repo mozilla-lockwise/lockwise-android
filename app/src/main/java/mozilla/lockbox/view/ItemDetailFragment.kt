@@ -93,7 +93,7 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
 
     private fun setupKebabMenu(view: View) {
         val sortList = ArrayList<ItemDetailAction.EditItemMenu>()
-//        sortList.add(ItemDetailAction.EditItemMenu.EDIT)
+        sortList.add(ItemDetailAction.EditItemMenu.EDIT)
         sortList.add(ItemDetailAction.EditItemMenu.DELETE)
         spinner = view.kebabMenu
         itemAdapter = DeleteItemAdapter(context!!, android.R.layout.simple_spinner_item, sortList)
