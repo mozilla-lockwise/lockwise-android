@@ -6,5 +6,15 @@
 
 package mozilla.lockbox.support
 
-data class Optional<T>(val value: T?)
-fun <T> T?.asOptional() = Optional(this)
+class Consumable<T>(private val value: T) {
+    private var consumed = false
+
+    fun get(): T? {
+        return if (consumed) {
+            null
+        } else {
+            consumed = true
+            value
+        }
+    }
+}

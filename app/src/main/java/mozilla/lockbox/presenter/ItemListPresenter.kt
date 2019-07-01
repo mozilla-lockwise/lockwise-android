@@ -169,7 +169,8 @@ class ItemListPresenter(
 
         dataStore.deletedItem
             .subscribe {
-                view.showDeleteToastNotification(it.formSubmitURL ?: it.hostname)
+                val event = it.get() ?: return@subscribe
+                view.showDeleteToastNotification(event.formSubmitURL ?: event.hostname)
             }
             .addTo(compositeDisposable)
 

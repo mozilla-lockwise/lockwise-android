@@ -26,6 +26,7 @@ import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.log
 import mozilla.lockbox.model.SyncCredentials
+import mozilla.lockbox.support.Consumable
 import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.DataStoreSupport
 import mozilla.lockbox.support.FxASyncDataStoreSupport
@@ -61,12 +62,12 @@ open class DataStore(
     private val stateSubject = ReplayRelay.createWithSize<State>(1)
     private val syncStateSubject = BehaviorRelay.createDefault<SyncState>(SyncState.NotSyncing)
     private val listSubject: BehaviorRelay<List<ServerPassword>> = BehaviorRelay.createDefault(emptyList())
-    private val deletedItemSubject = ReplayRelay.createWithSize<ServerPassword>(1)
+    private val deletedItemSubject = ReplayRelay.create<Consumable<ServerPassword>>()
 
     open val state: Observable<State> = stateSubject
     open val syncState: Observable<SyncState> = syncStateSubject
     open val list: Observable<List<ServerPassword>> get() = listSubject
-    open val deletedItem: Observable<ServerPassword> get() = deletedItemSubject
+    open val deletedItem: Observable<Consumable<ServerPassword>> get() = deletedItemSubject
 
     private val exceptionHandler: CoroutineExceptionHandler
         get() = CoroutineExceptionHandler { _, e ->
@@ -129,7 +130,7 @@ open class DataStore(
                     .subscribe()
                     .addTo(compositeDisposable)
                 sync()
-                deletedItemSubject.accept(item)
+                deletedItemSubject.accept(Consumable(item))
             }
         } catch (loginsStorageException: LoginsStorageException) {
             log.error("Exception: ", loginsStorageException)
