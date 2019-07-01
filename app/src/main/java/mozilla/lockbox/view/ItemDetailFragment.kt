@@ -26,7 +26,7 @@ import kotlinx.android.synthetic.main.fragment_item_detail.*
 import kotlinx.android.synthetic.main.fragment_item_detail.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
-import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.action.ItemDetailAction
 import mozilla.lockbox.adapter.DeleteItemAdapter
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.presenter.ItemDetailPresenter
@@ -51,7 +51,7 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupSpinner(view)
+        setupKebabMenu(view)
     }
 
     private lateinit var spinner: Spinner
@@ -85,16 +85,16 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
             updatePasswordVisibility(value)
         }
 
-    private var _menuItemSelection = PublishSubject.create<RouteAction.EditItemMenu>()
-    override val menuItemSelection: Observable<RouteAction.EditItemMenu> = _menuItemSelection
+    private var _menuItemSelection = PublishSubject.create<ItemDetailAction.EditItemMenu>()
+    override val menuItemSelection: Observable<ItemDetailAction.EditItemMenu> = _menuItemSelection
 
-    private val menuOptions: Array<RouteAction.EditItemMenu>
-        get() = RouteAction.EditItemMenu.values()
+    private val menuOptions: Array<ItemDetailAction.EditItemMenu>
+        get() = ItemDetailAction.EditItemMenu.values()
 
-    private fun setupSpinner(view: View) {
-        val sortList = ArrayList<RouteAction.EditItemMenu>()
-        sortList.add(RouteAction.EditItemMenu.EDIT)
-        sortList.add(RouteAction.EditItemMenu.DELETE)
+    private fun setupKebabMenu(view: View) {
+        val sortList = ArrayList<ItemDetailAction.EditItemMenu>()
+//        sortList.add(ItemDetailAction.EditItemMenu.EDIT)
+        sortList.add(ItemDetailAction.EditItemMenu.DELETE)
         spinner = view.kebabMenu
         itemAdapter = DeleteItemAdapter(context!!, android.R.layout.simple_spinner_item, sortList)
         spinner.adapter = itemAdapter
@@ -128,8 +128,8 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         }
     }
 
-    override fun updateKebabMenu(sort: RouteAction.EditItemMenu) {
-        itemAdapter.setSelection(menuOptions.indexOf(sort))
+    override fun updateKebabMenu(menuSelection: ItemDetailAction.EditItemMenu) {
+        itemAdapter.setSelection(menuOptions.indexOf(menuSelection))
     }
 
     override fun updateItem(item: ItemDetailViewModel) {

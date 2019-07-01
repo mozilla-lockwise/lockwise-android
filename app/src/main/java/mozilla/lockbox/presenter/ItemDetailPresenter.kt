@@ -39,8 +39,8 @@ interface ItemDetailView {
     fun updateItem(item: ItemDetailViewModel)
     fun showToastNotification(@StringRes strId: Int)
     fun handleNetworkError(networkErrorVisibility: Boolean)
-    fun updateKebabMenu(sort: RouteAction.EditItemMenu)
-    val menuItemSelection: Observable<RouteAction.EditItemMenu>
+    fun updateKebabMenu(menuSelection: ItemDetailAction.EditItemMenu)
+    val menuItemSelection: Observable<ItemDetailAction.EditItemMenu>
     //    val retryNetworkConnectionClicks: Observable<Unit>
 }
 

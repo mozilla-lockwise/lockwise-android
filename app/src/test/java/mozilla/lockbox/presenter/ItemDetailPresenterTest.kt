@@ -50,7 +50,15 @@ import org.robolectric.annotation.Config
 @Config(application = TestApplication::class)
 class ItemDetailPresenterTest {
     class FakeView : ItemDetailView {
+        val kebabMenuClickStub = PublishSubject.create<Unit>()
+        override val kebabMenuClicks: Observable<Unit>
+            get() = kebabMenuClickStub
 
+        override fun updateKebabMenu(sort: RouteAction.EditItemMenu) { }
+
+        val menuItemSelectionStub = PublishSubject.create<RouteAction.EditItemMenu>()
+        override val menuItemSelection: Observable<RouteAction.EditItemMenu>
+            get() = menuItemSelectionStub
         val learnMoreClickStub = PublishSubject.create<Unit>()
         override val learnMoreClicks: Observable<Unit>
             get() = learnMoreClickStub
@@ -152,7 +160,7 @@ class ItemDetailPresenterTest {
 
     @Test
     fun `sends a detail view model to view`() {
-        setUpTestSubject(fakeCredential.asOptional())
+        setUpTestSubject(Optional(fakeCredential))
 
         // test the results that the view gets.
         val obs = view.item ?: return fail("Expected an item")
@@ -164,7 +172,7 @@ class ItemDetailPresenterTest {
 
     @Test
     fun `sends a detail view model to view with null username`() {
-        setUpTestSubject(fakeCredentialNoUsername.asOptional())
+        setUpTestSubject(Optional(fakeCredentialNoUsername))
 
         view.updateItem(
             ItemDetailViewModel(
@@ -187,13 +195,13 @@ class ItemDetailPresenterTest {
 
     @Test
     fun `correct formatting functions called with null username`() {
-        setUpTestSubject(fakeCredentialNoUsername.asOptional())
+        setUpTestSubject(Optional(fakeCredentialNoUsername))
         assertEquals(true, view.showPlaceholderUsernameStub)
     }
 
     @Test
     fun `correct formatting functions called with non-null username`() {
-        setUpTestSubject(fakeCredential.asOptional())
+        setUpTestSubject(Optional(fakeCredential))
         assertEquals(false, view.showPlaceholderUsernameStub)
     }
 
@@ -210,7 +218,7 @@ class ItemDetailPresenterTest {
 
     @Test
     fun `opens a browser when tapping on the hostname`() {
-        setUpTestSubject(fakeCredential.asOptional())
+        setUpTestSubject(Optional(fakeCredential))
 
         val clicks = view.hostnameClicks
         clicks.onNext(Unit)
@@ -220,7 +228,7 @@ class ItemDetailPresenterTest {
 
     @Test
     fun `tapping on usernamecopy`() {
-        setUpTestSubject(fakeCredential.asOptional())
+        setUpTestSubject(Optional(fakeCredential))
         view.usernameCopyClicks.onNext(Unit)
 
         dispatcherObserver.assertValueSequence(
@@ -235,7 +243,7 @@ class ItemDetailPresenterTest {
 
     @Test
     fun `cannot copy username when null`() {
-        setUpTestSubject(fakeCredentialNoUsername.asOptional())
+        setUpTestSubject(Optional(fakeCredentialNoUsername))
 
         view.usernameCopyClicks.onNext(Unit)
 
@@ -248,7 +256,7 @@ class ItemDetailPresenterTest {
 
     @Test
     fun `tapping on passwordcopy`() {
-        setUpTestSubject(fakeCredential.asOptional())
+        setUpTestSubject(Optional(fakeCredential))
 
         view.passwordCopyClicks.onNext(Unit)
 
@@ -264,7 +272,7 @@ class ItemDetailPresenterTest {
 
     @Test
     fun `tapping on togglepassword`() {
-        setUpTestSubject(fakeCredential.asOptional())
+        setUpTestSubject(Optional(fakeCredential))
 
         view.togglePasswordClicks.onNext(Unit)
 
@@ -284,7 +292,7 @@ class ItemDetailPresenterTest {
 
     @Test
     fun `password visibility when app is paused in background`() {
-        setUpTestSubject(fakeCredential.asOptional())
+        setUpTestSubject(Optional(fakeCredential))
         // set password as visible
         view.togglePasswordClicks.onNext(Unit)
 
@@ -302,7 +310,7 @@ class ItemDetailPresenterTest {
 
     @Test
     fun `network error visibility is correctly being set`() {
-        setUpTestSubject(fakeCredential.asOptional())
+        setUpTestSubject(Optional(fakeCredential))
 
         val value = view.networkAvailable
         value.onNext(true)
@@ -312,7 +320,7 @@ class ItemDetailPresenterTest {
 
     @Test
     fun `learn more clicks`() {
-        setUpTestSubject(fakeCredential.asOptional())
+        setUpTestSubject(Optional(fakeCredential))
 
         view.learnMoreClickStub.onNext(Unit)
         dispatcherObserver.assertLastValue(AppWebPageAction.FaqEdit)

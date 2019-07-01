@@ -41,11 +41,6 @@ open class RouteAction(
         object AutofillSearchDialog : DialogFragment(R.string.autofill)
     }
 
-    enum class EditItemMenu(@StringRes val titleId: Int) {
-        EDIT(R.string.edit),
-        DELETE(R.string.delete)
-    }
-
     open class SystemIntent(
         val requestCode: Int = Constant.RequestCode.noResult,
         eventMethod: TelemetryEventMethod,

@@ -1,19 +1,18 @@
 package mozilla.lockbox.adapter
 
 import android.content.Context
-import android.graphics.Color
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import mozilla.lockbox.R
-import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.action.ItemDetailAction
 
 class DeleteItemAdapter(
     context: Context,
     textViewResourceId: Int,
-    val values: ArrayList<RouteAction.EditItemMenu>
-) : ArrayAdapter<RouteAction.EditItemMenu>(context, textViewResourceId, values) {
+    val values: ArrayList<ItemDetailAction.EditItemMenu>
+) : ArrayAdapter<ItemDetailAction.EditItemMenu>(context, textViewResourceId, values) {
 
     private var selectedIndex = -1
 
@@ -40,10 +39,6 @@ class DeleteItemAdapter(
         label.background = context.resources.getDrawable(R.drawable.button_pressed_white, null)
         val padding = label.resources.getDimensionPixelSize(R.dimen.sort_item_padding)
         label.setPadding(padding, padding, padding, padding)
-
-        if (position == selectedIndex) {
-            label.setBackgroundResource(R.color.selection)
-        }
 
         return label
     }

@@ -63,7 +63,6 @@ sealed class DialogAction(
         ),
         listOf(
             DataStoreAction.Delete(itemId),
-            DataStoreAction.Sync,
             ItemList
         )
     )

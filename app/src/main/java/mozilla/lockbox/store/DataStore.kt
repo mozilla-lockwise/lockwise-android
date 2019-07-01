@@ -32,7 +32,6 @@ import mozilla.lockbox.support.DataStoreSupport
 import mozilla.lockbox.support.FxASyncDataStoreSupport
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.TimingSupport
-import mozilla.lockbox.support.asOptional
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 import kotlin.coroutines.CoroutineContext
@@ -128,6 +127,7 @@ open class DataStore(
                     .asSingle(coroutineContext)
                     .subscribe()
                     .addTo(compositeDisposable)
+                sync()
             }
         } catch (loginsStorageException: LoginsStorageException) {
             log.error("Exception: ", loginsStorageException)
@@ -137,7 +137,7 @@ open class DataStore(
 
     private fun editEntry() {
         // TODO
-        dispatcher.dispatch(RouteAction.ItemList)
+//        dispatcher.dispatch(RouteAction.ItemList)
     }
 
     private fun shutdown() {
@@ -165,8 +165,10 @@ open class DataStore(
 
     open fun get(id: String): Observable<Optional<ServerPassword>> {
         return list.map { items ->
-            items.findLast { item -> item.id == id }.asOptional()
-        }
+                Optional(
+                    items.findLast { item -> item.id == id }
+                )
+            }
     }
 
     private fun touch(id: String) {

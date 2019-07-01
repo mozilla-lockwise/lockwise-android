@@ -80,12 +80,12 @@ class ItemListFragment : Fragment(), ItemListView {
         setupToolbar(view.navToolbar, view.appDrawer)
         setupNavigationView(navController, view.navView)
         setupListView(view.entriesView)
-        setupSpinner(view)
+        setupSortDropdown(view)
         view.refreshContainer.setColorSchemeResources(R.color.refresh_violet)
         super.onViewCreated(view, savedInstanceState)
     }
 
-    private fun setupSpinner(view: View) {
+    private fun setupSortDropdown(view: View) {
         val sortList = ArrayList<Setting.ItemListSort>()
         sortList.add(Setting.ItemListSort.ALPHABETICALLY)
         sortList.add(Setting.ItemListSort.RECENTLY_USED)
