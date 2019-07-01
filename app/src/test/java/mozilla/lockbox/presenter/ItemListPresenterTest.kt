@@ -72,7 +72,10 @@ open class ItemListPresenterTest {
         var updateItemsArgument: List<ItemViewModel>? = null
         var itemListSort: Setting.ItemListSort? = null
         var isLoading: Boolean? = null
-        var toastNotificationArg: Int? = null
+
+        var toastNotificationArgStrId: Int? = null
+        var toastNotificationArgText: String? = null
+
         val menuItemSelectionStub = PublishSubject.create<Int>()
         val itemSelectedStub = PublishSubject.create<ItemViewModel>()
         val filterClickStub = PublishSubject.create<Unit>()
@@ -125,11 +128,14 @@ open class ItemListPresenterTest {
 
         override val isRefreshing: Boolean = false
 
-        override fun stopRefreshing() {
-        }
+        override fun stopRefreshing() {}
 
         override fun showToastNotification(strId: Int) {
-            toastNotificationArg = strId
+            toastNotificationArgStrId = strId
+        }
+
+        override fun showDeleteToastNotification(text: String) {
+            toastNotificationArgText = text
         }
     }
 
@@ -152,21 +158,20 @@ open class ItemListPresenterTest {
     @Mock
     val dataStore = PowerMockito.mock(DataStore::class.java)!!
 
-    private var isConnected: Observable<Boolean> = PublishSubject.create()
-    var isConnectedObserver = TestObserver.create<Boolean>()
-
     @Mock
     private val connectivityManager = PowerMockito.mock(ConnectivityManager::class.java)
 
-    private val profileStub = PublishSubject.create<Optional<Profile>>()
-
-    val view: ItemListPresenterTest.FakeView = spy(ItemListPresenterTest.FakeView())
-
-    val dispatcher = Dispatcher()
-    private val dispatcherObserver = TestObserver.create<Action>()!!
-
     @Mock
     val context: Context = Mockito.mock(Context::class.java)
+
+    private var isConnected: Observable<Boolean> = PublishSubject.create()
+    var isConnectedObserver = TestObserver.create<Boolean>()
+    private val profileStub = PublishSubject.create<Optional<Profile>>()
+    private var deleteItemSubjectStub = PublishSubject.create<ServerPassword>()
+
+    val view: FakeView = spy(FakeView())
+    val dispatcher = Dispatcher()
+    private val dispatcherObserver = TestObserver.create<Action>()!!
 
     lateinit var subject: ItemListPresenter
 
@@ -178,6 +183,7 @@ open class ItemListPresenterTest {
         PowerMockito.`when`(settingStore.itemListSortOrder).thenReturn(itemListSortStub)
         PowerMockito.`when`(dataStore.list).thenReturn(listStub)
         PowerMockito.`when`(dataStore.syncState).thenReturn(syncStateStub)
+        PowerMockito.`when`(dataStore.deletedItem).thenReturn(deleteItemSubjectStub)
 
         PowerMockito.whenNew(AccountStore::class.java).withAnyArguments().thenReturn(accountStore)
         PowerMockito.whenNew(SettingStore::class.java).withAnyArguments().thenReturn(settingStore)
@@ -325,7 +331,15 @@ open class ItemListPresenterTest {
     fun `sync timeout indicator`() {
         syncStateStub.onNext(DataStore.SyncState.TimedOut)
         Assert.assertEquals(false, view.isLoading)
-        Assert.assertEquals(R.string.sync_timed_out, view.toastNotificationArg)
+        Assert.assertEquals(R.string.sync_timed_out, view.toastNotificationArgStrId)
+    }
+
+    @Test
+    fun `item deleted toast`() {
+        val item = ServerPasswordTestHelper().item1
+        val hostname = item.hostname
+        deleteItemSubjectStub.onNext(item)
+        Assert.assertEquals(hostname, view.toastNotificationArgText)
     }
 
     @Test

@@ -333,6 +333,6 @@ class ItemDetailPresenterTest {
 
         val menuItemSelection = ItemDetailAction.EditItemMenu.DELETE
         view.menuItemSelectionStub.onNext(menuItemSelection)
-        dispatcherObserver.assertValue(DialogAction.DeleteConfirmationDialog("id0"))
+        dispatcherObserver.assertValue(DialogAction.DeleteConfirmationDialog(fakeCredential))
     }
 }
