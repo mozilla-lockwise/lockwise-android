@@ -231,13 +231,27 @@ class ItemListFragment : Fragment(), ItemListView {
 
     override fun showToastNotification(@StringRes strId: Int) {
         assertOnUiThread()
+        val toast = setUpToast(strId = strId)
+        toast.show()
+    }
+
+    override fun showDeleteToastNotification(text: String) {
+        assertOnUiThread()
+        val toast = setUpToast(text = text)
+        toast.show()
+    }
+
+    private fun setUpToast(@StringRes strId: Int? = null, text: String? = null): Toast {
         val toast = Toast(activity)
+
         toast.duration = Toast.LENGTH_SHORT
         toast.view = layoutInflater.inflate(R.layout.toast_view, this.view as ViewGroup, false)
         toast.setGravity(Gravity.FILL_HORIZONTAL or Gravity.BOTTOM, 0, 0)
-        val v = toast.view.findViewById(R.id.message) as TextView
-        v.text = resources.getString(strId)
-        toast.show()
+
+        val view = toast.view.findViewById(R.id.message) as TextView
+        view.text = (text ?: resources.getString(strId!!)).plus(" deleted.")
+
+        return toast
     }
 
 //    override val retryNetworkConnectionClicks: Observable<Unit>

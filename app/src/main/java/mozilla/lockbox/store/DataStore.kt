@@ -62,10 +62,12 @@ open class DataStore(
     private val stateSubject = ReplayRelay.createWithSize<State>(1)
     private val syncStateSubject = BehaviorRelay.createDefault<SyncState>(SyncState.NotSyncing)
     private val listSubject: BehaviorRelay<List<ServerPassword>> = BehaviorRelay.createDefault(emptyList())
+    private val deletedItemSubject = ReplayRelay.createWithSize<ServerPassword>(1)
 
     open val state: Observable<State> = stateSubject
     open val syncState: Observable<SyncState> = syncStateSubject
     open val list: Observable<List<ServerPassword>> get() = listSubject
+    open val deletedItem: Observable<ServerPassword> get() = deletedItemSubject
 
     private val exceptionHandler: CoroutineExceptionHandler
         get() = CoroutineExceptionHandler { _, e ->
@@ -107,7 +109,7 @@ open class DataStore(
                     is DataStoreAction.Touch -> touch(action.id)
                     is DataStoreAction.Reset -> reset()
                     is DataStoreAction.UpdateCredentials -> updateCredentials(action.syncCredentials)
-                    is DataStoreAction.Delete -> deleteCredentials(action.itemId)
+                    is DataStoreAction.Delete -> deleteCredentials(action.item)
                 }
             }
             .addTo(compositeDisposable)
@@ -120,19 +122,19 @@ open class DataStore(
         setupAutoLock()
     }
 
-    private fun deleteCredentials(itemId: String?) {
+    private fun deleteCredentials(item: ServerPassword?) {
         try {
-            if (itemId != null) {
-                backend.delete(itemId)
+            if (item != null) {
+                backend.delete(item.id)
                     .asSingle(coroutineContext)
                     .subscribe()
                     .addTo(compositeDisposable)
                 sync()
+                deletedItemSubject.accept(item)
             }
         } catch (loginsStorageException: LoginsStorageException) {
             log.error("Exception: ", loginsStorageException)
         }
-        dispatcher.dispatch(RouteAction.ItemList)
     }
 
     private fun editEntry() {

@@ -6,6 +6,7 @@
 
 package mozilla.lockbox.action
 
+import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.R
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.model.DialogViewModel
@@ -52,7 +53,7 @@ sealed class DialogAction(
     )
 
     data class DeleteConfirmationDialog(
-        val itemId: String?
+        val item: ServerPassword?
     ) : DialogAction(
         DialogViewModel(
             R.string.delete_this_login,
@@ -62,7 +63,7 @@ sealed class DialogAction(
             R.color.red
         ),
         listOf(
-            DataStoreAction.Delete(itemId),
+            DataStoreAction.Delete(item),
             ItemList
         )
     )

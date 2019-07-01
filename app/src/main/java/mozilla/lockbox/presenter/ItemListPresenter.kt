@@ -51,6 +51,7 @@ interface ItemListView {
     val isRefreshing: Boolean
     fun stopRefreshing()
     fun showToastNotification(@StringRes strId: Int)
+    fun showDeleteToastNotification(text: String)
 }
 
 @ExperimentalCoroutinesApi
@@ -164,6 +165,12 @@ class ItemListPresenter(
 
         networkStore.isConnected
             .subscribe(view::handleNetworkError)
+            .addTo(compositeDisposable)
+
+        dataStore.deletedItem
+            .subscribe {
+                view.showDeleteToastNotification(it.formSubmitURL ?: it.hostname)
+            }
             .addTo(compositeDisposable)
 
         // TODO: make this more robust to retry loading the correct page again (loadUrl)

@@ -85,7 +85,7 @@ class ItemDetailPresenter(
 
         view.menuItemSelection
             .map {
-                DialogAction.DeleteConfirmationDialog(itemId)
+                DialogAction.DeleteConfirmationDialog(credentials)
             }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
