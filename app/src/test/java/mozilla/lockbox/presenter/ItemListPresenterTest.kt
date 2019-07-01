@@ -48,42 +48,15 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.mockito.Mockito.`when` as whenCalled
 
-private val username = "dogs@dogs.com"
-private val item1 = ServerPassword(
-    "fdsfda",
-    "https://www.mozilla.org",
-    username,
-    "woof",
-    timesUsed = 0,
-    timeCreated = 0L,
-    timeLastUsed = 1L,
-    timePasswordChanged = 0L
-)
-private val item2 = ServerPassword(
-    "ghfdhg",
-    "https://www.cats.org",
-    username,
-    "meow",
-    timesUsed = 0,
-    timeCreated = 0L,
-    timeLastUsed = 2L,
-    timePasswordChanged = 0L
-)
-private val item3 = ServerPassword(
-    "ioupiouiuy",
-    "www.dogs.org",
-    username = null,
-    password = "baaaaa",
-    timesUsed = 0,
-    timeCreated = 0L,
-    timeLastUsed = 3L,
-    timePasswordChanged = 0L
-)
-
 @ExperimentalCoroutinesApi
 @RunWith(RobolectricTestRunner::class)
 @Config(application = TestApplication::class)
 open class ItemListPresenterTest {
+
+    private val item1 = ServerPasswordTestHelper().item1
+    private val item2 = ServerPasswordTestHelper().item2
+    private val item3 = ServerPasswordTestHelper().item3
+
     class FakeView : ItemListView {
 
 //        private val retryButtonStub = PublishSubject.create<Unit>()

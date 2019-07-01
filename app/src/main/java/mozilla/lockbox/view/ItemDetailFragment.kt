@@ -128,10 +128,6 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         }
     }
 
-    override fun updateKebabMenu(menuSelection: ItemDetailAction.EditItemMenu) {
-        itemAdapter.setSelection(menuOptions.indexOf(menuSelection))
-    }
-
     override fun updateItem(item: ItemDetailViewModel) {
         assertOnUiThread()
         toolbar.elevation = resources.getDimension(R.dimen.larger_toolbar_elevation)
