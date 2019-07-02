@@ -34,6 +34,7 @@ import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.NetworkStore
 import mozilla.lockbox.store.SettingStore
+import mozilla.lockbox.support.Consumable
 import mozilla.lockbox.support.Optional
 import org.junit.Assert
 import org.junit.Before
@@ -165,9 +166,9 @@ open class ItemListPresenterTest {
     val context: Context = Mockito.mock(Context::class.java)
 
     private var isConnected: Observable<Boolean> = PublishSubject.create()
-    var isConnectedObserver = TestObserver.create<Boolean>()
+    private var isConnectedObserver: TestObserver<Boolean> = TestObserver.create<Boolean>()
     private val profileStub = PublishSubject.create<Optional<Profile>>()
-    private var deleteItemSubjectStub = PublishSubject.create<ServerPassword>()
+    private var deleteItemSubjectStub = PublishSubject.create<Consumable<ServerPassword>>()
 
     val view: FakeView = spy(FakeView())
     val dispatcher = Dispatcher()
@@ -338,7 +339,7 @@ open class ItemListPresenterTest {
     fun `item deleted toast`() {
         val item = ServerPasswordTestHelper().item1
         val hostname = item.hostname
-        deleteItemSubjectStub.onNext(item)
+        deleteItemSubjectStub.onNext(Consumable(item))
         Assert.assertEquals(hostname, view.toastNotificationArgText)
     }
 
