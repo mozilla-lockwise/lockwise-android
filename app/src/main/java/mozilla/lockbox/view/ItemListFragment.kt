@@ -249,7 +249,7 @@ class ItemListFragment : Fragment(), ItemListView {
         toast.setGravity(Gravity.FILL_HORIZONTAL or Gravity.BOTTOM, 0, 0)
 
         val view = toast.view.findViewById(R.id.message) as TextView
-        view.text = (text ?: resources.getString(strId!!)).plus(" deleted.")
+        view.text = text?.plus(" deleted.") ?: resources.getString(strId!!)
 
         return toast
     }
