@@ -19,7 +19,7 @@ class ItemDetailStore(
     val dispatcher: Dispatcher = Dispatcher.shared
 ) {
     companion object {
-        val shared by lazy { ItemDetailStore() }
+        val shared = ItemDetailStore()
     }
 
     private val compositeDisposable = CompositeDisposable()

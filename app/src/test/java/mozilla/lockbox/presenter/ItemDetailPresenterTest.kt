@@ -28,6 +28,7 @@ import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.ItemDetailStore
 import mozilla.lockbox.store.NetworkStore
 import mozilla.lockbox.support.Optional
+import mozilla.lockbox.support.asOptional
 import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
@@ -161,7 +162,7 @@ class ItemDetailPresenterTest {
 
     @Test
     fun `sends a detail view model to view`() {
-        setUpTestSubject(Optional(fakeCredential))
+        setUpTestSubject(fakeCredential.asOptional())
 
         // test the results that the view gets.
         val obs = view.item ?: return fail("Expected an item")
@@ -173,7 +174,7 @@ class ItemDetailPresenterTest {
 
     @Test
     fun `sends a detail view model to view with null username`() {
-        setUpTestSubject(Optional(fakeCredentialNoUsername))
+        setUpTestSubject(fakeCredentialNoUsername.asOptional())
 
         view.updateItem(
             ItemDetailViewModel(
@@ -196,13 +197,13 @@ class ItemDetailPresenterTest {
 
     @Test
     fun `correct formatting functions called with null username`() {
-        setUpTestSubject(Optional(fakeCredentialNoUsername))
+        setUpTestSubject(fakeCredentialNoUsername.asOptional())
         assertEquals(true, view.showPlaceholderUsernameStub)
     }
 
     @Test
     fun `correct formatting functions called with non-null username`() {
-        setUpTestSubject(Optional(fakeCredential))
+        setUpTestSubject(fakeCredential.asOptional())
         assertEquals(false, view.showPlaceholderUsernameStub)
     }
 
@@ -219,7 +220,7 @@ class ItemDetailPresenterTest {
 
     @Test
     fun `opens a browser when tapping on the hostname`() {
-        setUpTestSubject(Optional(fakeCredential))
+        setUpTestSubject(fakeCredential.asOptional())
 
         val clicks = view.hostnameClicks
         clicks.onNext(Unit)
@@ -229,7 +230,7 @@ class ItemDetailPresenterTest {
 
     @Test
     fun `tapping on usernamecopy`() {
-        setUpTestSubject(Optional(fakeCredential))
+        setUpTestSubject(fakeCredential.asOptional())
         view.usernameCopyClicks.onNext(Unit)
 
         dispatcherObserver.assertValueSequence(
@@ -244,7 +245,7 @@ class ItemDetailPresenterTest {
 
     @Test
     fun `cannot copy username when null`() {
-        setUpTestSubject(Optional(fakeCredentialNoUsername))
+        setUpTestSubject(fakeCredentialNoUsername.asOptional())
 
         view.usernameCopyClicks.onNext(Unit)
 
@@ -257,7 +258,7 @@ class ItemDetailPresenterTest {
 
     @Test
     fun `tapping on passwordcopy`() {
-        setUpTestSubject(Optional(fakeCredential))
+        setUpTestSubject(fakeCredential.asOptional())
 
         view.passwordCopyClicks.onNext(Unit)
 
@@ -273,7 +274,7 @@ class ItemDetailPresenterTest {
 
     @Test
     fun `tapping on togglepassword`() {
-        setUpTestSubject(Optional(fakeCredential))
+        setUpTestSubject(fakeCredential.asOptional())
 
         view.togglePasswordClicks.onNext(Unit)
 
@@ -293,7 +294,7 @@ class ItemDetailPresenterTest {
 
     @Test
     fun `password visibility when app is paused in background`() {
-        setUpTestSubject(Optional(fakeCredential))
+        setUpTestSubject(fakeCredential.asOptional())
         // set password as visible
         view.togglePasswordClicks.onNext(Unit)
 
@@ -311,7 +312,7 @@ class ItemDetailPresenterTest {
 
     @Test
     fun `network error visibility is correctly being set`() {
-        setUpTestSubject(Optional(fakeCredential))
+        setUpTestSubject(fakeCredential.asOptional())
 
         val value = view.networkAvailable
         value.onNext(true)
@@ -321,7 +322,7 @@ class ItemDetailPresenterTest {
 
     @Test
     fun `learn more clicks`() {
-        setUpTestSubject(Optional(fakeCredential))
+        setUpTestSubject(fakeCredential.asOptional())
 
         view.learnMoreClickStub.onNext(Unit)
         dispatcherObserver.assertLastValue(AppWebPageAction.FaqEdit)
