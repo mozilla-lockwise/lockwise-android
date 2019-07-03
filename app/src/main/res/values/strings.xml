@@ -271,4 +271,13 @@
     <string name="delete_description">This will delete the login from both %1$s and Firefox.</string>
     <!-- This is the text on an item in the item detail toolbar menu to edit an entry. -->
     <string name="edit">Edit</string>
+    <string name="entry_name_description">Entry name.</string>
+    <!-- This is a heading that appears above an entry name in context of a edit item view -->
+    <string name="hint_entryname">Name</string>
+    <string name="inputNameDescription">Entry name is not editable at this time.</string>
+    <string name="hostnameEntryDescription">Make sure this matches the exact domain for the website you are referencing
+        (“https://” and “www” included).
+    </string>
+    <string name="entry_password_description">Password for this entry.</string>
+    <string name="delete_entry">Delete Entry</string>
 </resources>
