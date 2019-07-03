@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ This Source Code Form is subject to the terms of the Mozilla Public
+  ~ License, v. 2.0. If a copy of the MPL was not distributed with this
+  ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
+  -->
+
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/fragment_item_edit"
+        android:background="@color/background_grey" >
+
+    <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:theme="@style/ToolBar"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            <Button
+                    android:id="@+id/closeEntryButton"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_close"
+                    android:layout_marginEnd="16dp"
+                    android:background="@null"
+                    android:gravity="center_vertical|center_horizontal"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+            />
+            <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:id="@+id/entryTitle"
+                    android:paddingEnd="50dp"
+                    android:maxLines="1"
+                    android:textSize="20sp"
+                    android:fontFamily="sans-serif-medium"
+                    android:textStyle="normal"
+                    android:textColor="@color/text_white"
+                    android:letterSpacing="0.01"
+                    android:layout_gravity="center_vertical|start"
+                    app:layout_constraintStart_toEndOf="@id/closeEntryButton"
+                    app:layout_constraintEnd_toStartOf="@id/confirmButton"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    tools:ignore="RtlSymmetry"/>
+            <Button
+                    android:id="@+id/confirmButton"
+                    android:layout_width="20dp"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_check"
+                    android:drawableTint="@color/background_white"
+                    android:background="@null"
+                    android:layout_marginEnd="16dp"
+                    android:gravity="center_vertical|center_horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+            />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.appcompat.widget.Toolbar>
+
+    <androidx.cardview.widget.CardView
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/cardView"
+            android:layout_width="match_parent"
+            android:layout_height="460dp"
+            android:layout_gravity="center"
+            card_view:layout_constraintTop_toBottomOf="@id/toolbar">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/editLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingTop="30dp"
+                android:paddingBottom="16dp"
+                tools:ignore="RtlSymmetry">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/entryName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="30dp"
+                    android:paddingEnd="16dp"
+                    app:layout_constraintTop_toTopOf="parent" >
+
+                <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/inputLayoutName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="16dp"
+                        android:textColorHint="@color/black_60_percent"
+                        android:contentDescription="@string/entry_name_description"
+                        app:layout_constraintTop_toTopOf="parent"
+                        card_view:layout_constraintStart_toStartOf="parent"
+                        card_view:layout_constraintEnd_toEndOf="parent"
+                        tools:ignore="RtlSymmetry">
+
+                    <EditText
+                            android:id="@+id/inputName"
+                            style="@style/EditTextStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/gray_73_percent"
+                            android:hint="@string/hint_entryname"
+                            android:inputType="textNoSuggestions"
+                            android:singleLine="true"
+                            android:clickable="false"
+                            android:focusable="false"
+                            android:text="mozilla.org"
+                            tools:ignore="Autofill"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <View
+                        android:id="@+id/nameDivider"
+                        android:layout_height="1dp"
+                        android:layout_width="match_parent"
+                        android:background="@color/gray_divider"
+                        android:layout_marginStart="16dp"
+                        card_view:layout_constraintTop_toBottomOf="@id/inputLayoutName"
+                />
+
+                <TextView
+                        android:id="@+id/inputNameDescription"
+                        android:layout_width="wrap_content"
+                        android:layout_height="16dp"
+                        android:textSize="12sp"
+                        android:fontFamily="sans-serif"
+                        android:textStyle="normal"
+                        android:textColor="@color/black_60_percent"
+                        android:letterSpacing="0.03"
+                        android:lineSpacingExtra="4sp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="0dp"
+                        card_view:layout_constraintTop_toBottomOf="@id/nameDivider"
+                        card_view:layout_constraintStart_toStartOf="parent"
+                        android:text="@string/inputNameDescription"
+                />
+
+                <Button
+                        android:id="@+id/learnMore"
+                        android:layout_width="wrap_content"
+                        android:layout_height="16dp"
+                        android:layout_gravity="start"
+                        android:textSize="12sp"
+                        android:textAllCaps="false"
+                        android:fontFamily="sans-serif"
+                        android:textStyle="normal"
+                        android:textColor="@color/link_pressed"
+                        android:letterSpacing="0.03"
+                        android:lineSpacingExtra="7.5sp"
+                        android:background="@color/background_white"
+                        android:text="@string/learn_more"
+                        card_view:layout_constraintTop_toBottomOf="@id/nameDivider"
+                        card_view:layout_constraintStart_toEndOf="@id/inputNameDescription"
+                />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/entryHostname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:paddingEnd="16dp"
+                    app:layout_constraintTop_toBottomOf="@id/entryName" >
+
+                <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/inputLayoutHostname"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="16dp"
+                        android:textColorHint="@color/black_60_percent"
+                        android:contentDescription="@string/entry_name_description"
+                        app:layout_constraintTop_toTopOf="parent"
+                        card_view:layout_constraintStart_toStartOf="parent"
+                        card_view:layout_constraintEnd_toEndOf="parent"
+                        tools:ignore="RtlSymmetry">
+
+                    <EditText
+                            android:id="@+id/inputHostname"
+                            style="@style/EditTextStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/hint_hostname"
+                            android:inputType="textNoSuggestions"
+                            android:singleLine="true"
+                            android:clickable="true"
+                            android:focusable="true"
+                            tools:ignore="Autofill"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <View
+                        android:id="@+id/hostnameDivider"
+                        android:layout_height="1dp"
+                        android:layout_width="match_parent"
+                        android:background="@color/gray_divider"
+                        android:layout_marginStart="16dp"
+                        card_view:layout_constraintTop_toBottomOf="@id/inputLayoutHostname"
+                />
+
+                <TextView
+                        android:id="@+id/inputHostnameDescription"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:fontFamily="sans-serif"
+                        android:textStyle="normal"
+                        android:textColor="@color/black_60_percent"
+                        android:letterSpacing="0.03"
+                        android:lineSpacingExtra="4sp"
+                        android:layout_marginStart="16dp"
+                        card_view:layout_constraintTop_toBottomOf="@id/hostnameDivider"
+                        card_view:layout_constraintStart_toStartOf="parent"
+                        android:text="@string/hostnameEntryDescription"
+                />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/entryUsername"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    app:layout_constraintTop_toBottomOf="@id/entryHostname" >
+
+                <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/inputLayoutUsername"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="16dp"
+                        android:textColorHint="@color/black_60_percent"
+                        android:contentDescription="@string/entry_name_description"
+                        app:layout_constraintTop_toTopOf="parent"
+                        card_view:layout_constraintStart_toStartOf="parent"
+                        card_view:layout_constraintEnd_toEndOf="parent"
+                        tools:ignore="RtlSymmetry">
+
+                    <EditText
+                            android:id="@+id/inputUsername"
+                            style="@style/EditTextStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/hint_username"
+                            android:inputType="textNoSuggestions"
+                            android:singleLine="true"
+                            android:clickable="true"
+                            android:focusable="true" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <View
+                        android:id="@+id/usernameDivider"
+                        android:layout_height="1dp"
+                        android:layout_width="match_parent"
+                        android:background="@color/gray_divider"
+                        android:layout_marginStart="16dp"
+                        android:paddingEnd="16dp"
+                        card_view:layout_constraintTop_toBottomOf="@id/inputLayoutUsername"
+                />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/entryPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:paddingEnd="16dp"
+                    app:layout_constraintTop_toBottomOf="@id/entryUsername" >
+
+                <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/inputLayoutPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="16dp"
+                        android:layout_marginEnd="30dp"
+                        android:textColorHint="@color/black_60_percent"
+                        android:contentDescription="@string/entry_password_description"
+                        app:layout_constraintTop_toTopOf="parent"
+                        card_view:layout_constraintStart_toStartOf="parent"
+                        card_view:layout_constraintEnd_toEndOf="parent"
+                        tools:ignore="RtlSymmetry">
+
+                    <EditText
+                            android:id="@+id/inputPassword"
+                            style="@style/EditTextStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/hint_password"
+                            android:inputType="none|textPassword"
+                            android:singleLine="true"
+                            android:clickable="true"
+                            android:focusable="true" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <ImageButton
+                        android:id="@+id/btnPasswordToggle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="16dp"
+                        android:padding="8dp"
+                        android:paddingTop="10dp"
+                        android:background="@null"
+                        android:contentDescription="@string/display_password_content_description"
+                        app:layout_constraintStart_toEndOf="@+id/inputLayoutPassword"
+                        app:layout_constraintTop_toTopOf="@+id/inputLayoutPassword"
+                        app:layout_constraintBottom_toBottomOf="@+id/inputLayoutPassword"
+                        app:srcCompat="@drawable/ic_show"/>
+
+                <View
+                        android:id="@+id/passwordDivider"
+                        android:layout_height="1dp"
+                        android:paddingEnd="16dp"
+                        android:layout_width="match_parent"
+                        android:background="@color/gray_divider"
+                        android:layout_marginStart="16dp"
+                        card_view:layout_constraintTop_toBottomOf="@id/inputLayoutPassword"
+                />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    card_view:layout_constraintTop_toBottomOf="@+id/entryPassword">
+
+
+                <Button
+                        android:id="@+id/deleteEntryButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal|center_vertical"
+                        android:layout_marginEnd="0dp"
+                        android:paddingEnd="20dp"
+                        android:text="@string/delete_entry"
+                        android:textAllCaps="true"
+                        android:textSize="14sp"
+                        android:fontFamily="sans-serif-medium"
+                        android:textStyle="normal"
+                        android:textColor="@color/red"
+                        android:letterSpacing="0.09"
+                        android:lineSpacingExtra="2sp"
+                        android:drawablePadding="12dp"
+                        android:shadowColor="@color/background_white"
+                        android:backgroundTint="@color/background_white"
+                        android:stateListAnimator="@null"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
