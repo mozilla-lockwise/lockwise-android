@@ -6,10 +6,18 @@
 
 package mozilla.lockbox.action
 
+import androidx.annotation.StringRes
+import mozilla.lockbox.R
+
 sealed class ItemDetailAction(
     override val eventMethod: TelemetryEventMethod,
     override val eventObject: TelemetryEventObject
 ) : TelemetryAction {
     data class TogglePassword(val displayed: Boolean)
         : ItemDetailAction(TelemetryEventMethod.tap, TelemetryEventObject.reveal_password)
+
+    enum class EditItemMenu(@StringRes val titleId: Int) {
+        EDIT(R.string.edit),
+        DELETE(R.string.delete)
+    }
 }
