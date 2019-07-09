@@ -26,5 +26,5 @@ sealed class DataStoreAction(
     data class Delete(val item: ServerPassword?) :
         DataStoreAction(TelemetryEventMethod.delete, TelemetryEventObject.delete_credential)
 
-    data class Edit(val itemId: Int) : DataStoreAction(TelemetryEventMethod.edit, TelemetryEventObject.edit_credential)
+    data class UpdateItemDetail(val item: ServerPassword) : DataStoreAction(TelemetryEventMethod.edit, TelemetryEventObject.update_credential)
 }

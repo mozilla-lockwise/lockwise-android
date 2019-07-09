@@ -99,5 +99,6 @@ enum class TelemetryEventObject {
     delete_credential,
     edit_credential,
     entry_kebab,
-    edit_entry_detail
+    edit_entry_detail,
+    update_credential
 }

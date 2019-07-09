@@ -12,6 +12,8 @@ import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.action.DataStoreAction
+import mozilla.lockbox.action.DialogAction
+import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.extensions.toDetailViewModel
 import mozilla.lockbox.flux.Dispatcher
@@ -22,6 +24,8 @@ import mozilla.lockbox.store.ItemDetailStore
 
 interface EditItemDetailView {
     val deleteClicks: Observable<Unit>
+    val closeEntryClicks: Observable<Unit>
+    val saveEntryClicks: Observable<Unit>
     fun updateItem(item: ItemDetailViewModel)
 }
 
@@ -50,6 +54,19 @@ class EditItemPresenter(
         this.view.deleteClicks
             .subscribe {
                 dispatcher.dispatch(DataStoreAction.Delete(credentials))
+            }
+            .addTo(compositeDisposable)
+
+        this.view.closeEntryClicks
+            .subscribe {
+                dispatcher.dispatch(DialogAction.DiscardChangesDialog(credentials!!.id))
+            }
+            .addTo(compositeDisposable)
+
+        this.view.saveEntryClicks
+            .subscribe {
+                dispatcher.dispatch(DataStoreAction.UpdateItemDetail(credentials!!))
+                dispatcher.dispatch(RouteAction.ItemDetail(credentials!!.id))
             }
             .addTo(compositeDisposable)
 

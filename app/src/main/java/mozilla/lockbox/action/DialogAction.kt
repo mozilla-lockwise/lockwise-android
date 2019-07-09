@@ -67,4 +67,19 @@ sealed class DialogAction(
             ItemList
         )
     )
+
+    data class DiscardChangesDialog(
+        val itemId: String
+    ) : DialogAction(
+        DialogViewModel(
+            R.string.discard_changes,
+            R.string.discard_changes_description,
+            R.string.discard,
+            R.string.cancel,
+            R.color.red
+        ),
+        listOf(
+            ItemDetail(itemId)
+        )
+    )
 }

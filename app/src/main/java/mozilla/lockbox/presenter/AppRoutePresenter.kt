@@ -24,6 +24,7 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.view.AppWebPageFragmentArgs
+import mozilla.lockbox.view.EditItemFragmentArgs
 import mozilla.lockbox.view.FingerprintAuthDialogFragment
 import mozilla.lockbox.view.ItemDetailFragmentArgs
 
@@ -68,7 +69,7 @@ class AppRoutePresenter(
     }
 
     fun bundle(action: RouteAction.EditItemDetail): Bundle {
-        return ItemDetailFragmentArgs.Builder()
+        return EditItemFragmentArgs.Builder()
             .setItemId(action.id)
             .build()
             .toBundle()
@@ -141,6 +142,8 @@ class AppRoutePresenter(
 
             R.id.fragment_item_detail to R.id.fragment_webview -> R.id.action_to_webview
             R.id.fragment_item_detail to R.id.fragment_item_edit -> R.id.action_itemDetail_to_edit
+
+            R.id.fragment_item_edit to R.id.fragment_item_detail -> R.id.action_itemEdit_to_itemDetail
 
             R.id.fragment_setting to R.id.fragment_webview -> R.id.action_to_webview
 

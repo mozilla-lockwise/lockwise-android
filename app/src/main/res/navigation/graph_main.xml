@@ -151,6 +151,9 @@
                 android:name="itemId"
                 android:defaultValue="MISSING_ID"
                 app:argType="string"/>
+        <action
+                android:id="@+id/action_itemEdit_to_itemDetail"
+                app:destination="@id/fragment_item_detail"/>
     </fragment>
 
     <fragment

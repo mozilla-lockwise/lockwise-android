@@ -54,12 +54,12 @@
                     android:letterSpacing="0.01"
                     android:layout_gravity="center_vertical|start"
                     app:layout_constraintStart_toEndOf="@id/closeEntryButton"
-                    app:layout_constraintEnd_toStartOf="@id/confirmButton"
+                    app:layout_constraintEnd_toStartOf="@id/saveEntryButton"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     tools:ignore="RtlSymmetry"/>
             <Button
-                    android:id="@+id/confirmButton"
+                    android:id="@+id/saveEntryButton"
                     android:layout_width="20dp"
                     android:layout_height="wrap_content"
                     android:drawableStart="@drawable/ic_check"

@@ -15,8 +15,17 @@ import android.widget.TextView
 import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
 import kotlinx.android.synthetic.main.fragment_item_detail.*
+import kotlinx.android.synthetic.main.fragment_item_detail.inputHostname
+import kotlinx.android.synthetic.main.fragment_item_detail.inputLayoutHostname
+import kotlinx.android.synthetic.main.fragment_item_detail.inputLayoutPassword
+import kotlinx.android.synthetic.main.fragment_item_detail.inputLayoutUsername
+import kotlinx.android.synthetic.main.fragment_item_detail.inputPassword
+import kotlinx.android.synthetic.main.fragment_item_detail.inputUsername
+import kotlinx.android.synthetic.main.fragment_item_detail.toolbar
 import kotlinx.android.synthetic.main.fragment_item_detail.view.entryTitle
+import kotlinx.android.synthetic.main.fragment_item_edit.*
 import kotlinx.android.synthetic.main.fragment_item_edit.view.*
+import kotlinx.android.synthetic.main.fragment_item_edit.view.inputLayoutName
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
 import mozilla.lockbox.model.ItemDetailViewModel
@@ -44,6 +53,12 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
     override val deleteClicks: Observable<Unit>
         get() = view!!.deleteEntryButton.clicks()
 
+    override val closeEntryClicks: Observable<Unit>
+        get() = view!!.closeEntryButton.clicks()
+
+    override val saveEntryClicks: Observable<Unit>
+        get() = view!!.saveEntryButton.clicks()
+
     override fun updateItem(item: ItemDetailViewModel) {
         assertOnUiThread()
         toolbar.elevation = resources.getDimension(R.dimen.larger_toolbar_elevation)
@@ -51,35 +66,30 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
         toolbar.entryTitle.text = item.title
         toolbar.entryTitle.gravity = Gravity.CENTER_VERTICAL
 
+        inputLayoutName.isHintAnimationEnabled = false
         inputLayoutHostname.isHintAnimationEnabled = false
         inputLayoutUsername.isHintAnimationEnabled = false
         inputLayoutPassword.isHintAnimationEnabled = false
 
-        inputUsername.readOnly = true
+        inputName.readOnly = true
 
-        if (!item.hasUsername) {
-            btnUsernameCopy.setColorFilter(resources.getColor(R.color.white_60_percent, null))
-            inputUsername.isClickable = false
-            inputUsername.isFocusable = false
-            inputUsername.setText(R.string.empty_space, TextView.BufferType.NORMAL)
-        } else {
-            btnUsernameCopy.clearColorFilter()
-            inputUsername.isClickable = true
-            inputUsername.isFocusable = true
-            inputUsername.setText(item.username, TextView.BufferType.NORMAL)
-        }
-
-        inputPassword.readOnly = true
-        inputPassword.isClickable = true
-        inputPassword.isFocusable = true
-
-        inputHostname.readOnly = true
-        inputHostname.isClickable = true
         inputHostname.isFocusable = true
+        inputHostname.isClickable = true
 
-        btnHostnameLaunch.isClickable = false
+        inputUsername.isFocusable = true
+        inputUsername.isClickable = true
 
+        inputPassword.isFocusable = true
+        inputPassword.isClickable = true
+
+        inputName.setText(item.hostname, TextView.BufferType.NORMAL)
         inputHostname.setText(item.hostname, TextView.BufferType.NORMAL)
         inputPassword.setText(item.password, TextView.BufferType.NORMAL)
+
+        if (!item.hasUsername) {
+            inputUsername.setText(R.string.empty_space, TextView.BufferType.NORMAL)
+        } else {
+            inputUsername.setText(item.username, TextView.BufferType.NORMAL)
+        }
     }
 }
