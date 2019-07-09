@@ -135,6 +135,22 @@
                 android:name="itemId"
                 android:defaultValue="MISSING_ID"
                 app:argType="string"/>
+        <action
+                android:id="@+id/action_itemDetail_to_edit"
+                app:destination="@id/fragment_item_edit"
+                app:launchSingleTop="true"
+                app:popUpTo="@id/fragment_item_edit"
+                app:popUpToInclusive="true"/>
+    </fragment>
+
+    <fragment
+            android:id="@+id/fragment_item_edit"
+            android:name="mozilla.lockbox.view.EditItemFragment"
+            tools:layout="@layout/fragment_item_edit">
+        <argument
+                android:name="itemId"
+                android:defaultValue="MISSING_ID"
+                app:argType="string"/>
     </fragment>
 
     <fragment

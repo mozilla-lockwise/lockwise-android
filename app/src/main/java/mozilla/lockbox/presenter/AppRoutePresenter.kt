@@ -67,6 +67,13 @@ class AppRoutePresenter(
             .toBundle()
     }
 
+    fun bundle(action: RouteAction.EditItemDetail): Bundle {
+        return ItemDetailFragmentArgs.Builder()
+            .setItemId(action.id)
+            .build()
+            .toBundle()
+    }
+
     override fun route(action: RouteAction) {
         activity.setTheme(R.style.AppTheme)
         when (action) {
@@ -82,6 +89,7 @@ class AppRoutePresenter(
             is RouteAction.LockScreen -> navigateToFragment(R.id.fragment_locked)
             is RouteAction.Filter -> navigateToFragment(R.id.fragment_filter)
             is RouteAction.ItemDetail -> navigateToFragment(R.id.fragment_item_detail, bundle(action))
+            is RouteAction.EditItemDetail -> navigateToFragment(R.id.fragment_item_edit, bundle(action))
             is RouteAction.OpenWebsite -> openWebsite(action.url)
             is RouteAction.SystemSetting -> openSetting(action)
             is RouteAction.UnlockFallbackDialog -> showUnlockFallback(action)
@@ -132,6 +140,7 @@ class AppRoutePresenter(
             R.id.fragment_item_list to R.id.fragment_webview -> R.id.action_to_webview
 
             R.id.fragment_item_detail to R.id.fragment_webview -> R.id.action_to_webview
+            R.id.fragment_item_detail to R.id.fragment_item_edit -> R.id.action_itemDetail_to_edit
 
             R.id.fragment_setting to R.id.fragment_webview -> R.id.action_to_webview
 
