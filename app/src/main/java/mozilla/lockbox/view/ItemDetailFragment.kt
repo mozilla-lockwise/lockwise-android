@@ -11,52 +11,80 @@ import android.text.InputType
 import android.text.method.PasswordTransformationMethod
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
+import android.widget.Button
 import android.widget.EditText
-import android.widget.Spinner
+import android.widget.ImageButton
+import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.StringRes
 import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_item_detail.*
 import kotlinx.android.synthetic.main.fragment_item_detail.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
-import mozilla.lockbox.action.ItemDetailAction
-import mozilla.lockbox.adapter.DeleteItemAdapter
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.presenter.ItemDetailPresenter
 import mozilla.lockbox.presenter.ItemDetailView
 import mozilla.lockbox.support.assertOnUiThread
 
+import android.view.ViewTreeObserver
+
+/**
+ * A OnPreDrawListener implementation that will execute a callback once and then unsubscribe itself.
+ * https://github.com/mozilla-mobile/focus-android/blob/master/app/src/main/java/org/mozilla/focus/utils/OneShotOnPreDrawListener.kt
+ */
+class OneShotOnPreDrawListener<V : View> (
+    private val view: V,
+    private inline val onPreDraw: (view: V) -> Boolean
+) : ViewTreeObserver.OnPreDrawListener {
+
+    init {
+        view.viewTreeObserver.addOnPreDrawListener(this)
+    }
+
+    override fun onPreDraw(): Boolean {
+        view.viewTreeObserver.removeOnPreDrawListener(this)
+
+        return onPreDraw(view)
+    }
+}
+
 @ExperimentalCoroutinesApi
-class ItemDetailFragment : BackableFragment(), ItemDetailView {
+class ItemDetailFragment : BackableFragment(), ItemDetailView, View.OnClickListener {
+
+    private var itemId: String? = null
+    private var kebabMenu: ItemDetailOptionMenu? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val itemId = arguments?.let {
-            ItemDetailFragmentArgs.fromBundle(it)
-                .itemId
+        itemId = arguments?.let {
+            ItemDetailFragmentArgs.fromBundle(it).itemId
         }
 
         presenter = ItemDetailPresenter(this, itemId)
-        return inflater.inflate(R.layout.fragment_item_detail, container, false)
+        val view = inflater.inflate(R.layout.fragment_item_detail, container, false)
+
+        return view
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setupKebabMenu(view)
+    override fun onPause() {
+        kebabMenu?.dismiss()
+        super.onPause()
     }
 
-    private lateinit var spinner: Spinner
-    private lateinit var itemAdapter: DeleteItemAdapter
-    private var userSelection = false
+    override fun onDestroy() {
+        kebabMenu?.dismiss()
+        super.onDestroy()
+    }
 
     private val errorHelper = NetworkErrorHelper()
 
@@ -76,7 +104,7 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         get() = view!!.detailLearnMore.clicks()
 
     override val kebabMenuClicks: Observable<Unit>
-        get() = view!!.toolbar.kebabMenu.clicks()
+        get() = view!!.toolbar.kebabMenuButton.clicks()
 
     override var isPasswordVisible: Boolean = false
         set(value) {
@@ -85,35 +113,29 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
             updatePasswordVisibility(value)
         }
 
-    private var _menuItemSelection = PublishSubject.create<ItemDetailAction.EditItemMenu>()
-    override val menuItemSelection: Observable<ItemDetailAction.EditItemMenu> = _menuItemSelection
-
-    private val menuOptions: Array<ItemDetailAction.EditItemMenu>
-        get() = ItemDetailAction.EditItemMenu.values()
-
-    private fun setupKebabMenu(view: View) {
-        val sortList = ArrayList<ItemDetailAction.EditItemMenu>()
-        sortList.add(ItemDetailAction.EditItemMenu.EDIT)
-        sortList.add(ItemDetailAction.EditItemMenu.DELETE)
-        spinner = view.kebabMenu
-        itemAdapter = DeleteItemAdapter(context!!, android.R.layout.simple_spinner_item, sortList)
-        spinner.adapter = itemAdapter
-        spinner.setPopupBackgroundResource(R.drawable.sort_menu_bg)
-
-        // added because different events can trigger onItemSelectedListener
-        spinner.setOnTouchListener { _, _ ->
-            userSelection = true
-            false
+    override fun onClick(view: View) {
+        when (view.id) {
+            R.id.kebabMenuButton -> showKebabMenu(view)
+            else -> throw IllegalStateException("View not handled on click: ${view.id}.")
         }
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-            }
+    }
 
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                if (userSelection) {
-                    itemAdapter.setSelection(position)
-                    _menuItemSelection.onNext(menuOptions[position])
-                }
+    private fun showKebabMenu(view: View) {
+        var kebabMenu: ItemDetailOptionMenu? = ItemDetailOptionMenu(view.context, this)
+        kebabMenu?.show(view)
+        kebabMenu?.dismissListener = {
+            kebabMenu = null
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        kebabMenu?.let {
+            it.dismiss()
+
+            OneShotOnPreDrawListener(toolbar.kebabMenuButton) {
+                showKebabMenu(toolbar.kebabMenuButton)
+                false
             }
         }
     }

@@ -48,12 +48,13 @@
                         android:textColor="@color/text_white"
                         android:letterSpacing="0.01"
                         android:layout_gravity="center_vertical|start"
+                        android:onClick="showPopup"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
                         tools:ignore="RtlSymmetry"/>
-                <Spinner
-                        android:id="@+id/kebabMenu"
+                <ImageButton
+                        android:id="@+id/kebabMenuButton"
                         android:layout_width="50dp"
                         android:layout_height="match_parent"
                         android:textAllCaps="false"
@@ -65,7 +66,6 @@
                         android:popupElevation="8dp"
                         android:dropDownWidth="128dp"
                         android:dropDownSelector="@color/selection"
-                        android:spinnerMode="dropdown"
                         android:popupBackground="@drawable/sort_menu_bg"
                         android:textSize="20sp"
                         android:background="@null"

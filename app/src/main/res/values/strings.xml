@@ -280,4 +280,7 @@
     </string>
     <string name="entry_password_description">Password for this entry.</string>
     <string name="delete_entry">Delete Entry</string>
+    <string name="discard_changes">Discard changes?</string>
+    <string name="discard_changes_description">Your edits will not be saved.</string>
+    <string name="discard">Discard</string>
 </resources>

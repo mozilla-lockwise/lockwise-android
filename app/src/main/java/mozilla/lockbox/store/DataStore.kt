@@ -62,11 +62,13 @@ open class DataStore(
     val syncStateSubject: BehaviorRelay<SyncState> = BehaviorRelay.createDefault(SyncState.NotSyncing)
     private val listSubject: BehaviorRelay<List<ServerPassword>> = BehaviorRelay.createDefault(emptyList())
     private val deletedItemSubject = ReplayRelay.create<Consumable<ServerPassword>>()
+    private val itemUpdatedSubject = ReplayRelay.create<Consumable<ServerPassword>>()
 
     open val state: Observable<State> = stateSubject
     open val syncState: Observable<SyncState> = syncStateSubject
     open val list: Observable<List<ServerPassword>> get() = listSubject
     open val deletedItem: Observable<Consumable<ServerPassword>> get() = deletedItemSubject
+    open val updatedItem: Observable<Consumable<ServerPassword>> get() = itemUpdatedSubject
 
     private val exceptionHandler: CoroutineExceptionHandler
         get() = CoroutineExceptionHandler { _, e ->
@@ -109,6 +111,7 @@ open class DataStore(
                     is DataStoreAction.Reset -> reset()
                     is DataStoreAction.UpdateCredentials -> updateCredentials(action.syncCredentials)
                     is DataStoreAction.Delete -> deleteCredentials(action.item)
+                    is DataStoreAction.UpdateItemDetail -> updateItemDetail(action.item)
                 }
             }
             .addTo(compositeDisposable)
@@ -134,7 +137,20 @@ open class DataStore(
                 deletedItemSubject.accept(Consumable(item))
             }
         } catch (loginsStorageException: LoginsStorageException) {
-            log.error("Exception: ", loginsStorageException)
+            pushError(loginsStorageException)
+        }
+    }
+
+    private fun updateItemDetail(item: ServerPassword) {
+        try {
+            backend.update(item)
+                .asSingle(coroutineContext)
+                .subscribe()
+                .addTo(compositeDisposable)
+            sync()
+            itemUpdatedSubject.accept(Consumable(item))
+        } catch (e: Exception) {
+            pushError(e)
         }
     }
 

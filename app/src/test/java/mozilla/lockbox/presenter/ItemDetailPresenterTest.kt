@@ -6,6 +6,8 @@
 
 package mozilla.lockbox.presenter
 
+import android.app.Dialog
+import android.content.Context
 import android.net.ConnectivityManager
 import androidx.annotation.StringRes
 import io.reactivex.Observable
@@ -22,8 +24,10 @@ import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.ItemDetailAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.assertLastValue
+import mozilla.lockbox.extensions.view.AlertDialogHelper
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.model.DialogViewModel
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.ItemDetailStore
@@ -55,6 +59,11 @@ class ItemDetailPresenterTest {
     class FakeView : ItemDetailView {
         override fun showKebabMenu() {}
         override fun hideKebabMenu() {}
+
+        var updateKebabSelectionStub = listOf<ItemDetailAction.EditItemMenu>()
+        override fun updateKebabSelection(item: ItemDetailAction.EditItemMenu) {
+            updateKebabSelectionStub = updateKebabSelectionStub + item
+        }
 
         val kebabMenuClickStub = PublishSubject.create<Unit>()
         override val kebabMenuClicks: Observable<Unit>
@@ -121,6 +130,9 @@ class ItemDetailPresenterTest {
     private var isConnected: Observable<Boolean> = PublishSubject.create()
     var isConnectedObserver: TestObserver<Boolean> = TestObserver.create<Boolean>()
 
+    @Mock
+    val deleteDialog = PowerMockito.mock(Dialog::class.java)
+
     private val fakeCredential: ServerPassword by lazy {
         ServerPassword(
             "id0",
@@ -149,15 +161,33 @@ class ItemDetailPresenterTest {
 
     lateinit var subject: ItemDetailPresenter
 
+    @Mock
+    val dialogHelper = PowerMockito.mock(AlertDialogHelper::class.java)
+
+    val dialogViewModel = DialogViewModel(
+        R.string.delete_this_login,
+        R.string.delete_description,
+        R.string.delete,
+        R.string.cancel,
+        R.color.red
+    )
+    @Mock
+    val context: Context = Mockito.mock(Context::class.java)
+
     @Before
     fun setUp() {
         PowerMockito.whenNew(DataStore::class.java).withAnyArguments().thenReturn(dataStore)
 
         dispatcher.register.subscribe(dispatcherObserver)
+//        Mockito.`when`(Context()).thenReturn(context)
         Mockito.`when`(networkStore.isConnected).thenReturn(isConnected)
         Mockito.`when`(dataStore.get(ArgumentMatchers.anyString())).thenReturn(getStub)
         networkStore.connectivityManager = connectivityManager
         view.networkAvailable.subscribe(isConnectedObserver)
+
+//        Mockito.`when`(DialogViewModel()).thenReturn(dialogViewModel)
+//        Mockito.`when`(AlertDialogHelper.showAlertDialog(ArgumentMatchers.any(), dialogViewModel))
+//            .thenReturn(fakeBuilder())
     }
 
     private fun setUpTestSubject(item: Optional<ServerPassword>) {
@@ -342,5 +372,25 @@ class ItemDetailPresenterTest {
         val menuItemSelection = ItemDetailAction.EditItemMenu.DELETE
         view.menuItemSelectionStub.onNext(menuItemSelection)
         dispatcherObserver.assertValue(DialogAction.DeleteConfirmationDialog(fakeCredential))
+    }
+
+    @Test
+    fun `select edit from kebab menu`() {
+        setUpTestSubject(Optional(fakeCredential))
+
+        val menuItemSelection = ItemDetailAction.EditItemMenu.EDIT
+        view.menuItemSelectionStub.onNext(menuItemSelection)
+        dispatcherObserver.assertValue(RouteAction.EditItemDetail(fakeCredential.id))
+    }
+
+    @Test
+    fun `kebab menu action in sequence`() {
+        setUpTestSubject(Optional(fakeCredential))
+
+        val menuItemSelection = ItemDetailAction.EditItemMenu.DELETE
+        view.menuItemSelectionStub.onNext(menuItemSelection)
+        dispatcherObserver.assertValue(DialogAction.DeleteConfirmationDialog(fakeCredential))
+
+        // click cancel
     }
 }

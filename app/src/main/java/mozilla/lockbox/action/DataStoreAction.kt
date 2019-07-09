@@ -78,5 +78,5 @@ sealed class DataStoreAction(
         item?.id
     )
 
-    data class Edit(val itemId: Int) : DataStoreAction(TelemetryEventMethod.edit, TelemetryEventObject.edit_credential)
+    data class UpdateItemDetail(val item: ServerPassword) : DataStoreAction(TelemetryEventMethod.edit, TelemetryEventObject.update_credential)
 }
