@@ -236,15 +236,21 @@ open class DataStore(
     }
 
     private fun sync() {
-        val syncConfig = support.syncConfig ?: return {
-            val throwable = IllegalStateException("syncConfig should already be defined")
+        val syncConfig = if (support.syncConfig != null) {
+            support.syncConfig
+        } else {
+            log.error("Support sync config is null: $support")
+            val throwable = IllegalStateException("syncConfig should already be defined in $support")
             pushError(throwable)
-        }()
+
+            resetSupport(support)
+            support.syncConfig
+        }
 
         // ideally, we don't sync unless we are connected to the network
         syncStateSubject.accept(SyncState.Syncing)
 
-        backend.sync(syncConfig)
+        backend.sync(syncConfig!!)
             .asSingle(coroutineContext)
             .timeout(Constant.App.syncTimeout, TimeUnit.SECONDS)
             .doOnEvent { _, err ->
@@ -326,7 +332,12 @@ open class DataStore(
         }
 
         when (loginsException) {
-            is SyncAuthInvalidException, is InvalidKeyException -> dispatcher.dispatch(LifecycleAction.UserReset)
+            is SyncAuthInvalidException,
+            is InvalidKeyException,
+            is LoginsStorageException -> {
+                resetSupport(support)
+                dispatcher.dispatch(LifecycleAction.UserReset)
+            }
         }
     }
 
