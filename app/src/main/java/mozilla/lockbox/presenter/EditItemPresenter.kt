@@ -20,7 +20,6 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.store.DataStore
-import mozilla.lockbox.store.ItemDetailStore
 
 interface EditItemDetailView {
     val deleteClicks: Observable<Unit>
@@ -34,8 +33,7 @@ class EditItemPresenter(
     private val view: EditItemDetailView,
     val itemId: String?,
     private val dispatcher: Dispatcher = Dispatcher.shared,
-    private val dataStore: DataStore = DataStore.shared,
-    private val itemDetailStore: ItemDetailStore = ItemDetailStore.shared
+    private val dataStore: DataStore = DataStore.shared
 ) : Presenter() {
 
     private var credentials: ServerPassword? = null
@@ -51,24 +49,24 @@ class EditItemPresenter(
             .subscribe(view::updateItem)
             .addTo(compositeDisposable)
 
-        this.view.deleteClicks
+        view.deleteClicks
             .subscribe {
                 dispatcher.dispatch(DataStoreAction.Delete(credentials))
+                dispatcher.dispatch(RouteAction.ItemList)
             }
             .addTo(compositeDisposable)
 
-        this.view.closeEntryClicks
+        view.closeEntryClicks
             .subscribe {
                 dispatcher.dispatch(DialogAction.DiscardChangesDialog(credentials!!.id))
             }
             .addTo(compositeDisposable)
 
-        this.view.saveEntryClicks
+        view.saveEntryClicks
             .subscribe {
                 dispatcher.dispatch(DataStoreAction.UpdateItemDetail(credentials!!))
                 dispatcher.dispatch(RouteAction.ItemDetail(credentials!!.id))
             }
             .addTo(compositeDisposable)
-
     }
 }
