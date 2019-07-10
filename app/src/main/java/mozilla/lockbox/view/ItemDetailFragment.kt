@@ -19,15 +19,24 @@ import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.StringRes
+import androidx.appcompat.widget.Toolbar
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import com.jakewharton.rxbinding2.support.v7.widget.navigationClicks
 import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_item_detail.*
 import kotlinx.android.synthetic.main.fragment_item_detail.view.*
+import kotlinx.android.synthetic.main.fragment_item_list.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
 import mozilla.lockbox.action.ItemDetailAction
-import mozilla.lockbox.adapter.DeleteItemAdapter
+import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.action.Setting
+import mozilla.lockbox.adapter.ItemDetailAdapter
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.presenter.ItemDetailPresenter
 import mozilla.lockbox.presenter.ItemDetailView
@@ -35,14 +44,16 @@ import mozilla.lockbox.support.assertOnUiThread
 
 @ExperimentalCoroutinesApi
 class ItemDetailFragment : BackableFragment(), ItemDetailView {
+
+    private var itemId: String? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val itemId = arguments?.let {
-            ItemDetailFragmentArgs.fromBundle(it)
-                .itemId
+        itemId = arguments?.let {
+            ItemDetailFragmentArgs.fromBundle(it).itemId
         }
 
         presenter = ItemDetailPresenter(this, itemId)
@@ -55,7 +66,7 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
     }
 
     private lateinit var spinner: Spinner
-    private lateinit var itemAdapter: DeleteItemAdapter
+    private lateinit var itemAdapter: ItemDetailAdapter
     private var userSelection = false
 
     private val errorHelper = NetworkErrorHelper()
@@ -93,11 +104,15 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
 
     private fun setupKebabMenu(view: View) {
         val sortList = ArrayList<ItemDetailAction.EditItemMenu>()
+
         sortList.add(ItemDetailAction.EditItemMenu.EDIT)
         sortList.add(ItemDetailAction.EditItemMenu.DELETE)
+
         spinner = view.kebabMenu
-        itemAdapter = DeleteItemAdapter(context!!, android.R.layout.simple_spinner_item, sortList)
+
+        itemAdapter = ItemDetailAdapter(context!!, android.R.layout.simple_spinner_item, sortList)
         spinner.adapter = itemAdapter
+
         spinner.setPopupBackgroundResource(R.drawable.sort_menu_bg)
 
         // added because different events can trigger onItemSelectedListener
@@ -105,14 +120,16 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
             userSelection = true
             false
         }
+
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                if (userSelection) {
+                if (position == 0) {
                     itemAdapter.setSelection(position)
-                    _menuItemSelection.onNext(menuOptions[position])
+                    RouteAction.EditItemDetail(itemId!!)
                 }
             }
         }
@@ -127,6 +144,12 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
             btnPasswordToggle.setImageResource(R.drawable.ic_show)
         }
     }
+
+    override fun updateKebabSelection(item: ItemDetailAction.EditItemMenu) {
+        itemAdapter.setSelection(menuOptions.indexOf(item))
+        spinner.setSelection(menuOptions.indexOf(item), false)
+    }
+
 
     override fun updateItem(item: ItemDetailViewModel) {
         assertOnUiThread()

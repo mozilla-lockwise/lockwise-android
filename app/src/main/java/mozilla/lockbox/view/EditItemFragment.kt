@@ -6,26 +6,25 @@
 
 package mozilla.lockbox.view
 
+import android.content.Context
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
+import com.jakewharton.rxbinding2.support.v7.widget.navigationClicks
 import com.jakewharton.rxbinding2.view.clicks
+import com.jakewharton.rxbinding2.widget.textChanges
+import com.jakewharton.rxrelay2.ReplayRelay
 import io.reactivex.Observable
-import kotlinx.android.synthetic.main.fragment_item_detail.*
-import kotlinx.android.synthetic.main.fragment_item_detail.inputHostname
-import kotlinx.android.synthetic.main.fragment_item_detail.inputLayoutHostname
-import kotlinx.android.synthetic.main.fragment_item_detail.inputLayoutPassword
-import kotlinx.android.synthetic.main.fragment_item_detail.inputLayoutUsername
-import kotlinx.android.synthetic.main.fragment_item_detail.inputPassword
-import kotlinx.android.synthetic.main.fragment_item_detail.inputUsername
-import kotlinx.android.synthetic.main.fragment_item_detail.toolbar
-import kotlinx.android.synthetic.main.fragment_item_detail.view.entryTitle
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.fragment_item_edit.*
 import kotlinx.android.synthetic.main.fragment_item_edit.view.*
-import kotlinx.android.synthetic.main.fragment_item_edit.view.inputLayoutName
+import kotlinx.android.synthetic.main.fragment_item_edit.view.toolbar
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
 import mozilla.lockbox.model.ItemDetailViewModel
@@ -50,14 +49,53 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
         return inflater.inflate(R.layout.fragment_item_edit, container, false)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupToolbar(view.toolbar)
+    }
+
+    private val compositeDisposable = CompositeDisposable()
+
     override val deleteClicks: Observable<Unit>
         get() = view!!.deleteEntryButton.clicks()
 
-    override val closeEntryClicks: Observable<Unit>
-        get() = view!!.closeEntryButton.clicks()
+    override val closeEntryClicks: ReplayRelay<Unit> = ReplayRelay.createWithSize<Unit>(1)
 
     override val saveEntryClicks: Observable<Unit>
         get() = view!!.saveEntryButton.clicks()
+
+    // input validation
+    override val hostnameChanged: Observable<CharSequence>
+        get() = view!!.inputHostname.textChanges()
+    // input validation
+    override val usernameChanged: Observable<CharSequence>
+        get() = view!!.inputUsername.textChanges()
+    // input validation
+    override val passwordChanged: Observable<CharSequence>
+        get() = view!!.inputPassword.textChanges()
+
+    override fun closeKeyboard() {
+        val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        if (imm.isAcceptingText) {
+            imm.hideSoftInputFromWindow(view!!.windowToken, 0)
+        }
+    }
+
+    private fun setupToolbar(toolbar: Toolbar) {
+        toolbar.navigationIcon = resources.getDrawable(R.drawable.ic_close, null)
+        toolbar.elevation = resources.getDimension(R.dimen.toolbar_elevation)
+        toolbar.contentInsetStartWithNavigation = 0
+
+        toolbar.navigationClicks()
+            .subscribe {
+                closeEntryClicks
+            }
+            .addTo(compositeDisposable)
+    }
+
+    private fun scrollToTop() {
+//        cardView.layoutMode =
+    }
 
     override fun updateItem(item: ItemDetailViewModel) {
         assertOnUiThread()

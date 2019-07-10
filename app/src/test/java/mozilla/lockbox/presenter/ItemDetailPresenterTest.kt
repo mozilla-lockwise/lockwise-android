@@ -7,8 +7,10 @@
 package mozilla.lockbox.presenter
 
 import android.app.Dialog
+import android.content.Context
 import android.net.ConnectivityManager
 import androidx.annotation.StringRes
+import androidx.appcompat.app.AlertDialog
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
@@ -23,6 +25,7 @@ import mozilla.lockbox.action.ItemDetailAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.extensions.view.AlertDialogHelper
+import mozilla.lockbox.extensions.view.AlertState
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.model.DialogViewModel
@@ -41,8 +44,6 @@ import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers
 import org.mockito.Mock
 import org.mockito.Mockito
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.any
 import org.mockito.Mockito.clearInvocations
 import org.mockito.Mockito.spy
 import org.mockito.Mockito.verify
@@ -160,16 +161,33 @@ class ItemDetailPresenterTest {
                                 R.string.cancel,
                                 R.color.red
                             )
+    @Mock
+    val context: Context = Mockito.mock(Context::class.java)
+
+    private fun fakeBuilder(): Observable<AlertState> {
+        return Observable.create {
+            val builder = AlertDialog.Builder(context, R.style.DeleteDialogStyle)
+            val dialog = builder.create()
+            dialog.show()
+        }
+    }
+
+
     @Before
     fun setUp() {
         PowerMockito.whenNew(DataStore::class.java).withAnyArguments().thenReturn(dataStore)
 
         dispatcher.register.subscribe(dispatcherObserver)
+//        Mockito.`when`(Context()).thenReturn(context)
         Mockito.`when`(networkStore.isConnected).thenReturn(isConnected)
         Mockito.`when`(dataStore.get(ArgumentMatchers.anyString())).thenReturn(getStub)
         networkStore.connectivityManager = connectivityManager
         view.networkAvailable.subscribe(isConnectedObserver)
-        `when`(dialogHelper.showAlertDialog(ArgumentMatchers.any(), dialogViewModel))
+
+//        Mockito.`when`(DialogViewModel()).thenReturn(dialogViewModel)
+//        Mockito.`when`(AlertDialogHelper.showAlertDialog(ArgumentMatchers.any(), dialogViewModel))
+//            .thenReturn(fakeBuilder())
+
     }
 
     private fun setUpTestSubject(item: Optional<ServerPassword>) {

@@ -8,6 +8,7 @@ package mozilla.lockbox.presenter
 
 import androidx.annotation.StringRes
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -19,6 +20,7 @@ import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.ItemDetailAction
 import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.extensions.debug
 import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.extensions.toDetailViewModel
 import mozilla.lockbox.flux.Dispatcher
@@ -39,6 +41,7 @@ interface ItemDetailView {
     fun updateItem(item: ItemDetailViewModel)
     fun showToastNotification(@StringRes strId: Int)
     fun handleNetworkError(networkErrorVisibility: Boolean)
+    fun updateKebabSelection(item: ItemDetailAction.EditItemMenu)
     val menuItemSelection: Observable<ItemDetailAction.EditItemMenu>
     //    val retryNetworkConnectionClicks: Observable<Unit>
 }
@@ -61,6 +64,15 @@ class ItemDetailPresenter(
     }
 
     override fun onViewReady() {
+        val itemId = this.itemId ?: return
+        dataStore.get(itemId)
+            .observeOn(mainThread())
+            .filterNotNull()
+            .doOnNext { credentials = it }
+            .map { it.toDetailViewModel() }
+            .subscribe(view::updateItem)
+            .addTo(compositeDisposable)
+
         handleClicks(view.usernameCopyClicks) {
             if (!it.username.isNullOrBlank()) {
                 dispatcher.dispatch(ClipboardAction.CopyUsername(it.username.toString()))
@@ -83,16 +95,6 @@ class ItemDetailPresenter(
             }
         }
 
-        view.menuItemSelection
-            .map {
-                when (it.titleId) {
-                    R.string.edit -> RouteAction.EditItemDetail(credentials!!.id)
-                    else -> DialogAction.DeleteConfirmationDialog(credentials)
-                }
-            }
-            .subscribe(dispatcher::dispatch)
-            .addTo(compositeDisposable)
-
         this.view.learnMoreClicks
             .map { AppWebPageAction.FaqEdit }
             .subscribe(dispatcher::dispatch)
@@ -104,17 +106,6 @@ class ItemDetailPresenter(
 
         view.isPasswordVisible = false
 
-        // now set up the data.
-        val itemId = this.itemId ?: return
-
-        dataStore.get(itemId)
-            .observeOn(mainThread())
-            .filterNotNull()
-            .doOnNext { credentials = it }
-            .map { it.toDetailViewModel() }
-            .subscribe(view::updateItem)
-            .addTo(compositeDisposable)
-
         networkStore.isConnected
             .subscribe(view::handleNetworkError)
             .addTo(compositeDisposable)
@@ -122,6 +113,18 @@ class ItemDetailPresenter(
         itemDetailStore.isPasswordVisible
             .subscribe { view.isPasswordVisible = it }
             .addTo(compositeDisposable)
+
+        view.menuItemSelection
+            .debug("Menu item selection==============================")
+            .subscribe {
+                view.updateKebabSelection(it)
+                when (it.titleId) {
+                    R.string.edit -> dispatcher.dispatch(RouteAction.EditItemDetail(credentials!!.id))
+                    else -> dispatcher.dispatch(DialogAction.DeleteConfirmationDialog(credentials))
+                }
+            }
+            .addTo(compositeDisposable)
+
 
 //        view.retryNetworkConnectionClicks.subscribe {
 //            dispatcher.dispatch(NetworkAction.CheckConnectivity)

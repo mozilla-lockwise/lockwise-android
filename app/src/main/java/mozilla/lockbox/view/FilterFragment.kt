@@ -62,12 +62,11 @@ class FilterFragment : BackableFragment(), FilterView {
     }
 
     override fun onPause() {
+        super.onPause()
         val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         if (imm.isAcceptingText) {
             imm.hideSoftInputFromWindow(view!!.filterField.windowToken, 0)
         }
-
-        super.onPause()
     }
 
     override val filterTextEntered: Observable<CharSequence>

@@ -6,6 +6,7 @@
 
 package mozilla.lockbox.presenter
 
+import com.jakewharton.rxrelay2.ReplayRelay
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.rxkotlin.addTo
@@ -14,6 +15,7 @@ import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.extensions.debug
 import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.extensions.toDetailViewModel
 import mozilla.lockbox.flux.Dispatcher
@@ -23,9 +25,13 @@ import mozilla.lockbox.store.DataStore
 
 interface EditItemDetailView {
     val deleteClicks: Observable<Unit>
-    val closeEntryClicks: Observable<Unit>
+    val closeEntryClicks: ReplayRelay<Unit>
     val saveEntryClicks: Observable<Unit>
+    val hostnameChanged: Observable<CharSequence>
+    val usernameChanged: Observable<CharSequence>
+    val passwordChanged: Observable<CharSequence>
     fun updateItem(item: ItemDetailViewModel)
+    fun closeKeyboard()
 }
 
 @ExperimentalCoroutinesApi
@@ -65,6 +71,7 @@ class EditItemPresenter(
         view.saveEntryClicks
             .subscribe {
                 dispatcher.dispatch(DataStoreAction.UpdateItemDetail(credentials!!))
+                view.closeKeyboard()
                 dispatcher.dispatch(RouteAction.ItemDetail(credentials!!.id))
             }
             .addTo(compositeDisposable)

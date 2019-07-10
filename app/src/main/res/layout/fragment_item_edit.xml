@@ -12,7 +12,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/fragment_item_edit"
-        android:background="@color/background_grey" >
+        android:overScrollMode="ifContentScrolls"
+        android:windowSoftInputMode="adjustPan"
+        android:background="@color/background_grey"
+        style="@style/EditItemDetail" >
 
     <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -27,18 +30,6 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-            <Button
-                    android:id="@+id/closeEntryButton"
-                    android:layout_width="30dp"
-                    android:layout_height="wrap_content"
-                    android:drawableStart="@drawable/ic_close"
-                    android:layout_marginEnd="16dp"
-                    android:background="@null"
-                    android:gravity="center_vertical|center_horizontal"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-            />
             <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -53,7 +44,6 @@
                     android:textColor="@color/text_white"
                     android:letterSpacing="0.01"
                     android:layout_gravity="center_vertical|start"
-                    app:layout_constraintStart_toEndOf="@id/closeEntryButton"
                     app:layout_constraintEnd_toStartOf="@id/saveEntryButton"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -62,7 +52,7 @@
                     android:id="@+id/saveEntryButton"
                     android:layout_width="20dp"
                     android:layout_height="wrap_content"
-                    android:drawableStart="@drawable/ic_check"
+                    android:drawableStart="@drawable/ic_check_white"
                     android:drawableTint="@color/background_white"
                     android:background="@null"
                     android:layout_marginEnd="16dp"
@@ -76,10 +66,13 @@
 
     <androidx.cardview.widget.CardView
             xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            style="@style/EditItemDetail"
             android:id="@+id/cardView"
             android:layout_width="match_parent"
             android:layout_height="460dp"
             android:layout_gravity="center"
+            android:overScrollMode="ifContentScrolls"
+            android:windowSoftInputMode="adjustPan"
             card_view:layout_constraintTop_toBottomOf="@id/toolbar">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -130,7 +123,7 @@
                         android:layout_height="1dp"
                         android:layout_width="match_parent"
                         android:background="@color/gray_divider"
-                        android:layout_marginStart="16dp"
+                        android:layout_marginStart="20dp"
                         card_view:layout_constraintTop_toBottomOf="@id/inputLayoutName"
                 />
 
@@ -144,8 +137,9 @@
                         android:textColor="@color/black_60_percent"
                         android:letterSpacing="0.03"
                         android:lineSpacingExtra="4sp"
-                        android:layout_marginStart="16dp"
                         android:layout_marginEnd="0dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="7dp"
                         card_view:layout_constraintTop_toBottomOf="@id/nameDivider"
                         card_view:layout_constraintStart_toStartOf="parent"
                         android:text="@string/inputNameDescription"
@@ -164,6 +158,10 @@
                         android:letterSpacing="0.03"
                         android:lineSpacingExtra="7.5sp"
                         android:background="@color/background_white"
+                        android:layout_marginTop="7dp"
+                        android:layout_weight="1"
+                        android:elevation="0dp"
+                        android:stateListAnimator="@null"
                         android:text="@string/learn_more"
                         card_view:layout_constraintTop_toBottomOf="@id/nameDivider"
                         card_view:layout_constraintStart_toEndOf="@id/inputNameDescription"
@@ -177,7 +175,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="30dp"
                     android:paddingEnd="16dp"
-                    app:layout_constraintTop_toBottomOf="@id/entryName" >
+                    app:layout_constraintTop_toBottomOf="@id/entryName"
+                    >
 
                 <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/inputLayoutHostname"
@@ -201,6 +200,7 @@
                             android:singleLine="true"
                             android:clickable="true"
                             android:focusable="true"
+                            android:textCursorDrawable="@android:color/transparent"
                             tools:ignore="Autofill"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -209,13 +209,13 @@
                         android:layout_height="1dp"
                         android:layout_width="match_parent"
                         android:background="@color/gray_divider"
-                        android:layout_marginStart="16dp"
+                        android:layout_marginStart="20dp"
                         card_view:layout_constraintTop_toBottomOf="@id/inputLayoutHostname"
                 />
 
                 <TextView
                         android:id="@+id/inputHostnameDescription"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textSize="12sp"
                         android:fontFamily="sans-serif"
@@ -223,7 +223,8 @@
                         android:textColor="@color/black_60_percent"
                         android:letterSpacing="0.03"
                         android:lineSpacingExtra="4sp"
-                        android:layout_marginStart="16dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="7dp"
                         card_view:layout_constraintTop_toBottomOf="@id/hostnameDivider"
                         card_view:layout_constraintStart_toStartOf="parent"
                         android:text="@string/hostnameEntryDescription"
@@ -268,7 +269,7 @@
                         android:layout_height="1dp"
                         android:layout_width="match_parent"
                         android:background="@color/gray_divider"
-                        android:layout_marginStart="16dp"
+                        android:layout_marginStart="20dp"
                         android:paddingEnd="16dp"
                         card_view:layout_constraintTop_toBottomOf="@id/inputLayoutUsername"
                 />
@@ -325,10 +326,10 @@
                 <View
                         android:id="@+id/passwordDivider"
                         android:layout_height="1dp"
-                        android:paddingEnd="16dp"
                         android:layout_width="match_parent"
                         android:background="@color/gray_divider"
-                        android:layout_marginStart="16dp"
+                        android:layout_marginStart="20dp"
+                        android:paddingEnd="16dp"
                         card_view:layout_constraintTop_toBottomOf="@id/inputLayoutPassword"
                 />
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -345,6 +346,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal|center_vertical"
                         android:layout_marginEnd="0dp"
+                        android:layout_marginTop="40dp"
                         android:paddingEnd="20dp"
                         android:text="@string/delete_entry"
                         android:textAllCaps="true"
