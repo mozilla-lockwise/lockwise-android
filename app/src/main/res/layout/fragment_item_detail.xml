@@ -14,13 +14,68 @@
         android:id="@+id/fragment_item_detail"
         android:background="@color/background_grey" >
 
-    <include layout="@layout/include_backable"/>
     <include layout="@layout/fragment_warning"
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
              app:layout_constraintTop_toBottomOf="@id/toolbar"
              app:layout_constraintBottom_toTopOf="@id/cardView"
              tools:text="@string/no_internet_connection"/>
+
+    <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:theme="@style/ToolBar"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:ellipsize="end"
+                        android:id="@+id/entryTitle"
+                        android:paddingEnd="50dp"
+                        android:maxLines="1"
+                        android:textSize="20sp"
+                        android:fontFamily="sans-serif-medium"
+                        android:textStyle="normal"
+                        android:textColor="@color/text_white"
+                        android:letterSpacing="0.01"
+                        android:layout_gravity="center_vertical|start"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        tools:ignore="RtlSymmetry"/>
+                <Spinner
+                        android:id="@+id/kebabMenu"
+                        android:layout_width="50dp"
+                        android:layout_height="match_parent"
+                        android:textAllCaps="false"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:contentDescription="@string/kebab_menu"
+                        android:overlapAnchor="false"
+                        android:popupElevation="8dp"
+                        android:dropDownWidth="128dp"
+                        android:dropDownSelector="@color/selection"
+                        android:spinnerMode="dropdown"
+                        android:popupBackground="@drawable/sort_menu_bg"
+                        android:textSize="20sp"
+                        android:background="@null"
+                        style="@style/PopupTheme"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+
+                />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.appcompat.widget.Toolbar>
 
     <androidx.cardview.widget.CardView
             xmlns:card_view="http://schemas.android.com/apk/res-auto"
@@ -38,51 +93,67 @@
                 android:paddingBottom="26dp"
                 tools:ignore="RtlSymmetry">
 
-            <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/inputLayoutHostname"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                    android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingStart="16dp"
-                    android:textColorHint="@color/black_60_percent"
-                    android:contentDescription="@string/launch_hostname_content_description"
-                    app:layout_constraintTop_toTopOf="parent"
+                    card_view:layout_constraintTop_toTopOf="parent"
                     card_view:layout_constraintStart_toStartOf="parent"
                     card_view:layout_constraintEnd_toEndOf="parent"
-                    tools:ignore="RtlSymmetry">
-
-                <EditText
-                        android:id="@+id/inputHostname"
-                        style="@style/EditTextStyle"
+                    android:id="@+id/hostname" >
+                <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/inputLayoutHostname"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/hint_hostname"
-                        android:inputType="textNoSuggestions"
-                        android:singleLine="true"
-                        android:textColor="@color/violet_70"
-                        android:clickable="true"
-                        android:focusable="true"
-                        tools:ignore="Autofill"/>
+                        android:scrollbars="none"
+                        android:paddingStart="16dp"
+                        android:layout_marginEnd="30dp"
+                        android:textColorHint="@color/black_60_percent"
+                        android:contentDescription="@string/launch_hostname_content_description"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        tools:ignore="RtlSymmetry">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <EditText
+                            android:id="@+id/inputHostname"
+                            style="@style/EditTextStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/hint_hostname"
+                            android:scrollHorizontally="true"
+                            android:lines="1"
+                            android:ellipsize="end"
+                            android:inputType="textNoSuggestions"
+                            android:maxLines="1"
+                            android:textColor="@color/violet_70"
+                            android:clickable="true"
+                            android:focusable="true"
+                            tools:ignore="Autofill"/>
 
-            <ImageView
-                    android:id="@+id/btnHostnameLaunch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="8dp"
-                    android:background="@null"
-                    tools:ignore="ContentDescription"
-                    app:layout_constraintBottom_toBottomOf="@+id/inputLayoutHostname"
-                    app:layout_constraintRight_toRightOf="@+id/inputLayoutHostname"
-                    app:layout_constraintTop_toTopOf="@+id/inputLayoutHostname"
-                    app:srcCompat="@drawable/ic_launch"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <ImageView
+                        android:id="@+id/btnHostnameLaunch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:padding="8dp"
+                        android:paddingStart="16dp"
+                        android:background="@null"
+                        tools:ignore="ContentDescription"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/inputLayoutHostname"
+                        app:srcCompat="@drawable/ic_launch"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <View
                     android:layout_height="1dp"
                     android:layout_width="match_parent"
                     android:background="@color/gray_divider"
                     android:layout_marginStart="16dp"
-                    card_view:layout_constraintTop_toBottomOf="@id/inputLayoutHostname"
+                    card_view:layout_constraintTop_toBottomOf="@id/hostname"
             />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -93,7 +164,7 @@
                     android:layout_marginTop="16dp"
                     android:paddingStart="16dp"
                     android:textColorHint="@color/black_60_percent"
-                    app:layout_constraintTop_toBottomOf="@id/inputLayoutHostname"
+                    app:layout_constraintTop_toBottomOf="@id/hostname"
                     card_view:layout_constraintStart_toStartOf="parent"
                     card_view:layout_constraintEnd_toEndOf="parent"
                     tools:ignore="RtlSymmetry">

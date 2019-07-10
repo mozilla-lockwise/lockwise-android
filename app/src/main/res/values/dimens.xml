@@ -12,6 +12,7 @@
     <dimen name="network_error_with_toolbar">96dp</dimen>
     <dimen name="network_error">40dp</dimen>
     <dimen name="toolbar_elevation">4dp</dimen>
+    <dimen name="larger_toolbar_elevation">8dp</dimen>
     <dimen name="logo_size">90dp</dimen>
     <dimen name="logo_top_margin">216dp</dimen>
     <dimen name="app_name_top_margin">318dp</dimen>

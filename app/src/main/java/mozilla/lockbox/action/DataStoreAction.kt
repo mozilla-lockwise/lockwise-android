@@ -6,6 +6,7 @@
 
 package mozilla.lockbox.action
 
+import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.model.SyncCredentials
 
 sealed class DataStoreAction(
@@ -16,6 +17,14 @@ sealed class DataStoreAction(
     object Unlock : DataStoreAction(TelemetryEventMethod.unlock, TelemetryEventObject.datastore)
     object Reset : DataStoreAction(TelemetryEventMethod.reset, TelemetryEventObject.datastore)
     object Sync : DataStoreAction(TelemetryEventMethod.sync, TelemetryEventObject.datastore)
+
     data class Touch(val id: String) : DataStoreAction(TelemetryEventMethod.touch, TelemetryEventObject.datastore)
-    data class UpdateCredentials(val syncCredentials: SyncCredentials) : DataStoreAction(TelemetryEventMethod.update_credentials, TelemetryEventObject.datastore)
+
+    data class UpdateCredentials(val syncCredentials: SyncCredentials) :
+        DataStoreAction(TelemetryEventMethod.update_credentials, TelemetryEventObject.datastore)
+
+    data class Delete(val item: ServerPassword?) :
+        DataStoreAction(TelemetryEventMethod.delete, TelemetryEventObject.delete_credential)
+
+    data class Edit(val itemId: Int) : DataStoreAction(TelemetryEventMethod.edit, TelemetryEventObject.edit_credential)
 }

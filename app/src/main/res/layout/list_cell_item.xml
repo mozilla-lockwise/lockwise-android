@@ -14,14 +14,17 @@
 
     <TextView
         android:id="@+id/itemTitle"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="16sp"
+        android:layout_marginEnd="16dp"
         android:fontFamily="sans-serif"
         android:textStyle="normal"
         android:textColor="@color/text_ink"
+        android:ellipsize="end"
         android:letterSpacing="0.01"
         android:lineSpacingExtra="8sp"
+        android:maxLines="1"
         android:layout_marginStart="16dp"
         android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="parent"
