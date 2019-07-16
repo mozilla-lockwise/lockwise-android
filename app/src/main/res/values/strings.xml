@@ -258,7 +258,7 @@
     <string name="no_username">(no username)</string>
 
     <!-- This is the message displayed when sync has timed out. -->
-    <string name="sync_timed_out">Syncing has timed out</string>
+    <!--<string name="sync_timed_out">Syncing has timed out</string>-->
 
     <!-- This is the description for the kebab menu in the item detail toolbar. -->
     <string name="kebab_menu">More options</string>

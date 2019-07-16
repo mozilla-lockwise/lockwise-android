@@ -26,14 +26,13 @@ import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.log
 import mozilla.lockbox.model.SyncCredentials
-import mozilla.lockbox.support.Consumable
 import mozilla.lockbox.support.Constant
+import mozilla.lockbox.support.Consumable
 import mozilla.lockbox.support.DataStoreSupport
 import mozilla.lockbox.support.FxASyncDataStoreSupport
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.TimingSupport
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeoutException
 import kotlin.coroutines.CoroutineContext
 
 @ExperimentalCoroutinesApi
@@ -55,7 +54,7 @@ open class DataStore(
     }
 
     enum class SyncState {
-        Syncing, NotSyncing, TimedOut
+        Syncing, NotSyncing
     }
 
     internal val compositeDisposable = CompositeDisposable()
@@ -244,6 +243,16 @@ open class DataStore(
         backend.sync(support.syncConfig!!)
             .asSingle(coroutineContext)
             .timeout(Constant.App.syncTimeout, TimeUnit.SECONDS)
+            .doOnEvent { _, _ ->
+                syncStateSubject.accept(SyncState.NotSyncing)
+            }
+            .subscribe(this::updateList, this::pushError)
+            .addTo(compositeDisposable)
+
+        /* timeout to be fixed in https://github.com/mozilla-lockwise/lockwise-android/issues/791
+        backend.sync(support.syncConfig!!)
+            .asSingle(coroutineContext)
+            .timeout(Constant.App.syncTimeout, TimeUnit.SECONDS)
             .doOnEvent { _, err ->
                 (err as? TimeoutException).let {
                     syncStateSubject.accept(SyncState.TimedOut)
@@ -252,7 +261,7 @@ open class DataStore(
                 }
             }
             .subscribe(this::updateList, this::pushError)
-            .addTo(compositeDisposable)
+            .addTo(compositeDisposable) */
     }
 
     // item list management
