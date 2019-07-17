@@ -115,7 +115,6 @@ class ItemDetailPresenter(
             .addTo(compositeDisposable)
 
         view.menuItemSelection
-            .debug("Menu item selection==============================")
             .subscribe {
                 view.updateKebabSelection(it)
                 when (it.titleId) {

@@ -12,6 +12,7 @@ import android.text.method.PasswordTransformationMethod
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.EditText
@@ -105,6 +106,7 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
     private fun setupKebabMenu(view: View) {
         val sortList = ArrayList<ItemDetailAction.EditItemMenu>()
 
+        sortList.add(ItemDetailAction.EditItemMenu.HEADER)
         sortList.add(ItemDetailAction.EditItemMenu.EDIT)
         sortList.add(ItemDetailAction.EditItemMenu.DELETE)
 
@@ -114,7 +116,6 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         spinner.adapter = itemAdapter
 
         spinner.setPopupBackgroundResource(R.drawable.sort_menu_bg)
-
         // added because different events can trigger onItemSelectedListener
         spinner.setOnTouchListener { _, _ ->
             userSelection = true
@@ -127,9 +128,9 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
             }
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                if (position == 0) {
+                if (userSelection) {
                     itemAdapter.setSelection(position)
-                    RouteAction.EditItemDetail(itemId!!)
+                    _menuItemSelection.onNext(menuOptions[position])
                 }
             }
         }

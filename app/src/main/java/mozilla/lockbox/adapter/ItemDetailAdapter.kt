@@ -1,8 +1,11 @@
 package mozilla.lockbox.adapter
 
 import android.content.Context
+import android.opengl.Visibility
 import android.view.View
+import android.view.View.GONE
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
@@ -11,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import mozilla.lockbox.R
 import mozilla.lockbox.action.ItemDetailAction
 import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.log
 
 class ItemDetailAdapter(
     context: Context,
@@ -40,15 +44,21 @@ class ItemDetailAdapter(
     }
 
     override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val label = super.getDropDownView(position, convertView, parent) as TextView
+        if (position == 0) {
+            val textView = TextView(context)
+            return textView
+        } else {
+            val label = super.getDropDownView(position, convertView, parent) as TextView
 
-        label.setTextAppearance(R.style.TextAppearanceSortMenuItem)
-        label.text = context.resources.getString(values[position].titleId)
-        label.background = context.resources.getDrawable(R.drawable.button_pressed_white, null)
+            label.setTextAppearance(R.style.TextAppearanceSortMenuItem)
+            val title = context.resources.getString(values[position].titleId)
+            label.text = title
+            label.background = context.resources.getDrawable(R.drawable.button_pressed_white, null)
+            val padding = label.resources.getDimensionPixelSize(R.dimen.sort_item_padding)
+            label.setPadding(padding, padding, padding, padding)
 
-        val padding = label.resources.getDimensionPixelSize(R.dimen.sort_item_padding)
-        label.setPadding(padding, padding, padding, padding)
+            return label
+        }
 
-        return label
     }
 }
