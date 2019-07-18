@@ -114,7 +114,6 @@
                             android:singleLine="true"
                             android:clickable="false"
                             android:focusable="false"
-                            android:text="mozilla.org"
                             tools:ignore="Autofill"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -262,7 +261,8 @@
                             android:inputType="textNoSuggestions"
                             android:singleLine="true"
                             android:clickable="true"
-                            android:focusable="true" />
+                            android:focusable="true"
+                            tools:ignore="Autofill"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -308,7 +308,8 @@
                             android:inputType="none|textPassword"
                             android:singleLine="true"
                             android:clickable="true"
-                            android:focusable="true" />
+                            android:focusable="true"
+                            tools:ignore="Autofill"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <ImageButton

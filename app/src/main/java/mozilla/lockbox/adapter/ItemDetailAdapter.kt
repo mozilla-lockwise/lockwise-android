@@ -1,20 +1,12 @@
 package mozilla.lockbox.adapter
 
 import android.content.Context
-import android.opengl.Visibility
 import android.view.View
-import android.view.View.GONE
 import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.recyclerview.widget.RecyclerView
 import mozilla.lockbox.R
 import mozilla.lockbox.action.ItemDetailAction
-import mozilla.lockbox.action.RouteAction
-import mozilla.lockbox.log
 
 class ItemDetailAdapter(
     context: Context,
@@ -45,8 +37,7 @@ class ItemDetailAdapter(
 
     override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
         if (position == 0) {
-            val textView = TextView(context)
-            return textView
+            return TextView(context)
         } else {
             val label = super.getDropDownView(position, convertView, parent) as TextView
 
@@ -59,6 +50,5 @@ class ItemDetailAdapter(
 
             return label
         }
-
     }
 }

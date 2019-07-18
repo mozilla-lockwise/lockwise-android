@@ -19,28 +19,9 @@ import androidx.appcompat.widget.Toolbar
 import com.jakewharton.rxbinding2.support.v7.widget.navigationClicks
 import com.jakewharton.rxbinding2.view.clicks
 import com.jakewharton.rxbinding2.widget.textChanges
-import com.jakewharton.rxrelay2.ReplayRelay
 import io.reactivex.Observable
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
-import kotlinx.android.synthetic.main.fragment_item_detail.*
-import kotlinx.android.synthetic.main.fragment_item_detail.view.*
 import kotlinx.android.synthetic.main.fragment_item_edit.*
-import kotlinx.android.synthetic.main.fragment_item_edit.btnPasswordToggle
-import kotlinx.android.synthetic.main.fragment_item_edit.inputHostname
-import kotlinx.android.synthetic.main.fragment_item_edit.inputLayoutHostname
-import kotlinx.android.synthetic.main.fragment_item_edit.inputLayoutPassword
-import kotlinx.android.synthetic.main.fragment_item_edit.inputLayoutUsername
-import kotlinx.android.synthetic.main.fragment_item_edit.inputPassword
-import kotlinx.android.synthetic.main.fragment_item_edit.inputUsername
-import kotlinx.android.synthetic.main.fragment_item_edit.toolbar
 import kotlinx.android.synthetic.main.fragment_item_edit.view.*
-import kotlinx.android.synthetic.main.fragment_item_edit.view.btnPasswordToggle
-import kotlinx.android.synthetic.main.fragment_item_edit.view.entryTitle
-import kotlinx.android.synthetic.main.fragment_item_edit.view.inputHostname
-import kotlinx.android.synthetic.main.fragment_item_edit.view.inputPassword
-import kotlinx.android.synthetic.main.fragment_item_edit.view.inputUsername
-import kotlinx.android.synthetic.main.fragment_item_edit.view.toolbar
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
 import mozilla.lockbox.model.ItemDetailViewModel
@@ -69,7 +50,6 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
         super.onViewCreated(view, savedInstanceState)
         setupToolbar(view.toolbar)
     }
-
 
     override var isPasswordVisible: Boolean = false
         set(value) {
@@ -119,6 +99,7 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
             btnPasswordToggle.setImageResource(R.drawable.ic_show)
         }
     }
+
     private fun setupToolbar(toolbar: Toolbar) {
         toolbar.navigationIcon = resources.getDrawable(R.drawable.ic_close, null)
         toolbar.elevation = resources.getDimension(R.dimen.toolbar_elevation)

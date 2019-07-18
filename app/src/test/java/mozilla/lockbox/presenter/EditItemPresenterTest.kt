@@ -6,30 +6,21 @@
 
 package mozilla.lockbox.presenter
 
-import android.net.ConnectivityManager
-import androidx.annotation.StringRes
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
-import mozilla.lockbox.R
-import mozilla.lockbox.action.AppWebPageAction
-import mozilla.lockbox.action.ClipboardAction
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.DialogAction
-import mozilla.lockbox.action.ItemDetailAction
 import mozilla.lockbox.action.RouteAction
-import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.log
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.store.DataStore
-import mozilla.lockbox.store.ItemDetailStore
-import mozilla.lockbox.store.NetworkStore
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.asOptional
-import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
 import org.junit.Before
@@ -38,10 +29,8 @@ import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers
 import org.mockito.Mock
 import org.mockito.Mockito
-import org.mockito.Mockito.clearInvocations
 import org.mockito.Mockito.spy
 import org.mockito.Mockito.verify
-import org.mockito.Mockito.verifyZeroInteractions
 import org.powermock.api.mockito.PowerMockito
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
@@ -52,6 +41,32 @@ import org.robolectric.annotation.Config
 class EditItemPresenterTest {
 
     class FakeView : EditItemDetailView {
+        val passwordVisibleStub = false
+        override var isPasswordVisible: Boolean = passwordVisibleStub
+
+        val togglePwdClicksStub = PublishSubject.create<Unit>()
+        override val togglePasswordClicks: Observable<Unit>
+            get() = togglePwdClicksStub
+
+        val learnMoreClicksStub = PublishSubject.create<Unit>()
+        override val learnMoreClicks: Observable<Unit>
+            get() = learnMoreClicksStub
+
+        val hostnameClicksStub = PublishSubject.create<CharSequence>()
+        override val hostnameChanged: Observable<CharSequence>
+            get() = hostnameClicksStub
+
+        val usernameClicksStub = PublishSubject.create<CharSequence>()
+        override val usernameChanged: Observable<CharSequence>
+            get() = usernameClicksStub
+
+        val pwdClicksStub = PublishSubject.create<CharSequence>()
+        override val passwordChanged: Observable<CharSequence>
+            get() = pwdClicksStub
+
+        override fun closeKeyboard() {
+            log.info("close keyboard")
+        }
 
         var item: ItemDetailViewModel? = null
 

@@ -10,7 +10,6 @@ import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
-import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.R
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.support.Constant

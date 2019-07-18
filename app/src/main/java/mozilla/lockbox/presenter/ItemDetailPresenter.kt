@@ -8,7 +8,6 @@ package mozilla.lockbox.presenter
 
 import androidx.annotation.StringRes
 import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -20,7 +19,6 @@ import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.ItemDetailAction
 import mozilla.lockbox.action.RouteAction
-import mozilla.lockbox.extensions.debug
 import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.extensions.toDetailViewModel
 import mozilla.lockbox.flux.Dispatcher
@@ -95,12 +93,12 @@ class ItemDetailPresenter(
             }
         }
 
-        this.view.learnMoreClicks
+        view.learnMoreClicks
             .map { AppWebPageAction.FaqEdit }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
 
-        this.view.togglePasswordClicks
+        view.togglePasswordClicks
             .subscribe { dispatcher.dispatch(ItemDetailAction.TogglePassword(view.isPasswordVisible.not())) }
             .addTo(compositeDisposable)
 

@@ -12,7 +12,6 @@ import android.text.method.PasswordTransformationMethod
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.EditText
@@ -20,23 +19,14 @@ import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.StringRes
-import androidx.appcompat.widget.Toolbar
-import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
-import com.jakewharton.rxbinding2.support.v7.widget.navigationClicks
 import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_item_detail.*
 import kotlinx.android.synthetic.main.fragment_item_detail.view.*
-import kotlinx.android.synthetic.main.fragment_item_list.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
 import mozilla.lockbox.action.ItemDetailAction
-import mozilla.lockbox.action.RouteAction
-import mozilla.lockbox.action.Setting
 import mozilla.lockbox.adapter.ItemDetailAdapter
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.presenter.ItemDetailPresenter
@@ -150,7 +140,6 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         itemAdapter.setSelection(menuOptions.indexOf(item))
         spinner.setSelection(menuOptions.indexOf(item), false)
     }
-
 
     override fun updateItem(item: ItemDetailViewModel) {
         assertOnUiThread()
