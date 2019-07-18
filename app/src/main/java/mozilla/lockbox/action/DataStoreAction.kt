@@ -16,7 +16,36 @@ sealed class DataStoreAction(
     object Lock : DataStoreAction(TelemetryEventMethod.lock, TelemetryEventObject.datastore)
     object Unlock : DataStoreAction(TelemetryEventMethod.unlock, TelemetryEventObject.datastore)
     object Reset : DataStoreAction(TelemetryEventMethod.reset, TelemetryEventObject.datastore)
-    object Sync : DataStoreAction(TelemetryEventMethod.sync, TelemetryEventObject.datastore)
+
+    /**
+     * Emitted when the app requests a sync.
+     */
+    object Sync : DataStoreAction(TelemetryEventMethod.sync_start, TelemetryEventObject.datastore)
+
+    /**
+     * Emitted when the app receives a response from sync. This response may be success or failure.
+     */
+    object SyncEnd : DataStoreAction(TelemetryEventMethod.sync_end, TelemetryEventObject.datastore)
+
+    /**
+     * Emitted when the app receives an error response from sync.
+     */
+    object SyncError : DataStoreAction(TelemetryEventMethod.sync_error, TelemetryEventObject.datastore)
+
+    /**
+     * Emitted when the item list has been updated.
+     */
+    object ListUpdate : DataStoreAction(TelemetryEventMethod.list_update, TelemetryEventObject.datastore)
+
+    /**
+     * Emitted when an update to the item list has failed with an error.
+     */
+    object ListUpdateError : DataStoreAction(TelemetryEventMethod.list_update_error, TelemetryEventObject.datastore)
+
+    /**
+     * Emitted when a DataStore action results in an error.
+     */
+    data class Errors(val errorType: String) : DataStoreAction(TelemetryEventMethod.list_update_error, TelemetryEventObject.datastore)
 
     data class Touch(val id: String) : DataStoreAction(TelemetryEventMethod.touch, TelemetryEventObject.datastore)
 

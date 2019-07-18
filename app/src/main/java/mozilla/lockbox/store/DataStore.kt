@@ -166,10 +166,10 @@ open class DataStore(
 
     open fun get(id: String): Observable<Optional<ServerPassword>> {
         return list.map { items ->
-                Optional(
-                    items.findLast { item -> item.id == id }
-                )
-            }
+            Optional(
+                items.findLast { item -> item.id == id }
+            )
+        }
     }
 
     private fun touch(id: String) {
@@ -246,7 +246,13 @@ open class DataStore(
             .doOnEvent { _, _ ->
                 syncStateSubject.accept(SyncState.NotSyncing)
             }
-            .subscribe(this::updateList, this::pushError)
+            .subscribe({
+                    this.updateList(it)
+                    dispatcher.dispatch(DataStoreAction.SyncEnd)
+                }, {
+                    this.pushError(it)
+                    dispatcher.dispatch(DataStoreAction.SyncError)
+            })
             .addTo(compositeDisposable)
 
         /* timeout to be fixed in https://github.com/mozilla-lockwise/lockwise-android/issues/791
@@ -256,11 +262,18 @@ open class DataStore(
             .doOnEvent { _, err ->
                 (err as? TimeoutException).let {
                     syncStateSubject.accept(SyncState.TimedOut)
+                    dispatcher.dispatch(DataStoreAction.SyncTimeout)
                 }.run {
                     syncStateSubject.accept(SyncState.NotSyncing)
                 }
             }
-            .subscribe(this::updateList, this::pushError)
+            .subscribe({
+                    this.updateList(it)
+                    dispatcher.dispatch(DataStoreAction.SyncEnd)
+                }, {
+                    this.pushError(it)
+                    dispatcher.dispatch(DataStoreAction.SyncError)
+            })
             .addTo(compositeDisposable) */
     }
 
@@ -276,7 +289,13 @@ open class DataStore(
         if (!backend.isLocked()) {
             backend.list()
                 .asSingle(coroutineContext)
-                .subscribe(listSubject::accept, this::pushError)
+                .subscribe({
+                    listSubject.accept(it)
+                    dispatcher.dispatch(DataStoreAction.ListUpdate)
+                }, {
+                    this.pushError(it)
+                    dispatcher.dispatch(DataStoreAction.ListUpdateError)
+                })
                 .addTo(compositeDisposable)
         }
     }
@@ -328,13 +347,25 @@ open class DataStore(
         val loginsException = e as? LoginsStorageException
 
         loginsException?.let {
-            this.stateSubject.accept(DataStore.State.Errored(it))
+            this.stateSubject.accept(State.Errored(it))
         }
 
         when (loginsException) {
-            is SyncAuthInvalidException,
-            is InvalidKeyException,
+            is SyncAuthInvalidException -> {
+                dispatcher.dispatch(DataStoreAction.Errors(Constant.FxAErrors.SyncAuthInvalid))
+
+                resetSupport(support)
+                dispatcher.dispatch(LifecycleAction.UserReset)
+            }
+            is InvalidKeyException -> {
+                dispatcher.dispatch(DataStoreAction.Errors(Constant.FxAErrors.InvalidKey))
+
+                resetSupport(support)
+                dispatcher.dispatch(LifecycleAction.UserReset)
+            }
             is LoginsStorageException -> {
+                dispatcher.dispatch(DataStoreAction.Errors(Constant.FxAErrors.LoginsStorage))
+
                 resetSupport(support)
                 dispatcher.dispatch(LifecycleAction.UserReset)
             }

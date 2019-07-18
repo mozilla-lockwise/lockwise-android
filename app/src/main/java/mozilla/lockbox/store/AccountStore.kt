@@ -22,11 +22,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.rx2.asMaybe
 import kotlinx.coroutines.rx2.asSingle
+import mozilla.appservices.fxaclient.Config
 import mozilla.appservices.fxaclient.FxaException
 import mozilla.components.concept.sync.AccessTokenInfo
 import mozilla.components.concept.sync.Avatar
 import mozilla.components.concept.sync.Profile
-import mozilla.components.service.fxa.Config
 import mozilla.components.service.fxa.FirefoxAccount
 import mozilla.lockbox.action.AccountAction
 import mozilla.lockbox.action.DataStoreAction
