@@ -59,7 +59,8 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
     override val deleteClicks: Observable<Unit>
         get() = view!!.deleteEntryButton.clicks()
 
-    override val closeEntryClicks: ReplayRelay<Unit> = ReplayRelay.createWithSize<Unit>(1)
+    override val closeEntryClicks: Observable<Unit>
+        get() = view!!.toolbar.navigationClicks()
 
     override val saveEntryClicks: Observable<Unit>
         get() = view!!.saveEntryButton.clicks()
@@ -85,12 +86,6 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
         toolbar.navigationIcon = resources.getDrawable(R.drawable.ic_close, null)
         toolbar.elevation = resources.getDimension(R.dimen.toolbar_elevation)
         toolbar.contentInsetStartWithNavigation = 0
-
-        toolbar.navigationClicks()
-            .subscribe {
-                closeEntryClicks
-            }
-            .addTo(compositeDisposable)
     }
 
     private fun scrollToTop() {

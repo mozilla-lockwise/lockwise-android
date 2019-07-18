@@ -124,7 +124,6 @@ class ItemDetailPresenter(
             }
             .addTo(compositeDisposable)
 
-
 //        view.retryNetworkConnectionClicks.subscribe {
 //            dispatcher.dispatch(NetworkAction.CheckConnectivity)
 //        }?.addTo(compositeDisposable)
