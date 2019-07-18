@@ -12,7 +12,6 @@ import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.R
 import mozilla.lockbox.action.AppWebPageAction
 import mozilla.lockbox.action.ClipboardAction
@@ -114,7 +113,7 @@ class ItemDetailPresenterTest {
     @Mock
     private val connectivityManager = PowerMockito.mock(ConnectivityManager::class.java)
 
-    private val fakeCredential: ServerPassword by lazy {
+    private val fakeCredential: ServerPassword =
         ServerPassword(
             "id0",
             "https://www.mozilla.org",
@@ -125,7 +124,6 @@ class ItemDetailPresenterTest {
             timeLastUsed = 0L,
             timePasswordChanged = 0L
         )
-    }
 
     private val fakeCredentialNoUsername: ServerPassword by lazy {
         ServerPassword(
