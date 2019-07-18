@@ -147,6 +147,8 @@
 
                 <Button
                         android:id="@+id/learnMore"
+                        android:gravity="start"
+                        android:paddingStart="4dp"
                         android:layout_width="wrap_content"
                         android:layout_height="16dp"
                         android:layout_gravity="start"

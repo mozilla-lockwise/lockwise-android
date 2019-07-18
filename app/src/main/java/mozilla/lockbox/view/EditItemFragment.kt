@@ -8,6 +8,7 @@ package mozilla.lockbox.view
 
 import android.content.Context
 import android.os.Bundle
+import android.text.method.PasswordTransformationMethod
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -22,8 +23,23 @@ import com.jakewharton.rxrelay2.ReplayRelay
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
+import kotlinx.android.synthetic.main.fragment_item_detail.*
+import kotlinx.android.synthetic.main.fragment_item_detail.view.*
 import kotlinx.android.synthetic.main.fragment_item_edit.*
+import kotlinx.android.synthetic.main.fragment_item_edit.btnPasswordToggle
+import kotlinx.android.synthetic.main.fragment_item_edit.inputHostname
+import kotlinx.android.synthetic.main.fragment_item_edit.inputLayoutHostname
+import kotlinx.android.synthetic.main.fragment_item_edit.inputLayoutPassword
+import kotlinx.android.synthetic.main.fragment_item_edit.inputLayoutUsername
+import kotlinx.android.synthetic.main.fragment_item_edit.inputPassword
+import kotlinx.android.synthetic.main.fragment_item_edit.inputUsername
+import kotlinx.android.synthetic.main.fragment_item_edit.toolbar
 import kotlinx.android.synthetic.main.fragment_item_edit.view.*
+import kotlinx.android.synthetic.main.fragment_item_edit.view.btnPasswordToggle
+import kotlinx.android.synthetic.main.fragment_item_edit.view.entryTitle
+import kotlinx.android.synthetic.main.fragment_item_edit.view.inputHostname
+import kotlinx.android.synthetic.main.fragment_item_edit.view.inputPassword
+import kotlinx.android.synthetic.main.fragment_item_edit.view.inputUsername
 import kotlinx.android.synthetic.main.fragment_item_edit.view.toolbar
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
@@ -54,7 +70,19 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
         setupToolbar(view.toolbar)
     }
 
-    private val compositeDisposable = CompositeDisposable()
+
+    override var isPasswordVisible: Boolean = false
+        set(value) {
+            assertOnUiThread()
+            field = value
+            updatePasswordVisibility(value)
+        }
+
+    override val togglePasswordClicks: Observable<Unit>
+        get() = view!!.btnPasswordToggle.clicks()
+
+    override val learnMoreClicks: Observable<Unit>
+        get() = view!!.learnMore.clicks()
 
     override val deleteClicks: Observable<Unit>
         get() = view!!.deleteEntryButton.clicks()
@@ -82,6 +110,15 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
         }
     }
 
+    private fun updatePasswordVisibility(visible: Boolean) {
+        if (visible) {
+            inputPassword.transformationMethod = null
+            btnPasswordToggle.setImageResource(R.drawable.ic_hide)
+        } else {
+            inputPassword.transformationMethod = PasswordTransformationMethod.getInstance()
+            btnPasswordToggle.setImageResource(R.drawable.ic_show)
+        }
+    }
     private fun setupToolbar(toolbar: Toolbar) {
         toolbar.navigationIcon = resources.getDrawable(R.drawable.ic_close, null)
         toolbar.elevation = resources.getDimension(R.dimen.toolbar_elevation)

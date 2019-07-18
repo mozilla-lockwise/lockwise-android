@@ -13,6 +13,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.DialogAction
+import mozilla.lockbox.action.ItemDetailAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.extensions.toDetailViewModel
@@ -20,9 +21,14 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.store.DataStore
+import mozilla.lockbox.store.ItemDetailStore
+import mozilla.lockbox.support.Constant
 
 interface EditItemDetailView {
+    var isPasswordVisible: Boolean
+    val togglePasswordClicks: Observable<Unit>
     val deleteClicks: Observable<Unit>
+    val learnMoreClicks: Observable<Unit>
     val closeEntryClicks: Observable<Unit>
     val saveEntryClicks: Observable<Unit>
     val hostnameChanged: Observable<CharSequence>
@@ -37,7 +43,8 @@ class EditItemPresenter(
     private val view: EditItemDetailView,
     val itemId: String?,
     private val dispatcher: Dispatcher = Dispatcher.shared,
-    private val dataStore: DataStore = DataStore.shared
+    private val dataStore: DataStore = DataStore.shared,
+    private val itemDetailStore: ItemDetailStore = ItemDetailStore.shared
 ) : Presenter() {
 
     private var credentials: ServerPassword? = null
@@ -51,6 +58,24 @@ class EditItemPresenter(
             .doOnNext { credentials = it }
             .map { it.toDetailViewModel() }
             .subscribe(view::updateItem)
+            .addTo(compositeDisposable)
+
+        view.isPasswordVisible = false
+
+        itemDetailStore.isPasswordVisible
+            .subscribe { view.isPasswordVisible = it }
+            .addTo(compositeDisposable)
+
+        view.togglePasswordClicks
+            .subscribe {
+                dispatcher.dispatch(ItemDetailAction.TogglePassword(view.isPasswordVisible.not()))
+            }
+            .addTo(compositeDisposable)
+
+        view.learnMoreClicks
+            .subscribe {
+                dispatcher.dispatch(RouteAction.OpenWebsite(Constant.Faq.uri))
+            }
             .addTo(compositeDisposable)
 
         view.deleteClicks
