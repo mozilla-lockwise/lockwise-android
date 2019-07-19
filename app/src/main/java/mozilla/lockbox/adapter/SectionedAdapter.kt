@@ -73,6 +73,7 @@ class SectionedAdapter(
         else
             baseAdapter.getItemViewType(sectionedPositionToPosition(position)) + 1
     }
+
     class Section(internal var firstPosition: Int, @StringRes title: Int) {
         internal var sectionedPosition: Int = 0
         @StringRes var title: Int

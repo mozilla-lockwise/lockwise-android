@@ -6,7 +6,6 @@
 
 package mozilla.lockbox.action
 
-import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.R
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.model.DialogViewModel
@@ -16,7 +15,6 @@ sealed class DialogAction(
     val positiveButtonActionList: List<Action> = emptyList(),
     val negativeButtonActionList: List<Action> = emptyList()
 ) : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.dialog) {
-
     object SecurityDisclaimer : DialogAction(
         DialogViewModel(
             R.string.no_device_security_title,
@@ -24,9 +22,8 @@ sealed class DialogAction(
             R.string.set_up_security_button,
             R.string.cancel
         ),
-        listOf(SystemSetting(SettingIntent.Security))
+        listOf(RouteAction.SystemSetting(SettingIntent.Security))
     )
-
     object UnlinkDisclaimer : DialogAction(
         DialogViewModel(
             R.string.disconnect_disclaimer_title,
@@ -37,34 +34,17 @@ sealed class DialogAction(
         ),
         listOf(LifecycleAction.UserReset)
     )
-
     object OnboardingSecurityDialog : DialogAction(
-        DialogViewModel(
-            R.string.secure_your_device,
-            R.string.device_security_description,
-            R.string.set_up_now,
-            R.string.skip_button
-        ),
-        listOf(
-            SystemSetting(SettingIntent.Security),
-            Login
-        ),
-        listOf(Login)
-    )
-
-    data class DeleteConfirmationDialog(
-        val item: ServerPassword?
-    ) : DialogAction(
-        DialogViewModel(
-            R.string.delete_this_login,
-            R.string.delete_description,
-            R.string.delete,
-            R.string.cancel,
-            R.color.red
-        ),
-        listOf(
-            DataStoreAction.Delete(item),
-            ItemList
+            DialogViewModel(
+                R.string.secure_your_device,
+                R.string.device_security_description,
+                R.string.set_up_now,
+                R.string.skip_button
+            ),
+            listOf(
+                RouteAction.SystemSetting(SettingIntent.Security),
+                RouteAction.Login
+            ),
+            listOf(RouteAction.Login)
         )
-    )
 }

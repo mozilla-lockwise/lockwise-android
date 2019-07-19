@@ -17,7 +17,6 @@ import mozilla.lockbox.R
 import mozilla.lockbox.action.AppWebPageAction
 import mozilla.lockbox.action.ClipboardAction
 import mozilla.lockbox.action.DataStoreAction
-import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.ItemDetailAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.assertLastValue
@@ -50,15 +49,7 @@ import org.robolectric.annotation.Config
 @RunWith(RobolectricTestRunner::class)
 @Config(application = TestApplication::class)
 class ItemDetailPresenterTest {
-
     class FakeView : ItemDetailView {
-        val kebabMenuClickStub = PublishSubject.create<Unit>()
-        override val kebabMenuClicks: Observable<Unit>
-            get() = kebabMenuClickStub
-
-        val menuItemSelectionStub = PublishSubject.create<ItemDetailAction.EditItemMenu>()
-        override val menuItemSelection: Observable<ItemDetailAction.EditItemMenu>
-            get() = menuItemSelectionStub
 
         val learnMoreClickStub = PublishSubject.create<Unit>()
         override val learnMoreClicks: Observable<Unit>
@@ -89,7 +80,6 @@ class ItemDetailPresenterTest {
             this.item = item
             showPlaceholderUsernameStub = !item.hasUsername
         }
-
         override fun showToastNotification(@StringRes strId: Int) {
             toastNotificationArgument = strId
         }
@@ -326,14 +316,5 @@ class ItemDetailPresenterTest {
 
         view.learnMoreClickStub.onNext(Unit)
         dispatcherObserver.assertLastValue(AppWebPageAction.FaqEdit)
-    }
-
-    @Test
-    fun `select delete from kebab menu`() {
-        setUpTestSubject(Optional(fakeCredential))
-
-        val menuItemSelection = ItemDetailAction.EditItemMenu.DELETE
-        view.menuItemSelectionStub.onNext(menuItemSelection)
-        dispatcherObserver.assertValue(DialogAction.DeleteConfirmationDialog(fakeCredential))
     }
 }

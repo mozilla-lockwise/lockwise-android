@@ -32,6 +32,7 @@ import mozilla.lockbox.support.DataStoreSupport
 import mozilla.lockbox.support.FxASyncDataStoreSupport
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.TimingSupport
+import mozilla.lockbox.support.asOptional
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 import kotlin.coroutines.CoroutineContext
@@ -62,12 +63,10 @@ open class DataStore(
     private val stateSubject = ReplayRelay.createWithSize<State>(1)
     private val syncStateSubject = BehaviorRelay.createDefault<SyncState>(SyncState.NotSyncing)
     private val listSubject: BehaviorRelay<List<ServerPassword>> = BehaviorRelay.createDefault(emptyList())
-    private val deletedItemSubject = ReplayRelay.create<Consumable<ServerPassword>>()
 
     open val state: Observable<State> = stateSubject
     open val syncState: Observable<SyncState> = syncStateSubject
     open val list: Observable<List<ServerPassword>> get() = listSubject
-    open val deletedItem: Observable<Consumable<ServerPassword>> get() = deletedItemSubject
 
     private val exceptionHandler: CoroutineExceptionHandler
         get() = CoroutineExceptionHandler { _, e ->
@@ -109,7 +108,6 @@ open class DataStore(
                     is DataStoreAction.Touch -> touch(action.id)
                     is DataStoreAction.Reset -> reset()
                     is DataStoreAction.UpdateCredentials -> updateCredentials(action.syncCredentials)
-                    is DataStoreAction.Delete -> deleteCredentials(action.item)
                 }
             }
             .addTo(compositeDisposable)
@@ -120,26 +118,6 @@ open class DataStore(
             .addTo(compositeDisposable)
 
         setupAutoLock()
-    }
-
-    private fun deleteCredentials(item: ServerPassword?) {
-        try {
-            if (item != null) {
-                backend.delete(item.id)
-                    .asSingle(coroutineContext)
-                    .subscribe()
-                    .addTo(compositeDisposable)
-                sync()
-                deletedItemSubject.accept(Consumable(item))
-            }
-        } catch (loginsStorageException: LoginsStorageException) {
-            log.error("Exception: ", loginsStorageException)
-        }
-    }
-
-    private fun editEntry() {
-        // TODO
-//        dispatcher.dispatch(RouteAction.ItemList)
     }
 
     private fun shutdown() {

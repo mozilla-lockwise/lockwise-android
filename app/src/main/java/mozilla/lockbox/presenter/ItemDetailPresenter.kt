@@ -16,7 +16,6 @@ import mozilla.lockbox.R
 import mozilla.lockbox.action.AppWebPageAction
 import mozilla.lockbox.action.ClipboardAction
 import mozilla.lockbox.action.DataStoreAction
-import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.ItemDetailAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.filterNotNull
@@ -34,12 +33,10 @@ interface ItemDetailView {
     val togglePasswordClicks: Observable<Unit>
     val hostnameClicks: Observable<Unit>
     val learnMoreClicks: Observable<Unit>
-    val kebabMenuClicks: Observable<Unit>
     var isPasswordVisible: Boolean
     fun updateItem(item: ItemDetailViewModel)
     fun showToastNotification(@StringRes strId: Int)
     fun handleNetworkError(networkErrorVisibility: Boolean)
-    val menuItemSelection: Observable<ItemDetailAction.EditItemMenu>
     //    val retryNetworkConnectionClicks: Observable<Unit>
 }
 
@@ -83,13 +80,6 @@ class ItemDetailPresenter(
             }
         }
 
-        view.menuItemSelection
-            .map {
-                DialogAction.DeleteConfirmationDialog(credentials)
-            }
-            .subscribe(dispatcher::dispatch)
-            .addTo(compositeDisposable)
-
         this.view.learnMoreClicks
             .map { AppWebPageAction.FaqEdit }
             .subscribe(dispatcher::dispatch)
@@ -127,8 +117,8 @@ class ItemDetailPresenter(
 
     private fun handleClicks(clicks: Observable<Unit>, withServerPassword: (ServerPassword) -> Unit) {
         clicks.subscribe {
-            this.credentials?.let { password -> withServerPassword(password) }
-        }
+                this.credentials?.let { password -> withServerPassword(password) }
+            }
             .addTo(compositeDisposable)
     }
 }
