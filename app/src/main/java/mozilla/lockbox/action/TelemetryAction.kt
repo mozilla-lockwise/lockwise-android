@@ -47,6 +47,7 @@ enum class TelemetryEventMethod {
     unlock,
     reset,
     sync_start,
+    sync_end,
     sync_timeout,
     sync_error,
     list_update,

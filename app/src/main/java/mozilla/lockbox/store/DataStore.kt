@@ -244,7 +244,7 @@ open class DataStore(
         backend.sync(support.syncConfig!!)
             .asSingle(coroutineContext)
             .timeout(Constant.App.syncTimeout, TimeUnit.SECONDS)
-            .doOnEvent {  _, err ->
+            .doOnEvent { _, err ->
                 (err as? TimeoutException).let {
                     // syncStateSubject.accept(SyncState.TimedOut)
                     dispatcher.dispatch(DataStoreAction.SyncTimeout)
@@ -254,7 +254,8 @@ open class DataStore(
             }
             .subscribe({
                     this.updateList(it)
-                }, {
+                    dispatcher.dispatch(DataStoreAction.SyncEnd)
+            }, {
                     this.pushError(it)
                     dispatcher.dispatch(DataStoreAction.SyncError)
             })

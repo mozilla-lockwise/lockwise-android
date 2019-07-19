@@ -23,6 +23,11 @@ sealed class DataStoreAction(
     object Sync : DataStoreAction(TelemetryEventMethod.sync_start, TelemetryEventObject.datastore)
 
     /**
+     * Emitted when a sync request completes.
+     */
+    object SyncEnd : DataStoreAction(TelemetryEventMethod.sync_end, TelemetryEventObject.datastore)
+
+    /**
      * Emitted when the app times out when listening for a response from sync.
      */
     object SyncTimeout : DataStoreAction(TelemetryEventMethod.sync_timeout, TelemetryEventObject.datastore)
