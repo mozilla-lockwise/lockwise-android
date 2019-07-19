@@ -29,7 +29,7 @@ version 2.0][license-link].
 
 Note that some test fixtures and all code in the `thirdparty` directory use source code from third-party services, and are not subject to this license.
 
-All alternative licenses and the origins of third party code is cited in the [third party readme][third-party-link]
+All alternative licenses and the origins of third party code is cited in the [third party readme][third-party-link].
 
 [bitrise-image]: https://app.bitrise.io/app/20089a88380dd14d/status.svg?token=41PRDjKSm0fQCUiS2EmCkQ&branch=master
 [bitrise-link]: https://app.bitrise.io/app/20089a88380dd14d
