@@ -33,6 +33,7 @@ import mozilla.lockbox.support.FxASyncDataStoreSupport
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.TimingSupport
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
 import kotlin.coroutines.CoroutineContext
 
 @ExperimentalCoroutinesApi
@@ -243,25 +244,9 @@ open class DataStore(
         backend.sync(support.syncConfig!!)
             .asSingle(coroutineContext)
             .timeout(Constant.App.syncTimeout, TimeUnit.SECONDS)
-            .doOnEvent { _, _ ->
-                syncStateSubject.accept(SyncState.NotSyncing)
-            }
-            .subscribe({
-                    this.updateList(it)
-                    dispatcher.dispatch(DataStoreAction.SyncEnd)
-                }, {
-                    this.pushError(it)
-                    dispatcher.dispatch(DataStoreAction.SyncError)
-            })
-            .addTo(compositeDisposable)
-
-        /* timeout to be fixed in https://github.com/mozilla-lockwise/lockwise-android/issues/791
-        backend.sync(support.syncConfig!!)
-            .asSingle(coroutineContext)
-            .timeout(Constant.App.syncTimeout, TimeUnit.SECONDS)
-            .doOnEvent { _, err ->
+            .doOnEvent {  _, err ->
                 (err as? TimeoutException).let {
-                    syncStateSubject.accept(SyncState.TimedOut)
+                    // syncStateSubject.accept(SyncState.TimedOut)
                     dispatcher.dispatch(DataStoreAction.SyncTimeout)
                 }.run {
                     syncStateSubject.accept(SyncState.NotSyncing)
@@ -269,12 +254,11 @@ open class DataStore(
             }
             .subscribe({
                     this.updateList(it)
-                    dispatcher.dispatch(DataStoreAction.SyncEnd)
                 }, {
                     this.pushError(it)
                     dispatcher.dispatch(DataStoreAction.SyncError)
             })
-            .addTo(compositeDisposable) */
+            .addTo(compositeDisposable)
     }
 
     // item list management
