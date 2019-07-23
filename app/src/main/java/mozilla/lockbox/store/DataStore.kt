@@ -247,7 +247,7 @@ open class DataStore(
             .doOnEvent { _, err ->
                 (err as? TimeoutException).let {
                     // syncStateSubject.accept(SyncState.TimedOut)
-                    dispatcher.dispatch(DataStoreAction.SyncTimeout)
+                    dispatcher.dispatch(DataStoreAction.SyncTimeout(it?.message ?: ""))
                 }.run {
                     syncStateSubject.accept(SyncState.NotSyncing)
                 }
@@ -257,7 +257,7 @@ open class DataStore(
                     dispatcher.dispatch(DataStoreAction.SyncEnd)
             }, {
                     this.pushError(it)
-                    dispatcher.dispatch(DataStoreAction.SyncError)
+                    dispatcher.dispatch(DataStoreAction.SyncError(it.message ?: ""))
             })
             .addTo(compositeDisposable)
     }
@@ -279,7 +279,7 @@ open class DataStore(
                     dispatcher.dispatch(DataStoreAction.ListUpdate)
                 }, {
                     this.pushError(it)
-                    dispatcher.dispatch(DataStoreAction.ListUpdateError)
+                    dispatcher.dispatch(DataStoreAction.ListUpdateError(it.message ?: ""))
                 })
                 .addTo(compositeDisposable)
         }
@@ -336,21 +336,10 @@ open class DataStore(
         }
 
         when (loginsException) {
-            is SyncAuthInvalidException -> {
-                dispatcher.dispatch(DataStoreAction.Errors(Constant.FxAErrors.SyncAuthInvalid))
-
-                resetSupport(support)
-                dispatcher.dispatch(LifecycleAction.UserReset)
-            }
-            is InvalidKeyException -> {
-                dispatcher.dispatch(DataStoreAction.Errors(Constant.FxAErrors.InvalidKey))
-
-                resetSupport(support)
-                dispatcher.dispatch(LifecycleAction.UserReset)
-            }
+            is SyncAuthInvalidException,
+            is InvalidKeyException,
             is LoginsStorageException -> {
-                dispatcher.dispatch(DataStoreAction.Errors(Constant.FxAErrors.LoginsStorage))
-
+                dispatcher.dispatch(DataStoreAction.Errors(e.message ?: ""))
                 resetSupport(support)
                 dispatcher.dispatch(LifecycleAction.UserReset)
             }
