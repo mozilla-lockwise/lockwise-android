@@ -50,7 +50,7 @@
                             android:spinnerMode="dropdown"
                             android:popupBackground="@drawable/sort_menu_bg"
                             android:textSize="20sp"
-                            style="@style/PopupTheme"
+                            style="@style/PopupMenu"
                             android:background="@null"/>
                 </LinearLayout>
                 <LinearLayout

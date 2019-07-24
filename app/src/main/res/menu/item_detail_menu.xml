@@ -6,14 +6,12 @@
   -->
 <menu
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/item_detail_menu">
+    android:id="@+id/item_detail_menu"
+>
     <item
             android:id="@+id/edit"
-            android:title="@string/edit"
-            app:showAsAction="never" />
+            android:title="@string/edit"/>
     <item
             android:id="@+id/delete"
-            android:title="@string/delete"
-            app:showAsAction="never" />
+            android:title="@string/delete" />
 </menu>

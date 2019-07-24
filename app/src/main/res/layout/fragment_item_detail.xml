@@ -48,32 +48,30 @@
                         android:textColor="@color/text_white"
                         android:letterSpacing="0.01"
                         android:layout_gravity="center_vertical|start"
-                        android:onClick="showPopup"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
                         tools:ignore="RtlSymmetry"/>
                 <ImageButton
                         android:id="@+id/kebabMenuButton"
-                        android:layout_width="50dp"
-                        android:layout_height="match_parent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:textAllCaps="false"
                         android:paddingTop="10dp"
                         android:paddingBottom="10dp"
                         android:visibility="gone"
                         android:contentDescription="@string/kebab_menu"
                         android:overlapAnchor="false"
+                        android:layout_marginEnd="14dp"
                         android:popupElevation="8dp"
                         android:dropDownWidth="128dp"
-                        android:dropDownSelector="@color/selection"
                         android:popupBackground="@drawable/sort_menu_bg"
                         android:textSize="20sp"
-                        android:background="@null"
-                        style="@style/PopupTheme"
+                        android:background="@drawable/ic_menu_kebab"
+                        style="@style/PopupMenu"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
-
                 />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.appcompat.widget.Toolbar>

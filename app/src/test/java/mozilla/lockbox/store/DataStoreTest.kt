@@ -10,6 +10,7 @@ import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import mozilla.appservices.logins.ServerPassword
 import mozilla.appservices.logins.SyncUnlockInfo
 import mozilla.components.concept.sync.AccessTokenInfo
 import mozilla.lockbox.DisposingTest
@@ -56,6 +57,35 @@ class DataStoreTest : DisposingTest() {
         PowerMockito.whenNew(TimingSupport::class.java).withAnyArguments().thenReturn(timingSupport)
 
         subject = DataStore(dispatcher, support, timingSupport, lifecycleStore)
+    }
+
+    @Test
+    fun `update item hostname`() {
+        val stateIterator = this.subject.state.blockingIterable().iterator()
+        val listIterator = this.subject.list.blockingIterable().iterator()
+        Assert.assertEquals(0, listIterator.next().size)
+        clearInvocations(support.storage)
+        whenCalled(timingSupport.shouldSync).thenReturn(false)
+
+        dispatcher.dispatch(DataStoreAction.Unlock)
+        Assert.assertEquals(State.Unlocked, stateIterator.next())
+        Assert.assertEquals(10, listIterator.next().size)
+
+        val item = listIterator.next()[0]
+        val newHostname = "https://ilovecats.com"
+
+        val updatedItem = ServerPassword(
+            id = item.id,
+            hostname = newHostname,
+            username = item.username,
+            password = item.password,
+            httpRealm = item.httpRealm
+        )
+
+        dispatcher.dispatch(DataStoreAction.UpdateItemDetail(updatedItem))
+
+        val newItem = listIterator.next()[0]
+        Assert.assertEquals(newItem, updatedItem)
     }
 
     @Test
@@ -222,7 +252,7 @@ class DataStoreTest : DisposingTest() {
         )
         val support = syncCredentials.support
         dispatcher.dispatch(
-            DataStoreAction.UpdateCredentials(
+            DataStoreAction.UpdateSyncCredentials(
                 syncCredentials
             )
         )

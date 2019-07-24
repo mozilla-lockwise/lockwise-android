@@ -36,8 +36,8 @@ import kotlin.coroutines.CoroutineContext
 
 @ExperimentalCoroutinesApi
 open class DataStore(
-    val dispatcher: Dispatcher = Dispatcher.shared,
-    var support: DataStoreSupport = FxASyncDataStoreSupport.shared,
+    open val dispatcher: Dispatcher = Dispatcher.shared,
+    open var support: DataStoreSupport = FxASyncDataStoreSupport.shared,
     private val timingSupport: TimingSupport = TimingSupport.shared,
     private val lifecycleStore: LifecycleStore = LifecycleStore.shared
 ) {
@@ -62,13 +62,11 @@ open class DataStore(
     val syncStateSubject: BehaviorRelay<SyncState> = BehaviorRelay.createDefault(SyncState.NotSyncing)
     private val listSubject: BehaviorRelay<List<ServerPassword>> = BehaviorRelay.createDefault(emptyList())
     private val deletedItemSubject = ReplayRelay.create<Consumable<ServerPassword>>()
-    private val itemUpdatedSubject = ReplayRelay.create<Consumable<ServerPassword>>()
 
     open val state: Observable<State> = stateSubject
     open val syncState: Observable<SyncState> = syncStateSubject
     open val list: Observable<List<ServerPassword>> get() = listSubject
     open val deletedItem: Observable<Consumable<ServerPassword>> get() = deletedItemSubject
-    open val updatedItem: Observable<Consumable<ServerPassword>> get() = itemUpdatedSubject
 
     private val exceptionHandler: CoroutineExceptionHandler
         get() = CoroutineExceptionHandler { _, e ->
@@ -109,9 +107,9 @@ open class DataStore(
                     is DataStoreAction.Sync -> sync()
                     is DataStoreAction.Touch -> touch(action.id)
                     is DataStoreAction.Reset -> reset()
-                    is DataStoreAction.UpdateCredentials -> updateCredentials(action.syncCredentials)
-                    is DataStoreAction.Delete -> deleteCredentials(action.item)
-                    is DataStoreAction.UpdateItemDetail -> updateItemDetail(action.item)
+                    is DataStoreAction.UpdateSyncCredentials -> updateCredentials(action.syncCredentials)
+                    is DataStoreAction.Delete -> delete(action.item)
+                    is DataStoreAction.UpdateItemDetail -> update(action.item)
                 }
             }
             .addTo(compositeDisposable)
@@ -124,7 +122,7 @@ open class DataStore(
         setupAutoLock()
     }
 
-    private fun deleteCredentials(item: ServerPassword?) {
+    private fun delete(item: ServerPassword?) {
         try {
             if (item != null) {
                 backend.delete(item.id)
@@ -141,14 +139,16 @@ open class DataStore(
         }
     }
 
-    private fun updateItemDetail(item: ServerPassword) {
+    private fun update(item: ServerPassword?) {
         try {
-            backend.update(item)
-                .asSingle(coroutineContext)
-                .subscribe()
-                .addTo(compositeDisposable)
-            sync()
-            itemUpdatedSubject.accept(Consumable(item))
+            if (item != null) {
+                backend.update(item)
+                    .asSingle(coroutineContext)
+                    .subscribe({}, {pushError(it)})
+                    .addTo(compositeDisposable)
+
+                updateList(Unit)
+            }
         } catch (e: Exception) {
             pushError(e)
         }

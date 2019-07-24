@@ -67,7 +67,7 @@ sealed class DataStoreAction(
         "ID: $id"
     )
 
-    data class UpdateCredentials(val syncCredentials: SyncCredentials) : DataStoreAction(
+    data class UpdateSyncCredentials(val syncCredentials: SyncCredentials) : DataStoreAction(
         TelemetryEventMethod.update_credentials,
         TelemetryEventObject.datastore
     )
@@ -78,5 +78,12 @@ sealed class DataStoreAction(
         item?.id
     )
 
-    data class UpdateItemDetail(val item: ServerPassword) : DataStoreAction(TelemetryEventMethod.edit, TelemetryEventObject.update_credential)
+    /**
+     * Emitted when an entry is edited and saved.
+     */
+    data class UpdateItemDetail(val item: ServerPassword?)
+        : DataStoreAction(
+            TelemetryEventMethod.edit,
+            TelemetryEventObject.update_credential
+        )
 }

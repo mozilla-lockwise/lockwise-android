@@ -154,9 +154,18 @@
         <item name="android:background">@android:color/transparent</item>
         <item name="android:popupBackground">@android:color/transparent</item>
     </style>
-    <style name="PopupTheme" parent="@style/Widget.AppCompat.PopupWindow">
+    <style name="PopupMenu" parent="@style/Widget.AppCompat.PopupWindow">
+        <item name="android:windowBackground">@drawable/rounded_corner_bg_white</item>
         <item name="android:popupEnterTransition">@android:transition/slide_top</item>
-    </style>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:textColor">@color/black_87_percent</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:letterSpacing">0.02</item>
+        <item name="android:lineSpacingExtra">6sp</item>
+        <item name="android:stateListAnimator">@null</item>
+s    </style>
     <style name="ToastTextAppearance" parent="@style/TextAppearance">
         <item name="android:background">@android:color/transparent</item>
         <item name="android:textColor">@color/text_white</item>

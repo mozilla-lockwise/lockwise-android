@@ -8,6 +8,7 @@ package mozilla.lockbox.presenter
 
 import android.view.MenuItem
 import androidx.annotation.StringRes
+import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.rxkotlin.addTo
@@ -29,10 +30,9 @@ import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.ItemDetailStore
 import mozilla.lockbox.store.NetworkStore
 import mozilla.lockbox.support.FeatureFlags
-import android.R.menu
-import android.view.MenuInflater
 import android.view.View
 import android.widget.PopupMenu
+import com.jakewharton.rxrelay2.BehaviorRelay
 
 interface ItemDetailView {
     val usernameCopyClicks: Observable<Unit>
@@ -41,14 +41,17 @@ interface ItemDetailView {
     val hostnameClicks: Observable<Unit>
     val learnMoreClicks: Observable<Unit>
     val kebabMenuClicks: Observable<Unit>
+    val editClicks: BehaviorRelay<Unit>
+    val deleteClicks: BehaviorRelay<Unit>
     var isPasswordVisible: Boolean
     fun showKebabMenu()
     fun hideKebabMenu()
     fun updateItem(item: ItemDetailViewModel)
+    fun showPopup()
     fun showToastNotification(@StringRes strId: Int)
     fun handleNetworkError(networkErrorVisibility: Boolean)
 //    val menuItemSelection: Observable<ItemDetailAction.EditItemMenu>
-    //    val retryNetworkConnectionClicks: Observable<Unit>
+//    val retryNetworkConnectionClicks: Observable<Unit>
 }
 
 @ExperimentalCoroutinesApi
@@ -125,10 +128,24 @@ class ItemDetailPresenter(
             .subscribe { view.isPasswordVisible = it }
             .addTo(compositeDisposable)
 
-//        view.kebabMenuClicks
-//            .subscribe(view::setupKebabMenu)
-//            .addTo(compositeDisposable)
+        view.editClicks
+            .subscribe {
+                dispatcher.dispatch(RouteAction.EditItemDetail(credentials!!.id))
+            }
+            .addTo(compositeDisposable)
 
+        view.deleteClicks
+            .subscribe {
+                dispatcher.dispatch(DialogAction.DeleteConfirmationDialog(credentials))
+            }
+            .addTo(compositeDisposable)
+
+        view.kebabMenuClicks
+            .subscribe {
+                view.showPopup()
+            }
+            .addTo(compositeDisposable)
+    }
 
 //        view.menuItemSelection
 //            .subscribe {
@@ -143,34 +160,33 @@ class ItemDetailPresenter(
 //        view.retryNetworkConnectionClicks.subscribe {
 //            dispatcher.dispatch(NetworkAction.CheckConnectivity)
 //        }?.addTo(compositeDisposable)
-    }
+//            }
 
-    fun showPopup(view: View) {
-        val popup = PopupMenu(view.context, view)
-        val inflater = popup.menuInflater
-        inflater.inflate(R.menu.item_detail_menu, popup.menu)
-        popup.show()
-    }
+//    fun showPopup(view: View) {
+//        val popup = PopupMenu(view.context, view)
+//        val inflater = popup.menuInflater
+//        inflater.inflate(R.menu.item_detail_menu, popup.menu)
+//        popup.show()
+//    }
 
     private fun onMenuItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.edit -> {
-                dispatcher.dispatch(RouteAction.EditItemDetail(credentials!!.id))
-                true
-            }
-            R.id.delete -> {
-                dispatcher.dispatch(DialogAction.DeleteConfirmationDialog(credentials))
-                true
-            }
+//            R.id.edit -> {
+//                dispatcher.dispatch(RouteAction.EditItemDetail(credentials!!.id))
+//                true
+//            }
+//            R.id.delete -> {
+//                dispatcher.dispatch(DialogAction.DeleteConfirmationDialog(credentials))
+//                true
+//            }
             else -> false
         }
     }
-
 
     private fun handleClicks(clicks: Observable<Unit>, withServerPassword: (ServerPassword) -> Unit) {
         clicks.subscribe {
             this.credentials?.let { password -> withServerPassword(password) }
         }
-            .addTo(compositeDisposable)
+        .addTo(compositeDisposable)
     }
 }

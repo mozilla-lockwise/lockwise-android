@@ -8,6 +8,7 @@ package mozilla.lockbox.view
 
 import android.content.Context
 import android.os.Bundle
+import android.text.TextWatcher
 import android.text.method.PasswordTransformationMethod
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -18,6 +19,7 @@ import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import com.jakewharton.rxbinding2.support.v7.widget.navigationClicks
 import com.jakewharton.rxbinding2.view.clicks
+import com.jakewharton.rxbinding2.widget.afterTextChangeEvents
 import com.jakewharton.rxbinding2.widget.textChanges
 import io.reactivex.Observable
 import kotlinx.android.synthetic.main.fragment_item_edit.*
@@ -28,6 +30,8 @@ import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.presenter.EditItemDetailView
 import mozilla.lockbox.presenter.EditItemPresenter
 import mozilla.lockbox.support.assertOnUiThread
+import android.text.Editable
+import mozilla.components.service.sync.logins.ServerPassword
 
 @ExperimentalCoroutinesApi
 class EditItemFragment : BackableFragment(), EditItemDetailView {
@@ -49,6 +53,16 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupToolbar(view.toolbar)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        closeKeyboard()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        closeKeyboard()
     }
 
     override var isPasswordVisible: Boolean = false
@@ -73,13 +87,12 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
     override val saveEntryClicks: Observable<Unit>
         get() = view!!.saveEntryButton.clicks()
 
-    // input validation
     override val hostnameChanged: Observable<CharSequence>
         get() = view!!.inputHostname.textChanges()
-    // input validation
+
     override val usernameChanged: Observable<CharSequence>
         get() = view!!.inputUsername.textChanges()
-    // input validation
+
     override val passwordChanged: Observable<CharSequence>
         get() = view!!.inputPassword.textChanges()
 
@@ -104,10 +117,6 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
         toolbar.navigationIcon = resources.getDrawable(R.drawable.ic_close, null)
         toolbar.elevation = resources.getDimension(R.dimen.toolbar_elevation)
         toolbar.contentInsetStartWithNavigation = 0
-    }
-
-    private fun scrollToTop() {
-//        cardView.layoutMode =
     }
 
     override fun updateItem(item: ItemDetailViewModel) {
