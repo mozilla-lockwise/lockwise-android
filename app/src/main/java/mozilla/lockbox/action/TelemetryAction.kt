@@ -37,6 +37,8 @@ enum class TelemetryEventMethod {
     background,
     setting_changed,
     show,
+    delete,
+    edit,
     canceled,
     login_selected,
     autofill_locked,
@@ -98,5 +100,7 @@ enum class TelemetryEventObject {
     filter,
     back,
     dialog,
-    datastore
+    datastore,
+    delete_credential,
+    edit_credential
 }
