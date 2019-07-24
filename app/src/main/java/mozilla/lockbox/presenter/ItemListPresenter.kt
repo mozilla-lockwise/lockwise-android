@@ -147,8 +147,12 @@ class ItemListPresenter(
             .addTo(compositeDisposable)
 
         view.refreshItemList
-            .doOnDispose { view.stopRefreshing() }
-            .subscribe { dispatcher.dispatch(DataStoreAction.Sync) }
+            .doOnDispose {
+                view.stopRefreshing()
+            }
+            .subscribe {
+                dispatcher.dispatch(DataStoreAction.Sync)
+            }
             .addTo(compositeDisposable)
 
         accountStore.profile

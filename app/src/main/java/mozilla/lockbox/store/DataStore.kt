@@ -33,6 +33,7 @@ import mozilla.lockbox.support.FxASyncDataStoreSupport
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.TimingSupport
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
 import kotlin.coroutines.CoroutineContext
 
 @ExperimentalCoroutinesApi
@@ -166,10 +167,10 @@ open class DataStore(
 
     open fun get(id: String): Observable<Optional<ServerPassword>> {
         return list.map { items ->
-                Optional(
-                    items.findLast { item -> item.id == id }
-                )
-            }
+            Optional(
+                items.findLast { item -> item.id == id }
+            )
+        }
     }
 
     private fun touch(id: String) {
@@ -243,25 +244,22 @@ open class DataStore(
         backend.sync(support.syncConfig!!)
             .asSingle(coroutineContext)
             .timeout(Constant.App.syncTimeout, TimeUnit.SECONDS)
-            .doOnEvent { _, _ ->
-                syncStateSubject.accept(SyncState.NotSyncing)
-            }
-            .subscribe(this::updateList, this::pushError)
-            .addTo(compositeDisposable)
-
-        /* timeout to be fixed in https://github.com/mozilla-lockwise/lockwise-android/issues/791
-        backend.sync(support.syncConfig!!)
-            .asSingle(coroutineContext)
-            .timeout(Constant.App.syncTimeout, TimeUnit.SECONDS)
             .doOnEvent { _, err ->
                 (err as? TimeoutException).let {
-                    syncStateSubject.accept(SyncState.TimedOut)
+                    // syncStateSubject.accept(SyncState.TimedOut)
+                    dispatcher.dispatch(DataStoreAction.SyncTimeout(it?.message ?: ""))
                 }.run {
                     syncStateSubject.accept(SyncState.NotSyncing)
                 }
             }
-            .subscribe(this::updateList, this::pushError)
-            .addTo(compositeDisposable) */
+            .subscribe({
+                    this.updateList(it)
+                    dispatcher.dispatch(DataStoreAction.SyncEnd)
+            }, {
+                    this.pushError(it)
+                    dispatcher.dispatch(DataStoreAction.SyncError(it.message ?: ""))
+            })
+            .addTo(compositeDisposable)
     }
 
     // item list management
@@ -276,7 +274,13 @@ open class DataStore(
         if (!backend.isLocked()) {
             backend.list()
                 .asSingle(coroutineContext)
-                .subscribe(listSubject::accept, this::pushError)
+                .subscribe({
+                    listSubject.accept(it)
+                    dispatcher.dispatch(DataStoreAction.ListUpdate)
+                }, {
+                    this.pushError(it)
+                    dispatcher.dispatch(DataStoreAction.ListUpdateError(it.message ?: ""))
+                })
                 .addTo(compositeDisposable)
         }
     }
@@ -328,13 +332,14 @@ open class DataStore(
         val loginsException = e as? LoginsStorageException
 
         loginsException?.let {
-            this.stateSubject.accept(DataStore.State.Errored(it))
+            this.stateSubject.accept(State.Errored(it))
         }
 
         when (loginsException) {
             is SyncAuthInvalidException,
             is InvalidKeyException,
             is LoginsStorageException -> {
+                dispatcher.dispatch(DataStoreAction.Errors(e.message ?: ""))
                 resetSupport(support)
                 dispatcher.dispatch(LifecycleAction.UserReset)
             }
