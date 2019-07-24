@@ -87,9 +87,9 @@ https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/c
 	* `value`: null
 	* `extras`: null
 
-2. When locking/unlocking/accessing the datastore:
+2. When locking/unlocking, accessing the datastore (sync credentials, updating the entry list, etc.):
 	* `category`: action
-	* `method`: lock, unlock, reset, sync, update_credentials, touch
+	* `method`: lock, unlock, reset, sync_start, sync_end, sync_timeout, sync_error, list_update, list_update_error, update_credentials, touch
 	* `object`: datastore
 	* `value`: null
 	* `extras`: null
