@@ -12,7 +12,6 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
-import kotlinx.android.synthetic.main.list_cell_setting_toggle.*
 import mozilla.lockbox.R
 import mozilla.lockbox.model.DialogViewModel
 
@@ -26,7 +25,7 @@ object AlertDialogHelper {
         viewModel: DialogViewModel
     ): Observable<AlertState> {
         return Observable.create { emitter ->
-            val builder = AlertDialog.Builder(context, R.style.DeleteDialogStyle)
+            val builder = AlertDialog.Builder(context, R.style.AlertDialogStyle)
 
             viewModel.title?.let {
                 val titleString = context.getString(it)
@@ -63,6 +62,7 @@ object AlertDialogHelper {
             setUpDismissal(builder, emitter)
 
             val dialog = builder.create()
+
             dialog.show()
 
             val defaultColor = context.getColor(R.color.violet_70)

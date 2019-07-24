@@ -31,7 +31,6 @@ import mozilla.lockbox.robots.fingerprintOnboardingScreen
 import mozilla.lockbox.robots.fxaLogin
 import mozilla.lockbox.robots.itemDetail
 import mozilla.lockbox.robots.itemList
-import mozilla.lockbox.robots.kebabMenu
 import mozilla.lockbox.robots.lockScreen
 import mozilla.lockbox.robots.onboardingConfirmationScreen
 import mozilla.lockbox.robots.securityDisclaimer
@@ -291,13 +290,6 @@ class Navigator {
 
     private fun checkAtItemDetail() {
         itemDetail { exists() }
-    }
-
-    fun gotoItemDetailKebabMenu(position: Int = 0) {
-        gotoItemList()
-        gotoItemDetail_from_itemList(position)
-        itemDetail { tapKebabMenu() }
-        kebabMenu { exists() }
     }
 
     fun back(remainInApplication: Boolean = true) {

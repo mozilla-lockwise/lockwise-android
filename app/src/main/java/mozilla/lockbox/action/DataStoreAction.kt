@@ -6,7 +6,7 @@
 
 package mozilla.lockbox.action
 
-import mozilla.appservices.logins.ServerPassword
+import mozilla.components.service.sync.logins.ServerPassword
 import mozilla.lockbox.model.SyncCredentials
 
 sealed class DataStoreAction(

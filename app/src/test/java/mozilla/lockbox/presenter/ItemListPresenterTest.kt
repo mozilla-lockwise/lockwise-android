@@ -34,7 +34,6 @@ import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.NetworkStore
 import mozilla.lockbox.store.SettingStore
-import mozilla.lockbox.support.Consumable
 import mozilla.lockbox.support.Optional
 import org.junit.Assert
 import org.junit.Before
@@ -49,15 +48,42 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.mockito.Mockito.`when` as whenCalled
 
+private val username = "dogs@dogs.com"
+private val item1 = ServerPassword(
+    "fdsfda",
+    "https://www.mozilla.org",
+    username,
+    "woof",
+    timesUsed = 0,
+    timeCreated = 0L,
+    timeLastUsed = 1L,
+    timePasswordChanged = 0L
+)
+private val item2 = ServerPassword(
+    "ghfdhg",
+    "https://www.cats.org",
+    username,
+    "meow",
+    timesUsed = 0,
+    timeCreated = 0L,
+    timeLastUsed = 2L,
+    timePasswordChanged = 0L
+)
+private val item3 = ServerPassword(
+    "ioupiouiuy",
+    "www.dogs.org",
+    username = null,
+    password = "baaaaa",
+    timesUsed = 0,
+    timeCreated = 0L,
+    timeLastUsed = 3L,
+    timePasswordChanged = 0L
+)
+
 @ExperimentalCoroutinesApi
 @RunWith(RobolectricTestRunner::class)
 @Config(application = TestApplication::class)
 open class ItemListPresenterTest {
-
-    private val item1 = ServerPasswordTestHelper().item1
-    private val item2 = ServerPasswordTestHelper().item2
-    private val item3 = ServerPasswordTestHelper().item3
-
     class FakeView : ItemListView {
 
 //        private val retryButtonStub = PublishSubject.create<Unit>()
@@ -73,10 +99,7 @@ open class ItemListPresenterTest {
         var updateItemsArgument: List<ItemViewModel>? = null
         var itemListSort: Setting.ItemListSort? = null
         var isLoading: Boolean? = null
-
-        var toastNotificationArgStrId: Int? = null
-        var toastNotificationArgText: String? = null
-
+        var toastNotificationArg: Int? = null
         val menuItemSelectionStub = PublishSubject.create<Int>()
         val itemSelectedStub = PublishSubject.create<ItemViewModel>()
         val filterClickStub = PublishSubject.create<Unit>()
@@ -129,14 +152,11 @@ open class ItemListPresenterTest {
 
         override val isRefreshing: Boolean = false
 
-        override fun stopRefreshing() {}
-
-        override fun showToastNotification(strId: Int) {
-            toastNotificationArgStrId = strId
+        override fun stopRefreshing() {
         }
 
-        override fun showDeleteToastNotification(text: String) {
-            toastNotificationArgText = text
+        override fun showToastNotification(strId: Int) {
+            toastNotificationArg = strId
         }
     }
 
@@ -159,20 +179,21 @@ open class ItemListPresenterTest {
     @Mock
     val dataStore = PowerMockito.mock(DataStore::class.java)!!
 
+    private var isConnected: Observable<Boolean> = PublishSubject.create()
+    var isConnectedObserver = TestObserver.create<Boolean>()
+
     @Mock
     private val connectivityManager = PowerMockito.mock(ConnectivityManager::class.java)
 
-    @Mock
-    val context: Context = Mockito.mock(Context::class.java)
-
-    private var isConnected: Observable<Boolean> = PublishSubject.create()
-    private var isConnectedObserver: TestObserver<Boolean> = TestObserver.create<Boolean>()
     private val profileStub = PublishSubject.create<Optional<Profile>>()
-    private var deleteItemSubjectStub = PublishSubject.create<Consumable<ServerPassword>>()
 
-    val view: FakeView = spy(FakeView())
+    val view: ItemListPresenterTest.FakeView = spy(ItemListPresenterTest.FakeView())
+
     val dispatcher = Dispatcher()
     private val dispatcherObserver = TestObserver.create<Action>()!!
+
+    @Mock
+    val context: Context = Mockito.mock(Context::class.java)
 
     lateinit var subject: ItemListPresenter
 
@@ -184,7 +205,6 @@ open class ItemListPresenterTest {
         PowerMockito.`when`(settingStore.itemListSortOrder).thenReturn(itemListSortStub)
         PowerMockito.`when`(dataStore.list).thenReturn(listStub)
         PowerMockito.`when`(dataStore.syncState).thenReturn(syncStateStub)
-        PowerMockito.`when`(dataStore.deletedItem).thenReturn(deleteItemSubjectStub)
 
         PowerMockito.whenNew(AccountStore::class.java).withAnyArguments().thenReturn(accountStore)
         PowerMockito.whenNew(SettingStore::class.java).withAnyArguments().thenReturn(settingStore)
@@ -335,13 +355,6 @@ open class ItemListPresenterTest {
         Assert.assertEquals(R.string.sync_timed_out, view.toastNotificationArgStrId)
     }
     */
-    @Test
-    fun `item deleted toast`() {
-        val item = ServerPasswordTestHelper().item1
-        val hostname = item.hostname
-        deleteItemSubjectStub.onNext(Consumable(item))
-        Assert.assertEquals(hostname, view.toastNotificationArgText)
-    }
 
     @Test
     fun `stop refreshing when stop syncing after pull to refresh`() {
