@@ -80,12 +80,12 @@ class ItemListFragment : Fragment(), ItemListView {
         setupToolbar(view.navToolbar, view.appDrawer)
         setupNavigationView(navController, view.navView)
         setupListView(view.entriesView)
-        setupSpinner(view)
+        setupSortDropdown(view)
         view.refreshContainer.setColorSchemeResources(R.color.refresh_violet)
         super.onViewCreated(view, savedInstanceState)
     }
 
-    private fun setupSpinner(view: View) {
+    private fun setupSortDropdown(view: View) {
         val sortList = ArrayList<Setting.ItemListSort>()
         sortList.add(Setting.ItemListSort.ALPHABETICALLY)
         sortList.add(Setting.ItemListSort.RECENTLY_USED)
@@ -231,13 +231,27 @@ class ItemListFragment : Fragment(), ItemListView {
 
     override fun showToastNotification(@StringRes strId: Int) {
         assertOnUiThread()
+        val toast = setUpToast(strId = strId)
+        toast.show()
+    }
+
+    override fun showDeleteToastNotification(text: String) {
+        assertOnUiThread()
+        val toast = setUpToast(text = text)
+        toast.show()
+    }
+
+    private fun setUpToast(@StringRes strId: Int? = null, text: String? = null): Toast {
         val toast = Toast(activity)
+
         toast.duration = Toast.LENGTH_SHORT
         toast.view = layoutInflater.inflate(R.layout.toast_view, this.view as ViewGroup, false)
         toast.setGravity(Gravity.FILL_HORIZONTAL or Gravity.BOTTOM, 0, 0)
-        val v = toast.view.findViewById(R.id.message) as TextView
-        v.text = resources.getString(strId)
-        toast.show()
+
+        val view = toast.view.findViewById(R.id.message) as TextView
+        view.text = text?.plus(" deleted.") ?: resources.getString(strId!!)
+
+        return toast
     }
 
 //    override val retryNetworkConnectionClicks: Observable<Unit>

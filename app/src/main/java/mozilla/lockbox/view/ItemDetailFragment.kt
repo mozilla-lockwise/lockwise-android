@@ -8,22 +8,26 @@ package mozilla.lockbox.view
 
 import android.os.Bundle
 import android.text.InputType
-import androidx.annotation.StringRes
 import android.text.method.PasswordTransformationMethod
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.EditText
+import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.StringRes
 import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_item_detail.*
 import kotlinx.android.synthetic.main.fragment_item_detail.view.*
-import kotlinx.android.synthetic.main.include_backable.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
+import mozilla.lockbox.action.ItemDetailAction
+import mozilla.lockbox.adapter.DeleteItemAdapter
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.presenter.ItemDetailPresenter
 import mozilla.lockbox.presenter.ItemDetailView
@@ -45,6 +49,15 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         return inflater.inflate(R.layout.fragment_item_detail, container, false)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupKebabMenu(view)
+    }
+
+    private lateinit var spinner: Spinner
+    private lateinit var itemAdapter: DeleteItemAdapter
+    private var userSelection = false
+
     private val errorHelper = NetworkErrorHelper()
 
     override val usernameCopyClicks: Observable<Unit>
@@ -62,12 +75,48 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
     override val learnMoreClicks: Observable<Unit>
         get() = view!!.detailLearnMore.clicks()
 
+    override val kebabMenuClicks: Observable<Unit>
+        get() = view!!.toolbar.kebabMenu.clicks()
+
     override var isPasswordVisible: Boolean = false
         set(value) {
             assertOnUiThread()
             field = value
             updatePasswordVisibility(value)
         }
+
+    private var _menuItemSelection = PublishSubject.create<ItemDetailAction.EditItemMenu>()
+    override val menuItemSelection: Observable<ItemDetailAction.EditItemMenu> = _menuItemSelection
+
+    private val menuOptions: Array<ItemDetailAction.EditItemMenu>
+        get() = ItemDetailAction.EditItemMenu.values()
+
+    private fun setupKebabMenu(view: View) {
+        val sortList = ArrayList<ItemDetailAction.EditItemMenu>()
+        sortList.add(ItemDetailAction.EditItemMenu.EDIT)
+        sortList.add(ItemDetailAction.EditItemMenu.DELETE)
+        spinner = view.kebabMenu
+        itemAdapter = DeleteItemAdapter(context!!, android.R.layout.simple_spinner_item, sortList)
+        spinner.adapter = itemAdapter
+        spinner.setPopupBackgroundResource(R.drawable.sort_menu_bg)
+
+        // added because different events can trigger onItemSelectedListener
+        spinner.setOnTouchListener { _, _ ->
+            userSelection = true
+            false
+        }
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                if (userSelection) {
+                    itemAdapter.setSelection(position)
+                    _menuItemSelection.onNext(menuOptions[position])
+                }
+            }
+        }
+    }
 
     private fun updatePasswordVisibility(visible: Boolean) {
         if (visible) {
@@ -81,7 +130,10 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
 
     override fun updateItem(item: ItemDetailViewModel) {
         assertOnUiThread()
+        toolbar.elevation = resources.getDimension(R.dimen.larger_toolbar_elevation)
         toolbar.title = item.title
+        toolbar.entryTitle.text = item.title
+        toolbar.entryTitle.gravity = Gravity.CENTER_VERTICAL
 
         inputLayoutHostname.isHintAnimationEnabled = false
         inputLayoutUsername.isHintAnimationEnabled = false

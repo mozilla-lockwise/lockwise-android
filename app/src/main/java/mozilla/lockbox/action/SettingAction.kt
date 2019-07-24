@@ -41,7 +41,7 @@ class Setting {
         val ms: Long = this.seconds * 1000
     }
 
-    enum class ItemListSort(val titleId: Int, val valueId: Int) {
+    enum class ItemListSort(@StringRes val titleId: Int, @StringRes val valueId: Int) {
         ALPHABETICALLY(R.string.all_logins_a_z, R.string.sort_menu_az),
         RECENTLY_USED(R.string.all_logins_recent, R.string.sort_menu_recent)
     }
