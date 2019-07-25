@@ -70,7 +70,7 @@ class ItemListPresenter(
             .map {
                 when (it) {
                     DataStore.SyncState.Syncing -> true
-                    DataStore.SyncState.NotSyncing, DataStore.SyncState.TimedOut -> false
+                    DataStore.SyncState.NotSyncing -> false
                 }
             }
             .subscribe { syncing ->
@@ -83,13 +83,14 @@ class ItemListPresenter(
             }
             .addTo(compositeDisposable)
 
-        dataStore.syncState
-            .filter { it == DataStore.SyncState.TimedOut }
-            .map { R.string.sync_timed_out }
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(view::showToastNotification)
-            .addTo(compositeDisposable)
-
+        /* timeout to be fixed in https://github.com/mozilla-lockwise/lockwise-android/issues/791
+              dataStore.syncState
+                  .filter { it == DataStore.SyncState.TimedOut }
+                  .map { R.string.sync_timed_out }
+                  .observeOn(AndroidSchedulers.mainThread())
+                  .subscribe(view::showToastNotification)
+                  .addTo(compositeDisposable)
+        */
         Observables.combineLatest(dataStore.list, settingStore.itemListSortOrder)
             .distinctUntilChanged()
             .map { pair ->
@@ -145,8 +146,12 @@ class ItemListPresenter(
             .addTo(compositeDisposable)
 
         view.refreshItemList
-            .doOnDispose { view.stopRefreshing() }
-            .subscribe { dispatcher.dispatch(DataStoreAction.Sync) }
+            .doOnDispose {
+                view.stopRefreshing()
+            }
+            .subscribe {
+                dispatcher.dispatch(DataStoreAction.Sync)
+            }
             .addTo(compositeDisposable)
 
         accountStore.profile

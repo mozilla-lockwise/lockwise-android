@@ -23,41 +23,41 @@ _all commits on all branches and pull requests are automatically built_
 
 1. Push to the git branch available on GitHub.com and open a pull request
 2. Open [bitrise][1] from a mobile device and browse to the build
-  - bitrise access is currently private and email-restricted
+    - bitrise access is currently private and email-restricted
 
 ## Preparing a Release (for Internal, Alpha, or Production via Play Store)
 
 1. Update the release notes under `docs/release-notes.md`
-  - create a pull request to collaborate and get approval
-  - determine the next build number and include it in release notes
-  - merge the release notes to `master` branch
-  - this will result in a release build matching the build number provided
+    - create a pull request to collaborate and get approval
+    - determine the next build number and include it in release notes
+    - merge the release notes to `master` branch
+    - this will result in a release build matching the build number provided
 2. Create and merge a pull request _from_ `master` _to_ `production` so it tracks the release
-  - https://github.com/mozilla-lockwise/lockwise-android/compare/production...master
+    - https://github.com/mozilla-lockwise/lockwise-android/compare/production...master
 3. Create a tag from `production` matching the format: `major.minor.patch.build`
-  - for example: `1.2.1399` is major version 1.2, bitrise build 1399
-  - for example: `1.3.1.1624` is major version 1.3 with 1 patch release, (bitrise) build 1624
-  - `git tag -a -s 1.3.1.1624 -m "1.3.1 (Build 1624)"`
+    - for example: `1.2.1399` is major version 1.2, bitrise build 1399
+    - for example: `1.3.1.1624` is major version 1.3 with 1 patch release, (bitrise) build 1624
+    - `git tag -a -s 1.3.1.1624 -m "1.3.1 (Build 1624)"`
 4. push the tag to GitHub and create a corresponding "Release" on GitHub.com
-  - copy the release notes to the "Release" on GitHub
-  - download the `-signed.apk` from bitrise and attach it to the Release on GitHub
-  - **open the `-signed.apk` and confirm release build does not allow screenshots and does not expose the contents of the app in the switcher**
+    - copy the release notes to the "Release" on GitHub
+    - download the `-signed.apk` from bitrise and attach it to the Release on GitHub
+    - **open the `-signed.apk` and confirm release build does not allow screenshots and does not expose the contents of the app in the switcher**
 5. Upload the `-signed.apk` (from bitrise) to the [Play Console][2]:
-  - browse to "Release Management" > "App Releases" > "Internal test track" > "Manage"
-  - "Create Release" and upload the signed APK, set the version to match the tag (for example: `1.2.1339`) then "Review" and the build will be immediately available to the core team
-  - Browse to 
+    - browse to "Release Management" > "App Releases" > "Internal test track" > "Manage"
+    - "Create Release" and upload the signed APK, set the version to match the tag (for example: `1.2.1339`) then "Review" and the build will be immediately available to the core team
+    - Browse to
 6. Download the `app-mapping.txt` (ProGuard rules) from bitrise and create an `AndroidManifest.xml` to map the file to the specific build:
-  ```
-  <?xml version="1.0" encoding="utf-8"?>
-  <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="mozilla.lockbox"
-      android:versionCode="4053"
-      android:versionName="1.1.1" >
-  </manifest>
-  ```
+    ```
+    <?xml version="1.0" encoding="utf-8"?>
+    <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+        package="mozilla.lockbox"
+        android:versionCode="4053"
+        android:versionName="1.1.1" >
+    </manifest>
+    ```
 7. Browse to "Android Vitals" and "Deobfusication files" and upload the `app-mapping.txt` file from bitrise.io
 8. Upload the mapping and manifest to Sentry using `sentry-cli` and following [these instructions](https://docs.sentry.io/cli/dif/proguard/](https://docs.sentry.io/cli/dif/proguard/)
-  - HINT: if you get a 411 "content-length" error, you may need to add the `--no-reprocessing` flag due to a bug with GCP and the `sentry-cli`
+    - HINT: if you get a 411 "content-length" error, you may need to add the `--no-reprocessing` flag due to a bug with GCP and the `sentry-cli`
 9. Continue the "Distributing..." instructions
 
 ### In Case of Emergency (Release)
@@ -68,12 +68,12 @@ _similar to above, but requires explicit cherry-pick commits on `production` bra
 2. Update the release notes
 3. Create and merge a pull request _up to and including_ the last release-able commit on `master` to `production`
 4. Then `git cherry-pick` each additional commit from `master` to be included in the release
-  - thus skipping or avoiding the non-release-able commits
+    - thus skipping or avoiding the non-release-able commits
 5. Push the resulting `production` branch to GitHub.com
 6. Create a tag from `production` matching the format: `major.minor.patch.build`
-  - for example: `git tag -a -s 1.3.1.1624 -m "1.3.1 (Build 1624)"`
+    - for example: `git tag -a -s 1.3.1.1624 -m "1.3.1 (Build 1624)"`
 7. Push the tag to GitHub and create a corresponding "Release" on GitHub.com
-  - copy the release notes to the "Release" on GitHub
+    - copy the release notes to the "Release" on GitHub
 8. Browse to bitrise and find the desired `production` branch build to distribute
 9. Follow the same instructions above starting at _Step 5_.
 10. Continue the "Distributing..." instructions
@@ -92,8 +92,8 @@ _Only Release Management team members (see private #release-coordination channel
 
 1. Contact release management by filing a bug under **[Release Engineering: Release Requests](https://bugzilla.mozilla.org/enter_bug.cgi?product=Release%20Engineering&component=Release%20Requests)**
 2. Note the expected version, build and which channel it is in (internal? Alpha? Beta?). [For example](https://bugzilla.mozilla.org/show_bug.cgi?id=1555746):
-  - Summary: Promote Lockwise Android 1.1.1 from Beta to Production channel in Play Store
-  - Description: We have a minor release to promote from Beta to Production by Tuesday (pending QA approval). APK: the version 1.1.1 (build 4057) in the Internal, Alpha, and Beta tracks is the current release candidate, but a newer build may be created in case of any potential "show stopper" bugs filed in the coming days.
+    - Summary: Promote Lockwise Android 1.1.1 from Beta to Production channel in Play Store
+    - Description: We have a minor release to promote from Beta to Production by Tuesday (pending QA approval). APK: the version 1.1.1 (build 4057) in the Internal, Alpha, and Beta tracks is the current release candidate, but a newer build may be created in case of any potential "show stopper" bugs filed in the coming days.
 
 NOTE: _brand new_ apps may take 1 or more hours to appear in the Play Store whereas existing app (updates) can appear within minutes. Schedule accordingly!
 

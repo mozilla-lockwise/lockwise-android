@@ -256,5 +256,7 @@
 
     <!-- This is the placeholder text for an empty or null username. -->
     <string name="no_username">(no username)</string>
-    <string name="sync_timed_out">Syncing has timed out</string>
+
+    <!-- This is the message displayed when sync has timed out. -->
+    <!--<string name="sync_timed_out">Syncing has timed out</string>-->
 </resources>

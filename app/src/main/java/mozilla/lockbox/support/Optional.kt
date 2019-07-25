@@ -7,4 +7,4 @@
 package mozilla.lockbox.support
 
 data class Optional<T>(val value: T?)
-fun <T> T?.asOptional() = Optional(this)
+fun <T> T?.asOptional(): Optional<T> = Optional(this)

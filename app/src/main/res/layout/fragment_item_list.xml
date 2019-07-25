@@ -45,7 +45,7 @@
                             android:contentDescription="@string/sort_description"
                             android:overlapAnchor="false"
                             android:popupElevation="8dp"
-                            android:dropDownWidth="150dp"
+                            android:dropDownWidth="170dp"
                             android:dropDownSelector="@color/selection"
                             android:spinnerMode="dropdown"
                             android:popupBackground="@drawable/sort_menu_bg"

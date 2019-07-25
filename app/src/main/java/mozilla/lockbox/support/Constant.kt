@@ -36,6 +36,12 @@ object Constant {
         val scopes = setOf(profileScope, lockboxScope, oldSyncScope)
     }
 
+    object FxAErrors {
+        const val SyncAuthInvalid = "SyncAuthInvalidException"
+        const val InvalidKey = "InvalidKeyException"
+        const val LoginsStorage = "LoginsStorageException"
+    }
+
     object Faq {
         const val uri = "https://lockbox.firefox.com/faq.html"
         const val topUri = uri + "#top"
