@@ -1,5 +1,19 @@
 # Release Notes
 
+## 1.1.3 (Build 4584)
+
+We fixed more bugs to help sync for some users, as well as some UI updates to standardize localized views.
+
+All changes since version 1.1.2:
+
+- Import strings from android-l10n (#809)
+- Adjust spinner dropdown size to fit longer words (l10n) (#812)
+- Ellipsize text in item list (#811)
+- Reset support when syncing (#826)
+- Add dot to sentence (#837)
+- Telemetry for sync (#835)
+- Update metrics docs to reflect telemetry sync changes (#841)
+
 ## 1.1.2 (Build 4405)
 
 We fixed more bugs to help stabilize sign in and sync for some users. We also hardened the security of the app even more.
