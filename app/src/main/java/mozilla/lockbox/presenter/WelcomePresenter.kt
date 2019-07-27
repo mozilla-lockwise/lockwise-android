@@ -8,15 +8,20 @@ package mozilla.lockbox.presenter
 
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import mozilla.components.service.fxa.sharing.AccountSharing
+import mozilla.lockbox.action.AccountAction
 import mozilla.lockbox.action.AppWebPageAction
 import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
+import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.FingerprintStore
 
 interface WelcomeView {
-    val getStartedClicks: Observable<Unit>
+    val getStartedAutomaticallyClicks: Observable<Unit>
+    val getStartedManuallyClicks: Observable<Unit>
     val learnMoreClicks: Observable<Unit>
 }
 
@@ -25,13 +30,32 @@ class WelcomePresenter(
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val fingerprintStore: FingerprintStore = FingerprintStore.shared
 ) : Presenter() {
+    @ExperimentalCoroutinesApi
     override fun onViewReady() {
-        view.getStartedClicks
+        view.getStartedAutomaticallyClicks
             .map {
-                if (fingerprintStore.isKeyguardDeviceSecure)
+                val availableAccount = AccountStore.shared.shareableAccount()
+                if (availableAccount != null) {
+                    if (fingerprintStore.isKeyguardDeviceSecure) {
+                        AccountAction.AutomaticLogin(availableAccount)
+                    } else {
+                        DialogAction.OnboardingSecurityDialogAutomatic(availableAccount)
+                    }
+                } else if (fingerprintStore.isKeyguardDeviceSecure) {
                     RouteAction.Login
-                else {
-                    DialogAction.OnboardingSecurityDialog
+                } else {
+                    DialogAction.OnboardingSecurityDialogManual
+                }
+            }
+            .subscribe(dispatcher::dispatch)
+            .addTo(compositeDisposable)
+
+        view.getStartedManuallyClicks
+            .map {
+                if (fingerprintStore.isKeyguardDeviceSecure) {
+                    RouteAction.Login
+                } else {
+                    DialogAction.OnboardingSecurityDialogManual
                 }
             }
             .subscribe(dispatcher::dispatch)

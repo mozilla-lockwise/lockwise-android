@@ -6,6 +6,7 @@
 
 package mozilla.lockbox.action
 
+import mozilla.components.service.fxa.sharing.ShareableAccount
 import mozilla.lockbox.R
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.model.DialogViewModel
@@ -34,7 +35,20 @@ sealed class DialogAction(
         ),
         listOf(LifecycleAction.UserReset)
     )
-    object OnboardingSecurityDialog : DialogAction(
+    data class OnboardingSecurityDialogAutomatic(val account: ShareableAccount) : DialogAction(
+        DialogViewModel(
+            R.string.secure_your_device,
+            R.string.device_security_description,
+            R.string.set_up_now,
+            R.string.skip_button
+        ),
+        listOf(
+            RouteAction.SystemSetting(SettingIntent.Security),
+            AccountAction.AutomaticLogin(account)
+        ),
+        listOf(RouteAction.Login)
+    )
+    object OnboardingSecurityDialogManual : DialogAction(
             DialogViewModel(
                 R.string.secure_your_device,
                 R.string.device_security_description,
