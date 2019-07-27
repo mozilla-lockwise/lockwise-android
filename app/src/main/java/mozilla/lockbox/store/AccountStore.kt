@@ -28,6 +28,8 @@ import mozilla.components.concept.sync.Avatar
 import mozilla.components.concept.sync.Profile
 import mozilla.components.service.fxa.ServerConfig
 import mozilla.components.service.fxa.FirefoxAccount
+import mozilla.components.service.fxa.sharing.AccountSharing
+import mozilla.components.service.fxa.sharing.ShareableAccount
 import mozilla.lockbox.action.AccountAction
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
@@ -91,6 +93,7 @@ open class AccountStore(
 
     private lateinit var webView: WebView
     private lateinit var logDirectory: File
+    private lateinit var context: Context
 
     init {
         val resetObservable = lifecycleStore.lifecycleEvents
@@ -109,6 +112,7 @@ open class AccountStore(
                 when (it) {
                     is AccountAction.OauthRedirect -> this.oauthLogin(it.url)
                     is AccountAction.UseTestData -> this.populateTestAccountInformation(true)
+                    is AccountAction.AutomaticLogin -> this.automaticLogin(it.account)
                     is AccountAction.Reset -> this.clear()
                 }
             }
@@ -126,8 +130,23 @@ open class AccountStore(
 
     override fun injectContext(context: Context) {
         detectAccount()
+        this.context = context
         webView = WebView(context)
         logDirectory = context.getDir("webview", Context.MODE_PRIVATE)
+    }
+
+    fun shareableAccount(): ShareableAccount? {
+        return AccountSharing.queryShareableAccounts(context).firstOrNull()
+    }
+
+    private fun automaticLogin(account: ShareableAccount) {
+        fxa?.migrateFromSessionTokenAsync(
+            account.authInfo.sessionToken,
+            account.authInfo.kSync,
+            account.authInfo.kXCS
+        )?.asSingle(coroutineContext)
+            ?.subscribe(this::populateAccountInformation, this::pushError)
+            ?.addTo(compositeDisposable)
     }
 
     private fun detectAccount() {
