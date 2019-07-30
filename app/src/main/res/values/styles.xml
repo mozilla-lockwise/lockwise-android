@@ -103,8 +103,20 @@
         <item name="colorAccent">@color/violet_70</item>
         <item name="buttonBarButtonStyle">@style/AlertButtonStyle</item>
     </style>
+    <style name="DeleteDialogStyle" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowBackground">@drawable/rounded_corner_bg_white</item>
+        <item name="android:textColorPrimary">@color/black_60_percent</item>
+        <item name="android:textColor">@color/black_87_percent</item>
+        <item name="buttonBarButtonStyle">@style/AlertButtonStyle</item>
+        <item name="android:lineSpacingExtra">8sp</item>
+    </style>
     <style name="AlertButtonStyle" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:textColor">@color/violet_70</item>
+        <item name="android:letterSpacing">0.09</item>
+        <item name="android:lineSpacingExtra">2sp</item>
+        <item name="android:gravity">center_horizontal|center_vertical</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
     </style>
     <style name="NavDrawerStyle" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:textSize">16sp</item>

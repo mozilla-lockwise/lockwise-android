@@ -7,10 +7,10 @@
 package mozilla.lockbox.view
 
 import android.os.Bundle
-import androidx.annotation.StringRes
-import androidx.fragment.app.DialogFragment as AndroidDialogFragment
 import android.view.View
+import androidx.annotation.StringRes
 import mozilla.lockbox.flux.Presenter
+import androidx.fragment.app.DialogFragment as AndroidDialogFragment
 
 open class DialogFragment : AndroidDialogFragment() {
     lateinit var presenter: Presenter

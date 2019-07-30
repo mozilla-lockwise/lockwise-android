@@ -33,6 +33,8 @@ class ItemDetailRobot : BaseTestRobot {
     fun toastIsDisplayed(id: Int, activityRule: ActivityTestRule<RootActivity>) =
         onView(withText(id)).inRoot(withDecorView(not(`is`(activityRule.activity.getWindow().decorView))))
             .check(matches(isDisplayed()))
+
+    fun tapKebabMenu() = ClickActions.click { id(R.id.kebabMenu) }
 }
 
 fun itemDetail(f: ItemDetailRobot.() -> Unit) = ItemDetailRobot().apply(f)
