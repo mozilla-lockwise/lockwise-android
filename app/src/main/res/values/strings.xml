@@ -262,11 +262,12 @@
 
     <!-- This is the description for the kebab menu in the item detail toolbar. -->
     <string name="kebab_menu">More options</string>
-    <!-- This is the text on a button to delete a login. -->
+    <!-- This is the text on an item in the item detail toolbar menu to delete an entry. -->
     <string name="delete">Delete</string>
     <!-- This is the confirmation message title seen when attempting to delete a login. -->
     <string name="delete_this_login">Delete this login?</string>
     <!-- This is the description for the deletion dialog. -->
-    <string name="delete_description">This will delete the login from both Lockwise and Firefox.</string>
+    <string name="delete_description">This will delete the login from both %1$s and Firefox.</string>
+    <!-- This is the text on an item in the item detail toolbar menu to edit an entry. -->
     <string name="edit">Edit</string>
 </resources>
