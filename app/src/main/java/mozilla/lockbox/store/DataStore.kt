@@ -243,6 +243,7 @@ open class DataStore(
 
         backend.sync(support.syncConfig!!)
             .asSingle(coroutineContext)
+            .map { log.debug("### ping: $it") }
             .timeout(Constant.App.syncTimeout, TimeUnit.SECONDS)
             .doOnEvent { _, err ->
                 (err as? TimeoutException).let {
