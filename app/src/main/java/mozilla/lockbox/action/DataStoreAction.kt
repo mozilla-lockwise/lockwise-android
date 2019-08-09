@@ -7,7 +7,10 @@
 package mozilla.lockbox.action
 
 import mozilla.appservices.logins.ServerPassword
+import mozilla.components.service.sync.logins.SyncTelemetryPing
 import mozilla.lockbox.model.SyncCredentials
+
+private const val emptyString = ""
 
 sealed class DataStoreAction(
     override val eventMethod: TelemetryEventMethod,
@@ -25,9 +28,15 @@ sealed class DataStoreAction(
     object Sync : DataStoreAction(TelemetryEventMethod.sync_start, TelemetryEventObject.datastore)
 
     /**
-     * Emitted when a sync request completes.
+     * Emitted when a sync request completes successfully.
      */
-    object SyncEnd : DataStoreAction(TelemetryEventMethod.sync_end, TelemetryEventObject.datastore)
+    data class SyncSuccess(val ping: SyncTelemetryPing)
+        : DataStoreAction(
+            TelemetryEventMethod.sync_end,
+            TelemetryEventObject.datastore,
+            emptyString,
+            mapOf(Pair(ping.uid, ping))
+        )
 
     /**
      * Emitted when the app times out when listening for a response from sync.
