@@ -13,7 +13,8 @@ import com.adjust.sdk.Adjust
 import com.adjust.sdk.AdjustConfig
 import com.squareup.leakcanary.LeakCanary
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import mozilla.appservices.LockboxMegazord
+import mozilla.appservices.Megazord
+import mozilla.components.support.rusthttp.RustHttpConfig
 import mozilla.components.lib.fetch.httpurlconnection.HttpURLConnectionClient
 import mozilla.components.support.base.log.Log
 import mozilla.components.support.base.log.logger.Logger
@@ -77,7 +78,8 @@ open class LockboxApplication : Application() {
     }
 
     private fun setupDataStoreSupport() {
-        LockboxMegazord.init(lazy { HttpURLConnectionClient() })
+        Megazord.init()
+        RustHttpConfig.setClient(lazy { HttpURLConnectionClient() })
         RustLog.enable()
 
         FxASyncDataStoreSupport.shared.injectContext(this)

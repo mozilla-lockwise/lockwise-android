@@ -243,6 +243,9 @@ open class DataStore(
 
         backend.sync(support.syncConfig!!)
             .asSingle(coroutineContext)
+            .map {
+                log.debug("Hashed UID: $it")
+            }
             .timeout(Constant.App.syncTimeout, TimeUnit.SECONDS)
             .doOnEvent { _, err ->
                 (err as? TimeoutException).let {
@@ -253,11 +256,11 @@ open class DataStore(
                 }
             }
             .subscribe({
-                    this.updateList(it)
-                    dispatcher.dispatch(DataStoreAction.SyncEnd)
+                this.updateList(it)
+                dispatcher.dispatch(DataStoreAction.SyncSuccess)
             }, {
-                    this.pushError(it)
-                    dispatcher.dispatch(DataStoreAction.SyncError(it.message ?: ""))
+                this.pushError(it)
+                dispatcher.dispatch(DataStoreAction.SyncError(it.message ?: ""))
             })
             .addTo(compositeDisposable)
     }

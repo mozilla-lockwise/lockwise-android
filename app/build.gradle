@@ -106,6 +106,7 @@ dependencies {
     implementation "org.mozilla.components:lib-dataprotect:${rootProject.ext.android_components_version}"
     implementation "org.mozilla.components:lib-fetch-httpurlconnection:${rootProject.ext.android_components_version}"
     implementation "org.mozilla.components:lib-publicsuffixlist:${rootProject.ext.android_components_version}"
+    implementation "org.mozilla.components:support-rusthttp:${rootProject.ext.android_components_version}"
     implementation "org.mozilla.components:support-rustlog:${rootProject.ext.android_components_version}"
     implementation "org.mozilla.components:concept-sync:${rootProject.ext.android_components_version}"
 
@@ -151,6 +152,14 @@ dependencies {
     androidTestImplementation 'br.com.concretesolutions:kappuccino:1.2.1'
     ktlint "com.github.shyiko:ktlint:0.28.0"
     androidTestImplementation "tools.fastlane:screengrab:1.2.0"
+    modules {
+        module('org.mozilla.appservices:full-megazord') {
+            replacedBy('org.mozilla.appservices:lockbox-megazord', 'prefer the lockbox megazord, to reduce final application size')
+        }
+        module('org.mozilla.appservices:lockbox-megazord') {
+            replacedBy('org.mozilla.appservices:lockbox-megazord-forUnitTests', 'prefer the forUnitTests variant if present')
+        }
+    }
 }
 
 sentry {
@@ -254,35 +263,3 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
 
 // Internal, but stable and convenient.
 import org.gradle.api.internal.artifacts.DefaultModuleIdentifier
-
-// This is the equivalent of what the `org.mozilla.appservices` Gradle plugin
-// achieved, minus asserting that the versions of all the megazord components
-// agree.  That assertion could be added if required.
-afterEvaluate {
-    // The definitions of the megazords themselves evolve: this set was determined from
-    // https://github.com/mozilla/application-services/blob/v0.27.0/megazords/lockbox/android/build.gradle#L79-L82,
-    // where the version in the URL is the tag corresponding to `mozilla_appservices_version`.  This
-    // will need to be bumped when `android_components_version` (and thus
-    // `mozilla_appservices_version`) is rolled forward.
-    def megazord = DefaultModuleIdentifier.newId('org.mozilla.appservices', 'lockbox-megazord')
-    def megazordComponents = [
-        DefaultModuleIdentifier.newId('org.mozilla.appservices', 'fxaclient'),
-        DefaultModuleIdentifier.newId('org.mozilla.appservices', 'logins'),
-        DefaultModuleIdentifier.newId('org.mozilla.appservices', 'rustlog'),
-    ]
-
-    configurations.each { configuration ->
-        configuration.resolutionStrategy.dependencySubstitution.all { dependency ->
-            if (dependency.requested instanceof ModuleComponentSelector) {
-                def moduleIdentifier = ((ModuleComponentSelector) dependency.requested).moduleIdentifier
-                if (megazordComponents.contains(moduleIdentifier)) {
-                    def megazordVersion = rootProject.ext.mozilla_appservices_version
-                    def substitution = "${megazord.group}:${megazord.name}:${megazordVersion}"
-                    logger.lifecycle("In ${configuration}: substituting megazord module '$substitution' for component module" +
-                                     " '${moduleIdentifier.group}:${moduleIdentifier.name}:${dependency.requested.version}'")
-                    dependency.useTarget(substitution)
-                }
-            }
-        }
-    }
-}
