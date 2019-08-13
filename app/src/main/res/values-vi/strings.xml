@@ -1,0 +1,272 @@
+<!--
+  ~ This Source Code Form is subject to the terms of the Mozilla Public
+  ~ License, v. 2.0. If a copy of the MPL was not distributed with this
+  ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
+  -->
+
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- This string is a promotional sentence used across all the applications to describe the purpose of the application. -->
+    <string name = "app_tagline">Mang mật khẩu của bạn đi khắp mọi nơi.</ string>
+    <!-- This is used for screenreaders to know the application logo image is currently selected. %1$s will be replaced with application name. -->
+    <string name="app_logo">%1$s Logo</string>
+
+    <!-- This is the text on a button to cancel the current operation or request such as unlocking the application with a fingerprint. -->
+    <string name="cancel">Hủy</string>
+    <!-- This is the title of a link for users to tap to open a web page to learn more about a related setting or feature. -->
+    <string name="learn_more">Tìm hiểu thêm</string>
+    <!-- This is the label a screenreader uses to inform the user they selected a link that will open a webpage to learn more about the feature or setting. -->
+    <string name="learn_more_description">Mở liên kết để Tìm hiểu thêm</string>
+
+    <!-- This is used as the label on a button on a first-run welcome screen to sign in and start using the application -->
+    <string name="welcome_start_btn">Bắt đầu</string>
+    <!-- This provides context near a button on the first-run welcome screen to describe application requirements. Firefox Account is to be translated consistently to match use in other Firefox products. %1$s will be replaced with application name. -->
+    <string name="welcome_instructions">Để sử dụng %1$s, bạn sẽ cần một Tài khoản Firefox với thông tin đăng nhập đã lưu.</string>
+    <!-- This is the link on the first-run welcome screen to learn more about the requirements of the application -->
+    <string name="welcome_learn_more_btn">Tìm hiểu thêm</string>
+
+    <!-- This is the label used for the title in the web view of the account's authentication instances. -->
+    <string name="get_started_title">Bắt đầu</string>
+
+    <!-- This is the label used by screenreaders to inform the user the navigation button selected is to go backwards from where they came from -->
+    <string name="backable_description">Quay lại</string>
+    <!-- This is the label used by screenreaders to inform the user the button selected is meant to open a navigation menu -->
+    <string name="menu_description">Trình đơn</string>
+
+    <!-- This is the label for the navigation item that opens a Frequently Asked Questions web page -->
+    <string name="nav_menu_faq">Câu hỏi thường gặp</string>
+    <!-- This is the label for the navigation item that opens a survey or feedback web page to submit to the developers -->
+    <string name="nav_menu_feedback">Cung cấp phản hồi</string>
+    <!-- This is the label for the navigation item that opens a screen to manage the user account currently signed in to the application -->
+    <string name="nav_menu_account">Tài khoản</string>
+    <!-- This is the label for the navigation item that opens a settings screen with options and preferences and more application information -->
+    <string name="nav_menu_settings">Cài đặt</string>
+    <!-- This is the label for a button, primarily in the navigation drawer, that securely locks the application requiring the user to unlock it -->
+    <string name="lock_now">Khóa ngay</string>
+
+    <!-- This label is used by screenreaders to inform the user they have selected an image of a lock -->
+    <string name="lock_icon_description">Khóa hình ảnh biểu tượng</string>
+    <!-- This is the label for the button to unlock the application for use while on a lock screen -->
+    <string name="unlock_button">Mở khóa</string>
+
+    <!-- This message appears in a toast informing the user it is currently downloading and syncing login (a saved login is basically the URL, username and password) data -->
+    <string name="syncing_logins">Đang đồng bộ thông tin đăng nhập của bạn…</string>
+
+    <!-- This is the label used by screenreaders to inform the user the selected menu is for sorting the saved logins in the list -->
+    <string name="sort_description">Sắp xếp thông tin đăng nhập</string>
+    <!-- This is the label for the sorting option of the list of passwords to be in alphabetical order -->
+    <string name="sort_menu_az">Theo thứ tự chữ cái</string>
+    <!-- This is a corresponding heading to describe the list view is showing all saved logins sorted alphabetically -->
+    <string name="all_logins_a_z">Tất cả thông tin đăng nhập (A-Z)</string>
+    <!-- This is the label for the sorting option of the list of passwords to be in order of recency the item was accessed or used -->
+    <string name="sort_menu_recent">Được sử dụng gần đây</string>
+    <!-- This is a corresponding heading to describe the list view is showing all saved logins sorted by recent use -->
+    <string name="all_logins_recent">Tất cả thông tin đăng nhập (Gần đây)</string>
+    <!-- This is the label used by screenreaders to inform the user the selected text area is used to search the logins in the list -->
+    <string name="search_description">Tìm thông tin đăng nhập</string>
+    <!-- This is the placeholder text to visibly describe a text area is to be used to search all the logins seen in the list view -->
+    <string name="search_logins">tìm thông tin đăng nhập</string>
+    <!-- This is the placeholder text to visibly describe a text area is to be used to search all the logins seen in the list view with the first letter capitalized -->
+    <string name="search_logins_cap">Tìm thông tin đăng nhập</string>
+    <!-- This is the label used by screenreaders to inform the user the selected button will clear the text currently input in the search area -->
+    <string name="search_clear_content_description">Xóa văn bản trên thanh tìm kiếm</string>
+    <!-- This is shown when a user has entered search terms that have filtered the list of logins to find no results -->
+    <string name="no_matching_logins">Không có thông tin đăng nhập phù hợp.</string>
+    <!-- This explains that if no logins are found and were expected, to add new logins through the Firefox desktop browser -->
+    <string name="save_firefox_disclaimer">Để xem thêm thông tin đăng nhập tại đây, bạn sẽ cần lưu chúng vào Firefox.</string>
+
+    <!-- This is a heading that appears above the URL in context of a detailed item view -->
+    <string name="hint_hostname">Địa chỉ web</string>
+    <!-- This is a heading that appears above the username in context of a detailed item view -->
+    <string name="hint_username">Tên người dùng</string>
+    <!-- This is a heading that appears above a password in context of a detailed item view -->
+    <string name="hint_password">Mật khẩu</string>
+    <!-- This message appears to link to a web page explaining how to make changes to the details -->
+    <string name="learn_to_edit_login">Tìm hiểu cách chỉnh sửa thông tin đăng nhập này</string>
+
+    <!-- This describes an icon to screenreaders that the button tapped will open the web address in a web browser -->
+    <string name="launch_hostname_content_description">Mở địa chỉ web trong trình duyệt web</string>
+    <!-- This describes an icon to screenreaders that the button tapped will copy the username to the device clipboard to paste and use in another application -->
+    <string name="copy_username_content_description">Sao chép tên người dùng</string>
+    <!-- This message appears when the user taps to copy the username to the device clipboard -->
+    <string name="toast_username_copied">Tên người dùng đã được sao chép</string>
+    <!-- This describes an icon to screenreaders that the button tapped will copy the password to the device clipboard to paste and use in another application -->
+    <string name="copy_password_content_description">Sao chép mật khẩu</string>
+    <!-- This message appears when the user taps to copy the password to the device clipboard -->
+    <string name="toast_password_copied">Mật khẩu đã được sao chép</string>
+    <!-- This describes an icon to screenreaders that the button tapped will display the password in plain text for immediate reading or use -->
+    <string name="display_password_content_description">Hiển thị mật khẩu của bạn ở dạng văn bản thuần túy</string>
+
+    <!-- This is a heading that appears above a group of application settings to configure the user experience -->
+    <string name="configuration_title">Cấu hình</string>
+    <!-- This is a heading that appears above a group of application settings or links related to what is supported by the application -->
+    <string name="support_title">Hỗ trợ</string>
+
+    <!-- This is the title of a setting that allows the user to change the time duration before the application locks and requires unlocking -->
+    <string name="auto_lock">Khóa tự động</string>
+    <!-- This is the label a screenreader uses to inform the user they selected the auto lock setting toggle -->
+    <string name="auto_lock_description">Cài đặt khóa tự động</string>
+    <!-- This is a time duration for the automatic application locking setting equal to 1 minute -->
+    <string name="one_minute">1 phút</string>
+    <!-- This is a time duration for the automatic application locking setting equal to 5 minutes -->
+    <string name="five_minutes">5 phút</string>
+    <!-- This is a time duration for the automatic application locking setting equal to 15 minutes -->
+    <string name="fifteen_minutes">15 phút</string>
+    <!-- This is a time duration for the automatic application locking setting equal to 30 minutes -->
+    <string name="thirty_minutes">30 phút</string>
+    <!-- This is a time duration for the automatic application locking setting equal to 1 hour -->
+    <string name="one_hour">1 giờ</string>
+    <!-- This is a time duration for the automatic application locking setting equal to 12 hours -->
+    <string name="twelve_hours">12 giờ</string>
+    <!-- This is a time duration for the automatic application locking setting equal to 24 hours -->
+    <string name="twenty_four_hours">24 giờ</string>
+    <!-- This is a time duration for the automatic application locking setting that means it will never automatically lock -->
+    <string name="never">Không bao giờ</string>
+
+    <!-- This is the title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application. Autofill should match the Android name for this system feature -->
+    <string name="autofill">Tự động điền</string>
+    <!-- This is the sub-title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application. %1$s will be replaced with application name -->
+    <string name="autofill_summary">Hãy để %1$s điền thông tin đăng nhập cho bạn</string>
+    <!-- This is the label a screenreader uses to inform the user they selected the autofill setting toggle. Autofill should match the Android name for this system feature -->
+    <string name="autofill_description">Cài đặt tự động điền ứng dụng</string>
+
+    <!-- This is the title of a setting that allows the user to enable and disable the sending of telemetry usage data to Mozilla -->
+    <string name="send_usage_data">Gửi dữ liệu sử dụng</string>
+    <!-- This is the sub-title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application -->
+    <string name="send_usage_data_summary">Mozilla cố gắng chỉ thu thập những gì chúng tôi cần để cung cấp và cải thiện Firefox cho mọi người. </string>
+
+    <!-- This is the label a screenreader uses to inform the user they selected a label on the screen that includes the application version number -->
+    <string name="app_version_description">Phiên bản ứng dụng</string>
+
+    <!-- This is the title of a setting that shows the version and the build number of an app -->
+    <string name="app_version_title">Phiên bản: %1$s (%2$d)</string>
+
+    <!-- This is the title of a setting that allows the user to use the device fingerprint biometrics to unlock the application -->
+    <string name="unlock">Mở khóa bằng vân tay</string>
+    <!-- This is the label a screenreader uses to inform the user they selected the fingerprint setting toggle -->
+    <string name="fingerprint_description">Kích hoạt cài đặt vân tay</string>
+    <!-- This is the title of a dialog that pops up to unlock the application when the unlock with fingerprint setting is enabled. %1$s will be replaced with application name -->
+    <string name="fingerprint_dialog_title">Mở khóa %1$s</string>
+    <!-- This is the message displayed to the user to unlock the application. %1$s will be replaced with application name -->
+    <string name="unlock_fallback_title">Mở khóa %1$s</string>
+    <!-- This is an instructional message displayed to use the fingerprint sensor to unlock the application -->
+    <string name="touch_fingerprint_sensor">Hãy chạm vào cảm biến vân tay.</string>
+    <!-- This is the title of a dialog requesting permission for the application to unlock using the device fingerprint sensor -->
+    <string name="enable_fingerprint_dialog_title">Kích hoạt vân tay</string>
+    <!-- This is the message requesting permission for the application to unlock using the device fingerprint sensor. %1$s will be replaced with application name -->
+    <string name="enable_fingerprint_dialog_subtitle">Cho phép %1$s quyền mở khóa ứng dụng này bằng cảm biến vân tay.</string>
+    <!-- This is the error displayed when attempting to unlock the application with a fingerprint and the device does not recognize it as a match -->
+    <string name="fingerprint_not_recognized">Không thể nhận dạng</string>
+    <!-- This is the success message displayed after using the fingerprint sensor to unlock the application -->
+    <string name="fingerprint_success">Thành công!</string>
+    <!-- This is the error displayed when attempting to unlock the application with a fingerprint and after multiple tries a match is not made -->
+    <string name="fingerprint_error_lockout">Quá nhiều lần thử.</string>
+    <!-- This is the error displayed when attempting to unlock the application with a fingerprint and the device returns a generic error to the application -->
+    <string name="fingerprint_sensor_error">Lỗi cảm biến vân tay</string>
+    <!-- This is an instructional message displayed to use the device-provided unlock features to unlock the application -->
+    <string name="confirm_pattern">Nhập Mẫu, mã PIN hoặc Mật khẩu của thiết bị.</string>
+
+    <!-- This is the title of a dialog displayed to encourage the user to enable security to lock their device and the application -->
+    <string name="no_device_security_title">Bảo mật thiết bị của bạn.</string>
+    <!-- This is a message displayed requiring the user to enable device-provided security to lock their device and the application. -->
+    <string name="no_device_security_message">Để đặt bộ hẹn giờ khóa tự động, Mẫu, PIN hoặc Mật khẩu phải được thiết lập trên thiết bị của bạn.</string>
+    <!-- This is the message displayed on a button to open the device settings for the user to set up device-provided security protections -->
+    <string name="set_up_security_button">Thiết lập ngay</string>
+
+    <!-- This is used for screenreaders to inform the user they have selected the account profile image. Firefox Account is to be translated consistently to match use in other Firefox products. -->
+    <string name="profile_image_content_description">Hình ảnh hồ sơ tài khoản Firefox</string>
+    <!-- This message is displayed to inform users how to change their Firefox Account profile details on a setting screen. Firefox Account is to be translated consistently to match use in other Firefox products. -->
+    <string name="account_information">Để thay đổi tài khoản của bạn, hãy đăng nhập vào Tài khoản Firefox của bạn từ bất kỳ trình duyệt nào.</string>
+    <!-- This is the text on a button to sign out and disconnect the account from the application. %1$s will be replaced with application name -->
+    <string name="disconnect_button">Ngắt kết nối %1$s</string>
+    <!-- This message is displayed near a button to sign out and disconnect the account from the application explaining this does not affect the data stored with Firefox. %1$s will be replaced with application name -->
+    <string name="disconnect_disclaimer">Việc này sẽ xóa thông tin đăng nhập được đồng bộ hóa từ %1$s, nhưng sẽ không xóa thông tin đăng nhập của bạn khỏi Firefox.</string>
+    <!-- This is the text on a final confirmation button to sign out and disconnect the account from the application. %1$s will be replaced with application name -->
+    <string name="disconnect_disclaimer_title">Ngắt kết nối %1$s?</string>
+    <!-- This message is displayed on a final confirmation dialog to sign out and disconnect their account from the application. Firefox Account is to be translated consistently to match use in other Firefox products. %1$s will be replaced with application name -->
+    <string name="disconnect_disclaimer_message">Điều này sẽ xóa thông tin Tài khoản Firefox của bạn và tất cả các thông tin đăng nhập đã lưu từ %1$s.</string>
+    <!-- This is the text on a final confirmation button to sign out and disconnect the account from the application -->
+    <string name="disconnect">Ngắt kết nối</string>
+    <!-- This is the hint value for an autofill box that appears when suggesting a value for a password field. It is interpolated with the user's account name. -->
+    <string name="password_for">Mật khẩu cho %1$s</string>
+
+    <!-- This label is used by screenreaders to inform the user that their device is not connected to the internet -->
+    <string name="networkWarningMessage">Cảnh báo: thiết bị không được kết nối với internet.</string>
+    <!-- This label is used by screenreaders to inform the user that the message contains an image of a warning icon -->
+    <string name="warningIcon">Biểu tượng cảnh báo</string>
+    <!-- This is used as the title for an alert message to inform the user that the app does not detect network connectivity -->
+    <string name="no_internet_connection">Không có kết nối Internet</string>
+    <!-- This is used in the app logs to inform that network connectivity has successfully been detected -->
+    <string name="network_connection_success">Kết nối mạng thành công.</string>
+
+    <!-- This is used to inform the user that there are no saved logins in the list -->
+    <string name="no_logins_found">Không tìm thấy thông tin đăng nhập</string>
+    <!-- This explains the steps the user should take, if no saved logins are found: sign in and sync in Firefox. %1$s will be replaced with application name -->
+    <string name="no_logins_description">%1$s cho phép bạn truy cập mật khẩu mà bạn đã lưu vào Firefox. 
+        Để xem thông tin đăng nhập của bạn tại đây, bạn sẽ cần phải đăng nhập và đồng bộ hóa trong Firefox.
+    </string>
+    <!-- This is the title for the biometric unlock onboarding screen. %1$s will be replaced with application name -->
+    <string name="onboarding_unlock_title">Mở khóa %1$s bằng dấu vân tay của bạn.</string>
+    <!-- This is the onboarding description for enabling biometric unlock with the fingerprint sensor. %1$s will be replaced with application name -->
+    <string name="onboarding_unlock_description">Cho phép %1$s quyền mở khóa ứng dụng này bằng cảm biến vân tay.</string>
+    <!-- This is the description of the button to skip the onboarding for biometric unlock with the fingerprint sensor. -->
+    <string name="onboarding_skip">Bỏ qua ngay bây giờ</string>
+    <!-- This is the description of the fingerprint icon on the onboarding screen -->
+    <string name="fingerprint_icon_description">Hình ảnh dấu vân tay</string>
+    <!-- This is the title of the autofill onboarding screen. %1$s will be replaced with application name -->
+    <string name="onboarding_autofill_title">Hãy để %1$s điền mật khẩu cho bạn.</string>
+    <!-- This is the onboarding description for enabling the application as an autofill provider through the device's autofill settings. -->
+    <string name="onboarding_autofill_description">Dễ dàng điền tên người dùng và mật khẩu vào nơi bạn cần nhất.</string>
+    <!-- This button will take you to your phone's autofill settings screen. -->
+    <string name="go_to_settings">Chuyển đến cài đặt</string>
+    <!-- This is the content description for the autofill image on the autofill onboarding screen. %1$s will be replaced with application name. Autofill should match the Android name for this system feature -->
+    <string name="onboarding_autofill_image_description">%1$s Tự động điền</string>
+    <!-- This is the title for the final onboarding screen -->
+    <string name="all_set">Bạn đã cài đặt tất cả!</string>
+    <!-- This is the button to dismiss the final onboarding screen -->
+    <string name="finish">Kết thúc</string>
+    <!-- This description of the app functionality is shown on the final onboarding screen -->
+    <string name="access_description">Đăng nhập truy cập được lưu vào Firefox từ điện thoại của bạn</string>
+    <!-- This is an accessible content description for the security information link text. %1$s will be replaced with application name -->
+    <string name="security_content_description">Đây là liên kết đến mô tả về các hoạt động bảo mật trong %1$s.</string>
+    <!-- This description of the app security is shown on the final onboarding screen. %s will be replaced with the security link. -->
+    <string name="security_description">Đồng bộ hóa giữa các thiết bị với %s</string>
+    <!-- This text is displayed as a link in the security description. -->
+    <string name="security_link">2Mã hóa 256 bit</string>
+    <!-- This description of the app convenience is shown on the final onboarding screen. -->
+    <string name="convenience_description">Mở khóa ứng dụng một cách dễ dàng bằng dấu vân tay của bạn</string>
+
+    <!-- This is the title of the device security dialog box. -->
+    <string name="secure_your_device">Bảo mật thiết bị của bạn.</string>
+    <!-- This is the description explaining the device security requirements. -->
+    <string name="device_security_description">Bạn nên sử dụng Mẫu, mã PIN hoặc Mật khẩu để khóa điện thoại của mình. Nếu không có điều này, bất kỳ ai có điện thoại của bạn đều có thể truy cập thông tin được lưu tại đây. -->
+    <string name="skip_button">Bỏ qua</string>
+    <!-- This is the the button description on the device security dialog box which routes to system security settings. -->
+    <string name="set_up_now">Thiết lập ngay</string>
+
+    <!-- This header appears above the Privacy page of the application website. -->
+    <string name="privacy">Quyền riêng tư</string>
+
+    <!-- This is the prompt when autofill is triggered and the application is locked. It appears on top of the login form as an action available to the user to take. %1$s will be replaced with application name -->
+    <string name="autofill_authenticate_cta">Mở khóa %1$s</string>
+    <!-- This is the message suggesting that if the user does not see the matching login to autofill into a form, they can search all their logins by opening this action. %1$s will be replaced with application name. -->
+    <string name="autofill_search_cta">Tìm %1$s</string>
+    <!-- This is the error message when autofill is triggered and the application is in an error state. %1$s will be replaced with application name. %2$s refers to the localized error message that will be provided by the system. -->
+    <string name="autofill_error_toast">%1$s gặp lỗi: %2$s</string>
+
+    <!-- This is the placeholder text for an empty or null username. -->
+    <string name="no_username">(không có tên người dùng)</string>
+
+    <!-- This is the message displayed when sync has timed out. -->
+    <!--<string name="sync_timed_out">Đồng bộ hóa đã hết thời gian</string>-->
+
+    <!-- This is the description for the kebab menu in the item detail toolbar. -->
+    <string name="kebab_menu">Tùy chọn khác</string>
+    <!-- This is the text on an item in the item detail toolbar menu to delete an entry. -->
+    <string name="delete">Xóa</string>
+    <!-- This is the confirmation message title seen when attempting to delete a login. -->
+    <string name="delete_this_login">Bạn có muốn Xóa thông tin đăng nhập này không?</string>
+    <!-- This is the description for the deletion dialog. -->
+    <string name="delete_description">Điều này sẽ xóa thông tin đăng nhập từ cả %1$s và Firefox.</string>
+    <!-- This is the text on an item in the item detail toolbar menu to edit an entry. -->
+    <string name="edit">Chỉnh sửa</string>
+</resources>
