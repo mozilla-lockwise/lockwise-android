@@ -7,10 +7,7 @@
 package mozilla.lockbox.action
 
 import mozilla.appservices.logins.ServerPassword
-import mozilla.components.service.sync.logins.SyncTelemetryPing
 import mozilla.lockbox.model.SyncCredentials
-
-private const val emptyString = ""
 
 sealed class DataStoreAction(
     override val eventMethod: TelemetryEventMethod,
@@ -28,25 +25,18 @@ sealed class DataStoreAction(
     object Sync : DataStoreAction(TelemetryEventMethod.sync_start, TelemetryEventObject.datastore)
 
     /**
-     * Emitted when a sync request completes successfully.
+     * Emitted when a sync request completes successfully with sync data.
      */
-    data class SyncSuccess(val ping: SyncTelemetryPing)
-        : DataStoreAction(
-            TelemetryEventMethod.sync_end,
-            TelemetryEventObject.datastore,
-            emptyString,
-            mapOf(Pair(ping.uid, ping))
-        )
+    object SyncSuccess : DataStoreAction(TelemetryEventMethod.sync_end, TelemetryEventObject.datastore)
 
     /**
      * Emitted when the app times out when listening for a response from sync.
      */
-    data class SyncTimeout(val error: String)
-        : DataStoreAction(
-            TelemetryEventMethod.sync_timeout,
-            TelemetryEventObject.datastore,
-            error
-        )
+    data class SyncTimeout(val error: String) : DataStoreAction(
+        TelemetryEventMethod.sync_timeout,
+        TelemetryEventObject.datastore,
+        error
+    )
 
     /**
      * Emitted when the app receives an error response from sync.
@@ -65,42 +55,37 @@ sealed class DataStoreAction(
     /**
      * Emitted when an update to the item list has failed with an error.
      */
-    data class ListUpdateError(val error: String)
-        : DataStoreAction(
-            TelemetryEventMethod.list_update_error,
-            TelemetryEventObject.datastore,
-            error
-        )
+    data class ListUpdateError(val error: String) : DataStoreAction(
+        TelemetryEventMethod.list_update_error,
+        TelemetryEventObject.datastore,
+        error
+    )
 
     /**
      * Emitted when a DataStore action results in an error.
      */
-    data class Errors(val error: String)
-        : DataStoreAction(
-            TelemetryEventMethod.list_update_error,
-            TelemetryEventObject.datastore,
-            error
-        )
+    data class Errors(val error: String) : DataStoreAction(
+        TelemetryEventMethod.list_update_error,
+        TelemetryEventObject.datastore,
+        error
+    )
 
-    data class Touch(val id: String)
-        : DataStoreAction(
-            TelemetryEventMethod.touch,
-            TelemetryEventObject.datastore,
-            "ID: $id"
-        )
+    data class Touch(val id: String) : DataStoreAction(
+        TelemetryEventMethod.touch,
+        TelemetryEventObject.datastore,
+        "ID: $id"
+    )
 
-    data class UpdateCredentials(val syncCredentials: SyncCredentials)
-        : DataStoreAction(
-            TelemetryEventMethod.update_credentials,
-            TelemetryEventObject.datastore
-        )
+    data class UpdateCredentials(val syncCredentials: SyncCredentials) : DataStoreAction(
+        TelemetryEventMethod.update_credentials,
+        TelemetryEventObject.datastore
+    )
 
-    data class Delete(val item: ServerPassword?)
-        : DataStoreAction(
-            TelemetryEventMethod.delete,
-            TelemetryEventObject.delete_credential,
-            item?.id
-        )
+    data class Delete(val item: ServerPassword?) : DataStoreAction(
+        TelemetryEventMethod.delete,
+        TelemetryEventObject.delete_credential,
+        item?.id
+    )
 
     data class Edit(val itemId: Int) : DataStoreAction(TelemetryEventMethod.edit, TelemetryEventObject.edit_credential)
 }

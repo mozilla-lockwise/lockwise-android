@@ -19,7 +19,6 @@ import mozilla.appservices.logins.ServerPassword
 import mozilla.appservices.logins.SyncAuthInvalidException
 import mozilla.appservices.logins.SyncUnlockInfo
 import mozilla.components.service.sync.logins.AsyncLoginsStorage
-import mozilla.components.service.sync.logins.SyncTelemetryPing
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.SentryAction
@@ -241,13 +240,11 @@ open class DataStore(
 
         // ideally, we don't sync unless we are connected to the network
         syncStateSubject.accept(SyncState.Syncing)
-        var syncTelemetryPing: SyncTelemetryPing? = null
 
         backend.sync(support.syncConfig!!)
             .asSingle(coroutineContext)
             .map {
                 log.debug("Hashed UID: $it")
-                syncTelemetryPing = it
             }
             .timeout(Constant.App.syncTimeout, TimeUnit.SECONDS)
             .doOnEvent { _, err ->
@@ -259,11 +256,11 @@ open class DataStore(
                 }
             }
             .subscribe({
-                    this.updateList(it)
-                    dispatcher.dispatch(DataStoreAction.SyncSuccess(syncTelemetryPing!!))
+                this.updateList(it)
+                dispatcher.dispatch(DataStoreAction.SyncSuccess)
             }, {
-                    this.pushError(it)
-                    dispatcher.dispatch(DataStoreAction.SyncError(it.message ?: ""))
+                this.pushError(it)
+                dispatcher.dispatch(DataStoreAction.SyncError(it.message ?: ""))
             })
             .addTo(compositeDisposable)
     }
