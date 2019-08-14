@@ -22,6 +22,8 @@ This project is governed by a [Code Of Conduct][coc-link].
 To disclose potential a security vulnerability please see our
 [security][security-link] documentation.
 
+Localization happens on [Pontoon](https://pontoon.mozilla.org/projects/android-l10n/). Please get in touch with delphine (at) mozilla (dot) com directly for more information.
+
 ## [License][license-link]
 
 This module is licensed under the [Mozilla Public License,
