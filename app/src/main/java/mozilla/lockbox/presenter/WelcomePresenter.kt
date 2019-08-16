@@ -9,7 +9,7 @@ package mozilla.lockbox.presenter
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import mozilla.components.service.fxa.sharing.AccountSharing
+import mozilla.components.service.fxa.sharing.ShareableAccount
 import mozilla.lockbox.action.AccountAction
 import mozilla.lockbox.action.AppWebPageAction
 import mozilla.lockbox.action.DialogAction
@@ -23,40 +23,32 @@ interface WelcomeView {
     val getStartedAutomaticallyClicks: Observable<Unit>
     val getStartedManuallyClicks: Observable<Unit>
     val learnMoreClicks: Observable<Unit>
+    fun showExistingAccount(email: String)
+    fun hideExistingAccount()
 }
 
+@ExperimentalCoroutinesApi
 class WelcomePresenter(
     private val view: WelcomeView,
     private val dispatcher: Dispatcher = Dispatcher.shared,
+    private val accountStore: AccountStore = AccountStore.shared,
     private val fingerprintStore: FingerprintStore = FingerprintStore.shared
 ) : Presenter() {
-    @ExperimentalCoroutinesApi
+
     override fun onViewReady() {
-        view.getStartedAutomaticallyClicks
-            .map {
-                val availableAccount = AccountStore.shared.shareableAccount()
-                if (availableAccount != null) {
-                    if (fingerprintStore.isKeyguardDeviceSecure) {
-                        AccountAction.AutomaticLogin(availableAccount)
-                    } else {
-                        DialogAction.OnboardingSecurityDialogAutomatic(availableAccount)
-                    }
-                } else if (fingerprintStore.isKeyguardDeviceSecure) {
-                    RouteAction.Login
-                } else {
-                    DialogAction.OnboardingSecurityDialogManual
+        accountStore.shareableAccount()?.let { account ->
+            view.showExistingAccount(account.email)
+            view.getStartedAutomaticallyClicks
+                .map {
+                    routeToUseExistingAccount(account)
                 }
-            }
-            .subscribe(dispatcher::dispatch)
-            .addTo(compositeDisposable)
+                .subscribe(dispatcher::dispatch)
+                .addTo(compositeDisposable)
+        } ?: view.hideExistingAccount()
 
         view.getStartedManuallyClicks
             .map {
-                if (fingerprintStore.isKeyguardDeviceSecure) {
-                    RouteAction.Login
-                } else {
-                    DialogAction.OnboardingSecurityDialogManual
-                }
+                routeToLoginManually()
             }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
@@ -67,4 +59,18 @@ class WelcomePresenter(
             }
             .addTo(compositeDisposable)
     }
+
+    private fun routeToUseExistingAccount(account: ShareableAccount) =
+        if (fingerprintStore.isKeyguardDeviceSecure) {
+            AccountAction.AutomaticLogin(account)
+        } else {
+            DialogAction.OnboardingSecurityDialogAutomatic(account)
+        }
+
+    private fun routeToLoginManually() =
+        if (fingerprintStore.isKeyguardDeviceSecure) {
+            RouteAction.Login
+        } else {
+            DialogAction.OnboardingSecurityDialogManual
+        }
 }

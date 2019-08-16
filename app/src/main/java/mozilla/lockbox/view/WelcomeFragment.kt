@@ -33,14 +33,26 @@ class WelcomeFragment : Fragment(), WelcomeView {
         view.textViewInstructions.text = getString(R.string.welcome_instructions, appLabel)
         view.lockwiseIcon.contentDescription = getString(R.string.app_logo, appLabel)
 
-        val existingAccount = AccountStore.shared.shareableAccount()
-        if (existingAccount != null) {
-            view.buttonGetStarted.text = getString(R.string.welcome_start_automatic_btn, existingAccount.email)
-            view.buttonGetStartedManually.text = getString(R.string.welcome_start_force_manual_btn)
-        } else {
-            view.buttonGetStartedManually.visibility = View.GONE
-        }
         return view
+    }
+
+    override fun showExistingAccount(email: String) {
+        view?.apply {
+            buttonGetStarted.text = getString(R.string.welcome_start_automatic_btn, email)
+            buttonGetStarted.visibility = View.VISIBLE
+
+            buttonGetStartedManually.text = getString(R.string.welcome_start_force_manual_btn)
+            buttonGetStartedManually.visibility = View.VISIBLE
+        }
+    }
+
+    override fun hideExistingAccount() {
+        view?.apply {
+            buttonGetStarted.visibility = View.GONE
+
+            buttonGetStartedManually.text = getString(R.string.welcome_start_btn)
+            buttonGetStartedManually.visibility = View.VISIBLE
+        }
     }
 
     override val getStartedAutomaticallyClicks: Observable<Unit>

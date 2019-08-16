@@ -83,6 +83,7 @@
             android:textColor="@color/text_white"
             android:textStyle="normal"
             android:layout_gravity="center"
+            android:visibility="gone"
         />
 
         <Button
@@ -97,6 +98,7 @@
             android:textColor="@color/text_white"
             android:textStyle="normal"
             android:layout_gravity="center"
+            android:visibility="gone"
         />
 
         <TextView
