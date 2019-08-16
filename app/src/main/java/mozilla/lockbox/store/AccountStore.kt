@@ -225,7 +225,7 @@ open class AccountStore(
     private fun generateLoginURL() {
         val fxa = fxa ?: return
 
-        fxa.beginOAuthFlowAsync(Constant.FxA.scopes, true)
+        fxa.beginOAuthFlowAsync(Constant.FxA.scopes)
             .asMaybe(coroutineContext)
             .subscribe((this.loginURL as Subject)::onNext, this::pushError)
             .addTo(compositeDisposable)
@@ -266,8 +266,7 @@ open class AccountStore(
 
     private fun removeDeviceFromFxA() {
         if (fxa != null) {
-            fxa!!.deviceConstellation()
-                .destroyCurrentDeviceAsync()
+            fxa!!.disconnectAsync()
                 .asSingle(coroutineContext)
                 .subscribe()
                 .addTo(compositeDisposable)
