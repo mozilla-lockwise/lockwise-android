@@ -26,6 +26,14 @@ object Constant {
         val syncTimeout: Long = 20
     }
 
+    /*
+     *  Used to turn features in the app on and off, where true denotes that the feature is available when
+     *  the app is run and false denotes that the feature is not available when the app is run.
+     */
+    object FeatureToggle {
+        const val delete = false
+    }
+
     object FxA {
         const val clientID = "e7ce535d93522896"
         const val redirectUri = "https://lockbox.firefox.com/fxa/android-redirect.html"

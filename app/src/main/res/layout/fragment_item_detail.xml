@@ -59,6 +59,7 @@
                         android:textAllCaps="false"
                         android:paddingTop="10dp"
                         android:paddingBottom="10dp"
+                        android:visibility="gone"
                         android:contentDescription="@string/kebab_menu"
                         android:overlapAnchor="false"
                         android:popupElevation="8dp"

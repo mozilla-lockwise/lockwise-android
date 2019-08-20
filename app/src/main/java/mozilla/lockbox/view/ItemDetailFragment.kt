@@ -181,6 +181,18 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         toast.show()
     }
 
+    // used for feature flag
+    override fun showKebabMenu() {
+        toolbar.kebabMenu.visibility = View.VISIBLE
+        toolbar.kebabMenu.isClickable = true
+    }
+
+    // used for feature flag
+    override fun hideKebabMenu() {
+        toolbar.kebabMenu.visibility = View.GONE
+        toolbar.kebabMenu.isClickable = false
+    }
+
     override fun handleNetworkError(networkErrorVisibility: Boolean) {
         if (!networkErrorVisibility) {
             errorHelper.showNetworkError(view!!)
