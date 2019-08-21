@@ -27,7 +27,7 @@ import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.ItemDetailStore
 import mozilla.lockbox.store.NetworkStore
-import mozilla.lockbox.support.Constant
+import mozilla.lockbox.support.FeatureFlagSupport
 
 interface ItemDetailView {
     val usernameCopyClicks: Observable<Unit>
@@ -64,9 +64,11 @@ class ItemDetailPresenter(
     }
 
     override fun onViewReady() {
-
-        // handle feature toggle
-        if (Constant.FeatureToggle.delete) view.showKebabMenu() else view.hideKebabMenu()
+        if (FeatureFlagSupport.FeatureFlags.deleteItemFromItemDetail) {
+            view.showKebabMenu()
+        } else {
+            view.hideKebabMenu()
+        }
 
         handleClicks(view.usernameCopyClicks) {
             if (!it.username.isNullOrBlank()) {
