@@ -6,16 +6,10 @@
 
 package mozilla.lockbox.support
 
-/*
- *  Used to turn features in the app on and off, where true denotes that the feature is available when
- *  the app is run and false denotes that the feature is not available when the app is run.
- *
- *  Flags will be set to true while in debug mode or testing. Release builds will automatically be set
- *  to false as to not show new features in development.
- */
-object FeatureFlagSupport {
+import mozilla.lockbox.BuildConfig
 
-    object FeatureFlags {
-        val deleteItemFromItemDetail = isDebug() || isTesting()
-    }
+object FeatureFlagSupport {
+    const val isDebug = BuildConfig.BUILD_TYPE == "debug"
+    const val isRelease = BuildConfig.BUILD_TYPE == "release"
+    val isTesting = isTesting()
 }
