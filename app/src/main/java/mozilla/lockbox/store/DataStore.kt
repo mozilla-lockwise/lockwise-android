@@ -4,6 +4,7 @@
 
 package mozilla.lockbox.store
 
+import androidx.annotation.VisibleForTesting
 import com.jakewharton.rxrelay2.BehaviorRelay
 import com.jakewharton.rxrelay2.ReplayRelay
 import io.reactivex.Observable
@@ -60,7 +61,8 @@ open class DataStore(
 
     internal val compositeDisposable = CompositeDisposable()
     private val stateSubject = ReplayRelay.createWithSize<State>(1)
-    private val syncStateSubject = BehaviorRelay.createDefault<SyncState>(SyncState.NotSyncing)
+    @VisibleForTesting
+    val syncStateSubject: BehaviorRelay<SyncState> = BehaviorRelay.createDefault(SyncState.NotSyncing)
     private val listSubject: BehaviorRelay<List<ServerPassword>> = BehaviorRelay.createDefault(emptyList())
     private val deletedItemSubject = ReplayRelay.create<Consumable<ServerPassword>>()
 
@@ -235,13 +237,21 @@ open class DataStore(
         }
     }
 
-    private fun sync() {
+    @VisibleForTesting(
+        otherwise = VisibleForTesting.PRIVATE
+    )
+    fun sync() {
         resetSupport(support)
+
+        val syncConfig = support.syncConfig ?: run {
+            log.error("syncConfig is null in sync. This is likely a bug.")
+            return
+        }
 
         // ideally, we don't sync unless we are connected to the network
         syncStateSubject.accept(SyncState.Syncing)
 
-        backend.sync(support.syncConfig!!)
+        backend.sync(syncConfig)
             .asSingle(coroutineContext)
             .map {
                 log.debug("Hashed UID: $it")
