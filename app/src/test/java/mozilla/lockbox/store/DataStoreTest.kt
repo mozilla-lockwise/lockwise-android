@@ -57,6 +57,15 @@ class DataStoreTest : DisposingTest() {
     }
 
     @Test
+    fun `test issue 867 sync crash`() {
+        support.syncConfig = null
+        Assert.assertNull(support.syncConfig)
+        subject.sync()
+        Assert.assertNull(support.syncConfig)
+        Assert.assertEquals(subject.syncStateSubject.value, DataStore.SyncState.NotSyncing)
+    }
+
+    @Test
     fun testLockUnlock_shouldSync() {
         val stateIterator = this.subject.state.blockingIterable().iterator()
         val listIterator = this.subject.list.blockingIterable().iterator()
