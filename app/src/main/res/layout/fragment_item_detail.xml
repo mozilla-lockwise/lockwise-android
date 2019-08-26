@@ -61,11 +61,7 @@
                         android:paddingBottom="10dp"
                         android:visibility="gone"
                         android:contentDescription="@string/kebab_menu"
-                        android:overlapAnchor="false"
                         android:layout_marginEnd="14dp"
-                        android:popupElevation="8dp"
-                        android:dropDownWidth="128dp"
-                        android:popupBackground="@drawable/sort_menu_bg"
                         android:textSize="20sp"
                         android:background="@drawable/ic_menu_kebab"
                         style="@style/PopupMenu"
@@ -209,7 +205,6 @@
                     style="@style/PasswordTextStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="monospace"
                     android:paddingStart="16dp"
                     android:layout_marginTop="5dp"
                     android:textColorHint="@color/black_60_percent"
@@ -218,18 +213,24 @@
                     card_view:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/inputLayoutUsername"
                     tools:ignore="RtlSymmetry">
-                <EditText
+                <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/inputPassword"
                         style="@style/EditTextStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/hint_password"
-                        android:inputType="none|textPassword"
+                        android:inputType="none"
+                        android:fontFamily="monospace"
                         android:singleLine="true"
                         android:lineSpacingExtra="8sp"
                         app:layout_constraintEnd_toEndOf="@id/inputLayoutUsername"
                         app:layout_constraintStart_toStartOf="@id/inputLayoutUsername"
                         app:layout_constraintTop_toTopOf="@+id/inputLayoutUsername"
+                        android:textSize="16sp"
+                        android:textStyle="normal"
+                        android:textColor="@color/black_87_percent"
+                        android:clickable="true"
+                        android:focusable="true"
                         tools:ignore="Autofill"/>
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -259,38 +260,13 @@
                     app:layout_constraintBottom_toBottomOf="@+id/inputLayoutPassword"
                     app:srcCompat="@drawable/ic_show"/>
 
-
             <View
                     android:layout_height="1dp"
                     android:layout_width="match_parent"
                     android:background="@color/gray_divider"
                     android:layout_marginStart="16dp"
-                    card_view:layout_constraintTop_toBottomOf="@id/inputLayoutPassword"
-            />
+                    card_view:layout_constraintTop_toBottomOf="@id/inputLayoutPassword" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </androidx.cardview.widget.CardView>
-
-    <TextView
-            android:id="@+id/detailLearnMore"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="26dp"
-            android:layout_marginStart="50dp"
-            android:layout_marginEnd="50dp"
-            android:background="@color/background_grey"
-            android:text="@string/learn_to_edit_login"
-            android:textAllCaps="true"
-            android:textColor="@color/violet_70"
-            android:textSize="12sp"
-            android:fontFamily="sans-serif"
-            android:textStyle="bold"
-            android:letterSpacing="0.03"
-            android:lineSpacingExtra="7.5sp"
-            android:gravity="center_horizontal|center_vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

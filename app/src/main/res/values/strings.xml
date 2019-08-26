@@ -84,8 +84,6 @@
     <string name="hint_username">Username</string>
     <!-- This is a heading that appears above a password in context of a detailed item view -->
     <string name="hint_password">Password</string>
-    <!-- This message appears to link to a web page explaining how to make changes to the details -->
-    <string name="learn_to_edit_login">Learn how to edit this login</string>
 
     <!-- This describes an icon to screenreaders that the button tapped will open the web address in a web browser -->
     <string name="launch_hostname_content_description">Open web address in web browser</string>
@@ -271,16 +269,29 @@
     <string name="delete_description">This will delete the login from both %1$s and Firefox.</string>
     <!-- This is the text on an item in the item detail toolbar menu to edit an entry. -->
     <string name="edit">Edit</string>
-    <string name="entry_name_description">Entry name.</string>
+    <!-- This is the hint in the edit entry view for the entry name. -->
+    <string name="entry_name_description">The entry name</string>
     <!-- This is a heading that appears above an entry name in context of a edit item view -->
     <string name="hint_entryname">Name</string>
-    <string name="inputNameDescription">Entry name is not editable at this time.</string>
-    <string name="hostnameEntryDescription">Make sure this matches the exact domain for the website you are referencing
+    <!-- This is the hint in the edit entry view for the entry name. -->
+    <string name="input_name_description">Entry name is not editable at this time.</string>
+    <!-- This is the hint in the edit entry view for formatting the entry hostname. -->
+    <string name="hostname_entry_description">Make sure this matches the exact domain for the website you are referencing
         (“https://” and “www” included).
     </string>
     <string name="entry_password_description">Password for this entry.</string>
+    <!-- This is the text on the button in the edit view that allows you to delete the entry. -->
     <string name="delete_entry">Delete Entry</string>
+    <!-- This is the title text on the dialog when you attempt to close the edit view and changes have been made. -->
     <string name="discard_changes">Discard changes?</string>
+    <!-- This is the additional text when you attempt to close the edit view and changes have been made. -->
     <string name="discard_changes_description">Your edits will not be saved.</string>
+    <!-- This is the text on the button to discard your current changes from the edit entry view. -->
     <string name="discard">Discard</string>
+    <!-- This is the description for the hostname in the edit entry view. -->
+    <string name="web_address_description">The hostname</string>
+    <!-- This is the description for the username in the edit entry view. -->
+    <string name="username_description">The username</string>
+    <!-- This is the title of the edit login page. -->
+    <string name="edit_login_title">Edit Login</string>
 </resources>

@@ -14,10 +14,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import androidx.appcompat.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.StringRes
+import androidx.appcompat.view.ContextThemeWrapper
+import androidx.appcompat.widget.PopupMenu
 import com.jakewharton.rxbinding2.view.clicks
 import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Observable
@@ -29,7 +30,7 @@ import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.presenter.ItemDetailPresenter
 import mozilla.lockbox.presenter.ItemDetailView
 import mozilla.lockbox.support.assertOnUiThread
-import androidx.appcompat.view.ContextThemeWrapper
+import androidx.appcompat.view.menu.MenuBuilder
 
 @ExperimentalCoroutinesApi
 class ItemDetailFragment : BackableFragment(), ItemDetailView {
@@ -76,9 +77,6 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
     override val hostnameClicks: Observable<Unit>
         get() = view!!.inputHostname.clicks()
 
-    override val learnMoreClicks: Observable<Unit>
-        get() = view!!.detailLearnMore.clicks()
-
     override val kebabMenuClicks: Observable<Unit>
         get() = view!!.toolbar.kebabMenuButton.clicks()
 
@@ -92,13 +90,6 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
             field = value
             updatePasswordVisibility(value)
         }
-
-//    override fun onClick(view: View) {
-//        when (view.id) {
-//            R.id.kebabMenuButton -> showPopup(view)
-//            else -> throw IllegalStateException("View not handled on click: ${view.id}.")
-//        }
-//    }
 
     override fun showPopup() {
         val wrapper = ContextThemeWrapper(context, R.style.PopupMenu)
@@ -120,6 +111,8 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
 
         popupMenu.inflate(R.menu.item_detail_menu)
 
+        val builder = popupMenu.menu as MenuBuilder
+        builder.setOptionalIconsVisible(true)
         popupMenu.show()
     }
 
@@ -188,14 +181,14 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
 
     // used for feature flag
     override fun showKebabMenu() {
-        toolbar.kebabMenu.visibility = View.VISIBLE
-        toolbar.kebabMenu.isClickable = true
+        toolbar.kebabMenuButton.visibility = View.VISIBLE
+        toolbar.kebabMenuButton.isClickable = true
     }
 
     // used for feature flag
     override fun hideKebabMenu() {
-        toolbar.kebabMenu.visibility = View.GONE
-        toolbar.kebabMenu.isClickable = false
+        toolbar.kebabMenuButton.visibility = View.GONE
+        toolbar.kebabMenuButton.isClickable = false
     }
 
     override fun handleNetworkError(networkErrorVisibility: Boolean) {
@@ -206,7 +199,6 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         }
     }
 }
-
 
 //    override val retryNetworkConnectionClicks: Observable<Unit>
 //        get() = view!!.networkWarning.retryButton.clicks()

@@ -72,16 +72,19 @@ sealed class DataStoreAction(
         TelemetryEventObject.datastore
     )
 
-    data class Delete(val item: ServerPassword?) : DataStoreAction(
+    /**
+     * Emitted when an entry is deleted from the entry's detail view or the edit view.
+     */
+    data class Delete(val item: ServerPassword) : DataStoreAction(
         TelemetryEventMethod.delete,
         TelemetryEventObject.delete_credential,
-        item?.id
+        item.id
     )
 
     /**
      * Emitted when an entry is edited and saved.
      */
-    data class UpdateItemDetail(val item: ServerPassword?)
+    data class UpdateItemDetail(val item: ServerPassword)
         : DataStoreAction(
             TelemetryEventMethod.edit,
             TelemetryEventObject.update_credential

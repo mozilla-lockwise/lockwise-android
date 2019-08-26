@@ -76,9 +76,6 @@
     <!-- This is a heading that appears above a password in context of a detailed item view -->
     <string name="hint_password">Mot de passe</string>
 
-    <!-- This message appears to link to a web page explaining how to make changes to the details -->
-    <string name="learn_to_edit_login">Apprendre à modifier cet identifiant</string>
-
     <!-- This describes an icon to screenreaders that the button tapped will open the web address in a web browser -->
     <string name="launch_hostname_content_description">Ouvrir une adresse web dans un navigateur web</string>
     <!-- This describes an icon to screenreaders that the button tapped will copy the username to the device clipboard to paste and use in another application -->

@@ -63,7 +63,7 @@ sealed class DialogAction(
     )
 
     data class DeleteConfirmationDialog(
-        val item: ServerPassword?
+        val item: ServerPassword
     ) : DialogAction(
         DialogViewModel(
             R.string.delete_this_login,

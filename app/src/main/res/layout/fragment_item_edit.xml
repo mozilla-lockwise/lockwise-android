@@ -35,7 +35,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:ellipsize="end"
-                    android:id="@+id/entryTitle"
+                    android:id="@+id/editLoginTitle"
                     android:paddingEnd="50dp"
                     android:maxLines="1"
                     android:textSize="20sp"
@@ -44,6 +44,7 @@
                     android:textColor="@color/text_white"
                     android:letterSpacing="0.01"
                     android:layout_gravity="center_vertical|start"
+                    android:text="@string/edit_login_title"
                     app:layout_constraintEnd_toStartOf="@id/saveEntryButton"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -70,7 +71,8 @@
             style="@style/EditItemDetail"
             android:id="@+id/cardView"
             android:layout_width="match_parent"
-            android:layout_height="460dp"
+            android:layout_height="wrap_content"
+            android:paddingBottom="30dp"
             android:layout_gravity="center"
             android:overScrollMode="ifContentScrolls"
             android:windowSoftInputMode="adjustPan"
@@ -111,6 +113,11 @@
                             android:layout_height="wrap_content"
                             android:textColor="@color/gray_73_percent"
                             android:hint="@string/hint_entryname"
+                            android:textSize="16sp"
+                            android:fontFamily="sans-serif"
+                            android:textStyle="normal"
+                            android:letterSpacing="0.03"
+                            android:lineSpacingExtra="4sp"
                             android:inputType="textNoSuggestions"
                             android:singleLine="true"
                             android:clickable="false"
@@ -142,7 +149,7 @@
                         android:layout_marginTop="7dp"
                         card_view:layout_constraintTop_toBottomOf="@id/nameDivider"
                         card_view:layout_constraintStart_toStartOf="parent"
-                        android:text="@string/inputNameDescription"
+                        android:text="@string/input_name_description"
                 />
 
                 <Button
@@ -186,7 +193,7 @@
                         android:layout_height="wrap_content"
                         android:paddingStart="16dp"
                         android:textColorHint="@color/black_60_percent"
-                        android:contentDescription="@string/entry_name_description"
+                        android:contentDescription="@string/web_address_description"
                         app:layout_constraintTop_toTopOf="parent"
                         card_view:layout_constraintStart_toStartOf="parent"
                         card_view:layout_constraintEnd_toEndOf="parent"
@@ -195,6 +202,13 @@
                     <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/inputHostname"
                             style="@style/EditTextStyle"
+                            android:textSize="16sp"
+                            android:fontFamily="sans-serif"
+                            android:textStyle="normal"
+                            android:textColor="@color/black_87_percent"
+                            android:textColorHint="@color/violet_70"
+                            android:letterSpacing="0.01"
+                            android:lineSpacingExtra="8sp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/hint_hostname"
@@ -229,7 +243,7 @@
                         android:layout_marginTop="7dp"
                         card_view:layout_constraintTop_toBottomOf="@id/hostnameDivider"
                         card_view:layout_constraintStart_toStartOf="parent"
-                        android:text="@string/hostnameEntryDescription"
+                        android:text="@string/hostname_entry_description"
                 />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -247,7 +261,7 @@
                         android:layout_height="wrap_content"
                         android:paddingStart="16dp"
                         android:textColorHint="@color/black_60_percent"
-                        android:contentDescription="@string/entry_name_description"
+                        android:contentDescription="@string/username_description"
                         app:layout_constraintTop_toTopOf="parent"
                         card_view:layout_constraintStart_toStartOf="parent"
                         card_view:layout_constraintEnd_toEndOf="parent"
@@ -259,6 +273,12 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/hint_username"
+                            android:textSize="16sp"
+                            android:fontFamily="sans-serif"
+                            android:textStyle="normal"
+                            android:textColor="@color/black_87_percent"
+                            android:letterSpacing="0.01"
+                            android:lineSpacingExtra="8sp"
                             android:inputType="textNoSuggestions"
                             android:singleLine="true"
                             android:clickable="true"
@@ -285,6 +305,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="30dp"
                     android:paddingEnd="16dp"
+                    android:fontFamily="sans-serif"
                     app:layout_constraintTop_toBottomOf="@id/entryUsername" >
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -303,10 +324,15 @@
                     <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/inputPassword"
                             style="@style/EditTextStyle"
+                            android:textSize="16sp"
+                            android:textStyle="normal"
+                            android:textColor="@color/black_87_percent"
+                            android:lineSpacingExtra="8sp"
+                            android:fontFamily="monospace"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/hint_password"
-                            android:inputType="none|textPassword"
+                            android:inputType="textPassword"
                             android:singleLine="true"
                             android:clickable="true"
                             android:focusable="true"
@@ -341,8 +367,8 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
                     card_view:layout_constraintTop_toBottomOf="@+id/entryPassword">
-
 
                 <Button
                         android:id="@+id/deleteEntryButton"
@@ -350,7 +376,6 @@
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal|center_vertical"
                         android:layout_marginEnd="0dp"
-                        android:layout_marginTop="40dp"
                         android:paddingEnd="20dp"
                         android:text="@string/delete_entry"
                         android:textAllCaps="true"
@@ -369,8 +394,5 @@
                 />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </androidx.cardview.widget.CardView>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

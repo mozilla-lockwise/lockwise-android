@@ -8,7 +8,6 @@ package mozilla.lockbox.view
 
 import android.content.Context
 import android.os.Bundle
-import android.text.TextWatcher
 import android.text.method.PasswordTransformationMethod
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -19,7 +18,6 @@ import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import com.jakewharton.rxbinding2.support.v7.widget.navigationClicks
 import com.jakewharton.rxbinding2.view.clicks
-import com.jakewharton.rxbinding2.widget.afterTextChangeEvents
 import com.jakewharton.rxbinding2.widget.textChanges
 import io.reactivex.Observable
 import kotlinx.android.synthetic.main.fragment_item_edit.*
@@ -30,8 +28,6 @@ import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.presenter.EditItemDetailView
 import mozilla.lockbox.presenter.EditItemPresenter
 import mozilla.lockbox.support.assertOnUiThread
-import android.text.Editable
-import mozilla.components.service.sync.logins.ServerPassword
 
 @ExperimentalCoroutinesApi
 class EditItemFragment : BackableFragment(), EditItemDetailView {
@@ -123,8 +119,7 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
         assertOnUiThread()
         toolbar.elevation = resources.getDimension(R.dimen.larger_toolbar_elevation)
         toolbar.title = item.title
-        toolbar.entryTitle.text = item.title
-        toolbar.entryTitle.gravity = Gravity.CENTER_VERTICAL
+        toolbar.editLoginTitle.gravity = Gravity.CENTER_VERTICAL
 
         inputLayoutName.isHintAnimationEnabled = false
         inputLayoutHostname.isHintAnimationEnabled = false

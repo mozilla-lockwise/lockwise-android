@@ -19,7 +19,7 @@
         <item name="android:actionMenuTextAppearance">@style/NavDrawerStyle</item>
         <item name="actionMenuTextColor">@style/NavDrawerStyle</item>
         <item name="android:titleTextAppearance">@style/NavDrawerStyle</item>
-        <item name="android:popupBackground">@android:color/transparent</item>
+        <item name="popupMenuStyle">@style/PopupMenu</item>
     </style>
 
     <style name="AppTheme.Launcher" parent="Theme.AppCompat.Light.NoActionBar">
@@ -155,17 +155,23 @@
         <item name="android:popupBackground">@android:color/transparent</item>
     </style>
     <style name="PopupMenu" parent="@style/Widget.AppCompat.PopupWindow">
-        <item name="android:windowBackground">@drawable/rounded_corner_bg_white</item>
+        <item name="android:popupBackground">@null</item>
+        <item name="android:background">@drawable/rounded_corner_bg_white</item>
         <item name="android:popupEnterTransition">@android:transition/slide_top</item>
-        <item name="android:background">@android:color/transparent</item>
         <item name="android:textColor">@color/black_87_percent</item>
         <item name="android:textSize">14sp</item>
         <item name="android:fontFamily">sans-serif</item>
+        <item name="android:dropDownWidth">128dp</item>
         <item name="android:textStyle">normal</item>
         <item name="android:letterSpacing">0.02</item>
         <item name="android:lineSpacingExtra">6sp</item>
+        <item name="android:paddingStart">1dp</item>
+        <item name="android:dropDownVerticalOffset">-34dp</item>
+        <item name="android:dropDownHorizontalOffset">34dp</item>
         <item name="android:stateListAnimator">@null</item>
-s    </style>
+        <item name="android:popupElevation">14dp</item>
+        <item name="android:elevation">0dp</item>
+    </style>
     <style name="ToastTextAppearance" parent="@style/TextAppearance">
         <item name="android:background">@android:color/transparent</item>
         <item name="android:textColor">@color/text_white</item>

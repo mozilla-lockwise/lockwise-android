@@ -10,23 +10,20 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import mozilla.appservices.fxaclient.FxaException
 import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.ItemDetailAction
 import mozilla.lockbox.action.RouteAction
-import mozilla.lockbox.action.SentryAction
 import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.extensions.toDetailViewModel
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
-import mozilla.lockbox.log
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.ItemDetailStore
 import mozilla.lockbox.support.Constant
-import java.lang.NullPointerException
+import mozilla.lockbox.support.pushError
 
 interface EditItemDetailView {
     var isPasswordVisible: Boolean
@@ -84,8 +81,15 @@ class EditItemPresenter(
 
         view.deleteClicks
             .subscribe {
-                dispatcher.dispatch(DataStoreAction.Delete(credentials))
-                dispatcher.dispatch(RouteAction.ItemList)
+                if (credentials != null) {
+                    dispatcher.dispatch(DataStoreAction.Delete(credentials!!))
+                    dispatcher.dispatch(RouteAction.ItemList)
+                } else {
+                    pushError(
+                        NullPointerException("Credentials are null"),
+                        "Error editing credential with id ${credentials?.id}"
+                    )
+                }
             }
             .addTo(compositeDisposable)
 
@@ -97,54 +101,54 @@ class EditItemPresenter(
 
         view.hostnameChanged
             .subscribe {
-                updateCredentials(newHostname = it, newUsername = null, newPassword = null)
+                updateCredentials(newHostname = it)
             }
             .addTo(compositeDisposable)
 
         view.usernameChanged
             .subscribe {
-                updateCredentials(newHostname = null, newUsername = it, newPassword = null)
+                updateCredentials(newUsername = it)
             }
             .addTo(compositeDisposable)
 
         view.passwordChanged
             .subscribe {
-                updateCredentials(newHostname = null, newUsername = null, newPassword = it)
+                updateCredentials(newPassword = it)
             }
             .addTo(compositeDisposable)
 
         view.saveEntryClicks
             .subscribe {
-                dispatcher.dispatch(DataStoreAction.UpdateItemDetail(credentials))
-
-                view.closeKeyboard()
-//                dispatcher.dispatch(RouteAction.ItemDetail(credentials!!.id))
-                dispatcher.dispatch(RouteAction.ItemList)
+                if (credentials != null) {
+                    dispatcher.dispatch(DataStoreAction.UpdateItemDetail(credentials!!))
+                    view.closeKeyboard()
+                    dispatcher.dispatch(RouteAction.ItemList)
+                } else {
+                    pushError(
+                        NullPointerException("Credentials are null"),
+                        "Error editing credential with id ${credentials?.id}"
+                    )
+                }
             }
             .addTo(compositeDisposable)
     }
 
     private fun updateCredentials(
-        newHostname: CharSequence?,
-        newUsername: CharSequence?,
-        newPassword: CharSequence?
+        newHostname: CharSequence? = null,
+        newUsername: CharSequence? = null,
+        newPassword: CharSequence? = null
     ) {
-        if(credentials != null) {
+        try {
             credentials = ServerPassword(
-                id = credentials!!.id,
-                hostname = newHostname?.toString() ?: credentials!!.hostname,
-                username = newUsername?.toString() ?: credentials!!.username,
-                password = newPassword?.toString() ?: credentials!!.password,
-                httpRealm = credentials!!.httpRealm
+                id = credentials?.id.orEmpty(),
+                hostname = newHostname?.toString() ?: credentials?.hostname.orEmpty(),
+                username = newUsername?.toString() ?: credentials?.username,
+                password = newPassword?.toString() ?: credentials?.password.orEmpty(),
+                httpRealm = credentials?.httpRealm,
+                formSubmitURL = credentials?.formSubmitURL
             )
-        } else {
-            pushError(NullPointerException("Credential is null."))
+        } catch (exception: NullPointerException) {
+            pushError(exception, "Error editing credential with id ${credentials?.id}")
         }
-    }
-
-
-    private fun pushError(it: Throwable) {
-        log.error("Error editing credential with id ${credentials?.id}")
-        dispatcher.dispatch(SentryAction(it))
     }
 }

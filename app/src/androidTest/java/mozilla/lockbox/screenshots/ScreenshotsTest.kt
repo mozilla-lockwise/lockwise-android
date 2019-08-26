@@ -77,7 +77,7 @@ open class ScreenshotsTest {
                 .check(matches(isDisplayed()))
         Screengrab.screenshot("item-detail-screen")
 
-        onView(withId(R.id.kebabMenu)).perform(click())
+        onView(withId(R.id.kebabMenuButton)).perform(click())
         Screengrab.screenshot("item-menu")
 
         onView(withText(R.string.delete)).perform(click())

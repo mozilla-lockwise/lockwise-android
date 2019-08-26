@@ -195,7 +195,7 @@ class EditItemPresenterTest {
         dispatcherObserver.assertValueSequence(
             listOf(
                 DataStoreAction.UpdateItemDetail(fakeCredential),
-                RouteAction.ItemDetail(fakeCredential.id)
+                RouteAction.ItemList
             )
         )
     }

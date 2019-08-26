@@ -122,35 +122,34 @@ open class DataStore(
         setupAutoLock()
     }
 
-    private fun delete(item: ServerPassword?) {
+    private fun delete(item: ServerPassword) {
         try {
-            if (item != null) {
-                backend.delete(item.id)
-                    .asSingle(coroutineContext)
-                    .subscribe { _ ->
-                        dispatcher.dispatch(DataStoreAction.Sync)
-                    }
-                    .addTo(compositeDisposable)
+            backend.delete(item.id)
+                .asSingle(coroutineContext)
+                .subscribe { _ ->
+                    dispatcher.dispatch(DataStoreAction.Sync)
+                }
+                .addTo(compositeDisposable)
 
-                deletedItemSubject.accept(Consumable(item))
-            }
+            deletedItemSubject.accept(Consumable(item))
         } catch (loginsStorageException: LoginsStorageException) {
             pushError(loginsStorageException)
         }
     }
 
-    private fun update(item: ServerPassword?) {
+    private fun update(item: ServerPassword) {
         try {
-            if (item != null) {
-                backend.update(item)
-                    .asSingle(coroutineContext)
-                    .subscribe({}, {pushError(it)})
-                    .addTo(compositeDisposable)
-
-                updateList(Unit)
-            }
-        } catch (e: Exception) {
-            pushError(e)
+            backend.update(item)
+                .asSingle(coroutineContext)
+                .subscribe({
+                    this.updateList(it)
+                    dispatcher.dispatch(DataStoreAction.Sync)
+                }, {
+                    this.pushError(it)
+                })
+                .addTo(compositeDisposable)
+        } catch (loginsStorageException: LoginsStorageException) {
+            pushError(loginsStorageException)
         }
     }
 
