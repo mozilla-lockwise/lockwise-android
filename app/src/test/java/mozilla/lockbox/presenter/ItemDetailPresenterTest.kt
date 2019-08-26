@@ -13,6 +13,7 @@ import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
+import mozilla.lockbox.BuildConfig
 import mozilla.lockbox.R
 import mozilla.lockbox.action.AppWebPageAction
 import mozilla.lockbox.action.ClipboardAction
@@ -52,6 +53,9 @@ import org.robolectric.annotation.Config
 class ItemDetailPresenterTest {
 
     class FakeView : ItemDetailView {
+        override fun showKebabMenu() {}
+        override fun hideKebabMenu() {}
+
         val kebabMenuClickStub = PublishSubject.create<Unit>()
         override val kebabMenuClicks: Observable<Unit>
             get() = kebabMenuClickStub
@@ -95,24 +99,27 @@ class ItemDetailPresenterTest {
         }
     }
 
-    private val getStub = PublishSubject.create<Optional<ServerPassword>>()
     @Mock
-    val dataStore = PowerMockito.mock(DataStore::class.java)!!
+    val config: BuildConfig = PowerMockito.mock(BuildConfig::class.java)
 
-    val dispatcher = Dispatcher()
-    val dispatcherObserver = TestObserver.create<Action>()!!
-
-    val view = spy(FakeView())
-    private val itemDetailStore = ItemDetailStore(dispatcher)
+    @Mock
+    val dataStore: DataStore = PowerMockito.mock(DataStore::class.java)
 
     @Mock
     val networkStore = PowerMockito.mock(NetworkStore::class.java)!!
 
-    private var isConnected: Observable<Boolean> = PublishSubject.create()
-    var isConnectedObserver: TestObserver<Boolean> = TestObserver.create<Boolean>()
-
     @Mock
     private val connectivityManager = PowerMockito.mock(ConnectivityManager::class.java)
+
+    val dispatcher = Dispatcher()
+    val dispatcherObserver = TestObserver.create<Action>()!!
+    val view = spy(FakeView())
+
+    private val getStub = PublishSubject.create<Optional<ServerPassword>>()
+    private val itemDetailStore = ItemDetailStore(dispatcher)
+
+    private var isConnected: Observable<Boolean> = PublishSubject.create()
+    var isConnectedObserver: TestObserver<Boolean> = TestObserver.create<Boolean>()
 
     private val fakeCredential: ServerPassword by lazy {
         ServerPassword(

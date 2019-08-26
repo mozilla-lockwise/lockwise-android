@@ -27,6 +27,7 @@ import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.ItemDetailStore
 import mozilla.lockbox.store.NetworkStore
+import mozilla.lockbox.support.FeatureFlags
 
 interface ItemDetailView {
     val usernameCopyClicks: Observable<Unit>
@@ -36,6 +37,8 @@ interface ItemDetailView {
     val learnMoreClicks: Observable<Unit>
     val kebabMenuClicks: Observable<Unit>
     var isPasswordVisible: Boolean
+    fun showKebabMenu()
+    fun hideKebabMenu()
     fun updateItem(item: ItemDetailViewModel)
     fun showToastNotification(@StringRes strId: Int)
     fun handleNetworkError(networkErrorVisibility: Boolean)
@@ -61,6 +64,13 @@ class ItemDetailPresenter(
     }
 
     override fun onViewReady() {
+
+        if (FeatureFlags.CRUD_DELETE) {
+            view.showKebabMenu()
+        } else {
+            view.hideKebabMenu()
+        }
+
         handleClicks(view.usernameCopyClicks) {
             if (!it.username.isNullOrBlank()) {
                 dispatcher.dispatch(ClipboardAction.CopyUsername(it.username.toString()))
