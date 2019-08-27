@@ -129,9 +129,11 @@ open class DataStore(
             if (item != null) {
                 backend.delete(item.id)
                     .asSingle(coroutineContext)
-                    .subscribe()
+                    .subscribe { _ ->
+                        dispatcher.dispatch(DataStoreAction.Sync)
+                    }
                     .addTo(compositeDisposable)
-                sync()
+
                 deletedItemSubject.accept(Consumable(item))
             }
         } catch (loginsStorageException: LoginsStorageException) {
@@ -230,9 +232,12 @@ open class DataStore(
         }
     }
 
-    private fun syncIfRequired() {
+    @VisibleForTesting(
+        otherwise = VisibleForTesting.PRIVATE
+    )
+    fun syncIfRequired() {
         if (timingSupport.shouldSync) {
-            this.sync()
+            dispatcher.dispatch(DataStoreAction.Sync)
             timingSupport.storeNextSyncTime()
         }
     }
