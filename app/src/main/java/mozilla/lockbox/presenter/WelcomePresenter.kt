@@ -18,6 +18,7 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.FingerprintStore
+import mozilla.lockbox.support.FeatureFlags
 
 interface WelcomeView {
     val getStartedAutomaticallyClicks: Observable<Unit>
@@ -36,15 +37,19 @@ class WelcomePresenter(
 ) : Presenter() {
 
     override fun onViewReady() {
-        accountStore.shareableAccount()?.let { account ->
-            view.showExistingAccount(account.email)
-            view.getStartedAutomaticallyClicks
-                .map {
-                    routeToUseExistingAccount(account)
-                }
-                .subscribe(dispatcher::dispatch)
-                .addTo(compositeDisposable)
-        } ?: view.hideExistingAccount()
+        if (FeatureFlags.FXA_LOGIN_WITTH_AUTHPROVIDER) {
+            accountStore.shareableAccount()?.let { account ->
+                view.showExistingAccount(account.email)
+                view.getStartedAutomaticallyClicks
+                    .map {
+                        routeToExistingAccount(account)
+                    }
+                    .subscribe(dispatcher::dispatch)
+                    .addTo(compositeDisposable)
+            } ?: view.hideExistingAccount()
+        } else {
+            view.hideExistingAccount()
+        }
 
         view.getStartedManuallyClicks
             .map {
@@ -60,7 +65,7 @@ class WelcomePresenter(
             .addTo(compositeDisposable)
     }
 
-    private fun routeToUseExistingAccount(account: ShareableAccount) =
+    private fun routeToExistingAccount(account: ShareableAccount) =
         if (fingerprintStore.isKeyguardDeviceSecure) {
             AccountAction.AutomaticLogin(account)
         } else {
