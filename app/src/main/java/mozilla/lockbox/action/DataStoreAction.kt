@@ -30,15 +30,6 @@ sealed class DataStoreAction(
     object SyncSuccess : DataStoreAction(TelemetryEventMethod.sync_end, TelemetryEventObject.datastore)
 
     /**
-     * Emitted when the app times out when listening for a response from sync.
-     */
-    data class SyncTimeout(val error: String) : DataStoreAction(
-        TelemetryEventMethod.sync_timeout,
-        TelemetryEventObject.datastore,
-        error
-    )
-
-    /**
      * Emitted when the app receives an error response from sync.
      */
     data class SyncError(val error: String) : DataStoreAction(

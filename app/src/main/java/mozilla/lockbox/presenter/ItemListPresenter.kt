@@ -84,14 +84,6 @@ class ItemListPresenter(
             }
             .addTo(compositeDisposable)
 
-        /* timeout to be fixed in https://github.com/mozilla-lockwise/lockwise-android/issues/791
-              dataStore.syncState
-                  .filter { it == DataStore.SyncState.TimedOut }
-                  .map { R.string.sync_timed_out }
-                  .observeOn(AndroidSchedulers.mainThread())
-                  .subscribe(view::showToastNotification)
-                  .addTo(compositeDisposable)
-        */
         Observables.combineLatest(dataStore.list, settingStore.itemListSortOrder)
             .distinctUntilChanged()
             .map { pair ->

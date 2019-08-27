@@ -239,7 +239,7 @@ class DataStoreTest : DisposingTest() {
         Assert.assertEquals(expectedSyncUnlockInfo.syncKey, support.syncConfig!!.syncKey)
         Assert.assertEquals(expectedSyncUnlockInfo.tokenserverURL, support.syncConfig!!.tokenserverURL)
     }
-    /* timeout to be fixed in https://github.com/mozilla-lockwise/lockwise-android/issues/791
+
     @Test
     fun testSync() {
         val syncIterator = this.subject.syncState.blockingIterable().iterator()
@@ -247,9 +247,8 @@ class DataStoreTest : DisposingTest() {
 
         dispatcher.dispatch(DataStoreAction.Sync)
         Assert.assertEquals(DataStore.SyncState.Syncing, syncIterator.next())
-        Assert.assertEquals(DataStore.SyncState.TimedOut, syncIterator.next())
     }
-    */
+
     @Test
     fun testGet() {
         val stateIterator = this.subject.state.blockingIterable().iterator()
