@@ -252,5 +252,18 @@
 
     <!-- This is the placeholder text for an empty or null username. -->
     <string name="no_username">(Kein Benutzername)</string>
-    <!--<string name="sync_timed_out">Zeitüberschreitung bei Synchronisation</string>-->
+
+    <!-- This is the message displayed when sync has timed out. -->
+    <!--<string name="sync_timed_out">Syncing has timed out</string>-->
+
+    <!-- This is the description for the kebab menu in the item detail toolbar. -->
+    <string name="kebab_menu">Weitere Optionen</string>
+    <!-- This is the text on an item in the item detail toolbar menu to delete an entry. -->
+    <string name="delete">Löschen</string>
+    <!-- This is the confirmation message title seen when attempting to delete a login. -->
+    <string name="delete_this_login">Diese Zugangsdaten löschen?</string>
+    <!-- This is the description for the deletion dialog. -->
+    <string name="delete_description">Dies löscht diese Zugangsdaten von %1$s und Firefox.</string>
+    <!-- This is the text on an item in the item detail toolbar menu to edit an entry. -->
+    <string name="edit">Bearbeiten</string>
 </resources>
