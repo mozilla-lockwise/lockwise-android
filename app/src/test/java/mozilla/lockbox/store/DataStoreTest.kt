@@ -15,6 +15,7 @@ import mozilla.components.concept.sync.AccessTokenInfo
 import mozilla.lockbox.DisposingTest
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
+import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.mocks.MockDataStoreSupport
 import mozilla.lockbox.model.FixedSyncCredentials
@@ -33,6 +34,7 @@ import org.mockito.Mockito.never
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.powermock.api.mockito.PowerMockito
+import java.util.concurrent.atomic.AtomicBoolean
 import org.powermock.api.mockito.PowerMockito.`when` as whenCalled
 
 @ExperimentalCoroutinesApi
@@ -85,6 +87,22 @@ class DataStoreTest : DisposingTest() {
         dispatcher.dispatch(DataStoreAction.Lock)
         Assert.assertEquals(State.Locked, stateIterator.next())
         Assert.assertEquals(0, listIterator.next().size)
+    }
+
+    @Test
+    fun testSyncIfRequired_dispatchesSyncAction() {
+        whenCalled(timingSupport.shouldSync).thenReturn(true)
+        val isSyncing = AtomicBoolean(false)
+        val sub = dispatcher.register
+            .filterByType(DataStoreAction::class.java)
+            .subscribe {
+                isSyncing.set(true)
+            }
+
+        subject.syncIfRequired()
+
+        Assert.assertTrue(isSyncing.get())
+        sub.dispose()
     }
 
     @Test
