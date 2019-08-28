@@ -69,6 +69,8 @@ open class RouteStore(
             .subscribe(onboarding as Relay)
             .addTo(compositeDisposable)
 
+        // dataStore.state is being updated here, and the state it's receiving is Unlocked
+        // causing us to route to the ItemList below
         Observables.combineLatest(dataStore.state, onboarding)
             .filter { !it.second }
             .map { dataStoreToRouteActions(it.first) }
