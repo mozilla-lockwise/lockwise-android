@@ -251,9 +251,6 @@
     <!-- This is the placeholder text for an empty or null username. -->
     <string name="no_username">(aucun nom d’utilisateur)</string>
 
-    <!-- This is the message displayed when sync has timed out. -->
-    <!--<string name="sync_timed_out">Syncing has timed out</string>-->
-
     <!-- This is the description for the kebab menu in the item detail toolbar. -->
     <string name="kebab_menu">Plus d’options</string>
     <!-- This is the text on an item in the item detail toolbar menu to delete an entry. -->
