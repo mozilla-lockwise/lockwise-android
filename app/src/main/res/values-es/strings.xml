@@ -252,7 +252,4 @@
 
     <!-- This is the placeholder text for an empty or null username. -->
     <string name="no_username">(no existe usuario)</string>
-    
-    <!-- This is the message displayed when sync has timed out. -->
-    <!--<string name="sync_timed_out">La sincronización ha expirado</string>-->
 </resources>

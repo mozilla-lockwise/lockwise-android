@@ -27,14 +27,11 @@ import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.log
 import mozilla.lockbox.model.SyncCredentials
-import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.Consumable
 import mozilla.lockbox.support.DataStoreSupport
 import mozilla.lockbox.support.FxASyncDataStoreSupport
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.TimingSupport
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeoutException
 import kotlin.coroutines.CoroutineContext
 
 @ExperimentalCoroutinesApi
@@ -139,11 +136,6 @@ open class DataStore(
         } catch (loginsStorageException: LoginsStorageException) {
             log.error("Exception: ", loginsStorageException)
         }
-    }
-
-    private fun editEntry() {
-        // TODO
-//        dispatcher.dispatch(RouteAction.ItemList)
     }
 
     private fun shutdown() {
@@ -261,21 +253,15 @@ open class DataStore(
             .map {
                 log.debug("Hashed UID: $it")
             }
-            .timeout(Constant.App.syncTimeout, TimeUnit.SECONDS)
-            .doOnEvent { _, err ->
-                (err as? TimeoutException).let {
-                    // syncStateSubject.accept(SyncState.TimedOut)
-                    dispatcher.dispatch(DataStoreAction.SyncTimeout(it?.message ?: ""))
-                }.run {
-                    syncStateSubject.accept(SyncState.NotSyncing)
-                }
+            .doOnEvent { _, _ ->
+                syncStateSubject.accept(SyncState.NotSyncing)
             }
             .subscribe({
                 this.updateList(it)
                 dispatcher.dispatch(DataStoreAction.SyncSuccess)
             }, {
                 this.pushError(it)
-                dispatcher.dispatch(DataStoreAction.SyncError(it.message ?: ""))
+                dispatcher.dispatch(DataStoreAction.SyncError(it.message.orEmpty()))
             })
             .addTo(compositeDisposable)
     }
