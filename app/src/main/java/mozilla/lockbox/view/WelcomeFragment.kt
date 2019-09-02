@@ -10,7 +10,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.transition.Visibility
 import io.reactivex.Observable
 import com.jakewharton.rxbinding2.view.clicks
 import kotlinx.android.synthetic.main.fragment_welcome.view.*
@@ -18,7 +17,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
 import mozilla.lockbox.presenter.WelcomePresenter
 import mozilla.lockbox.presenter.WelcomeView
-import mozilla.lockbox.store.AccountStore
 
 class WelcomeFragment : Fragment(), WelcomeView {
     @ExperimentalCoroutinesApi

@@ -44,7 +44,6 @@ class WelcomePresenterTest {
         val getStartedExistingAcccountStub: PublishSubject<Unit> = PublishSubject.create<Unit>()
         override val getStartedAutomaticallyClicks: Observable<Unit>
             get() = getStartedExistingAcccountStub
-
     }
 
     @Mock
