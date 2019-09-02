@@ -11,6 +11,15 @@ import mozilla.lockbox.R
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.model.DialogViewModel
 
+/**
+ * Dispatching a `DialogAction` causes a modal dialog to be displayed.
+ *
+ * On the user pressing either a the positive or negative buttons a list of actions
+ * are dispatched.
+ *
+ * Hint: DialogActions are not added to history stack. The edge linking where the dialog is shown to where
+ * then buttons should take the user should be represented in the `RoutePresenter` and the `graph.xml`.
+ */
 sealed class DialogAction(
     val viewModel: DialogViewModel,
     val positiveButtonActionList: List<Action> = emptyList(),
