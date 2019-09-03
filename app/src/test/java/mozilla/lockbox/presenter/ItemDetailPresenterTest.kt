@@ -6,8 +6,10 @@
 
 package mozilla.lockbox.presenter
 
+import android.content.Context
 import android.net.ConnectivityManager
 import androidx.annotation.StringRes
+import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
@@ -15,7 +17,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.BuildConfig
 import mozilla.lockbox.R
-import mozilla.lockbox.action.AppWebPageAction
 import mozilla.lockbox.action.ClipboardAction
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.DialogAction
@@ -56,17 +57,19 @@ class ItemDetailPresenterTest {
         override fun showKebabMenu() {}
         override fun hideKebabMenu() {}
 
-        val kebabMenuClickStub = PublishSubject.create<Unit>()
+        var editClicksStub: BehaviorRelay<Unit> = BehaviorRelay.createDefault(Unit)
+        override val editClicks: BehaviorRelay<Unit>
+            get() = editClicksStub
+
+        var deleteClicksStub: BehaviorRelay<Unit> = BehaviorRelay.createDefault(Unit)
+        override val deleteClicks: BehaviorRelay<Unit>
+            get() = deleteClicksStub
+
+        override fun showPopup() {}
+
+        private val kebabMenuClickStub = PublishSubject.create<Unit>()
         override val kebabMenuClicks: Observable<Unit>
             get() = kebabMenuClickStub
-
-        val menuItemSelectionStub = PublishSubject.create<ItemDetailAction.EditItemMenu>()
-        override val menuItemSelection: Observable<ItemDetailAction.EditItemMenu>
-            get() = menuItemSelectionStub
-
-        val learnMoreClickStub = PublishSubject.create<Unit>()
-        override val learnMoreClicks: Observable<Unit>
-            get() = learnMoreClickStub
 
 //        private val retryButtonStub = PublishSubject.create<Unit>()
 //        override val retryNetworkConnectionClicks: Observable<Unit>
@@ -113,13 +116,13 @@ class ItemDetailPresenterTest {
 
     val dispatcher = Dispatcher()
     val dispatcherObserver = TestObserver.create<Action>()!!
-    val view = spy(FakeView())
+    val view: FakeView = spy(FakeView())
 
     private val getStub = PublishSubject.create<Optional<ServerPassword>>()
     private val itemDetailStore = ItemDetailStore(dispatcher)
 
     private var isConnected: Observable<Boolean> = PublishSubject.create()
-    var isConnectedObserver: TestObserver<Boolean> = TestObserver.create<Boolean>()
+    private var isConnectedObserver: TestObserver<Boolean> = TestObserver.create<Boolean>()
 
     private val fakeCredential: ServerPassword by lazy {
         ServerPassword(
@@ -149,11 +152,12 @@ class ItemDetailPresenterTest {
 
     lateinit var subject: ItemDetailPresenter
 
+    @Mock
+    val context: Context = Mockito.mock(Context::class.java)
+
     @Before
     fun setUp() {
         PowerMockito.whenNew(DataStore::class.java).withAnyArguments().thenReturn(dataStore)
-
-        dispatcher.register.subscribe(dispatcherObserver)
         Mockito.`when`(networkStore.isConnected).thenReturn(isConnected)
         Mockito.`when`(dataStore.get(ArgumentMatchers.anyString())).thenReturn(getStub)
         networkStore.connectivityManager = connectivityManager
@@ -163,8 +167,8 @@ class ItemDetailPresenterTest {
     private fun setUpTestSubject(item: Optional<ServerPassword>) {
         subject = ItemDetailPresenter(view, item.value?.id, dispatcher, networkStore, dataStore, itemDetailStore)
         subject.onViewReady()
-
         getStub.onNext(item)
+        dispatcher.register.subscribe(dispatcherObserver)
     }
 
     @Test
@@ -328,19 +332,16 @@ class ItemDetailPresenterTest {
     }
 
     @Test
-    fun `learn more clicks`() {
+    fun `select delete from kebab menu`() {
         setUpTestSubject(fakeCredential.asOptional())
-
-        view.learnMoreClickStub.onNext(Unit)
-        dispatcherObserver.assertLastValue(AppWebPageAction.FaqEdit)
+        view.deleteClicksStub.accept(Unit)
+        dispatcherObserver.assertValue(DialogAction.DeleteConfirmationDialog(fakeCredential))
     }
 
     @Test
-    fun `select delete from kebab menu`() {
-        setUpTestSubject(Optional(fakeCredential))
-
-        val menuItemSelection = ItemDetailAction.EditItemMenu.DELETE
-        view.menuItemSelectionStub.onNext(menuItemSelection)
-        dispatcherObserver.assertValue(DialogAction.DeleteConfirmationDialog(fakeCredential))
+    fun `select edit from kebab menu`() {
+        setUpTestSubject(fakeCredential.asOptional())
+        view.editClicksStub.accept(Unit)
+        dispatcherObserver.assertValue(RouteAction.EditItemDetail(fakeCredential.id))
     }
 }

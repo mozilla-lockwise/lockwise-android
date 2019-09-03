@@ -36,8 +36,8 @@ import kotlin.coroutines.CoroutineContext
 
 @ExperimentalCoroutinesApi
 open class DataStore(
-    val dispatcher: Dispatcher = Dispatcher.shared,
-    var support: DataStoreSupport = FxASyncDataStoreSupport.shared,
+    open val dispatcher: Dispatcher = Dispatcher.shared,
+    open var support: DataStoreSupport = FxASyncDataStoreSupport.shared,
     private val timingSupport: TimingSupport = TimingSupport.shared,
     private val lifecycleStore: LifecycleStore = LifecycleStore.shared
 ) {
@@ -107,8 +107,9 @@ open class DataStore(
                     is DataStoreAction.Sync -> sync()
                     is DataStoreAction.Touch -> touch(action.id)
                     is DataStoreAction.Reset -> reset()
-                    is DataStoreAction.UpdateCredentials -> updateCredentials(action.syncCredentials)
-                    is DataStoreAction.Delete -> deleteCredentials(action.item)
+                    is DataStoreAction.UpdateSyncCredentials -> updateCredentials(action.syncCredentials)
+                    is DataStoreAction.Delete -> delete(action.item)
+                    is DataStoreAction.UpdateItemDetail -> update(action.item)
                 }
             }
             .addTo(compositeDisposable)
@@ -121,20 +122,34 @@ open class DataStore(
         setupAutoLock()
     }
 
-    private fun deleteCredentials(item: ServerPassword?) {
+    private fun delete(item: ServerPassword) {
         try {
-            if (item != null) {
-                backend.delete(item.id)
-                    .asSingle(coroutineContext)
-                    .subscribe { _ ->
-                        dispatcher.dispatch(DataStoreAction.Sync)
-                    }
-                    .addTo(compositeDisposable)
+            backend.delete(item.id)
+                .asSingle(coroutineContext)
+                .subscribe { _ ->
+                    dispatcher.dispatch(DataStoreAction.Sync)
+                }
+                .addTo(compositeDisposable)
 
-                deletedItemSubject.accept(Consumable(item))
-            }
+            deletedItemSubject.accept(Consumable(item))
         } catch (loginsStorageException: LoginsStorageException) {
-            log.error("Exception: ", loginsStorageException)
+            pushError(loginsStorageException)
+        }
+    }
+
+    private fun update(item: ServerPassword) {
+        try {
+            backend.update(item)
+                .asSingle(coroutineContext)
+                .subscribe({
+                    this.updateList(it)
+                    dispatcher.dispatch(DataStoreAction.Sync)
+                }, {
+                    this.pushError(it)
+                })
+                .addTo(compositeDisposable)
+        } catch (loginsStorageException: LoginsStorageException) {
+            pushError(loginsStorageException)
         }
     }
 

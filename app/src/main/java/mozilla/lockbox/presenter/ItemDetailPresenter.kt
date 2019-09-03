@@ -7,13 +7,13 @@
 package mozilla.lockbox.presenter
 
 import androidx.annotation.StringRes
+import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.R
-import mozilla.lockbox.action.AppWebPageAction
 import mozilla.lockbox.action.ClipboardAction
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.DialogAction
@@ -28,22 +28,24 @@ import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.ItemDetailStore
 import mozilla.lockbox.store.NetworkStore
 import mozilla.lockbox.support.FeatureFlags
+import mozilla.lockbox.support.pushError
 
 interface ItemDetailView {
     val usernameCopyClicks: Observable<Unit>
     val passwordCopyClicks: Observable<Unit>
     val togglePasswordClicks: Observable<Unit>
     val hostnameClicks: Observable<Unit>
-    val learnMoreClicks: Observable<Unit>
     val kebabMenuClicks: Observable<Unit>
+    val editClicks: BehaviorRelay<Unit>
+    val deleteClicks: BehaviorRelay<Unit>
     var isPasswordVisible: Boolean
     fun showKebabMenu()
     fun hideKebabMenu()
     fun updateItem(item: ItemDetailViewModel)
+    fun showPopup()
     fun showToastNotification(@StringRes strId: Int)
     fun handleNetworkError(networkErrorVisibility: Boolean)
-    val menuItemSelection: Observable<ItemDetailAction.EditItemMenu>
-    //    val retryNetworkConnectionClicks: Observable<Unit>
+//    val retryNetworkConnectionClicks: Observable<Unit>
 }
 
 @ExperimentalCoroutinesApi
@@ -64,8 +66,16 @@ class ItemDetailPresenter(
     }
 
     override fun onViewReady() {
+        val itemId = this.itemId ?: return
+        dataStore.get(itemId)
+            .observeOn(mainThread())
+            .filterNotNull()
+            .doOnNext { credentials = it }
+            .map { it.toDetailViewModel() }
+            .subscribe(view::updateItem)
+            .addTo(compositeDisposable)
 
-        if (FeatureFlags.CRUD_DELETE) {
+        if (FeatureFlags.CRUD_UPDATE_AND_DELETE) {
             view.showKebabMenu()
         } else {
             view.hideKebabMenu()
@@ -93,34 +103,11 @@ class ItemDetailPresenter(
             }
         }
 
-        view.menuItemSelection
-            .map {
-                DialogAction.DeleteConfirmationDialog(credentials)
-            }
-            .subscribe(dispatcher::dispatch)
-            .addTo(compositeDisposable)
-
-        this.view.learnMoreClicks
-            .map { AppWebPageAction.FaqEdit }
-            .subscribe(dispatcher::dispatch)
-            .addTo(compositeDisposable)
-
-        this.view.togglePasswordClicks
+        view.togglePasswordClicks
             .subscribe { dispatcher.dispatch(ItemDetailAction.TogglePassword(view.isPasswordVisible.not())) }
             .addTo(compositeDisposable)
 
         view.isPasswordVisible = false
-
-        // now set up the data.
-        val itemId = this.itemId ?: return
-
-        dataStore.get(itemId)
-            .observeOn(mainThread())
-            .filterNotNull()
-            .doOnNext { credentials = it }
-            .map { it.toDetailViewModel() }
-            .subscribe(view::updateItem)
-            .addTo(compositeDisposable)
 
         networkStore.isConnected
             .subscribe(view::handleNetworkError)
@@ -130,9 +117,30 @@ class ItemDetailPresenter(
             .subscribe { view.isPasswordVisible = it }
             .addTo(compositeDisposable)
 
-//        view.retryNetworkConnectionClicks.subscribe {
-//            dispatcher.dispatch(NetworkAction.CheckConnectivity)
-//        }?.addTo(compositeDisposable)
+        view.editClicks
+            .subscribe {
+                dispatcher.dispatch(RouteAction.EditItemDetail(credentials?.id.toString()))
+            }
+            .addTo(compositeDisposable)
+
+        view.deleteClicks
+            .subscribe {
+                if (credentials != null) {
+                    dispatcher.dispatch(DialogAction.DeleteConfirmationDialog(credentials!!))
+                } else {
+                    pushError(
+                        NullPointerException("Credentials are null."),
+                        "Error accessing credential with id ${credentials?.id}"
+                    )
+                }
+            }
+            .addTo(compositeDisposable)
+
+        view.kebabMenuClicks
+            .subscribe {
+                view.showPopup()
+            }
+            .addTo(compositeDisposable)
     }
 
     private fun handleClicks(clicks: Observable<Unit>, withServerPassword: (ServerPassword) -> Unit) {

@@ -121,7 +121,7 @@ open class AccountStore(
         // Moves credentials from the AccountStore, into the DataStore.
         syncCredentials
             .map {
-                it.value?.let { credentials -> DataStoreAction.UpdateCredentials(credentials) }
+                it.value?.let { credentials -> DataStoreAction.UpdateSyncCredentials(credentials) }
                     ?: DataStoreAction.Reset
             }
             .subscribe(dispatcher::dispatch)

@@ -55,6 +55,7 @@ open class RouteStore(
                         is DialogAction,
                         is RouteAction.AutoLockSetting,
                         is RouteAction.DialogFragment,
+                        is RouteAction.EditItemDetail,
                         is RouteAction.SystemIntent -> true
                         else -> false
                     }

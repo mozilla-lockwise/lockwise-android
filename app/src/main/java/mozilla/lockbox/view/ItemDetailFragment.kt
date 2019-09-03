@@ -13,50 +13,55 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.EditText
-import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.StringRes
+import androidx.appcompat.view.ContextThemeWrapper
+import androidx.appcompat.widget.PopupMenu
 import com.jakewharton.rxbinding2.view.clicks
+import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_item_detail.*
 import kotlinx.android.synthetic.main.fragment_item_detail.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
-import mozilla.lockbox.action.ItemDetailAction
-import mozilla.lockbox.adapter.DeleteItemAdapter
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.presenter.ItemDetailPresenter
 import mozilla.lockbox.presenter.ItemDetailView
 import mozilla.lockbox.support.assertOnUiThread
+import androidx.appcompat.view.menu.MenuBuilder
 
 @ExperimentalCoroutinesApi
 class ItemDetailFragment : BackableFragment(), ItemDetailView {
+
+    private var itemId: String? = null
+    private var kebabMenu: ItemDetailOptionMenu? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val itemId = arguments?.let {
-            ItemDetailFragmentArgs.fromBundle(it)
-                .itemId
+        itemId = arguments?.let {
+            ItemDetailFragmentArgs.fromBundle(it).itemId
         }
 
+        this.setHasOptionsMenu(true)
         presenter = ItemDetailPresenter(this, itemId)
+
         return inflater.inflate(R.layout.fragment_item_detail, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setupKebabMenu(view)
+    override fun onPause() {
+        kebabMenu?.dismiss()
+        super.onPause()
     }
 
-    private lateinit var spinner: Spinner
-    private lateinit var itemAdapter: DeleteItemAdapter
-    private var userSelection = false
+    override fun onDestroy() {
+        kebabMenu?.dismiss()
+        super.onDestroy()
+    }
 
     private val errorHelper = NetworkErrorHelper()
 
@@ -72,11 +77,12 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
     override val hostnameClicks: Observable<Unit>
         get() = view!!.inputHostname.clicks()
 
-    override val learnMoreClicks: Observable<Unit>
-        get() = view!!.detailLearnMore.clicks()
-
     override val kebabMenuClicks: Observable<Unit>
-        get() = view!!.toolbar.kebabMenu.clicks()
+        get() = view!!.toolbar.kebabMenuButton.clicks()
+
+    override val editClicks: BehaviorRelay<Unit> = BehaviorRelay.create()
+
+    override val deleteClicks: BehaviorRelay<Unit> = BehaviorRelay.create()
 
     override var isPasswordVisible: Boolean = false
         set(value) {
@@ -85,37 +91,29 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
             updatePasswordVisibility(value)
         }
 
-    private var _menuItemSelection = PublishSubject.create<ItemDetailAction.EditItemMenu>()
-    override val menuItemSelection: Observable<ItemDetailAction.EditItemMenu> = _menuItemSelection
+    override fun showPopup() {
+        val wrapper = ContextThemeWrapper(context, R.style.PopupMenu)
+        val popupMenu = PopupMenu(wrapper, this.kebabMenuButton)
 
-    private val menuOptions: Array<ItemDetailAction.EditItemMenu>
-        get() = ItemDetailAction.EditItemMenu.values()
-
-    private fun setupKebabMenu(view: View) {
-        val sortList = ArrayList<ItemDetailAction.EditItemMenu>()
-        sortList.add(ItemDetailAction.EditItemMenu.EDIT)
-        sortList.add(ItemDetailAction.EditItemMenu.DELETE)
-        spinner = view.kebabMenu
-        itemAdapter = DeleteItemAdapter(context!!, android.R.layout.simple_spinner_item, sortList)
-        spinner.adapter = itemAdapter
-        spinner.setPopupBackgroundResource(R.drawable.sort_menu_bg)
-
-        // added because different events can trigger onItemSelectedListener
-        spinner.setOnTouchListener { _, _ ->
-            userSelection = true
-            false
-        }
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-            }
-
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                if (userSelection) {
-                    itemAdapter.setSelection(position)
-                    _menuItemSelection.onNext(menuOptions[position])
+        popupMenu.setOnMenuItemClickListener { item ->
+            when (item?.itemId) {
+                R.id.edit -> {
+                    editClicks.accept(Unit)
+                    true
                 }
+                R.id.delete -> {
+                    deleteClicks.accept(Unit)
+                    true
+                }
+                else -> false
             }
         }
+
+        popupMenu.inflate(R.menu.item_detail_menu)
+
+        val builder = popupMenu.menu as MenuBuilder
+        builder.setOptionalIconsVisible(true)
+        popupMenu.show()
     }
 
     private fun updatePasswordVisibility(visible: Boolean) {
@@ -183,14 +181,14 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
 
     // used for feature flag
     override fun showKebabMenu() {
-        toolbar.kebabMenu.visibility = View.VISIBLE
-        toolbar.kebabMenu.isClickable = true
+        toolbar.kebabMenuButton.visibility = View.VISIBLE
+        toolbar.kebabMenuButton.isClickable = true
     }
 
     // used for feature flag
     override fun hideKebabMenu() {
-        toolbar.kebabMenu.visibility = View.GONE
-        toolbar.kebabMenu.isClickable = false
+        toolbar.kebabMenuButton.visibility = View.GONE
+        toolbar.kebabMenuButton.isClickable = false
     }
 
     override fun handleNetworkError(networkErrorVisibility: Boolean) {
@@ -200,10 +198,10 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
             errorHelper.hideNetworkError(view!!, view!!.cardView, R.dimen.hidden_network_error)
         }
     }
+}
 
 //    override val retryNetworkConnectionClicks: Observable<Unit>
 //        get() = view!!.networkWarning.retryButton.clicks()
-}
 
 var EditText.readOnly: Boolean
     get() = this.isFocusable

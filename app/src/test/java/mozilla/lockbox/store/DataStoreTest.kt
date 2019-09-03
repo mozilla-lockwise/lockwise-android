@@ -7,15 +7,18 @@
 package mozilla.lockbox.store
 
 import io.reactivex.Observable
+import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import mozilla.appservices.logins.ServerPassword
 import mozilla.appservices.logins.SyncUnlockInfo
 import mozilla.components.concept.sync.AccessTokenInfo
 import mozilla.lockbox.DisposingTest
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.extensions.filterByType
+import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.mocks.MockDataStoreSupport
 import mozilla.lockbox.model.FixedSyncCredentials
@@ -51,11 +54,44 @@ class DataStoreTest : DisposingTest() {
     private val lifecycleStore = FakeLifecycleStore()
     private lateinit var subject: DataStore
 
+    val dispatcherObserver = TestObserver.create<Action>()!!
+
     @Before
     fun setUp() {
         PowerMockito.whenNew(TimingSupport::class.java).withAnyArguments().thenReturn(timingSupport)
+        dispatcher.register.subscribe(dispatcherObserver)
 
         subject = DataStore(dispatcher, support, timingSupport, lifecycleStore)
+    }
+
+    @Test
+    fun `update item details`() {
+        val stateIterator = this.subject.state.blockingIterable().iterator()
+        val listIterator = this.subject.list.blockingIterable().iterator()
+        Assert.assertEquals(0, listIterator.next().size)
+        clearInvocations(support.storage)
+        whenCalled(timingSupport.shouldSync).thenReturn(false)
+
+        dispatcher.dispatch(DataStoreAction.Unlock)
+        Assert.assertEquals(State.Unlocked, stateIterator.next())
+        Assert.assertEquals(10, listIterator.next().size)
+
+        val item = listIterator.next()[0]
+        val newHostname = "https://ilovecats.com"
+
+        val updatedItem = ServerPassword(
+            id = item.id,
+            hostname = newHostname,
+            username = item.username,
+            password = item.password,
+            httpRealm = item.httpRealm,
+            formSubmitURL = item.formSubmitURL
+        )
+
+        dispatcher.dispatch(DataStoreAction.UpdateItemDetail(updatedItem))
+
+        // check if the list is updated
+        dispatcherObserver.assertValueAt(1, DataStoreAction.ListUpdate)
     }
 
     @Test
@@ -222,7 +258,7 @@ class DataStoreTest : DisposingTest() {
         )
         val support = syncCredentials.support
         dispatcher.dispatch(
-            DataStoreAction.UpdateCredentials(
+            DataStoreAction.UpdateSyncCredentials(
                 syncCredentials
             )
         )
