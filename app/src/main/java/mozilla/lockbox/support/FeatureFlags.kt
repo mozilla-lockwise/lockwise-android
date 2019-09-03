@@ -40,4 +40,17 @@ object FeatureFlags {
         isRelease -> false
         else -> false
     }
+
+    /**
+     * Use existing apps' FxA credentials to login.
+     *
+     * Currently, only Fennec will detect the release version of Lockwise.
+     * To see this work, you need a custom build of Fennec and Android Components.
+     */
+    val FXA_LOGIN_WITTH_AUTHPROVIDER = when {
+        isDebug -> true
+        isTesting -> false
+        isRelease -> false
+        else -> false
+    }
 }

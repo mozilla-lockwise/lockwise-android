@@ -13,11 +13,13 @@ import android.view.ViewGroup
 import io.reactivex.Observable
 import com.jakewharton.rxbinding2.view.clicks
 import kotlinx.android.synthetic.main.fragment_welcome.view.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
 import mozilla.lockbox.presenter.WelcomePresenter
 import mozilla.lockbox.presenter.WelcomeView
 
 class WelcomeFragment : Fragment(), WelcomeView {
+    @ExperimentalCoroutinesApi
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -28,11 +30,34 @@ class WelcomeFragment : Fragment(), WelcomeView {
         val appLabel = getString(R.string.app_label)
         view.textViewInstructions.text = getString(R.string.welcome_instructions, appLabel)
         view.lockwiseIcon.contentDescription = getString(R.string.app_logo, appLabel)
+
         return view
     }
 
-    override val getStartedClicks: Observable<Unit>
+    override fun showExistingAccount(email: String) {
+        view?.apply {
+            buttonGetStarted.text = getString(R.string.welcome_start_automatic_btn, email)
+            buttonGetStarted.visibility = View.VISIBLE
+
+            buttonGetStartedManually.text = getString(R.string.welcome_start_force_manual_btn)
+            buttonGetStartedManually.visibility = View.VISIBLE
+        }
+    }
+
+    override fun hideExistingAccount() {
+        view?.apply {
+            buttonGetStarted.visibility = View.GONE
+
+            buttonGetStartedManually.text = getString(R.string.welcome_start_btn)
+            buttonGetStartedManually.visibility = View.VISIBLE
+        }
+    }
+
+    override val getStartedAutomaticallyClicks: Observable<Unit>
         get() = view!!.buttonGetStarted.clicks()
+
+    override val getStartedManuallyClicks: Observable<Unit>
+        get() = view!!.buttonGetStartedManually.clicks()
 
     override val learnMoreClicks: Observable<Unit>
         get() = view!!.textViewLearnMore.clicks()

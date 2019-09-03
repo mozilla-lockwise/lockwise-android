@@ -103,6 +103,7 @@ class AppRoutePresenter(
             R.id.fragment_null to R.id.fragment_welcome -> R.id.action_init_to_unprepared
 
             R.id.fragment_welcome to R.id.fragment_fxa_login -> R.id.action_welcome_to_fxaLogin
+            R.id.fragment_welcome to R.id.fragment_item_list -> R.id.action_welcome_to_autoLogin
 
             R.id.fragment_fxa_login to R.id.fragment_item_list -> R.id.action_fxaLogin_to_itemList
             R.id.fragment_fxa_login to R.id.fragment_fingerprint_onboarding ->

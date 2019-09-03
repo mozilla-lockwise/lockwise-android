@@ -17,7 +17,11 @@
     <!-- This is the label a screenreader uses to inform the user they selected a link that will open a webpage to learn more about the feature or setting. -->
     <string name="learn_more_description">Open a link to Learn more</string>
 
-    <!-- This is used as the label on a button on a first-run welcome screen to sign in and start using the application -->
+    <!-- This is used as the label on a button on a first-run welcome screen to automatically sign in to an existing account and start using the application -->
+    <string name="welcome_start_automatic_btn">%s</string>
+    <!-- This is used as the label on a button on a first-run welcome screen to force manual sign in and start using the application -->
+    <string name="welcome_start_force_manual_btn">Different Account</string>
+    <!-- This is used as the label on a button on a first-run welcome screen to manually sign in (no existing account) and start using the application -->
     <string name="welcome_start_btn">Get Started</string>
     <!-- This provides context near a button on the first-run welcome screen to describe application requirements. Firefox Account is to be translated consistently to match use in other Firefox products. %1$s will be replaced with application name. -->
     <string name="welcome_instructions">To use %1$s, you’ll need a Firefox Account with saved logins.</string>

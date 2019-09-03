@@ -73,6 +73,21 @@
 
         <Button
             android:id="@+id/buttonGetStarted"
+            android:layout_width="220dp"
+            android:layout_height="36dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/button_pressed_violet"
+            android:letterSpacing="0.09"
+            android:lineSpacingExtra="2sp"
+            android:text="@string/welcome_start_btn"
+            android:textColor="@color/text_white"
+            android:textStyle="normal"
+            android:layout_gravity="center"
+            android:visibility="gone"
+        />
+
+        <Button
+            android:id="@+id/buttonGetStartedManually"
             android:layout_width="180dp"
             android:layout_height="36dp"
             android:layout_marginBottom="8dp"
@@ -83,6 +98,7 @@
             android:textColor="@color/text_white"
             android:textStyle="normal"
             android:layout_gravity="center"
+            android:visibility="gone"
         />
 
         <TextView
