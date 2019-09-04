@@ -115,10 +115,9 @@ class AppRoutePresenter(
             R.id.fragment_welcome to R.id.fragment_item_list -> R.id.action_welcome_to_autoLogin
 
             R.id.fragment_fxa_login to R.id.fragment_item_list -> R.id.action_fxaLogin_to_itemList
-            R.id.fragment_fxa_login to R.id.fragment_fingerprint_onboarding ->
-                R.id.action_fxaLogin_to_fingerprint_onboarding
-            R.id.fragment_fxa_login to R.id.fragment_onboarding_confirmation ->
-                R.id.action_fxaLogin_to_onboarding_confirmation
+            R.id.fragment_fxa_login to R.id.fragment_fingerprint_onboarding -> R.id.action_fxaLogin_to_fingerprint_onboarding
+            R.id.fragment_fxa_login to R.id.fragment_autofill_onboarding -> R.id.action_fxaLogin_to_autofill_onboarding
+            R.id.fragment_fxa_login to R.id.fragment_onboarding_confirmation -> R.id.action_fxaLogin_to_onboarding_confirmation
 
             R.id.fragment_fingerprint_onboarding to R.id.fragment_onboarding_confirmation ->
                 R.id.action_fingerprint_onboarding_to_confirmation
