@@ -113,6 +113,7 @@ class AppRoutePresenter(
             R.id.fragment_null to R.id.fragment_setting -> R.id.action_init_to_unprepared
             R.id.fragment_null to R.id.fragment_account_setting -> R.id.action_init_to_unprepared
             R.id.fragment_null to R.id.fragment_item_detail -> R.id.action_init_to_item_detail
+            R.id.fragment_null to R.id.fragment_filter -> R.id.action_init_to_filter
 
             R.id.fragment_welcome to R.id.fragment_fxa_login -> R.id.action_welcome_to_fxaLogin
             R.id.fragment_welcome to R.id.fragment_item_list -> R.id.action_welcome_to_autoLogin
@@ -162,6 +163,7 @@ class AppRoutePresenter(
 
             R.id.fragment_filter_backdrop to R.id.fragment_item_detail -> R.id.action_filter_to_itemDetail
             R.id.fragment_filter to R.id.fragment_item_detail -> R.id.action_filter_to_itemDetail
+            R.id.fragment_filter to R.id.fragment_item_list -> R.id.action_filter_to_item_list
 
             else -> null
         }

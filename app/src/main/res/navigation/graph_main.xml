@@ -44,6 +44,11 @@
                 app:launchSingleTop="true"
                 app:popUpTo="@id/fragment_item_detail"
                 app:popUpToInclusive="true" />
+        <action android:id="@+id/action_init_to_filter"
+                app:destination="@id/fragment_filter"
+                app:launchSingleTop="true"
+                app:popUpTo="@id/fragment_filter"
+                app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
