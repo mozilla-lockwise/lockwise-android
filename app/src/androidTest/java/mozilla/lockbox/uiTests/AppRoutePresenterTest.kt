@@ -68,7 +68,6 @@ open class AppRoutePresenterTest {
         navigator.gotoSettings()
         navigator.back()
         navigator.checkAtItemList()
-        navigator.back()
     }
 
     @Test
