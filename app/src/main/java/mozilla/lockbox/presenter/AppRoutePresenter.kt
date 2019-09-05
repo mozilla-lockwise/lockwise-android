@@ -119,10 +119,8 @@ class AppRoutePresenter(
             R.id.fragment_fxa_login to R.id.fragment_autofill_onboarding -> R.id.action_fxaLogin_to_autofill_onboarding
             R.id.fragment_fxa_login to R.id.fragment_onboarding_confirmation -> R.id.action_fxaLogin_to_onboarding_confirmation
 
-            R.id.fragment_fingerprint_onboarding to R.id.fragment_onboarding_confirmation ->
-                R.id.action_fingerprint_onboarding_to_confirmation
-            R.id.fragment_fingerprint_onboarding to R.id.fragment_autofill_onboarding ->
-                R.id.action_onboarding_fingerprint_to_autofill
+            R.id.fragment_fingerprint_onboarding to R.id.fragment_onboarding_confirmation -> R.id.action_fingerprint_onboarding_to_confirmation
+            R.id.fragment_fingerprint_onboarding to R.id.fragment_autofill_onboarding -> R.id.action_onboarding_fingerprint_to_autofill
 
             R.id.fragment_autofill_onboarding to R.id.fragment_item_list -> R.id.action_to_itemList
             R.id.fragment_autofill_onboarding to R.id.fragment_onboarding_confirmation -> R.id.action_autofill_onboarding_to_confirmation
@@ -143,12 +141,19 @@ class AppRoutePresenter(
             R.id.fragment_item_detail to R.id.fragment_webview -> R.id.action_to_webview
             R.id.fragment_item_detail to R.id.fragment_item_list -> R.id.action_to_itemList
             R.id.fragment_item_detail to R.id.fragment_item_edit -> R.id.action_itemDetail_to_edit
+            R.id.fragment_item_detail to R.id.fragment_locked -> R.id.action_itemDetail_to_locked
 
-            R.id.fragment_item_edit to R.id.fragment_item_detail -> R.id.action_itemEdit_to_itemDetail
+            R.id.fragment_item_edit to R.id.fragment_item_list -> R.id.action_itemEdit_to_itemList
+            R.id.fragment_item_edit to R.id.fragment_locked -> R.id.action_itemEdit_to_locked
 
             R.id.fragment_setting to R.id.fragment_webview -> R.id.action_to_webview
+            R.id.fragment_setting to R.id.fragment_locked -> R.id.action_settings_to_locked
 
             R.id.fragment_account_setting to R.id.fragment_welcome -> R.id.action_to_welcome
+
+            R.id.fragment_filter to R.id.fragment_item_detail -> R.id.action_filter_to_itemDetail
+            R.id.fragment_filter to R.id.fragment_item_list -> R.id.action_filter_to_itemList
+            R.id.fragment_filter to R.id.fragment_locked -> R.id.action_filter_to_locked
 
             R.id.fragment_filter_backdrop to R.id.fragment_item_detail -> R.id.action_filter_to_itemDetail
 
