@@ -110,6 +110,9 @@ class AppRoutePresenter(
             R.id.fragment_null to R.id.fragment_item_list -> R.id.action_init_to_unlocked
             R.id.fragment_null to R.id.fragment_locked -> R.id.action_init_to_locked
             R.id.fragment_null to R.id.fragment_welcome -> R.id.action_init_to_unprepared
+            R.id.fragment_null to R.id.fragment_setting -> R.id.action_init_to_unprepared
+            R.id.fragment_null to R.id.fragment_account_setting -> R.id.action_init_to_unprepared
+            R.id.fragment_null to R.id.fragment_item_detail -> R.id.action_init_to_item_detail
 
             R.id.fragment_welcome to R.id.fragment_fxa_login -> R.id.action_welcome_to_fxaLogin
             R.id.fragment_welcome to R.id.fragment_item_list -> R.id.action_welcome_to_autoLogin
@@ -148,14 +151,17 @@ class AppRoutePresenter(
 
             R.id.fragment_setting to R.id.fragment_webview -> R.id.action_to_webview
             R.id.fragment_setting to R.id.fragment_locked -> R.id.action_settings_to_locked
+            R.id.fragment_setting to R.id.fragment_item_list -> R.id.action_settings_to_item_list
 
             R.id.fragment_account_setting to R.id.fragment_welcome -> R.id.action_to_welcome
+            R.id.fragment_account_setting to R.id.fragment_item_list -> R.id.action_account_setting_to_item_list
 
             R.id.fragment_filter to R.id.fragment_item_detail -> R.id.action_filter_to_itemDetail
             R.id.fragment_filter to R.id.fragment_item_list -> R.id.action_filter_to_itemList
             R.id.fragment_filter to R.id.fragment_locked -> R.id.action_filter_to_locked
 
             R.id.fragment_filter_backdrop to R.id.fragment_item_detail -> R.id.action_filter_to_itemDetail
+            R.id.fragment_filter to R.id.fragment_item_detail -> R.id.action_filter_to_itemDetail
 
             else -> null
         }

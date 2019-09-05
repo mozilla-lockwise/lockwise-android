@@ -29,6 +29,21 @@
                 app:launchSingleTop="true"
                 app:popUpTo="@id/fragment_welcome"
                 app:popUpToInclusive="true" />
+        <action android:id="@+id/action_init_to_settings"
+                app:destination="@id/fragment_setting"
+                app:launchSingleTop="true"
+                app:popUpTo="@id/fragment_setting"
+                app:popUpToInclusive="true" />
+        <action android:id="@+id/action_init_to_account_setting"
+                app:destination="@id/fragment_account_setting"
+                app:launchSingleTop="true"
+                app:popUpTo="@id/fragment_account_setting"
+                app:popUpToInclusive="true" />
+        <action android:id="@+id/action_init_to_item_detail"
+                app:destination="@id/fragment_item_detail"
+                app:launchSingleTop="true"
+                app:popUpTo="@id/fragment_item_detail"
+                app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -186,6 +201,10 @@
                 android:id="@+id/action_settings_to_locked"
                 app:destination="@id/fragment_locked"
                 app:popUpToInclusive="true"/>
+        <action
+                android:id="@+id/action_settings_to_item_list"
+                app:destination="@id/fragment_item_list"
+                app:popUpToInclusive="true"/>
     </fragment>
 
     <fragment
@@ -206,7 +225,12 @@
             android:id="@+id/fragment_account_setting"
             android:name="mozilla.lockbox.view.AccountSettingFragment"
             android:label="@string/nav_menu_account"
-            tools:layout="@layout/fragment_account_setting"/>
+            tools:layout="@layout/fragment_account_setting">
+            <action
+                android:id="@+id/action_account_setting_to_item_list"
+                app:destination="@id/fragment_item_list"
+                app:popUpToInclusive="true"/>
+    </fragment>
 
     <fragment
             android:id="@+id/fragment_filter"
