@@ -7,6 +7,8 @@
 package mozilla.lockbox.view
 
 import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
@@ -33,6 +35,7 @@ import mozilla.lockbox.R
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.presenter.EditItemDetailView
 import mozilla.lockbox.presenter.EditItemPresenter
+import mozilla.lockbox.support.PublicSuffixSupport
 import mozilla.lockbox.support.assertOnUiThread
 
 @ExperimentalCoroutinesApi
@@ -215,6 +218,64 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
             }
         }
     } */
+
+    private fun setTextWatcher(view: View) {
+        view.inputHostname.addTextChangedListener(
+            buildTextWatcher(
+                view.inputLayoutHostname
+            )
+        )
+        view.inputPassword.addTextChangedListener(
+            buildTextWatcher(
+                view.inputLayoutHostname
+            )
+        )
+    }
+
+    private fun buildTextWatcher(errorLayout: TextInputLayout): TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(charSequence: CharSequence, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(charSequence: CharSequence, start: Int, before: Int, count: Int) {
+                errorLayout.error = null
+            }
+
+            override fun afterTextChanged(editable: Editable) {
+                validateTextAndShowError(errorLayout)
+                errorLayout.setErrorTextColor(context?.getColorStateList(R.color.error_input_text))
+            }
+        }
+    }
+
+    fun validateTextAndShowError(inputLayout: TextInputLayout): String? {
+        val inputText: String? = inputLayout.editText?.text.toString()
+
+        val errorMessage = when (inputLayout.id) {
+            is R.id.inputLayoutHostname -> {
+                // hostname cannot be null
+                // has to have http:// or https://
+                when {
+                    TextUtils.isEmpty(inputText)
+                        || !URLUtil.isHttpUrl(inputText)
+                        || !URLUtil.isHttpsUrl(inputText)
+                            -> context?.getString(R.string.hostname_invalid_text)
+                    else -> null
+                }
+            }
+            is R.id.inputLayoutPassword -> {
+                // password cannot be empty
+                // cannot be just spaces
+                when {
+                    TextUtils.isEmpty(inputText) -> context?.getString(R.string.password_invalid_text)
+                    else -> null
+                }
+            }
+            else -> null // includes username
+        }
+
+        return errorMessage
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
