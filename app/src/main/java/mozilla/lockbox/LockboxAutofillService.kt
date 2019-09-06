@@ -50,11 +50,11 @@ class LockboxAutofillService(
     lateinit var dataStore: DataStore
 
     override fun onConnected() {
-        dispatcher.dispatch(LifecycleAction.AutofillStart)
         telemetryStore.injectContext(this)
         accountStore.injectContext(this)
         fxaSupport.injectContext(this)
         dataStore = DataStore.shared
+        dispatcher.dispatch(LifecycleAction.AutofillStart)
     }
 
     override fun onDisconnected() {

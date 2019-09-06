@@ -15,6 +15,7 @@
         android:overScrollMode="ifContentScrolls"
         android:windowSoftInputMode="adjustPan"
         android:background="@color/background_grey"
+        android:importantForAutofill="noExcludeDescendants"
         style="@style/EditItemDetail" >
 
     <androidx.appcompat.widget.Toolbar
@@ -106,7 +107,7 @@
                         card_view:layout_constraintEnd_toEndOf="parent"
                         tools:ignore="RtlSymmetry">
 
-                    <EditText
+                    <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/inputName"
                             style="@style/EditTextStyle"
                             android:layout_width="match_parent"

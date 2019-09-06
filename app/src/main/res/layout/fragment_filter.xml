@@ -11,12 +11,15 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:backgroundTint="@color/background_grey"
-    tools:context=".view.FilterFragment">
+    android:importantForAutofill="noExcludeDescendants"
+    tools:context=".view.FilterFragment"
+    tools:ignore="Autofill">
 
     <include layout="@layout/include_backable_filter"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/entriesView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        tools:ignore="Autofill"/>
 </LinearLayout>
