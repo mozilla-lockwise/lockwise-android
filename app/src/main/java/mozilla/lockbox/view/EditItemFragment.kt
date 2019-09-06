@@ -7,15 +7,22 @@
 package mozilla.lockbox.view
 
 import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextUtils
+import android.text.TextWatcher
 import android.text.method.PasswordTransformationMethod
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.webkit.URLUtil
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
+import com.google.android.material.textfield.TextInputLayout
 import com.jakewharton.rxbinding2.support.v7.widget.navigationClicks
 import com.jakewharton.rxbinding2.view.clicks
 import com.jakewharton.rxbinding2.widget.textChanges
@@ -27,6 +34,7 @@ import mozilla.lockbox.R
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.presenter.EditItemDetailView
 import mozilla.lockbox.presenter.EditItemPresenter
+import mozilla.lockbox.support.PublicSuffixSupport
 import mozilla.lockbox.support.assertOnUiThread
 
 @ExperimentalCoroutinesApi
@@ -49,7 +57,66 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupToolbar(view.toolbar)
+        setTextWatcher(view)
     }
+
+    private fun setTextWatcher(view: View) {
+        view.inputHostname.addTextChangedListener(
+            buildTextWatcher(
+                view.inputLayoutHostname
+            )
+        )
+        view.inputPassword.addTextChangedListener(
+            buildTextWatcher(
+                view.inputLayoutHostname
+            )
+        )
+    }
+
+    private fun buildTextWatcher(errorLayout: TextInputLayout): TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(charSequence: CharSequence, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(charSequence: CharSequence, start: Int, before: Int, count: Int) {
+                errorLayout.error = null
+            }
+
+            override fun afterTextChanged(editable: Editable) {
+                validateTextAndShowError(errorLayout)
+                errorLayout.setErrorTextColor(context?.getColorStateList(R.color.error_input_text))
+            }
+        }
+    }
+
+    fun validateTextAndShowError(inputLayout: TextInputLayout): String? {
+        val inputText: String? = inputLayout.editText?.text.toString()
+
+        val errorMessage = when (inputLayout.id) {
+            is R.id.inputLayoutHostname -> {
+                // hostname cannot be null
+                // has to have http:// or https://
+                when {
+                    TextUtils.isEmpty(inputText)
+                        || !URLUtil.isHttpUrl(inputText)
+                        || !URLUtil.isHttpsUrl(inputText)
+                            -> context?.getString(R.string.hostname_invalid_text)
+                    else -> null
+                }
+            }
+            is R.id.inputLayoutPassword -> {
+                // password cannot be empty
+                // cannot be just spaces
+                when {
+                    TextUtils.isEmpty(inputText) -> context?.getString(R.string.password_invalid_text)
+                    else -> null
+                }
+            }
+            else -> null // includes username
+        }
+
+        return errorMessage
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
