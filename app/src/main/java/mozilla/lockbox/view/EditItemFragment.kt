@@ -36,6 +36,7 @@ import mozilla.lockbox.presenter.EditItemDetailView
 import mozilla.lockbox.presenter.EditItemPresenter
 import mozilla.lockbox.support.PublicSuffixSupport
 import mozilla.lockbox.support.assertOnUiThread
+import mozilla.lockbox.support.validateEditTextAndShowError
 
 @ExperimentalCoroutinesApi
 class EditItemFragment : BackableFragment(), EditItemDetailView {
@@ -82,41 +83,11 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
             }
 
             override fun afterTextChanged(editable: Editable) {
-                validateTextAndShowError(errorLayout)
+                validateEditTextAndShowError(errorLayout)
                 errorLayout.setErrorTextColor(context?.getColorStateList(R.color.error_input_text))
             }
         }
     }
-
-    fun validateTextAndShowError(inputLayout: TextInputLayout): String? {
-        val inputText: String? = inputLayout.editText?.text.toString()
-
-        val errorMessage = when (inputLayout.id) {
-            is R.id.inputLayoutHostname -> {
-                // hostname cannot be null
-                // has to have http:// or https://
-                when {
-                    TextUtils.isEmpty(inputText)
-                        || !URLUtil.isHttpUrl(inputText)
-                        || !URLUtil.isHttpsUrl(inputText)
-                            -> context?.getString(R.string.hostname_invalid_text)
-                    else -> null
-                }
-            }
-            is R.id.inputLayoutPassword -> {
-                // password cannot be empty
-                // cannot be just spaces
-                when {
-                    TextUtils.isEmpty(inputText) -> context?.getString(R.string.password_invalid_text)
-                    else -> null
-                }
-            }
-            else -> null // includes username
-        }
-
-        return errorMessage
-    }
-
 
     override fun onDestroyView() {
         super.onDestroyView()
