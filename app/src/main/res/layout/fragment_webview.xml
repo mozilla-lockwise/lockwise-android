@@ -14,7 +14,8 @@
         android:id="@+id/fragment_webview"
         android:orientation="vertical"
         android:importantForAutofill="noExcludeDescendants"
-        tools:context=".view.AppWebPageFragment">
+        tools:context=".view.AppWebPageFragment"
+        tools:ignore="UnusedAttribute">
 
     <include layout="@layout/include_backable"
              app:layout_constraintVertical_chainStyle="packed"/>

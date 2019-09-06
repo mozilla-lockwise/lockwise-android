@@ -13,7 +13,7 @@
     android:backgroundTint="@color/background_grey"
     android:importantForAutofill="noExcludeDescendants"
     tools:context=".view.FilterFragment"
-    tools:ignore="Autofill">
+    tools:ignore="UnusedAttribute">
 
     <include layout="@layout/include_backable_filter"/>
 
