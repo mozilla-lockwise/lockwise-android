@@ -13,6 +13,7 @@
         android:layout_height="match_parent"
         android:id="@+id/fragment_webview"
         android:orientation="vertical"
+        android:importantForAutofill="noExcludeDescendants"
         tools:context=".view.AppWebPageFragment">
 
     <include layout="@layout/include_backable"
@@ -31,6 +32,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:overScrollMode="ifContentScrolls"
+            android:importantForAutofill="noExcludeDescendants"
+            tools:ignore="Autofill"
             app:layout_constraintTop_toBottomOf="@id/toolbar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintVertical_chainStyle="packed"
