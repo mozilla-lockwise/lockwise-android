@@ -164,7 +164,7 @@ class AppRoutePresenter(
 
             R.id.fragment_filter_backdrop to R.id.fragment_item_detail -> R.id.action_filter_to_itemDetail
             R.id.fragment_filter to R.id.fragment_item_detail -> R.id.action_filter_to_itemDetail
-            R.id.fragment_filter to R.id.fragment_item_list -> R.id.action_filter_to_item_list
+            R.id.fragment_filter to R.id.fragment_item_list -> R.id.action_filter_to_itemList
 
             else -> null
         }
