@@ -49,6 +49,11 @@
                 app:launchSingleTop="true"
                 app:popUpTo="@id/fragment_filter"
                 app:popUpToInclusive="true" />
+        <action android:id="@+id/action_init_to_fxa_login"
+                app:destination="@id/fragment_fxa_login"
+                app:launchSingleTop="true"
+                app:popUpTo="@id/fragment_fxa_login"
+                app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
