@@ -14,7 +14,7 @@ import mozilla.lockbox.R
 class WelcomeRobot : BaseTestRobot {
     override fun exists() = displayed { id(R.id.buttonGetStarted) }
 
-    fun tapGetStarted() = click { id(R.id.buttonGetStarted) }
+    fun tapGetStarted() = click { id(R.id.buttonGetStartedManually) }
 
     fun tapSkipSecureYourDevice() = click { id(android.R.id.button2) }
 }
