@@ -12,7 +12,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/fragment_item_detail"
-        android:background="@color/background_grey" >
+        android:background="@color/background_grey"
+        android:importantForAutofill="noExcludeDescendants"
+        tools:ignore="UnusedAttribute">
 
     <include layout="@layout/fragment_warning"
              android:layout_width="match_parent"
@@ -213,7 +215,7 @@
                     card_view:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/inputLayoutUsername"
                     tools:ignore="RtlSymmetry">
-                <androidx.appcompat.widget.AppCompatEditText
+                <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/inputPassword"
                         style="@style/EditTextStyle"
                         android:layout_width="match_parent"
