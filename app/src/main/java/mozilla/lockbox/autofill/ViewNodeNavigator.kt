@@ -5,6 +5,7 @@ import android.app.assist.AssistStructure.ViewNode
 import android.os.Build
 import android.view.autofill.AutofillId
 import androidx.annotation.RequiresApi
+import java.util.Locale
 
 interface AutofillNodeNavigator<T, U> {
     val rootNodes: List<T>
@@ -56,13 +57,12 @@ class ViewNodeNavigator(
 
     override fun autofillId(node: ViewNode): AutofillId? = node.autofillId
 
-    override fun isEditText(node: ViewNode): Boolean {
-        return node.className == "android.widget.EditText"
-    }
+    override fun isEditText(node: ViewNode) =
+        node.className == "android.widget.EditText"
 
-    override fun isHtmlInputField(node: ViewNode): Boolean {
-        return node.htmlInfo?.tag?.toLowerCase() == "input"
-    }
+    override fun isHtmlInputField(node: ViewNode) =
+        // Use English locale, as the HTML tags are all in English.
+        node.htmlInfo?.tag?.toLowerCase(Locale.ENGLISH) == "input"
 
     override fun packageName(node: ViewNode): String? = node.idPackage
 
