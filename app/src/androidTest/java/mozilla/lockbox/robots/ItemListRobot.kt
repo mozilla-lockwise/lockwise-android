@@ -15,7 +15,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import br.com.concretesolutions.kappuccino.actions.ClickActions.click
 import br.com.concretesolutions.kappuccino.assertions.VisibilityAssertions.displayed
-import br.com.concretesolutions.kappuccino.assertions.VisibilityAssertions.notDisplayed
 import mozilla.lockbox.R
 
 // ItemList
@@ -41,8 +40,8 @@ class ItemListRobot : BaseTestRobot {
         text(R.string.all_logins_recent)
     }
 
-    fun editedCredentialHostnameExists(hostname: String)= displayed { text(hostname) }
-    fun editedCredentialUsernameExists(username: String)= displayed { text(username) }
+    fun editedCredentialHostnameExists(hostname: String) = displayed { text(hostname) }
+    fun editedCredentialUsernameExists(username: String) = displayed { text(username) }
 
     fun openCredential(credential: String) = click { allOf { text(credential) } }
     fun credentialRemovedDoesNotExist(hostname: String) = onView(withText(hostname)).check(doesNotExist())

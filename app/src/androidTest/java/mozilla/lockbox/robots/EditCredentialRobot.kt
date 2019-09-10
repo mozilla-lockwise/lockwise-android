@@ -11,8 +11,6 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import br.com.concretesolutions.kappuccino.actions.ClickActions
-import br.com.concretesolutions.kappuccino.actions.TextActions.typeText
-
 import br.com.concretesolutions.kappuccino.assertions.VisibilityAssertions
 import mozilla.lockbox.R
 
@@ -30,7 +28,6 @@ class EditCredentialRobot : BaseTestRobot {
     fun editUserName(text: String) = onView(withId(R.id.inputUsername)).perform(replaceText(text))
 
     fun editPassword(text: String) = onView(withId(R.id.inputPassword)).perform(replaceText(text))
-
 }
 
 fun editCredential(f: EditCredentialRobot.() -> Unit) = EditCredentialRobot().apply(f)
