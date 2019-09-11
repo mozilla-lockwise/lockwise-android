@@ -76,9 +76,6 @@
     <!-- This is a heading that appears above a password in context of a detailed item view -->
     <string name="hint_password">Mot de passe</string>
 
-    <!-- This message appears to link to a web page explaining how to make changes to the details -->
-    <string name="learn_to_edit_login">Apprendre à modifier cet identifiant</string>
-
     <!-- This describes an icon to screenreaders that the button tapped will open the web address in a web browser -->
     <string name="launch_hostname_content_description">Ouvrir une adresse web dans un navigateur web</string>
     <!-- This describes an icon to screenreaders that the button tapped will copy the username to the device clipboard to paste and use in another application -->
@@ -250,5 +247,15 @@
 
     <!-- This is the placeholder text for an empty or null username. -->
     <string name="no_username">(aucun nom d’utilisateur)</string>
-    <!--<string name="sync_timed_out">Délai de synchronisation dépassé</string>-->
+
+    <!-- This is the description for the kebab menu in the item detail toolbar. -->
+    <string name="kebab_menu">Plus d’options</string>
+    <!-- This is the text on an item in the item detail toolbar menu to delete an entry. -->
+    <string name="delete">Supprimer</string>
+    <!-- This is the confirmation message title seen when attempting to delete a login. -->
+    <string name="delete_this_login">Supprimer cet identifiant ?</string>
+    <!-- This is the description for the deletion dialog. -->
+    <string name="delete_description">Cette action supprimera l’identifiant à la fois de %1$s et de Firefox.</string>
+    <!-- This is the text on an item in the item detail toolbar menu to edit an entry. -->
+    <string name="edit">Modifier</string>
 </resources>

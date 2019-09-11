@@ -84,9 +84,9 @@ configurations.all { config ->
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.1.0-beta01'
+    implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'com.google.android.material:material:1.1.0-alpha07'
+    implementation 'com.google.android.material:material:1.1.0-alpha09'
     implementation "androidx.recyclerview:recyclerview:$recyclerview_version"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.exifinterface:exifinterface:1.0.0'
@@ -106,6 +106,7 @@ dependencies {
     implementation "org.mozilla.components:lib-dataprotect:${rootProject.ext.android_components_version}"
     implementation "org.mozilla.components:lib-fetch-httpurlconnection:${rootProject.ext.android_components_version}"
     implementation "org.mozilla.components:lib-publicsuffixlist:${rootProject.ext.android_components_version}"
+    implementation "org.mozilla.components:support-rusthttp:${rootProject.ext.android_components_version}"
     implementation "org.mozilla.components:support-rustlog:${rootProject.ext.android_components_version}"
     implementation "org.mozilla.components:concept-sync:${rootProject.ext.android_components_version}"
 
@@ -118,8 +119,8 @@ dependencies {
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.2'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.2'
     testImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.2'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0-alpha01'
-    implementation 'androidx.lifecycle:lifecycle-common-java8:2.2.0-alpha01'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0-alpha03'
+    implementation 'androidx.lifecycle:lifecycle-common-java8:2.2.0-alpha03'
     implementation "android.arch.navigation:navigation-fragment:$navigation_version"
     implementation "android.arch.navigation:navigation-ui-ktx:$navigation_version"
     implementation 'com.adjust.sdk:adjust-android:4.17.0'
@@ -151,6 +152,14 @@ dependencies {
     androidTestImplementation 'br.com.concretesolutions:kappuccino:1.2.1'
     ktlint "com.github.shyiko:ktlint:0.28.0"
     androidTestImplementation "tools.fastlane:screengrab:1.2.0"
+    modules {
+        module('org.mozilla.appservices:full-megazord') {
+            replacedBy('org.mozilla.appservices:lockbox-megazord', 'prefer the lockbox megazord, to reduce final application size')
+        }
+        module('org.mozilla.appservices:lockbox-megazord') {
+            replacedBy('org.mozilla.appservices:lockbox-megazord-forUnitTests', 'prefer the forUnitTests variant if present')
+        }
+    }
 }
 
 sentry {
@@ -254,35 +263,3 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
 
 // Internal, but stable and convenient.
 import org.gradle.api.internal.artifacts.DefaultModuleIdentifier
-
-// This is the equivalent of what the `org.mozilla.appservices` Gradle plugin
-// achieved, minus asserting that the versions of all the megazord components
-// agree.  That assertion could be added if required.
-afterEvaluate {
-    // The definitions of the megazords themselves evolve: this set was determined from
-    // https://github.com/mozilla/application-services/blob/v0.27.0/megazords/lockbox/android/build.gradle#L79-L82,
-    // where the version in the URL is the tag corresponding to `mozilla_appservices_version`.  This
-    // will need to be bumped when `android_components_version` (and thus
-    // `mozilla_appservices_version`) is rolled forward.
-    def megazord = DefaultModuleIdentifier.newId('org.mozilla.appservices', 'lockbox-megazord')
-    def megazordComponents = [
-        DefaultModuleIdentifier.newId('org.mozilla.appservices', 'fxaclient'),
-        DefaultModuleIdentifier.newId('org.mozilla.appservices', 'logins'),
-        DefaultModuleIdentifier.newId('org.mozilla.appservices', 'rustlog'),
-    ]
-
-    configurations.each { configuration ->
-        configuration.resolutionStrategy.dependencySubstitution.all { dependency ->
-            if (dependency.requested instanceof ModuleComponentSelector) {
-                def moduleIdentifier = ((ModuleComponentSelector) dependency.requested).moduleIdentifier
-                if (megazordComponents.contains(moduleIdentifier)) {
-                    def megazordVersion = rootProject.ext.mozilla_appservices_version
-                    def substitution = "${megazord.group}:${megazord.name}:${megazordVersion}"
-                    logger.lifecycle("In ${configuration}: substituting megazord module '$substitution' for component module" +
-                                     " '${moduleIdentifier.group}:${moduleIdentifier.name}:${dependency.requested.version}'")
-                    dependency.useTarget(substitution)
-                }
-            }
-        }
-    }
-}

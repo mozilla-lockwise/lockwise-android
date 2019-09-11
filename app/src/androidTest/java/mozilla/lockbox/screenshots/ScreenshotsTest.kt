@@ -6,6 +6,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.rule.ActivityTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.espresso.Espresso.pressBack
@@ -75,6 +76,19 @@ open class ScreenshotsTest {
         onView(withId(R.id.inputHostname))
                 .check(matches(isDisplayed()))
         Screengrab.screenshot("item-detail-screen")
+
+        onView(withId(R.id.kebabMenuButton)).perform(click())
+        Screengrab.screenshot("item-menu")
+
+        onView(withText(R.string.delete)).perform(click())
+        Screengrab.screenshot("item-delete-disclaimer")
+
+        onView(withText(R.string.cancel)).perform(click())
+        /* Edit Menu Not developed yet
+        onView(withId(R.id.kebabMenu)).perform(click())
+        onView(withText(R.string.edit)).perform(click())
+        Screengrab.screenshot("item-edit-menu")
+        */
 
         onView(withId(R.id.inputUsername)).perform(click())
         Screengrab.screenshot("username-copied-screen")

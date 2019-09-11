@@ -9,6 +9,7 @@ package mozilla.lockbox.mocks
 import mozilla.appservices.logins.LoginsStorage
 import mozilla.appservices.logins.ServerPassword
 import mozilla.appservices.logins.SyncUnlockInfo
+import mozilla.appservices.sync15.SyncTelemetryPing
 import mozilla.components.service.sync.logins.AsyncLoginsStorage
 import mozilla.components.service.sync.logins.AsyncLoginsStorageAdapter
 import mozilla.lockbox.support.DataStoreSupport
@@ -60,7 +61,14 @@ open class MockLoginsStorage : LoginsStorage {
 
     override fun close() {}
 
-    override fun sync(syncInfo: SyncUnlockInfo) {}
+    override fun sync(syncInfo: SyncUnlockInfo): SyncTelemetryPing {
+        return SyncTelemetryPing(
+            version = 1,
+            uid = "uid",
+            events = emptyList(),
+            syncs = emptyList()
+        )
+    }
 
     override fun reset() {}
 

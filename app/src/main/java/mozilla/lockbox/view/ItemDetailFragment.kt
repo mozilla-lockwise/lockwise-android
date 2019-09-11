@@ -8,7 +8,6 @@ package mozilla.lockbox.view
 
 import android.os.Bundle
 import android.text.InputType
-import androidx.annotation.StringRes
 import android.text.method.PasswordTransformationMethod
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -17,32 +16,51 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.StringRes
+import androidx.appcompat.view.ContextThemeWrapper
+import androidx.appcompat.widget.PopupMenu
 import com.jakewharton.rxbinding2.view.clicks
+import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Observable
 import kotlinx.android.synthetic.main.fragment_item_detail.*
 import kotlinx.android.synthetic.main.fragment_item_detail.view.*
-import kotlinx.android.synthetic.main.include_backable.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.presenter.ItemDetailPresenter
 import mozilla.lockbox.presenter.ItemDetailView
 import mozilla.lockbox.support.assertOnUiThread
+import androidx.appcompat.view.menu.MenuBuilder
 
 @ExperimentalCoroutinesApi
 class ItemDetailFragment : BackableFragment(), ItemDetailView {
+
+    private var itemId: String? = null
+    private var kebabMenu: ItemDetailOptionMenu? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val itemId = arguments?.let {
-            ItemDetailFragmentArgs.fromBundle(it)
-                .itemId
+        itemId = arguments?.let {
+            ItemDetailFragmentArgs.fromBundle(it).itemId
         }
 
+        this.setHasOptionsMenu(true)
         presenter = ItemDetailPresenter(this, itemId)
+
         return inflater.inflate(R.layout.fragment_item_detail, container, false)
+    }
+
+    override fun onPause() {
+        kebabMenu?.dismiss()
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        kebabMenu?.dismiss()
+        super.onDestroy()
     }
 
     private val errorHelper = NetworkErrorHelper()
@@ -59,8 +77,12 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
     override val hostnameClicks: Observable<Unit>
         get() = view!!.inputHostname.clicks()
 
-    override val learnMoreClicks: Observable<Unit>
-        get() = view!!.detailLearnMore.clicks()
+    override val kebabMenuClicks: Observable<Unit>
+        get() = view!!.toolbar.kebabMenuButton.clicks()
+
+    override val editClicks: BehaviorRelay<Unit> = BehaviorRelay.create()
+
+    override val deleteClicks: BehaviorRelay<Unit> = BehaviorRelay.create()
 
     override var isPasswordVisible: Boolean = false
         set(value) {
@@ -68,6 +90,31 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
             field = value
             updatePasswordVisibility(value)
         }
+
+    override fun showPopup() {
+        val wrapper = ContextThemeWrapper(context, R.style.PopupMenu)
+        val popupMenu = PopupMenu(wrapper, this.kebabMenuButton)
+
+        popupMenu.setOnMenuItemClickListener { item ->
+            when (item?.itemId) {
+                R.id.edit -> {
+                    editClicks.accept(Unit)
+                    true
+                }
+                R.id.delete -> {
+                    deleteClicks.accept(Unit)
+                    true
+                }
+                else -> false
+            }
+        }
+
+        popupMenu.inflate(R.menu.item_detail_menu)
+
+        val builder = popupMenu.menu as MenuBuilder
+        builder.setOptionalIconsVisible(true)
+        popupMenu.show()
+    }
 
     private fun updatePasswordVisibility(visible: Boolean) {
         if (visible) {
@@ -81,7 +128,10 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
 
     override fun updateItem(item: ItemDetailViewModel) {
         assertOnUiThread()
+        toolbar.elevation = resources.getDimension(R.dimen.larger_toolbar_elevation)
         toolbar.title = item.title
+        toolbar.entryTitle.text = item.title
+        toolbar.entryTitle.gravity = Gravity.CENTER_VERTICAL
 
         inputLayoutHostname.isHintAnimationEnabled = false
         inputLayoutUsername.isHintAnimationEnabled = false
@@ -129,6 +179,18 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         toast.show()
     }
 
+    // used for feature flag
+    override fun showKebabMenu() {
+        toolbar.kebabMenuButton.visibility = View.VISIBLE
+        toolbar.kebabMenuButton.isClickable = true
+    }
+
+    // used for feature flag
+    override fun hideKebabMenu() {
+        toolbar.kebabMenuButton.visibility = View.GONE
+        toolbar.kebabMenuButton.isClickable = false
+    }
+
     override fun handleNetworkError(networkErrorVisibility: Boolean) {
         if (!networkErrorVisibility) {
             errorHelper.showNetworkError(view!!)
@@ -136,10 +198,10 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
             errorHelper.hideNetworkError(view!!, view!!.cardView, R.dimen.hidden_network_error)
         }
     }
+}
 
 //    override val retryNetworkConnectionClicks: Observable<Unit>
 //        get() = view!!.networkWarning.retryButton.clicks()
-}
 
 var EditText.readOnly: Boolean
     get() = this.isFocusable

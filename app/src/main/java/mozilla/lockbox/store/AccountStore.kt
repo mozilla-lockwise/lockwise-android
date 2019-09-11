@@ -22,12 +22,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.rx2.asMaybe
 import kotlinx.coroutines.rx2.asSingle
-import mozilla.appservices.fxaclient.Config
 import mozilla.appservices.fxaclient.FxaException
 import mozilla.components.concept.sync.AccessTokenInfo
 import mozilla.components.concept.sync.Avatar
 import mozilla.components.concept.sync.Profile
 import mozilla.components.service.fxa.FirefoxAccount
+import mozilla.components.service.fxa.ServerConfig
+import mozilla.components.service.fxa.sharing.AccountSharing
+import mozilla.components.service.fxa.sharing.ShareableAccount
 import mozilla.lockbox.action.AccountAction
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
@@ -91,6 +93,7 @@ open class AccountStore(
 
     private lateinit var webView: WebView
     private lateinit var logDirectory: File
+    private lateinit var context: Context
 
     init {
         val resetObservable = lifecycleStore.lifecycleEvents
@@ -109,6 +112,7 @@ open class AccountStore(
                 when (it) {
                     is AccountAction.OauthRedirect -> this.oauthLogin(it.url)
                     is AccountAction.UseTestData -> this.populateTestAccountInformation(true)
+                    is AccountAction.AutomaticLogin -> this.automaticLogin(it.account)
                     is AccountAction.Reset -> this.clear()
                 }
             }
@@ -117,7 +121,7 @@ open class AccountStore(
         // Moves credentials from the AccountStore, into the DataStore.
         syncCredentials
             .map {
-                it.value?.let { credentials -> DataStoreAction.UpdateCredentials(credentials) }
+                it.value?.let { credentials -> DataStoreAction.UpdateSyncCredentials(credentials) }
                     ?: DataStoreAction.Reset
             }
             .subscribe(dispatcher::dispatch)
@@ -126,8 +130,27 @@ open class AccountStore(
 
     override fun injectContext(context: Context) {
         detectAccount()
+        this.context = context
         webView = WebView(context)
         logDirectory = context.getDir("webview", Context.MODE_PRIVATE)
+    }
+
+    fun shareableAccount(): ShareableAccount? {
+        return AccountSharing.queryShareableAccounts(context).firstOrNull()
+    }
+
+    private fun automaticLogin(account: ShareableAccount) {
+        fxa?.migrateFromSessionTokenAsync(
+            account.authInfo.sessionToken,
+            account.authInfo.kSync,
+            account.authInfo.kXCS
+        )
+            ?.let {
+                it.asSingle(coroutineContext)
+                    .map { true }
+                    .subscribe(this::populateAccountInformation, this::pushError)
+                    .addTo(compositeDisposable)
+            }
     }
 
     private fun detectAccount() {
@@ -189,7 +212,7 @@ open class AccountStore(
 
     private fun generateNewFirefoxAccount() {
         try {
-            val config = Config.release(Constant.FxA.clientID, Constant.FxA.redirectUri)
+            val config = ServerConfig.release(Constant.FxA.clientID, Constant.FxA.redirectUri)
             fxa = FirefoxAccount(config)
             generateLoginURL()
         } catch (e: FxaException) {
@@ -202,7 +225,7 @@ open class AccountStore(
     private fun generateLoginURL() {
         val fxa = fxa ?: return
 
-        fxa.beginOAuthFlowAsync(Constant.FxA.scopes, true)
+        fxa.beginOAuthFlowAsync(Constant.FxA.scopes)
             .asMaybe(coroutineContext)
             .subscribe((this.loginURL as Subject)::onNext, this::pushError)
             .addTo(compositeDisposable)
@@ -243,8 +266,7 @@ open class AccountStore(
 
     private fun removeDeviceFromFxA() {
         if (fxa != null) {
-            fxa!!.deviceConstellation()
-                .destroyCurrentDeviceAsync()
+            fxa!!.disconnectAsync()
                 .asSingle(coroutineContext)
                 .subscribe()
                 .addTo(compositeDisposable)

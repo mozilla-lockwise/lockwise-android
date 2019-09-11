@@ -39,14 +39,14 @@ _all commits on all branches and pull requests are automatically built_
     - for example: `1.3.1.1624` is major version 1.3 with 1 patch release, (bitrise) build 1624
     - `git tag -a -s 1.3.1.1624 -m "1.3.1 (Build 1624)"`
 4. push the tag to GitHub and create a corresponding "Release" on GitHub.com
+    - mark this as a "pre-release" until PI requests are finished
     - copy the release notes to the "Release" on GitHub
     - download the `-signed.apk` from bitrise and attach it to the Release on GitHub
     - **open the `-signed.apk` and confirm release build does not allow screenshots and does not expose the contents of the app in the switcher**
 5. Upload the `-signed.apk` (from bitrise) to the [Play Console][2]:
     - browse to "Release Management" > "App Releases" > "Internal test track" > "Manage"
     - "Create Release" and upload the signed APK, set the version to match the tag (for example: `1.2.1339`) then "Review" and the build will be immediately available to the core team
-    - Browse to
-6. Download the `app-mapping.txt` (ProGuard rules) from bitrise and create an `AndroidManifest.xml` to map the file to the specific build:
+6. Download the `app-mapping.txt` (ProGuard rules) from bitrise and create an `AndroidManifest.xml` (in a local folder on your machine) to map the file to the specific build:
     ```
     <?xml version="1.0" encoding="utf-8"?>
     <manifest xmlns:android="http://schemas.android.com/apk/res/android"
@@ -55,10 +55,17 @@ _all commits on all branches and pull requests are automatically built_
         android:versionName="1.1.1" >
     </manifest>
     ```
-7. Browse to "Android Vitals" and "Deobfusication files" and upload the `app-mapping.txt` file from bitrise.io
-8. Upload the mapping and manifest to Sentry using `sentry-cli` and following [these instructions](https://docs.sentry.io/cli/dif/proguard/](https://docs.sentry.io/cli/dif/proguard/)
+    - Suggestion: rename the file to `AndroidManifest-BUILDNUMBER.xml` to make it less generic
+7. [Create an auth token](https://sentry.prod.mozaws.net/settings/account/api/auth-tokens/) for your sentry account that will allow you to create releases. This will be used when uploading the `app-mapping` and `AndroidManifest`. If you have already created an auth token, there is no need to create a new one.
+8. Browse to "Android Vitals" and "Deobfusication files" and upload the `app-mapping.txt` file from bitrise.io
+    - Suggestion: rename the file to `app-mapping-BUILDNUMBER.txt` to make it less generic
+9. Upload the mapping and manifest to Sentry using `sentry-cli` and following [these instructions](https://docs.sentry.io/cli/dif/proguard/)
+    - The upload script should look something like this:
+    ```
+    SENTRY_URL=https://MYSENTRYURL/ sentry-cli --auth-token MYAUTHTOKEN upload-proguard --android-manifest /PATH/to/manifest/AndroidManifest-4854.xml --org operations --project lockwise-android /PATH/to/appmapping/app-mapping-4854.txt
+    ```
     - HINT: if you get a 411 "content-length" error, you may need to add the `--no-reprocessing` flag due to a bug with GCP and the `sentry-cli`
-9. Continue the "Distributing..." instructions
+10. Continue the "Distributing..." instructions
 
 ### In Case of Emergency (Release)
 

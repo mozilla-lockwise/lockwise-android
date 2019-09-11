@@ -27,19 +27,17 @@ import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.log
 import mozilla.lockbox.model.SyncCredentials
-import mozilla.lockbox.support.Constant
+import mozilla.lockbox.support.Consumable
 import mozilla.lockbox.support.DataStoreSupport
 import mozilla.lockbox.support.FxASyncDataStoreSupport
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.TimingSupport
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeoutException
 import kotlin.coroutines.CoroutineContext
 
 @ExperimentalCoroutinesApi
 open class DataStore(
-    val dispatcher: Dispatcher = Dispatcher.shared,
-    var support: DataStoreSupport = FxASyncDataStoreSupport.shared,
+    open val dispatcher: Dispatcher = Dispatcher.shared,
+    open var support: DataStoreSupport = FxASyncDataStoreSupport.shared,
     private val timingSupport: TimingSupport = TimingSupport.shared,
     private val lifecycleStore: LifecycleStore = LifecycleStore.shared
 ) {
@@ -63,10 +61,12 @@ open class DataStore(
     @VisibleForTesting
     val syncStateSubject: BehaviorRelay<SyncState> = BehaviorRelay.createDefault(SyncState.NotSyncing)
     private val listSubject: BehaviorRelay<List<ServerPassword>> = BehaviorRelay.createDefault(emptyList())
+    private val deletedItemSubject = ReplayRelay.create<Consumable<ServerPassword>>()
 
     open val state: Observable<State> = stateSubject
     open val syncState: Observable<SyncState> = syncStateSubject
     open val list: Observable<List<ServerPassword>> get() = listSubject
+    open val deletedItem: Observable<Consumable<ServerPassword>> get() = deletedItemSubject
 
     private val exceptionHandler: CoroutineExceptionHandler
         get() = CoroutineExceptionHandler { _, e ->
@@ -107,7 +107,9 @@ open class DataStore(
                     is DataStoreAction.Sync -> sync()
                     is DataStoreAction.Touch -> touch(action.id)
                     is DataStoreAction.Reset -> reset()
-                    is DataStoreAction.UpdateCredentials -> updateCredentials(action.syncCredentials)
+                    is DataStoreAction.UpdateSyncCredentials -> updateCredentials(action.syncCredentials)
+                    is DataStoreAction.Delete -> delete(action.item)
+                    is DataStoreAction.UpdateItemDetail -> update(action.item)
                 }
             }
             .addTo(compositeDisposable)
@@ -118,6 +120,37 @@ open class DataStore(
             .addTo(compositeDisposable)
 
         setupAutoLock()
+    }
+
+    private fun delete(item: ServerPassword) {
+        try {
+            backend.delete(item.id)
+                .asSingle(coroutineContext)
+                .subscribe { _ ->
+                    dispatcher.dispatch(DataStoreAction.Sync)
+                }
+                .addTo(compositeDisposable)
+
+            deletedItemSubject.accept(Consumable(item))
+        } catch (loginsStorageException: LoginsStorageException) {
+            pushError(loginsStorageException)
+        }
+    }
+
+    private fun update(item: ServerPassword) {
+        try {
+            backend.update(item)
+                .asSingle(coroutineContext)
+                .subscribe({
+                    this.updateList(it)
+                    dispatcher.dispatch(DataStoreAction.Sync)
+                }, {
+                    this.pushError(it)
+                })
+                .addTo(compositeDisposable)
+        } catch (loginsStorageException: LoginsStorageException) {
+            pushError(loginsStorageException)
+        }
     }
 
     private fun shutdown() {
@@ -206,9 +239,12 @@ open class DataStore(
         }
     }
 
-    private fun syncIfRequired() {
+    @VisibleForTesting(
+        otherwise = VisibleForTesting.PRIVATE
+    )
+    fun syncIfRequired() {
         if (timingSupport.shouldSync) {
-            this.sync()
+            dispatcher.dispatch(DataStoreAction.Sync)
             timingSupport.storeNextSyncTime()
         }
     }
@@ -229,21 +265,18 @@ open class DataStore(
 
         backend.sync(syncConfig)
             .asSingle(coroutineContext)
-            .timeout(Constant.App.syncTimeout, TimeUnit.SECONDS)
-            .doOnEvent { _, err ->
-                (err as? TimeoutException).let {
-                    // syncStateSubject.accept(SyncState.TimedOut)
-                    dispatcher.dispatch(DataStoreAction.SyncTimeout(it?.message ?: ""))
-                }.run {
-                    syncStateSubject.accept(SyncState.NotSyncing)
-                }
+            .map {
+                log.debug("Hashed UID: $it")
+            }
+            .doOnEvent { _, _ ->
+                syncStateSubject.accept(SyncState.NotSyncing)
             }
             .subscribe({
-                    this.updateList(it)
-                    dispatcher.dispatch(DataStoreAction.SyncEnd)
+                this.updateList(it)
+                dispatcher.dispatch(DataStoreAction.SyncSuccess)
             }, {
-                    this.pushError(it)
-                    dispatcher.dispatch(DataStoreAction.SyncError(it.message ?: ""))
+                this.pushError(it)
+                dispatcher.dispatch(DataStoreAction.SyncError(it.message.orEmpty()))
             })
             .addTo(compositeDisposable)
     }

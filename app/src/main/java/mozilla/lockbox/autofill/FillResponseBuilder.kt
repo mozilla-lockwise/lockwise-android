@@ -102,7 +102,7 @@ open class FillResponseBuilder(
         val title = titleFromHostname(credential.hostname)
         val username = credential.username ?: context.getString(R.string.no_username)
 
-        parsedStructure.usernameId?.let {
+        parsedStructure.usernameId?.let { id ->
             val presentation = RemoteViews(context.packageName, R.layout.autofill_item)
                 .apply {
                     setTextViewText(R.id.autofillValue, username)
@@ -110,13 +110,13 @@ open class FillResponseBuilder(
                 }
 
             datasetBuilder.setValue(
-                it,
-                AutofillValue.forText(credential.username ?: ""),
+                id,
+                credential.username?.let { AutofillValue.forText(it) },
                 presentation
             )
         }
 
-        parsedStructure.passwordId?.let {
+        parsedStructure.passwordId?.let { id ->
             val presentation = RemoteViews(context.packageName, R.layout.autofill_item)
                 .apply {
                     setTextViewText(R.id.autofillValue, context.getString(R.string.password_for, username))
@@ -124,7 +124,7 @@ open class FillResponseBuilder(
                 }
 
             datasetBuilder.setValue(
-                it,
+                id,
                 AutofillValue.forText(credential.password),
                 presentation
             )

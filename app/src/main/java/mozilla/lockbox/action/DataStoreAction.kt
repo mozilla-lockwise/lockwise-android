@@ -6,7 +6,7 @@
 
 package mozilla.lockbox.action
 
-import mozilla.components.service.sync.logins.ServerPassword
+import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.model.SyncCredentials
 
 sealed class DataStoreAction(
@@ -25,19 +25,9 @@ sealed class DataStoreAction(
     object Sync : DataStoreAction(TelemetryEventMethod.sync_start, TelemetryEventObject.datastore)
 
     /**
-     * Emitted when a sync request completes.
+     * Emitted when a sync request completes successfully with sync data.
      */
-    object SyncEnd : DataStoreAction(TelemetryEventMethod.sync_end, TelemetryEventObject.datastore)
-
-    /**
-     * Emitted when the app times out when listening for a response from sync.
-     */
-    data class SyncTimeout(val error: String)
-        : DataStoreAction(
-            TelemetryEventMethod.sync_timeout,
-            TelemetryEventObject.datastore,
-            error
-        )
+    object SyncSuccess : DataStoreAction(TelemetryEventMethod.sync_end, TelemetryEventObject.datastore)
 
     /**
      * Emitted when the app receives an error response from sync.
@@ -56,42 +46,47 @@ sealed class DataStoreAction(
     /**
      * Emitted when an update to the item list has failed with an error.
      */
-    data class ListUpdateError(val error: String)
-        : DataStoreAction(
-            TelemetryEventMethod.list_update_error,
-            TelemetryEventObject.datastore,
-            error
-        )
+    data class ListUpdateError(val error: String) : DataStoreAction(
+        TelemetryEventMethod.list_update_error,
+        TelemetryEventObject.datastore,
+        error
+    )
 
     /**
      * Emitted when a DataStore action results in an error.
      */
-    data class Errors(val error: String)
-        : DataStoreAction(
-            TelemetryEventMethod.list_update_error,
-            TelemetryEventObject.datastore,
-            error
-        )
+    data class Errors(val error: String) : DataStoreAction(
+        TelemetryEventMethod.list_update_error,
+        TelemetryEventObject.datastore,
+        error
+    )
 
-    data class Touch(val id: String)
-        : DataStoreAction(
-            TelemetryEventMethod.touch,
-            TelemetryEventObject.datastore,
-            "ID: $id"
-        )
+    data class Touch(val id: String) : DataStoreAction(
+        TelemetryEventMethod.touch,
+        TelemetryEventObject.datastore,
+        "ID: $id"
+    )
 
-    data class UpdateCredentials(val syncCredentials: SyncCredentials)
-        : DataStoreAction(
-            TelemetryEventMethod.update_credentials,
-            TelemetryEventObject.datastore
-        )
+    data class UpdateSyncCredentials(val syncCredentials: SyncCredentials) : DataStoreAction(
+        TelemetryEventMethod.update_credentials,
+        TelemetryEventObject.datastore
+    )
 
-    data class Delete(val item: ServerPassword?)
-        : DataStoreAction(
-            TelemetryEventMethod.delete,
-            TelemetryEventObject.delete_credential,
-            item?.id
-        )
+    /**
+     * Emitted when an entry is deleted from the entry's detail view or the edit view.
+     */
+    data class Delete(val item: ServerPassword) : DataStoreAction(
+        TelemetryEventMethod.delete,
+        TelemetryEventObject.delete_credential,
+        item.id
+    )
 
-    data class Edit(val itemId: Int) : DataStoreAction(TelemetryEventMethod.edit, TelemetryEventObject.edit_credential)
+    /**
+     * Emitted when an entry is edited and saved.
+     */
+    data class UpdateItemDetail(val item: ServerPassword)
+        : DataStoreAction(
+            TelemetryEventMethod.edit,
+            TelemetryEventObject.update_credential
+    )
 }

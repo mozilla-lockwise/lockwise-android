@@ -1,5 +1,25 @@
 # Release Notes
 
+## 1.1.4 (Build 4814)
+
+Refine telemetry for sync and fix crashes.
+
+All changes since version 1.1.3: 
+
+- Telemetry for sync (#835)
+- String updates for localization (#852)
+- Update app services, android components, and megazord configuration (#865)
+- Update Readme with l10n process (#872)
+- Fix obvious NPE sync crash (#884)
+- Create infrastructure for feature flags (#882)
+- Add telemetry probes to syncIfRequired trigger syncs (#887)
+- Import strings from l10n (#893)
+- Remove timeout from sync (#889)
+- Fail fast if the edge between to routes is not in the nav graph. (#895)
+- Add fxalogin to autofill onboarding route. (#901)
+- Routing back to itemlist on login/search/feedback forms (#890)
+- Add null text value for empty usernames (#902)
+
 ## 1.1.3 (Build 4584)
 
 We fixed more bugs to help sync for some users, as well as some UI updates to standardize localized views.

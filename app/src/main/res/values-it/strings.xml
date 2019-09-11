@@ -80,9 +80,6 @@
     <!-- This is a heading that appears above a password in context of a detailed item view -->
     <string name="hint_password">Password</string>
 
-    <!-- This message appears to link to a web page explaining how to make changes to the details -->
-    <string name="learn_to_edit_login">Scopri come modificare questa credenziale</string>
-
     <!-- This describes an icon to screenreaders that the button tapped will open the web address in a web browser -->
     <string name="launch_hostname_content_description">Apri indirizzo nel browser</string>
     <!-- This describes an icon to screenreaders that the button tapped will copy the username to the device clipboard to paste and use in another application -->
@@ -258,5 +255,15 @@
 
     <!-- This is the placeholder text for an empty or null username. -->
     <string name="no_username">[nessun nome utente]</string>
-    <!--<string name="sync_timed_out">Tempo per la sincronizzazione scaduto</string>-->
+
+    <!-- This is the description for the kebab menu in the item detail toolbar. -->
+    <string name="kebab_menu">Altre opzioni</string>
+    <!-- This is the text on an item in the item detail toolbar menu to delete an entry. -->
+    <string name="delete">Elimina</string>
+    <!-- This is the confirmation message title seen when attempting to delete a login. -->
+    <string name="delete_this_login">Eliminare questa credenziale?</string>
+    <!-- This is the description for the deletion dialog. -->
+    <string name="delete_description">Questa operazione eliminerà la credenziale sia da %1$s che da Firefox.</string>
+    <!-- This is the text on an item in the item detail toolbar menu to edit an entry. -->
+    <string name="edit">Modifica</string>
 </resources>

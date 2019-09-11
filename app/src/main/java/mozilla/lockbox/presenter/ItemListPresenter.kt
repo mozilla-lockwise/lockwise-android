@@ -51,6 +51,7 @@ interface ItemListView {
     val isRefreshing: Boolean
     fun stopRefreshing()
     fun showToastNotification(@StringRes strId: Int)
+    fun showDeleteToastNotification(text: String)
 }
 
 @ExperimentalCoroutinesApi
@@ -83,14 +84,6 @@ class ItemListPresenter(
             }
             .addTo(compositeDisposable)
 
-        /* timeout to be fixed in https://github.com/mozilla-lockwise/lockwise-android/issues/791
-              dataStore.syncState
-                  .filter { it == DataStore.SyncState.TimedOut }
-                  .map { R.string.sync_timed_out }
-                  .observeOn(AndroidSchedulers.mainThread())
-                  .subscribe(view::showToastNotification)
-                  .addTo(compositeDisposable)
-        */
         Observables.combineLatest(dataStore.list, settingStore.itemListSortOrder)
             .distinctUntilChanged()
             .map { pair ->
@@ -169,6 +162,13 @@ class ItemListPresenter(
 
         networkStore.isConnected
             .subscribe(view::handleNetworkError)
+            .addTo(compositeDisposable)
+
+        dataStore.deletedItem
+            .subscribe {
+                val event = it.get() ?: return@subscribe
+                view.showDeleteToastNotification(event.formSubmitURL ?: event.hostname)
+            }
             .addTo(compositeDisposable)
 
         // TODO: make this more robust to retry loading the correct page again (loadUrl)

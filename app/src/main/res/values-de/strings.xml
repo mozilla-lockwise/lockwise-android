@@ -76,8 +76,6 @@
     <string name="hint_username">Benutzername</string>
     <!-- This is a heading that appears above a password in context of a detailed item view -->
     <string name="hint_password">Passwort</string>
-    <!-- This message appears to link to a web page explaining how to make changes to the details -->
-    <string name="learn_to_edit_login">Finde heraus, wie du diese Zugangsdaten bearbeiten kannst</string>
 
     <!-- This describes an icon to screenreaders that the button tapped will open the web address in a web browser -->
     <string name="launch_hostname_content_description">Grafik: Internetadresse im Browser öffnen</string>
@@ -252,5 +250,15 @@
 
     <!-- This is the placeholder text for an empty or null username. -->
     <string name="no_username">(Kein Benutzername)</string>
-    <!--<string name="sync_timed_out">Zeitüberschreitung bei Synchronisation</string>-->
+
+    <!-- This is the description for the kebab menu in the item detail toolbar. -->
+    <string name="kebab_menu">Weitere Optionen</string>
+    <!-- This is the text on an item in the item detail toolbar menu to delete an entry. -->
+    <string name="delete">Löschen</string>
+    <!-- This is the confirmation message title seen when attempting to delete a login. -->
+    <string name="delete_this_login">Diese Zugangsdaten löschen?</string>
+    <!-- This is the description for the deletion dialog. -->
+    <string name="delete_description">Dies löscht diese Zugangsdaten von %1$s und Firefox.</string>
+    <!-- This is the text on an item in the item detail toolbar menu to edit an entry. -->
+    <string name="edit">Bearbeiten</string>
 </resources>

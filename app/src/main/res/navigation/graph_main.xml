@@ -29,6 +29,31 @@
                 app:launchSingleTop="true"
                 app:popUpTo="@id/fragment_welcome"
                 app:popUpToInclusive="true" />
+        <action android:id="@+id/action_init_to_settings"
+                app:destination="@id/fragment_setting"
+                app:launchSingleTop="true"
+                app:popUpTo="@id/fragment_setting"
+                app:popUpToInclusive="true" />
+        <action android:id="@+id/action_init_to_account_setting"
+                app:destination="@id/fragment_account_setting"
+                app:launchSingleTop="true"
+                app:popUpTo="@id/fragment_account_setting"
+                app:popUpToInclusive="true" />
+        <action android:id="@+id/action_init_to_item_detail"
+                app:destination="@id/fragment_item_detail"
+                app:launchSingleTop="true"
+                app:popUpTo="@id/fragment_item_detail"
+                app:popUpToInclusive="true" />
+        <action android:id="@+id/action_init_to_filter"
+                app:destination="@id/fragment_filter"
+                app:launchSingleTop="true"
+                app:popUpTo="@id/fragment_filter"
+                app:popUpToInclusive="true" />
+        <action android:id="@+id/action_init_to_fxa_login"
+                app:destination="@id/fragment_fxa_login"
+                app:launchSingleTop="true"
+                app:popUpTo="@id/fragment_fxa_login"
+                app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -38,6 +63,10 @@
         <action
                 android:id="@+id/action_welcome_to_fxaLogin"
                 app:destination="@id/fragment_fxa_login"/>
+        <action
+                android:id="@+id/action_welcome_to_autoLogin"
+                app:launchSingleTop="true"
+                app:destination="@id/fragment_item_list"/>
     </fragment>
 
     <fragment
@@ -48,15 +77,23 @@
                 android:id="@+id/action_fxaLogin_to_itemList"
                 app:destination="@id/fragment_item_list"
                 app:launchSingleTop="true"
-                app:popUpTo="@+id/fragment_item_list"/>
+                app:popUpTo="@+id/fragment_item_list"
+                app:popUpToInclusive="true" />
 
         <action
                 android:id="@+id/action_fxaLogin_to_fingerprint_onboarding"
-                app:destination="@id/fragment_fingerprint_onboarding"/>
+                app:destination="@id/fragment_fingerprint_onboarding"
+                app:popUpToInclusive="true" />
+
+        <action
+                android:id="@+id/action_fxaLogin_to_autofill_onboarding"
+                app:destination="@id/fragment_autofill_onboarding"
+                app:popUpToInclusive="true" />
 
         <action
                 android:id="@+id/action_fxaLogin_to_onboarding_confirmation"
-                app:destination="@id/fragment_onboarding_confirmation"/>
+                app:destination="@id/fragment_onboarding_confirmation"
+                app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -135,6 +172,34 @@
                 android:name="itemId"
                 android:defaultValue="MISSING_ID"
                 app:argType="string"/>
+        <action
+                android:id="@+id/action_itemDetail_to_edit"
+                app:destination="@id/fragment_item_edit"
+                app:launchSingleTop="true"
+                app:popUpTo="@id/fragment_item_edit"
+                app:popUpToInclusive="true"/>
+        <action
+                android:id="@+id/action_itemDetail_to_locked"
+                app:destination="@id/fragment_locked"
+                app:popUpToInclusive="true"/>
+    </fragment>
+
+    <fragment
+            android:id="@+id/fragment_item_edit"
+            android:name="mozilla.lockbox.view.EditItemFragment"
+            tools:layout="@layout/fragment_item_edit">
+        <argument
+                android:name="itemId"
+                android:defaultValue="MISSING_ID"
+                app:argType="string"/>
+        <action
+                android:id="@+id/action_itemEdit_to_itemList"
+                app:destination="@id/fragment_item_list"
+                app:popUpToInclusive="true"/>
+        <action
+                android:id="@+id/action_itemEdit_to_locked"
+                app:destination="@id/fragment_locked"
+                app:popUpToInclusive="true"/>
     </fragment>
 
     <fragment
@@ -142,6 +207,14 @@
             android:name="mozilla.lockbox.view.SettingFragment"
             android:label="@string/nav_menu_settings"
             tools:layout="@layout/fragment_setting">
+        <action
+                android:id="@+id/action_settings_to_locked"
+                app:destination="@id/fragment_locked"
+                app:popUpToInclusive="true"/>
+        <action
+                android:id="@+id/action_settings_to_item_list"
+                app:destination="@id/fragment_item_list"
+                app:popUpToInclusive="true"/>
     </fragment>
 
     <fragment
@@ -162,7 +235,12 @@
             android:id="@+id/fragment_account_setting"
             android:name="mozilla.lockbox.view.AccountSettingFragment"
             android:label="@string/nav_menu_account"
-            tools:layout="@layout/fragment_account_setting"/>
+            tools:layout="@layout/fragment_account_setting">
+            <action
+                android:id="@+id/action_account_setting_to_item_list"
+                app:destination="@id/fragment_item_list"
+                app:popUpToInclusive="true"/>
+    </fragment>
 
     <fragment
             android:id="@+id/fragment_filter"
@@ -171,6 +249,13 @@
         <action
                 android:id="@+id/action_filter_to_itemDetail"
                 app:destination="@id/fragment_item_detail"/>
+        <action
+                android:id="@+id/action_filter_to_itemList"
+                app:destination="@id/fragment_item_list"/>
+        <action
+                android:id="@+id/action_filter_to_locked"
+                app:destination="@id/fragment_locked"
+                app:popUpToInclusive="true"/>
     </fragment>
 
     <fragment
