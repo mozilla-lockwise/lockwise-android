@@ -327,7 +327,7 @@ open class ItemListPresenterTest {
         syncStateStub.onNext(DataStore.SyncState.NotSyncing)
         Assert.assertEquals(false, view.isLoading)
     }
-  
+
     @Test
     fun `item deleted toast`() {
         val item = ServerPasswordTestHelper().item1

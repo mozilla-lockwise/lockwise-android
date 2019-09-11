@@ -22,13 +22,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.rx2.asMaybe
 import kotlinx.coroutines.rx2.asSingle
-import mozilla.appservices.fxaclient.Config
 import mozilla.appservices.fxaclient.FxaException
 import mozilla.components.concept.sync.AccessTokenInfo
 import mozilla.components.concept.sync.Avatar
 import mozilla.components.concept.sync.Profile
-import mozilla.components.service.fxa.ServerConfig
 import mozilla.components.service.fxa.FirefoxAccount
+import mozilla.components.service.fxa.ServerConfig
 import mozilla.components.service.fxa.sharing.AccountSharing
 import mozilla.components.service.fxa.sharing.ShareableAccount
 import mozilla.lockbox.action.AccountAction
@@ -146,12 +145,12 @@ open class AccountStore(
             account.authInfo.kSync,
             account.authInfo.kXCS
         )
-        ?.let {
-            it.asSingle(coroutineContext)
-                .map { true }
-                .subscribe(this::populateAccountInformation, this::pushError)
-                .addTo(compositeDisposable)
-        }
+            ?.let {
+                it.asSingle(coroutineContext)
+                    .map { true }
+                    .subscribe(this::populateAccountInformation, this::pushError)
+                    .addTo(compositeDisposable)
+            }
     }
 
     private fun detectAccount() {
