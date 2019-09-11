@@ -37,6 +37,8 @@ enum class TelemetryEventMethod {
     background,
     setting_changed,
     show,
+    delete,
+    edit,
     canceled,
     login_selected,
     autofill_locked,

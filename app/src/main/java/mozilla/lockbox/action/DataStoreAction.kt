@@ -88,5 +88,5 @@ sealed class DataStoreAction(
         : DataStoreAction(
             TelemetryEventMethod.edit,
             TelemetryEventObject.update_credential
-        )
+    )
 }
