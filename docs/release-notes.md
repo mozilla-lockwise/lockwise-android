@@ -1,6 +1,6 @@
 # Release Notes
 
-## 1.1.4 (Build 4807)
+## 1.1.4 (Build 4814)
 
 Refine telemetry for sync and fix crashes.
 
