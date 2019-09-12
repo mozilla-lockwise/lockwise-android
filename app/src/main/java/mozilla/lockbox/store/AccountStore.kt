@@ -145,12 +145,12 @@ open class AccountStore(
             account.authInfo.kSync,
             account.authInfo.kXCS
         )
-            ?.let {
-                it.asSingle(coroutineContext)
-                    .map { true }
-                    .subscribe(this::populateAccountInformation, this::pushError)
-                    .addTo(compositeDisposable)
-            }
+        ?.let {
+            it.asSingle(coroutineContext)
+                .map { true }
+                .subscribe(this::populateAccountInformation, this::pushError)
+                .addTo(compositeDisposable)
+        }
     }
 
     private fun detectAccount() {
