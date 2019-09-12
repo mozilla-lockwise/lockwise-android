@@ -26,8 +26,8 @@ import mozilla.appservices.fxaclient.FxaException
 import mozilla.components.concept.sync.AccessTokenInfo
 import mozilla.components.concept.sync.Avatar
 import mozilla.components.concept.sync.Profile
-import mozilla.components.service.fxa.ServerConfig
 import mozilla.components.service.fxa.FirefoxAccount
+import mozilla.components.service.fxa.ServerConfig
 import mozilla.components.service.fxa.sharing.AccountSharing
 import mozilla.components.service.fxa.sharing.ShareableAccount
 import mozilla.lockbox.action.AccountAction

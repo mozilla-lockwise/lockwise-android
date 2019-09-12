@@ -1,6 +1,6 @@
 # Release Notes
 
-## 2.0.0 (Build 4820)
+## 2.0.0 (Build 4824)
 
 Refine telemetry for sync and fix crashes.
 
