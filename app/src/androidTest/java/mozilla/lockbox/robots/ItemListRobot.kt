@@ -8,9 +8,11 @@ package mozilla.lockbox.robots
 
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewInteraction
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.contrib.DrawerActions
 import androidx.test.espresso.contrib.NavigationViewActions.navigateTo
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import br.com.concretesolutions.kappuccino.actions.ClickActions.click
 import br.com.concretesolutions.kappuccino.assertions.VisibilityAssertions.displayed
 import mozilla.lockbox.R
@@ -37,6 +39,12 @@ class ItemListRobot : BaseTestRobot {
         id(R.id.sortButton)
         text(R.string.all_logins_recent)
     }
+
+    fun editedCredentialHostnameExists(hostname: String) = displayed { text(hostname) }
+    fun editedCredentialUsernameExists(username: String) = displayed { text(username) }
+
+    fun openCredential(credential: String) = click { allOf { text(credential) } }
+    fun credentialRemovedDoesNotExist(hostname: String) = onView(withText(hostname)).check(doesNotExist())
 
     fun openMenu(): ViewInteraction {
         val drawer = onView(withId(R.id.appDrawer))
