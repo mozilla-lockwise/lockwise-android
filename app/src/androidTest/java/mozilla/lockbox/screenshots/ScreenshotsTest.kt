@@ -24,7 +24,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 import br.com.concretesolutions.kappuccino.custom.recyclerView.RecyclerViewInteractions.recyclerView
-
 import tools.fastlane.screengrab.Screengrab
 import tools.fastlane.screengrab.locale.LocaleTestRule
 import tools.fastlane.screengrab.UiAutomatorScreenshotStrategy
@@ -42,15 +41,15 @@ open class ScreenshotsTest {
     val localeTestRule = LocaleTestRule()
 
     @Test
-    fun testCompleteOnboarding() {
+    fun testThroughoutAllApp() {
 
         Screengrab.setDefaultScreenshotStrategy(UiAutomatorScreenshotStrategy())
-        onView(withId(R.id.buttonGetStarted))
+        onView(withId(R.id.buttonGetStartedManually))
                 .check(matches(isDisplayed()))
 
         Screengrab.screenshot("get-started")
 
-        onView(withId(R.id.buttonGetStarted)).perform(click())
+        onView(withId(R.id.buttonGetStartedManually)).perform(click())
         Screengrab.screenshot("secure-device-screen")
 
         onView(withId(android.R.id.button2)).perform(click())
@@ -84,28 +83,32 @@ open class ScreenshotsTest {
         Screengrab.screenshot("item-delete-disclaimer")
 
         onView(withText(R.string.cancel)).perform(click())
-        /* Edit Menu Not developed yet
-        onView(withId(R.id.kebabMenu)).perform(click())
-        onView(withText(R.string.edit)).perform(click())
-        Screengrab.screenshot("item-edit-menu")
-        */
 
+        // Detail credential view
         onView(withId(R.id.inputUsername)).perform(click())
         Screengrab.screenshot("username-copied-screen")
 
         onView(withId(R.id.inputPassword)).perform(click())
         Screengrab.screenshot("password-copied-screen")
-        pressBack()
 
+        //  Edit Menu
+        onView(withId(R.id.kebabMenuButton)).perform(click())
+        onView(withText(R.string.edit)).perform(click())
+        Screengrab.screenshot("item-edit-menu")
+
+        // Cancel edit menu
+        // Disabled until tapping on 'x' button is available without using text
+        // onView(withId(android.R.id.button1)).perform(click())
+        // Screengrab.screenshot("item-edit-menu-disclaimer")
+        // Temporary solution
+        onView(withId(R.id.saveEntryButton)).perform(click())
+
+        // Sort menu
         onView(withId(R.id.sortButton)).perform(click())
         Screengrab.screenshot("sorting-options-screen")
         pressBack()
-/*
-        onView(withId(R.id.filterButton)).perform(click());
-        Screengrab.screenshot("filter-options-screen");
-        pressBack()
-        pressBack()
-*/
+
+        // App Menu
         onView(withId(R.id.appDrawer)).perform(DrawerActions.open())
         Screengrab.screenshot("app-menu-screen")
 
@@ -113,6 +116,7 @@ open class ScreenshotsTest {
         Screengrab.screenshot("lock-now-screen")
         pressBack()
 
+        // Settings screens
         tapSettings()
         onView(withId(R.id.settingList))
                 .check(matches(isDisplayed()))
