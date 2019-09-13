@@ -12,7 +12,11 @@
     <!-- This is the label a screenreader uses to inform the user they selected a link that will open a webpage to learn more about the feature or setting. -->
     <string name="learn_more_description">Einen Link öffnen, um mehr zu erfahren</string>
 
-    <!-- This is used as the label on a button on a first-run welcome screen to sign in and start using the application -->
+    <!-- This is used as the label on a button on a first-run welcome screen to automatically sign in to an existing account and start using the application -->
+    <string name="welcome_start_automatic_btn">%s</string>
+    <!-- This is used as the label on a button on a first-run welcome screen to force manual sign in and start using the application -->
+    <string name="welcome_start_force_manual_btn">Anderes Konto</string>
+    <!-- This is used as the label on a button on a first-run welcome screen to manually sign in (no existing account) and start using the application -->
     <string name="welcome_start_btn">Erste Schritte</string>
     <!-- This provides context near a button on the first-run welcome screen to describe application requirements. Firefox Account is to be translated consistently to match use in other Firefox products. %1$s will be replaced with application name. -->
     <string name="welcome_instructions">Um %1$s zu verwenden, benötigst du ein Firefox-Konto mit gespeicherten Zugangsdaten.</string>
@@ -261,4 +265,29 @@
     <string name="delete_description">Dies löscht diese Zugangsdaten von %1$s und Firefox.</string>
     <!-- This is the text on an item in the item detail toolbar menu to edit an entry. -->
     <string name="edit">Bearbeiten</string>
+    <!-- This is the hint in the edit entry view for the entry name. -->
+    <string name="entry_name_description">Name des Eintrags</string>
+    <!-- This is a heading that appears above an entry name in context of a edit item view -->
+    <string name="hint_entryname">Name</string>
+    <!-- This is the hint in the edit entry view for the entry name. -->
+    <string name="input_name_description">Der Eintragsname kann derzeit nicht bearbeitet werden.</string>
+    <!-- This is the hint in the edit entry view for formatting the entry hostname. -->
+    <string name="hostname_entry_description">Stellen Sie sicher, dass dies mit der genauen Domain der Website übereinstimmt, auf die Sie verweisen
+        (inklusive „https://“ und „www“).
+    </string>
+    <string name="entry_password_description">Passwort für diesen Eintrag.</string>
+    <!-- This is the text on the button in the edit view that allows you to delete the entry. -->
+    <string name="delete_entry">Eintrag löschen</string>
+    <!-- This is the title text on the dialog when you attempt to close the edit view and changes have been made. -->
+    <string name="discard_changes">Änderungen verwerfen?</string>
+    <!-- This is the additional text when you attempt to close the edit view and changes have been made. -->
+    <string name="discard_changes_description">Ihre Änderungen werden nicht gespeichert.</string>
+    <!-- This is the text on the button to discard your current changes from the edit entry view. -->
+    <string name="discard">Verwerfen</string>
+    <!-- This is the description for the hostname in the edit entry view. -->
+    <string name="web_address_description">Der Hostname</string>
+    <!-- This is the description for the username in the edit entry view. -->
+    <string name="username_description">Der Benutzername</string>
+    <!-- This is the title of the edit login page. -->
+    <string name="edit_login_title">Zugangsdaten bearbeiten</string>
 </resources>
