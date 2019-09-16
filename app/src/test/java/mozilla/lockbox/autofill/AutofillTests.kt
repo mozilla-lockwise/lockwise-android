@@ -1,34 +1,36 @@
-package mozilla.lockbox.uiTests
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
 
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
-import androidx.test.rule.ServiceTestRule
-import mozilla.lockbox.autofill.AutofillNodeNavigator
-import mozilla.lockbox.autofill.ParsedStructureBuilder
-import mozilla.lockbox.autofill.ParsedStructureData
+package mozilla.lockbox.autofill
+
+import android.content.Context
+import androidx.test.core.app.ApplicationProvider
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import mozilla.lockbox.LockboxApplication
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
-import org.junit.Ignore
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import javax.xml.parsers.DocumentBuilderFactory
 
-@RunWith(AndroidJUnit4::class)
-@Ignore("619-ui-tests-bitrise (#620)")
+@ExperimentalCoroutinesApi
+@RunWith(RobolectricTestRunner::class)
 class AutofillTests {
 
-    @get:Rule
-    val serviceRule = ServiceTestRule()
+    val context: LockboxApplication = ApplicationProvider.getApplicationContext()
 
     @Test
     fun testBasicFixtures() {
         val files = listOf("test_basic", "test_labelled_edittexts", "test_basic_html_inputs", "test_labelled_html_inputs")
 
-        files.map { DOMNavigator(it, it) }
+        files.map { DOMNavigator(context, it, it) }
             .forEach { navigator ->
                 val subject = ParsedStructureBuilder(navigator).build()
 
@@ -42,15 +44,16 @@ class AutofillTests {
     @Test
     fun testRealFixtures() {
         val fixtures = listOf(
-                Fixture("app_twitter", null, "com.twitter.android"),
-                Fixture("html_twitter", "mobile.twitter.com", ""),
-                Fixture("html_facebook", "m.facebook.com", ""),
-                Fixture("html_gmail_1", "accounts.google.com", ""),
-                Fixture("html_gmail_2", "accounts.google.com", "")
+            Fixture("app_twitter", null, "com.twitter.android"),
+            Fixture("html_twitter", "mobile.twitter.com", ""),
+            Fixture("html_facebook", "m.facebook.com", ""),
+            Fixture("html_gmail_1", "accounts.google.com", ""),
+            Fixture("html_gmail_2", "accounts.google.com", "")
         )
 
         fixtures.forEach { fixture ->
-            val navigator = DOMNavigator(fixture.filename, fixture.filename)
+            val navigator =
+                DOMNavigator(context, fixture.filename, fixture.filename)
             val subject = ParsedStructureBuilder(navigator).build()
 
             if (fixture.webDomain != null) {
@@ -72,13 +75,14 @@ data class Fixture(
 )
 
 class DOMNavigator(
+    context: Context,
     filename: String,
     override val activityPackageName: String
 ) : AutofillNodeNavigator<Element, String> {
     private val document: Document
 
     init {
-        val inputStream = getInstrumentation().targetContext.assets.open("fixtures/$filename.xml")
+        val inputStream = context.assets.open("fixtures/$filename.xml")
         val db = DocumentBuilderFactory.newInstance().newDocumentBuilder()
         document = db.parse(inputStream)
     }
