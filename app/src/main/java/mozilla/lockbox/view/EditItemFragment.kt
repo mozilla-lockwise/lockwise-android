@@ -255,7 +255,6 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
             }
 
             override fun afterTextChanged(editable: Editable) {
-
                 val inputText: String? = errorLayout.editText?.text.toString()
 
                 when (errorLayout.id) {
@@ -267,22 +266,28 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
                                 || (!URLUtil.isHttpUrl(inputText) and !URLUtil.isHttpsUrl(inputText))
                             -> {
                                 errorLayout.setErrorTextColor(context?.getColorStateList(R.color.error_input_text))
-                                errorLayout.error =
-                                    errorLayout.context.getString(R.string.hostname_invalid_text)
+                                errorLayout.error = context?.getString(R.string.hostname_invalid_text)
+                                errorLayout.setErrorIconDrawable(R.drawable.ic_error)
                             }
                             else -> {
                                 errorLayout.error = null
                             }
                         }
                     }
+                    R.id.inputLayoutUsername -> {
+                        when {
+                            TextUtils.isEmpty(inputText) -> {
+                                errorLayout.helperText = context?.getString(R.string.hint_username)
+                            }
+                        }
+                    }
                     R.id.inputLayoutPassword -> {
                         // password cannot be empty
-                        // cannot be just spaces
                         when {
                             TextUtils.isEmpty(inputText) -> {
                                 errorLayout.setErrorTextColor(context?.getColorStateList(R.color.error_input_text))
-                                errorLayout.error =
-                                    errorLayout.context.getString(R.string.password_invalid_text)
+                                errorLayout.error = context?.getString(R.string.password_invalid_text)
+                                errorLayout.setErrorIconDrawable(R.drawable.ic_error)
                             }
                             else -> {
                                 errorLayout.error = null
@@ -291,7 +296,7 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
                     }
                     else -> {
                         errorLayout.error = null
-                    } // includes username
+                    }
                 }
             }
         }
