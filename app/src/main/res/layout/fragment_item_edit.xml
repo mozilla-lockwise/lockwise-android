@@ -16,8 +16,11 @@
         android:windowSoftInputMode="adjustPan"
         android:background="@color/background_grey"
         android:importantForAutofill="noExcludeDescendants"
+        android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         tools:ignore="UnusedAttribute"
-        style="@style/EditItemDetail" >
+        style="@style/EditItemDetail">
 
     <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"

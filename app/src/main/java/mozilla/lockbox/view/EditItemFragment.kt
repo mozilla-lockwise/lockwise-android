@@ -7,8 +7,6 @@
 package mozilla.lockbox.view
 
 import android.content.Context
-import android.content.res.ColorStateList
-import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
@@ -31,15 +29,17 @@ import kotlinx.android.synthetic.main.fragment_item_edit.*
 import kotlinx.android.synthetic.main.fragment_item_edit.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
+import mozilla.lockbox.action.ItemDetailAction
+import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.presenter.EditItemDetailView
 import mozilla.lockbox.presenter.EditItemPresenter
-import mozilla.lockbox.support.PublicSuffixSupport
 import mozilla.lockbox.support.assertOnUiThread
-import mozilla.lockbox.support.validateEditTextAndShowError
 
 @ExperimentalCoroutinesApi
 class EditItemFragment : BackableFragment(), EditItemDetailView {
+
+    private val dispatcher: Dispatcher = Dispatcher.shared
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -59,6 +59,31 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
         super.onViewCreated(view, savedInstanceState)
         setupToolbar(view.toolbar)
         setTextWatcher(view)
+        setUpKeyboardFocus(view)
+    }
+
+    private fun setUpKeyboardFocus(view: View) {
+        view.inputHostname.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) {
+                closeKeyboard()
+            }
+        }
+
+        view.inputUsername.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) {
+                closeKeyboard()
+            }
+        }
+
+        view.inputPassword.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) {
+                closeKeyboard()
+                dispatcher.dispatch(ItemDetailAction.TogglePassword(displayed = false))
+            } else {
+                // show the password when it is focused
+                dispatcher.dispatch(ItemDetailAction.TogglePassword(displayed = true))
+            }
+        }
     }
 
     private fun setTextWatcher(view: View) {
@@ -67,24 +92,75 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
                 view.inputLayoutHostname
             )
         )
+        view.inputUsername.addTextChangedListener(
+            buildTextWatcher(
+                view.inputLayoutUsername
+            )
+        )
         view.inputPassword.addTextChangedListener(
             buildTextWatcher(
-                view.inputLayoutHostname
+                view.inputLayoutPassword
             )
         )
     }
 
     private fun buildTextWatcher(errorLayout: TextInputLayout): TextWatcher {
         return object : TextWatcher {
-            override fun beforeTextChanged(charSequence: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun beforeTextChanged(
+                charSequence: CharSequence,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {
+            }
 
-            override fun onTextChanged(charSequence: CharSequence, start: Int, before: Int, count: Int) {
-                errorLayout.error = null
+            override fun onTextChanged(
+                charSequence: CharSequence,
+                start: Int,
+                before: Int,
+                count: Int
+            ) {
             }
 
             override fun afterTextChanged(editable: Editable) {
-                validateEditTextAndShowError(errorLayout)
-                errorLayout.setErrorTextColor(context?.getColorStateList(R.color.error_input_text))
+
+                val inputText: String? = errorLayout.editText?.text.toString()
+
+                when (errorLayout.id) {
+                    R.id.inputLayoutHostname -> {
+                        // hostname cannot be null
+                        // has to have http:// or https://
+                        when {
+                            TextUtils.isEmpty(inputText)
+                                || (!URLUtil.isHttpUrl(inputText) and !URLUtil.isHttpsUrl(inputText))
+                            -> {
+                                errorLayout.setErrorTextColor(context?.getColorStateList(R.color.error_input_text))
+                                errorLayout.error =
+                                    errorLayout.context.getString(R.string.hostname_invalid_text)
+                            }
+                            else -> {
+                                errorLayout.error = null
+                            }
+                        }
+                    }
+                    R.id.inputLayoutPassword -> {
+                        // password cannot be empty
+                        // cannot be just spaces
+                        when {
+                            TextUtils.isEmpty(inputText) -> {
+                                errorLayout.setErrorTextColor(context?.getColorStateList(R.color.error_input_text))
+                                errorLayout.error =
+                                    errorLayout.context.getString(R.string.password_invalid_text)
+                            }
+                            else -> {
+                                errorLayout.error = null
+                            }
+                        }
+                    }
+                    else -> {
+                        errorLayout.error = null
+                    } // includes username
+                }
             }
         }
     }
