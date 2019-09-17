@@ -56,6 +56,21 @@
     <style name="EditItemDetail" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:popupBackground">@android:color/transparent</item>
         <item name="android:background">@android:color/transparent</item>
+        <item name="android:textColorHint">@color/black_60_percent</item>
+        <item name="android:colorControlActivated">@color/violet_70</item>
+        <item name="android:colorControlNormal">@color/dark_grey</item>
+        <item name="android:colorControlHighlight">@color/violet_70</item>
+        <item name="colorAccent">@color/violet_70</item>
+        <item name="errorTextAppearance">@style/ErrorText</item>
+    </style>
+
+    <style name="ErrorText" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/red</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:letterSpacing">0.03</item>
+        <item name="android:lineSpacingExtra">4sp</item>
     </style>
 
     <style name="TextAppearanceWidgetEventToolbarTitle">
