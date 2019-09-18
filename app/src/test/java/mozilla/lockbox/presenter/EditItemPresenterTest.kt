@@ -208,8 +208,7 @@ class EditItemPresenterTest {
 
         dispatcherObserver.assertValueSequence(
             listOf(
-                DataStoreAction.Delete(fakeCredential),
-                RouteAction.ItemList
+                DialogAction.DeleteConfirmationDialog(fakeCredential)
             )
         )
     }
