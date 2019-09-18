@@ -82,8 +82,7 @@ class EditItemPresenter(
         view.deleteClicks
             .subscribe {
                 if (credentials != null) {
-                    dispatcher.dispatch(DataStoreAction.Delete(credentials!!))
-                    dispatcher.dispatch(RouteAction.ItemList)
+                    dispatcher.dispatch(DialogAction.DeleteConfirmationDialog(credentials!!))
                 } else {
                     pushError(
                         NullPointerException("Credentials are null"),
