@@ -60,6 +60,14 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
         setupToolbar(view.toolbar)
         setTextWatcher(view)
         setUpKeyboardFocus(view)
+
+        val layouts = arrayOf(view.inputLayoutHostname, view.inputLayoutUsername,
+            view.inputLayoutPassword)
+
+        for(layout in layouts) {
+            layout.hintTextColor = context?.getColorStateList(R.color.hint_edit_text)
+            layout.setHintTextAppearance(R.style.HintText)
+        }
     }
 
     private fun setUpKeyboardFocus(view: View) {
@@ -136,9 +144,12 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
                                 errorLayout.setErrorTextColor(context?.getColorStateList(R.color.error_input_text))
                                 errorLayout.error = context?.getString(R.string.hostname_invalid_text)
                                 errorLayout.setErrorIconDrawable(R.drawable.ic_error)
+                                view?.inputHostnameDescription?.visibility = View.INVISIBLE
                             }
                             else -> {
                                 errorLayout.error = null
+                                errorLayout.errorIconDrawable = null
+                                view?.inputHostnameDescription?.visibility = View.VISIBLE
                             }
                         }
                     }
@@ -156,9 +167,12 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
                                 errorLayout.setErrorTextColor(context?.getColorStateList(R.color.error_input_text))
                                 errorLayout.error = context?.getString(R.string.password_invalid_text)
                                 errorLayout.setErrorIconDrawable(R.drawable.ic_error)
+                                view?.btnPasswordToggle?.visibility = View.INVISIBLE
                             }
                             else -> {
                                 errorLayout.error = null
+                                errorLayout.errorIconDrawable = null
+                                view?.btnPasswordToggle?.visibility = View.VISIBLE
                             }
                         }
                     }

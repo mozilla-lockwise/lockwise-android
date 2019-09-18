@@ -73,6 +73,15 @@
         <item name="android:lineSpacingExtra">4sp</item>
     </style>
 
+    <style name="HintText" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/hint_edit_text</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:letterSpacing">0.03</item>
+        <item name="android:lineSpacingExtra">4sp</item>
+    </style>
+
     <style name="TextAppearanceWidgetEventToolbarTitle">
         <item name="android:letterSpacing">0.01</item>
         <item name="android:fontFamily">sans-serif-medium</item>
