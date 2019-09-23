@@ -10,9 +10,12 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.LockboxApplication
+import mozilla.lockbox.support.isDebug
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
+import org.junit.Assume.assumeTrue
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -25,6 +28,11 @@ import javax.xml.parsers.DocumentBuilderFactory
 class AutofillTests {
 
     val context: LockboxApplication = ApplicationProvider.getApplicationContext()
+
+    @Before
+    fun setUp() {
+        assumeTrue(isDebug())
+    }
 
     @Test
     fun testBasicFixtures() {
