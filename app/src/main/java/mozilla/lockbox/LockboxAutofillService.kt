@@ -44,6 +44,7 @@ import mozilla.lockbox.support.isDebug
 @ExperimentalCoroutinesApi
 class LockboxAutofillService(
     private val accountStore: AccountStore = AccountStore.shared,
+    private val dataStore: DataStore = DataStore.shared,
     private val fxaSupport: FxASyncDataStoreSupport = FxASyncDataStoreSupport.shared,
     private val telemetryStore: TelemetryStore = TelemetryStore.shared,
     private val autofillStore: AutofillStore = AutofillStore.shared,
@@ -52,12 +53,15 @@ class LockboxAutofillService(
 
     private var compositeDisposable = CompositeDisposable()
     private val pslSupport = PublicSuffixSupport.shared
-    lateinit var dataStore: DataStore
 
     var isRunning = false
 
     override fun onConnected() {
         isRunning = false
+        telemetryStore.injectContext(this)
+        accountStore.injectContext(this)
+        fxaSupport.injectContext(this)
+        dispatcher.dispatch(LifecycleAction.AutofillStart)
     }
 
     override fun onDisconnected() {
@@ -168,7 +172,7 @@ class LockboxAutofillService(
                 )
             }
             .map {
-                DataStoreAction.Add(it)
+                DataStoreAction.AutofillCapture(it)
             }
             .doOnNext {
                 callback.onSuccess()

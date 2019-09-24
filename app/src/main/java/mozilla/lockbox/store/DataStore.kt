@@ -111,7 +111,7 @@ open class DataStore(
                     is DataStoreAction.UpdateSyncCredentials -> updateCredentials(action.syncCredentials)
                     is DataStoreAction.Delete -> delete(action.item)
                     is DataStoreAction.UpdateItemDetail -> update(action.item)
-                    is DataStoreAction.Add -> add(action.item)
+                    is DataStoreAction.AutofillCapture -> add(action.item)
                 }
             }
             .addTo(compositeDisposable)

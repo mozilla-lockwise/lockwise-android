@@ -20,7 +20,7 @@ sealed class DataStoreAction(
     object Reset : DataStoreAction(TelemetryEventMethod.reset, TelemetryEventObject.datastore)
 
     /**
-     * Emitted when the app requests a sync.
+     * Dispatched when the app requests a sync.
      */
     object Sync : DataStoreAction(TelemetryEventMethod.sync_start, TelemetryEventObject.datastore)
 
@@ -30,7 +30,7 @@ sealed class DataStoreAction(
     object SyncSuccess : DataStoreAction(TelemetryEventMethod.sync_end, TelemetryEventObject.datastore)
 
     /**
-     * Emitted when the app receives an error response from sync.
+     * Emitted by the data store when the data store receives an error response from sync.
      */
     data class SyncError(val error: String) : DataStoreAction(
         TelemetryEventMethod.sync_error,
@@ -61,19 +61,25 @@ sealed class DataStoreAction(
         error
     )
 
+    /**
+     * Dispatched when the user accesses a credential.
+     */
     data class Touch(val id: String) : DataStoreAction(
         TelemetryEventMethod.touch,
         TelemetryEventObject.datastore,
         "ID: $id"
     )
 
+    /**
+     * Dispatched when the user logs in or starts the app with a logged in state.
+     */
     data class UpdateSyncCredentials(val syncCredentials: SyncCredentials) : DataStoreAction(
         TelemetryEventMethod.update_credentials,
         TelemetryEventObject.datastore
     )
 
     /**
-     * Emitted when an entry is deleted from the entry's detail view or the edit view.
+     * Dispatched when the user deletes an entry.
      */
     data class Delete(val item: ServerPassword) : DataStoreAction(
         TelemetryEventMethod.delete,
@@ -82,7 +88,7 @@ sealed class DataStoreAction(
     )
 
     /**
-     * Emitted when an entry is edited and saved.
+     * Dispatched when the user edits or saves an entry.
      */
     data class UpdateItemDetail(val item: ServerPassword)
         : DataStoreAction(
@@ -90,5 +96,11 @@ sealed class DataStoreAction(
             TelemetryEventObject.update_credential
         )
 
-    data class Add(val item: ServerPassword) : DataStoreAction(TelemetryEventMethod.autofill_add, TelemetryEventObject.datastore)
+    /**
+     * Dispatched when the user saves an entry that was captured from autofill.
+     */
+    data class AutofillCapture(val item: ServerPassword) : DataStoreAction(
+        TelemetryEventMethod.autofill_add,
+        TelemetryEventObject.datastore
+    )
 }

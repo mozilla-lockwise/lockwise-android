@@ -122,7 +122,7 @@ class DataStoreTest : DisposingTest() {
             password = "iLUVkatz",
             formSubmitURL = "cats.com"
         )
-        dispatcher.dispatch(DataStoreAction.Add(newEntry))
+        dispatcher.dispatch(DataStoreAction.AutofillCapture(newEntry))
 
         verify(support.storage).add(newEntry)
     }
