@@ -7,23 +7,47 @@ import android.view.autofill.AutofillId
 import androidx.annotation.RequiresApi
 import java.util.Locale
 
-interface AutofillNodeNavigator<T, U> {
-    val rootNodes: List<T>
+interface AutofillNodeNavigator<Node, Id> {
+    val rootNodes: List<Node>
     val activityPackageName: String
-    fun childNodes(node: T): List<T>
-    fun clues(node: T): Iterable<CharSequence>
-    fun autofillId(node: T): U?
-    fun isEditText(node: T): Boolean
-    fun isHtmlInputField(node: T): Boolean
-    fun packageName(node: T): String?
-    fun webDomain(node: T): String?
-    fun currentText(node: T): String?
+    fun childNodes(node: Node): List<Node>
+    fun clues(node: Node): Iterable<CharSequence>
+    fun autofillId(node: Node): Id?
+    fun isEditText(node: Node): Boolean
+    fun isHtmlInputField(node: Node): Boolean
+    fun packageName(node: Node): String?
+    fun webDomain(node: Node): String?
+    fun currentText(node: Node): String?
     fun build(
-        usernameId: U?,
-        passwordId: U?,
+        usernameId: Id?,
+        passwordId: Id?,
         webDomain: String?,
         packageName: String
-    ): ParsedStructureData<U>
+    ): ParsedStructureData<Id>
+
+    fun <T> findFirst(transform: (Node) -> T?): T? {
+        rootNodes
+            .forEach { node ->
+                findFirst(node, transform)?.let { result ->
+                    return result
+                }
+            }
+        return null
+    }
+
+    fun <T> findFirst(node: Node, transform: (Node) -> T?): T? {
+        transform(node)?.let {
+            return it
+        }
+
+        childNodes(node)
+            .forEach { child ->
+                findFirst(child, transform)?.let { result ->
+                    return result
+                }
+            }
+        return null
+    }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)

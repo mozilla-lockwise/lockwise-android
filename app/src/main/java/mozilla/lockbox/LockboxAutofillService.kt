@@ -82,7 +82,7 @@ class LockboxAutofillService(
         val nodeNavigator = ViewNodeNavigator(structure, activityPackageName)
         val parsedStructure = ParsedStructureBuilder(nodeNavigator).build() as ParsedStructure
 
-        if (parsedStructure.password == null && parsedStructure.username == null) {
+        if (parsedStructure.passwordId == null && parsedStructure.usernameId == null) {
             if (isDebug()) {
                 val xml = structure.getWindowNodeAt(0).rootViewNode.dump()
                 log.debug("Autofilling failed for:\n$xml")
@@ -95,7 +95,6 @@ class LockboxAutofillService(
         telemetryStore.injectContext(this)
         accountStore.injectContext(this)
         fxaSupport.injectContext(this)
-        dataStore = DataStore.shared
         dispatcher.dispatch(LifecycleAction.AutofillStart)
 
         val builder = FillResponseBuilder(parsedStructure)

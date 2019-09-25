@@ -29,7 +29,7 @@ open class FillResponseBuilder(
         get() {
             return SaveInfo.Builder(
                 SaveInfo.SAVE_DATA_TYPE_PASSWORD,
-                arrayOf(parsedStructure.password)
+                arrayOf(parsedStructure.passwordId)
                     .filter { it != null }
                     .toTypedArray()
             )
@@ -61,7 +61,7 @@ open class FillResponseBuilder(
     }
 
     private fun autofillIds(): Array<AutofillId> {
-        return arrayOf(parsedStructure.username, parsedStructure.password)
+        return arrayOf(parsedStructure.usernameId, parsedStructure.passwordId)
             .filter { it != null }
             .map { it!! }
             .toTypedArray()
@@ -130,7 +130,7 @@ open class FillResponseBuilder(
         val title = titleFromHostname(credential.hostname)
         val username = credential.username ?: context.getString(R.string.no_username)
 
-        parsedStructure.username?.let { id ->
+        parsedStructure.usernameId?.let { id ->
             val presentation = RemoteViews(context.packageName, R.layout.autofill_item)
                 .apply {
                     setTextViewText(R.id.autofillValue, username)
@@ -144,7 +144,7 @@ open class FillResponseBuilder(
             )
         }
 
-        parsedStructure.password?.let { id ->
+        parsedStructure.passwordId?.let { id ->
             val presentation = RemoteViews(context.packageName, R.layout.autofill_item)
                 .apply {
                     setTextViewText(R.id.autofillValue, context.getString(R.string.password_for, username))

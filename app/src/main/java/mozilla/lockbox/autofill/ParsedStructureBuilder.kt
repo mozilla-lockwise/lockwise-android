@@ -43,7 +43,7 @@ class ParsedStructureBuilder<ViewNode, AutofillId>(
     }
 
     private fun searchBasicAutofillContent(keywords: Collection<String>): AutofillId? {
-        return findFirst { node ->
+        return navigator.findFirst { node: ViewNode ->
             if (isAutoFillableEditText(node, keywords) || isAutoFillableInputField(node, keywords)) {
                 navigator.autofillId(node)
             } else {
@@ -53,10 +53,10 @@ class ParsedStructureBuilder<ViewNode, AutofillId>(
     }
 
     private fun checkForConsecutiveKeywordAndField(keywords: Collection<String>): AutofillId? {
-        return findFirst { node ->
+        return navigator.findFirst { node: ViewNode ->
             val childNodes = navigator.childNodes(node)
             // check for consecutive views with keywords followed by possible fill locations
-            for (i in 1..(childNodes.size - 1)) {
+            for (i in 1.until(childNodes.size - 1)) {
                 val prevNode = childNodes[i - 1]
                 val currentNode = childNodes[i]
                 val id = navigator.autofillId(currentNode) ?: continue
@@ -100,30 +100,6 @@ class ParsedStructureBuilder<ViewNode, AutofillId>(
         return navigator.isHtmlInputField(node) &&
             containsKeywords(node, keywords) &&
             navigator.autofillId(node) != null
-    }
-
-    private fun <T> findFirst(transform: (ViewNode) -> T?): T? {
-        navigator.rootNodes
-            .forEach { node ->
-                findFirst(node, transform)?.let { result ->
-                    return result
-                }
-            }
-        return null
-    }
-
-    private fun <T> findFirst(node: ViewNode, transform: (ViewNode) -> T?): T? {
-        transform(node)?.let {
-            return it
-        }
-
-        navigator.childNodes(node)
-            .forEach { child ->
-                findFirst(child, transform)?.let { result ->
-                    return result
-                }
-            }
-        return null
     }
 
     private fun containsKeywords(node: ViewNode, keywords: Collection<String>): Boolean {

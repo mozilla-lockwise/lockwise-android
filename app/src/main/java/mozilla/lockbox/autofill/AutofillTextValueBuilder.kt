@@ -19,43 +19,19 @@ class AutofillTextValueBuilder(
     private val navigator: AutofillNodeNavigator<ViewNode, AutofillId>
 ) {
     fun build(): AutofillTextValue {
-        val usernameText = textForAutofillId(parsedStructure.username)
-        val passwordText = textForAutofillId(parsedStructure.password)
+        val usernameText = textForAutofillId(parsedStructure.usernameId)
+        val passwordText = textForAutofillId(parsedStructure.passwordId)
 
         return AutofillTextValue(usernameText, passwordText)
     }
 
     private fun textForAutofillId(id: AutofillId?): String? {
-        return findFirst { node ->
-            if (navigator.autofillId(node) == id) {
-                navigator.currentText(node)
+        return navigator.findFirst {
+            if (navigator.autofillId(it) == id) {
+                navigator.currentText(it)
             } else {
                 null
             }
         }
-    }
-
-    private fun <T> findFirst(transform: (ViewNode) -> T?): T? {
-        navigator.rootNodes
-            .forEach { node ->
-                findFirst(node, transform)?.let { result ->
-                    return result
-                }
-            }
-        return null
-    }
-
-    private fun <T> findFirst(node: ViewNode, transform: (ViewNode) -> T?): T? {
-        transform(node)?.let {
-            return it
-        }
-
-        navigator.childNodes(node)
-            .forEach { child ->
-                findFirst(child, transform)?.let { result ->
-                    return result
-                }
-            }
-        return null
     }
 }
