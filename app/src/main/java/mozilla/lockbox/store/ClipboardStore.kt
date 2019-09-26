@@ -20,11 +20,11 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.support.ClipboardSupport
 import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.SystemTimingSupport
-import mozilla.lockbox.support.SystemSystemTimingSupport
+import mozilla.lockbox.support.DeviceSystemTimingSupport
 
 open class ClipboardStore(
     val dispatcher: Dispatcher = Dispatcher.shared,
-    private val timerSupport: SystemTimingSupport = SystemSystemTimingSupport()
+    private val timerSupport: SystemTimingSupport = DeviceSystemTimingSupport()
 ) : ContextStore {
     internal val compositeDisposable = CompositeDisposable()
 
