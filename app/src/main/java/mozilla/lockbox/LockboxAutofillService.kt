@@ -49,16 +49,16 @@ class LockboxAutofillService(
     private val pslSupport = PublicSuffixSupport.shared
     lateinit var dataStore: DataStore
 
+    var isRunning = false
+
     override fun onConnected() {
-        telemetryStore.injectContext(this)
-        accountStore.injectContext(this)
-        fxaSupport.injectContext(this)
-        dataStore = DataStore.shared
-        dispatcher.dispatch(LifecycleAction.AutofillStart)
+        isRunning = false
     }
 
     override fun onDisconnected() {
-        dispatcher.dispatch(LifecycleAction.AutofillEnd)
+        if (isRunning) {
+            dispatcher.dispatch(LifecycleAction.AutofillEnd)
+        }
         compositeDisposable.clear()
     }
 
@@ -81,6 +81,13 @@ class LockboxAutofillService(
             callback.onSuccess(null)
             return
         }
+
+        isRunning = true
+        telemetryStore.injectContext(this)
+        accountStore.injectContext(this)
+        fxaSupport.injectContext(this)
+        dataStore = DataStore.shared
+        dispatcher.dispatch(LifecycleAction.AutofillStart)
 
         val builder = FillResponseBuilder(parsedStructure)
 
