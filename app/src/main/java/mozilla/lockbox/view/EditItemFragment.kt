@@ -151,53 +151,70 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
 
                 when (errorLayout.id) {
                     R.id.inputLayoutHostname -> {
-                        // hostname cannot be null
-                        // has to have http:// or https://
-                        when {
-                            TextUtils.isEmpty(inputText)
-                                || (!URLUtil.isHttpUrl(inputText) and !URLUtil.isHttpsUrl(inputText))
-                            -> {
-                                errorLayout.setErrorTextColor(context?.getColorStateList(R.color.error_input_text))
-                                errorLayout.error =
-                                    context?.getString(R.string.hostname_invalid_text)
-                                errorLayout.setErrorIconDrawable(R.drawable.ic_error)
-                                view?.inputHostnameDescription?.visibility = View.INVISIBLE
-                            }
-                            else -> {
-                                errorLayout.error = null
-                                errorLayout.errorIconDrawable = null
-                                view?.inputHostnameDescription?.visibility = View.VISIBLE
-                            }
-                        }
+                        handleHostnameChanges(errorLayout, inputText)
                     }
                     R.id.inputLayoutUsername -> {
-                        when {
-                            TextUtils.isEmpty(inputText) -> {
-                                errorLayout.error = null
-                            }
-                        }
+                        handleUsernameChanges(errorLayout, inputText)
                     }
                     R.id.inputLayoutPassword -> {
-                        // password cannot be empty
-                        when {
-                            TextUtils.isEmpty(inputText) -> {
-                                errorLayout.setErrorTextColor(context?.getColorStateList(R.color.error_input_text))
-                                errorLayout.error =
-                                    context?.getString(R.string.password_invalid_text)
-                                errorLayout.setErrorIconDrawable(R.drawable.ic_error)
-                                view?.btnPasswordToggle?.visibility = View.INVISIBLE
-                            }
-                            else -> {
-                                errorLayout.error = null
-                                errorLayout.errorIconDrawable = null
-                                view?.btnPasswordToggle?.visibility = View.VISIBLE
-                            }
-                        }
+                        handlePasswordChanges(errorLayout, inputText)
                     }
                     else -> {
                         errorLayout.error = null
                     }
                 }
+            }
+        }
+    }
+
+    private fun handlePasswordChanges(errorLayout: TextInputLayout, inputText: String?) {
+        // password cannot be empty
+        when {
+            TextUtils.isEmpty(inputText) -> {
+                errorLayout.setErrorTextColor(context?.getColorStateList(R.color.error_input_text))
+                errorLayout.error =
+                    context?.getString(R.string.password_invalid_text)
+                errorLayout.setErrorIconDrawable(R.drawable.ic_error)
+                view?.btnPasswordToggle?.visibility = View.INVISIBLE
+            }
+            else -> {
+                errorLayout.error = null
+                errorLayout.errorIconDrawable = null
+                view?.btnPasswordToggle?.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private fun handleUsernameChanges(errorLayout: TextInputLayout, inputText: String?) {
+        when {
+            TextUtils.isEmpty(inputText) -> {
+                errorLayout.error = null
+            }
+        }
+    }
+
+    private fun handleHostnameChanges(errorLayout: TextInputLayout, inputText: String?) {
+        // hostname cannot be empty
+        // has to have http:// or https://
+        when {
+            TextUtils.isEmpty(inputText) -> {
+                errorLayout.setErrorTextColor(context?.getColorStateList(R.color.error_input_text))
+                errorLayout.error =
+                    context?.getString(R.string.hostname_empty_text)
+                errorLayout.setErrorIconDrawable(R.drawable.ic_error)
+                view?.inputHostnameDescription?.visibility = View.INVISIBLE
+            }
+            !URLUtil.isHttpUrl(inputText) and !URLUtil.isHttpsUrl(inputText) -> {
+                errorLayout.setErrorTextColor(context?.getColorStateList(R.color.error_input_text))
+                errorLayout.error =
+                    context?.getString(R.string.hostname_invalid_text)
+                errorLayout.setErrorIconDrawable(R.drawable.ic_error)
+                view?.inputHostnameDescription?.visibility = View.INVISIBLE
+            }
+            else -> {
+                errorLayout.error = null
+                errorLayout.errorIconDrawable = null
+                view?.inputHostnameDescription?.visibility = View.VISIBLE
             }
         }
     }

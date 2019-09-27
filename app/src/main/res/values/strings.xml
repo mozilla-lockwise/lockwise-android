@@ -301,5 +301,8 @@
     <!-- This is the error message that is shown in edit or create view when input text for password is not valid. -->
     <string name="password_invalid_text">Password cannot be empty</string>
 
+    <!-- This is the error message that is shown in edit or create view when input text for the hostname is not valid. -->
+    <string name="hostname_empty_text">Web address cannot be empty</string>
+
 
 </resources>
