@@ -25,13 +25,12 @@ import com.google.android.material.textfield.TextInputLayout
 import com.jakewharton.rxbinding2.support.v7.widget.navigationClicks
 import com.jakewharton.rxbinding2.view.clicks
 import com.jakewharton.rxbinding2.widget.textChanges
+import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Observable
 import kotlinx.android.synthetic.main.fragment_item_edit.*
 import kotlinx.android.synthetic.main.fragment_item_edit.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
-import mozilla.lockbox.action.ItemDetailAction
-import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.presenter.EditItemDetailView
 import mozilla.lockbox.presenter.EditItemPresenter
@@ -40,7 +39,31 @@ import mozilla.lockbox.support.assertOnUiThread
 @ExperimentalCoroutinesApi
 class EditItemFragment : BackableFragment(), EditItemDetailView {
 
-    private val dispatcher: Dispatcher = Dispatcher.shared
+    override val togglePasswordVisibility: BehaviorRelay<Unit> = BehaviorRelay.create()
+
+    override val togglePasswordClicks: Observable<Unit>
+        get() = view!!.btnPasswordToggle.clicks()
+
+    override val learnMoreClicks: Observable<Unit>
+        get() = view!!.learnMore.clicks()
+
+    override val deleteClicks: Observable<Unit>
+        get() = view!!.deleteEntryButton.clicks()
+
+    override val closeEntryClicks: Observable<Unit>
+        get() = view!!.toolbar.navigationClicks()
+
+    override val saveEntryClicks: Observable<Unit>
+        get() = view!!.saveEntryButton.clicks()
+
+    override val hostnameChanged: Observable<CharSequence>
+        get() = view!!.inputHostname.textChanges()
+
+    override val usernameChanged: Observable<CharSequence>
+        get() = view!!.inputUsername.textChanges()
+
+    override val passwordChanged: Observable<CharSequence>
+        get() = view!!.inputPassword.textChanges()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -62,35 +85,31 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
         setTextWatcher(view)
         setKeyboardFocus(view)
 
-        val layouts = arrayOf(view.inputLayoutHostname, view.inputLayoutUsername,
-            view.inputLayoutPassword)
+        val layouts = arrayOf(
+            view.inputLayoutHostname, view.inputLayoutUsername,
+            view.inputLayoutPassword
+        )
 
-        for(layout in layouts) {
+        for (layout in layouts) {
             layout.hintTextColor = context?.getColorStateList(R.color.hint_edit_text)
             layout.setHintTextAppearance(R.style.HintText)
         }
     }
 
     private fun setKeyboardFocus(view: View) {
-        view.inputHostname.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+        val focusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) {
                 closeKeyboard()
             }
         }
 
-        view.inputUsername.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                closeKeyboard()
-            }
-        }
+        view.inputHostname.onFocusChangeListener = focusChangeListener
+        view.inputUsername.onFocusChangeListener = focusChangeListener
 
         view.inputPassword.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            togglePasswordVisibility.accept(Unit)
             if (!hasFocus) {
                 closeKeyboard()
-                dispatcher.dispatch(ItemDetailAction.TogglePassword(displayed = false))
-            } else {
-                // show the password when it is focused
-                dispatcher.dispatch(ItemDetailAction.TogglePassword(displayed = true))
             }
         }
     }
@@ -139,7 +158,8 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
                                 || (!URLUtil.isHttpUrl(inputText) and !URLUtil.isHttpsUrl(inputText))
                             -> {
                                 errorLayout.setErrorTextColor(context?.getColorStateList(R.color.error_input_text))
-                                errorLayout.error = context?.getString(R.string.hostname_invalid_text)
+                                errorLayout.error =
+                                    context?.getString(R.string.hostname_invalid_text)
                                 errorLayout.setErrorIconDrawable(R.drawable.ic_error)
                                 view?.inputHostnameDescription?.visibility = View.INVISIBLE
                             }
@@ -162,7 +182,8 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
                         when {
                             TextUtils.isEmpty(inputText) -> {
                                 errorLayout.setErrorTextColor(context?.getColorStateList(R.color.error_input_text))
-                                errorLayout.error = context?.getString(R.string.password_invalid_text)
+                                errorLayout.error =
+                                    context?.getString(R.string.password_invalid_text)
                                 errorLayout.setErrorIconDrawable(R.drawable.ic_error)
                                 view?.btnPasswordToggle?.visibility = View.INVISIBLE
                             }
@@ -191,43 +212,19 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
         closeKeyboard()
     }
 
-    override var isPasswordVisible: Boolean = false
-        set(value) {
-            assertOnUiThread()
-            field = value
-            updatePasswordVisibility(value)
-        }
-
-    override val togglePasswordClicks: Observable<Unit>
-        get() = view!!.btnPasswordToggle.clicks()
-
-    override val learnMoreClicks: Observable<Unit>
-        get() = view!!.learnMore.clicks()
-
-    override val deleteClicks: Observable<Unit>
-        get() = view!!.deleteEntryButton.clicks()
-
-    override val closeEntryClicks: Observable<Unit>
-        get() = view!!.toolbar.navigationClicks()
-
-    override val saveEntryClicks: Observable<Unit>
-        get() = view!!.saveEntryButton.clicks()
-
-    override val hostnameChanged: Observable<CharSequence>
-        get() = view!!.inputHostname.textChanges()
-
-    override val usernameChanged: Observable<CharSequence>
-        get() = view!!.inputUsername.textChanges()
-
-    override val passwordChanged: Observable<CharSequence>
-        get() = view!!.inputPassword.textChanges()
-
     override fun closeKeyboard() {
         val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         if (imm.isAcceptingText) {
             imm.hideSoftInputFromWindow(view!!.windowToken, 0)
         }
     }
+
+    override var isPasswordVisible: Boolean = false
+        set(value) {
+            assertOnUiThread()
+            field = value
+            updatePasswordVisibility(value)
+        }
 
     private fun updatePasswordVisibility(visible: Boolean) {
         if (visible) {
