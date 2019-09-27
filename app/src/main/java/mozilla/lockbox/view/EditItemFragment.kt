@@ -20,6 +20,7 @@ import android.view.inputmethod.InputMethodManager
 import android.webkit.URLUtil
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
+import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.jakewharton.rxbinding2.support.v7.widget.navigationClicks
 import com.jakewharton.rxbinding2.view.clicks
@@ -59,7 +60,7 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
         super.onViewCreated(view, savedInstanceState)
         setupToolbar(view.toolbar)
         setTextWatcher(view)
-        setUpKeyboardFocus(view)
+        setKeyboardFocus(view)
 
         val layouts = arrayOf(view.inputLayoutHostname, view.inputLayoutUsername,
             view.inputLayoutPassword)
@@ -70,7 +71,7 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
         }
     }
 
-    private fun setUpKeyboardFocus(view: View) {
+    private fun setKeyboardFocus(view: View) {
         view.inputHostname.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) {
                 closeKeyboard()
@@ -95,21 +96,17 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
     }
 
     private fun setTextWatcher(view: View) {
-        view.inputHostname.addTextChangedListener(
-            buildTextWatcher(
-                view.inputLayoutHostname
-            )
+        val textInputs = listOf<Pair<TextInputEditText, TextInputLayout>>(
+            Pair(view.inputHostname, view.inputLayoutHostname),
+            Pair(view.inputUsername, view.inputLayoutUsername),
+            Pair(view.inputPassword, view.inputLayoutPassword)
         )
-        view.inputUsername.addTextChangedListener(
-            buildTextWatcher(
-                view.inputLayoutUsername
+
+        for (input in textInputs) {
+            input.first.addTextChangedListener(
+                buildTextWatcher(input.second)
             )
-        )
-        view.inputPassword.addTextChangedListener(
-            buildTextWatcher(
-                view.inputLayoutPassword
-            )
-        )
+        }
     }
 
     private fun buildTextWatcher(errorLayout: TextInputLayout): TextWatcher {
