@@ -81,15 +81,12 @@ class EditItemPresenter(
 
         view.deleteClicks
             .subscribe {
-                if (credentials != null) {
-                    dispatcher.dispatch(DataStoreAction.Delete(credentials!!))
-                    dispatcher.dispatch(RouteAction.ItemList)
-                } else {
-                    pushError(
+                credentials?.let { c ->
+                    dispatcher.dispatch(DialogAction.DeleteConfirmationDialog(c))
+                } ?: pushError(
                         NullPointerException("Credentials are null"),
                         "Error editing credential with id ${credentials?.id}"
                     )
-                }
             }
             .addTo(compositeDisposable)
 
@@ -119,16 +116,14 @@ class EditItemPresenter(
 
         view.saveEntryClicks
             .subscribe {
-                if (credentials != null) {
-                    dispatcher.dispatch(DataStoreAction.UpdateItemDetail(credentials!!))
+                credentials?.let { c ->
+                    dispatcher.dispatch(DataStoreAction.UpdateItemDetail(c))
                     view.closeKeyboard()
                     dispatcher.dispatch(RouteAction.ItemList)
-                } else {
-                    pushError(
-                        NullPointerException("Credentials are null"),
-                        "Error editing credential with id ${credentials?.id}"
-                    )
-                }
+                } ?: pushError(
+                    NullPointerException("Credentials are null"),
+                    "Error editing credential with id ${credentials?.id}"
+                )
             }
             .addTo(compositeDisposable)
     }
@@ -138,17 +133,18 @@ class EditItemPresenter(
         newUsername: CharSequence? = null,
         newPassword: CharSequence? = null
     ) {
-        try {
+        credentials?.let { cred ->
             credentials = ServerPassword(
-                id = credentials?.id.orEmpty(),
-                hostname = newHostname?.toString() ?: credentials?.hostname.orEmpty(),
-                username = newUsername?.toString() ?: credentials?.username,
-                password = newPassword?.toString() ?: credentials?.password.orEmpty(),
-                httpRealm = credentials?.httpRealm,
-                formSubmitURL = credentials?.formSubmitURL
+                id = cred.id,
+                hostname = newHostname?.toString() ?: cred.hostname,
+                username = newUsername?.toString() ?: cred.username,
+                password = newPassword?.toString() ?: cred.password,
+                httpRealm = cred.httpRealm,
+                formSubmitURL = cred.formSubmitURL
             )
-        } catch (exception: NullPointerException) {
-            pushError(exception, "Error editing credential with id ${credentials?.id}")
-        }
+        } ?: pushError(
+            NullPointerException("Credentials are null"),
+            "Error editing credential with id ${credentials?.id}"
+        )
     }
 }
