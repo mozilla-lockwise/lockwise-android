@@ -11,7 +11,6 @@ import mozilla.lockbox.action.Setting
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.robots.itemList
 import mozilla.lockbox.support.TimingSupport
-import mozilla.lockbox.support.SystemTimingSupport
 import mozilla.lockbox.support.TestSystemTimingSupport
 import mozilla.lockbox.view.RootActivity
 import org.junit.Before
