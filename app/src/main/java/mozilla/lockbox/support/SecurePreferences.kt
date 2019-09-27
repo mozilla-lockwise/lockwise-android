@@ -75,6 +75,10 @@ open class SecurePreferences(
         editor.apply()
     }
 
+    open fun clear() {
+        prefs.edit().clear().commit()
+    }
+
     // these methods won't be used until https://github.com/mozilla-lockwise/lockwise-android/issues/165
     // is addressed.
 //    open fun createEncryptCipher(): Cipher {

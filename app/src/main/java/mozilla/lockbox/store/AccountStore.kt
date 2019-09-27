@@ -308,8 +308,7 @@ open class AccountStore(
 
         tokenRotationHandler.removeCallbacksAndMessages(null)
 
-        this.securePreferences.remove(Constant.Key.firefoxAccount)
-        this.securePreferences.remove(Constant.Key.accessToken)
+        this.securePreferences.clear()
 
         this.generateNewFirefoxAccount()
 
