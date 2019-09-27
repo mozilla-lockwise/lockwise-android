@@ -34,7 +34,7 @@
     <!-- This is the label for the navigation item that opens a Frequently Asked Questions web page -->
     <string name="nav_menu_faq">FAQ</string>
     <!-- This is the label for the navigation item that opens a survey or feedback web page to submit to the developers -->
-    <string name="nav_menu_feedback">Feedback geben</string>
+    <string name="nav_menu_feedback">Feedback abgeben</string>
     <!-- This is the label for the navigation item that opens a screen to manage the user account currently signed in to the application -->
     <string name="nav_menu_account">Konto</string>
     <!-- This is the label for the navigation item that opens a settings screen with options and preferences and more application information -->
@@ -48,7 +48,7 @@
     <string name="unlock_button">Entsperren</string>
 
     <!-- This message appears in a toast informing the user it is currently downloading and syncing login (a saved login is basically the URL, username and password) data -->
-    <string name="syncing_logins">Zugangsdaten synchronisieren…</string>
+    <string name="syncing_logins">Zugangsdaten werden synchronisiert…</string>
 
     <!-- This is the label used by screenreaders to inform the user the selected menu is for sorting the saved logins in the list -->
     <string name="sort_description">Zugangsdaten sortieren</string>
