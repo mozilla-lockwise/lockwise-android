@@ -167,6 +167,10 @@ class AppRoutePresenter(
             R.id.fragment_filter to R.id.fragment_item_list -> R.id.action_filter_to_itemList
 
             else -> null
+        } ?: when (dest) {
+            R.id.fragment_locked -> R.id.action_to_locked
+
+            else -> null
         }
     }
 
