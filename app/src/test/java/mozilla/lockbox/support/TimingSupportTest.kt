@@ -35,10 +35,6 @@ import org.powermock.modules.junit4.PowerMockRunner
 import java.lang.Math.abs
 import org.mockito.Mockito.`when` as whenCalled
 
-class TestSystemTimingSupport : SystemTimingSupport {
-    override var systemTimeElapsed: Long = 0L
-}
-
 @ExperimentalCoroutinesApi
 @RunWith(PowerMockRunner::class)
 @PrepareForTest(PreferenceManager::class, SimpleFileReader::class)

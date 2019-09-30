@@ -75,6 +75,7 @@ object Constant {
         const val bootCompletedIntent = "android.intent.action.BOOT_COMPLETED"
         const val clearClipboardIntent = "mozilla.lockbox.intent.CLEAR_CLIPBOARD"
         const val clipboardDirtyExtra = "clipboard-dirty"
+        const val accessToken = "access-token"
     }
 
     object FingerprintTimeout {

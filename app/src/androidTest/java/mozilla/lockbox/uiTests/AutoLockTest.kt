@@ -11,26 +11,13 @@ import mozilla.lockbox.action.Setting
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.robots.itemList
 import mozilla.lockbox.support.TimingSupport
-import mozilla.lockbox.support.SystemTimingSupport
+import mozilla.lockbox.support.TestSystemTimingSupport
 import mozilla.lockbox.view.RootActivity
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-
-@Ignore("589-UItests-update (#590)")
-class TestSystemTimingSupport() : SystemTimingSupport {
-    override var systemTimeElapsed: Long = 0L
-
-    constructor(existing: SystemTimingSupport) : this() {
-        systemTimeElapsed = existing.systemTimeElapsed
-    }
-
-    fun advance(time: Long = 1L) {
-        systemTimeElapsed += time
-    }
-}
 
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
