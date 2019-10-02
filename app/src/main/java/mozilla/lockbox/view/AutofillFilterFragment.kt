@@ -24,8 +24,6 @@ import io.reactivex.Observable
 import io.reactivex.functions.Consumer
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_autofill_filter.view.*
-import kotlinx.android.synthetic.main.fragment_autofill_filter.view.entriesView
-import kotlinx.android.synthetic.main.fragment_item_list.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
 import mozilla.lockbox.adapter.ItemListAdapter
@@ -38,7 +36,11 @@ import mozilla.lockbox.presenter.FilterView
 class AutofillFilterFragment : DialogFragment(), FilterView {
     val adapter = ItemListAdapter(ItemListAdapterType.AutofillFilter)
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         presenter = AutofillFilterPresenter(this)
         val view = inflater.inflate(R.layout.fragment_autofill_filter, container, false)
         retainInstance = true
@@ -88,7 +90,6 @@ class AutofillFilterFragment : DialogFragment(), FilterView {
         get() = view!!.cancelButton.visibility()
     override val itemSelection: Observable<ItemViewModel>
         get() = adapter.itemClicks
-    override val noMatchingClicks: Observable<Unit>? = null
     override val displayNoEntries: ((Boolean) -> Unit)?
         get() = adapter::displayNoEntries
     override val onDismiss: Observable<Unit> = PublishSubject.create<Unit>()

@@ -36,17 +36,14 @@ object Constant {
     }
 
     object Faq {
-        const val uri = "https://lockbox.firefox.com/faq.html"
-        const val topUri = uri + "#top"
-        const val savedUri = uri + "#how-do-i-get-my-saved-logins-into-firefox-lockbox"
-        const val securityUri = uri + "#what-security-technologies-does-firefox-lockbox-use"
-        const val syncUri = uri + "#how-do-i-enable-sync-on-firefox"
-        const val createUri = uri + "#how-do-i-create-new-entries"
-        const val editUri = uri + "#how-do-i-edit-existing-entries"
+        const val uri = "https://support.mozilla.org/en-US/kb"
+        const val faqUri = uri + "/getting-started-firefox-lockwise"
+        const val savedUri = uri + "/getting-started-firefox-lockwise#w_step-1-sign-up-for-firefox-accounts"
+        const val syncUri = uri + "/sync-logins-firefox-android"
     }
 
     object Privacy {
-        const val uri = "https://lockbox.firefox.com/privacy.html"
+        const val uri = "https://lockwise.firefox.com/privacy.html"
     }
 
     object SendFeedback {

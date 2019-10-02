@@ -52,13 +52,7 @@ class ItemListAdapter(
         val inflater = LayoutInflater.from(parent.context)
         when (viewType) {
             NO_MATCHING_ENTRIES_CELL_TYPE -> {
-                val view = inflater.inflate(R.layout.list_cell_no_matching, parent, false)
-
-                view.noMatchingLearnMore
-                    .clicks()
-                    .subscribe(noMatchingEntriesClicks as Subject)
-
-                return ItemListCell(view)
+                return ItemListCell(inflater.inflate(R.layout.list_cell_no_matching, parent, false))
             }
             NO_ENTRIES_CELL_TYPE -> {
                 val view = inflater.inflate(R.layout.list_cell_no_entries, parent, false)

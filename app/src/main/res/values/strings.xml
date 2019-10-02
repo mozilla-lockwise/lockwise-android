@@ -228,12 +228,8 @@
     <string name="finish">Finish</string>
     <!-- This description of the app functionality is shown on the final onboarding screen -->
     <string name="access_description">Access logins saved to Firefox from your phone</string>
-    <!-- This is an accessible content description for the security information link text. %1$s will be replaced with application name -->
-    <string name="security_content_description">This is a link to a description of security practices in %1$s.</string>
     <!-- This description of the app security is shown on the final onboarding screen. %s will be replaced with the security link. -->
-    <string name="security_description">Sync between devices with secure %s</string>
-    <!-- This text is displayed as a link in the security description. -->
-    <string name="security_link">256-bit encryption</string>
+    <string name="security_description">Sync between devices with secure 256-bit encryption</string>
     <!-- This description of the app convenience is shown on the final onboarding screen. -->
     <string name="convenience_description">Unlock the app with ease using your fingerprint</string>
 

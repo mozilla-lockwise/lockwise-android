@@ -15,7 +15,6 @@ import mozilla.lockbox.flux.Presenter
 
 interface OnboardingConfirmationView {
     val finishClicks: Observable<Unit>
-    val encryptionClicks: Observable<Unit>
 }
 
 class OnboardingConfirmationPresenter(
@@ -25,11 +24,6 @@ class OnboardingConfirmationPresenter(
     override fun onViewReady() {
         view.finishClicks
             .map { OnboardingStatusAction(false) }
-            .subscribe(dispatcher::dispatch)
-            .addTo(compositeDisposable)
-
-        view.encryptionClicks
-            .map { AppWebPageAction.FaqSecurity }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
     }
