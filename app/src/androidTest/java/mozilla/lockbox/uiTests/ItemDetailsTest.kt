@@ -64,6 +64,7 @@ open class ItemDetailsTest {
     fun editItem() {
         navigator.gotoItemDetailKebabMenu()
         kebabMenu { tapEditButton() }
+        // Edit entry Hostname and Username
         editCredential {
             exists()
             tapOnHostname()
@@ -71,18 +72,26 @@ open class ItemDetailsTest {
             tapOnUserName()
             editUserName("UsernameChanged")
             saveChanges() }
+        // Check that changes in entry are saved
         itemList {
             exists()
             editedCredentialHostnameExists("HostnameChanged")
             editedCredentialUsernameExists("UsernameChanged")
             openCredential("HostnameChanged")
         }
-
-        // Remove this entry
+        // Remove the entry
         navigator.gotoItemDetailKebabMenu()
         kebabMenu { tapEditButton() }
         editCredential { deleteEntryFromEdit() }
-        // There will be a disclaimer menu here see issue #904
+        // Tap on Cancel
+        deleteCredentialDisclaimer { tapCancelButton() }
+        editCredential {
+            exists()
+            // Tap on Delete
+            deleteEntryFromEdit()
+        }
+        deleteCredentialDisclaimer { tapDeleteButton() }
+        // Once entry is removed user is taken to ItemList view
         itemList {
             exists()
             credentialRemovedDoesNotExist("HostnameChanged")
