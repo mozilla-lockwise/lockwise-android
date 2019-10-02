@@ -42,7 +42,6 @@ class FilterPresenterTest {
         val cancelButtonStub = PublishSubject.create<Unit>()
         val cancelButtonVisibilityStub = TestObserver<Boolean>()
         val itemSelectionStub = PublishSubject.create<ItemViewModel>()
-        val noMatchingClickStub = PublishSubject.create<Unit>()
 
         var updateItemsArgument: List<ItemViewModel>? = null
 
@@ -52,7 +51,6 @@ class FilterPresenterTest {
         override val cancelButtonVisibility: Consumer<in Boolean> =
             TestConsumer(cancelButtonVisibilityStub)
         override val itemSelection: Observable<ItemViewModel> = itemSelectionStub
-        override val noMatchingClicks: Observable<Unit> = noMatchingClickStub
 
         override fun updateItems(items: List<ItemViewModel>) {
             updateItemsArgument = items
@@ -175,11 +173,5 @@ class FilterPresenterTest {
         subject.itemSelectionActionSubject.onNext(action)
 
         dispatcherObserver.assertValue(action)
-    }
-
-    @Test
-    fun `no matching items clicks`() {
-        view.noMatchingClickStub.onNext(Unit)
-        dispatcherObserver.assertValue(AppWebPageAction.FaqCreate)
     }
 }

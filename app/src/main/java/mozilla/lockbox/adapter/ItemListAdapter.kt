@@ -39,7 +39,6 @@ class ItemListAdapter(
     private var displayNoEntries: Boolean = true
     val itemClicks: Observable<ItemViewModel> = PublishSubject.create()
     val noEntriesClicks: Observable<Unit> = PublishSubject.create()
-    val noMatchingEntriesClicks: Observable<Unit> = PublishSubject.create()
 
     companion object {
         private const val ITEM_DISPLAY_CELL_TYPE = 0
