@@ -28,6 +28,7 @@ import mozilla.lockbox.support.pushError
 interface EditItemDetailView {
     var isPasswordVisible: Boolean
     val togglePasswordClicks: Observable<Unit>
+    val togglePasswordVisibility: Observable<Unit>
     val deleteClicks: Observable<Unit>
     val learnMoreClicks: Observable<Unit>
     val closeEntryClicks: Observable<Unit>
@@ -67,9 +68,16 @@ class EditItemPresenter(
             .subscribe { view.isPasswordVisible = it }
             .addTo(compositeDisposable)
 
+        view.togglePasswordVisibility
+            .skip(1)
+            .subscribe {
+                dispatcher.dispatch(ItemDetailAction.TogglePassword)
+            }
+            .addTo(compositeDisposable)
+
         view.togglePasswordClicks
             .subscribe {
-                dispatcher.dispatch(ItemDetailAction.TogglePassword(view.isPasswordVisible.not()))
+                dispatcher.dispatch(ItemDetailAction.TogglePassword)
             }
             .addTo(compositeDisposable)
 
@@ -81,12 +89,12 @@ class EditItemPresenter(
 
         view.deleteClicks
             .subscribe {
-                credentials?.let { c ->
-                    dispatcher.dispatch(DialogAction.DeleteConfirmationDialog(c))
+                credentials?.let {
+                    dispatcher.dispatch(DialogAction.DeleteConfirmationDialog(it))
                 } ?: pushError(
-                        NullPointerException("Credentials are null"),
-                        "Error editing credential with id ${credentials?.id}"
-                    )
+                    NullPointerException("Credentials are null"),
+                    "Error editing credential with id ${credentials?.id}"
+                )
             }
             .addTo(compositeDisposable)
 
@@ -116,8 +124,8 @@ class EditItemPresenter(
 
         view.saveEntryClicks
             .subscribe {
-                credentials?.let { c ->
-                    dispatcher.dispatch(DataStoreAction.UpdateItemDetail(c))
+                credentials?.let {
+                    dispatcher.dispatch(DataStoreAction.UpdateItemDetail(it))
                     view.closeKeyboard()
                     dispatcher.dispatch(RouteAction.ItemList)
                 } ?: pushError(

@@ -294,4 +294,15 @@
     <string name="username_description">The username</string>
     <!-- This is the title of the edit login page. -->
     <string name="edit_login_title">Edit Login</string>
+
+    <!-- This is the error message that is shown in edit or create view when input text for hostname is not valid. -->
+    <string name="hostname_invalid_text">Web address must contain “https://“ or “http://“</string>
+
+    <!-- This is the error message that is shown in edit or create view when input text for password is not valid. -->
+    <string name="password_invalid_text">Password cannot be empty</string>
+
+    <!-- This is the error message that is shown in edit or create view when input text for the hostname is not valid. -->
+    <string name="hostname_empty_text">Web address cannot be empty</string>
+
+
 </resources>

@@ -16,8 +16,11 @@
         android:windowSoftInputMode="adjustPan"
         android:background="@color/background_grey"
         android:importantForAutofill="noExcludeDescendants"
+        android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         tools:ignore="UnusedAttribute"
-        style="@style/EditItemDetail" >
+        style="@style/EditItemDetail">
 
     <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -110,7 +113,6 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/inputName"
-                            style="@style/EditTextStyle"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textColor="@color/gray_73_percent"
@@ -124,17 +126,9 @@
                             android:singleLine="true"
                             android:clickable="false"
                             android:focusable="false"
+                            app:backgroundTint="@color/gray_divider"
                             tools:ignore="Autofill"/>
                 </com.google.android.material.textfield.TextInputLayout>
-
-                <View
-                        android:id="@+id/nameDivider"
-                        android:layout_height="1dp"
-                        android:layout_width="match_parent"
-                        android:background="@color/gray_divider"
-                        android:layout_marginStart="20dp"
-                        card_view:layout_constraintTop_toBottomOf="@id/inputLayoutName"
-                />
 
                 <TextView
                         android:id="@+id/inputNameDescription"
@@ -149,7 +143,7 @@
                         android:layout_marginEnd="0dp"
                         android:layout_marginStart="20dp"
                         android:layout_marginTop="7dp"
-                        card_view:layout_constraintTop_toBottomOf="@id/nameDivider"
+                        card_view:layout_constraintTop_toBottomOf="@id/inputLayoutName"
                         card_view:layout_constraintStart_toStartOf="parent"
                         android:text="@string/input_name_description"
                 />
@@ -174,7 +168,7 @@
                         android:elevation="0dp"
                         android:stateListAnimator="@null"
                         android:text="@string/learn_more"
-                        card_view:layout_constraintTop_toBottomOf="@id/nameDivider"
+                        card_view:layout_constraintTop_toBottomOf="@id/inputLayoutName"
                         card_view:layout_constraintStart_toEndOf="@id/inputNameDescription"
                 />
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -194,7 +188,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingStart="16dp"
-                        android:textColorHint="@color/black_60_percent"
+                        android:textColorHint="@color/hint_edit_text"
                         android:contentDescription="@string/web_address_description"
                         app:layout_constraintTop_toTopOf="parent"
                         card_view:layout_constraintStart_toStartOf="parent"
@@ -203,12 +197,11 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/inputHostname"
-                            style="@style/EditTextStyle"
                             android:textSize="16sp"
                             android:fontFamily="sans-serif"
                             android:textStyle="normal"
                             android:textColor="@color/black_87_percent"
-                            android:textColorHint="@color/violet_70"
+                            android:textColorHint="@color/hint_edit_text"
                             android:letterSpacing="0.01"
                             android:lineSpacingExtra="8sp"
                             android:layout_width="match_parent"
@@ -219,17 +212,9 @@
                             android:clickable="true"
                             android:focusable="true"
                             android:textCursorDrawable="@android:color/transparent"
+                            app:backgroundTint="@color/gray_divider"
                             tools:ignore="Autofill"/>
                 </com.google.android.material.textfield.TextInputLayout>
-
-                <View
-                        android:id="@+id/hostnameDivider"
-                        android:layout_height="1dp"
-                        android:layout_width="match_parent"
-                        android:background="@color/gray_divider"
-                        android:layout_marginStart="20dp"
-                        card_view:layout_constraintTop_toBottomOf="@id/inputLayoutHostname"
-                />
 
                 <TextView
                         android:id="@+id/inputHostnameDescription"
@@ -243,7 +228,7 @@
                         android:lineSpacingExtra="4sp"
                         android:layout_marginStart="20dp"
                         android:layout_marginTop="7dp"
-                        card_view:layout_constraintTop_toBottomOf="@id/hostnameDivider"
+                        card_view:layout_constraintTop_toBottomOf="@id/inputLayoutHostname"
                         card_view:layout_constraintStart_toStartOf="parent"
                         android:text="@string/hostname_entry_description"
                 />
@@ -255,6 +240,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="30dp"
+                    android:layout_marginEnd="16dp"
                     app:layout_constraintTop_toBottomOf="@id/entryHostname" >
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -263,6 +249,7 @@
                         android:layout_height="wrap_content"
                         android:paddingStart="16dp"
                         android:textColorHint="@color/black_60_percent"
+                        android:colorControlActivated="@color/violet_70"
                         android:contentDescription="@string/username_description"
                         app:layout_constraintTop_toTopOf="parent"
                         card_view:layout_constraintStart_toStartOf="parent"
@@ -271,7 +258,6 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/inputUsername"
-                            style="@style/EditTextStyle"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/hint_username"
@@ -285,19 +271,9 @@
                             android:singleLine="true"
                             android:clickable="true"
                             android:focusable="true"
+                            app:backgroundTint="@color/gray_divider"
                             tools:ignore="Autofill"/>
-
                 </com.google.android.material.textfield.TextInputLayout>
-
-                <View
-                        android:id="@+id/usernameDivider"
-                        android:layout_height="1dp"
-                        android:layout_width="match_parent"
-                        android:background="@color/gray_divider"
-                        android:layout_marginStart="20dp"
-                        android:paddingEnd="16dp"
-                        card_view:layout_constraintTop_toBottomOf="@id/inputLayoutUsername"
-                />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -315,8 +291,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingStart="16dp"
-                        android:layout_marginEnd="30dp"
-                        android:textColorHint="@color/black_60_percent"
+                        android:textColorHint="@color/hint_edit_text"
+                        android:colorControlActivated="@color/violet_70"
                         android:contentDescription="@string/entry_password_description"
                         app:layout_constraintTop_toTopOf="parent"
                         card_view:layout_constraintStart_toStartOf="parent"
@@ -325,7 +301,6 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/inputPassword"
-                            style="@style/EditTextStyle"
                             android:textSize="16sp"
                             android:textStyle="normal"
                             android:textColor="@color/black_87_percent"
@@ -335,9 +310,11 @@
                             android:layout_height="wrap_content"
                             android:hint="@string/hint_password"
                             android:inputType="textPassword"
+                            android:colorControlActivated="@color/violet_70"
                             android:singleLine="true"
                             android:clickable="true"
                             android:focusable="true"
+                            app:backgroundTint="@color/gray_divider"
                             tools:ignore="Autofill"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -350,20 +327,10 @@
                         android:paddingTop="10dp"
                         android:background="@null"
                         android:contentDescription="@string/display_password_content_description"
-                        app:layout_constraintStart_toEndOf="@+id/inputLayoutPassword"
                         app:layout_constraintTop_toTopOf="@+id/inputLayoutPassword"
+                        card_view:layout_constraintEnd_toEndOf="@id/inputLayoutPassword"
                         app:layout_constraintBottom_toBottomOf="@+id/inputLayoutPassword"
                         app:srcCompat="@drawable/ic_show"/>
-
-                <View
-                        android:id="@+id/passwordDivider"
-                        android:layout_height="1dp"
-                        android:layout_width="match_parent"
-                        android:background="@color/gray_divider"
-                        android:layout_marginStart="20dp"
-                        android:paddingEnd="16dp"
-                        card_view:layout_constraintTop_toBottomOf="@id/inputLayoutPassword"
-                />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
