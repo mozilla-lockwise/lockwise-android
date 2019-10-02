@@ -136,6 +136,7 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
                 count: Int,
                 after: Int
             ) {
+                // NOOP
             }
 
             override fun onTextChanged(
@@ -144,6 +145,7 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
                 before: Int,
                 count: Int
             ) {
+                // NOOP
             }
 
             override fun afterTextChanged(editable: Editable) {
