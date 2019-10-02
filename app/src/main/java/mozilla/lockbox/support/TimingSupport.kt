@@ -28,7 +28,7 @@ open class TimingSupport(
     private val compositeDisposable = CompositeDisposable()
     private lateinit var preferences: SharedPreferences
 
-    var systemTimingSupport: SystemTimingSupport = SystemSystemTimingSupport()
+    var systemTimingSupport: SystemTimingSupport = DeviceSystemTimingSupport()
 
     open val shouldLock: Boolean
         get() = lockCurrentlyRequired()

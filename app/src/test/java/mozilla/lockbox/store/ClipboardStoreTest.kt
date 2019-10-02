@@ -32,6 +32,7 @@ import org.mockito.Mockito.`when` as whenCalled
 @Ignore("More reliably clear the clipboard (#644)")
 class TestSystemTimeSupport : SystemTimingSupport {
     override val systemTimeElapsed: Long = 2000L
+    override val currentTimeMillis: Long = 2000L
 }
 
 @RunWith(RobolectricTestRunner::class)
