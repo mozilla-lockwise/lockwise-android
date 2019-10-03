@@ -59,10 +59,10 @@ class ItemDetailStoreTest : DisposingTest() {
         val observer = createTestObserver<Boolean>()
         subject.isPasswordVisible.subscribe(observer)
 
-        dispatcher.dispatch(ItemDetailAction.TogglePassword)
+        dispatcher.dispatch(ItemDetailAction.SetPasswordVisibility)
         observer.assertLastValue(true)
 
-        dispatcher.dispatch(ItemDetailAction.TogglePassword)
+        dispatcher.dispatch(ItemDetailAction.SetPasswordVisibility)
         observer.assertLastValue(false)
     }
 }

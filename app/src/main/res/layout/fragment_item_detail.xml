@@ -37,11 +37,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
                 <TextView
+                        android:id="@+id/entryTitle"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:ellipsize="end"
-                        android:id="@+id/entryTitle"
                         android:paddingEnd="50dp"
                         android:maxLines="1"
                         android:textSize="20sp"
@@ -91,27 +91,29 @@
                 tools:ignore="RtlSymmetry">
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/hostname"
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     card_view:layout_constraintTop_toTopOf="parent"
                     card_view:layout_constraintStart_toStartOf="parent"
-                    card_view:layout_constraintEnd_toEndOf="parent"
-                    android:id="@+id/hostname" >
+                    card_view:layout_constraintEnd_toEndOf="parent">
+
                 <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/inputLayoutHostname"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:scrollbars="none"
                         android:paddingStart="16dp"
-                        android:layout_marginEnd="30dp"
+                        android:paddingEnd="12dp"
                         android:textColorHint="@color/black_60_percent"
                         android:contentDescription="@string/launch_hostname_content_description"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/btnHostnameLaunch"
                         tools:ignore="RtlSymmetry">
 
-                    <EditText
+                    <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/inputHostname"
                             style="@style/EditTextStyle"
                             android:layout_width="match_parent"
@@ -121,12 +123,12 @@
                             android:lines="1"
                             android:ellipsize="end"
                             android:inputType="textNoSuggestions"
-                            android:maxLines="1"
                             android:textColor="@color/violet_70"
                             android:clickable="true"
                             android:focusable="true"
+                            android:colorControlActivated="@color/violet_70"
+                            app:backgroundTint="@color/gray_divider"
                             tools:ignore="Autofill"/>
-
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <ImageView
@@ -134,140 +136,154 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:padding="8dp"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp"
                         android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
                         android:background="@null"
                         tools:ignore="ContentDescription"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/inputLayoutHostname"
                         app:srcCompat="@drawable/ic_launch"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <View
-                    android:layout_height="1dp"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/username"
+                    android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:background="@color/gray_divider"
-                    android:layout_marginStart="16dp"
-                    card_view:layout_constraintTop_toBottomOf="@id/hostname"
-            />
-
-            <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/inputLayoutUsername"
-                    android:contentDescription="@string/copy_username_content_description"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:paddingStart="16dp"
-                    android:textColorHint="@color/black_60_percent"
-                    app:layout_constraintTop_toBottomOf="@id/hostname"
-                    card_view:layout_constraintStart_toStartOf="parent"
-                    card_view:layout_constraintEnd_toEndOf="parent"
-                    tools:ignore="RtlSymmetry">
-
-                <EditText
-                        android:id="@+id/inputUsername"
-                        style="@style/EditTextStyle"
+                    android:layout_height="match_parent"
+                    app:layout_constraintTop_toBottomOf="@id/hostname">
+                <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/inputLayoutUsername"
+                        android:contentDescription="@string/copy_username_content_description"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/hint_username"
-                        android:inputType="textNoSuggestions"
-                        android:singleLine="true"
-                        app:layout_constraintEnd_toEndOf="@+id/inputLayoutUsername"
-                        app:layout_constraintTop_toTopOf="@+id/inputLayoutUsername"
-                        tools:ignore="Autofill"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                        android:layout_marginTop="16dp"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="12dp"
+                        android:textColorHint="@color/black_60_percent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        tools:ignore="RtlSymmetry">
 
-            <ImageView
-                    android:id="@+id/btnUsernameCopy"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="8dp"
-                    android:background="@null"
-                    tools:ignore="ContentDescription"
-                    app:layout_constraintBottom_toBottomOf="@+id/inputLayoutUsername"
-                    app:layout_constraintRight_toRightOf="@+id/inputLayoutUsername"
-                    app:layout_constraintTop_toTopOf="@+id/inputLayoutUsername"
-                    app:srcCompat="@drawable/ic_copy"
-                    tools:layout_editor_absoluteX="334dp"
-                    tools:layout_editor_absoluteY="89dp"/>
+                    <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/inputUsername"
+                            style="@style/EditTextStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/hint_username"
+                            android:inputType="textNoSuggestions"
+                            android:lines="1"
+                            android:ellipsize="end"
+                            android:colorControlActivated="@color/violet_70"
+                            app:backgroundTint="@color/gray_divider"
+                            app:layout_constraintEnd_toEndOf="@+id/inputLayoutUsername"
+                            app:layout_constraintTop_toTopOf="@+id/inputLayoutUsername"
+                            tools:ignore="Autofill"/>
+                </com.google.android.material.textfield.TextInputLayout>
 
-
-            <View
-                    android:layout_height="1dp"
-                    android:layout_width="match_parent"
-                    android:background="@color/gray_divider"
-                    android:layout_marginStart="16dp"
-                    card_view:layout_constraintTop_toBottomOf="@id/inputLayoutUsername"
-            />
-
-            <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/inputLayoutPassword"
-                    style="@style/PasswordTextStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="16dp"
-                    android:layout_marginTop="5dp"
-                    android:textColorHint="@color/black_60_percent"
-                    android:contentDescription="@string/copy_password_content_description"
-                    card_view:layout_constraintStart_toStartOf="parent"
-                    card_view:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/inputLayoutUsername"
-                    tools:ignore="RtlSymmetry">
-                <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/inputPassword"
-                        style="@style/EditTextStyle"
-                        android:layout_width="match_parent"
+                <ImageView
+                        android:id="@+id/btnUsernameCopy"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:hint="@string/hint_password"
-                        android:inputType="none"
-                        android:fontFamily="monospace"
-                        android:singleLine="true"
-                        android:lineSpacingExtra="8sp"
-                        app:layout_constraintEnd_toEndOf="@id/inputLayoutUsername"
-                        app:layout_constraintStart_toStartOf="@id/inputLayoutUsername"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp"
+                        android:paddingEnd="16dp"
+                        android:background="@null"
+                        tools:ignore="ContentDescription,RtlSymmetry"
+                        app:layout_constraintBottom_toBottomOf="@+id/inputLayoutUsername"
+                        app:layout_constraintRight_toRightOf="@+id/inputLayoutUsername"
                         app:layout_constraintTop_toTopOf="@+id/inputLayoutUsername"
-                        android:textSize="16sp"
-                        android:textStyle="normal"
-                        android:textColor="@color/black_87_percent"
-                        android:clickable="true"
-                        android:focusable="true"
-                        tools:ignore="Autofill"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                        app:srcCompat="@drawable/ic_copy"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <ImageView
-                    android:id="@+id/btnPasswordCopy"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="8dp"
-                    android:background="@null"
-                    tools:ignore="ContentDescription"
-                    app:layout_constraintBottom_toBottomOf="@+id/inputLayoutPassword"
-                    app:layout_constraintEnd_toEndOf="@+id/inputLayoutPassword"
-                    app:layout_constraintTop_toTopOf="@+id/inputLayoutPassword"
-                    app:srcCompat="@drawable/ic_copy"/>
-
-            <ImageButton
-                    android:id="@+id/btnPasswordToggle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/password"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_marginEnd="16dp"
-                    android:padding="8dp"
-                    android:paddingTop="10dp"
-                    android:background="@null"
-                    android:contentDescription="@string/display_password_content_description"
-                    app:layout_constraintRight_toLeftOf="@+id/btnPasswordCopy"
-                    app:layout_constraintTop_toTopOf="@+id/inputLayoutPassword"
-                    app:layout_constraintBottom_toBottomOf="@+id/inputLayoutPassword"
-                    app:srcCompat="@drawable/ic_show"/>
-
-            <View
-                    android:layout_height="1dp"
-                    android:layout_width="match_parent"
-                    android:background="@color/gray_divider"
                     android:layout_marginStart="16dp"
-                    card_view:layout_constraintTop_toBottomOf="@id/inputLayoutPassword" />
+                    app:layout_constraintTop_toBottomOf="@id/username"
+                    card_view:layout_constraintStart_toStartOf="parent"
+                    card_view:layout_constraintEnd_toEndOf="parent">
+                <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/inputLayoutPassword"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_weight="1"
+                        android:textColorHint="@color/black_60_percent"
+                        android:contentDescription="@string/copy_password_content_description"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        card_view:layout_constraintEnd_toStartOf="@id/btnPasswordToggle"
+                        tools:ignore="RtlSymmetry"
+                        style="@style/PasswordTextStyle" >
+                        <androidx.appcompat.widget.AppCompatEditText
+                                android:id="@+id/inputPassword"
+                                style="@style/EditTextStyle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical|start"
+                                android:hint="@string/hint_password"
+                                android:ellipsize="end"
+                                android:singleLine="true"
+                                android:scrollHorizontally="true"
+                                android:fontFamily="monospace"
+                                android:lineSpacingExtra="8sp"
+                                android:textSize="16sp"
+                                android:textStyle="normal"
+                                android:textColor="@color/black_87_percent"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:colorControlActivated="@color/violet_70"
+                                tools:ignore="Autofill"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <ImageButton
+                        android:id="@+id/btnPasswordToggle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="16dp"
+                        android:paddingBottom="8dp"
+                        android:paddingTop="10dp"
+                        android:paddingEnd="16dp"
+                        android:paddingStart="16dp"
+                        android:background="@null"
+                        android:contentDescription="@string/display_password_content_description"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/btnPasswordCopy"
+                        card_view:layout_constraintStart_toEndOf="@id/inputLayoutPassword"
+                        app:srcCompat="@drawable/ic_show"/>
+                <ImageButton
+                        android:id="@+id/btnPasswordCopy"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp"
+                        android:paddingStart="16dp"
+                        android:background="@null"
+                        tools:ignore="ContentDescription,RtlSymmetry"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:srcCompat="@drawable/ic_copy"/>
+
+                <View
+                        android:layout_height="1dp"
+                        android:layout_width="match_parent"
+                        android:background="@color/gray_divider"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="5dp"
+                        card_view:layout_constraintTop_toBottomOf="@id/btnPasswordCopy" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

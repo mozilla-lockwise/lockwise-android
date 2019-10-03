@@ -62,7 +62,9 @@ class ItemDetailPresenter(
 
     override fun onPause() {
         super.onPause()
-        dispatcher.dispatch(ItemDetailAction.TogglePassword)
+        dispatcher.dispatch(
+            ItemDetailAction.SetPasswordVisibility(false)
+        )
     }
 
     override fun onViewReady() {
@@ -104,10 +106,12 @@ class ItemDetailPresenter(
         }
 
         view.togglePasswordClicks
-            .subscribe { dispatcher.dispatch(ItemDetailAction.TogglePassword) }
+            .subscribe {
+                dispatcher.dispatch(
+                    ItemDetailAction.SetPasswordVisibility(view.isPasswordVisible.not())
+                )
+            }
             .addTo(compositeDisposable)
-
-        view.isPasswordVisible = false
 
         networkStore.isConnected
             .subscribe(view::handleNetworkError)

@@ -24,17 +24,17 @@ class ItemDetailStore(
 
     private val compositeDisposable = CompositeDisposable()
 
-    internal val passwordVisible = BehaviorSubject.createDefault(false)
-    val isPasswordVisible: Observable<Boolean> = passwordVisible
+    internal val _passwordVisible = BehaviorSubject.createDefault(false)
+    val isPasswordVisible: Observable<Boolean> = _passwordVisible
 
     init {
         dispatcher.register
             .filterByType(RouteAction::class.java)
             .subscribe { action ->
                 when (action) {
-                    is RouteAction.ItemDetail -> passwordVisible.onNext(false)
-                    is RouteAction.ItemList -> passwordVisible.onNext(false)
-                    is RouteAction.EditItemDetail -> passwordVisible.onNext(false)
+                    is RouteAction.ItemDetail -> _passwordVisible.onNext(false)
+                    is RouteAction.ItemList -> _passwordVisible.onNext(false)
+                    is RouteAction.EditItemDetail -> _passwordVisible.onNext(false)
                 }
             }
             .addTo(compositeDisposable)
@@ -43,7 +43,7 @@ class ItemDetailStore(
             .filterByType(ItemDetailAction::class.java)
             .subscribe { action ->
                 when (action) {
-                    is ItemDetailAction.TogglePassword -> passwordVisible.onNext(passwordVisible.value?.not() ?: false)
+                    is ItemDetailAction.SetPasswordVisibility -> _passwordVisible.onNext(action.visible)
                 }
             }
             .addTo(compositeDisposable)
