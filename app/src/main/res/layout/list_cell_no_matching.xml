@@ -24,18 +24,4 @@
             android:lineSpacingExtra="8.5sp"
             android:layout_marginTop="40dp"
             android:text="@string/no_matching_logins"/>
-
-    <TextView
-            android:layout_width="220dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:textAlignment="center"
-            android:textSize="13sp"
-            android:lineSpacingExtra="6.5sp"
-            android:fontFamily="sans-serif"
-            android:textStyle="normal"
-            android:textColor="@color/text_grey"
-            android:background="@color/background_grey"
-            android:layout_marginTop="5dp"
-            android:text="@string/save_firefox_disclaimer"/>
 </LinearLayout>

@@ -8,7 +8,6 @@ package mozilla.lockbox.presenter
 
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
-import mozilla.lockbox.action.AppWebPageAction
 import mozilla.lockbox.action.OnboardingStatusAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter

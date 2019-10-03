@@ -13,7 +13,6 @@ import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.TestConsumer
-import mozilla.lockbox.action.AppWebPageAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.toViewModel
 import mozilla.lockbox.flux.Action
@@ -84,16 +83,16 @@ class FilterPresenterTest {
     val dispatcherObserver: TestObserver<Action> = TestObserver.create<Action>()
 
     val serverPassword1 = ServerPassword(
-            "oiupkjkui",
-            "www.mozilla.org",
-            username = "cats@cats.com",
-            password = "woof"
+        "oiupkjkui",
+        "www.mozilla.org",
+        username = "cats@cats.com",
+        password = "woof"
     )
     val serverPassword2 = ServerPassword(
-            "ljklkjldfs",
-            "www.neopets.com",
-            username = "dogs@dogs.com",
-            password = "meow"
+        "ljklkjldfs",
+        "www.neopets.com",
+        username = "dogs@dogs.com",
+        password = "meow"
     )
 
     private val items = listOf(serverPassword1, serverPassword2)
