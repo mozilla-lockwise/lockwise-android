@@ -98,8 +98,9 @@ open class AccountStore(
     private val syncCredentials: Observable<Optional<SyncCredentials>> = ReplaySubject.createWithSize(1)
     open val profile: Observable<Optional<Profile>> = ReplaySubject.createWithSize(1)
 
-    private lateinit var webView: WebView
-    private lateinit var logDirectory: File
+    private val logDirectory: File
+        get() = context.getDir("webview", Context.MODE_PRIVATE)
+
     private lateinit var context: Context
 
     private val tokenRotationHandler = Handler()
@@ -140,8 +141,6 @@ open class AccountStore(
     override fun injectContext(context: Context) {
         detectAccount()
         this.context = context
-        webView = WebView(context)
-        logDirectory = context.getDir("webview", Context.MODE_PRIVATE)
     }
 
     fun shareableAccount(): ShareableAccount? {
@@ -302,7 +301,7 @@ open class AccountStore(
         removeDeviceFromFxA()
 
         if (Looper.myLooper() != null) {
-            CookieManager.getInstance().removeAllCookies { }
+            CookieManager.getInstance().removeAllCookies(null)
             WebStorage.getInstance().deleteAllData()
         }
 
@@ -312,7 +311,8 @@ open class AccountStore(
 
         this.generateNewFirefoxAccount()
 
-        webView.clearCache(true)
+        WebView(context).clearCache(true)
+
         clearLogs()
     }
 
