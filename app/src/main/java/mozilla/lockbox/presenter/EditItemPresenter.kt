@@ -69,15 +69,18 @@ class EditItemPresenter(
             .addTo(compositeDisposable)
 
         view.togglePasswordVisibility
-            .skip(1)
             .subscribe {
-                dispatcher.dispatch(ItemDetailAction.TogglePassword)
+                dispatcher.dispatch(
+                    ItemDetailAction.SetPasswordVisibility(view.isPasswordVisible.not())
+                )
             }
             .addTo(compositeDisposable)
 
         view.togglePasswordClicks
             .subscribe {
-                dispatcher.dispatch(ItemDetailAction.TogglePassword)
+                dispatcher.dispatch(
+                    ItemDetailAction.SetPasswordVisibility(view.isPasswordVisible.not())
+                )
             }
             .addTo(compositeDisposable)
 

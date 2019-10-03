@@ -290,7 +290,7 @@ class ItemDetailPresenterTest {
         view.togglePasswordClicks.onNext(Unit)
 
         dispatcherObserver.assertValueSequence(
-            listOf(ItemDetailAction.TogglePassword)
+            listOf(ItemDetailAction.SetPasswordVisibility)
         )
         Assert.assertTrue(view.isPasswordVisible)
 
@@ -298,7 +298,7 @@ class ItemDetailPresenterTest {
         view.togglePasswordClicks.onNext(Unit)
 
         dispatcherObserver.assertValueSequence(
-            listOf(ItemDetailAction.TogglePassword)
+            listOf(ItemDetailAction.SetPasswordVisibility)
         )
         Assert.assertFalse(view.isPasswordVisible)
     }
@@ -310,7 +310,7 @@ class ItemDetailPresenterTest {
         view.togglePasswordClicks.onNext(Unit)
 
         dispatcherObserver.assertValueSequence(
-            listOf(ItemDetailAction.TogglePassword)
+            listOf(ItemDetailAction.SetPasswordVisibility)
         )
 
         Assert.assertTrue(view.isPasswordVisible)

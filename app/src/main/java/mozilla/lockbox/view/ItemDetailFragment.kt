@@ -8,6 +8,7 @@ package mozilla.lockbox.view
 
 import android.os.Bundle
 import android.text.InputType
+import android.text.TextUtils
 import android.text.method.PasswordTransformationMethod
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -136,6 +137,10 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         inputLayoutHostname.isHintAnimationEnabled = false
         inputLayoutUsername.isHintAnimationEnabled = false
         inputLayoutPassword.isHintAnimationEnabled = false
+
+        inputPassword.ellipsize = TextUtils.TruncateAt.END
+        inputPassword.setSingleLine()
+        inputPassword.maxLines = 1
 
         inputUsername.readOnly = true
 
