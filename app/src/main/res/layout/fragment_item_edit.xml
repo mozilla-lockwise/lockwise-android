@@ -13,8 +13,10 @@
         android:layout_height="match_parent"
         android:id="@+id/fragment_item_edit"
         android:overScrollMode="ifContentScrolls"
-        android:windowSoftInputMode="adjustPan"
         android:background="@color/background_grey"
+        android:windowSoftInputMode="adjustPan"
+        android:fitsSystemWindows="true"
+        android:windowActionBarOverlay="true"
         android:importantForAutofill="noExcludeDescendants"
         android:clickable="true"
         android:focusable="true"
@@ -79,8 +81,7 @@
             android:layout_height="wrap_content"
             android:paddingBottom="20dp"
             android:layout_gravity="center"
-            android:overScrollMode="ifContentScrolls"
-            android:windowSoftInputMode="adjustPan"
+            android:fitsSystemWindows="true"
             card_view:layout_constraintTop_toBottomOf="@id/toolbar">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -154,6 +155,7 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/inputHostname"
+
                             android:textSize="16sp"
                             android:fontFamily="sans-serif"
                             android:textStyle="normal"
@@ -196,8 +198,9 @@
                         card_view:layout_constraintEnd_toEndOf="parent"
                         tools:ignore="RtlSymmetry">
 
-                    <androidx.appcompat.widget.AppCompatEditText
+                    <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/inputUsername"
+
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/hint_username"
@@ -241,6 +244,7 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/inputPassword"
+                            android:paddingBottom="15dp"
                             android:textSize="16sp"
                             android:textStyle="normal"
                             android:textColor="@color/black_87_percent"
@@ -249,7 +253,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/hint_password"
-                            android:inputType="textPassword"
                             android:colorControlActivated="@color/violet_70"
                             android:singleLine="true"
                             android:clickable="true"
@@ -263,8 +266,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="16dp"
-                        android:padding="8dp"
-                        android:paddingTop="10dp"
+                        android:layout_marginBottom="12dp"
+                        android:padding="10dp"
                         android:background="@null"
                         android:contentDescription="@string/display_password_content_description"
                         app:layout_constraintTop_toTopOf="@+id/inputLayoutPassword"
