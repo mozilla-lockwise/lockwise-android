@@ -24,6 +24,7 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.jakewharton.rxbinding2.support.v7.widget.navigationClicks
 import com.jakewharton.rxbinding2.view.clicks
+import com.jakewharton.rxbinding2.widget.color
 import com.jakewharton.rxbinding2.widget.textChanges
 import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Observable
@@ -183,7 +184,7 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
                     }
                 }
 
-                if (hostnameInvalid || passwordInvalid) {
+                if(hostnameInvalid || passwordInvalid) {
                     disableSave()
                 } else {
                     enableSave()
@@ -196,8 +197,7 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
     private var passwordInvalid = false
 
     private fun disableSave() {
-        saveEntryButton.compoundDrawableTintList =
-            context?.getColorStateList(R.color.button_disabled)
+        saveEntryButton.compoundDrawableTintList = context?.getColorStateList(R.color.button_disabled)
         saveEntryButton.isClickable = false
         saveEntryButton.isFocusable = false
     }
@@ -208,35 +208,6 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
         saveEntryButton.isClickable = true
         saveEntryButton.isFocusable = true
     }
-
-    // Removed the ability to edit the entry hostname as part of
-    // https://github.com/mozilla-lockwise/lockwise-android/issues/956.
-    // TODO: revisit this logic as part of https://github.com/mozilla-lockwise/lockwise-android/issues/948.
-    /*
-    private fun handleHostnameChanges(errorLayout: TextInputLayout, inputText: String?) {
-        when {
-            TextUtils.isEmpty(inputText) -> {
-                errorLayout.setErrorTextColor(context?.getColorStateList(R.color.error_input_text))
-                errorLayout.error = context?.getString(R.string.hostname_empty_text)
-                errorLayout.setErrorIconDrawable(R.drawable.ic_error)
-                view?.inputHostnameDescription?.visibility = View.INVISIBLE
-                hostnameInvalid = true
-            }
-            !URLUtil.isHttpUrl(inputText) and !URLUtil.isHttpsUrl(inputText) -> {
-                errorLayout.setErrorTextColor(context?.getColorStateList(R.color.error_input_text))
-                errorLayout.error = context?.getString(R.string.hostname_invalid_text)
-                errorLayout.setErrorIconDrawable(R.drawable.ic_error)
-                view?.inputHostnameDescription?.visibility = View.INVISIBLE
-                hostnameInvalid = true
-            }
-            else -> {
-                errorLayout.error = null
-                errorLayout.errorIconDrawable = null
-                view?.inputHostnameDescription?.visibility = View.VISIBLE
-                hostnameInvalid = false
-            }
-        }
-    } */
 
     private fun handleUsernameChanges(errorLayout: TextInputLayout, inputText: String?) {
         when {
@@ -255,13 +226,7 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
         }
     }
 
-    // Removed the ability to edit the entry hostname as part of
-    // https://github.com/mozilla-lockwise/lockwise-android/issues/956.
-    // TODO: revisit this logic as part of https://github.com/mozilla-lockwise/lockwise-android/issues/948.
-    /*
-    private fun handleHostnameChanges(errorLayout: TextInputLayout, inputText: String?) {
-        // hostname cannot be empty
-        // has to have http:// or https://
+    private fun handlePasswordChanges(errorLayout: TextInputLayout, inputText: String?) {
         when {
             TextUtils.isEmpty(inputText) -> {
                 errorLayout.setErrorTextColor(context?.getColorStateList(R.color.error_input_text))
@@ -276,6 +241,43 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
                 errorLayout.errorIconDrawable = null
                 view?.btnPasswordToggle?.visibility = View.VISIBLE
                 passwordInvalid = false
+            }
+        }
+    }
+
+    // Removed the ability to edit the entry hostname as part of
+    // https://github.com/mozilla-lockwise/lockwise-android/issues/956.
+    // TODO: revisit this logic as part of https://github.com/mozilla-lockwise/lockwise-android/issues/948.
+    /*
+    private fun handleHostnameChanges(errorLayout: TextInputLayout, inputText: String?) {
+        // hostname cannot be empty
+        // has to have http:// or https://
+        when {
+                        TextUtils.isEmpty(inputText) -> {
+                errorLayout.setErrorTextColor(context?.getColorStateList(R.color.error_input_text))
+                errorLayout.error =
+                    context?.getString(R.string.password_invalid_text)
+                errorLayout.error = context?.getString(R.string.hostname_empty_text)
+                errorLayout.setErrorIconDrawable(R.drawable.ic_error)
+                view?.inputHostnameDescription?.visibility = View.INVISIBLE
+                hostnameInvalid = true
+            }
+            !URLUtil.isHttpUrl(inputText) and !URLUtil.isHttpsUrl(inputText) -> {
+                errorLayout.setErrorTextColor(context?.getColorStateList(R.color.error_input_text))
+                errorLayout.error = context?.getString(R.string.hostname_invalid_text)
+                errorLayout.setErrorIconDrawable(R.drawable.ic_error)
+                view?.btnPasswordToggle?.visibility = View.INVISIBLE
+                passwordInvalid = true
+                view?.inputHostnameDescription?.visibility = View.INVISIBLE
+                hostnameInvalid = true
+            }
+            else -> {
+                errorLayout.error = null
+                errorLayout.errorIconDrawable = null
+                view?.btnPasswordToggle?.visibility = View.VISIBLE
+                passwordInvalid = false
+                view?.inputHostnameDescription?.visibility = View.VISIBLE
+                hostnameInvalid = false
             }
         }
     } */
