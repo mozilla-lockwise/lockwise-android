@@ -62,7 +62,7 @@ class ItemDetailPresenter(
 
     override fun onPause() {
         super.onPause()
-        dispatcher.dispatch(ItemDetailAction.TogglePassword(false))
+        dispatcher.dispatch(ItemDetailAction.TogglePassword)
     }
 
     override fun onViewReady() {
@@ -104,7 +104,7 @@ class ItemDetailPresenter(
         }
 
         view.togglePasswordClicks
-            .subscribe { dispatcher.dispatch(ItemDetailAction.TogglePassword(view.isPasswordVisible.not())) }
+            .subscribe { dispatcher.dispatch(ItemDetailAction.TogglePassword) }
             .addTo(compositeDisposable)
 
         view.isPasswordVisible = false

@@ -8,17 +8,24 @@ package mozilla.lockbox.view
 
 import android.content.Context
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextUtils
+import android.text.TextWatcher
 import android.text.method.PasswordTransformationMethod
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.webkit.URLUtil
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import com.jakewharton.rxbinding2.support.v7.widget.navigationClicks
 import com.jakewharton.rxbinding2.view.clicks
 import com.jakewharton.rxbinding2.widget.textChanges
+import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Observable
 import kotlinx.android.synthetic.main.fragment_item_edit.*
 import kotlinx.android.synthetic.main.fragment_item_edit.view.*
@@ -32,41 +39,7 @@ import mozilla.lockbox.support.assertOnUiThread
 @ExperimentalCoroutinesApi
 class EditItemFragment : BackableFragment(), EditItemDetailView {
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val itemId = arguments?.let {
-            ItemDetailFragmentArgs.fromBundle(it)
-                .itemId
-        }
-
-        presenter = EditItemPresenter(this, itemId)
-        return inflater.inflate(R.layout.fragment_item_edit, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setupToolbar(view.toolbar)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        closeKeyboard()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        closeKeyboard()
-    }
-
-    override var isPasswordVisible: Boolean = false
-        set(value) {
-            assertOnUiThread()
-            field = value
-            updatePasswordVisibility(value)
-        }
+    override val togglePasswordVisibility: BehaviorRelay<Unit> = BehaviorRelay.create()
 
     override val togglePasswordClicks: Observable<Unit>
         get() = view!!.btnPasswordToggle.clicks()
@@ -92,12 +65,185 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
     override val passwordChanged: Observable<CharSequence>
         get() = view!!.inputPassword.textChanges()
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val itemId = arguments?.let {
+            ItemDetailFragmentArgs.fromBundle(it)
+                .itemId
+        }
+
+        presenter = EditItemPresenter(this, itemId)
+        return inflater.inflate(R.layout.fragment_item_edit, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupToolbar(view.toolbar)
+        setTextWatcher(view)
+        setKeyboardFocus(view)
+
+        val layouts = arrayOf(
+            view.inputLayoutHostname, view.inputLayoutUsername,
+            view.inputLayoutPassword
+        )
+
+        for (layout in layouts) {
+            layout.hintTextColor = context?.getColorStateList(R.color.hint_edit_text)
+            layout.setHintTextAppearance(R.style.HintText)
+        }
+    }
+
+    private fun setKeyboardFocus(view: View) {
+        val focusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) {
+                closeKeyboard()
+            }
+        }
+
+        view.inputHostname.onFocusChangeListener = focusChangeListener
+        view.inputUsername.onFocusChangeListener = focusChangeListener
+
+        view.inputPassword.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            togglePasswordVisibility.accept(Unit)
+            if (!hasFocus) {
+                closeKeyboard()
+            }
+        }
+    }
+
+    private fun setTextWatcher(view: View) {
+        val textInputs = listOf<Pair<TextInputEditText, TextInputLayout>>(
+            Pair(view.inputHostname, view.inputLayoutHostname),
+            Pair(view.inputUsername, view.inputLayoutUsername),
+            Pair(view.inputPassword, view.inputLayoutPassword)
+        )
+
+        for (input in textInputs) {
+            input.first.addTextChangedListener(
+                buildTextWatcher(input.second)
+            )
+        }
+    }
+
+    private fun buildTextWatcher(errorLayout: TextInputLayout): TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(
+                charSequence: CharSequence,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {
+                // NOOP
+            }
+
+            override fun onTextChanged(
+                charSequence: CharSequence,
+                start: Int,
+                before: Int,
+                count: Int
+            ) {
+                // NOOP
+            }
+
+            override fun afterTextChanged(editable: Editable) {
+                val inputText: String? = errorLayout.editText?.text.toString()
+
+                when (errorLayout.id) {
+                    R.id.inputLayoutHostname -> {
+                        handleHostnameChanges(errorLayout, inputText)
+                    }
+                    R.id.inputLayoutUsername -> {
+                        handleUsernameChanges(errorLayout, inputText)
+                    }
+                    R.id.inputLayoutPassword -> {
+                        handlePasswordChanges(errorLayout, inputText)
+                    }
+                    else -> {
+                        errorLayout.error = null
+                    }
+                }
+            }
+        }
+    }
+
+    private fun handlePasswordChanges(errorLayout: TextInputLayout, inputText: String?) {
+        // password cannot be empty
+        when {
+            TextUtils.isEmpty(inputText) -> {
+                errorLayout.setErrorTextColor(context?.getColorStateList(R.color.error_input_text))
+                errorLayout.error =
+                    context?.getString(R.string.password_invalid_text)
+                errorLayout.setErrorIconDrawable(R.drawable.ic_error)
+                view?.btnPasswordToggle?.visibility = View.INVISIBLE
+            }
+            else -> {
+                errorLayout.error = null
+                errorLayout.errorIconDrawable = null
+                view?.btnPasswordToggle?.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private fun handleUsernameChanges(errorLayout: TextInputLayout, inputText: String?) {
+        when {
+            TextUtils.isEmpty(inputText) -> {
+                errorLayout.error = null
+            }
+        }
+    }
+
+    private fun handleHostnameChanges(errorLayout: TextInputLayout, inputText: String?) {
+        // hostname cannot be empty
+        // has to have http:// or https://
+        when {
+            TextUtils.isEmpty(inputText) -> {
+                errorLayout.setErrorTextColor(context?.getColorStateList(R.color.error_input_text))
+                errorLayout.error =
+                    context?.getString(R.string.hostname_empty_text)
+                errorLayout.setErrorIconDrawable(R.drawable.ic_error)
+                view?.inputHostnameDescription?.visibility = View.INVISIBLE
+            }
+            !URLUtil.isHttpUrl(inputText) and !URLUtil.isHttpsUrl(inputText) -> {
+                errorLayout.setErrorTextColor(context?.getColorStateList(R.color.error_input_text))
+                errorLayout.error =
+                    context?.getString(R.string.hostname_invalid_text)
+                errorLayout.setErrorIconDrawable(R.drawable.ic_error)
+                view?.inputHostnameDescription?.visibility = View.INVISIBLE
+            }
+            else -> {
+                errorLayout.error = null
+                errorLayout.errorIconDrawable = null
+                view?.inputHostnameDescription?.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        closeKeyboard()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        closeKeyboard()
+    }
+
     override fun closeKeyboard() {
         val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         if (imm.isAcceptingText) {
             imm.hideSoftInputFromWindow(view!!.windowToken, 0)
         }
     }
+
+    override var isPasswordVisible: Boolean = false
+        set(value) {
+            assertOnUiThread()
+            field = value
+            updatePasswordVisibility(value)
+        }
 
     private fun updatePasswordVisibility(visible: Boolean) {
         if (visible) {

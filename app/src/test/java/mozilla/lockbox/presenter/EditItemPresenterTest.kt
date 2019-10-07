@@ -41,6 +41,10 @@ import org.robolectric.annotation.Config
 class EditItemPresenterTest {
 
     class FakeView : EditItemDetailView {
+        val togglePasswordVisibilityStub = PublishSubject.create<Unit>()
+        override val togglePasswordVisibility: Observable<Unit>
+            get() = togglePasswordVisibilityStub
+
         val passwordVisibleStub = false
         override var isPasswordVisible: Boolean = passwordVisibleStub
 
@@ -208,8 +212,7 @@ class EditItemPresenterTest {
 
         dispatcherObserver.assertValueSequence(
             listOf(
-                DataStoreAction.Delete(fakeCredential),
-                RouteAction.ItemList
+                DialogAction.DeleteConfirmationDialog(fakeCredential)
             )
         )
     }

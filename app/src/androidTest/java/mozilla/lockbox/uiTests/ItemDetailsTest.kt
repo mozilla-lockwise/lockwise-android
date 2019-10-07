@@ -8,6 +8,8 @@ import mozilla.lockbox.robots.itemDetail
 import mozilla.lockbox.robots.itemList
 import mozilla.lockbox.robots.kebabMenu
 import mozilla.lockbox.robots.deleteCredentialDisclaimer
+import mozilla.lockbox.robots.editCredential
+import mozilla.lockbox.robots.editCredentialDisclaimer
 import mozilla.lockbox.view.RootActivity
 import org.junit.Rule
 import org.junit.Test
@@ -47,17 +49,71 @@ open class ItemDetailsTest {
     fun deleteItem() {
         navigator.gotoItemDetailKebabMenu()
         kebabMenu { tapDeleteButton() }
-        // First tap on Cancel delete credencial
+        // First tap on Cancel delete credential
         deleteCredentialDisclaimer { tapCancelButton() }
         itemDetail { exists() }
         // Now delete the credential
-        // Disabled until issue #807 is fixed
-        // and logins can be added after removal
-        /*
         itemDetail { tapKebabMenu() }
         kebabMenu { tapDeleteButton() }
         deleteCredentialDisclaimer { tapDeleteButton() }
+        // Check that Item List is shown after removing the credential
         itemList { exists() }
-        */
+    }
+
+    @Test
+    fun editItem() {
+        navigator.gotoItemDetailKebabMenu()
+        kebabMenu { tapEditButton() }
+        // Edit entry Hostname and Username
+        editCredential {
+            exists()
+            tapOnHostname()
+            editHostname("HostnameChanged")
+            tapOnUserName()
+            editUserName("UsernameChanged")
+            saveChanges() }
+        // Check that changes in entry are saved
+        itemList {
+            exists()
+            editedCredentialHostnameExists("HostnameChanged")
+            editedCredentialUsernameExists("UsernameChanged")
+            openCredential("HostnameChanged")
+        }
+        // Remove the entry
+        navigator.gotoItemDetailKebabMenu()
+        kebabMenu { tapEditButton() }
+        editCredential { deleteEntryFromEdit() }
+        // Tap on Cancel
+        deleteCredentialDisclaimer { tapCancelButton() }
+        editCredential {
+            exists()
+            // Tap on Delete
+            deleteEntryFromEdit()
+        }
+        deleteCredentialDisclaimer { tapDeleteButton() }
+        // Once entry is removed user is taken to ItemList view
+        itemList {
+            exists()
+            credentialRemovedDoesNotExist("HostnameChanged")
+        }
+    }
+
+    @Test
+    fun cancelEditCredential() {
+        // Tap on Cancel edit credential
+        navigator.gotoItemDetailKebabMenu()
+        kebabMenu { tapEditButton() }
+        editCredential {
+            closeEditChanges() }
+        editCredentialDisclaimer { tapCancelButton() }
+        // User is taken to ItemDetail View
+        // Now Tap on Discard edit credential
+        itemDetail { exists() }
+
+        editCredential { closeEditChanges() }
+        editCredentialDisclaimer { tapDiscardButton() }
+        // User is taken to ItemList View
+        // No changes are applied
+        itemList { exists() }
     }
 }

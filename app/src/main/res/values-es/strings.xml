@@ -12,7 +12,11 @@
     <!-- This is the label a screenreader uses to inform the user they selected a link that will open a webpage to learn more about the feature or setting. -->
     <string name="learn_more_description">Abre un enlace para saber más</string>
 
-    <!-- This is used as the label on a button on a first-run welcome screen to sign in and start using the application -->
+    <!-- This is used as the label on a button on a first-run welcome screen to automatically sign in to an existing account and start using the application -->
+    <string name="welcome_start_automatic_btn">%s</string>
+    <!-- This is used as the label on a button on a first-run welcome screen to force manual sign in and start using the application -->
+    <string name="welcome_start_force_manual_btn">Cuenta diferente</string>
+    <!-- This is used as the label on a button on a first-run welcome screen to manually sign in (no existing account) and start using the application -->
     <string name="welcome_start_btn">Comenzar</string>
     <!-- This provides context near a button on the first-run welcome screen to describe application requirements. Firefox Account is to be translated consistently to match use in other Firefox products. %1$s will be replaced with application name. -->
     <string name="welcome_instructions">Para usar %1$s necesitas una cuenta Firefox con inicios de sesión guardados.</string>
@@ -250,5 +254,36 @@
 
     <!-- This is the placeholder text for an empty or null username. -->
     <string name="no_username">(no existe usuario)</string>
-    <!--<string name="sync_timed_out">La sincronización ha expirado</string>-->
+
+    <!-- This is the description for the kebab menu in the item detail toolbar. -->
+    <string name="kebab_menu">Más opciones</string>
+    <!-- This is the text on an item in the item detail toolbar menu to delete an entry. -->
+    <string name="delete">Eliminar</string>
+    <!-- This is the confirmation message title seen when attempting to delete a login. -->
+    <string name="delete_this_login">¿Eliminar este inicio de sesión?</string>
+    <!-- This is the description for the deletion dialog. -->
+    <string name="delete_description">Se eliminará el inicio de sesión tanto de %1$s como de Firefox.</string>
+    <!-- This is the text on an item in the item detail toolbar menu to edit an entry. -->
+    <string name="edit">Editar</string>
+    <!-- This is the hint in the edit entry view for the entry name. -->
+    <string name="entry_name_description">El nombre de la entrada</string>
+    <!-- This is a heading that appears above an entry name in context of a edit item view -->
+    <string name="hint_entryname">Nombre</string>
+    <!-- This is the hint in the edit entry view for the entry name. -->
+    <string name="input_name_description">No se puede editar el nombre de la entrada en este momento.</string>
+    <string name="entry_password_description">Contraseña para esta entrada.</string>
+    <!-- This is the text on the button in the edit view that allows you to delete the entry. -->
+    <string name="delete_entry">Eliminar entrada</string>
+    <!-- This is the title text on the dialog when you attempt to close the edit view and changes have been made. -->
+    <string name="discard_changes">¿Descartar los cambios?</string>
+    <!-- This is the additional text when you attempt to close the edit view and changes have been made. -->
+    <string name="discard_changes_description">No se guardarán tus ediciones.</string>
+    <!-- This is the text on the button to discard your current changes from the edit entry view. -->
+    <string name="discard">Descartar</string>
+    <!-- This is the description for the hostname in the edit entry view. -->
+    <string name="web_address_description">El nombre del servidor</string>
+    <!-- This is the description for the username in the edit entry view. -->
+    <string name="username_description">El nombre de usuario</string>
+    <!-- This is the title of the edit login page. -->
+    <string name="edit_login_title">Editar inicio de sesión</string>
 </resources>

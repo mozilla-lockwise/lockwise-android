@@ -28,6 +28,7 @@ import mozilla.lockbox.support.pushError
 interface EditItemDetailView {
     var isPasswordVisible: Boolean
     val togglePasswordClicks: Observable<Unit>
+    val togglePasswordVisibility: Observable<Unit>
     val deleteClicks: Observable<Unit>
     val learnMoreClicks: Observable<Unit>
     val closeEntryClicks: Observable<Unit>
@@ -67,9 +68,16 @@ class EditItemPresenter(
             .subscribe { view.isPasswordVisible = it }
             .addTo(compositeDisposable)
 
+        view.togglePasswordVisibility
+            .skip(1)
+            .subscribe {
+                dispatcher.dispatch(ItemDetailAction.TogglePassword)
+            }
+            .addTo(compositeDisposable)
+
         view.togglePasswordClicks
             .subscribe {
-                dispatcher.dispatch(ItemDetailAction.TogglePassword(view.isPasswordVisible.not()))
+                dispatcher.dispatch(ItemDetailAction.TogglePassword)
             }
             .addTo(compositeDisposable)
 
@@ -81,15 +89,12 @@ class EditItemPresenter(
 
         view.deleteClicks
             .subscribe {
-                if (credentials != null) {
-                    dispatcher.dispatch(DataStoreAction.Delete(credentials!!))
-                    dispatcher.dispatch(RouteAction.ItemList)
-                } else {
-                    pushError(
-                        NullPointerException("Credentials are null"),
-                        "Error editing credential with id ${credentials?.id}"
-                    )
-                }
+                credentials?.let {
+                    dispatcher.dispatch(DialogAction.DeleteConfirmationDialog(it))
+                } ?: pushError(
+                    NullPointerException("Credentials are null"),
+                    "Error editing credential with id ${credentials?.id}"
+                )
             }
             .addTo(compositeDisposable)
 
@@ -119,16 +124,14 @@ class EditItemPresenter(
 
         view.saveEntryClicks
             .subscribe {
-                if (credentials != null) {
-                    dispatcher.dispatch(DataStoreAction.UpdateItemDetail(credentials!!))
+                credentials?.let {
+                    dispatcher.dispatch(DataStoreAction.UpdateItemDetail(it))
                     view.closeKeyboard()
                     dispatcher.dispatch(RouteAction.ItemList)
-                } else {
-                    pushError(
-                        NullPointerException("Credentials are null"),
-                        "Error editing credential with id ${credentials?.id}"
-                    )
-                }
+                } ?: pushError(
+                    NullPointerException("Credentials are null"),
+                    "Error editing credential with id ${credentials?.id}"
+                )
             }
             .addTo(compositeDisposable)
     }
@@ -138,17 +141,18 @@ class EditItemPresenter(
         newUsername: CharSequence? = null,
         newPassword: CharSequence? = null
     ) {
-        try {
+        credentials?.let { cred ->
             credentials = ServerPassword(
-                id = credentials?.id.orEmpty(),
-                hostname = newHostname?.toString() ?: credentials?.hostname.orEmpty(),
-                username = newUsername?.toString() ?: credentials?.username,
-                password = newPassword?.toString() ?: credentials?.password.orEmpty(),
-                httpRealm = credentials?.httpRealm,
-                formSubmitURL = credentials?.formSubmitURL
+                id = cred.id,
+                hostname = newHostname?.toString() ?: cred.hostname,
+                username = newUsername?.toString() ?: cred.username,
+                password = newPassword?.toString() ?: cred.password,
+                httpRealm = cred.httpRealm,
+                formSubmitURL = cred.formSubmitURL
             )
-        } catch (exception: NullPointerException) {
-            pushError(exception, "Error editing credential with id ${credentials?.id}")
-        }
+        } ?: pushError(
+            NullPointerException("Credentials are null"),
+            "Error editing credential with id ${credentials?.id}"
+        )
     }
 }
