@@ -24,7 +24,6 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.jakewharton.rxbinding2.support.v7.widget.navigationClicks
 import com.jakewharton.rxbinding2.view.clicks
-import com.jakewharton.rxbinding2.widget.color
 import com.jakewharton.rxbinding2.widget.textChanges
 import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Observable
@@ -32,8 +31,6 @@ import kotlinx.android.synthetic.main.fragment_item_edit.*
 import kotlinx.android.synthetic.main.fragment_item_edit.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
-import mozilla.lockbox.action.ItemDetailAction
-import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.presenter.EditItemDetailView
 import mozilla.lockbox.presenter.EditItemPresenter
@@ -162,7 +159,7 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
                     }
                 }
 
-                if(hostnameInvalid || passwordInvalid) {
+                if (hostnameInvalid || passwordInvalid) {
                     disableSave()
                 } else {
                     enableSave()
@@ -175,13 +172,15 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
     private var passwordInvalid = false
 
     private fun disableSave() {
-        saveEntryButton.compoundDrawableTintList = context?.getColorStateList(R.color.button_disabled)
+        saveEntryButton.compoundDrawableTintList =
+            context?.getColorStateList(R.color.button_disabled)
         saveEntryButton.isClickable = false
         saveEntryButton.isFocusable = false
     }
 
     private fun enableSave() {
-        saveEntryButton.compoundDrawableTintList = context?.getColorStateList(R.color.background_white)
+        saveEntryButton.compoundDrawableTintList =
+            context?.getColorStateList(R.color.background_white)
         saveEntryButton.isClickable = true
         saveEntryButton.isFocusable = true
     }
@@ -191,8 +190,6 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
     // TODO: revisit this logic as part of https://github.com/mozilla-lockwise/lockwise-android/issues/948.
     /*
     private fun handleHostnameChanges(errorLayout: TextInputLayout, inputText: String?) {
-        // hostname cannot be empty
-        // has to have http:// or https://
         when {
             TextUtils.isEmpty(inputText) -> {
                 errorLayout.setErrorTextColor(context?.getColorStateList(R.color.error_input_text))
