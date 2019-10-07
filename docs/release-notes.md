@@ -1,10 +1,18 @@
 # Release Notes
 
+## 2.0.1 (Build 4939)
+
+Cache access tokens.
+
+All changes since version 2.0.0:
+
+- Add token caching and token rotation (#945)
+
 ## 2.0.0 (Build 4824)
 
 Refine telemetry for sync and fix crashes.
 
-All changes since version 1.1.3: 
+All changes since version 1.1.3:
 
 - Telemetry for sync (#835)
 - String updates for localization (#852)
