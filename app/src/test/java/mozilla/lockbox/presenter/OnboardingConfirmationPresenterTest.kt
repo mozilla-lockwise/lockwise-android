@@ -10,7 +10,6 @@ import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
-import mozilla.lockbox.action.AppWebPageAction
 import mozilla.lockbox.action.OnboardingStatusAction
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.flux.Action
@@ -20,7 +19,6 @@ import org.junit.Test
 
 class OnboardingConfirmationPresenterTest {
     class FakeOnboardingConfirmationView : OnboardingConfirmationView {
-        override val encryptionClicks: Observable<Unit> = PublishSubject.create()
         override val finishClicks: Observable<Unit> = PublishSubject.create()
     }
 
@@ -42,12 +40,5 @@ class OnboardingConfirmationPresenterTest {
         (view.finishClicks as Subject).onNext(Unit)
 
         dispatcherObserver.assertLastValue(OnboardingStatusAction(false))
-    }
-
-    @Test
-    fun encryptionClicks() {
-        (view.encryptionClicks as Subject).onNext(Unit)
-
-        dispatcherObserver.assertLastValue(AppWebPageAction.FaqSecurity)
     }
 }

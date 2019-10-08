@@ -55,9 +55,8 @@
             android:maxWidth="@dimen/onboarding_max_width"
             android:drawablePadding="@dimen/onboarding_drawable_padding"
             android:drawableStart="@drawable/ic_security"
-            android:contentDescription="@string/security_content_description"
+            android:text="@string/security_description"
     />
-
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
