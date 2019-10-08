@@ -24,6 +24,7 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.jakewharton.rxbinding2.support.v7.widget.navigationClicks
 import com.jakewharton.rxbinding2.view.clicks
+import com.jakewharton.rxbinding2.widget.color
 import com.jakewharton.rxbinding2.widget.textChanges
 import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Observable
@@ -95,7 +96,7 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
             EditItemFragmentArgs.fromBundle(it!!).hostname
         }
 
-        presenter = EditItemPresenter(this, itemId)
+        presenter = EditItemPresenter(this, itemId, itemHostname)
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
         return inflater.inflate(R.layout.fragment_item_edit, container, false)
     }
@@ -183,7 +184,7 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
                     }
                 }
 
-                if (usernameInvalid || passwordInvalid) {
+                if(hostnameInvalid || passwordInvalid) {
                     disableSave()
                 } else {
                     enableSave()
@@ -192,12 +193,11 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
         }
     }
 
-    private var usernameInvalid = false
+    private var hostnameInvalid = false
     private var passwordInvalid = false
 
     private fun disableSave() {
-        saveEntryButton.compoundDrawableTintList =
-            context?.getColorStateList(R.color.button_disabled)
+        saveEntryButton.compoundDrawableTintList = context?.getColorStateList(R.color.button_disabled)
         saveEntryButton.isClickable = false
         saveEntryButton.isFocusable = false
     }
@@ -213,18 +213,15 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
         when {
             TextUtils.isEmpty(inputText) -> {
                 errorLayout.error = null
-                usernameInvalid = false
             }
             duplicateList.contains(inputText) -> {
                 errorLayout.setErrorTextColor(context?.getColorStateList(R.color.error_input_text))
                 errorLayout.error = context?.getString(R.string.username_duplicate_exists)
                 errorLayout.setErrorIconDrawable(R.drawable.ic_error)
-                usernameInvalid = true
             }
             else -> {
                 errorLayout.error = null
                 errorLayout.errorIconDrawable = null
-                usernameInvalid = false
             }
         }
     }
@@ -258,8 +255,6 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
         when {
                         TextUtils.isEmpty(inputText) -> {
                 errorLayout.setErrorTextColor(context?.getColorStateList(R.color.error_input_text))
-                errorLayout.error =
-                    context?.getString(R.string.password_invalid_text)
                 errorLayout.error = context?.getString(R.string.hostname_empty_text)
                 errorLayout.setErrorIconDrawable(R.drawable.ic_error)
                 view?.inputHostnameDescription?.visibility = View.INVISIBLE
