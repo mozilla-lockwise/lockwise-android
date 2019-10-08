@@ -288,6 +288,7 @@
     <string name="password_invalid_text">Password cannot be empty</string>
 
     <!-- This is the hint in the edit entry view for formatting the entry hostname. -->
+    <string name="hostname_entry_description">Hostname is not editable at this time.</string>
     <!--    <string name="hostname_entry_description">Make sure this matches the exact domain for the website you are referencing-->
     <!--        (“https://” and “www” included).-->
     <!--    </string>-->
