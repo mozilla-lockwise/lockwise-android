@@ -13,7 +13,6 @@ import androidx.test.core.app.ApplicationProvider
 import io.reactivex.observers.TestObserver
 import kotlinx.android.synthetic.main.list_cell_item.*
 import kotlinx.android.synthetic.main.list_cell_no_entries.view.*
-import kotlinx.android.synthetic.main.list_cell_no_matching.view.*
 import mozilla.lockbox.R
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.model.ItemViewModel
@@ -31,7 +30,6 @@ class ItemListAdapterTest {
 
     val itemObserver = TestObserver.create<ItemViewModel>()
     val noEntriesObserver = TestObserver.create<Unit>()
-    val noMatchingObserver = TestObserver.create<Unit>()
 
     lateinit var subject: ItemListAdapter
     private lateinit var context: Context
@@ -57,7 +55,10 @@ class ItemListAdapterTest {
         val viewHolder = subject.onCreateViewHolder(parent, 0) as ItemViewHolder
 
         subject.onBindViewHolder(viewHolder, 3)
-        Assert.assertEquals(context.resources.getString(R.string.no_username), viewHolder.itemSubtitle.text)
+        Assert.assertEquals(
+            context.resources.getString(R.string.no_username),
+            viewHolder.itemSubtitle.text
+        )
     }
 
     @Test
@@ -138,19 +139,6 @@ class ItemListAdapterTest {
     }
 
     @Test
-    fun `on bind with click on empty filtered list`() {
-        setupSubject(ItemListAdapterType.Filter)
-        subject.updateItems(emptyList())
-        val viewHolder = subject.onCreateViewHolder(parent, 1)
-
-        subject.onBindViewHolder(viewHolder, 0)
-
-        viewHolder.containerView.noMatchingLearnMore.performClick()
-
-        noMatchingObserver.assertValueCount(1)
-    }
-
-    @Test
     fun getItemCount() {
         setupSubject(ItemListAdapterType.ItemList)
         Assert.assertEquals(4, subject.itemCount)
@@ -221,7 +209,6 @@ class ItemListAdapterTest {
         subject = ItemListAdapter(type)
         subject.itemClicks.subscribe(itemObserver)
         subject.noEntriesClicks.subscribe(noEntriesObserver)
-        subject.noMatchingEntriesClicks.subscribe(noMatchingObserver)
 
         subject.updateItems(list)
     }

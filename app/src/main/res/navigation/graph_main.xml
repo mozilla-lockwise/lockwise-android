@@ -64,6 +64,9 @@
                 android:id="@+id/action_welcome_to_fxaLogin"
                 app:destination="@id/fragment_fxa_login"/>
         <action
+                android:id="@+id/action_welcome_to_faq"
+                app:destination="@id/fragment_webview"/>
+        <action
                 android:id="@+id/action_welcome_to_autoLogin"
                 app:launchSingleTop="true"
                 app:destination="@id/fragment_item_list"/>

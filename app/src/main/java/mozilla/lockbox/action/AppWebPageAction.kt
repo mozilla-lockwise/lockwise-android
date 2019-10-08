@@ -17,32 +17,17 @@ sealed class AppWebPageAction(
 ) : RouteAction(TelemetryEventMethod.show, eventObject) {
 
     object FaqList : AppWebPageAction(
-        Constant.Faq.topUri,
+        Constant.Faq.faqUri,
         R.string.nav_menu_faq,
         TelemetryEventObject.settings_faq)
 
     object FaqWelcome : AppWebPageAction(
-        Constant.Faq.savedUri,
-        R.string.nav_menu_faq,
-        TelemetryEventObject.settings_faq)
-
-    object FaqSecurity : AppWebPageAction(
-        Constant.Faq.securityUri,
+        Constant.Faq.faqUri,
         R.string.nav_menu_faq,
         TelemetryEventObject.settings_faq)
 
     object FaqSync : AppWebPageAction(
         Constant.Faq.syncUri,
-        R.string.nav_menu_faq,
-        TelemetryEventObject.settings_faq)
-
-    object FaqCreate : AppWebPageAction(
-        Constant.Faq.createUri,
-        R.string.nav_menu_faq,
-        TelemetryEventObject.settings_faq)
-
-    object FaqEdit : AppWebPageAction(
-        Constant.Faq.editUri,
         R.string.nav_menu_faq,
         TelemetryEventObject.settings_faq)
 

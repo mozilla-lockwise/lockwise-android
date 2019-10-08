@@ -71,8 +71,6 @@
 
     <!-- This is shown when a user has entered search terms that have filtered the list of logins to find no results -->
     <string name="no_matching_logins">Keine passenden Zugangsdaten.</string>
-    <!-- This explains that if no logins are found and were expected, to add new logins through the Firefox desktop browser -->
-    <string name="save_firefox_disclaimer">Um hier weitere Zugangsdaten zu sehen, musst du sie erst in Firefox speichern.</string>
 
     <!-- This is a heading that appears above the URL in context of a detailed item view -->
     <string name="hint_hostname">Internetadresse</string>
@@ -224,12 +222,8 @@
     <string name="finish">Abschließen</string>
     <!-- This description of the app functionality is shown on the final onboarding screen -->
     <string name="access_description">Greife über dein Handy auf alle in Firefox gespeicherten Zugangsdaten zu</string>
-    <!-- This is an accessible content description for the security information link text. %1$s will be replaced with application name -->
-    <string name="security_content_description">Dies ist ein Link zu einer Beschreibung der Sicherheitsmaßnahmen in %1$s.</string>
     <!-- This description of the app security is shown on the final onboarding screen. %s will be replaced with the security link. -->
-    <string name="security_description">Synchronisiere zwischen Geräten mit sicherer %s</string>
-    <!-- This text is displayed as a link in the security description. -->
-    <string name="security_link">256-Bit-Verschlüsselung</string>
+    <string name="security_description">Synchronisiere zwischen Geräten mit sicherer 256-Bit-Verschlüsselung</string>
     <!-- This description of the app convenience is shown on the final onboarding screen. -->
     <string name="convenience_description">Entsperre die App einfach per Fingerabdruck</string>
 
