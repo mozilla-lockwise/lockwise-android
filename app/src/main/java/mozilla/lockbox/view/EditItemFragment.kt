@@ -43,9 +43,6 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
     override val togglePasswordClicks: Observable<Unit>
         get() = view!!.btnPasswordToggle.clicks()
 
-    override val learnMoreClicks: Observable<Unit>
-        get() = view!!.learnMore.clicks()
-
     override val deleteClicks: Observable<Unit>
         get() = view!!.deleteEntryButton.clicks()
 

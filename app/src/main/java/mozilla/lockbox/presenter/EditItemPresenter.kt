@@ -22,7 +22,6 @@ import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.ItemDetailStore
-import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.pushError
 
 interface EditItemDetailView {
@@ -30,7 +29,6 @@ interface EditItemDetailView {
     val togglePasswordClicks: Observable<Unit>
     val togglePasswordVisibility: Observable<Unit>
     val deleteClicks: Observable<Unit>
-    val learnMoreClicks: Observable<Unit>
     val closeEntryClicks: Observable<Unit>
     val saveEntryClicks: Observable<Unit>
     val hostnameChanged: Observable<CharSequence>
@@ -78,12 +76,6 @@ class EditItemPresenter(
         view.togglePasswordClicks
             .subscribe {
                 dispatcher.dispatch(ItemDetailAction.TogglePassword)
-            }
-            .addTo(compositeDisposable)
-
-        view.learnMoreClicks
-            .subscribe {
-                dispatcher.dispatch(RouteAction.OpenWebsite(Constant.Faq.uri))
             }
             .addTo(compositeDisposable)
 

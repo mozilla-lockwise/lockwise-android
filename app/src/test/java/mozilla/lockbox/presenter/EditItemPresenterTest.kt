@@ -52,10 +52,6 @@ class EditItemPresenterTest {
         override val togglePasswordClicks: Observable<Unit>
             get() = togglePwdClicksStub
 
-        val learnMoreClicksStub = PublishSubject.create<Unit>()
-        override val learnMoreClicks: Observable<Unit>
-            get() = learnMoreClicksStub
-
         val hostnameClicksStub = PublishSubject.create<CharSequence>()
         override val hostnameChanged: Observable<CharSequence>
             get() = hostnameClicksStub
