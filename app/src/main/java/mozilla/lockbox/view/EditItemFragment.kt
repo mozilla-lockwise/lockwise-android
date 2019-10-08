@@ -30,6 +30,7 @@ import io.reactivex.Observable
 import kotlinx.android.synthetic.main.fragment_item_edit.*
 import kotlinx.android.synthetic.main.fragment_item_edit.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.R
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.presenter.EditItemDetailView
@@ -215,11 +216,22 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
     } */
 
     private fun handleUsernameChanges(errorLayout: TextInputLayout, inputText: String?) {
+        // get list of usernames for the hostname
+        // see if the new hostname is a duplicate
+        val newEntryIsDuplicate = presenter.checkForDuplicates(errorLayout.inputUsername.text)
+
         when {
             TextUtils.isEmpty(inputText) -> {
                 errorLayout.error = null
             }
+
         }
+    }
+
+
+
+    override fun isDuplicateEntry(newItem: ServerPassword?): Boolean {
+            presenter.checkForDuplicates(newItem)
     }
 
     private fun handlePasswordChanges(errorLayout: TextInputLayout, inputText: String?) {

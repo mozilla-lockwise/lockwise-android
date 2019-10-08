@@ -9,6 +9,7 @@ package mozilla.lockbox.extensions
 import io.reactivex.Observable
 import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.LogProvider
+import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.support.Optional
 
@@ -38,4 +39,8 @@ fun <T : Any, U : Optional<T>> Observable<U>.filterNotNull(): Observable<T> {
 
 fun Observable<List<ServerPassword>>.mapToItemViewModelList(): Observable<List<ItemViewModel>> {
     return this.map { list -> list.map { it.toViewModel() } }
+}
+
+fun Observable<List<ServerPassword>>.mapToDetailViewModelList(): Observable<List<ItemDetailViewModel>> {
+    return this.map { list -> list.map { it.toDetailViewModel() } }
 }

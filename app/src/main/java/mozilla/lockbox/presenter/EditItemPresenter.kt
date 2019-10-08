@@ -7,6 +7,7 @@
 package mozilla.lockbox.presenter
 
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -16,10 +17,12 @@ import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.ItemDetailAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.filterNotNull
+import mozilla.lockbox.extensions.mapToDetailViewModelList
 import mozilla.lockbox.extensions.toDetailViewModel
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.model.ItemDetailViewModel
+import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.ItemDetailStore
 import mozilla.lockbox.support.pushError
@@ -34,6 +37,7 @@ interface EditItemDetailView {
     val hostnameChanged: Observable<CharSequence>
     val usernameChanged: Observable<CharSequence>
     val passwordChanged: Observable<CharSequence>
+    fun isDuplicateEntry(item: ServerPassword): Boolean
     fun updateItem(item: ItemDetailViewModel)
     fun closeKeyboard()
 }
@@ -48,6 +52,8 @@ class EditItemPresenter(
 ) : Presenter() {
 
     private var credentials: ServerPassword? = null
+    private lateinit var itemsWithSameHostname: Observable<List<ItemDetailViewModel>>
+
 
     override fun onViewReady() {
         val itemId = this.itemId ?: return
@@ -59,6 +65,15 @@ class EditItemPresenter(
             .map { it.toDetailViewModel() }
             .subscribe(view::updateItem)
             .addTo(compositeDisposable)
+
+        val itemViewModelList = dataStore.list.mapToDetailViewModelList()
+        itemsWithSameHostname =
+                itemViewModelList
+                    .map { list ->
+                        list.filter {viewModel ->
+                            viewModel.hostname == credentials?.hostname
+                        }
+                    }
 
         view.isPasswordVisible = false
 
@@ -129,6 +144,20 @@ class EditItemPresenter(
                 )
             }
             .addTo(compositeDisposable)
+    }
+
+    fun checkForDuplicates(newUsername: String): Boolean {
+
+        val containsDup = itemsWithSameHostname.map { list ->
+            for (item in list) {
+                if (item.username == newUsername) {
+                    true
+                    return@map
+                }
+            }
+            false
+        }
+        containsDup.any
     }
 
     private fun updateCredentials(
