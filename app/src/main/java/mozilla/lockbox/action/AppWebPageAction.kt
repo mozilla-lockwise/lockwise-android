@@ -22,7 +22,7 @@ sealed class AppWebPageAction(
         TelemetryEventObject.settings_faq)
 
     object FaqWelcome : AppWebPageAction(
-        Constant.Faq.savedUri,
+        Constant.Faq.faqUri,
         R.string.nav_menu_faq,
         TelemetryEventObject.settings_faq)
 

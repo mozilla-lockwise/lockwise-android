@@ -38,7 +38,6 @@ object Constant {
     object Faq {
         const val uri = "https://support.mozilla.org/en-US/kb"
         const val faqUri = uri + "/getting-started-firefox-lockwise"
-        const val savedUri = uri + "/getting-started-firefox-lockwise#w_step-1-sign-up-for-firefox-accounts"
         const val syncUri = uri + "/sync-logins-firefox-android"
     }
 
