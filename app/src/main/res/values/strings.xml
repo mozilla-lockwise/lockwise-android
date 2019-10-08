@@ -275,11 +275,7 @@
     <string name="hint_entryname">Name</string>
     <!-- This is the hint in the edit entry view for the entry name. -->
     <string name="input_name_description">Entry name is not editable at this time.</string>
-    <!-- This is the hint in the edit entry view for formatting the entry hostname. -->
-    <string name="hostname_entry_description">Hostname is not editable at this time.</string>
-<!--    <string name="hostname_entry_description">Make sure this matches the exact domain for the website you are referencing-->
-<!--        (“https://” and “www” included).-->
-<!--    </string>-->
+
     <string name="entry_password_description">Password for this entry.</string>
     <!-- This is the text on the button in the edit view that allows you to delete the entry. -->
     <string name="delete_entry">Delete Entry</string>
@@ -296,14 +292,18 @@
     <!-- This is the title of the edit login page. -->
     <string name="edit_login_title">Edit Login</string>
 
-    <!-- This is the error message that is shown in edit or create view when input text for hostname is not valid. -->
-    <string name="hostname_invalid_text">Web address must contain “https://“ or “http://“</string>
-
     <!-- This is the error message that is shown in edit or create view when input text for password is not valid. -->
     <string name="password_invalid_text">Password cannot be empty</string>
 
+    <!-- This is the hint in the edit entry view for formatting the entry hostname. -->
+    <string name="hostname_entry_description">Hostname is not editable at this time.</string>
+    <!--    <string name="hostname_entry_description">Make sure this matches the exact domain for the website you are referencing-->
+    <!--        (“https://” and “www” included).-->
+    <!--    </string>-->
+
     <!-- This is the error message that is shown in edit or create view when input text for the hostname is not valid. -->
-    <string name="hostname_empty_text">Web address cannot be empty</string>
+    <!--    <string name="hostname_empty_text">Web address cannot be empty</string>-->
 
-
+    <!-- This is the error message that is shown in edit or create view when input text for hostname is not valid. -->
+    <!--    <string name="hostname_invalid_text">Web address must contain “https://“ or “http://“</string>-->
 </resources>
