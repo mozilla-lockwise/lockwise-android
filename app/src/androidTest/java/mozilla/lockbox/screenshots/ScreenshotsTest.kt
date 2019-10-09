@@ -12,6 +12,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.contrib.DrawerActions
 import androidx.test.espresso.ViewInteraction
+import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.contrib.NavigationViewActions.navigateTo
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -95,6 +96,12 @@ open class ScreenshotsTest {
         onView(withId(R.id.kebabMenuButton)).perform(click())
         onView(withText(R.string.edit)).perform(click())
         Screengrab.screenshot("item-edit-menu")
+
+        // Get error diaglog removing all password
+        onView(withId(R.id.inputPassword)).perform(replaceText(""))
+        // need this or the message will not be caught
+        sleep(2000)
+        Screengrab.screenshot("error-empty-field")
 
         // Cancel edit menu
         // Disabled until tapping on 'x' button is available without using text
