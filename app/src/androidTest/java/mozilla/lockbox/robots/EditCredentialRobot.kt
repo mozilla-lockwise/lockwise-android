@@ -26,7 +26,6 @@ class EditCredentialRobot : BaseTestRobot {
     fun editUserName(text: String) = onView(withId(R.id.inputUsername)).perform(replaceText(text))
 
     fun editPassword(text: String) = onView(withId(R.id.inputPassword)).perform(replaceText(text))
-    fun removePassword(text: String) = onView(withId(R.id.inputPassword)).perform(replaceText(text))
     fun assertErrorEmptyPassord() = VisibilityAssertions.displayed { id(R.id.textinput_error) }
     fun noErrorEmptyPassword() = VisibilityAssertions.notDisplayed { id(R.id.textinput_error) }
 }
