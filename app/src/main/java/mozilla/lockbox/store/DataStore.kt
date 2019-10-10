@@ -8,6 +8,7 @@ import androidx.annotation.VisibleForTesting
 import com.jakewharton.rxrelay2.BehaviorRelay
 import com.jakewharton.rxrelay2.ReplayRelay
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -217,6 +218,16 @@ open class DataStore(
 
     private fun backendAdd(item: ServerPassword) =
         backend.add(item).asSingle(coroutineContext).toObservable()
+
+    // Returns a list of usernames that match the given hostname
+    open fun getUsernamesForDomain(hostname: String): List<Optional<String>> {
+       return listOf( list.map { items ->
+                Optional(
+                    items.find { item -> item.hostname == hostname }.username
+                )
+              }
+       )
+    }
 
     private fun touch(id: String) {
         if (!backend.isLocked()) {

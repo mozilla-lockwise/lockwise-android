@@ -228,13 +228,13 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
         }
     }
 
-
-
-    override fun isDuplicateEntry(newItem: ServerPassword?): Boolean {
-            presenter.checkForDuplicates(newItem)
-    }
-
-    private fun handlePasswordChanges(errorLayout: TextInputLayout, inputText: String?) {
+    // Removed the ability to edit the entry hostname as part of
+    // https://github.com/mozilla-lockwise/lockwise-android/issues/956.
+    // TODO: revisit this logic as part of https://github.com/mozilla-lockwise/lockwise-android/issues/948.
+    /*
+    private fun handleHostnameChanges(errorLayout: TextInputLayout, inputText: String?) {
+        // hostname cannot be empty
+        // has to have http:// or https://
         when {
             TextUtils.isEmpty(inputText) -> {
                 errorLayout.setErrorTextColor(context?.getColorStateList(R.color.error_input_text))
@@ -251,7 +251,7 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
                 passwordInvalid = false
             }
         }
-    }
+    } */
 
     override fun onDestroyView() {
         super.onDestroyView()
