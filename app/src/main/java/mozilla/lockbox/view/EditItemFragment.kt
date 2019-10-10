@@ -17,7 +17,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.webkit.URLUtil
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import com.google.android.material.textfield.TextInputEditText
@@ -43,9 +42,6 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
 
     override val togglePasswordClicks: Observable<Unit>
         get() = view!!.btnPasswordToggle.clicks()
-
-    override val learnMoreClicks: Observable<Unit>
-        get() = view!!.learnMore.clicks()
 
     override val deleteClicks: Observable<Unit>
         get() = view!!.deleteEntryButton.clicks()
@@ -86,7 +82,7 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
         setKeyboardFocus(view)
 
         val layouts = arrayOf(
-            view.inputLayoutHostname, view.inputLayoutUsername,
+            view.inputLayoutUsername,
             view.inputLayoutPassword
         )
 
@@ -103,7 +99,6 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
             }
         }
 
-        view.inputHostname.onFocusChangeListener = focusChangeListener
         view.inputUsername.onFocusChangeListener = focusChangeListener
 
         view.inputPassword.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
@@ -116,7 +111,6 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
 
     private fun setTextWatcher(view: View) {
         val textInputs = listOf<Pair<TextInputEditText, TextInputLayout>>(
-            Pair(view.inputHostname, view.inputLayoutHostname),
             Pair(view.inputUsername, view.inputLayoutUsername),
             Pair(view.inputPassword, view.inputLayoutPassword)
         )
@@ -152,9 +146,6 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
                 val inputText: String? = errorLayout.editText?.text.toString()
 
                 when (errorLayout.id) {
-                    R.id.inputLayoutHostname -> {
-                        handleHostnameChanges(errorLayout, inputText)
-                    }
                     R.id.inputLayoutUsername -> {
                         handleUsernameChanges(errorLayout, inputText)
                     }
@@ -195,6 +186,10 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
         }
     }
 
+    // Removed the ability to edit the entry hostname as part of
+    // https://github.com/mozilla-lockwise/lockwise-android/issues/956.
+    // TODO: revisit this logic as part of https://github.com/mozilla-lockwise/lockwise-android/issues/948.
+    /*
     private fun handleHostnameChanges(errorLayout: TextInputLayout, inputText: String?) {
         // hostname cannot be empty
         // has to have http:// or https://
@@ -219,7 +214,7 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
                 view?.inputHostnameDescription?.visibility = View.VISIBLE
             }
         }
-    }
+    } */
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -273,9 +268,7 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
         inputLayoutPassword.isHintAnimationEnabled = false
 
         inputName.readOnly = true
-
-        inputHostname.isFocusable = true
-        inputHostname.isClickable = true
+        inputHostname.readOnly = true
 
         inputUsername.isFocusable = true
         inputUsername.isClickable = true

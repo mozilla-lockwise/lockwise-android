@@ -77,7 +77,7 @@
             android:id="@+id/cardView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="30dp"
+            android:paddingBottom="20dp"
             android:layout_gravity="center"
             android:overScrollMode="ifContentScrolls"
             android:windowSoftInputMode="adjustPan"
@@ -87,7 +87,7 @@
                 android:id="@+id/editLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingTop="30dp"
+                android:paddingTop="20dp"
                 android:paddingBottom="16dp"
                 tools:ignore="RtlSymmetry">
 
@@ -95,7 +95,6 @@
                     android:id="@+id/entryName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="30dp"
                     android:paddingEnd="16dp"
                     app:layout_constraintTop_toTopOf="parent" >
 
@@ -129,48 +128,6 @@
                             app:backgroundTint="@color/gray_divider"
                             tools:ignore="Autofill"/>
                 </com.google.android.material.textfield.TextInputLayout>
-
-                <TextView
-                        android:id="@+id/inputNameDescription"
-                        android:layout_width="wrap_content"
-                        android:layout_height="16dp"
-                        android:textSize="12sp"
-                        android:fontFamily="sans-serif"
-                        android:textStyle="normal"
-                        android:textColor="@color/black_60_percent"
-                        android:letterSpacing="0.03"
-                        android:lineSpacingExtra="4sp"
-                        android:layout_marginEnd="0dp"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginTop="7dp"
-                        card_view:layout_constraintTop_toBottomOf="@id/inputLayoutName"
-                        card_view:layout_constraintStart_toStartOf="parent"
-                        android:text="@string/input_name_description"
-                />
-
-                <Button
-                        android:id="@+id/learnMore"
-                        android:gravity="start"
-                        android:paddingStart="4dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="16dp"
-                        android:layout_gravity="start"
-                        android:textSize="12sp"
-                        android:textAllCaps="false"
-                        android:fontFamily="sans-serif"
-                        android:textStyle="normal"
-                        android:textColor="@color/link_pressed"
-                        android:letterSpacing="0.03"
-                        android:lineSpacingExtra="7.5sp"
-                        android:background="@color/background_white"
-                        android:layout_marginTop="7dp"
-                        android:layout_weight="1"
-                        android:elevation="0dp"
-                        android:stateListAnimator="@null"
-                        android:text="@string/learn_more"
-                        card_view:layout_constraintTop_toBottomOf="@id/inputLayoutName"
-                        card_view:layout_constraintStart_toEndOf="@id/inputNameDescription"
-                />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -178,7 +135,7 @@
                     android:id="@+id/entryHostname"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="30dp"
+                    android:layout_marginTop="20dp"
                     android:paddingEnd="16dp"
                     app:layout_constraintTop_toBottomOf="@id/entryName"
                     >
@@ -200,7 +157,7 @@
                             android:textSize="16sp"
                             android:fontFamily="sans-serif"
                             android:textStyle="normal"
-                            android:textColor="@color/black_87_percent"
+                            android:textColor="@color/gray_73_percent"
                             android:textColorHint="@color/hint_edit_text"
                             android:letterSpacing="0.01"
                             android:lineSpacingExtra="8sp"
@@ -215,23 +172,6 @@
                             app:backgroundTint="@color/gray_divider"
                             tools:ignore="Autofill"/>
                 </com.google.android.material.textfield.TextInputLayout>
-
-                <TextView
-                        android:id="@+id/inputHostnameDescription"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="12sp"
-                        android:fontFamily="sans-serif"
-                        android:textStyle="normal"
-                        android:textColor="@color/black_60_percent"
-                        android:letterSpacing="0.03"
-                        android:lineSpacingExtra="4sp"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginTop="7dp"
-                        card_view:layout_constraintTop_toBottomOf="@id/inputLayoutHostname"
-                        card_view:layout_constraintStart_toStartOf="parent"
-                        android:text="@string/hostname_entry_description"
-                />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -239,7 +179,7 @@
                     android:id="@+id/entryUsername"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="30dp"
+                    android:layout_marginTop="20dp"
                     android:layout_marginEnd="16dp"
                     app:layout_constraintTop_toBottomOf="@id/entryHostname" >
 
@@ -281,7 +221,7 @@
                     android:id="@+id/entryPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="30dp"
+                    android:layout_marginTop="20dp"
                     android:paddingEnd="16dp"
                     android:fontFamily="sans-serif"
                     app:layout_constraintTop_toBottomOf="@id/entryUsername" >
@@ -336,7 +276,6 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="30dp"
                     card_view:layout_constraintTop_toBottomOf="@+id/entryPassword">
 
                 <Button
@@ -344,8 +283,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal|center_vertical"
-                        android:layout_marginEnd="0dp"
-                        android:paddingEnd="20dp"
+                        android:layout_marginEnd="30dp"
+                        android:paddingEnd="5dp"
+                        android:paddingStart="5dp"
                         android:text="@string/delete_entry"
                         android:textAllCaps="true"
                         android:textSize="14sp"
