@@ -22,7 +22,8 @@ import mozilla.lockbox.support.filter
 @TargetApi(Build.VERSION_CODES.O)
 @ExperimentalCoroutinesApi
 open class FillResponseBuilder(
-    internal val parsedStructure: ParsedStructure
+    internal val parsedStructure: ParsedStructure,
+    private val enableSave: Boolean = true
 ) {
     private val clientState: Bundle
         get() {
@@ -42,7 +43,9 @@ open class FillResponseBuilder(
         val sender = IntentBuilder.getAuthIntentSender(context, this)
 
         responseBuilder.setAuthentication(parsedStructure.autofillIds, sender, presentation)
-        responseBuilder.setSaveInfo(buildSaveInfo())
+        if (enableSave) {
+            responseBuilder.setSaveInfo(buildSaveInfo())
+        }
         responseBuilder.setClientState(clientState)
 
         return responseBuilder.build()
@@ -63,7 +66,9 @@ open class FillResponseBuilder(
         addSearchFallback(context) { sender, presentation ->
             builder.setAuthentication(parsedStructure.autofillIds, sender, presentation)
         }
-        builder.setSaveInfo(buildSaveInfo())
+        if (enableSave) {
+            builder.setSaveInfo(buildSaveInfo())
+        }
         builder.setClientState(clientState)
         return builder.build()
     }
@@ -106,7 +111,9 @@ open class FillResponseBuilder(
             builder.addDataset(datasetBuilder.build())
         }
 
-        builder.setSaveInfo(buildSaveInfo())
+        if (enableSave) {
+            builder.setSaveInfo(buildSaveInfo())
+        }
         builder.setClientState(clientState)
         return builder.build()
     }

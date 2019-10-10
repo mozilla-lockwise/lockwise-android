@@ -34,6 +34,7 @@ import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.TelemetryStore
 import mozilla.lockbox.support.FxASyncDataStoreSupport
 import mozilla.lockbox.support.Constant
+import mozilla.lockbox.support.FeatureFlags
 import mozilla.lockbox.support.PublicSuffixSupport
 import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.support.isDebug
@@ -91,7 +92,7 @@ class LockboxAutofillService(
         fxaSupport.injectContext(this)
         dispatcher.dispatch(LifecycleAction.AutofillStart)
 
-        val builder = FillResponseBuilder(parsedStructure)
+        val builder = FillResponseBuilder(parsedStructure, enableSave = FeatureFlags.AUTOFILL_CAPTURE)
 
         // When locked, then the list will be empty.
         // We have to do it as an observable, as looking up PSL is all async.
