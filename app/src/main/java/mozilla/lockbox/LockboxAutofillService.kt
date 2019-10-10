@@ -54,14 +54,11 @@ class LockboxAutofillService(
 
     private var isRunning = false
 
-
     override fun onConnected() {
-        log.debug("LockboxAutofillService.onConnected()")
         isRunning = false
     }
 
     override fun onDisconnected() {
-        log.debug("LockboxAutofillService.onDisconnected()")
         if (isRunning) {
             isRunning = false
             dispatcher.dispatch(LifecycleAction.AutofillEnd)
@@ -69,7 +66,6 @@ class LockboxAutofillService(
     }
 
     override fun onFillRequest(request: FillRequest, cancellationSignal: CancellationSignal, callback: FillCallback) {
-        log.debug("LockboxAutofillService.onFillRequest(request:[$request], cancellationSignal:[$cancellationSignal], callback:[$callback])")
         val structure = request.fillContexts.last().structure
         val activityPackageName = structure.activityComponent.packageName
         if (this.packageName == activityPackageName) {
@@ -153,7 +149,7 @@ class LockboxAutofillService(
 
     // won't be in the list until we sync
     override fun onSaveRequest(request: SaveRequest, callback: SaveCallback) {
-        val parsedStructure= request.clientState?.let {
+        val parsedStructure = request.clientState?.let {
             it.classLoader = ParsedStructure::class.java.classLoader
             it.getParcelable<ParsedStructure>(Constant.Key.parsedStructure)
         } ?: return callback.onFailure("Bundle missing")
@@ -163,9 +159,9 @@ class LockboxAutofillService(
 
         val autofillItem = AutofillTextValueBuilder(parsedStructure, nodeNavigator).build()
 
-        val pslSuffix= parsedStructure.webDomain
-            ?.let { pslSupport.fromWebDomain(it) } ?:
-            pslSupport.fromPackageName(parsedStructure.packageName)
+        val pslSuffix =
+            parsedStructure.webDomain?.let { pslSupport.fromWebDomain(it) }
+            ?: pslSupport.fromPackageName(parsedStructure.packageName)
 
         pslSuffix.take(1)
             .map { suffix ->

@@ -42,6 +42,7 @@ open class ParsedStructureData<Id>(
 }
 
 // This should be kept in the same order as allIds below.
+@RequiresApi(Build.VERSION_CODES.O)
 val masks = arrayOf(
     SaveInfo.SAVE_DATA_TYPE_USERNAME,
     SaveInfo.SAVE_DATA_TYPE_PASSWORD
@@ -66,7 +67,7 @@ class ParsedStructure(
         allIds.mapIndexed { index, id ->
                 id?.let { masks[index] } ?: 0
             }
-            .reduce { acc, i->
+            .reduce { acc, i ->
                 acc or i
             }
     }

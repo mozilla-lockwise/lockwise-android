@@ -56,7 +56,7 @@ class ParsedStructureBuilder<ViewNode, AutofillId>(
         return navigator.findFirst { node: ViewNode ->
             val childNodes = navigator.childNodes(node)
             // check for consecutive views with keywords followed by possible fill locations
-            for (i in 1.until(childNodes.size - 1)) {
+            for (i in 1.until(childNodes.size)) {
                 val prevNode = childNodes[i - 1]
                 val currentNode = childNodes[i]
                 val id = navigator.autofillId(currentNode) ?: continue
