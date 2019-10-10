@@ -268,10 +268,8 @@
     <string name="entry_name_description">Nome voce</string>
     <!-- This is a heading that appears above an entry name in context of a edit item view -->
     <string name="hint_entryname">Nome</string>
-    <!-- This is the hint in the edit entry view for the entry name. -->
-    <string name="input_name_description">Non è possibile modificare il nome della voce in questo momento.</string>
     <!-- This is the hint in the edit entry view for formatting the entry hostname. -->
-    <string name="hostname_entry_description">Assicurarsi che corrisponda esattamente al dominio del sito web a cui fa riferimento (inclusi “https://” e “www“).</string>
+<!--    <string name="hostname_entry_description">Assicurarsi che corrisponda esattamente al dominio del sito web a cui fa riferimento (inclusi “https://” e “www“).</string>-->
     <string name="entry_password_description">Password per questa voce.</string>
     <!-- This is the text on the button in the edit view that allows you to delete the entry. -->
     <string name="delete_entry">Elimina voce</string>
