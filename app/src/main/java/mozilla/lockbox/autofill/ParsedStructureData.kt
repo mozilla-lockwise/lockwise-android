@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.Parcel
 import android.os.ParcelFormatException
 import android.os.Parcelable
+import android.service.autofill.SaveInfo
 import android.view.autofill.AutofillId
 import androidx.annotation.RequiresApi
 
@@ -40,6 +41,12 @@ open class ParsedStructureData<Id>(
     }
 }
 
+// This should be kept in the same order as allIds below.
+val masks = arrayOf(
+    SaveInfo.SAVE_DATA_TYPE_USERNAME,
+    SaveInfo.SAVE_DATA_TYPE_PASSWORD
+)
+
 @RequiresApi(Build.VERSION_CODES.O)
 class ParsedStructure(
     usernameId: AutofillId? = null,
@@ -47,6 +54,23 @@ class ParsedStructure(
     webDomain: String? = null,
     packageName: String
 ) : ParsedStructureData<AutofillId>(usernameId, passwordId, webDomain, packageName), Parcelable {
+
+    private val allIds = arrayOf(usernameId, passwordId)
+
+    val autofillIds: Array<AutofillId> by lazy {
+        allIds.filterNotNull()
+            .toTypedArray()
+    }
+
+    val saveInfoMask: Int by lazy {
+        allIds.mapIndexed { index, id ->
+                id?.let { masks[index] } ?: 0
+            }
+            .reduce { acc, i->
+                acc or i
+            }
+    }
+
     constructor(parcel: Parcel) : this(
         parcel.readParcelable(AutofillId::class.java.classLoader),
         parcel.readParcelable(AutofillId::class.java.classLoader),

@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.service.autofill.Dataset
 import android.service.autofill.FillResponse
 import android.service.autofill.SaveInfo
-import android.view.autofill.AutofillId
 import android.view.autofill.AutofillValue
 import android.widget.RemoteViews
 import io.reactivex.Observable
@@ -25,17 +24,6 @@ import mozilla.lockbox.support.filter
 open class FillResponseBuilder(
     internal val parsedStructure: ParsedStructure
 ) {
-    private val saveResponse: SaveInfo
-        get() {
-            return SaveInfo.Builder(
-                SaveInfo.SAVE_DATA_TYPE_PASSWORD,
-                arrayOf(parsedStructure.passwordId)
-                    .filter { it != null }
-                    .toTypedArray()
-            )
-                .build()
-        }
-
     private val clientState: Bundle
         get() {
             val bundle = Bundle()
@@ -53,27 +41,29 @@ open class FillResponseBuilder(
 
         val sender = IntentBuilder.getAuthIntentSender(context, this)
 
-        responseBuilder.setAuthentication(autofillIds(), sender, presentation)
-        responseBuilder.setSaveInfo(saveResponse)
+        responseBuilder.setAuthentication(parsedStructure.autofillIds, sender, presentation)
+        responseBuilder.setSaveInfo(buildSaveInfo(context))
         responseBuilder.setClientState(clientState)
 
         return responseBuilder.build()
     }
 
-    private fun autofillIds(): Array<AutofillId> {
-        return arrayOf(parsedStructure.usernameId, parsedStructure.passwordId)
-            .filter { it != null }
-            .map { it!! }
-            .toTypedArray()
+    private fun buildSaveInfo(context: Context): SaveInfo {
+        val builder = SaveInfo.Builder(
+            parsedStructure.saveInfoMask,
+            parsedStructure.autofillIds
+        )
+
+        return builder.build()
     }
 
     fun buildFallbackFillResponse(context: Context): FillResponse? {
         // See https://github.com/mozilla-lockwise/lockwise-android/issues/421
         val builder = FillResponse.Builder()
         addSearchFallback(context) { sender, presentation ->
-            builder.setAuthentication(autofillIds(), sender, presentation)
+            builder.setAuthentication(parsedStructure.autofillIds, sender, presentation)
         }
-        builder.setSaveInfo(saveResponse)
+        builder.setSaveInfo(buildSaveInfo(context))
         builder.setClientState(clientState)
         return builder.build()
     }
@@ -107,7 +97,7 @@ open class FillResponseBuilder(
         addSearchFallback(context) { sender, presentation ->
             val datasetBuilder = Dataset.Builder()
 
-            autofillIds().forEach { id ->
+            parsedStructure.autofillIds.forEach { id ->
                 datasetBuilder.setValue(id, null, presentation)
             }
 
@@ -116,7 +106,7 @@ open class FillResponseBuilder(
             builder.addDataset(datasetBuilder.build())
         }
 
-        builder.setSaveInfo(saveResponse)
+        builder.setSaveInfo(buildSaveInfo(context))
         builder.setClientState(clientState)
         return builder.build()
     }

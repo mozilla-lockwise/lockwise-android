@@ -111,7 +111,7 @@ open class DataStore(
                     is DataStoreAction.UpdateSyncCredentials -> updateCredentials(action.syncCredentials)
                     is DataStoreAction.Delete -> delete(action.item)
                     is DataStoreAction.UpdateItemDetail -> update(action.item)
-                    is DataStoreAction.AutofillCapture -> add(action.item)
+                    is DataStoreAction.AutofillCapture -> autofillAdd(action.item)
                 }
             }
             .addTo(compositeDisposable)
@@ -197,6 +197,33 @@ open class DataStore(
         }
     }
 
+    private fun autofillAdd(item: ServerPassword) {
+        val initiallyLocked = backend.isLocked()
+
+        val addItem = backendEnsureUnlocked()
+            .switchMap {
+                backendAdd(item)
+            }
+
+        val value = if (initiallyLocked) {
+            addItem.switchMap { backendEnsureLocked() }
+        } else {
+            addItem
+        }
+
+        value.subscribe()
+            .addTo(compositeDisposable)
+    }
+
+    private fun backendEnsureLocked() =
+        backend.ensureLocked().asSingle(coroutineContext).toObservable()
+
+    private fun backendAdd(item: ServerPassword) =
+        backend.add(item).asSingle(coroutineContext).toObservable()
+
+    private fun backendEnsureUnlocked() =
+        backend.ensureUnlocked(support.encryptionKey).asSingle(coroutineContext).toObservable()
+
     private fun touch(id: String) {
         if (!backend.isLocked()) {
             backend.touch(id)
@@ -214,10 +241,7 @@ open class DataStore(
     }
 
     private fun unlockInternal() {
-        val encryptionKey = support.encryptionKey
-        backend.ensureUnlocked(encryptionKey)
-            .asSingle(coroutineContext)
-            .toObservable()
+        backendEnsureUnlocked()
             // start listening to the list when receiving the unlock completion
             .switchMap { list }
             // force an update

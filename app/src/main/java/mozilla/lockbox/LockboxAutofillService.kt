@@ -11,6 +11,7 @@ import android.service.autofill.FillCallback
 import android.service.autofill.FillRequest
 import android.service.autofill.SaveCallback
 import android.service.autofill.SaveRequest
+import android.util.Log
 import androidx.annotation.RequiresApi
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.Observables
@@ -56,22 +57,22 @@ class LockboxAutofillService(
 
     var isRunning = false
 
+
     override fun onConnected() {
+        log.debug("LockboxAutofillService.onConnected()")
         isRunning = false
-        telemetryStore.injectContext(this)
-        accountStore.injectContext(this)
-        fxaSupport.injectContext(this)
-        dispatcher.dispatch(LifecycleAction.AutofillStart)
     }
 
     override fun onDisconnected() {
+        log.debug("LockboxAutofillService.onDisconnected()")
         if (isRunning) {
+            isRunning = false
             dispatcher.dispatch(LifecycleAction.AutofillEnd)
         }
-        compositeDisposable.clear()
     }
 
     override fun onFillRequest(request: FillRequest, cancellationSignal: CancellationSignal, callback: FillCallback) {
+        log.debug("LockboxAutofillService.onFillRequest(request:[$request], cancellationSignal:[$cancellationSignal], callback:[$callback])")
         val structure = request.fillContexts.last().structure
         val activityPackageName = structure.activityComponent.packageName
         if (this.packageName == activityPackageName) {
@@ -98,6 +99,8 @@ class LockboxAutofillService(
         dispatcher.dispatch(LifecycleAction.AutofillStart)
 
         val builder = FillResponseBuilder(parsedStructure)
+
+        log.debug("LockboxAutofillService.onFillRequest(request:[$request], cancellationSignal:[$cancellationSignal], callback:[$callback])")
 
         // When locked, then the list will be empty.
         // We have to do it as an observable, as looking up PSL is all async.
@@ -129,12 +132,12 @@ class LockboxAutofillService(
             .map {
                 val appName = this.getString(R.string.app_name)
                 when (it) {
-                    is AutofillAction.Complete -> builder.buildFilteredFillResponse(this, listOf(it.login)).asOptional()
+                    is AutofillAction.Complete -> builder.buildFilteredFillResponse(this, listOf(it.login))
                     is AutofillAction.CompleteMultiple -> (builder.buildFilteredFillResponse(this, it.logins)
-                        ?: builder.buildFallbackFillResponse(this)).asOptional()
-                    is AutofillAction.SearchFallback -> builder.buildFallbackFillResponse(this).asOptional()
-                    is AutofillAction.Authenticate -> builder.buildAuthenticationFillResponse(this).asOptional()
-                    is AutofillAction.Cancel -> Optional(null)
+                        ?: builder.buildFallbackFillResponse(this))
+                    is AutofillAction.SearchFallback -> builder.buildFallbackFillResponse(this)
+                    is AutofillAction.Authenticate -> builder.buildAuthenticationFillResponse(this)
+                    is AutofillAction.Cancel -> null
                     is AutofillAction.Error -> {
                         callback.onFailure(getString(R.string.autofill_error_toast, appName, it.error.localizedMessage))
                         null
@@ -142,8 +145,11 @@ class LockboxAutofillService(
                 }.asOptional()
             }
             .filterNotNull()
+            .doOnComplete {
+                compositeDisposable.clear()
+            }
             .subscribe({
-                callback.onSuccess(it.value)
+                callback.onSuccess(it)
             }, {
                 log.error(throwable = it)
             })
@@ -152,6 +158,7 @@ class LockboxAutofillService(
 
     // won't be in the list until we sync
     override fun onSaveRequest(request: SaveRequest, callback: SaveCallback) {
+        log.debug("LockboxAutofillService.onSaveRequest(request:[$request], callback:[$callback])")
         val clientState = request.clientState
         clientState?.classLoader = ParsedStructure::class.java.classLoader
         val structure = request.fillContexts.last().structure
@@ -161,6 +168,7 @@ class LockboxAutofillService(
         val autofillItem = AutofillTextValueBuilder(parsedStructure!!, nodeNavigator).build()
 
         pslSupport.fromPackageName(parsedStructure.packageName)
+            .take(1)
             .map {
                 ServerPassword(
                     "",
@@ -175,6 +183,9 @@ class LockboxAutofillService(
             }
             .doOnNext {
                 callback.onSuccess()
+            }
+            .doOnComplete {
+                compositeDisposable.clear()
             }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
