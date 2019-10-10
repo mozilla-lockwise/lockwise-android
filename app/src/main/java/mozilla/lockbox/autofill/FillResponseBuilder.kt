@@ -42,13 +42,13 @@ open class FillResponseBuilder(
         val sender = IntentBuilder.getAuthIntentSender(context, this)
 
         responseBuilder.setAuthentication(parsedStructure.autofillIds, sender, presentation)
-        responseBuilder.setSaveInfo(buildSaveInfo(context))
+        responseBuilder.setSaveInfo(buildSaveInfo())
         responseBuilder.setClientState(clientState)
 
         return responseBuilder.build()
     }
 
-    private fun buildSaveInfo(context: Context): SaveInfo {
+    private fun buildSaveInfo(): SaveInfo {
         val builder = SaveInfo.Builder(
             parsedStructure.saveInfoMask,
             parsedStructure.autofillIds
@@ -63,7 +63,7 @@ open class FillResponseBuilder(
         addSearchFallback(context) { sender, presentation ->
             builder.setAuthentication(parsedStructure.autofillIds, sender, presentation)
         }
-        builder.setSaveInfo(buildSaveInfo(context))
+        builder.setSaveInfo(buildSaveInfo())
         builder.setClientState(clientState)
         return builder.build()
     }
@@ -106,7 +106,7 @@ open class FillResponseBuilder(
             builder.addDataset(datasetBuilder.build())
         }
 
-        builder.setSaveInfo(buildSaveInfo(context))
+        builder.setSaveInfo(buildSaveInfo())
         builder.setClientState(clientState)
         return builder.build()
     }

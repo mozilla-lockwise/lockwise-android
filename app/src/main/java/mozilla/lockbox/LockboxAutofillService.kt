@@ -11,7 +11,6 @@ import android.service.autofill.FillCallback
 import android.service.autofill.FillRequest
 import android.service.autofill.SaveCallback
 import android.service.autofill.SaveRequest
-import android.util.Log
 import androidx.annotation.RequiresApi
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.Observables
@@ -33,10 +32,8 @@ import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.AutofillStore
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.TelemetryStore
-
 import mozilla.lockbox.support.FxASyncDataStoreSupport
 import mozilla.lockbox.support.Constant
-import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.PublicSuffixSupport
 import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.support.isDebug
@@ -55,7 +52,7 @@ class LockboxAutofillService(
     private var compositeDisposable = CompositeDisposable()
     private val pslSupport = PublicSuffixSupport.shared
 
-    var isRunning = false
+    private var isRunning = false
 
 
     override fun onConnected() {
@@ -99,8 +96,6 @@ class LockboxAutofillService(
         dispatcher.dispatch(LifecycleAction.AutofillStart)
 
         val builder = FillResponseBuilder(parsedStructure)
-
-        log.debug("LockboxAutofillService.onFillRequest(request:[$request], cancellationSignal:[$cancellationSignal], callback:[$callback])")
 
         // When locked, then the list will be empty.
         // We have to do it as an observable, as looking up PSL is all async.
@@ -158,36 +153,38 @@ class LockboxAutofillService(
 
     // won't be in the list until we sync
     override fun onSaveRequest(request: SaveRequest, callback: SaveCallback) {
-        log.debug("LockboxAutofillService.onSaveRequest(request:[$request], callback:[$callback])")
-        val clientState = request.clientState
-        clientState?.classLoader = ParsedStructure::class.java.classLoader
+        val parsedStructure= request.clientState?.let {
+            it.classLoader = ParsedStructure::class.java.classLoader
+            it.getParcelable<ParsedStructure>(Constant.Key.parsedStructure)
+        } ?: return callback.onFailure("Bundle missing")
+
         val structure = request.fillContexts.last().structure
-        val parsedStructure = clientState?.getParcelable<ParsedStructure>(Constant.Key.parsedStructure)
-        val nodeNavigator = ViewNodeNavigator(structure, parsedStructure?.packageName ?: "")
+        val nodeNavigator = ViewNodeNavigator(structure, parsedStructure.packageName)
 
-        val autofillItem = AutofillTextValueBuilder(parsedStructure!!, nodeNavigator).build()
+        val autofillItem = AutofillTextValueBuilder(parsedStructure, nodeNavigator).build()
 
-        pslSupport.fromPackageName(parsedStructure.packageName)
-            .take(1)
-            .map {
+        val pslSuffix= parsedStructure.webDomain
+            ?.let { pslSupport.fromWebDomain(it) } ?:
+            pslSupport.fromPackageName(parsedStructure.packageName)
+
+        pslSuffix.take(1)
+            .map { suffix ->
+                val domain = "https://${suffix.fullDomain}"
                 ServerPassword(
-                    "",
-                    it.fullDomain,
-                    autofillItem.username,
-                    autofillItem.password ?: "",
-                    formSubmitURL = it.fullDomain
+                    id = "",
+                    hostname = domain,
+                    username = autofillItem.username,
+                    password = autofillItem.password ?: "",
+                    formSubmitURL = parsedStructure.webDomain ?: domain
                 )
-            }
-            .map {
-                DataStoreAction.AutofillCapture(it)
-            }
-            .doOnNext {
-                callback.onSuccess()
             }
             .doOnComplete {
                 compositeDisposable.clear()
             }
-            .subscribe(dispatcher::dispatch)
+            .subscribe {
+                dispatcher.dispatch(DataStoreAction.AutofillCapture(it))
+                callback.onSuccess()
+            }
             .addTo(compositeDisposable)
     }
 }
