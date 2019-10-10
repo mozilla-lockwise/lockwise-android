@@ -13,7 +13,6 @@ import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.TestConsumer
-import mozilla.lockbox.action.AppWebPageAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.toViewModel
 import mozilla.lockbox.flux.Action
@@ -42,7 +41,6 @@ class FilterPresenterTest {
         val cancelButtonStub = PublishSubject.create<Unit>()
         val cancelButtonVisibilityStub = TestObserver<Boolean>()
         val itemSelectionStub = PublishSubject.create<ItemViewModel>()
-        val noMatchingClickStub = PublishSubject.create<Unit>()
 
         var updateItemsArgument: List<ItemViewModel>? = null
 
@@ -52,7 +50,6 @@ class FilterPresenterTest {
         override val cancelButtonVisibility: Consumer<in Boolean> =
             TestConsumer(cancelButtonVisibilityStub)
         override val itemSelection: Observable<ItemViewModel> = itemSelectionStub
-        override val noMatchingClicks: Observable<Unit> = noMatchingClickStub
 
         override fun updateItems(items: List<ItemViewModel>) {
             updateItemsArgument = items
@@ -86,16 +83,16 @@ class FilterPresenterTest {
     val dispatcherObserver: TestObserver<Action> = TestObserver.create<Action>()
 
     val serverPassword1 = ServerPassword(
-            "oiupkjkui",
-            "www.mozilla.org",
-            username = "cats@cats.com",
-            password = "woof"
+        "oiupkjkui",
+        "www.mozilla.org",
+        username = "cats@cats.com",
+        password = "woof"
     )
     val serverPassword2 = ServerPassword(
-            "ljklkjldfs",
-            "www.neopets.com",
-            username = "dogs@dogs.com",
-            password = "meow"
+        "ljklkjldfs",
+        "www.neopets.com",
+        username = "dogs@dogs.com",
+        password = "meow"
     )
 
     private val items = listOf(serverPassword1, serverPassword2)
@@ -175,11 +172,5 @@ class FilterPresenterTest {
         subject.itemSelectionActionSubject.onNext(action)
 
         dispatcherObserver.assertValue(action)
-    }
-
-    @Test
-    fun `no matching items clicks`() {
-        view.noMatchingClickStub.onNext(Unit)
-        dispatcherObserver.assertValue(AppWebPageAction.FaqCreate)
     }
 }

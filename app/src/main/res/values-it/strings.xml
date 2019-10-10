@@ -73,8 +73,6 @@
 
     <!-- This is shown when a user has entered search terms that have filtered the list of logins to find no results -->
     <string name="no_matching_logins">Nessuna corrispondenza nelle credenziali.</string>
-    <!-- This explains that if no logins are found and were expected, to add new logins through the Firefox desktop browser -->
-    <string name="save_firefox_disclaimer">Per visualizzare ulteriori credenziali in questa sezione è necessario salvarle prima in Firefox.</string>
 
     <!-- This is a heading that appears above the URL in context of a detailed item view -->
     <string name="hint_hostname">Indirizzo web</string>
@@ -203,7 +201,7 @@
     <string name="network_connection_success">Connessione alla rete stabilita.</string>
 
     <!-- This is used to inform the user that there are no saved logins in the list -->
-    <string name="no_logins_found">Impossibile trovare la credenziale</string>
+    <string name="no_logins_found">Impossibile trovare le credenziali</string>
     <!-- This explains the steps the user should take, if no saved logins are found: sign in and sync in Firefox. %1$s will be replaced with application name -->
     <string name="no_logins_description">%1$s permette di accedere alle password salvate in Firefox. Per visualizzare le credenziali in questa sezione, effettua l’accesso in Firefox e completa la sincronizzazione.</string>
     <!-- This is the title for the biometric unlock onboarding screen. %1$s will be replaced with application name -->
@@ -228,12 +226,8 @@
     <string name="finish">Fine</string>
     <!-- This description of the app functionality is shown on the final onboarding screen -->
     <string name="access_description">Accedi alle credenziali salvate in Firefox dal tuo telefono</string>
-    <!-- This is an accessible content description for the security information link text. %1$s will be replaced with application name -->
-    <string name="security_content_description">Link a una descrizione delle pratiche di sicurezza in %1$s.</string>
     <!-- This description of the app security is shown on the final onboarding screen. %s will be replaced with the security link. -->
-    <string name="security_description">Sincronizza in modo sicuro più dispositivi con %s</string>
-    <!-- This text is displayed as a link in the security description. -->
-    <string name="security_link">crittografia a 256 bit</string>
+    <string name="security_description">Sincronizza in modo sicuro più dispositivi con crittografia a 256 bit</string>
 
     <!-- This description of the app convenience is shown on the final onboarding screen. -->
     <string name="convenience_description">Sblocca comodamente l’app utilizzando la tua impronta digitale</string>
@@ -265,9 +259,9 @@
     <!-- This is the text on an item in the item detail toolbar menu to delete an entry. -->
     <string name="delete">Elimina</string>
     <!-- This is the confirmation message title seen when attempting to delete a login. -->
-    <string name="delete_this_login">Eliminare questa credenziale?</string>
+    <string name="delete_this_login">Eliminare queste credenziali?</string>
     <!-- This is the description for the deletion dialog. -->
-    <string name="delete_description">Questa operazione eliminerà la credenziale sia da %1$s che da Firefox.</string>
+    <string name="delete_description">Questa operazione eliminerà le credenziali sia da %1$s che da Firefox.</string>
     <!-- This is the text on an item in the item detail toolbar menu to edit an entry. -->
     <string name="edit">Modifica</string>
     <!-- This is the hint in the edit entry view for the entry name. -->
@@ -290,5 +284,5 @@
     <!-- This is the description for the username in the edit entry view. -->
     <string name="username_description">Nome utente</string>
     <!-- This is the title of the edit login page. -->
-    <string name="edit_login_title">Modifica credenziale</string>
+    <string name="edit_login_title">Modifica credenziali</string>
 </resources>

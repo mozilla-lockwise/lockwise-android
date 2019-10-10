@@ -70,8 +70,6 @@
     <string name="search_clear_content_description">Borrar texto de la barra de búsqueda</string>
     <!-- This is shown when a user has entered search terms that have filtered the list of logins to find no results -->
     <string name="no_matching_logins">No coincide ningún usuario.</string>
-    <!-- This explains that if no logins are found and were expected, to add new logins through the Firefox desktop browser -->
-    <string name="save_firefox_disclaimer">Para ver más usuarios, tendrás que guardarlos en Firefox.</string>
 
     <!-- This is a heading that appears above the URL in context of a detailed item view -->
     <string name="hint_hostname">Dirección web</string>
@@ -224,12 +222,8 @@
     <string name="finish">Terminar</string>
     <!-- This description of the app functionality is shown on the final onboarding screen -->
     <string name="access_description">Acceder a los usuarios guardados en Firefox desde el teléfono</string>
-    <!-- This is an accessible content description for the security information link text. %1$s will be replaced with application name -->
-    <string name="security_content_description">Este es un enlace a una descripción de prácticas de seguridad en %1$s.</string>
     <!-- This description of the app security is shown on the final onboarding screen. %s will be replaced with the security link. -->
-    <string name="security_description">Sincroniza dispositivos con la seguridad que te ofrece %s</string>
-    <!-- This text is displayed as a link in the security description. -->
-    <string name="security_link">Cifrado de 256 bit</string>
+    <string name="security_description">Sincroniza dispositivos con la seguridad que te ofrece Cifrado de 256 bit</string>
     <!-- This description of the app convenience is shown on the final onboarding screen. -->
     <string name="convenience_description">Desbloquea rápidamente la aplicación mediante tu huella digital</string>
 

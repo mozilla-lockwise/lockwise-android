@@ -84,9 +84,6 @@ class FilterFragment : BackableFragment(), FilterView {
     override val itemSelection: Observable<ItemViewModel>
         get() = adapter.itemClicks
 
-    override val noMatchingClicks: Observable<Unit>
-        get() = adapter.noMatchingEntriesClicks
-
     override val onDismiss: Observable<Unit>? = null
 
     override val displayNoEntries: ((Boolean) -> Unit)? = null

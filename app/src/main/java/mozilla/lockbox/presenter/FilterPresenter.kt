@@ -13,7 +13,6 @@ import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import mozilla.lockbox.action.AppWebPageAction
 import mozilla.lockbox.action.AutofillAction
 import mozilla.lockbox.extensions.mapToItemViewModelList
 import mozilla.lockbox.flux.Action
@@ -29,7 +28,6 @@ interface FilterView {
     val cancelButtonClicks: Observable<Unit>
     val cancelButtonVisibility: Consumer<in Boolean>
     val itemSelection: Observable<ItemViewModel>
-    val noMatchingClicks: Observable<Unit>?
     val displayNoEntries: ((Boolean) -> Unit)?
     fun updateItems(items: List<ItemViewModel>)
 }
@@ -70,11 +68,6 @@ abstract class FilterPresenter(
                 .subscribe(noEntriesConsumer)
                 .addTo(compositeDisposable)
         }
-
-        view.noMatchingClicks
-            ?.map { AppWebPageAction.FaqCreate }
-            ?.subscribe(dispatcher::dispatch)
-            ?.addTo(compositeDisposable)
 
         view.filterTextEntered
             .map { it.isNotEmpty() }
