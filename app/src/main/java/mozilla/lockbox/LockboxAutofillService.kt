@@ -35,6 +35,7 @@ import mozilla.lockbox.store.TelemetryStore
 import mozilla.lockbox.support.FxASyncDataStoreSupport
 import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.PublicSuffixSupport
+import mozilla.lockbox.support.SecurePreferences
 import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.support.isDebug
 
@@ -43,6 +44,7 @@ import mozilla.lockbox.support.isDebug
 class LockboxAutofillService(
     private val accountStore: AccountStore = AccountStore.shared,
     private val dataStore: DataStore = DataStore.shared,
+    private val securePreferences: SecurePreferences = SecurePreferences.shared,
     private val fxaSupport: FxASyncDataStoreSupport = FxASyncDataStoreSupport.shared,
     private val telemetryStore: TelemetryStore = TelemetryStore.shared,
     private val autofillStore: AutofillStore = AutofillStore.shared,
@@ -85,11 +87,7 @@ class LockboxAutofillService(
             return
         }
 
-        isRunning = true
-        telemetryStore.injectContext(this)
-        accountStore.injectContext(this)
-        fxaSupport.injectContext(this)
-        dispatcher.dispatch(LifecycleAction.AutofillStart)
+        intializeService()
 
         val builder = FillResponseBuilder(parsedStructure)
 
@@ -145,6 +143,22 @@ class LockboxAutofillService(
                 log.error(throwable = it)
             })
             .addTo(compositeDisposable)
+    }
+
+    private fun intializeService() {
+        isRunning = true
+
+        val contextInjectables = arrayOf(
+            telemetryStore,
+            securePreferences,
+            accountStore,
+            fxaSupport
+        )
+
+        contextInjectables.forEach {
+            it.injectContext(this)
+        }
+        dispatcher.dispatch(LifecycleAction.AutofillStart)
     }
 
     override fun onSaveRequest(request: SaveRequest, callback: SaveCallback) {
