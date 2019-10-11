@@ -187,10 +187,8 @@ open class DataStore(
     }
 
     private fun add(item: ServerPassword) {
-        val backend = this.backend
         if (!backend.isLocked()) {
-            backend.add(item)
-                .asSingle(coroutineContext)
+            backendAdd(item)
                 .map { Unit }
                 .subscribe(this::updateList, this::pushError)
                 .addTo(compositeDisposable)
@@ -199,30 +197,26 @@ open class DataStore(
 
     private fun autofillAdd(item: ServerPassword) {
         val initiallyLocked = backend.isLocked()
-
-        val addItem = backendEnsureUnlocked()
-            .switchMap {
-                backendAdd(item)
-            }
-
-        val value = if (initiallyLocked) {
-            addItem.switchMap { backendEnsureLocked() }
+        val addItem = if (initiallyLocked) {
+            backendEnsureUnlocked()
+                .switchMap { backendAdd(item) }
+                .switchMap { backendEnsureLocked() }
         } else {
-            addItem
+            backendAdd(item)
         }
 
-        value.subscribe()
+        addItem.subscribe()
             .addTo(compositeDisposable)
     }
 
     private fun backendEnsureLocked() =
         backend.ensureLocked().asSingle(coroutineContext).toObservable()
 
-    private fun backendAdd(item: ServerPassword) =
-        backend.add(item).asSingle(coroutineContext).toObservable()
-
     private fun backendEnsureUnlocked() =
         backend.ensureUnlocked(support.encryptionKey).asSingle(coroutineContext).toObservable()
+
+    private fun backendAdd(item: ServerPassword) =
+        backend.add(item).asSingle(coroutineContext).toObservable()
 
     private fun touch(id: String) {
         if (!backend.isLocked()) {
@@ -261,8 +255,7 @@ open class DataStore(
     }
 
     private fun lockInternal() {
-        backend.ensureLocked()
-            .asSingle(coroutineContext)
+        backendEnsureLocked()
             .map { State.Locked }
             .subscribe(stateSubject::accept, this::pushError)
             .addTo(compositeDisposable)

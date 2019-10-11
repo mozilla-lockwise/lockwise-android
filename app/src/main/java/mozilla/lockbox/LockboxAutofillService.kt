@@ -34,7 +34,6 @@ import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.TelemetryStore
 import mozilla.lockbox.support.FxASyncDataStoreSupport
 import mozilla.lockbox.support.Constant
-import mozilla.lockbox.support.FeatureFlags
 import mozilla.lockbox.support.PublicSuffixSupport
 import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.support.isDebug
@@ -92,7 +91,7 @@ class LockboxAutofillService(
         fxaSupport.injectContext(this)
         dispatcher.dispatch(LifecycleAction.AutofillStart)
 
-        val builder = FillResponseBuilder(parsedStructure, enableSave = FeatureFlags.AUTOFILL_CAPTURE)
+        val builder = FillResponseBuilder(parsedStructure)
 
         // When locked, then the list will be empty.
         // We have to do it as an observable, as looking up PSL is all async.
@@ -148,7 +147,6 @@ class LockboxAutofillService(
             .addTo(compositeDisposable)
     }
 
-    // won't be in the list until we sync
     override fun onSaveRequest(request: SaveRequest, callback: SaveCallback) {
         val parsedStructure = request.clientState?.let {
             it.classLoader = ParsedStructure::class.java.classLoader
@@ -160,6 +158,15 @@ class LockboxAutofillService(
 
         val autofillItem = AutofillTextValueBuilder(parsedStructure, nodeNavigator).build()
 
+        // The SaveInfo we have fillled in means that we'll only get here if there's a username and password.
+        // We can safely bail knowing we'll never need to here.
+        val capturedUsername = autofillItem.username
+        val capturedPassword = autofillItem.password ?: return callback.onFailure("Password missing")
+
+        // According to the AsyncLoginsStorage docs:
+        // "If login has an empty id field, then a GUID will be generated automatically."
+        val emptyId = ""
+
         val pslSuffix =
             parsedStructure.webDomain?.let { pslSupport.fromWebDomain(it) }
             ?: pslSupport.fromPackageName(parsedStructure.packageName)
@@ -168,10 +175,10 @@ class LockboxAutofillService(
             .map { suffix ->
                 val domain = "https://${suffix.fullDomain}"
                 ServerPassword(
-                    id = "",
+                    id = emptyId,
                     hostname = domain,
-                    username = autofillItem.username,
-                    password = autofillItem.password ?: "",
+                    username = capturedUsername,
+                    password = capturedPassword,
                     formSubmitURL = parsedStructure.webDomain ?: domain
                 )
             }

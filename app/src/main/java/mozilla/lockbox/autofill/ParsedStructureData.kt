@@ -41,9 +41,9 @@ open class ParsedStructureData<Id>(
     }
 }
 
-// This should be kept in the same order as allIds below.
+// This should be kept in the same order as `allPossibleIds` below.
 @RequiresApi(Build.VERSION_CODES.O)
-val masks = arrayOf(
+val saveDataTypeMasks = arrayOf(
     SaveInfo.SAVE_DATA_TYPE_USERNAME,
     SaveInfo.SAVE_DATA_TYPE_PASSWORD
 )
@@ -56,19 +56,23 @@ class ParsedStructure(
     packageName: String
 ) : ParsedStructureData<AutofillId>(usernameId, passwordId, webDomain, packageName), Parcelable {
 
-    private val allIds = arrayOf(usernameId, passwordId)
+    // This is a paired array with `saveDataTypeMasks` above.
+    // We'll use this to calculate both the available autofillIds and the saveInfo mask.
+    private val allPossibleIds = arrayOf(usernameId, passwordId)
 
     val autofillIds: Array<AutofillId> by lazy {
-        allIds.filterNotNull()
+        allPossibleIds.filterNotNull()
             .toTypedArray()
     }
 
+    // Construct the saveInfo mask based upon the autofillIds that are available.
+    // This relies on the paired arrays of `saveDataTypeMasks` and the null padded `allPossibleIds`.
     val saveInfoMask: Int by lazy {
-        allIds.mapIndexed { index, id ->
-                id?.let { masks[index] } ?: 0
+        allPossibleIds.mapIndexed { index, autofillId ->
+                autofillId?.let { saveDataTypeMasks[index] } ?: 0
             }
-            .reduce { acc, i ->
-                acc or i
+            .reduce { totalMask, saveDataTypeMask ->
+                totalMask or saveDataTypeMask
             }
     }
 

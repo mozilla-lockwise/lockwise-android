@@ -16,21 +16,15 @@ import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.R
 import mozilla.lockbox.model.titleFromHostname
 import mozilla.lockbox.support.Constant
+import mozilla.lockbox.support.FeatureFlags
 import mozilla.lockbox.support.PublicSuffixSupport
 import mozilla.lockbox.support.filter
 
 @TargetApi(Build.VERSION_CODES.O)
 @ExperimentalCoroutinesApi
 open class FillResponseBuilder(
-    internal val parsedStructure: ParsedStructure,
-    private val enableSave: Boolean = true
+    internal val parsedStructure: ParsedStructure
 ) {
-    private val clientState: Bundle
-        get() {
-            val bundle = Bundle()
-            bundle.putParcelable(Constant.Key.parsedStructure, parsedStructure)
-            return bundle
-        }
 
     fun buildAuthenticationFillResponse(context: Context): FillResponse {
         val responseBuilder = FillResponse.Builder()
@@ -43,10 +37,7 @@ open class FillResponseBuilder(
         val sender = IntentBuilder.getAuthIntentSender(context, this)
 
         responseBuilder.setAuthentication(parsedStructure.autofillIds, sender, presentation)
-        if (enableSave) {
-            responseBuilder.setSaveInfo(buildSaveInfo())
-        }
-        responseBuilder.setClientState(clientState)
+        setupSaveInfo(responseBuilder)
 
         return responseBuilder.build()
     }
@@ -66,10 +57,7 @@ open class FillResponseBuilder(
         addSearchFallback(context) { sender, presentation ->
             builder.setAuthentication(parsedStructure.autofillIds, sender, presentation)
         }
-        if (enableSave) {
-            builder.setSaveInfo(buildSaveInfo())
-        }
-        builder.setClientState(clientState)
+        setupSaveInfo(builder)
         return builder.build()
     }
 
@@ -111,11 +99,18 @@ open class FillResponseBuilder(
             builder.addDataset(datasetBuilder.build())
         }
 
-        if (enableSave) {
-            builder.setSaveInfo(buildSaveInfo())
-        }
-        builder.setClientState(clientState)
+        setupSaveInfo(builder)
         return builder.build()
+    }
+
+    private fun setupSaveInfo(builder: FillResponse.Builder) {
+        if (FeatureFlags.AUTOFILL_CAPTURE) {
+            builder.setSaveInfo(buildSaveInfo())
+
+            val clientState = Bundle()
+            clientState.putParcelable(Constant.Key.parsedStructure, parsedStructure)
+            builder.setClientState(clientState)
+        }
     }
 
     private fun serverPasswordToDataset(
