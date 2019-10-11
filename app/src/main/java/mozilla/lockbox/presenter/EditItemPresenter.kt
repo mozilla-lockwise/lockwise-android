@@ -7,7 +7,9 @@
 package mozilla.lockbox.presenter
 
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
+import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
@@ -36,13 +38,14 @@ interface EditItemDetailView {
     val hostnameChanged: Observable<CharSequence>
     val usernameChanged: Observable<CharSequence>
     val passwordChanged: Observable<CharSequence>
-    fun isDuplicateEntry(item: ServerPassword): Boolean
+    var dupes: Boolean
+    var dupesList: List<Optional<String>>
     fun updateItem(item: ItemDetailViewModel)
     fun closeKeyboard()
 }
 
 @ExperimentalCoroutinesApi
-class EditItemPresenter(
+open class EditItemPresenter(
     private val view: EditItemDetailView,
     val itemId: String?,
     private val dispatcher: Dispatcher = Dispatcher.shared,
@@ -51,7 +54,8 @@ class EditItemPresenter(
 ) : Presenter() {
 
     private var credentials: ServerPassword? = null
-    private lateinit var itemsWithSameHostname: Observable<List<Optional<String>>>
+    var dupeList = listOf<Optional<String>>()
+    open var possibleDuplicates = false
 
     override fun onViewReady() {
         val itemId = this.itemId ?: return
@@ -64,9 +68,14 @@ class EditItemPresenter(
             .subscribe(view::updateItem)
             .addTo(compositeDisposable)
 
-        itemsWithSameHostname = dataStore.getUsernamesForDomain(credentials?.hostname ?: "")
-
         view.isPasswordVisible = false
+
+        dataStore.getUsernamesForDomain(credentials?.hostname ?: "")
+            .subscribe { dupeList = it }
+            .addTo(compositeDisposable)
+
+        view.dupes = dupeList.isNotEmpty()
+        view.dupesList = dupeList
 
         itemDetailStore.isPasswordVisible
             .subscribe { view.isPasswordVisible = it }
@@ -137,16 +146,6 @@ class EditItemPresenter(
             .addTo(compositeDisposable)
 
     }
-
-    fun checkForDuplicates(newUsername: String): Boolean {
-
-        var dupe = itemsWithSameHostname.map { list ->
-               list.findLast { item ->
-                   item.value == newUsername
-               }
-        }.isEmpty
-    }
-
 
     private fun updateCredentials(
         newHostname: CharSequence? = null,

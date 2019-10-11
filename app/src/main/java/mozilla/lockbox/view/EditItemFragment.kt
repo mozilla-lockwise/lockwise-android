@@ -30,15 +30,19 @@ import io.reactivex.Observable
 import kotlinx.android.synthetic.main.fragment_item_edit.*
 import kotlinx.android.synthetic.main.fragment_item_edit.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.R
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.presenter.EditItemDetailView
 import mozilla.lockbox.presenter.EditItemPresenter
+import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.assertOnUiThread
 
 @ExperimentalCoroutinesApi
 class EditItemFragment : BackableFragment(), EditItemDetailView {
+
+    // these are set in the presenter:
+    override var dupes: Boolean = false
+    override var dupesList: List<Optional<String>> = listOf()
 
     override val togglePasswordVisibility: BehaviorRelay<Unit> = BehaviorRelay.create()
 
@@ -62,6 +66,23 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
 
     override val passwordChanged: Observable<CharSequence>
         get() = view!!.inputPassword.textChanges()
+
+    override var isPasswordVisible: Boolean = false
+        set(value) {
+            assertOnUiThread()
+            field = value
+            updatePasswordVisibility(value)
+        }
+
+    private fun updatePasswordVisibility(visible: Boolean) {
+        if (visible) {
+            inputPassword.transformationMethod = null
+            btnPasswordToggle.setImageResource(R.drawable.ic_hide)
+        } else {
+            inputPassword.transformationMethod = PasswordTransformationMethod.getInstance()
+            btnPasswordToggle.setImageResource(R.drawable.ic_show)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -218,13 +239,22 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
     private fun handleUsernameChanges(errorLayout: TextInputLayout, inputText: String?) {
         // get list of usernames for the hostname
         // see if the new hostname is a duplicate
-        val newEntryIsDuplicate = presenter.checkForDuplicates(errorLayout.inputUsername.text)
+        var duplicateExists = false
+        for (itemWithSameHostname in dupesList){
+            if(inputText == itemWithSameHostname.value) {
+                duplicateExists = true
+            }
+        }
 
         when {
             TextUtils.isEmpty(inputText) -> {
                 errorLayout.error = null
             }
-
+            duplicateExists -> {
+                errorLayout.setErrorTextColor(context?.getColorStateList(R.color.error_input_text))
+                errorLayout.error = context?.getString(R.string.username_duplicate_exists)
+                errorLayout.setErrorIconDrawable(R.drawable.ic_error)
+            }
         }
     }
 
@@ -267,23 +297,6 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
         val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         if (imm.isAcceptingText) {
             imm.hideSoftInputFromWindow(view!!.windowToken, 0)
-        }
-    }
-
-    override var isPasswordVisible: Boolean = false
-        set(value) {
-            assertOnUiThread()
-            field = value
-            updatePasswordVisibility(value)
-        }
-
-    private fun updatePasswordVisibility(visible: Boolean) {
-        if (visible) {
-            inputPassword.transformationMethod = null
-            btnPasswordToggle.setImageResource(R.drawable.ic_hide)
-        } else {
-            inputPassword.transformationMethod = PasswordTransformationMethod.getInstance()
-            btnPasswordToggle.setImageResource(R.drawable.ic_show)
         }
     }
 

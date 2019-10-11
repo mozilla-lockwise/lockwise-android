@@ -220,13 +220,12 @@ open class DataStore(
         backend.add(item).asSingle(coroutineContext).toObservable()
 
     // Returns a list of usernames that match the given hostname
-    open fun getUsernamesForDomain(hostname: String): List<Optional<String>> {
-       return listOf( list.map { items ->
+    open fun getUsernamesForDomain(hostname: String): Observable<List<Optional<String>>> {
+       return list.map { items ->
                 Optional(
-                    items.find { item -> item.hostname == hostname }.username
+                    items.find { item -> item.hostname == hostname }?.username
                 )
-              }
-       )
+              }.toList().toObservable()
     }
 
     private fun touch(id: String) {
