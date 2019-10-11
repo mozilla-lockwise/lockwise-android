@@ -35,13 +35,13 @@ interface EditItemDetailView {
     val hostnameChanged: Observable<CharSequence>
     val usernameChanged: Observable<CharSequence>
     val passwordChanged: Observable<CharSequence>
-    var dupesList: List<Optional<String>>
+    var duplicateList: List<Optional<String>>
     fun updateItem(item: ItemDetailViewModel)
     fun closeKeyboard()
 }
 
 @ExperimentalCoroutinesApi
-open class EditItemPresenter(
+class EditItemPresenter(
     private val view: EditItemDetailView,
     val itemId: String?,
     private val dispatcher: Dispatcher = Dispatcher.shared,
@@ -50,15 +50,14 @@ open class EditItemPresenter(
 ) : Presenter() {
 
     private var credentials: ServerPassword? = null
-    var dupeList = listOf<Optional<String>>()
-    open var possibleDuplicates = false
+    var listOfDuplicatesByHostname = listOf<Optional<String>>()
 
     override fun onViewReady() {
         val itemId = this.itemId ?: return
 
         dataStore.get(itemId)
             .observeOn(mainThread())
-            .filterNotNull() // pair<Set<strong>, itemdetailviewmodel>
+            .filterNotNull()
             .doOnNext { credentials = it }
             .map { it.toDetailViewModel() }
             .subscribe(view::updateItem)
@@ -67,10 +66,10 @@ open class EditItemPresenter(
         view.isPasswordVisible = false
 
         dataStore.getUsernamesForDomain(credentials?.hostname ?: "")
-            .subscribe { dupeList = it }
+            .subscribe { listOfDuplicatesByHostname = it }
             .addTo(compositeDisposable)
 
-        view.dupesList = dupeList
+        view.duplicateList = listOfDuplicatesByHostname
 
         itemDetailStore.isPasswordVisible
             .subscribe { view.isPasswordVisible = it }

@@ -41,7 +41,7 @@ import mozilla.lockbox.support.assertOnUiThread
 class EditItemFragment : BackableFragment(), EditItemDetailView {
 
     // set in the presenter:
-    override var dupesList: List<Optional<String>> = listOf()
+    override var duplicateList: List<Optional<String>> = listOf()
 
     override val togglePasswordVisibility: BehaviorRelay<Unit> = BehaviorRelay.create()
 
@@ -236,10 +236,9 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
     } */
 
     private fun handleUsernameChanges(errorLayout: TextInputLayout, inputText: String?) {
-        // get list of usernames for the hostname
-        // see if the new hostname is a duplicate
+        // get list of usernames with a matching hostname
         var duplicateExists = false
-        for (itemWithSameHostname in dupesList) {
+        for (itemWithSameHostname in duplicateList) {
             if (inputText == itemWithSameHostname.value) {
                 duplicateExists = true
             }

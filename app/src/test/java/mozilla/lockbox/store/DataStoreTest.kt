@@ -20,6 +20,7 @@ import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.log
 import mozilla.lockbox.mocks.MockDataStoreSupport
 import mozilla.lockbox.model.FixedSyncCredentials
 import mozilla.lockbox.store.DataStore.State
@@ -322,6 +323,60 @@ class DataStoreTest : DisposingTest() {
         val serverPasswordIterator = this.subject.get(serverPassword.id).blockingIterable().iterator()
 
         Assert.assertEquals(serverPassword.asOptional(), serverPasswordIterator.next())
+    }
+
+    @Test
+    fun `get a list of usernames for a given hostname`() {
+        val stateIterator = this.subject.state.blockingIterable().iterator()
+        val listIterator = this.subject.list.blockingIterable().iterator()
+        Assert.assertEquals(0, listIterator.next().size)
+
+        clearInvocations(support.storage)
+        whenCalled(timingSupport.shouldSync).thenReturn(false)
+
+        dispatcher.dispatch(DataStoreAction.Unlock)
+        Assert.assertEquals(State.Unlocked, stateIterator.next())
+        Assert.assertEquals(10, listIterator.next().size)
+
+        // get the list of entries
+        val itemList = listIterator.next()
+
+        // take two items
+        val item1 = itemList[0]
+        val item2 = itemList[1]
+
+        val newHostname = "https://ilovecats.com"
+
+        // update their hostnames to match
+        val updatedItem1 = ServerPassword(
+            id = item1.id,
+            hostname = newHostname,
+            username = item1.username,
+            password = item1.password,
+            httpRealm = item1.httpRealm,
+            formSubmitURL = item1.formSubmitURL
+        )
+
+        val updatedItem2 = ServerPassword(
+            id = item2.id,
+            hostname = newHostname,
+            username = item2.username,
+            password = item2.password,
+            httpRealm = item2.httpRealm,
+            formSubmitURL = item2.formSubmitURL
+        )
+
+        dispatcher.dispatch(DataStoreAction.UpdateItemDetail(updatedItem1))
+        dispatcher.dispatch(DataStoreAction.UpdateItemDetail(updatedItem2))
+
+        // check if the list is updated
+        dispatcherObserver.assertValueAt(1, DataStoreAction.ListUpdate)
+        dispatcherObserver.assertValueAt(2, DataStoreAction.ListUpdate)
+
+        val listOfUsernames = subject.getUsernamesForDomain(newHostname).blockingIterable().iterator().next()
+
+        Assert.assertEquals(item1.username, listOfUsernames[0].value)
+        Assert.assertEquals(item2.username, listOfUsernames[1].value)
     }
 
     @Test
