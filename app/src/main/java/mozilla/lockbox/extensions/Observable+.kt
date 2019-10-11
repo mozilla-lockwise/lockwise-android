@@ -40,7 +40,3 @@ fun <T : Any, U : Optional<T>> Observable<U>.filterNotNull(): Observable<T> {
 fun Observable<List<ServerPassword>>.mapToItemViewModelList(): Observable<List<ItemViewModel>> {
     return this.map { list -> list.map { it.toViewModel() } }
 }
-
-fun Observable<List<ServerPassword>>.mapToDetailViewModelList(): Observable<List<ItemDetailViewModel>> {
-    return this.map { list -> list.map { it.toDetailViewModel() } }
-}

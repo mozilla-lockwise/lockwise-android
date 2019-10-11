@@ -40,8 +40,7 @@ import mozilla.lockbox.support.assertOnUiThread
 @ExperimentalCoroutinesApi
 class EditItemFragment : BackableFragment(), EditItemDetailView {
 
-    // these are set in the presenter:
-    override var dupes: Boolean = false
+    // set in the presenter:
     override var dupesList: List<Optional<String>> = listOf()
 
     override val togglePasswordVisibility: BehaviorRelay<Unit> = BehaviorRelay.create()
@@ -240,8 +239,8 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
         // get list of usernames for the hostname
         // see if the new hostname is a duplicate
         var duplicateExists = false
-        for (itemWithSameHostname in dupesList){
-            if(inputText == itemWithSameHostname.value) {
+        for (itemWithSameHostname in dupesList) {
+            if (inputText == itemWithSameHostname.value) {
                 duplicateExists = true
             }
         }

@@ -8,7 +8,6 @@ import androidx.annotation.VisibleForTesting
 import com.jakewharton.rxrelay2.BehaviorRelay
 import com.jakewharton.rxrelay2.ReplayRelay
 import io.reactivex.Observable
-import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -61,8 +60,10 @@ open class DataStore(
 
     private val stateSubject = ReplayRelay.createWithSize<State>(1)
     @VisibleForTesting
-    val syncStateSubject: BehaviorRelay<SyncState> = BehaviorRelay.createDefault(SyncState.NotSyncing)
-    private val listSubject: BehaviorRelay<List<ServerPassword>> = BehaviorRelay.createDefault(emptyList())
+    val syncStateSubject: BehaviorRelay<SyncState> =
+        BehaviorRelay.createDefault(SyncState.NotSyncing)
+    private val listSubject: BehaviorRelay<List<ServerPassword>> =
+        BehaviorRelay.createDefault(emptyList())
     private val deletedItemSubject = ReplayRelay.create<Consumable<ServerPassword>>()
 
     open val state: Observable<State> = stateSubject
@@ -221,11 +222,11 @@ open class DataStore(
 
     // Returns a list of usernames that match the given hostname
     open fun getUsernamesForDomain(hostname: String): Observable<List<Optional<String>>> {
-       return list.map { items ->
-                Optional(
-                    items.find { item -> item.hostname == hostname }?.username
-                )
-              }.toList().toObservable()
+        return list.map { items ->
+            Optional(
+                items.find { item -> item.hostname == hostname }?.username
+            )
+        }.toList().toObservable()
     }
 
     private fun touch(id: String) {

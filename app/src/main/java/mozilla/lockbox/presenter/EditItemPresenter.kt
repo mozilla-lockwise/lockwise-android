@@ -7,9 +7,7 @@
 package mozilla.lockbox.presenter
 
 import io.reactivex.Observable
-import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
-import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
@@ -24,7 +22,6 @@ import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.ItemDetailStore
-import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.pushError
 
@@ -38,7 +35,6 @@ interface EditItemDetailView {
     val hostnameChanged: Observable<CharSequence>
     val usernameChanged: Observable<CharSequence>
     val passwordChanged: Observable<CharSequence>
-    var dupes: Boolean
     var dupesList: List<Optional<String>>
     fun updateItem(item: ItemDetailViewModel)
     fun closeKeyboard()
@@ -74,7 +70,6 @@ open class EditItemPresenter(
             .subscribe { dupeList = it }
             .addTo(compositeDisposable)
 
-        view.dupes = dupeList.isNotEmpty()
         view.dupesList = dupeList
 
         itemDetailStore.isPasswordVisible
@@ -144,7 +139,6 @@ open class EditItemPresenter(
                 )
             }
             .addTo(compositeDisposable)
-
     }
 
     private fun updateCredentials(
