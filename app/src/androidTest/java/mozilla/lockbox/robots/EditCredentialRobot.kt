@@ -22,12 +22,12 @@ class EditCredentialRobot : BaseTestRobot {
     fun closeEditChanges() = ClickActions.click { contentDescription("Back") }
     fun deleteEntryFromEdit() = ClickActions.click { id(R.id.deleteEntryButton) }
 
-    fun tapOnHostname() = onView(withId(R.id.inputHostname)).perform(click())
-    fun editHostname(text: String) = onView(withId(R.id.inputHostname)).perform(replaceText(text))
     fun tapOnUserName() = onView(withId(R.id.inputUsername)).perform(click())
     fun editUserName(text: String) = onView(withId(R.id.inputUsername)).perform(replaceText(text))
 
     fun editPassword(text: String) = onView(withId(R.id.inputPassword)).perform(replaceText(text))
+    fun assertErrorEmptyPassord() = VisibilityAssertions.displayed { id(R.id.textinput_error) }
+    fun noErrorEmptyPassword() = VisibilityAssertions.notDisplayed { id(R.id.textinput_error) }
 }
 
 fun editCredential(f: EditCredentialRobot.() -> Unit) = EditCredentialRobot().apply(f)
