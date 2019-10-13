@@ -227,7 +227,7 @@
     <!-- This description of the app functionality is shown on the final onboarding screen -->
     <string name="access_description">Accedi alle credenziali salvate in Firefox dal tuo telefono</string>
     <!-- This description of the app security is shown on the final onboarding screen. %s will be replaced with the security link. -->
-    <string name="security_description">Sincronizza in modo sicuro più dispositivi con crittografia a 256 bit</string>
+    <string name="security_description">Sincronizza in modo sicuro più dispositivi con %s</string>
 
     <!-- This description of the app convenience is shown on the final onboarding screen. -->
     <string name="convenience_description">Sblocca comodamente l’app utilizzando la tua impronta digitale</string>
@@ -268,8 +268,10 @@
     <string name="entry_name_description">Nome voce</string>
     <!-- This is a heading that appears above an entry name in context of a edit item view -->
     <string name="hint_entryname">Nome</string>
+    <!-- This is the hint in the edit entry view for the entry name. -->
+    <string name="input_name_description">Non è possibile modificare il nome della voce in questo momento.</string>
     <!-- This is the hint in the edit entry view for formatting the entry hostname. -->
-<!--    <string name="hostname_entry_description">Assicurarsi che corrisponda esattamente al dominio del sito web a cui fa riferimento (inclusi “https://” e “www“).</string>-->
+    <string name="hostname_entry_description">Assicurarsi che corrisponda esattamente al dominio del sito web a cui fa riferimento (inclusi “https://” e “www“).</string>
     <string name="entry_password_description">Password per questa voce.</string>
     <!-- This is the text on the button in the edit view that allows you to delete the entry. -->
     <string name="delete_entry">Elimina voce</string>
@@ -285,4 +287,15 @@
     <string name="username_description">Nome utente</string>
     <!-- This is the title of the edit login page. -->
     <string name="edit_login_title">Modifica credenziali</string>
+
+    <!-- This is the error message that is shown in edit or create view when input text for hostname is not valid. -->
+    <string name="hostname_invalid_text">L’indirizzo web deve contenere “https://“ o “http://“</string>
+
+    <!-- This is the error message that is shown in edit or create view when input text for password is not valid. -->
+    <string name="password_invalid_text">Il campo Password non può essere vuoto</string>
+
+    <!-- This is the error message that is shown in edit or create view when input text for the hostname is not valid. -->
+    <string name="hostname_empty_text">Il campo Indirizzo web non può essere vuoto</string>
+
+
 </resources>

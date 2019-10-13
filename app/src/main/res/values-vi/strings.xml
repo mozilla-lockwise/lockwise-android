@@ -70,6 +70,8 @@
     <string name="search_clear_content_description">Xóa văn bản trên thanh tìm kiếm</string>
     <!-- This is shown when a user has entered search terms that have filtered the list of logins to find no results -->
     <string name="no_matching_logins">Không có thông tin đăng nhập phù hợp.</string>
+    <!-- This explains that if no logins are found and were expected, to add new logins through the Firefox desktop browser -->
+    <string name="save_firefox_disclaimer">Để xem thêm thông tin đăng nhập tại đây, bạn sẽ cần lưu chúng vào Firefox.</string>
 
     <!-- This is a heading that appears above the URL in context of a detailed item view -->
     <string name="hint_hostname">Địa chỉ web</string>
@@ -221,8 +223,12 @@
     <string name="finish">Kết thúc</string>
     <!-- This description of the app functionality is shown on the final onboarding screen -->
     <string name="access_description">Truy cập thông tin đăng nhập được lưu vào Firefox từ điện thoại của bạn</string>
+    <!-- This is an accessible content description for the security information link text. %1$s will be replaced with application name -->
+    <string name="security_content_description">Đây là liên kết đến mô tả về các hoạt động bảo mật trong %1$s.</string>
     <!-- This description of the app security is shown on the final onboarding screen. %s will be replaced with the security link. -->
-    <string name="security_description">Đồng bộ hóa giữa các thiết bị với Mã hóa 256-bit</string>
+    <string name="security_description">Đồng bộ hóa giữa các thiết bị với %s</string>
+    <!-- This text is displayed as a link in the security description. -->
+    <string name="security_link">Mã hóa 256-bit</string>
     <!-- This description of the app convenience is shown on the final onboarding screen. -->
     <string name="convenience_description">Mở khóa ứng dụng một cách dễ dàng bằng dấu vân tay của bạn</string>
 
@@ -262,10 +268,12 @@
     <string name="entry_name_description">Tên mục</string>
     <!-- This is a heading that appears above an entry name in context of a edit item view -->
     <string name="hint_entryname">Tên</string>
+    <!-- This is the hint in the edit entry view for the entry name. -->
+    <string name="input_name_description">Không thể chỉnh sửa tên mục vào lúc này.</string>
     <!-- This is the hint in the edit entry view for formatting the entry hostname. -->
-<!--    <string name="hostname_entry_description">Nội dung của trường này phải giống hệt như tên miền tương ứng-->
-<!--        (Bao gồm “https://” và “www”).-->
-<!--    </string>-->
+    <string name="hostname_entry_description">Nội dung của trường này phải giống hệt như tên miền tương ứng
+        (Bao gồm “https://” và “www”).
+    </string>
     <string name="entry_password_description">Mật khẩu cho mục này.</string>
     <!-- This is the text on the button in the edit view that allows you to delete the entry. -->
     <string name="delete_entry">Xóa mục</string>
