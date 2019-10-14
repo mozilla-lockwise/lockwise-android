@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.mtrl_alert_dialog_actions.view.*
 import mozilla.lockbox.R
 
 class WelcomeRobot : BaseTestRobot {
-    override fun exists() = displayed { id(R.id.buttonGetStarted) }
+    override fun exists() = displayed { id(R.id.buttonGetStartedManually) }
 
     fun tapGetStarted() = click { id(R.id.buttonGetStartedManually) }
 

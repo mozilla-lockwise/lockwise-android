@@ -25,6 +25,17 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 import br.com.concretesolutions.kappuccino.custom.recyclerView.RecyclerViewInteractions.recyclerView
+import mozilla.lockbox.robots.accountSettingScreen
+import mozilla.lockbox.robots.autofillOnboardingScreen
+import mozilla.lockbox.robots.deleteCredentialDisclaimer
+import mozilla.lockbox.robots.editCredential
+import mozilla.lockbox.robots.fxaLogin
+import mozilla.lockbox.robots.itemDetail
+import mozilla.lockbox.robots.itemList
+import mozilla.lockbox.robots.kebabMenu
+import mozilla.lockbox.robots.onboardingConfirmationScreen
+import mozilla.lockbox.robots.welcome
+import mozilla.lockbox.uiTests.Navigator
 import tools.fastlane.screengrab.Screengrab
 import tools.fastlane.screengrab.locale.LocaleTestRule
 import tools.fastlane.screengrab.UiAutomatorScreenshotStrategy
@@ -33,6 +44,7 @@ import tools.fastlane.screengrab.UiAutomatorScreenshotStrategy
 @RunWith(AndroidJUnit4::class)
 
 open class ScreenshotsTest {
+    private val navigator = Navigator()
 
     @Rule
     @JvmField
@@ -40,7 +52,7 @@ open class ScreenshotsTest {
 
     @get:Rule
     val localeTestRule = LocaleTestRule()
-
+    /*
     @Test
     fun testThroughoutAllApp() {
 
@@ -71,7 +83,7 @@ open class ScreenshotsTest {
         onView(withId(R.id.sortButton))
                 .check(matches(isDisplayed()))
         Screengrab.screenshot("all-logins-screen")
-
+        //---
         selectItem(1)
         onView(withId(R.id.inputHostname))
                 .check(matches(isDisplayed()))
@@ -139,6 +151,103 @@ open class ScreenshotsTest {
         Screengrab.screenshot("disconnect-account-screen")
         pressBack()
     }
+*/
+    @Test
+    fun testOnboarding() {
+        Screengrab.setDefaultScreenshotStrategy(UiAutomatorScreenshotStrategy())
+        welcome {
+            exists()
+            sleep(5000)
+            Screengrab.screenshot("get-started")
+            tapGetStarted()
+            Screengrab.screenshot("secure-device-screen")
+            tapSkipSecureYourDevice()
+            sleep(5000)
+            Screengrab.screenshot("enter-email-screen")
+        }
+        fxaLogin {
+            tapPlaceholderLogin()
+            sleep(5000)
+            Screengrab.screenshot("autofill-onboarding-screen")
+        }
+        autofillOnboardingScreen {
+            tapSkip()
+            Screengrab.screenshot("allset-screen")
+        }
+        onboardingConfirmationScreen {
+            clickFinish()
+            sleep(5000)
+        }
+        itemList {
+            //exists()
+            Screengrab.screenshot("all-logins-screen")
+            selectItem(1)
+            Screengrab.screenshot("item-detail-screen")
+        }
+        itemDetail {
+            tapCopyPass()
+            Screengrab.screenshot("password-copied-screen")
+            tapCopyUsername()
+            Screengrab.screenshot("username-copied-screen")
+            tapKebabMenu()
+        }
+        kebabMenu {
+            Screengrab.screenshot("item-menu")
+            tapDeleteButton()
+            Screengrab.screenshot("item-delete-disclaimer")
+        }
+        deleteCredentialDisclaimer {
+            tapCancelButton()
+        }
+        itemDetail {
+            tapKebabMenu()
+        }
+        kebabMenu {
+            //onView(withText(R.string.edit)).perform(click())
+            tapEditButton()
+            sleep(1000)
+            Screengrab.screenshot("item-edit-menu")
+        }
+        editCredential {
+            editPassword("")
+            sleep(1000)
+            Screengrab.screenshot("error-empty-field")
+            saveChanges()
+        }
+        itemList {
+            tapSortButton()
+            Screengrab.screenshot("sorting-options-screen")
+            pressBack()
+
+            openMenu()
+            Screengrab.screenshot("app-menu-screen")
+
+            tapLockNow()
+            Screengrab.screenshot("lock-now-screen")
+            pressBack()
+
+            tapSettings()
+            Screengrab.screenshot("settings-menu-screen")
+            pressBack()
+
+            tapAccountSetting()
+            Screengrab.screenshot("settings-account-screen")
+
+            accountSettingScreen { tapDisconnect()
+                Screengrab.screenshot("disconnect-account-screen")
+                pressBack()
+            }
+        }
+
+
+    }
+    /*
+    @Test
+    fun testItemList() {
+        Screengrab.setDefaultScreenshotStrategy(UiAutomatorScreenshotStrategy())
+        navigator.gotoItemList(false)
+        Screengrab.screenshot("all-logins-screen")
+    }*/
 }
 
 fun selectItem(position: Int = 0) = clickListItem(R.id.entriesView, position)
