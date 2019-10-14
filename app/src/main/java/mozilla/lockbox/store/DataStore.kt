@@ -57,6 +57,7 @@ open class DataStore(
     }
 
     internal val compositeDisposable = CompositeDisposable()
+
     private val stateSubject = ReplayRelay.createWithSize<State>(1)
     @VisibleForTesting
     val syncStateSubject: BehaviorRelay<SyncState> = BehaviorRelay.createDefault(SyncState.NotSyncing)
@@ -110,6 +111,7 @@ open class DataStore(
                     is DataStoreAction.UpdateSyncCredentials -> updateCredentials(action.syncCredentials)
                     is DataStoreAction.Delete -> delete(action.item)
                     is DataStoreAction.UpdateItemDetail -> update(action.item)
+                    is DataStoreAction.AutofillCapture -> autofillAdd(action.item)
                 }
             }
             .addTo(compositeDisposable)
@@ -184,6 +186,38 @@ open class DataStore(
         }
     }
 
+    private fun add(item: ServerPassword) {
+        if (!backend.isLocked()) {
+            backendAdd(item)
+                .map { Unit }
+                .subscribe(this::updateList, this::pushError)
+                .addTo(compositeDisposable)
+        }
+    }
+
+    private fun autofillAdd(item: ServerPassword) {
+        val initiallyLocked = backend.isLocked()
+        val addItem = if (initiallyLocked) {
+            backendEnsureUnlocked()
+                .switchMap { backendAdd(item) }
+                .switchMap { backendEnsureLocked() }
+        } else {
+            backendAdd(item)
+        }
+
+        addItem.subscribe()
+            .addTo(compositeDisposable)
+    }
+
+    private fun backendEnsureLocked() =
+        backend.ensureLocked().asSingle(coroutineContext).toObservable()
+
+    private fun backendEnsureUnlocked() =
+        backend.ensureUnlocked(support.encryptionKey).asSingle(coroutineContext).toObservable()
+
+    private fun backendAdd(item: ServerPassword) =
+        backend.add(item).asSingle(coroutineContext).toObservable()
+
     private fun touch(id: String) {
         if (!backend.isLocked()) {
             backend.touch(id)
@@ -201,10 +235,7 @@ open class DataStore(
     }
 
     private fun unlockInternal() {
-        val encryptionKey = support.encryptionKey
-        backend.ensureUnlocked(encryptionKey)
-            .asSingle(coroutineContext)
-            .toObservable()
+        backendEnsureUnlocked()
             // start listening to the list when receiving the unlock completion
             .switchMap { list }
             // force an update
@@ -224,8 +255,7 @@ open class DataStore(
     }
 
     private fun lockInternal() {
-        backend.ensureLocked()
-            .asSingle(coroutineContext)
+        backendEnsureLocked()
             .map { State.Locked }
             .subscribe(stateSubject::accept, this::pushError)
             .addTo(compositeDisposable)

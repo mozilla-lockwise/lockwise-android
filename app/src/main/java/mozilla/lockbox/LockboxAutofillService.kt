@@ -16,8 +16,11 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.action.AutofillAction
+import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
+import mozilla.lockbox.autofill.AutofillTextValueBuilder
 import mozilla.lockbox.autofill.FillResponseBuilder
 import mozilla.lockbox.autofill.ParsedStructure
 import mozilla.lockbox.autofill.ParsedStructureBuilder
@@ -30,8 +33,9 @@ import mozilla.lockbox.store.AutofillStore
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.TelemetryStore
 import mozilla.lockbox.support.FxASyncDataStoreSupport
-import mozilla.lockbox.support.Optional
+import mozilla.lockbox.support.Constant
 import mozilla.lockbox.support.PublicSuffixSupport
+import mozilla.lockbox.support.SecurePreferences
 import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.support.isDebug
 
@@ -39,6 +43,8 @@ import mozilla.lockbox.support.isDebug
 @ExperimentalCoroutinesApi
 class LockboxAutofillService(
     private val accountStore: AccountStore = AccountStore.shared,
+    private val dataStore: DataStore = DataStore.shared,
+    private val securePreferences: SecurePreferences = SecurePreferences.shared,
     private val fxaSupport: FxASyncDataStoreSupport = FxASyncDataStoreSupport.shared,
     private val telemetryStore: TelemetryStore = TelemetryStore.shared,
     private val autofillStore: AutofillStore = AutofillStore.shared,
@@ -47,9 +53,8 @@ class LockboxAutofillService(
 
     private var compositeDisposable = CompositeDisposable()
     private val pslSupport = PublicSuffixSupport.shared
-    lateinit var dataStore: DataStore
 
-    var isRunning = false
+    private var isRunning = false
 
     override fun onConnected() {
         isRunning = false
@@ -57,9 +62,9 @@ class LockboxAutofillService(
 
     override fun onDisconnected() {
         if (isRunning) {
+            isRunning = false
             dispatcher.dispatch(LifecycleAction.AutofillEnd)
         }
-        compositeDisposable.clear()
     }
 
     override fun onFillRequest(request: FillRequest, cancellationSignal: CancellationSignal, callback: FillCallback) {
@@ -82,12 +87,7 @@ class LockboxAutofillService(
             return
         }
 
-        isRunning = true
-        telemetryStore.injectContext(this)
-        accountStore.injectContext(this)
-        fxaSupport.injectContext(this)
-        dataStore = DataStore.shared
-        dispatcher.dispatch(LifecycleAction.AutofillStart)
+        intializeService()
 
         val builder = FillResponseBuilder(parsedStructure)
 
@@ -121,12 +121,12 @@ class LockboxAutofillService(
             .map {
                 val appName = this.getString(R.string.app_name)
                 when (it) {
-                    is AutofillAction.Complete -> builder.buildFilteredFillResponse(this, listOf(it.login)).asOptional()
+                    is AutofillAction.Complete -> builder.buildFilteredFillResponse(this, listOf(it.login))
                     is AutofillAction.CompleteMultiple -> (builder.buildFilteredFillResponse(this, it.logins)
-                        ?: builder.buildFallbackFillResponse(this)).asOptional()
-                    is AutofillAction.SearchFallback -> builder.buildFallbackFillResponse(this).asOptional()
-                    is AutofillAction.Authenticate -> builder.buildAuthenticationFillResponse(this).asOptional()
-                    is AutofillAction.Cancel -> Optional(null)
+                        ?: builder.buildFallbackFillResponse(this))
+                    is AutofillAction.SearchFallback -> builder.buildFallbackFillResponse(this)
+                    is AutofillAction.Authenticate -> builder.buildAuthenticationFillResponse(this)
+                    is AutofillAction.Cancel -> null
                     is AutofillAction.Error -> {
                         callback.onFailure(getString(R.string.autofill_error_toast, appName, it.error.localizedMessage))
                         null
@@ -134,14 +134,75 @@ class LockboxAutofillService(
                 }.asOptional()
             }
             .filterNotNull()
+            .doOnComplete {
+                compositeDisposable.clear()
+            }
             .subscribe({
-                callback.onSuccess(it.value)
+                callback.onSuccess(it)
             }, {
                 log.error(throwable = it)
             })
             .addTo(compositeDisposable)
     }
 
-    // to be implemented in issue #217
-    override fun onSaveRequest(request: SaveRequest, callback: SaveCallback) {}
+    private fun intializeService() {
+        isRunning = true
+
+        val contextInjectables = arrayOf(
+            telemetryStore,
+            securePreferences,
+            accountStore,
+            fxaSupport
+        )
+
+        contextInjectables.forEach {
+            it.injectContext(this)
+        }
+        dispatcher.dispatch(LifecycleAction.AutofillStart)
+    }
+
+    override fun onSaveRequest(request: SaveRequest, callback: SaveCallback) {
+        val parsedStructure = request.clientState?.let {
+            it.classLoader = ParsedStructure::class.java.classLoader
+            it.getParcelable<ParsedStructure>(Constant.Key.parsedStructure)
+        } ?: return callback.onFailure("Bundle missing")
+
+        val structure = request.fillContexts.last().structure
+        val nodeNavigator = ViewNodeNavigator(structure, parsedStructure.packageName)
+
+        val autofillItem = AutofillTextValueBuilder(parsedStructure, nodeNavigator).build()
+
+        // The SaveInfo we have fillled in means that we'll only get here if there's a username and password.
+        // We can safely bail knowing we'll never need to here.
+        val capturedUsername = autofillItem.username
+        val capturedPassword = autofillItem.password ?: return callback.onFailure("Password missing")
+
+        // According to the AsyncLoginsStorage docs:
+        // "If login has an empty id field, then a GUID will be generated automatically."
+        val emptyId = ""
+
+        val pslSuffix =
+            parsedStructure.webDomain?.let { pslSupport.fromWebDomain(it) }
+            ?: pslSupport.fromPackageName(parsedStructure.packageName)
+
+        pslSuffix.take(1)
+            .map { suffix ->
+                val domain = "https://${suffix.fullDomain}"
+                ServerPassword(
+                    id = emptyId,
+                    hostname = domain,
+                    username = capturedUsername,
+                    password = capturedPassword,
+                    formSubmitURL = parsedStructure.webDomain ?: domain
+                )
+            }
+            .doOnComplete {
+                compositeDisposable.clear()
+            }
+            .subscribe {
+                dispatcher.dispatch(DataStoreAction.AutofillCapture(it))
+                callback.onSuccess()
+            }
+            .addTo(compositeDisposable)
+    }
 }

@@ -98,8 +98,6 @@ open class AccountStore(
     private val syncCredentials: Observable<Optional<SyncCredentials>> = ReplaySubject.createWithSize(1)
     open val profile: Observable<Optional<Profile>> = ReplaySubject.createWithSize(1)
 
-    private lateinit var webView: WebView
-    private lateinit var logDirectory: File
     private lateinit var context: Context
 
     private val tokenRotationHandler = Handler()
@@ -140,8 +138,6 @@ open class AccountStore(
     override fun injectContext(context: Context) {
         detectAccount()
         this.context = context
-        webView = WebView(context)
-        logDirectory = context.getDir("webview", Context.MODE_PRIVATE)
     }
 
     fun shareableAccount(): ShareableAccount? {
@@ -302,7 +298,7 @@ open class AccountStore(
         removeDeviceFromFxA()
 
         if (Looper.myLooper() != null) {
-            CookieManager.getInstance().removeAllCookies { }
+            CookieManager.getInstance().removeAllCookies(null)
             WebStorage.getInstance().deleteAllData()
         }
 
@@ -312,8 +308,17 @@ open class AccountStore(
 
         this.generateNewFirefoxAccount()
 
-        webView.clearCache(true)
-        clearLogs()
+        // Clear down the webview subsystem as best we can.
+        // Unfortunately, some of this assumes we have a webview to hand. No matter, we can just
+        // create one.
+        // This was previously being held from `injectContext` to now, (PR #694).
+        // Now, our very rare event (disconnect) is slightly slower and more memory instance,
+        // but our frequent event (injectContext) is fast and svelte.
+        WebView(context).clearCache(true)
+
+        // Clear the log directories.
+        val logDirectory = context.getDir("webview", Context.MODE_PRIVATE)
+        clearLogFolder(logDirectory)
     }
 
     private fun removeDeviceFromFxA() {
@@ -325,11 +330,6 @@ open class AccountStore(
         } else {
             log.info("FxA is null. No devices to disconnect.")
         }
-    }
-
-    private fun clearLogs() {
-        clearLogFolder(logDirectory)
-        log.info("Log pruning completed.")
     }
 
     private fun clearLogFolder(dir: File) {

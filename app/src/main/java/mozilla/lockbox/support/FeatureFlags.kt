@@ -37,4 +37,14 @@ object FeatureFlags {
         isRelease -> false
         else -> false
     }
+
+    /**
+     * Prompt the user to save logins in autofill contexts.
+     */
+    val AUTOFILL_CAPTURE = when {
+        isDebug -> true
+        isTesting -> true
+        isRelease -> false
+        else -> false
+    }
 }

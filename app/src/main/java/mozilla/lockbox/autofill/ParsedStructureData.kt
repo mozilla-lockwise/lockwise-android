@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.Parcel
 import android.os.ParcelFormatException
 import android.os.Parcelable
+import android.service.autofill.SaveInfo
 import android.view.autofill.AutofillId
 import androidx.annotation.RequiresApi
 
@@ -40,6 +41,13 @@ open class ParsedStructureData<Id>(
     }
 }
 
+// This should be kept in the same order as `allPossibleIds` below.
+@RequiresApi(Build.VERSION_CODES.O)
+val saveDataTypeMasks = arrayOf(
+    SaveInfo.SAVE_DATA_TYPE_USERNAME,
+    SaveInfo.SAVE_DATA_TYPE_PASSWORD
+)
+
 @RequiresApi(Build.VERSION_CODES.O)
 class ParsedStructure(
     usernameId: AutofillId? = null,
@@ -47,6 +55,27 @@ class ParsedStructure(
     webDomain: String? = null,
     packageName: String
 ) : ParsedStructureData<AutofillId>(usernameId, passwordId, webDomain, packageName), Parcelable {
+
+    // This is a paired array with `saveDataTypeMasks` above.
+    // We'll use this to calculate both the available autofillIds and the saveInfo mask.
+    private val allPossibleIds = arrayOf(usernameId, passwordId)
+
+    val autofillIds: Array<AutofillId> by lazy {
+        allPossibleIds.filterNotNull()
+            .toTypedArray()
+    }
+
+    // Construct the saveInfo mask based upon the autofillIds that are available.
+    // This relies on the paired arrays of `saveDataTypeMasks` and the null padded `allPossibleIds`.
+    val saveInfoMask: Int by lazy {
+        allPossibleIds.mapIndexed { index, autofillId ->
+                autofillId?.let { saveDataTypeMasks[index] } ?: 0
+            }
+            .reduce { totalMask, saveDataTypeMask ->
+                totalMask or saveDataTypeMask
+            }
+    }
+
     constructor(parcel: Parcel) : this(
         parcel.readParcelable(AutofillId::class.java.classLoader),
         parcel.readParcelable(AutofillId::class.java.classLoader),
