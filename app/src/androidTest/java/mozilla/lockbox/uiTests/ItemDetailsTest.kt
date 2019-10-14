@@ -67,17 +67,14 @@ open class ItemDetailsTest {
         // Edit entry Hostname and Username
         editCredential {
             exists()
-            tapOnHostname()
-            editHostname("HostnameChanged")
             tapOnUserName()
             editUserName("UsernameChanged")
             saveChanges() }
         // Check that changes in entry are saved
         itemList {
             exists()
-            editedCredentialHostnameExists("HostnameChanged")
             editedCredentialUsernameExists("UsernameChanged")
-            openCredential("HostnameChanged")
+            openCredential("UsernameChanged")
         }
         // Remove the entry
         navigator.gotoItemDetailKebabMenu()
@@ -115,5 +112,17 @@ open class ItemDetailsTest {
         // User is taken to ItemList View
         // No changes are applied
         itemList { exists() }
+    }
+
+    @Test
+    fun editItemInvalidTextFieldInput() {
+        navigator.gotoItemDetailKebabMenu()
+        kebabMenu { tapEditButton() }
+        editCredential {
+            editPassword("")
+            assertErrorEmptyPassord()
+            editPassword("foo")
+            noErrorEmptyPassword()
+        }
     }
 }
