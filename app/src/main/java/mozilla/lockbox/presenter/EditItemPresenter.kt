@@ -19,10 +19,10 @@ import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.extensions.toDetailViewModel
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
+import mozilla.lockbox.log
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.ItemDetailStore
-import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.pushError
 
 interface EditItemDetailView {
@@ -35,7 +35,7 @@ interface EditItemDetailView {
     val hostnameChanged: Observable<CharSequence>
     val usernameChanged: Observable<CharSequence>
     val passwordChanged: Observable<CharSequence>
-    var duplicateList: List<Optional<String>>
+    var duplicateList: Set<String?>
     fun updateItem(item: ItemDetailViewModel)
     fun closeKeyboard()
 }
@@ -44,16 +44,17 @@ interface EditItemDetailView {
 class EditItemPresenter(
     private val view: EditItemDetailView,
     val itemId: String?,
+    val hostname: String,
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val dataStore: DataStore = DataStore.shared,
     private val itemDetailStore: ItemDetailStore = ItemDetailStore.shared
 ) : Presenter() {
 
     private var credentials: ServerPassword? = null
-    var listOfDuplicatesByHostname = listOf<Optional<String>>()
 
     override fun onViewReady() {
         val itemId = this.itemId ?: return
+        val hostname = this.hostname
 
         dataStore.get(itemId)
             .observeOn(mainThread())
@@ -65,11 +66,11 @@ class EditItemPresenter(
 
         view.isPasswordVisible = false
 
-        dataStore.getUsernamesForDomain(credentials?.hostname ?: "")
-            .subscribe { listOfDuplicatesByHostname = it }
+        dataStore.getUsernamesForDomain(hostname)
+            .subscribe {
+                view.duplicateList = it
+            }
             .addTo(compositeDisposable)
-
-        view.duplicateList = listOfDuplicatesByHostname
 
         itemDetailStore.isPasswordVisible
             .subscribe { view.isPasswordVisible = it }

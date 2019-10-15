@@ -71,6 +71,7 @@ class AppRoutePresenter(
     fun bundle(action: RouteAction.EditItemDetail): Bundle {
         return EditItemFragmentArgs.Builder()
             .setItemId(action.id)
+            .setHostname(action.hostname)
             .build()
             .toBundle()
     }
@@ -133,7 +134,8 @@ class AppRoutePresenter(
             R.id.fragment_autofill_onboarding to R.id.fragment_item_list -> R.id.action_to_itemList
             R.id.fragment_autofill_onboarding to R.id.fragment_onboarding_confirmation -> R.id.action_autofill_onboarding_to_confirmation
 
-            R.id.fragment_onboarding_confirmation to R.id.fragment_item_list -> R.id.action_to_itemList
+            R.id.fragment_onboarding_confirmation to R.id.fragment_item_list -> R.id.action_onboarding_confirmation_to_itemList
+            R.id.fragment_onboarding_confirmation to R.id.fragment_welcome -> R.id.action_onboarding_confirmation_to_welcome
             R.id.fragment_onboarding_confirmation to R.id.fragment_webview -> R.id.action_to_webview
 
             R.id.fragment_locked to R.id.fragment_item_list -> R.id.action_locked_to_itemList

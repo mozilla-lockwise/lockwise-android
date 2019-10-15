@@ -9,7 +9,6 @@ package mozilla.lockbox.extensions
 import io.reactivex.Observable
 import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.LogProvider
-import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.support.Optional
 

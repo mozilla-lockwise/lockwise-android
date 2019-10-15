@@ -134,6 +134,11 @@
                 app:destination="@id/fragment_item_list"
                 app:popUpTo="@id/fragment_item_list"
                 app:popUpToInclusive="true"/>
+        <action
+                android:id="@+id/action_onboarding_confirmation_to_welcome"
+                app:launchSingleTop="true"
+                app:destination="@id/fragment_welcome"
+                app:popUpToInclusive="true"/>
     </fragment>
 
     <fragment
@@ -201,6 +206,10 @@
             tools:layout="@layout/fragment_item_edit">
         <argument
                 android:name="itemId"
+                android:defaultValue="MISSING_ID"
+                app:argType="string"/>
+        <argument
+                android:name="hostname"
                 android:defaultValue="MISSING_ID"
                 app:argType="string"/>
         <action

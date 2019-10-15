@@ -21,7 +21,6 @@ import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.asOptional
-import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
 import org.junit.Before
@@ -42,8 +41,8 @@ import org.robolectric.annotation.Config
 class EditItemPresenterTest {
 
     class FakeView : EditItemDetailView {
-        val dupeListStub = listOf<Optional<String>>()
-        override var duplicateList: List<Optional<String>> = listOf()
+        val dupeListStub = setOf<String?>()
+        override var duplicateList: Set<String?> = setOf()
             get() = dupeListStub
 
         val togglePasswordVisibilityStub = PublishSubject.create<Unit>()
@@ -95,7 +94,7 @@ class EditItemPresenterTest {
     @Mock
     val dataStore = PowerMockito.mock(DataStore::class.java)!!
     private val getStub = PublishSubject.create<Optional<ServerPassword>>()
-    private val getUsernameDupesStub = PublishSubject.create<List<Optional<String>>>()
+    private val getUsernameDupesStub = PublishSubject.create<Set<String?>>()
 
     val dispatcher = Dispatcher()
     val dispatcherObserver = TestObserver.create<Action>()!!
@@ -150,11 +149,10 @@ class EditItemPresenterTest {
         Mockito.`when`(dataStore.get(ArgumentMatchers.anyString())).thenReturn(getStub)
         Mockito.`when`(dataStore.getUsernamesForDomain(ArgumentMatchers.anyString()))
             .thenReturn(getUsernameDupesStub)
-//        Mockito.`when`(view.duplicateList).thenReturn(view.dupeListStub)
     }
 
     private fun setUpTestSubject(item: Optional<ServerPassword>) {
-        subject = EditItemPresenter(view, item.value?.id, dispatcher, dataStore)
+        subject = EditItemPresenter(view, item.value?.id, item.value?.hostname!!, dispatcher, dataStore)
         subject.onViewReady()
 
         getStub.onNext(item)
@@ -196,6 +194,22 @@ class EditItemPresenterTest {
     }
 
     @Test
+    fun `sends a list of duplicates to the view model`() {
+        setUpTestSubject(duplicateFakeCredential.asOptional())
+
+        view.updateItem(
+            ItemDetailViewModel(
+                duplicateFakeCredential.id,
+                duplicateFakeCredential.hostname,
+                duplicateFakeCredential.hostname,
+                duplicateFakeCredential.username,
+                duplicateFakeCredential.password
+            )
+        )
+        verify(dataStore).getUsernamesForDomain(ArgumentMatchers.anyString())
+    }
+
+    @Test
     fun `tapping on close button`() {
         setUpTestSubject(fakeCredential.asOptional())
 
@@ -233,16 +247,5 @@ class EditItemPresenterTest {
                 DialogAction.DeleteConfirmationDialog(fakeCredential)
             )
         )
-    }
-
-    @Test
-    fun `duplicate username shows error`() {
-        val listOfDupes = listOf(
-            duplicateFakeCredential.username.asOptional()
-        )
-        getUsernameDupesStub.onNext(listOfDupes)
-        setUpTestSubject(fakeCredential.asOptional())
-
-        assertEquals(1, subject.listOfDuplicatesByHostname.size)
     }
 }

@@ -296,9 +296,15 @@ class DataStoreTest : DisposingTest() {
         )
 
         Assert.assertEquals(expectedSyncUnlockInfo.kid, support.syncConfig!!.kid)
-        Assert.assertEquals(expectedSyncUnlockInfo.fxaAccessToken, support.syncConfig!!.fxaAccessToken)
+        Assert.assertEquals(
+            expectedSyncUnlockInfo.fxaAccessToken,
+            support.syncConfig!!.fxaAccessToken
+        )
         Assert.assertEquals(expectedSyncUnlockInfo.syncKey, support.syncConfig!!.syncKey)
-        Assert.assertEquals(expectedSyncUnlockInfo.tokenserverURL, support.syncConfig!!.tokenserverURL)
+        Assert.assertEquals(
+            expectedSyncUnlockInfo.tokenserverURL,
+            support.syncConfig!!.tokenserverURL
+        )
     }
 
     @Test
@@ -320,7 +326,8 @@ class DataStoreTest : DisposingTest() {
         Assert.assertEquals(State.Unlocked, stateIterator.next())
         val serverPassword = listIterator.next()[4]
 
-        val serverPasswordIterator = this.subject.get(serverPassword.id).blockingIterable().iterator()
+        val serverPasswordIterator =
+            this.subject.get(serverPassword.id).blockingIterable().iterator()
 
         Assert.assertEquals(serverPassword.asOptional(), serverPasswordIterator.next())
     }
@@ -331,52 +338,56 @@ class DataStoreTest : DisposingTest() {
         val listIterator = this.subject.list.blockingIterable().iterator()
         Assert.assertEquals(0, listIterator.next().size)
 
-        clearInvocations(support.storage)
-        whenCalled(timingSupport.shouldSync).thenReturn(false)
-
         dispatcher.dispatch(DataStoreAction.Unlock)
         Assert.assertEquals(State.Unlocked, stateIterator.next())
-        Assert.assertEquals(10, listIterator.next().size)
-
-        // get the list of entries
-        val itemList = listIterator.next()
-
-        // take two items
-        val item1 = itemList[0]
-        val item2 = itemList[1]
 
         val newHostname = "https://ilovecats.com"
-
-        // update their hostnames to match
-        val updatedItem1 = ServerPassword(
-            id = item1.id,
+        val item1 = ServerPassword(
+            id = "id1",
             hostname = newHostname,
-            username = item1.username,
-            password = item1.password,
-            httpRealm = item1.httpRealm,
-            formSubmitURL = item1.formSubmitURL
+            username = "feline1",
+            password = "iLUVkatz",
+            formSubmitURL = newHostname
         )
 
-        val updatedItem2 = ServerPassword(
-            id = item2.id,
+        val item2 = ServerPassword(
+            id = "id2",
             hostname = newHostname,
-            username = item2.username,
-            password = item2.password,
-            httpRealm = item2.httpRealm,
-            formSubmitURL = item2.formSubmitURL
+            username = "feline2",
+            password = "iLUVkatz",
+            formSubmitURL = newHostname
         )
 
-        dispatcher.dispatch(DataStoreAction.UpdateItemDetail(updatedItem1))
-        dispatcher.dispatch(DataStoreAction.UpdateItemDetail(updatedItem2))
+        val item3 = ServerPassword(
+            id = "id3",
+            hostname = "https://www.goforcats.com",
+            username = "feline3",
+            password = "iLUVkatz",
+            formSubmitURL = "goforcats.com"
+        )
 
-        // check if the list is updated
-        dispatcherObserver.assertValueAt(1, DataStoreAction.ListUpdate)
-        dispatcherObserver.assertValueAt(2, DataStoreAction.ListUpdate)
+        val item4 = ServerPassword(
+            id = "id4",
+            hostname = "http://www.catb4dogs.org",
+            username = "feline4",
+            password = "iLUVkatz",
+            formSubmitURL = "catsb4dogs.org"
+        )
 
-        val listOfUsernames = subject.getUsernamesForDomain(newHostname).blockingIterable().iterator().next()
+        subject.add(item1)
+        subject.add(item2)
+        subject.add(item3)
+        subject.add(item4)
 
-        Assert.assertEquals(item1.username, listOfUsernames[0].value)
-        Assert.assertEquals(item2.username, listOfUsernames[1].value)
+        val usernameSet = subject.getUsernamesForDomain(newHostname).blockingIterable().iterator().next()
+
+        Assert.assertEquals(2, usernameSet.size)
+
+        Assert.assertTrue(usernameSet.contains(item1.username))
+        Assert.assertTrue(usernameSet.contains(item2.username))
+
+        Assert.assertFalse(usernameSet.contains(item3.username))
+        Assert.assertFalse(usernameSet.contains(item4.username))
     }
 
     @Test

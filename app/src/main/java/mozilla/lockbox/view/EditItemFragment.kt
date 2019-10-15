@@ -34,14 +34,13 @@ import mozilla.lockbox.R
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.presenter.EditItemDetailView
 import mozilla.lockbox.presenter.EditItemPresenter
-import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.assertOnUiThread
 
 @ExperimentalCoroutinesApi
 class EditItemFragment : BackableFragment(), EditItemDetailView {
 
     // set in the presenter:
-    override var duplicateList: List<Optional<String>> = listOf()
+    override var duplicateList: Set<String?> = setOf()
 
     override val togglePasswordVisibility: BehaviorRelay<Unit> = BehaviorRelay.create()
 
@@ -88,9 +87,12 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val itemId = arguments?.let {
-            ItemDetailFragmentArgs.fromBundle(it)
-                .itemId
+        val itemId = arguments.let {
+            EditItemFragmentArgs.fromBundle(it!!).itemId
+        }
+
+        val itemHostname: String = arguments.let {
+            EditItemFragmentArgs.fromBundle(it!!).hostname
         }
 
         presenter = EditItemPresenter(this, itemId)
@@ -177,6 +179,7 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
                     }
                     else -> {
                         errorLayout.error = null
+                        errorLayout.errorIconDrawable = null
                     }
                 }
 
@@ -236,22 +239,18 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
     } */
 
     private fun handleUsernameChanges(errorLayout: TextInputLayout, inputText: String?) {
-        // get list of usernames with a matching hostname
-        var duplicateExists = false
-        for (itemWithSameHostname in duplicateList) {
-            if (inputText == itemWithSameHostname.value) {
-                duplicateExists = true
-            }
-        }
-
         when {
             TextUtils.isEmpty(inputText) -> {
                 errorLayout.error = null
             }
-            duplicateExists -> {
+            duplicateList.contains(inputText) -> {
                 errorLayout.setErrorTextColor(context?.getColorStateList(R.color.error_input_text))
                 errorLayout.error = context?.getString(R.string.username_duplicate_exists)
                 errorLayout.setErrorIconDrawable(R.drawable.ic_error)
+            }
+            else -> {
+                errorLayout.error = null
+                errorLayout.errorIconDrawable = null
             }
         }
     }
