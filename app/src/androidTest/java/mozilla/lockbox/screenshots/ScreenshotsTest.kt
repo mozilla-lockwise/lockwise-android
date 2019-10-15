@@ -1,30 +1,18 @@
 package mozilla.lockbox.screenshots
 
 import android.os.SystemClock.sleep
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.rule.ActivityTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.espresso.Espresso.pressBack
-import androidx.test.espresso.contrib.DrawerActions
-import androidx.test.espresso.ViewInteraction
-import androidx.test.espresso.action.ViewActions.replaceText
-import androidx.test.espresso.contrib.NavigationViewActions.navigateTo
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 import mozilla.lockbox.view.RootActivity
-import mozilla.lockbox.R
 
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-import br.com.concretesolutions.kappuccino.custom.recyclerView.RecyclerViewInteractions.recyclerView
 import mozilla.lockbox.robots.accountSettingScreen
 import mozilla.lockbox.robots.autofillOnboardingScreen
 import mozilla.lockbox.robots.deleteCredentialDisclaimer
