@@ -6,6 +6,7 @@
 
 package mozilla.lockbox.presenter
 
+import androidx.annotation.StringRes
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
@@ -41,9 +42,6 @@ import org.robolectric.annotation.Config
 class EditItemPresenterTest {
 
     class FakeView : EditItemDetailView {
-        val dupeListStub = setOf<String?>()
-        override var duplicateList: Set<String?> = setOf()
-            get() = dupeListStub
 
         val togglePasswordVisibilityStub = PublishSubject.create<Unit>()
         override val togglePasswordVisibility: Observable<Unit>
@@ -56,16 +54,16 @@ class EditItemPresenterTest {
         override val togglePasswordClicks: Observable<Unit>
             get() = togglePwdClicksStub
 
-        val hostnameClicksStub = PublishSubject.create<CharSequence>()
-        override val hostnameChanged: Observable<CharSequence>
+        val hostnameClicksStub = PublishSubject.create<String>()
+        override val hostnameChanged: Observable<String>
             get() = hostnameClicksStub
 
-        val usernameClicksStub = PublishSubject.create<CharSequence>()
-        override val usernameChanged: Observable<CharSequence>
+        val usernameClicksStub = PublishSubject.create<String>()
+        override val usernameChanged: Observable<String>
             get() = usernameClicksStub
 
-        val pwdClicksStub = PublishSubject.create<CharSequence>()
-        override val passwordChanged: Observable<CharSequence>
+        val pwdClicksStub = PublishSubject.create<String>()
+        override val passwordChanged: Observable<String>
             get() = pwdClicksStub
 
         override fun closeKeyboard() {
@@ -73,6 +71,9 @@ class EditItemPresenterTest {
         }
 
         var item: ItemDetailViewModel? = null
+        @StringRes var usernameError: Int? = null
+        @StringRes var passwordError: Int? = null
+        var _saveEnabled = true
 
         val deleteClicksStub = PublishSubject.create<Unit>()
         override val deleteClicks: Observable<Unit>
@@ -89,12 +90,22 @@ class EditItemPresenterTest {
         override fun updateItem(item: ItemDetailViewModel) {
             this.item = item
         }
+
+        override fun displayUsernameError(@StringRes errorMessage: Int?) {
+            usernameError = null
+        }
+        override fun displayPasswordError(@StringRes errorMessage: Int?) {
+            passwordError = null
+        }
+        override fun setSaveEnabled(enabled: Boolean) {
+            _saveEnabled = enabled
+        }
     }
 
     @Mock
     val dataStore = PowerMockito.mock(DataStore::class.java)!!
     private val getStub = PublishSubject.create<Optional<ServerPassword>>()
-    private val getUsernameDupesStub = PublishSubject.create<Set<String?>>()
+    private val usedUsernameStub = PublishSubject.create<Set<String?>>()
 
     val dispatcher = Dispatcher()
     val dispatcherObserver = TestObserver.create<Action>()!!
@@ -147,12 +158,11 @@ class EditItemPresenterTest {
         PowerMockito.whenNew(DataStore::class.java).withAnyArguments().thenReturn(dataStore)
         dispatcher.register.subscribe(dispatcherObserver)
         Mockito.`when`(dataStore.get(ArgumentMatchers.anyString())).thenReturn(getStub)
-        Mockito.`when`(dataStore.getUsernamesForDomain(ArgumentMatchers.anyString()))
-            .thenReturn(getUsernameDupesStub)
+        Mockito.`when`(dataStore.getUsernamesForHostname(ArgumentMatchers.anyString())).thenReturn(usedUsernameStub)
     }
 
     private fun setUpTestSubject(item: Optional<ServerPassword>) {
-        subject = EditItemPresenter(view, item.value?.id, item.value?.hostname!!, dispatcher, dataStore)
+        subject = EditItemPresenter(view, item.value?.id, dispatcher, dataStore)
         subject.onViewReady()
 
         getStub.onNext(item)
@@ -206,7 +216,7 @@ class EditItemPresenterTest {
                 duplicateFakeCredential.password
             )
         )
-        verify(dataStore).getUsernamesForDomain(ArgumentMatchers.anyString())
+        verify(dataStore).getUsernamesForHostname(ArgumentMatchers.anyString())
     }
 
     @Test

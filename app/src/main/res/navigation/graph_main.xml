@@ -208,10 +208,6 @@
                 android:name="itemId"
                 android:defaultValue="MISSING_ID"
                 app:argType="string"/>
-        <argument
-                android:name="hostname"
-                android:defaultValue="MISSING_ID"
-                app:argType="string"/>
         <action
                 android:id="@+id/action_itemEdit_to_itemList"
                 app:destination="@id/fragment_item_list"

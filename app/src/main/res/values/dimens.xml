@@ -22,6 +22,4 @@
     <dimen name="onboarding_text_size">15sp</dimen>
     <dimen name="lock_icon_top_margin">238dp</dimen>
     <dimen name="menu_elevation">8dp</dimen>
-    <integer name="password_field_scroll_up">180</integer>
-    <integer name="password_field_scroll_down">-180</integer>
 </resources>

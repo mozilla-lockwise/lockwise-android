@@ -143,8 +143,7 @@ class ItemDetailPresenter(
             .subscribe {
                 dispatcher.dispatch(
                     RouteAction.EditItemDetail(
-                        credentials?.id.toString(),
-                        credentials?.hostname.toString()
+                        credentials?.id.toString()
                     )
                 )
             }

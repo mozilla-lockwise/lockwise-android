@@ -6,11 +6,15 @@
 
 package mozilla.lockbox.presenter
 
+import android.text.TextUtils
+import androidx.annotation.StringRes
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
+import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
+import mozilla.lockbox.R
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.ItemDetailAction
@@ -19,10 +23,10 @@ import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.extensions.toDetailViewModel
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
-import mozilla.lockbox.log
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.ItemDetailStore
+import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.support.pushError
 
 interface EditItemDetailView {
@@ -32,43 +36,51 @@ interface EditItemDetailView {
     val deleteClicks: Observable<Unit>
     val closeEntryClicks: Observable<Unit>
     val saveEntryClicks: Observable<Unit>
-    val hostnameChanged: Observable<CharSequence>
-    val usernameChanged: Observable<CharSequence>
-    val passwordChanged: Observable<CharSequence>
-    var duplicateList: Set<String?>
+    val hostnameChanged: Observable<String>
+    val usernameChanged: Observable<String>
+    val passwordChanged: Observable<String>
     fun updateItem(item: ItemDetailViewModel)
     fun closeKeyboard()
+    fun displayUsernameError(@StringRes errorMessage: Int? = null)
+    fun displayPasswordError(@StringRes errorMessage: Int? = null)
+    fun setSaveEnabled(enabled: Boolean)
 }
 
 @ExperimentalCoroutinesApi
 class EditItemPresenter(
     private val view: EditItemDetailView,
     val itemId: String?,
-    val hostname: String,
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val dataStore: DataStore = DataStore.shared,
     private val itemDetailStore: ItemDetailStore = ItemDetailStore.shared
 ) : Presenter() {
 
+    // These should move to the ItemDetailStore.
+    // https://github.com/mozilla-lockwise/lockwise-android/issues/977
     private var credentials: ServerPassword? = null
+    private lateinit var unavailableUsernames: Set<String?>
 
     override fun onViewReady() {
         val itemId = this.itemId ?: return
-        val hostname = this.hostname
-
-        dataStore.get(itemId)
-            .observeOn(mainThread())
-            .filterNotNull()
-            .doOnNext { credentials = it }
-            .map { it.toDetailViewModel() }
-            .subscribe(view::updateItem)
-            .addTo(compositeDisposable)
 
         view.isPasswordVisible = false
 
-        dataStore.getUsernamesForDomain(hostname)
+        val getItem = dataStore.get(itemId)
+            .filterNotNull()
+            .doOnNext { credentials = it }
+
+        getItem
+            .map { it.toDetailViewModel() }
+            .observeOn(mainThread())
+            .subscribe(view::updateItem)
+            .addTo(compositeDisposable)
+
+        getItem
+            .switchMap {
+                dataStore.getUsernamesForHostname(it.hostname)
+            }
             .subscribe {
-                view.duplicateList = it
+                unavailableUsernames = it.minus(credentials?.username)
             }
             .addTo(compositeDisposable)
 
@@ -127,6 +139,18 @@ class EditItemPresenter(
             }
             .addTo(compositeDisposable)
 
+        Observables.combineLatest(
+                view.usernameChanged.map(this::usernameError),
+                view.passwordChanged.map(this::passwordError)
+            )
+            .subscribe { (usernameError, passwordError) ->
+                view.displayUsernameError(usernameError.value)
+                view.displayPasswordError(passwordError.value)
+
+                view.setSaveEnabled(usernameError.value == null && passwordError.value == null)
+            }
+            .addTo(compositeDisposable)
+
         view.saveEntryClicks
             .subscribe {
                 credentials?.let {
@@ -141,17 +165,30 @@ class EditItemPresenter(
             .addTo(compositeDisposable)
     }
 
+    private fun usernameError(inputText: String) =
+        when {
+            TextUtils.isEmpty(inputText) -> null
+            unavailableUsernames.contains(inputText) -> R.string.username_duplicate_exists
+            else -> null
+        }.asOptional()
+
+    private fun passwordError(inputText: String) =
+        when {
+            TextUtils.isEmpty(inputText) -> R.string.password_invalid_text
+            else -> null
+        }.asOptional()
+
     private fun updateCredentials(
-        newHostname: CharSequence? = null,
-        newUsername: CharSequence? = null,
-        newPassword: CharSequence? = null
+        newHostname: String? = null,
+        newUsername: String? = null,
+        newPassword: String? = null
     ) {
         credentials?.let { cred ->
             credentials = ServerPassword(
                 id = cred.id,
-                hostname = newHostname?.toString() ?: cred.hostname,
-                username = newUsername?.toString() ?: cred.username,
-                password = newPassword?.toString() ?: cred.password,
+                hostname = newHostname ?: cred.hostname,
+                username = newUsername ?: cred.username,
+                password = newPassword ?: cred.password,
                 httpRealm = cred.httpRealm,
                 formSubmitURL = cred.formSubmitURL
             )

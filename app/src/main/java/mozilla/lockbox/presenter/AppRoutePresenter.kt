@@ -71,7 +71,6 @@ class AppRoutePresenter(
     fun bundle(action: RouteAction.EditItemDetail): Bundle {
         return EditItemFragmentArgs.Builder()
             .setItemId(action.id)
-            .setHostname(action.hostname)
             .build()
             .toBundle()
     }

@@ -24,8 +24,6 @@ import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.SentryAction
 import mozilla.lockbox.extensions.filterByType
-import mozilla.lockbox.extensions.filterNotNull
-import mozilla.lockbox.extensions.toDetailViewModel
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.log
 import mozilla.lockbox.model.SyncCredentials
@@ -191,7 +189,7 @@ open class DataStore(
     }
 
     // Returns a list of usernames that match the given hostname
-    open fun getUsernamesForDomain(hostname: String): Observable<Set<String?>> {
+    open fun getUsernamesForHostname(hostname: String): Observable<Set<String?>> {
         return list.map { items ->
             items.filter { it.hostname == hostname }
                 .map { it.username }

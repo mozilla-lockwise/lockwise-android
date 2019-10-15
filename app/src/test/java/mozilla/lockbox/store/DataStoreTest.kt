@@ -20,7 +20,6 @@ import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
-import mozilla.lockbox.log
 import mozilla.lockbox.mocks.MockDataStoreSupport
 import mozilla.lockbox.model.FixedSyncCredentials
 import mozilla.lockbox.store.DataStore.State
@@ -379,7 +378,11 @@ class DataStoreTest : DisposingTest() {
         subject.add(item3)
         subject.add(item4)
 
-        val usernameSet = subject.getUsernamesForDomain(newHostname).blockingIterable().iterator().next()
+        val usernameSet =
+            subject.getUsernamesForHostname(newHostname)
+                .blockingIterable()
+                .iterator()
+                .next()
 
         Assert.assertEquals(2, usernameSet.size)
 
