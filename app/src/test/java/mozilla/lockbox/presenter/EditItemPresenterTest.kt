@@ -147,7 +147,7 @@ class EditItemPresenterTest {
         PowerMockito.whenNew(DataStore::class.java).withAnyArguments().thenReturn(dataStore)
         dispatcher.register.subscribe(dispatcherObserver)
         Mockito.`when`(dataStore.get(ArgumentMatchers.anyString())).thenReturn(getStub)
-        Mockito.`when`(dataStore.getUsernamesForDomain(ArgumentMatchers.anyString()))
+        Mockito.`when`(dataStore.getUsernamesForDomain(ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
             .thenReturn(getUsernameDupesStub)
     }
 
@@ -206,7 +206,7 @@ class EditItemPresenterTest {
                 duplicateFakeCredential.password
             )
         )
-        verify(dataStore).getUsernamesForDomain(ArgumentMatchers.anyString())
+        verify(dataStore).getUsernamesForDomain(ArgumentMatchers.anyString(), ArgumentMatchers.anyString())
     }
 
     @Test

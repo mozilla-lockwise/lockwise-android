@@ -24,7 +24,6 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.jakewharton.rxbinding2.support.v7.widget.navigationClicks
 import com.jakewharton.rxbinding2.view.clicks
-import com.jakewharton.rxbinding2.widget.color
 import com.jakewharton.rxbinding2.widget.textChanges
 import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Observable
@@ -184,7 +183,7 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
                     }
                 }
 
-                if(hostnameInvalid || passwordInvalid) {
+                if (usernameInvalid || passwordInvalid) {
                     disableSave()
                 } else {
                     enableSave()
@@ -193,11 +192,12 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
         }
     }
 
-    private var hostnameInvalid = false
+    private var usernameInvalid = false
     private var passwordInvalid = false
 
     private fun disableSave() {
-        saveEntryButton.compoundDrawableTintList = context?.getColorStateList(R.color.button_disabled)
+        saveEntryButton.compoundDrawableTintList =
+            context?.getColorStateList(R.color.button_disabled)
         saveEntryButton.isClickable = false
         saveEntryButton.isFocusable = false
     }
@@ -213,15 +213,18 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
         when {
             TextUtils.isEmpty(inputText) -> {
                 errorLayout.error = null
+                usernameInvalid = false
             }
             duplicateList.contains(inputText) -> {
                 errorLayout.setErrorTextColor(context?.getColorStateList(R.color.error_input_text))
                 errorLayout.error = context?.getString(R.string.username_duplicate_exists)
                 errorLayout.setErrorIconDrawable(R.drawable.ic_error)
+                usernameInvalid = true
             }
             else -> {
                 errorLayout.error = null
                 errorLayout.errorIconDrawable = null
+                usernameInvalid = false
             }
         }
     }

@@ -19,7 +19,6 @@ import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.extensions.toDetailViewModel
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
-import mozilla.lockbox.log
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.ItemDetailStore
@@ -66,7 +65,7 @@ class EditItemPresenter(
 
         view.isPasswordVisible = false
 
-        dataStore.getUsernamesForDomain(hostname)
+        dataStore.getUsernamesForDomain(itemId, hostname)
             .subscribe {
                 view.duplicateList = it
             }
