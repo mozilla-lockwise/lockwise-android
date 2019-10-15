@@ -19,6 +19,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.appcompat.view.ContextThemeWrapper
+import androidx.appcompat.view.menu.MenuBuilder
 import androidx.appcompat.widget.PopupMenu
 import com.jakewharton.rxbinding2.view.clicks
 import com.jakewharton.rxrelay2.BehaviorRelay
@@ -31,10 +32,6 @@ import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.presenter.ItemDetailPresenter
 import mozilla.lockbox.presenter.ItemDetailView
 import mozilla.lockbox.support.assertOnUiThread
-import androidx.appcompat.view.menu.MenuBuilder
-import io.reactivex.rxkotlin.Observables
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
 
 @ExperimentalCoroutinesApi
 class ItemDetailFragment : BackableFragment(), ItemDetailView {
@@ -102,7 +99,13 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
 
     override fun showPopup() {
         val wrapper = ContextThemeWrapper(context, R.style.PopupKebabMenu)
-        val popupMenu = PopupMenu(wrapper, this.kebabMenuButton, Gravity.END, R.attr.popupWindowStyle, R.style.PopupKebabMenu)
+        val popupMenu = PopupMenu(
+            wrapper,
+            this.kebabMenuButton,
+            Gravity.END,
+            R.attr.popupWindowStyle,
+            R.style.PopupKebabMenu
+        )
 
         popupMenu.setOnMenuItemClickListener { item ->
             when (item?.itemId) {
