@@ -32,6 +32,9 @@ import mozilla.lockbox.presenter.ItemDetailPresenter
 import mozilla.lockbox.presenter.ItemDetailView
 import mozilla.lockbox.support.assertOnUiThread
 import androidx.appcompat.view.menu.MenuBuilder
+import io.reactivex.rxkotlin.Observables
+import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.Subject
 
 @ExperimentalCoroutinesApi
 class ItemDetailFragment : BackableFragment(), ItemDetailView {
@@ -67,9 +70,15 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
     private val errorHelper = NetworkErrorHelper()
 
     override val usernameCopyClicks: Observable<Unit>
+        get() = view!!.btnUsernameCopy.clicks()
+
+    override val usernameFieldClicks: Observable<Unit>
         get() = view!!.inputUsername.clicks()
 
     override val passwordCopyClicks: Observable<Unit>
+        get() = view!!.btnPasswordCopy.clicks()
+
+    override val passwordFieldClicks: Observable<Unit>
         get() = view!!.inputPassword.clicks()
 
     override val togglePasswordClicks: Observable<Unit>
@@ -82,7 +91,6 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         get() = view!!.toolbar.kebabMenuButton.clicks()
 
     override val editClicks: BehaviorRelay<Unit> = BehaviorRelay.create()
-
     override val deleteClicks: BehaviorRelay<Unit> = BehaviorRelay.create()
 
     override var isPasswordVisible: Boolean = false
@@ -93,8 +101,8 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         }
 
     override fun showPopup() {
-        val wrapper = ContextThemeWrapper(context, R.style.PopupMenu)
-        val popupMenu = PopupMenu(wrapper, this.kebabMenuButton)
+        val wrapper = ContextThemeWrapper(context, R.style.PopupKebabMenu)
+        val popupMenu = PopupMenu(wrapper, this.kebabMenuButton, Gravity.END, R.attr.popupWindowStyle, R.style.PopupKebabMenu)
 
         popupMenu.setOnMenuItemClickListener { item ->
             when (item?.itemId) {
@@ -133,6 +141,7 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         toolbar.title = item.title
         toolbar.entryTitle.text = item.title
         toolbar.entryTitle.gravity = Gravity.CENTER_VERTICAL
+        toolbar.contentInsetStartWithNavigation = 0
 
         inputLayoutHostname.isHintAnimationEnabled = false
         inputLayoutUsername.isHintAnimationEnabled = false

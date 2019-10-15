@@ -150,6 +150,7 @@ class AppRoutePresenter(
             R.id.fragment_item_detail to R.id.fragment_locked -> R.id.action_itemDetail_to_locked
 
             R.id.fragment_item_edit to R.id.fragment_item_list -> R.id.action_itemEdit_to_itemList
+            R.id.fragment_item_edit to R.id.fragment_item_detail -> R.id.action_itemEdit_to_itemDetail
             R.id.fragment_item_edit to R.id.fragment_locked -> R.id.action_itemEdit_to_locked
 
             R.id.fragment_setting to R.id.fragment_webview -> R.id.action_to_webview

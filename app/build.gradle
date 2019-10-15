@@ -21,8 +21,8 @@ android {
         minSdkVersion 24
         //noinspection OldTargetApi
         targetSdkVersion 26
-        versionCode 4584
-        versionName "1.1.3"
+        versionCode 4939
+        versionName "2.0.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         // The following argument makes the Android Test Orchestrator run its
         // "pm clear" command after each test invocation. This command ensures

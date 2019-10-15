@@ -103,7 +103,7 @@ sealed class DialogAction(
             R.color.red
         ),
         listOf(
-            ItemList
+            ItemDetail(itemId)
         )
     )
 }
