@@ -28,7 +28,7 @@
         <activity
                 android:name=".view.RootActivity"
                 android:label="@string/app_label"
-                android:windowSoftInputMode="adjustUnspecified"
+                android:windowSoftInputMode="adjustPan|stateUnchanged"
                 android:configChanges="orientation|keyboardHidden"
                 android:screenOrientation="portrait">
             <intent-filter>

@@ -178,7 +178,10 @@
         <action
                 android:id="@+id/action_itemDetail_to_edit"
                 app:destination="@id/fragment_item_edit"
-                app:launchSingleTop="true"
+                app:popEnterAnim="@anim/none"
+                app:popExitAnim="@anim/none"
+                app:enterAnim="@anim/none"
+                app:exitAnim="@anim/none"
                 app:popUpTo="@id/fragment_item_edit"
                 app:popUpToInclusive="true"/>
         <action
@@ -198,6 +201,14 @@
         <action
                 android:id="@+id/action_itemEdit_to_itemList"
                 app:destination="@id/fragment_item_list"
+                app:popUpToInclusive="true"/>
+        <action
+                android:id="@+id/action_itemEdit_to_itemDetail"
+                app:destination="@id/fragment_item_detail"
+                app:popEnterAnim="@anim/none"
+                app:popExitAnim="@anim/none"
+                app:enterAnim="@anim/none"
+                app:exitAnim="@anim/none"
                 app:popUpToInclusive="true"/>
         <action
                 android:id="@+id/action_itemEdit_to_locked"

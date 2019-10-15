@@ -15,6 +15,7 @@ import android.webkit.WebStorage
 import android.webkit.WebView
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.internal.util.HalfSerializer.onNext
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.ReplaySubject
 import io.reactivex.subjects.Subject
