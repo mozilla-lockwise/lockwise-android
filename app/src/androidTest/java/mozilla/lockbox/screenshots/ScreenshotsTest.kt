@@ -52,122 +52,22 @@ open class ScreenshotsTest {
 
     @get:Rule
     val localeTestRule = LocaleTestRule()
-    /*
+
     @Test
-    fun testThroughoutAllApp() {
-
-        Screengrab.setDefaultScreenshotStrategy(UiAutomatorScreenshotStrategy())
-        onView(withId(R.id.buttonGetStartedManually))
-                .check(matches(isDisplayed()))
-
-        Screengrab.screenshot("get-started")
-
-        onView(withId(R.id.buttonGetStartedManually)).perform(click())
-        Screengrab.screenshot("secure-device-screen")
-
-        onView(withId(android.R.id.button2)).perform(click())
-        onView(withId(R.id.skipFxA))
-                .check(matches(isDisplayed()))
-        sleep(5000)
-        Screengrab.screenshot("enter-email-screen")
-
-        onView(withId(R.id.skipFxA)).perform(click())
-        onView(withId(R.id.skipButton))
-                .check(matches(isDisplayed()))
-        Screengrab.screenshot("autofill-onboarding-screen")
-
-        onView(withId(R.id.skipButton)).perform(click())
-        Screengrab.screenshot("allset-screen")
-
-        onView(withId(R.id.finishButton)).perform(click())
-        onView(withId(R.id.sortButton))
-                .check(matches(isDisplayed()))
-        Screengrab.screenshot("all-logins-screen")
-        //---
-        selectItem(1)
-        onView(withId(R.id.inputHostname))
-                .check(matches(isDisplayed()))
-        Screengrab.screenshot("item-detail-screen")
-
-        onView(withId(R.id.kebabMenuButton)).perform(click())
-        Screengrab.screenshot("item-menu")
-
-        onView(withText(R.string.delete)).perform(click())
-        Screengrab.screenshot("item-delete-disclaimer")
-
-        onView(withText(R.string.cancel)).perform(click())
-
-        // Detail credential view
-        onView(withId(R.id.inputUsername)).perform(click())
-        Screengrab.screenshot("username-copied-screen")
-
-        onView(withId(R.id.inputPassword)).perform(click())
-        Screengrab.screenshot("password-copied-screen")
-
-        //  Edit Menu
-        onView(withId(R.id.kebabMenuButton)).perform(click())
-        onView(withText(R.string.edit)).perform(click())
-        Screengrab.screenshot("item-edit-menu")
-
-        // Get error diaglog removing all password
-        onView(withId(R.id.inputPassword)).perform(replaceText(""))
-        // need this or the message will not be caught
-        sleep(2000)
-        Screengrab.screenshot("error-empty-field")
-
-        // Cancel edit menu
-        // Disabled until tapping on 'x' button is available without using text
-        // onView(withId(android.R.id.button1)).perform(click())
-        // Screengrab.screenshot("item-edit-menu-disclaimer")
-        // Temporary solution
-        onView(withId(R.id.saveEntryButton)).perform(click())
-
-        // Sort menu
-        onView(withId(R.id.sortButton)).perform(click())
-        Screengrab.screenshot("sorting-options-screen")
-        pressBack()
-
-        // App Menu
-        onView(withId(R.id.appDrawer)).perform(DrawerActions.open())
-        Screengrab.screenshot("app-menu-screen")
-
-        onView(withId(R.id.lockNow)).perform(click())
-        Screengrab.screenshot("lock-now-screen")
-        pressBack()
-
-        // Settings screens
-        tapSettings()
-        onView(withId(R.id.settingList))
-                .check(matches(isDisplayed()))
-        Screengrab.screenshot("settings-menu-screen")
-        pressBack()
-
-        tapAccountSetting()
-        onView(withId(R.id.disconnectButton))
-                .check(matches(isDisplayed()))
-        Screengrab.screenshot("settings-account-screen")
-
-        onView(withId(R.id.disconnectButton)).perform(click())
-        Screengrab.screenshot("disconnect-account-screen")
-        pressBack()
-    }
-*/
-    @Test
-    fun testOnboarding() {
+    fun testAppFirstView() {
         Screengrab.setDefaultScreenshotStrategy(UiAutomatorScreenshotStrategy())
         welcome {
             exists()
-            sleep(5000)
             Screengrab.screenshot("get-started")
             tapGetStarted()
             Screengrab.screenshot("secure-device-screen")
             tapSkipSecureYourDevice()
+            // Need to wait for the FxAscreen to be shown
             sleep(5000)
             Screengrab.screenshot("enter-email-screen")
         }
         fxaLogin {
             tapPlaceholderLogin()
-            sleep(5000)
             Screengrab.screenshot("autofill-onboarding-screen")
         }
         autofillOnboardingScreen {
@@ -176,14 +76,48 @@ open class ScreenshotsTest {
         }
         onboardingConfirmationScreen {
             clickFinish()
-            sleep(5000)
         }
+    }
+
+    @Test
+    fun testItemList() {
+        Screengrab.setDefaultScreenshotStrategy(UiAutomatorScreenshotStrategy())
+        navigator.gotoItemList(false)
+        Screengrab.screenshot("all-logins-screen")
+
         itemList {
-            //exists()
-            Screengrab.screenshot("all-logins-screen")
-            selectItem(1)
-            Screengrab.screenshot("item-detail-screen")
+            tapSortButton()
+            Screengrab.screenshot("sorting-options-screen")
+            pressBack()
+
+            openMenu()
+            Screengrab.screenshot("app-menu-screen")
+
+            tapLockNow()
+            Screengrab.screenshot("lock-now-screen")
+            pressBack()
         }
+    }
+
+    @Test
+    fun testAppSettingsMenu() {
+        Screengrab.setDefaultScreenshotStrategy(UiAutomatorScreenshotStrategy())
+        navigator.gotoSettings()
+        Screengrab.screenshot("settings-menu-screen")
+
+        navigator.gotoAccountSetting()
+        Screengrab.screenshot("settings-account-screen")
+
+        accountSettingScreen { tapDisconnect()
+            Screengrab.screenshot("disconnect-account-screen")
+            pressBack()
+        }
+    }
+
+    @Test
+    fun testEditDetailView() {
+        Screengrab.setDefaultScreenshotStrategy(UiAutomatorScreenshotStrategy())
+        navigator.gotoItemDetail(1)
         itemDetail {
             tapCopyPass()
             Screengrab.screenshot("password-copied-screen")
@@ -203,7 +137,6 @@ open class ScreenshotsTest {
             tapKebabMenu()
         }
         kebabMenu {
-            //onView(withText(R.string.edit)).perform(click())
             tapEditButton()
             sleep(1000)
             Screengrab.screenshot("item-edit-menu")
@@ -214,57 +147,5 @@ open class ScreenshotsTest {
             Screengrab.screenshot("error-empty-field")
             saveChanges()
         }
-        itemList {
-            tapSortButton()
-            Screengrab.screenshot("sorting-options-screen")
-            pressBack()
-
-            openMenu()
-            Screengrab.screenshot("app-menu-screen")
-
-            tapLockNow()
-            Screengrab.screenshot("lock-now-screen")
-            pressBack()
-
-            tapSettings()
-            Screengrab.screenshot("settings-menu-screen")
-            pressBack()
-
-            tapAccountSetting()
-            Screengrab.screenshot("settings-account-screen")
-
-            accountSettingScreen { tapDisconnect()
-                Screengrab.screenshot("disconnect-account-screen")
-                pressBack()
-            }
-        }
-
-
-    }
-    /*
-    @Test
-    fun testItemList() {
-        Screengrab.setDefaultScreenshotStrategy(UiAutomatorScreenshotStrategy())
-        navigator.gotoItemList(false)
-        Screengrab.screenshot("all-logins-screen")
-    }*/
-}
-
-fun selectItem(position: Int = 0) = clickListItem(R.id.entriesView, position)
-
-fun openMenu(): ViewInteraction {
-    val drawer2 = onView(withId(R.id.appDrawer))
-    drawer2.perform(DrawerActions.open())
-    return onView(withId(R.id.navView))!!
-}
-
-private fun menuOption(item: Int) = openMenu().perform(navigateTo(item))
-
-fun tapSettings() = menuOption(R.id.setting_menu_item)
-fun tapAccountSetting() = menuOption(R.id.account_setting_menu_item)
-
-fun clickListItem(listRes: Int, position: Int) {
-    recyclerView(listRes) {
-        atPosition(position) { click() }
     }
 }

@@ -54,6 +54,11 @@
                 app:launchSingleTop="true"
                 app:popUpTo="@id/fragment_fxa_login"
                 app:popUpToInclusive="true" />
+        <action android:id="@+id/action_init_to_onboarding_confirmation"
+                app:destination="@id/fragment_onboarding_confirmation"
+                app:launchSingleTop="true"
+                app:popUpTo="@id/fragment_onboarding_confirmation"
+                app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
