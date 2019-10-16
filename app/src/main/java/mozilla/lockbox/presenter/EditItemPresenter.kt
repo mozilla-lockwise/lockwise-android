@@ -33,7 +33,6 @@ interface EditItemDetailView {
     var isPasswordVisible: Boolean
     val togglePasswordClicks: Observable<Unit>
     val togglePasswordVisibility: Observable<Unit>
-    val deleteClicks: Observable<Unit>
     val closeEntryClicks: Observable<Unit>
     val saveEntryClicks: Observable<Unit>
     val hostnameChanged: Observable<String>
@@ -100,17 +99,6 @@ class EditItemPresenter(
             .subscribe {
                 dispatcher.dispatch(
                     ItemDetailAction.SetPasswordVisibility(view.isPasswordVisible.not())
-                )
-            }
-            .addTo(compositeDisposable)
-
-        view.deleteClicks
-            .subscribe {
-                credentials?.let {
-                    dispatcher.dispatch(DialogAction.DeleteConfirmationDialog(it))
-                } ?: pushError(
-                    NullPointerException("Credentials are null"),
-                    "Error editing credential with id ${credentials?.id}"
                 )
             }
             .addTo(compositeDisposable)

@@ -79,7 +79,7 @@
             android:id="@+id/cardView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="20dp"
+            android:paddingBottom="26dp"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:layout_gravity="center"
@@ -243,6 +243,7 @@
                         android:layout_height="wrap_content"
                         android:paddingStart="16dp"
                         android:paddingEnd="32dp"
+                        android:paddingBottom="4dp"
                         android:layout_weight="1"
                         android:textColorHint="@color/hint_edit_text"
                         android:colorControlActivated="@color/violet_70"
@@ -254,8 +255,7 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/inputPassword"
-                            android:paddingBottom="15dp"
-                            android:textSize="16sp"
+                            android:textSize="15sp"
                             android:textStyle="normal"
                             android:textColor="@color/black_87_percent"
                             android:lineSpacingExtra="8sp"
@@ -290,39 +290,8 @@
                         android:background="@color/gray_divider"
                         android:layout_marginStart="18dp"
                         android:layout_marginEnd="2dp"
-                        android:layout_marginTop="12dp"
+                        android:layout_marginTop="8dp"
                         card_view:layout_constraintTop_toBottomOf="@id/btnPasswordToggle" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    card_view:layout_constraintTop_toBottomOf="@+id/entryPassword">
-
-                <Button
-
-                        android:id="@+id/deleteEntryButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_horizontal|center_vertical"
-                        android:layout_marginEnd="16dp"
-                        android:paddingStart="5dp"
-                        android:paddingEnd="5dp"
-                        android:text="@string/delete_entry"
-                        android:textAllCaps="true"
-                        android:textSize="14sp"
-                        android:textAlignment="center"
-                        android:fontFamily="sans-serif-medium"
-                        android:textStyle="normal"
-                        android:textColor="@color/red"
-                        android:letterSpacing="0.09"
-                        android:lineSpacingExtra="2sp"
-                        android:shadowColor="@color/background_white"
-                        android:backgroundTint="@color/background_white"
-                        android:stateListAnimator="@null"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
