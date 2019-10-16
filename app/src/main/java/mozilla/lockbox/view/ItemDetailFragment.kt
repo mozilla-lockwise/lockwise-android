@@ -8,6 +8,7 @@ package mozilla.lockbox.view
 
 import android.os.Bundle
 import android.text.InputType
+import android.text.TextUtils
 import android.text.method.PasswordTransformationMethod
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -18,6 +19,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.appcompat.view.ContextThemeWrapper
+import androidx.appcompat.view.menu.MenuBuilder
 import androidx.appcompat.widget.PopupMenu
 import com.jakewharton.rxbinding2.view.clicks
 import com.jakewharton.rxrelay2.BehaviorRelay
@@ -30,7 +32,6 @@ import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.presenter.ItemDetailPresenter
 import mozilla.lockbox.presenter.ItemDetailView
 import mozilla.lockbox.support.assertOnUiThread
-import androidx.appcompat.view.menu.MenuBuilder
 
 @ExperimentalCoroutinesApi
 class ItemDetailFragment : BackableFragment(), ItemDetailView {
@@ -66,9 +67,15 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
     private val errorHelper = NetworkErrorHelper()
 
     override val usernameCopyClicks: Observable<Unit>
+        get() = view!!.btnUsernameCopy.clicks()
+
+    override val usernameFieldClicks: Observable<Unit>
         get() = view!!.inputUsername.clicks()
 
     override val passwordCopyClicks: Observable<Unit>
+        get() = view!!.btnPasswordCopy.clicks()
+
+    override val passwordFieldClicks: Observable<Unit>
         get() = view!!.inputPassword.clicks()
 
     override val togglePasswordClicks: Observable<Unit>
@@ -81,7 +88,6 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         get() = view!!.toolbar.kebabMenuButton.clicks()
 
     override val editClicks: BehaviorRelay<Unit> = BehaviorRelay.create()
-
     override val deleteClicks: BehaviorRelay<Unit> = BehaviorRelay.create()
 
     override var isPasswordVisible: Boolean = false
@@ -92,8 +98,14 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         }
 
     override fun showPopup() {
-        val wrapper = ContextThemeWrapper(context, R.style.PopupMenu)
-        val popupMenu = PopupMenu(wrapper, this.kebabMenuButton)
+        val wrapper = ContextThemeWrapper(context, R.style.PopupKebabMenu)
+        val popupMenu = PopupMenu(
+            wrapper,
+            this.kebabMenuButton,
+            Gravity.END,
+            R.attr.popupWindowStyle,
+            R.style.PopupKebabMenu
+        )
 
         popupMenu.setOnMenuItemClickListener { item ->
             when (item?.itemId) {
@@ -132,10 +144,15 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         toolbar.title = item.title
         toolbar.entryTitle.text = item.title
         toolbar.entryTitle.gravity = Gravity.CENTER_VERTICAL
+        toolbar.contentInsetStartWithNavigation = 0
 
         inputLayoutHostname.isHintAnimationEnabled = false
         inputLayoutUsername.isHintAnimationEnabled = false
         inputLayoutPassword.isHintAnimationEnabled = false
+
+        inputPassword.ellipsize = TextUtils.TruncateAt.END
+        inputPassword.setSingleLine()
+        inputPassword.maxLines = 1
 
         inputUsername.readOnly = true
 

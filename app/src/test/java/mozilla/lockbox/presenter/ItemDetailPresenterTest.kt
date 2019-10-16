@@ -84,7 +84,9 @@ class ItemDetailPresenterTest {
 
         var toastNotificationArgument: Int? = null
 
+        override val usernameFieldClicks = PublishSubject.create<Unit>()
         override val usernameCopyClicks = PublishSubject.create<Unit>()
+        override val passwordFieldClicks = PublishSubject.create<Unit>()
         override val passwordCopyClicks = PublishSubject.create<Unit>()
         override val togglePasswordClicks = PublishSubject.create<Unit>()
         override val hostnameClicks = PublishSubject.create<Unit>()
@@ -240,9 +242,24 @@ class ItemDetailPresenterTest {
     }
 
     @Test
-    fun `tapping on usernamecopy`() {
+    fun `tapping on username copy button copies credentials`() {
         setUpTestSubject(fakeCredential.asOptional())
         view.usernameCopyClicks.onNext(Unit)
+
+        dispatcherObserver.assertValueSequence(
+            listOf(
+                ClipboardAction.CopyUsername(fakeCredential.username!!),
+                DataStoreAction.Touch(fakeCredential.id)
+            )
+        )
+
+        assertEquals(R.string.toast_username_copied, view.toastNotificationArgument)
+    }
+
+    @Test
+    fun `tapping on username field copies credentials`() {
+        setUpTestSubject(fakeCredential.asOptional())
+        view.usernameFieldClicks.onNext(Unit)
 
         dispatcherObserver.assertValueSequence(
             listOf(
@@ -268,10 +285,26 @@ class ItemDetailPresenterTest {
     }
 
     @Test
-    fun `tapping on passwordcopy`() {
+    fun `tapping on password copy button copies the password`() {
         setUpTestSubject(fakeCredential.asOptional())
 
         view.passwordCopyClicks.onNext(Unit)
+
+        dispatcherObserver.assertValueSequence(
+            listOf(
+                ClipboardAction.CopyPassword(fakeCredential.password),
+                DataStoreAction.Touch(fakeCredential.id)
+            )
+        )
+
+        assertEquals(R.string.toast_password_copied, view.toastNotificationArgument)
+    }
+
+    @Test
+    fun `tapping on password field copies the password`() {
+        setUpTestSubject(fakeCredential.asOptional())
+
+        view.passwordFieldClicks.onNext(Unit)
 
         dispatcherObserver.assertValueSequence(
             listOf(
@@ -290,7 +323,7 @@ class ItemDetailPresenterTest {
         view.togglePasswordClicks.onNext(Unit)
 
         dispatcherObserver.assertValueSequence(
-            listOf(ItemDetailAction.TogglePassword)
+            listOf(ItemDetailAction.SetPasswordVisibility(true))
         )
         Assert.assertTrue(view.isPasswordVisible)
 
@@ -298,7 +331,7 @@ class ItemDetailPresenterTest {
         view.togglePasswordClicks.onNext(Unit)
 
         dispatcherObserver.assertValueSequence(
-            listOf(ItemDetailAction.TogglePassword)
+            listOf(ItemDetailAction.SetPasswordVisibility(false))
         )
         Assert.assertFalse(view.isPasswordVisible)
     }
@@ -310,7 +343,7 @@ class ItemDetailPresenterTest {
         view.togglePasswordClicks.onNext(Unit)
 
         dispatcherObserver.assertValueSequence(
-            listOf(ItemDetailAction.TogglePassword)
+            listOf(ItemDetailAction.SetPasswordVisibility(true))
         )
 
         Assert.assertTrue(view.isPasswordVisible)

@@ -32,7 +32,9 @@ import mozilla.lockbox.support.pushError
 
 interface ItemDetailView {
     val usernameCopyClicks: Observable<Unit>
+    val usernameFieldClicks: Observable<Unit>
     val passwordCopyClicks: Observable<Unit>
+    val passwordFieldClicks: Observable<Unit>
     val togglePasswordClicks: Observable<Unit>
     val hostnameClicks: Observable<Unit>
     val kebabMenuClicks: Observable<Unit>
@@ -62,7 +64,9 @@ class ItemDetailPresenter(
 
     override fun onPause() {
         super.onPause()
-        dispatcher.dispatch(ItemDetailAction.TogglePassword)
+        dispatcher.dispatch(
+            ItemDetailAction.SetPasswordVisibility(false)
+        )
     }
 
     override fun onViewReady() {
@@ -89,7 +93,23 @@ class ItemDetailPresenter(
             }
         }
 
+        handleClicks(view.usernameFieldClicks) {
+            if (!it.username.isNullOrBlank()) {
+                dispatcher.dispatch(ClipboardAction.CopyUsername(it.username.toString()))
+                dispatcher.dispatch(DataStoreAction.Touch(it.id))
+                view.showToastNotification(R.string.toast_username_copied)
+            }
+        }
+
         handleClicks(view.passwordCopyClicks) {
+            if (it.password.isNotEmpty()) {
+                dispatcher.dispatch(ClipboardAction.CopyPassword(it.password))
+                dispatcher.dispatch(DataStoreAction.Touch(it.id))
+                view.showToastNotification(R.string.toast_password_copied)
+            }
+        }
+
+        handleClicks(view.passwordFieldClicks) {
             if (it.password.isNotEmpty()) {
                 dispatcher.dispatch(ClipboardAction.CopyPassword(it.password))
                 dispatcher.dispatch(DataStoreAction.Touch(it.id))
@@ -104,10 +124,12 @@ class ItemDetailPresenter(
         }
 
         view.togglePasswordClicks
-            .subscribe { dispatcher.dispatch(ItemDetailAction.TogglePassword) }
+            .subscribe {
+                dispatcher.dispatch(
+                    ItemDetailAction.SetPasswordVisibility(view.isPasswordVisible.not())
+                )
+            }
             .addTo(compositeDisposable)
-
-        view.isPasswordVisible = false
 
         networkStore.isConnected
             .subscribe(view::handleNetworkError)
