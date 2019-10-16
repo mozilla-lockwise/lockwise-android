@@ -267,7 +267,6 @@
                         android:layout_marginEnd="16dp"
                         android:paddingBottom="8dp"
                         android:paddingTop="10dp"
-                        android:paddingEnd="16dp"
                         android:paddingStart="16dp"
                         android:background="@null"
                         android:contentDescription="@string/display_password_content_description"
@@ -298,7 +297,6 @@
                         android:layout_marginStart="6dp"
                         android:layout_marginTop="5dp"
                         card_view:layout_constraintTop_toBottomOf="@id/btnPasswordCopy" />
-
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

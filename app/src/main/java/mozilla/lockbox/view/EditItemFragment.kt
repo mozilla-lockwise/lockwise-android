@@ -208,6 +208,9 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
         inputPassword.isClickable = true
 
         inputName.setText(item.hostname, TextView.BufferType.NORMAL)
+        inputName.setSingleLine()
+        inputName.ellipsize = TextUtils.TruncateAt.END
+
         inputHostname.setText(item.hostname, TextView.BufferType.NORMAL)
         inputPassword.setText(item.password, TextView.BufferType.NORMAL)
 

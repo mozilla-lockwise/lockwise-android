@@ -151,12 +151,6 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         inputLayoutPassword.isHintAnimationEnabled = false
         inputLayoutUsername.isScrollContainer = false
         view?.isScrollContainer = false
-//        inputPassword.stopNestedScroll()
-//        inputPassword.setHorizontallyScrolling(false)
-//        inputPassword.setSingleLine()
-//        inputPassword.isScrollContainer = false
-//        inputPassword.ellipsize = TextUtils.TruncateAt.END
-//        inputPassword.maxLines = 1
 
         inputUsername.readOnly = true
         inputLayoutUsername.editText?.ellipsize = TextUtils.TruncateAt.END
