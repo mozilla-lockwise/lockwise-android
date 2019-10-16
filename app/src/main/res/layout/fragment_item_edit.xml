@@ -101,7 +101,7 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/inputLayoutName"
-                        android:layout_width="match_parent"
+                        android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:paddingStart="16dp"
                         android:textColorHint="@color/black_60_percent"
@@ -113,7 +113,7 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/inputName"
-                            android:layout_width="match_parent"
+                            android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:textColor="@color/gray_73_percent"
                             android:hint="@string/hint_entryname"
@@ -124,13 +124,13 @@
                             android:lineSpacingExtra="4sp"
                             android:inputType="textNoSuggestions"
                             android:singleLine="true"
+                            android:ellipsize="end"
                             android:clickable="false"
                             android:focusable="false"
                             app:backgroundTint="@color/gray_divider"
                             tools:ignore="Autofill"/>
                 </com.google.android.material.textfield.TextInputLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
-
 
             <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/entryHostname"
