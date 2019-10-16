@@ -265,12 +265,11 @@
     <string name="edit">Edit</string>
     <!-- This is the hint in the edit entry view for the entry name. -->
     <string name="entry_name_description">The entry name</string>
-    <!-- This is a heading that appears above an entry name in context of a edit item view -->
+    <!-- This is a heading that appears above an entry name in context of an edit item view -->
     <string name="hint_entryname">Name</string>
 
+    <!-- This is the description for the entry password in context of an edit item view. -->
     <string name="entry_password_description">Password for this entry.</string>
-    <!-- This is the text on the button in the edit view that allows you to delete the entry. -->
-    <string name="delete_entry">Delete Entry</string>
     <!-- This is the title text on the dialog when you attempt to close the edit view and changes have been made. -->
     <string name="discard_changes">Discard changes?</string>
     <!-- This is the additional text when you attempt to close the edit view and changes have been made. -->

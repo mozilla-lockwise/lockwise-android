@@ -131,7 +131,6 @@
                             android:maxLines="1"
                             android:clickable="false"
                             android:focusable="false"
-                            android:editable="false"
                             app:backgroundTint="@color/gray_divider"
                             tools:ignore="Autofill"/>
                 </com.google.android.material.textfield.TextInputLayout>
@@ -176,7 +175,6 @@
                             android:singleLine="true"
                             android:clickable="true"
                             android:focusable="true"
-                            android:editable="false"
                             android:textCursorDrawable="@android:color/transparent"
                             app:backgroundTint="@color/gray_divider"
                             tools:ignore="Autofill"/>

@@ -157,7 +157,6 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         inputUsername.ellipsize = TextUtils.TruncateAt.END
         inputUsername.setSingleLine()
 
-
         if (!item.hasUsername) {
             btnUsernameCopy.setColorFilter(resources.getColor(R.color.white_60_percent, null))
             inputUsername.isClickable = false
