@@ -37,6 +37,7 @@ interface ItemDetailView {
     val passwordFieldClicks: Observable<Unit>
     val togglePasswordClicks: Observable<Unit>
     val hostnameClicks: Observable<Unit>
+    val launchButtonClicks: Observable<Unit>
     val kebabMenuClicks: Observable<Unit>
     val editClicks: BehaviorRelay<Unit>
     val deleteClicks: BehaviorRelay<Unit>
@@ -118,6 +119,12 @@ class ItemDetailPresenter(
         }
 
         handleClicks(view.hostnameClicks) {
+            if (it.hostname.isNotEmpty()) {
+                dispatcher.dispatch(RouteAction.OpenWebsite(it.hostname))
+            }
+        }
+
+        handleClicks(view.launchButtonClicks) {
             if (it.hostname.isNotEmpty()) {
                 dispatcher.dispatch(RouteAction.OpenWebsite(it.hostname))
             }
