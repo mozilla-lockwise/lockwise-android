@@ -84,6 +84,9 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
     override val hostnameClicks: Observable<Unit>
         get() = view!!.inputHostname.clicks()
 
+    override val launchButtonClicks: Observable<Unit>
+        get() = view!!.btnHostnameLaunch.clicks()
+
     override val kebabMenuClicks: Observable<Unit>
         get() = view!!.toolbar.kebabMenuButton.clicks()
 
