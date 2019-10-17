@@ -22,8 +22,8 @@ import androidx.appcompat.view.ContextThemeWrapper
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.appcompat.widget.PopupMenu
 import com.jakewharton.rxbinding2.view.clicks
-import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_item_detail.*
 import kotlinx.android.synthetic.main.fragment_item_detail.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -87,8 +87,8 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
     override val kebabMenuClicks: Observable<Unit>
         get() = view!!.toolbar.kebabMenuButton.clicks()
 
-    override val editClicks: BehaviorRelay<Unit> = BehaviorRelay.create()
-    override val deleteClicks: BehaviorRelay<Unit> = BehaviorRelay.create()
+    override val editClicks: Observable<Unit> = PublishSubject.create()
+    override val deleteClicks: Observable<Unit> = PublishSubject.create()
 
     override var isPasswordVisible: Boolean = false
         set(value) {
@@ -110,11 +110,11 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         popupMenu.setOnMenuItemClickListener { item ->
             when (item?.itemId) {
                 R.id.edit -> {
-                    editClicks.accept(Unit)
+                    (editClicks as PublishSubject).onNext(Unit)
                     true
                 }
                 R.id.delete -> {
-                    deleteClicks.accept(Unit)
+                    (deleteClicks as PublishSubject).onNext(Unit)
                     true
                 }
                 else -> false

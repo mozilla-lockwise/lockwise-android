@@ -7,7 +7,6 @@
 package mozilla.lockbox.presenter
 
 import androidx.annotation.StringRes
-import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.rxkotlin.addTo
@@ -38,8 +37,8 @@ interface ItemDetailView {
     val togglePasswordClicks: Observable<Unit>
     val hostnameClicks: Observable<Unit>
     val kebabMenuClicks: Observable<Unit>
-    val editClicks: BehaviorRelay<Unit>
-    val deleteClicks: BehaviorRelay<Unit>
+    val editClicks: Observable<Unit>
+    val deleteClicks: Observable<Unit>
     var isPasswordVisible: Boolean
     fun showKebabMenu()
     fun hideKebabMenu()
