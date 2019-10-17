@@ -8,6 +8,7 @@ package mozilla.lockbox.view
 
 import android.content.Context
 import android.os.Bundle
+import android.text.TextUtils
 import android.text.method.PasswordTransformationMethod
 import android.view.Gravity
 import android.view.LayoutInflater
