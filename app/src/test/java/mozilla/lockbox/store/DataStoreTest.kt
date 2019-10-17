@@ -295,9 +295,15 @@ class DataStoreTest : DisposingTest() {
         )
 
         Assert.assertEquals(expectedSyncUnlockInfo.kid, support.syncConfig!!.kid)
-        Assert.assertEquals(expectedSyncUnlockInfo.fxaAccessToken, support.syncConfig!!.fxaAccessToken)
+        Assert.assertEquals(
+            expectedSyncUnlockInfo.fxaAccessToken,
+            support.syncConfig!!.fxaAccessToken
+        )
         Assert.assertEquals(expectedSyncUnlockInfo.syncKey, support.syncConfig!!.syncKey)
-        Assert.assertEquals(expectedSyncUnlockInfo.tokenserverURL, support.syncConfig!!.tokenserverURL)
+        Assert.assertEquals(
+            expectedSyncUnlockInfo.tokenserverURL,
+            support.syncConfig!!.tokenserverURL
+        )
     }
 
     @Test
@@ -319,9 +325,72 @@ class DataStoreTest : DisposingTest() {
         Assert.assertEquals(State.Unlocked, stateIterator.next())
         val serverPassword = listIterator.next()[4]
 
-        val serverPasswordIterator = this.subject.get(serverPassword.id).blockingIterable().iterator()
+        val serverPasswordIterator =
+            this.subject.get(serverPassword.id).blockingIterable().iterator()
 
         Assert.assertEquals(serverPassword.asOptional(), serverPasswordIterator.next())
+    }
+
+    @Test
+    fun `get a list of usernames for a given hostname`() {
+        val stateIterator = this.subject.state.blockingIterable().iterator()
+        val listIterator = this.subject.list.blockingIterable().iterator()
+        Assert.assertEquals(0, listIterator.next().size)
+
+        dispatcher.dispatch(DataStoreAction.Unlock)
+        Assert.assertEquals(State.Unlocked, stateIterator.next())
+
+        val newHostname = "https://ilovecats.com"
+        val item1 = ServerPassword(
+            id = "id1",
+            hostname = newHostname,
+            username = "feline1",
+            password = "iLUVkatz",
+            formSubmitURL = newHostname
+        )
+
+        val item2 = ServerPassword(
+            id = "id2",
+            hostname = newHostname,
+            username = "feline2",
+            password = "iLUVkatz",
+            formSubmitURL = newHostname
+        )
+
+        val item3 = ServerPassword(
+            id = "id3",
+            hostname = "https://www.goforcats.com",
+            username = "feline3",
+            password = "iLUVkatz",
+            formSubmitURL = "goforcats.com"
+        )
+
+        val item4 = ServerPassword(
+            id = "id4",
+            hostname = "http://www.catb4dogs.org",
+            username = "feline4",
+            password = "iLUVkatz",
+            formSubmitURL = "catsb4dogs.org"
+        )
+
+        subject.add(item1)
+        subject.add(item2)
+        subject.add(item3)
+        subject.add(item4)
+
+        val usernameSet =
+            subject.getUsernamesForHostname(newHostname)
+                .blockingIterable()
+                .iterator()
+                .next()
+
+        Assert.assertEquals(2, usernameSet.size)
+
+        Assert.assertTrue(usernameSet.contains(item1.username))
+        Assert.assertTrue(usernameSet.contains(item2.username))
+
+        Assert.assertFalse(usernameSet.contains(item3.username))
+        Assert.assertFalse(usernameSet.contains(item4.username))
     }
 
     @Test

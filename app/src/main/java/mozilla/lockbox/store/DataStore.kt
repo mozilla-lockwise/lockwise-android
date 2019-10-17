@@ -60,8 +60,10 @@ open class DataStore(
 
     private val stateSubject = ReplayRelay.createWithSize<State>(1)
     @VisibleForTesting
-    val syncStateSubject: BehaviorRelay<SyncState> = BehaviorRelay.createDefault(SyncState.NotSyncing)
-    private val listSubject: BehaviorRelay<List<ServerPassword>> = BehaviorRelay.createDefault(emptyList())
+    val syncStateSubject: BehaviorRelay<SyncState> =
+        BehaviorRelay.createDefault(SyncState.NotSyncing)
+    private val listSubject: BehaviorRelay<List<ServerPassword>> =
+        BehaviorRelay.createDefault(emptyList())
     private val deletedItemSubject = ReplayRelay.create<Consumable<ServerPassword>>()
 
     open val state: Observable<State> = stateSubject
@@ -186,7 +188,19 @@ open class DataStore(
         }
     }
 
-    private fun add(item: ServerPassword) {
+    // Returns a list of usernames that match the given hostname
+    open fun getUsernamesForHostname(hostname: String): Observable<Set<String?>> {
+        return list.map { items ->
+            items.filter { it.hostname == hostname }
+                .map { it.username }
+                .toSet()
+        }
+    }
+
+    @VisibleForTesting(
+        otherwise = VisibleForTesting.PRIVATE
+    )
+    fun add(item: ServerPassword) {
         if (!backend.isLocked()) {
             backendAdd(item)
                 .map { Unit }

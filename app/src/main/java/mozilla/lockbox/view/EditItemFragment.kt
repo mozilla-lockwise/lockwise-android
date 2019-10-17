@@ -8,9 +8,6 @@ package mozilla.lockbox.view
 
 import android.content.Context
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextUtils
-import android.text.TextWatcher
 import android.text.method.PasswordTransformationMethod
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -19,8 +16,8 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import androidx.annotation.StringRes
 import androidx.appcompat.widget.Toolbar
-import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.jakewharton.rxbinding2.support.v7.widget.navigationClicks
 import com.jakewharton.rxbinding2.view.clicks
@@ -53,14 +50,31 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
     override val saveEntryClicks: Observable<Unit>
         get() = view!!.saveEntryButton.clicks()
 
-    override val hostnameChanged: Observable<CharSequence>
-        get() = view!!.inputHostname.textChanges()
+    override val hostnameChanged: Observable<String>
+        get() = view!!.inputHostname.textChanges().map { it.toString() }
 
-    override val usernameChanged: Observable<CharSequence>
-        get() = view!!.inputUsername.textChanges()
+    override val usernameChanged: Observable<String>
+        get() = view!!.inputUsername.textChanges().map { it.toString() }
 
-    override val passwordChanged: Observable<CharSequence>
-        get() = view!!.inputPassword.textChanges()
+    override val passwordChanged: Observable<String>
+        get() = view!!.inputPassword.textChanges().map { it.toString() }
+
+    override var isPasswordVisible: Boolean = false
+        set(value) {
+            assertOnUiThread()
+            field = value
+            updatePasswordVisibility(value)
+        }
+
+    private fun updatePasswordVisibility(visible: Boolean) {
+        if (visible) {
+            inputPassword.transformationMethod = null
+            btnPasswordToggle.setImageResource(R.drawable.ic_hide)
+        } else {
+            inputPassword.transformationMethod = PasswordTransformationMethod.getInstance()
+            btnPasswordToggle.setImageResource(R.drawable.ic_show)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -68,8 +82,7 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
         savedInstanceState: Bundle?
     ): View? {
         val itemId = arguments?.let {
-            ItemDetailFragmentArgs.fromBundle(it)
-                .itemId
+            EditItemFragmentArgs.fromBundle(it).itemId
         }
 
         presenter = EditItemPresenter(this, itemId)
@@ -80,8 +93,7 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupToolbar(view.toolbar)
-        setTextWatcher(view)
-        setKeyboardFocus(view)
+        setupKeyboardFocus(view)
 
         val layouts = arrayOf(
             view.inputLayoutUsername,
@@ -94,7 +106,7 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
         }
     }
 
-    private fun setKeyboardFocus(view: View) {
+    private fun setupKeyboardFocus(view: View) {
         val focusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) {
                 closeKeyboard()
@@ -111,132 +123,43 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
         }
     }
 
-    private fun setTextWatcher(view: View) {
-        val textInputs = listOf<Pair<TextInputEditText, TextInputLayout>>(
-            Pair(view.inputUsername, view.inputLayoutUsername),
-            Pair(view.inputPassword, view.inputLayoutPassword)
-        )
+    override fun setSaveEnabled(enabled: Boolean) {
+        val colorRes = if (enabled) {
+            R.color.background_white
+        } else {
+            R.color.button_disabled
+        }
+        saveEntryButton.compoundDrawableTintList = context?.getColorStateList(colorRes)
+        saveEntryButton.isClickable = enabled
+        saveEntryButton.isFocusable = enabled
+    }
 
-        for (input in textInputs) {
-            input.first.addTextChangedListener(
-                buildTextWatcher(input.second)
-            )
+    override fun displayUsernameError(@StringRes errorMessage: Int?) {
+        view?.apply {
+            displayError(inputLayoutUsername, errorMessage)
         }
     }
 
-    private fun buildTextWatcher(errorLayout: TextInputLayout): TextWatcher {
-        return object : TextWatcher {
-            override fun beforeTextChanged(
-                charSequence: CharSequence,
-                start: Int,
-                count: Int,
-                after: Int
-            ) {
-                // NOOP
-            }
-
-            override fun onTextChanged(
-                charSequence: CharSequence,
-                start: Int,
-                before: Int,
-                count: Int
-            ) {
-                // NOOP
-            }
-
-            override fun afterTextChanged(editable: Editable) {
-                val inputText: String? = errorLayout.editText?.text.toString()
-
-                when (errorLayout.id) {
-                    R.id.inputLayoutUsername -> {
-                        handleUsernameChanges(errorLayout, inputText)
-                    }
-                    R.id.inputLayoutPassword -> {
-                        handlePasswordChanges(errorLayout, inputText)
-                    }
-                    else -> {
-                        errorLayout.error = null
-                    }
-                }
-
-                if (hostnameInvalid || passwordInvalid) {
-                    disableSave()
-                } else {
-                    enableSave()
-                }
-            }
+    override fun displayPasswordError(@StringRes errorMessage: Int?) {
+        view?.apply {
+            displayError(inputLayoutPassword, errorMessage)
+            btnPasswordToggle?.visibility =
+                if (errorMessage == null) View.VISIBLE else View.INVISIBLE
         }
     }
 
-    private var hostnameInvalid = false
-    private var passwordInvalid = false
-
-    private fun disableSave() {
-        saveEntryButton.compoundDrawableTintList =
-            context?.getColorStateList(R.color.button_disabled)
-        saveEntryButton.isClickable = false
-        saveEntryButton.isFocusable = false
-    }
-
-    private fun enableSave() {
-        saveEntryButton.compoundDrawableTintList =
-            context?.getColorStateList(R.color.background_white)
-        saveEntryButton.isClickable = true
-        saveEntryButton.isFocusable = true
-    }
-
-    // Removed the ability to edit the entry hostname as part of
-    // https://github.com/mozilla-lockwise/lockwise-android/issues/956.
-    // TODO: revisit this logic as part of https://github.com/mozilla-lockwise/lockwise-android/issues/948.
-    /*
-    private fun handleHostnameChanges(errorLayout: TextInputLayout, inputText: String?) {
-        when {
-            TextUtils.isEmpty(inputText) -> {
-                errorLayout.setErrorTextColor(context?.getColorStateList(R.color.error_input_text))
-                errorLayout.error = context?.getString(R.string.hostname_empty_text)
-                errorLayout.setErrorIconDrawable(R.drawable.ic_error)
-                view?.inputHostnameDescription?.visibility = View.INVISIBLE
-                hostnameInvalid = true
-            }
-            !URLUtil.isHttpUrl(inputText) and !URLUtil.isHttpsUrl(inputText) -> {
-                errorLayout.setErrorTextColor(context?.getColorStateList(R.color.error_input_text))
-                errorLayout.error = context?.getString(R.string.hostname_invalid_text)
-                errorLayout.setErrorIconDrawable(R.drawable.ic_error)
-                view?.inputHostnameDescription?.visibility = View.INVISIBLE
-                hostnameInvalid = true
-            }
-            else -> {
-                errorLayout.error = null
-                errorLayout.errorIconDrawable = null
-                view?.inputHostnameDescription?.visibility = View.VISIBLE
-                hostnameInvalid = false
-            }
-        }
-    } */
-
-    private fun handleUsernameChanges(errorLayout: TextInputLayout, inputText: String?) {
-        when {
-            TextUtils.isEmpty(inputText) -> {
-                errorLayout.error = null
-            }
-        }
-    }
-
-    private fun handlePasswordChanges(errorLayout: TextInputLayout, inputText: String?) {
-        when {
-            TextUtils.isEmpty(inputText) -> {
-                errorLayout.setErrorTextColor(context?.getColorStateList(R.color.error_input_text))
-                errorLayout.error =
-                    context?.getString(R.string.password_invalid_text)
-                errorLayout.setErrorIconDrawable(R.drawable.ic_error)
-                view?.btnPasswordToggle?.visibility = View.INVISIBLE
-                passwordInvalid = true
-            }
-            else -> {
-                errorLayout.error = null
-                errorLayout.errorIconDrawable = null
-                view?.btnPasswordToggle?.visibility = View.VISIBLE
-                passwordInvalid = false
+    private fun displayError(
+        errorLayout: TextInputLayout,
+        errorMessage: Int?
+    ) {
+        errorLayout.run {
+            errorMessage?.let {
+                setErrorTextColor(context?.getColorStateList(R.color.error_input_text))
+                setErrorIconDrawable(R.drawable.ic_error)
+                error = context?.getString(it)
+            } ?: let {
+                error = null
+                errorIconDrawable = null
             }
         }
     }
@@ -255,23 +178,6 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
         val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         if (imm.isAcceptingText) {
             imm.hideSoftInputFromWindow(view!!.windowToken, 0)
-        }
-    }
-
-    override var isPasswordVisible: Boolean = false
-        set(value) {
-            assertOnUiThread()
-            field = value
-            updatePasswordVisibility(value)
-        }
-
-    private fun updatePasswordVisibility(visible: Boolean) {
-        if (visible) {
-            inputPassword.transformationMethod = null
-            btnPasswordToggle.setImageResource(R.drawable.ic_hide)
-        } else {
-            inputPassword.transformationMethod = PasswordTransformationMethod.getInstance()
-            btnPasswordToggle.setImageResource(R.drawable.ic_show)
         }
     }
 
@@ -306,7 +212,7 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
         inputPassword.setText(item.password, TextView.BufferType.NORMAL)
 
         if (!item.hasUsername) {
-            inputUsername.setText(R.string.empty_space, TextView.BufferType.NORMAL)
+            inputUsername.setText(R.string.empty_string, TextView.BufferType.NORMAL)
         } else {
             inputUsername.setText(item.username, TextView.BufferType.NORMAL)
         }

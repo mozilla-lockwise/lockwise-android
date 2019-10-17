@@ -6,6 +6,7 @@
 
 package mozilla.lockbox.presenter
 
+import androidx.annotation.StringRes
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
@@ -41,6 +42,7 @@ import org.robolectric.annotation.Config
 class EditItemPresenterTest {
 
     class FakeView : EditItemDetailView {
+
         val togglePasswordVisibilityStub = PublishSubject.create<Unit>()
         override val togglePasswordVisibility: Observable<Unit>
             get() = togglePasswordVisibilityStub
@@ -52,16 +54,16 @@ class EditItemPresenterTest {
         override val togglePasswordClicks: Observable<Unit>
             get() = togglePwdClicksStub
 
-        val hostnameClicksStub = PublishSubject.create<CharSequence>()
-        override val hostnameChanged: Observable<CharSequence>
+        val hostnameClicksStub = PublishSubject.create<String>()
+        override val hostnameChanged: Observable<String>
             get() = hostnameClicksStub
 
-        val usernameClicksStub = PublishSubject.create<CharSequence>()
-        override val usernameChanged: Observable<CharSequence>
+        val usernameClicksStub = PublishSubject.create<String>()
+        override val usernameChanged: Observable<String>
             get() = usernameClicksStub
 
-        val pwdClicksStub = PublishSubject.create<CharSequence>()
-        override val passwordChanged: Observable<CharSequence>
+        val pwdClicksStub = PublishSubject.create<String>()
+        override val passwordChanged: Observable<String>
             get() = pwdClicksStub
 
         override fun closeKeyboard() {
@@ -69,6 +71,9 @@ class EditItemPresenterTest {
         }
 
         var item: ItemDetailViewModel? = null
+        @StringRes var usernameError: Int? = null
+        @StringRes var passwordError: Int? = null
+        var _saveEnabled = true
 
         val deleteClicksStub = PublishSubject.create<Unit>()
         override val deleteClicks: Observable<Unit>
@@ -85,11 +90,22 @@ class EditItemPresenterTest {
         override fun updateItem(item: ItemDetailViewModel) {
             this.item = item
         }
+
+        override fun displayUsernameError(@StringRes errorMessage: Int?) {
+            usernameError = null
+        }
+        override fun displayPasswordError(@StringRes errorMessage: Int?) {
+            passwordError = null
+        }
+        override fun setSaveEnabled(enabled: Boolean) {
+            _saveEnabled = enabled
+        }
     }
 
     @Mock
     val dataStore = PowerMockito.mock(DataStore::class.java)!!
     private val getStub = PublishSubject.create<Optional<ServerPassword>>()
+    private val usedUsernameStub = PublishSubject.create<Set<String?>>()
 
     val dispatcher = Dispatcher()
     val dispatcherObserver = TestObserver.create<Action>()!!
@@ -102,6 +118,19 @@ class EditItemPresenterTest {
             "https://www.mozilla.org",
             "dogs@dogs.com",
             "woof",
+            timesUsed = 0,
+            timeCreated = 0L,
+            timeLastUsed = 0L,
+            timePasswordChanged = 0L
+        )
+    }
+
+    private val duplicateFakeCredential: ServerPassword by lazy {
+        ServerPassword(
+            "id2",
+            "https://www.mozilla.org",
+            "dogs@dogs.com",
+            "woofwoof",
             timesUsed = 0,
             timeCreated = 0L,
             timeLastUsed = 0L,
@@ -129,6 +158,7 @@ class EditItemPresenterTest {
         PowerMockito.whenNew(DataStore::class.java).withAnyArguments().thenReturn(dataStore)
         dispatcher.register.subscribe(dispatcherObserver)
         Mockito.`when`(dataStore.get(ArgumentMatchers.anyString())).thenReturn(getStub)
+        Mockito.`when`(dataStore.getUsernamesForHostname(ArgumentMatchers.anyString())).thenReturn(usedUsernameStub)
     }
 
     private fun setUpTestSubject(item: Optional<ServerPassword>) {
@@ -171,6 +201,22 @@ class EditItemPresenterTest {
         assertEquals(fakeCredentialNoUsername.username, obs.username)
         assertEquals(fakeCredentialNoUsername.password, obs.password)
         assertEquals(fakeCredentialNoUsername.id, obs.id)
+    }
+
+    @Test
+    fun `sends a list of duplicates to the view model`() {
+        setUpTestSubject(duplicateFakeCredential.asOptional())
+
+        view.updateItem(
+            ItemDetailViewModel(
+                duplicateFakeCredential.id,
+                duplicateFakeCredential.hostname,
+                duplicateFakeCredential.hostname,
+                duplicateFakeCredential.username,
+                duplicateFakeCredential.password
+            )
+        )
+        verify(dataStore).getUsernamesForHostname(ArgumentMatchers.anyString())
     }
 
     @Test

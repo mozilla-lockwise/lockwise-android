@@ -141,7 +141,11 @@ class ItemDetailPresenter(
 
         view.editClicks
             .subscribe {
-                dispatcher.dispatch(RouteAction.EditItemDetail(credentials?.id.toString()))
+                dispatcher.dispatch(
+                    RouteAction.EditItemDetail(
+                        credentials?.id.toString()
+                    )
+                )
             }
             .addTo(compositeDisposable)
 

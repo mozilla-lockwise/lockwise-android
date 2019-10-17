@@ -286,8 +286,8 @@
 
     <!-- This is the error message that is shown in edit or create view when input text for password is not valid. -->
     <string name="password_invalid_text">Password cannot be empty</string>
+    <string name="username_duplicate_exists">A login with that username already exists</string>
 
-    <!-- This is the hint in the edit entry view for formatting the entry hostname. -->
     <!--    <string name="hostname_entry_description">Make sure this matches the exact domain for the website you are referencing-->
     <!--        (“https://” and “www” included).-->
     <!--    </string>-->
