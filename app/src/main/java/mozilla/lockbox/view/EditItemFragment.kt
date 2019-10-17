@@ -143,7 +143,8 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
     override fun displayPasswordError(@StringRes errorMessage: Int?) {
         view?.apply {
             displayError(inputLayoutPassword, errorMessage)
-            btnPasswordToggle?.visibility = if (errorMessage == null) View.VISIBLE else View.INVISIBLE
+            btnPasswordToggle?.visibility =
+                if (errorMessage == null) View.VISIBLE else View.INVISIBLE
         }
     }
 

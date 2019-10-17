@@ -79,8 +79,8 @@ class EditItemPresenter(
             .switchMap {
                 dataStore.getUsernamesForHostname(it.hostname)
             }
-            .subscribe {
-                unavailableUsernames = it.minus(credentials?.username)
+            .subscribe { listOfUsernames ->
+                unavailableUsernames = listOfUsernames.minus(credentials?.username)
             }
             .addTo(compositeDisposable)
 
@@ -140,9 +140,9 @@ class EditItemPresenter(
             .addTo(compositeDisposable)
 
         Observables.combineLatest(
-                view.usernameChanged.map(this::usernameError),
-                view.passwordChanged.map(this::passwordError)
-            )
+            view.usernameChanged.map(this::usernameError),
+            view.passwordChanged.map(this::passwordError)
+        )
             .subscribe { (usernameError, passwordError) ->
                 view.displayUsernameError(usernameError.value)
                 view.displayPasswordError(passwordError.value)
