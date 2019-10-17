@@ -105,7 +105,7 @@ class EditItemPresenter(
 
         view.closeEntryClicks
             .subscribe {
-                dispatcher.dispatch(DialogAction.DiscardChangesDialog(credentials!!.id))
+                dispatcher.dispatch(DialogAction.DiscardChangesDialog(itemId))
             }
             .addTo(compositeDisposable)
 

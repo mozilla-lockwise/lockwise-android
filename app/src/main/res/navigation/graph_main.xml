@@ -211,6 +211,7 @@
         <action
                 android:id="@+id/action_itemEdit_to_itemList"
                 app:destination="@id/fragment_item_list"
+                app:launchSingleTop="true"
                 app:popUpToInclusive="true"/>
         <action
                 android:id="@+id/action_itemEdit_to_itemDetail"
