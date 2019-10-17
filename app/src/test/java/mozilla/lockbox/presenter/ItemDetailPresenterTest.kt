@@ -90,6 +90,7 @@ class ItemDetailPresenterTest {
         override val passwordCopyClicks = PublishSubject.create<Unit>()
         override val togglePasswordClicks = PublishSubject.create<Unit>()
         override val hostnameClicks = PublishSubject.create<Unit>()
+        override val launchButtonClicks = PublishSubject.create<Unit>()
 
         override var isPasswordVisible: Boolean = false
 
@@ -236,6 +237,16 @@ class ItemDetailPresenterTest {
         setUpTestSubject(fakeCredential.asOptional())
 
         val clicks = view.hostnameClicks
+        clicks.onNext(Unit)
+
+        dispatcherObserver.assertLastValue(RouteAction.OpenWebsite(fakeCredential.hostname))
+    }
+
+    @Test
+    fun `opens a browser when tapping on the hostname launch button`() {
+        setUpTestSubject(fakeCredential.asOptional())
+
+        val clicks = view.launchButtonClicks
         clicks.onNext(Unit)
 
         dispatcherObserver.assertLastValue(RouteAction.OpenWebsite(fakeCredential.hostname))
