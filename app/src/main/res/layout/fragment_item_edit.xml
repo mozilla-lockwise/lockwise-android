@@ -274,6 +274,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="5dp"
+                        android:layout_marginBottom="8dp"
                         android:background="@null"
                         android:foregroundGravity="center_horizontal|center_vertical"
                         android:contentDescription="@string/display_password_content_description"
