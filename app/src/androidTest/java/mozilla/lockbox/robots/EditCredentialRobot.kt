@@ -20,7 +20,6 @@ class EditCredentialRobot : BaseTestRobot {
 
     fun saveChanges() = ClickActions.click { id(R.id.saveEntryButton) }
     fun closeEditChanges() = ClickActions.click { contentDescription("Back") }
-    fun deleteEntryFromEdit() = ClickActions.click { id(R.id.deleteEntryButton) }
 
     fun tapOnUserName() = onView(withId(R.id.inputUsername)).perform(click())
     fun editUserName(text: String) = onView(withId(R.id.inputUsername)).perform(replaceText(text))
