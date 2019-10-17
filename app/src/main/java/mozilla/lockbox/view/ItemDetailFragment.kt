@@ -149,12 +149,13 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         inputLayoutHostname.isHintAnimationEnabled = false
         inputLayoutUsername.isHintAnimationEnabled = false
         inputLayoutPassword.isHintAnimationEnabled = false
-
-        inputPassword.ellipsize = TextUtils.TruncateAt.END
-        inputPassword.setSingleLine()
-        inputPassword.maxLines = 1
+        inputLayoutUsername.isScrollContainer = false
+        view?.isScrollContainer = false
 
         inputUsername.readOnly = true
+        inputLayoutUsername.editText?.ellipsize = TextUtils.TruncateAt.END
+        inputUsername.ellipsize = TextUtils.TruncateAt.END
+        inputUsername.setSingleLine()
 
         if (!item.hasUsername) {
             btnUsernameCopy.setColorFilter(resources.getColor(R.color.white_60_percent, null))

@@ -76,23 +76,6 @@ open class ItemDetailsTest {
             editedCredentialUsernameExists("UsernameChanged")
             openCredential("UsernameChanged")
         }
-        // Remove the entry
-        navigator.gotoItemDetailKebabMenu()
-        kebabMenu { tapEditButton() }
-        editCredential { deleteEntryFromEdit() }
-        // Tap on Cancel
-        deleteCredentialDisclaimer { tapCancelButton() }
-        editCredential {
-            exists()
-            // Tap on Delete
-            deleteEntryFromEdit()
-        }
-        deleteCredentialDisclaimer { tapDeleteButton() }
-        // Once entry is removed user is taken to ItemList view
-        itemList {
-            exists()
-            credentialRemovedDoesNotExist("HostnameChanged")
-        }
     }
 
     @Test

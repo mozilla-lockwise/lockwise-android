@@ -8,6 +8,7 @@ package mozilla.lockbox.view
 
 import android.content.Context
 import android.os.Bundle
+import android.text.TextUtils
 import android.text.method.PasswordTransformationMethod
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -40,9 +41,6 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
 
     override val togglePasswordClicks: Observable<Unit>
         get() = view!!.btnPasswordToggle.clicks()
-
-    override val deleteClicks: Observable<Unit>
-        get() = view!!.deleteEntryButton.clicks()
 
     override val closeEntryClicks: Observable<Unit>
         get() = view!!.toolbar.navigationClicks()
@@ -208,6 +206,9 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
         inputPassword.isClickable = true
 
         inputName.setText(item.hostname, TextView.BufferType.NORMAL)
+        inputName.setSingleLine()
+        inputName.ellipsize = TextUtils.TruncateAt.END
+
         inputHostname.setText(item.hostname, TextView.BufferType.NORMAL)
         inputPassword.setText(item.password, TextView.BufferType.NORMAL)
 

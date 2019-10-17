@@ -75,10 +75,6 @@ class EditItemPresenterTest {
         @StringRes var passwordError: Int? = null
         var _saveEnabled = true
 
-        val deleteClicksStub = PublishSubject.create<Unit>()
-        override val deleteClicks: Observable<Unit>
-            get() = deleteClicksStub
-
         val closeEntryClicksStub = PublishSubject.create<Unit>()
         override val closeEntryClicks: Observable<Unit>
             get() = closeEntryClicksStub
@@ -242,19 +238,6 @@ class EditItemPresenterTest {
             listOf(
                 DataStoreAction.UpdateItemDetail(fakeCredential),
                 RouteAction.ItemList
-            )
-        )
-    }
-
-    @Test
-    fun `tapping on delete button`() {
-        setUpTestSubject(fakeCredential.asOptional())
-
-        view.deleteClicksStub.onNext(Unit)
-
-        dispatcherObserver.assertValueSequence(
-            listOf(
-                DialogAction.DeleteConfirmationDialog(fakeCredential)
             )
         )
     }

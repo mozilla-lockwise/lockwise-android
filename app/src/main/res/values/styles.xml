@@ -112,6 +112,10 @@
         <item name="android:textStyle">normal</item>
         <item name="android:textColor">@color/text_ink</item>
         <item name="android:letterSpacing">0.01</item>
+        <item name="android:scrollHorizontally">false</item>
+        <item name="android:isScrollContainer">false</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:singleLine">true</item>
         <item name="android:lineSpacingExtra">8sp</item>
         <item name="android:backgroundTint">@color/background_white</item>
         <item name="android:popupBackground">@android:color/transparent</item>
