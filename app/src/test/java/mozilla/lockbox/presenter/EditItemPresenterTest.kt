@@ -23,6 +23,7 @@ import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.asOptional
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
@@ -88,10 +89,10 @@ class EditItemPresenterTest {
         }
 
         override fun displayUsernameError(@StringRes errorMessage: Int?) {
-            usernameError = null
+            usernameError = errorMessage
         }
         override fun displayPasswordError(@StringRes errorMessage: Int?) {
-            passwordError = null
+            passwordError = errorMessage
         }
         override fun setSaveEnabled(enabled: Boolean) {
             _saveEnabled = enabled
@@ -101,7 +102,7 @@ class EditItemPresenterTest {
     @Mock
     val dataStore = PowerMockito.mock(DataStore::class.java)!!
     private val getStub = PublishSubject.create<Optional<ServerPassword>>()
-    private val usedUsernameStub = PublishSubject.create<Set<String?>>()
+    private val listStub = PublishSubject.create<List<ServerPassword>>()
 
     val dispatcher = Dispatcher()
     val dispatcherObserver = TestObserver.create<Action>()!!
@@ -154,19 +155,23 @@ class EditItemPresenterTest {
         PowerMockito.whenNew(DataStore::class.java).withAnyArguments().thenReturn(dataStore)
         dispatcher.register.subscribe(dispatcherObserver)
         Mockito.`when`(dataStore.get(ArgumentMatchers.anyString())).thenReturn(getStub)
-        Mockito.`when`(dataStore.getUsernamesForHostname(ArgumentMatchers.anyString())).thenReturn(usedUsernameStub)
+        Mockito.`when`(dataStore.list).thenReturn(listStub)
     }
 
-    private fun setUpTestSubject(item: Optional<ServerPassword>) {
-        subject = EditItemPresenter(view, item.value?.id, dispatcher, dataStore)
+    private fun setUpTestSubject(item: ServerPassword?) {
+        subject = EditItemPresenter(view, item?.id, dispatcher, dataStore)
         subject.onViewReady()
 
-        getStub.onNext(item)
+        getStub.onNext(item.asOptional())
+        listStub.onNext(listOf(
+            fakeCredential,
+            fakeCredentialNoUsername
+        ))
     }
 
     @Test
     fun `sends a detail view model to view`() {
-        setUpTestSubject(fakeCredential.asOptional())
+        setUpTestSubject(fakeCredential)
 
         // test the results that the view gets.
         val obs = view.item ?: return fail("Expected an item")
@@ -178,7 +183,7 @@ class EditItemPresenterTest {
 
     @Test
     fun `sends a detail view model to view with null username`() {
-        setUpTestSubject(fakeCredentialNoUsername.asOptional())
+        setUpTestSubject(fakeCredentialNoUsername)
 
         view.updateItem(
             ItemDetailViewModel(
@@ -201,23 +206,19 @@ class EditItemPresenterTest {
 
     @Test
     fun `sends a list of duplicates to the view model`() {
-        setUpTestSubject(duplicateFakeCredential.asOptional())
+        setUpTestSubject(fakeCredentialNoUsername)
+        view.usernameClicksStub.onNext("")
+        view.pwdClicksStub.onNext(fakeCredentialNoUsername.password)
 
-        view.updateItem(
-            ItemDetailViewModel(
-                duplicateFakeCredential.id,
-                duplicateFakeCredential.hostname,
-                duplicateFakeCredential.hostname,
-                duplicateFakeCredential.username,
-                duplicateFakeCredential.password
-            )
-        )
-        verify(dataStore).getUsernamesForHostname(ArgumentMatchers.anyString())
+        // now do the test.
+        view.usernameClicksStub.onNext(fakeCredential.username ?: "")
+
+        assertNotNull(view.usernameError)
     }
 
     @Test
     fun `tapping on close button`() {
-        setUpTestSubject(fakeCredential.asOptional())
+        setUpTestSubject(fakeCredential)
 
         view.closeEntryClicksStub.onNext(Unit)
 
@@ -230,7 +231,7 @@ class EditItemPresenterTest {
 
     @Test
     fun `tapping on save button`() {
-        setUpTestSubject(fakeCredential.asOptional())
+        setUpTestSubject(fakeCredential)
 
         view.saveEntryClicksStub.onNext(Unit)
 
