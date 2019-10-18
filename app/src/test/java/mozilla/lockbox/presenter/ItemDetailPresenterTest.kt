@@ -58,11 +58,11 @@ class ItemDetailPresenterTest {
         override fun hideKebabMenu() {}
 
         var editClicksStub: BehaviorRelay<Unit> = BehaviorRelay.createDefault(Unit)
-        override val editClicks: BehaviorRelay<Unit>
+        override val editClicks: Observable<Unit>
             get() = editClicksStub
 
         var deleteClicksStub: BehaviorRelay<Unit> = BehaviorRelay.createDefault(Unit)
-        override val deleteClicks: BehaviorRelay<Unit>
+        override val deleteClicks: Observable<Unit>
             get() = deleteClicksStub
 
         override fun showPopup() {}
