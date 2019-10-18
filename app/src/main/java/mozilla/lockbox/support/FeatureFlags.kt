@@ -21,8 +21,8 @@ object FeatureFlags {
     val CRUD_UPDATE_AND_DELETE = when {
         isDebug -> true
         isTesting -> true
-        isRelease -> false
-        else -> false
+        isRelease -> true
+        else -> true
     }
 
     /**
@@ -44,7 +44,7 @@ object FeatureFlags {
     val AUTOFILL_CAPTURE = when {
         isDebug -> true
         isTesting -> true
-        isRelease -> false
-        else -> false
+        isRelease -> true
+        else -> true
     }
 }
