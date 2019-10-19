@@ -1,5 +1,23 @@
 # Release Notes
 
+## 3.0.0 (Build 5068)
+
+Add capabilities to edit entries, delete entries, and capture new entries from autofill.
+
+All changes since version 2.0.0: 
+
+- 948: Prevent duplicates during edit
+- Cache access tokens (#945)
+- 873: Update faq links to sumo (#951)
+- Import l10n. (#964)
+- 956: Disable editing hostname (#963)
+- 938-uitests-add-error-handling-edit-view (#966)
+- 920-add-new-edit-screenshots-tests (#922)
+- Add intent filter for launching app from a URL (#967)
+- Autofill capture an existing login new to Lockwise (#943)
+- 899: UX cleanup for edit (#962)
+- 969 refactor screenshotstests use robot (#970)
+
 ## 2.0.0 (Build 4820)
 
 Refine telemetry for sync and fix crashes.
