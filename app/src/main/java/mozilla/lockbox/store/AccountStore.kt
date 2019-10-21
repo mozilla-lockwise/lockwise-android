@@ -15,8 +15,8 @@ import android.webkit.WebStorage
 import android.webkit.WebView
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.internal.util.HalfSerializer.onNext
 import io.reactivex.rxkotlin.addTo
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.ReplaySubject
 import io.reactivex.subjects.Subject
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -226,8 +226,7 @@ open class AccountStore(
         // restarted) or a token refresh.
         // 1. Update the rest of the app.
         val credentials = generateSyncCredentials(token, isNewLogin)
-        val syncCredentialSubject = syncCredentials as Subject
-        syncCredentialSubject.onNext(credentials.asOptional())
+        credentials.subscribe(syncCredentials as Subject)
 
         // 2. Store this token in the secure preferences.
         securePreferences.putString(Constant.Key.accessToken, token.toJSONObject().toString())
@@ -250,10 +249,15 @@ open class AccountStore(
         }, msDelay)
     }
 
-    private fun generateSyncCredentials(oauthInfo: AccessTokenInfo, isNew: Boolean): SyncCredentials? {
-        val fxa = fxa ?: return null
-        val tokenServerURL = fxa.getTokenServerEndpointURL()
-        return FxASyncCredentials(oauthInfo, tokenServerURL, isNew)
+    private fun generateSyncCredentials(oauthInfo: AccessTokenInfo, isNew: Boolean): Observable<Optional<SyncCredentials>> {
+        return Observable.just(Unit)
+            .observeOn(Schedulers.io())
+            .map {
+                fxa?.let {
+                    val url = it.getTokenServerEndpointURL()
+                    FxASyncCredentials(oauthInfo, url, isNew) as SyncCredentials
+                }.asOptional()
+            }
     }
 
     private fun generateNewFirefoxAccount() {
