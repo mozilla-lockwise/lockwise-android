@@ -14,6 +14,7 @@ import mozilla.lockbox.view.RootActivity
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.lang.Thread.sleep
 
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
@@ -94,7 +95,7 @@ open class ItemDetailsTest {
         editCredentialDisclaimer { tapDiscardButton() }
         // User is taken to ItemList View
         // No changes are applied
-        itemList { exists() }
+        itemDetail { exists() }
     }
 
     @Test
@@ -104,7 +105,8 @@ open class ItemDetailsTest {
         editCredential {
             editPassword("")
             assertErrorEmptyPassord()
-            editPassword("foo")
+            editPassword("foo bar baz")
+            sleep(1000)
             noErrorEmptyPassword()
         }
     }
