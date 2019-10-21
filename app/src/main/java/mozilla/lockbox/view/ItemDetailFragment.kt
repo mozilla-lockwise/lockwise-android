@@ -180,7 +180,7 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         inputHostname.isClickable = true
         inputHostname.isFocusable = true
 
-        btnHostnameLaunch.isClickable = false
+        btnHostnameLaunch.isClickable = true
 
         inputHostname.setText(item.hostname, TextView.BufferType.NORMAL)
         inputPassword.setText(item.password, TextView.BufferType.NORMAL)
