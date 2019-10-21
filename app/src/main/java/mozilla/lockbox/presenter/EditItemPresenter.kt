@@ -20,6 +20,7 @@ import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.ItemDetailAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.filterNotNull
+import mozilla.lockbox.extensions.filter
 import mozilla.lockbox.extensions.toDetailViewModel
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
@@ -57,7 +58,7 @@ class EditItemPresenter(
     // These should move to the ItemDetailStore.
     // https://github.com/mozilla-lockwise/lockwise-android/issues/977
     private var credentials: ServerPassword? = null
-    private lateinit var unavailableUsernames: Set<String?>
+    private var unavailableUsernames: Set<String?> = emptySet()
 
     override fun onViewReady() {
         val itemId = this.itemId ?: return
@@ -74,13 +75,18 @@ class EditItemPresenter(
             .subscribe(view::updateItem)
             .addTo(compositeDisposable)
 
-        getItem
-            .switchMap {
-                dataStore.getUsernamesForHostname(it.hostname)
+        Observables.combineLatest(getItem, dataStore.list)
+            .map { (item, list) ->
+                list.filter(
+                        hostname = item.hostname,
+                        httpRealm = item.httpRealm,
+                        formSubmitURL = item.formSubmitURL
+                    )
+                    .map { it.username }
+                    .toSet()
+                    .minus(item.username)
             }
-            .subscribe { listOfUsernames ->
-                unavailableUsernames = listOfUsernames.minus(credentials?.username)
-            }
+            .subscribe { unavailableUsernames = it }
             .addTo(compositeDisposable)
 
         itemDetailStore.isPasswordVisible

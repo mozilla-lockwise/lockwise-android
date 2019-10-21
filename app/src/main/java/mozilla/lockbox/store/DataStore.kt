@@ -24,6 +24,7 @@ import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.SentryAction
 import mozilla.lockbox.extensions.filterByType
+import mozilla.lockbox.extensions.filter
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.log
 import mozilla.lockbox.model.SyncCredentials
@@ -188,14 +189,22 @@ open class DataStore(
         }
     }
 
-    // Returns a list of usernames that match the given hostname
-    open fun getUsernamesForHostname(hostname: String): Observable<Set<String?>> {
-        return list.map { items ->
-            items.filter { it.hostname == hostname }
-                .map { it.username }
-                .toSet()
+    // Returns a list of credentials that match the arguments given.
+    open fun filteredList(
+        username: String? = null,
+        password: String? = null,
+        hostname: String? = null,
+        httpRealm: String? = null,
+        formSubmitURL: String? = null
+    ): Observable<List<ServerPassword>> = list.map {
+            it.filter(
+                username = username,
+                password = password,
+                hostname = hostname,
+                httpRealm = httpRealm,
+                formSubmitURL = formSubmitURL
+            )
         }
-    }
 
     @VisibleForTesting(
         otherwise = VisibleForTesting.PRIVATE

@@ -18,6 +18,8 @@ import mozilla.lockbox.DisposingTest
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.extensions.filterByType
+import mozilla.lockbox.extensions.matches
+import mozilla.lockbox.extensions.filter
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.mocks.MockDataStoreSupport
@@ -26,6 +28,9 @@ import mozilla.lockbox.store.DataStore.State
 import mozilla.lockbox.support.TimingSupport
 import mozilla.lockbox.support.asOptional
 import org.junit.Assert
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
@@ -331,66 +336,59 @@ class DataStoreTest : DisposingTest() {
         Assert.assertEquals(serverPassword.asOptional(), serverPasswordIterator.next())
     }
 
-    @Test
-    fun `get a list of usernames for a given hostname`() {
-        val stateIterator = this.subject.state.blockingIterable().iterator()
-        val listIterator = this.subject.list.blockingIterable().iterator()
-        Assert.assertEquals(0, listIterator.next().size)
-
-        dispatcher.dispatch(DataStoreAction.Unlock)
-        Assert.assertEquals(State.Unlocked, stateIterator.next())
-
-        val newHostname = "https://ilovecats.com"
-        val item1 = ServerPassword(
+    @Test fun `find matching credentials`() {
+        val item = ServerPassword(
             id = "id1",
-            hostname = newHostname,
-            username = "feline1",
-            password = "iLUVkatz",
-            formSubmitURL = newHostname
+            hostname = "example1.com",
+            username = "user1",
+            password = "",
+            formSubmitURL = "form1",
+            httpRealm = "realm1"
         )
 
-        val item2 = ServerPassword(
-            id = "id2",
-            hostname = newHostname,
-            username = "feline2",
-            password = "iLUVkatz",
-            formSubmitURL = newHostname
+        assertTrue(item.matches(hostname = "example1.com"))
+        assertFalse(item.matches(hostname = "nonmatching.com"))
+        assertTrue(item.matches(hostname = "example1.com", formSubmitURL = "form1"))
+        assertFalse(item.matches(hostname = "example1.com", formSubmitURL = "nonmatching"))
+        assertTrue(item.matches(hostname = "example1.com", formSubmitURL = "form1", httpRealm = "realm1"))
+        assertFalse(item.matches(hostname = "example1.com", formSubmitURL = "form1", httpRealm = "nonmatching"))
+
+        val list = listOf(
+            ServerPassword(
+                id = "id1",
+                hostname = "example1.com",
+                username = "user1",
+                password = "",
+                formSubmitURL = "form1"
+            ),
+            ServerPassword(
+                id = "id2",
+                hostname = "example1.com",
+                username = "user2",
+                password = "",
+                formSubmitURL = "form2"
+            ),
+            ServerPassword(
+                id = "id3",
+                hostname = "example2.com",
+                username = "user3",
+                password = "",
+                httpRealm = "realm1"
+            ),
+            ServerPassword(
+                id = "id4",
+                hostname = "example2.com",
+                username = "user4",
+                password = "",
+                httpRealm = "realm2"
+            )
         )
 
-        val item3 = ServerPassword(
-            id = "id3",
-            hostname = "https://www.goforcats.com",
-            username = "feline3",
-            password = "iLUVkatz",
-            formSubmitURL = "goforcats.com"
-        )
+        assertEquals(2, list.filter(hostname = "example1.com").size)
+        assertEquals(1, list.filter(hostname = "example1.com", formSubmitURL = "form1").size)
 
-        val item4 = ServerPassword(
-            id = "id4",
-            hostname = "http://www.catb4dogs.org",
-            username = "feline4",
-            password = "iLUVkatz",
-            formSubmitURL = "catsb4dogs.org"
-        )
-
-        subject.add(item1)
-        subject.add(item2)
-        subject.add(item3)
-        subject.add(item4)
-
-        val usernameSet =
-            subject.getUsernamesForHostname(newHostname)
-                .blockingIterable()
-                .iterator()
-                .next()
-
-        Assert.assertEquals(2, usernameSet.size)
-
-        Assert.assertTrue(usernameSet.contains(item1.username))
-        Assert.assertTrue(usernameSet.contains(item2.username))
-
-        Assert.assertFalse(usernameSet.contains(item3.username))
-        Assert.assertFalse(usernameSet.contains(item4.username))
+        assertEquals(2, list.filter(hostname = "example2.com").size)
+        assertEquals(1, list.filter(hostname = "example2.com", httpRealm = "realm1").size)
     }
 
     @Test
