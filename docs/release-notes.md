@@ -1,11 +1,14 @@
 # Release Notes
 
-## 3.0.0 (Build 5068)
+## 3.0.0 (Build 5177)
 
 Add capabilities to edit entries, delete entries, and capture new entries from autofill.
 
 All changes since version 2.0.0: 
 
+- Use extra fields to detect duplicates (#997)
+- Generate the token URL of the main thread (#1003)
+- 980: launch hostname from icon in detail (#1004)
 - 948: Prevent duplicates during edit
 - Cache access tokens (#945)
 - 873: Update faq links to sumo (#951)
