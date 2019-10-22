@@ -31,6 +31,7 @@ import mozilla.lockbox.support.isDebug
 @ExperimentalCoroutinesApi
 class FxALoginFragment : BackableFragment(), FxALoginView {
     private var errorHelper = NetworkErrorHelper()
+    private val inputMode = activity?.window?.attributes?.softInputMode
 
     override var webViewRedirect: ((url: Uri?) -> Boolean) = { _ -> false }
 
@@ -43,13 +44,17 @@ class FxALoginFragment : BackableFragment(), FxALoginView {
         presenter = FxALoginPresenter(this)
 
         val view = inflater.inflate(R.layout.fragment_fxa_login, container, false)
-
         view.webView.settings.domStorageEnabled = true
         view.webView.settings.javaScriptEnabled = true
         CookieManager.getInstance().setAcceptCookie(true)
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
 
         return view
+    }
+
+    override fun onPause() {
+        super.onPause()
+        activity?.window?.setSoftInputMode(inputMode ?: WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
