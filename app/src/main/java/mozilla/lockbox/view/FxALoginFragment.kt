@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.webkit.CookieManager
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
@@ -40,10 +41,14 @@ class FxALoginFragment : BackableFragment(), FxALoginView {
         savedInstanceState: Bundle?
     ): View? {
         presenter = FxALoginPresenter(this)
+
         val view = inflater.inflate(R.layout.fragment_fxa_login, container, false)
+
         view.webView.settings.domStorageEnabled = true
         view.webView.settings.javaScriptEnabled = true
         CookieManager.getInstance().setAcceptCookie(true)
+        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+
         return view
     }
 
