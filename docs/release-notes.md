@@ -1,5 +1,14 @@
 # Release Notes
 
+## 3.0.1 (Build 5215)
+
+Improve threading and log in keyboard experience.
+
+All changes since version 3.0.0:
+
+- Soft pan layout when keyboard is opened on webview (#929)
+- Update syncCredentials on the correct thread after their generation (#1012, #1013)
+
 ## 3.0.0 (Build 5177)
 
 Add capabilities to edit entries, delete entries, and capture new entries from autofill.
