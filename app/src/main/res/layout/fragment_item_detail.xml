@@ -77,6 +77,7 @@
     <androidx.cardview.widget.CardView
             xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:id="@+id/cardView"
+            style="@style/EditItemDetail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -95,9 +96,9 @@
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    card_view:layout_constraintTop_toTopOf="parent"
-                    card_view:layout_constraintStart_toStartOf="parent"
-                    card_view:layout_constraintEnd_toEndOf="parent">
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
 
                 <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/inputLayoutHostname"
@@ -153,7 +154,7 @@
                         android:layout_marginStart="18dp"
                         android:layout_marginTop="2dp"
                         android:layout_marginEnd="11dp"
-                        card_view:layout_constraintTop_toBottomOf="@id/btnHostnameLaunch" />
+                        app:layout_constraintTop_toBottomOf="@id/btnHostnameLaunch" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -222,8 +223,9 @@
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="12dp"
-                    android:layout_marginStart="12dp"
+                    android:layout_marginStart="16dp"
                     android:fontFamily="sans-serif"
                     app:layout_constraintTop_toBottomOf="@id/username"
                     card_view:layout_constraintStart_toStartOf="parent"
@@ -240,13 +242,16 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
                         card_view:layout_constraintEnd_toStartOf="@id/btnPasswordToggle"
-                        tools:ignore="RtlSymmetry"
-                        style="@style/PasswordTextStyle" >
-                        <androidx.appcompat.widget.AppCompatEditText
+                        tools:ignore="RtlSymmetry" >
+                        <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/inputPassword"
-                                style="@style/EditTextStyle"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
+                                android:letterSpacing="0.01"
+                                android:ellipsize="end"
+                                android:singleLine="true"
+                                android:backgroundTint="@color/background_white"
+                                android:popupBackground="@android:color/transparent"
                                 android:layout_gravity="center_vertical|start"
                                 android:hint="@string/hint_password"
                                 android:isScrollContainer="false"
@@ -291,7 +296,6 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:srcCompat="@drawable/ic_copy"/>
-
                 <View
                         android:layout_height="1dp"
                         android:layout_width="match_parent"
