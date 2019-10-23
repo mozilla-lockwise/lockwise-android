@@ -224,6 +224,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginEnd="12dp"
                     android:layout_marginStart="12dp"
+                    android:fontFamily="sans-serif"
                     app:layout_constraintTop_toBottomOf="@id/username"
                     card_view:layout_constraintStart_toStartOf="parent"
                     card_view:layout_constraintEnd_toEndOf="parent">
@@ -257,7 +258,8 @@
                                 android:clickable="true"
                                 android:focusable="true"
                                 android:colorControlActivated="@color/violet_70"
-                                tools:ignore="Autofill"/>
+                                tools:ignore="Autofill"
+                        />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <ImageButton

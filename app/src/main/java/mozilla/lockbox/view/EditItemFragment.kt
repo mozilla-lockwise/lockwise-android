@@ -191,12 +191,10 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
         toolbar.title = item.title
         toolbar.editLoginTitle.gravity = Gravity.CENTER_VERTICAL
 
-        inputLayoutName.isHintAnimationEnabled = false
         inputLayoutHostname.isHintAnimationEnabled = false
         inputLayoutUsername.isHintAnimationEnabled = false
         inputLayoutPassword.isHintAnimationEnabled = false
 
-        inputName.readOnly = true
         inputHostname.readOnly = true
 
         inputUsername.isFocusable = true
@@ -204,10 +202,6 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
 
         inputPassword.isFocusable = true
         inputPassword.isClickable = true
-
-        inputName.setText(item.hostname, TextView.BufferType.NORMAL)
-        inputName.setSingleLine()
-        inputName.ellipsize = TextUtils.TruncateAt.END
 
         inputHostname.setText(item.hostname, TextView.BufferType.NORMAL)
         inputPassword.setText(item.password, TextView.BufferType.NORMAL)
