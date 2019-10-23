@@ -7,6 +7,7 @@
 .externalNativeBuild
 /site
 .idea/assetWizardSettings.xml
+.idea/codeStyles/Project.xml
 .idea/gradle.xml
 .idea/caches
 .idea/navEditor.xml
