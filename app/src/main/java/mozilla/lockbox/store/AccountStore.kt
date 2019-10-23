@@ -14,6 +14,7 @@ import android.webkit.CookieManager
 import android.webkit.WebStorage
 import android.webkit.WebView
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
@@ -225,8 +226,11 @@ open class AccountStore(
         // We've just got a new token. It might be from secure preferences (we've just been
         // restarted) or a token refresh.
         // 1. Update the rest of the app.
-        val credentials = generateSyncCredentials(token, isNewLogin)
-        credentials.subscribe(syncCredentials as Subject)
+        generateSyncCredentials(token, isNewLogin)
+            .take(1)
+            .observeOn(mainThread())
+            .subscribe((syncCredentials as Subject)::onNext, this::pushError)
+            .addTo(compositeDisposable)
 
         // 2. Store this token in the secure preferences.
         securePreferences.putString(Constant.Key.accessToken, token.toJSONObject().toString())
