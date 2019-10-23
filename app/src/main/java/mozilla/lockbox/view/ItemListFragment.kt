@@ -90,7 +90,8 @@ class ItemListFragment : Fragment(), ItemListView {
         sortList.add(Setting.ItemListSort.ALPHABETICALLY)
         sortList.add(Setting.ItemListSort.RECENTLY_USED)
         spinner = view.sortButton
-        sortItemsAdapter = SortItemAdapter(context!!, android.R.layout.simple_spinner_item, sortList)
+        sortItemsAdapter =
+            SortItemAdapter(context!!, android.R.layout.simple_spinner_item, sortList)
         spinner.adapter = sortItemsAdapter
         spinner.setPopupBackgroundResource(R.drawable.sort_menu_bg)
 
@@ -103,7 +104,12 @@ class ItemListFragment : Fragment(), ItemListView {
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
 
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
                 if (userSelection) {
                     sortItemsAdapter.setSelection(position)
                     _sortItemSelection.onNext(sortMenuOptions[position])
@@ -181,8 +187,10 @@ class ItemListFragment : Fragment(), ItemListView {
         val header = view!!.navView.getHeaderView(0)
         val appName = getString(R.string.app_name)
         header.menuHeader.profileImage.contentDescription = getString(R.string.app_logo, appName)
-        header.menuHeader.displayName.text = profile.displayEmailName ?: resources.getString(R.string.firefox_account)
-        header.menuHeader.accountName.text = profile.accountName ?: resources.getString(R.string.app_name)
+        header.menuHeader.displayName.text =
+            profile.displayEmailName ?: resources.getString(R.string.firefox_account)
+        header.menuHeader.accountName.text =
+            profile.accountName ?: resources.getString(R.string.app_name)
 
         var avatarUrl = profile.avatarFromURL
         if (avatarUrl.isNullOrEmpty() || avatarUrl == resources.getString(R.string.default_avatar_url)) {
@@ -225,7 +233,10 @@ class ItemListFragment : Fragment(), ItemListView {
         if (!networkErrorVisibility) {
             errorHelper.showNetworkError(view!!)
         } else {
-            errorHelper.hideNetworkError(parent = view!!, child = view!!.refreshContainer.entriesView)
+            errorHelper.hideNetworkError(
+                parent = view!!,
+                child = view!!.refreshContainer.entriesView
+            )
         }
     }
 
