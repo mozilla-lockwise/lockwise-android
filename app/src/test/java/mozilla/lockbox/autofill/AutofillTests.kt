@@ -7,9 +7,11 @@
 package mozilla.lockbox.autofill
 
 import android.content.Context
+import android.text.InputType
 import androidx.test.core.app.ApplicationProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.LockboxApplication
+import mozilla.lockbox.autofill.AutofillNodeNavigator.Companion.editTextMask
 import mozilla.lockbox.support.isDebug
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -52,11 +54,19 @@ class AutofillTests {
     @Test
     fun testRealFixtures() {
         val fixtures = listOf(
+            Fixture("app_twitter_2", null, "com.twitter.android"),
+            Fixture("app_messenger_lite", null, "com.facebook.mlite"),
             Fixture("app_twitter", null, "com.twitter.android"),
             Fixture("html_twitter", "mobile.twitter.com", ""),
             Fixture("html_facebook", "m.facebook.com", ""),
             Fixture("html_gmail_1", "accounts.google.com", ""),
-            Fixture("html_gmail_2", "accounts.google.com", "")
+            Fixture("html_gmail_2", "accounts.google.com", ""),
+            Fixture("app_fortuneo", null, "com.fortuneo.android"),
+
+            // Fixtures using consecutive edit texts, the second with a password field.
+            //            Fixture("app_facebook_lite", null, "com.facebook.lite"),
+            // This currently works, but only in en_ locales.
+            Fixture("app_facebook", null, "com.facebook.katana")
         )
 
         fixtures.forEach { fixture ->
@@ -64,14 +74,14 @@ class AutofillTests {
                 DOMNavigator(context, fixture.filename, fixture.filename)
             val subject = ParsedStructureBuilder(navigator).build()
 
+            assertNotNull("${fixture.filename} password detected", subject.passwordId)
+            assertNotNull("${fixture.filename} username detected", subject.usernameId)
+
             if (fixture.webDomain != null) {
                 assertEquals("${fixture.filename} webDomain detected", fixture.webDomain, subject.webDomain)
             } else {
                 assertEquals("${fixture.filename} packageName detected", fixture.packageName, subject.packageName)
             }
-
-            assertNotNull(subject.passwordId, "${fixture.filename} password detected")
-            assertNotNull(subject.usernameId, "${fixture.filename} username detected")
         }
     }
 }
@@ -122,9 +132,8 @@ class DOMNavigator(
         return if (isEditText(node) || isHtmlInputField(node)) { clues(node).joinToString("|") } else { null }
     }
 
-    override fun isEditText(node: Element): Boolean {
-        return node.tagName == "EditText"
-    }
+    override fun isEditText(node: Element): Boolean =
+        node.tagName == "EditText" || (inputType(node) and editTextMask) > 0
 
     override fun isHtmlInputField(node: Element): Boolean {
         return node.tagName == "input"
@@ -137,6 +146,11 @@ class DOMNavigator(
     override fun webDomain(node: Element): String? {
         return node.attributes.getNamedItem("webDomain")?.nodeValue
     }
+
+    override fun inputType(node: Element): Int =
+        node.attributes.getNamedItem("inputType")?.nodeValue?.let {
+            Integer.parseInt(it, 16)
+        } ?: 0
 
     override fun build(
         usernameId: String?,

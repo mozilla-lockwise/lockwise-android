@@ -39,7 +39,7 @@ class ParsedStructureBuilder<ViewNode, AutofillId>(
     }
 
     private fun getAutofillIdForKeywords(keywords: Collection<String>): AutofillId? {
-        return searchBasicAutofillContent(keywords) ?: checkForConsecutiveKeywordAndField(keywords)
+        return searchBasicAutofillContent(keywords) ?: checkForConsecutiveKeywordAndField(keywords) ?: checkForNestedLayoutAndField(keywords)
     }
 
     private fun searchBasicAutofillContent(keywords: Collection<String>): AutofillId? {
@@ -64,6 +64,25 @@ class ParsedStructureBuilder<ViewNode, AutofillId>(
                     if (containsKeywords(prevNode, keywords)) {
                         return@findFirst id
                     }
+                }
+            }
+            null
+        }
+    }
+
+    private fun checkForNestedLayoutAndField(keywords: Collection<String>): AutofillId? {
+        return navigator.findFirst { node: ViewNode ->
+            val childNodes = navigator.childNodes(node)
+
+            if (childNodes.size != 1) {
+                return@findFirst null
+            }
+
+            val child = childNodes[0]
+            val id = navigator.autofillId(child) ?: return@findFirst null
+            if (navigator.isEditText(child) || navigator.isHtmlInputField(child)) {
+                if (containsKeywords(node, keywords)) {
+                    return@findFirst id
                 }
             }
             null

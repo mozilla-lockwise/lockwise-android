@@ -3,11 +3,17 @@ package mozilla.lockbox.autofill
 import android.app.assist.AssistStructure
 import android.app.assist.AssistStructure.ViewNode
 import android.os.Build
+import android.text.InputType
 import android.view.autofill.AutofillId
 import androidx.annotation.RequiresApi
+import mozilla.lockbox.autofill.AutofillNodeNavigator.Companion.editTextMask
 import java.util.Locale
 
 interface AutofillNodeNavigator<Node, Id> {
+    companion object {
+        val editTextMask = InputType.TYPE_CLASS_TEXT
+    }
+
     val rootNodes: List<Node>
     val activityPackageName: String
     fun childNodes(node: Node): List<Node>
@@ -18,6 +24,7 @@ interface AutofillNodeNavigator<Node, Id> {
     fun packageName(node: Node): String?
     fun webDomain(node: Node): String?
     fun currentText(node: Node): String?
+    fun inputType(node: Node): Int
     fun build(
         usernameId: Id?,
         passwordId: Id?,
@@ -62,7 +69,7 @@ class ViewNodeNavigator(
         node.run { (0 until childCount) }.map { node.getChildAt(it) }
 
     override fun clues(node: ViewNode): Iterable<CharSequence> {
-        var hints = listOf(node.hint, node.text)
+        var hints = listOf(node.hint, node.text, node.idEntry)
 
         node.autofillOptions?.let {
             hints += it
@@ -83,7 +90,9 @@ class ViewNodeNavigator(
     override fun autofillId(node: ViewNode): AutofillId? = node.autofillId
 
     override fun isEditText(node: ViewNode) =
-        node.className == "android.widget.EditText"
+        inputType(node) and editTextMask > 0
+
+    override fun inputType(node: ViewNode) = node.inputType
 
     override fun isHtmlInputField(node: ViewNode) =
         // Use English locale, as the HTML tags are all in English.
