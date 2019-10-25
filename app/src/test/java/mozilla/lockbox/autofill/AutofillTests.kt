@@ -7,7 +7,6 @@
 package mozilla.lockbox.autofill
 
 import android.content.Context
-import android.text.InputType
 import androidx.test.core.app.ApplicationProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.LockboxApplication
@@ -64,7 +63,7 @@ class AutofillTests {
             Fixture("app_fortuneo", null, "com.fortuneo.android"),
 
             // Fixtures using consecutive edit texts, the second with a password field.
-            //            Fixture("app_facebook_lite", null, "com.facebook.lite"),
+            Fixture("app_facebook_lite", null, "com.facebook.lite"),
             // This currently works, but only in en_ locales.
             Fixture("app_facebook", null, "com.facebook.katana")
         )

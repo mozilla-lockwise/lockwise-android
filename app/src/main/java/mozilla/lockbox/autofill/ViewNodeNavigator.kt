@@ -12,6 +12,9 @@ import java.util.Locale
 interface AutofillNodeNavigator<Node, Id> {
     companion object {
         val editTextMask = InputType.TYPE_CLASS_TEXT
+        val passwordMask =
+            InputType.TYPE_TEXT_VARIATION_PASSWORD or
+            InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
     }
 
     val rootNodes: List<Node>
@@ -25,6 +28,7 @@ interface AutofillNodeNavigator<Node, Id> {
     fun webDomain(node: Node): String?
     fun currentText(node: Node): String?
     fun inputType(node: Node): Int
+    fun isPasswordField(node: Node): Boolean = (inputType(node) and passwordMask) > 0
     fun build(
         usernameId: Id?,
         passwordId: Id?,
@@ -69,7 +73,7 @@ class ViewNodeNavigator(
         node.run { (0 until childCount) }.map { node.getChildAt(it) }
 
     override fun clues(node: ViewNode): Iterable<CharSequence> {
-        var hints = listOf(node.hint, node.text, node.idEntry)
+        var hints = listOf(node.text, node.idEntry)
 
         node.autofillOptions?.let {
             hints += it

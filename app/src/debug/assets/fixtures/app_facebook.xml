@@ -9,8 +9,8 @@
     <LinearLayout idEntry="(name removed)" idPackage="com.facebook.katana" idType="id">
         <FrameLayout idEntry="(name removed)" idPackage="com.facebook.katana" idType="id">
             <FrameLayout idEntry="(name removed)" idPackage="com.facebook.katana" idType="id">
-                <EditText hint="Phone or email" inputType="21"/>
-                <EditText hint="Password" inputType="81"/>
+                <EditText inputType="21"/>
+                <EditText inputType="81"/>
             </FrameLayout>
         </FrameLayout>
     </LinearLayout>

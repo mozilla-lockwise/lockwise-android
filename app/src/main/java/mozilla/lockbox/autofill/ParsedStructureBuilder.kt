@@ -9,8 +9,7 @@ class ParsedStructureBuilder<ViewNode, AutofillId>(
     private val navigator: AutofillNodeNavigator<ViewNode, AutofillId>
 ) {
     fun build(): ParsedStructureData<AutofillId> {
-        val usernameId = getUsernameId()
-        val passwordId = getPasswordId()
+        val (usernameId, passwordId) = findAutofillIds()
         val hostnameClue = usernameId ?: passwordId
 
         return navigator.build(
@@ -20,6 +19,9 @@ class ParsedStructureBuilder<ViewNode, AutofillId>(
             getPackageName(hostnameClue) ?: navigator.activityPackageName
         )
     }
+
+    private fun findAutofillIds(): Pair<AutofillId?, AutofillId?> =
+        checkForAdjacentFields() ?: getUsernameId() to getPasswordId()
 
     private fun getUsernameId(): AutofillId? {
         // how do we localize the "email" and "username"?
@@ -85,6 +87,29 @@ class ParsedStructureBuilder<ViewNode, AutofillId>(
                     return@findFirst id
                 }
             }
+            null
+        }
+    }
+
+    private fun checkForAdjacentFields(): Pair<AutofillId?, AutofillId?>? {
+        return navigator.findFirst { node: ViewNode ->
+            val childNodes = navigator.childNodes(node).filter {
+                navigator.isEditText(it) && navigator.autofillId(it) != null
+            }
+
+            // we must have a minimum of two EditText boxes in order to have a pair.
+            if (childNodes.size < 2) {
+                return@findFirst null
+            }
+
+            for (i in 1.until(childNodes.size)) {
+                val prevNode = childNodes[i - 1]
+                val currentNode = childNodes[i]
+                if (navigator.isPasswordField(currentNode) && navigator.isPasswordField(prevNode).not()) {
+                    return@findFirst navigator.autofillId(prevNode) to navigator.autofillId(currentNode)
+                }
+            }
+
             null
         }
     }
