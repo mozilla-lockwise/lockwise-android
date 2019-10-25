@@ -57,10 +57,7 @@
         <item name="android:popupBackground">@android:color/transparent</item>
         <item name="android:background">@android:color/transparent</item>
         <item name="android:textColorHint">@color/black_60_percent</item>
-        <item name="android:colorControlActivated">@color/violet_70</item>
         <item name="android:colorControlNormal">@color/dark_grey</item>
-        <item name="android:colorControlHighlight">@color/violet_70</item>
-        <item name="colorAccent">@color/violet_70</item>
         <item name="errorTextAppearance">@style/ErrorText</item>
     </style>
 
