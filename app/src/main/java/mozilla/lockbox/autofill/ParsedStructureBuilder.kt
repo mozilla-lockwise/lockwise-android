@@ -44,7 +44,8 @@ class ParsedStructureBuilder<ViewNode, AutofillId>(
                 "email",
                 "username",
                 "user name",
-                "identifier"
+                "identifier",
+                "account_name"
             )
         )
     }
@@ -55,7 +56,9 @@ class ParsedStructureBuilder<ViewNode, AutofillId>(
     }
 
     private fun getAutofillIdForKeywords(rootNode: ViewNode?, keywords: Collection<String>): AutofillId? {
-        return searchBasicAutofillContent(rootNode, keywords) ?: checkForConsecutiveKeywordAndField(keywords) ?: checkForNestedLayoutAndField(keywords)
+        return searchBasicAutofillContent(rootNode, keywords) ?:
+            checkForConsecutiveKeywordAndField(rootNode, keywords) ?:
+            checkForNestedLayoutAndField(rootNode, keywords)
     }
 
     private fun searchBasicAutofillContent(rootNode: ViewNode?, keywords: Collection<String>): AutofillId? {
@@ -68,8 +71,8 @@ class ParsedStructureBuilder<ViewNode, AutofillId>(
         }
     }
 
-    private fun checkForConsecutiveKeywordAndField(keywords: Collection<String>): AutofillId? {
-        return navigator.findFirst { node: ViewNode ->
+    private fun checkForConsecutiveKeywordAndField(rootNode: ViewNode?, keywords: Collection<String>): AutofillId? {
+        return navigator.findFirst(rootNode) { node: ViewNode ->
             val childNodes = navigator.childNodes(node)
             // check for consecutive views with keywords followed by possible fill locations
             for (i in 1.until(childNodes.size)) {
@@ -86,8 +89,8 @@ class ParsedStructureBuilder<ViewNode, AutofillId>(
         }
     }
 
-    private fun checkForNestedLayoutAndField(keywords: Collection<String>): AutofillId? {
-        return navigator.findFirst { node: ViewNode ->
+    private fun checkForNestedLayoutAndField(rootNode: ViewNode?, keywords: Collection<String>): AutofillId? {
+        return navigator.findFirst(rootNode) { node: ViewNode ->
             val childNodes = navigator.childNodes(node)
 
             if (childNodes.size != 1) {

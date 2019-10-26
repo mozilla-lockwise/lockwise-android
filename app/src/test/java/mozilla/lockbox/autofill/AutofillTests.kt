@@ -71,7 +71,8 @@ class AutofillTests {
             // Fixtures with two web forms. Added a 'focus' attribute to the XML to select which is
             // focused.
             Fixture("html_amazon_signin", "www.amazon.co.uk", ""),
-            Fixture("html_amazon_register", "www.amazon.co.uk", "")
+            Fixture("html_amazon_register", "www.amazon.co.uk", ""),
+            Fixture("app_pocket_apple_id", "appleid.apple.com", "")
         )
 
         fixtures.forEach { fixture ->

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ This Source Code Form is subject to the terms of the Mozilla Public
+  ~ License, v. 2.0. If a copy of the MPL was not distributed with this
+  ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
+  -->
+
+<FrameLayout>
+    <LinearLayout>
+        <View idEntry="action_mode_bar_stub" idPackage="android" idType="id"/>
+        <FrameLayout>
+            <LinearLayout idEntry="action_bar_root" idPackage="com.ideashower.readitlater.pro" idType="id">
+                <View idEntry="action_mode_bar_stub" idPackage="com.ideashower.readitlater.pro" idType="id"/>
+                <FrameLayout idEntry="content" idPackage="android" idType="id">
+                    <RelativeLayout idEntry="pocket_root" idPackage="com.ideashower.readitlater.pro" idType="id">
+                        <FrameLayout idEntry="content" idPackage="com.ideashower.readitlater.pro" idType="id">
+                            <ViewGroup>
+                                <ViewGroup idEntry="intro" idPackage="com.ideashower.readitlater.pro" idType="id">
+                                    <FrameLayout>
+                                        <ViewGroup idEntry="info_page_content" idPackage="com.ideashower.readitlater.pro" idType="id">
+                                            <ImageView idEntry="header" idPackage="com.ideashower.readitlater.pro" idType="id"/>
+                                            <ViewGroup idEntry="viewPager" idPackage="com.ideashower.readitlater.pro" idType="id">
+                                                <ViewGroup idEntry="pager" idPackage="com.ideashower.readitlater.pro" idType="id">
+                                                    <FrameLayout>
+                                                        <ViewGroup>
+                                                            <ImageView idEntry="image" idPackage="com.ideashower.readitlater.pro" idType="id"/>
+                                                            <TextView idEntry="title" idPackage="com.ideashower.readitlater.pro" idType="id"/>
+                                                            <TextView idEntry="text" idPackage="com.ideashower.readitlater.pro" idType="id"/>
+                                                        </ViewGroup>
+                                                    </FrameLayout>
+                                                    <FrameLayout>
+                                                        <ViewGroup>
+                                                            <ImageView idEntry="image" idPackage="com.ideashower.readitlater.pro" idType="id"/>
+                                                            <TextView idEntry="title" idPackage="com.ideashower.readitlater.pro" idType="id"/>
+                                                            <TextView idEntry="text" idPackage="com.ideashower.readitlater.pro" idType="id"/>
+                                                        </ViewGroup>
+                                                    </FrameLayout>
+                                                    <FrameLayout>
+                                                        <ViewGroup>
+                                                            <ImageView idEntry="image" idPackage="com.ideashower.readitlater.pro" idType="id"/>
+                                                            <TextView idEntry="title" idPackage="com.ideashower.readitlater.pro" idType="id"/>
+                                                            <TextView idEntry="text" idPackage="com.ideashower.readitlater.pro" idType="id"/>
+                                                        </ViewGroup>
+                                                    </FrameLayout>
+                                                </ViewGroup>
+                                                <LinearLayout idEntry="indicators" idPackage="com.ideashower.readitlater.pro" idType="id">
+                                                    <ImageView/>
+                                                    <ImageView/>
+                                                    <ImageView/>
+                                                </LinearLayout>
+                                            </ViewGroup>
+                                            <TextView idEntry="actionButton" idPackage="com.ideashower.readitlater.pro" idType="id"/>
+                                            <TextView idEntry="actionLinkText" idPackage="com.ideashower.readitlater.pro" idType="id"/>
+                                        </ViewGroup>
+                                    </FrameLayout>
+                                </ViewGroup>
+                                <ViewGroup idEntry="server_message" idPackage="com.ideashower.readitlater.pro" idType="id"/>
+                                <ViewGroup idEntry="login" idPackage="com.ideashower.readitlater.pro" idType="id">
+                                    <ViewGroup idEntry="app_bar" idPackage="com.ideashower.readitlater.pro" idType="id">
+                                        <View/>
+                                        <ImageView idEntry="app_bar_nav" idPackage="com.ideashower.readitlater.pro" idType="id"/>
+                                        <TextView idEntry="app_bar_title" idPackage="com.ideashower.readitlater.pro" idType="id"/>
+                                    </ViewGroup>
+                                    <ViewGroup idEntry="container" idPackage="com.ideashower.readitlater.pro" idType="id">
+                                        <FrameLayout idEntry="scroll" idPackage="com.ideashower.readitlater.pro" idType="id">
+                                            <ViewGroup idEntry="form_wrap" idPackage="com.ideashower.readitlater.pro" idType="id">
+                                                <FrameLayout idEntry="form_parent" idPackage="com.ideashower.readitlater.pro" idType="id">
+                                                    <ViewGroup>
+                                                        <LinearLayout idEntry="dummy_focus" idPackage="com.ideashower.readitlater.pro" idType="id"/>
+                                                        <TextView idEntry="google_login" idPackage="com.ideashower.readitlater.pro" idType="id"/>
+                                                        <TextView idEntry="firefox_login" idPackage="com.ideashower.readitlater.pro" idType="id"/>
+                                                        <TextView idEntry="apple_login" idPackage="com.ideashower.readitlater.pro" idType="id"/>
+                                                        <TextView idEntry="or" idPackage="com.ideashower.readitlater.pro" idType="id"/>
+                                                        <LinearLayout idEntry="email" idPackage="com.ideashower.readitlater.pro" idType="id">
+                                                            <FrameLayout>
+                                                                <EditText inputType="21"/>
+                                                            </FrameLayout>
+                                                            <View/>
+                                                        </LinearLayout>
+                                                        <LinearLayout idEntry="password" idPackage="com.ideashower.readitlater.pro" idType="id">
+                                                            <FrameLayout>
+                                                                <EditText inputType="81"/>
+                                                            </FrameLayout>
+                                                            <View/>
+                                                        </LinearLayout>
+                                                        <TextView idEntry="forgot_login" idPackage="com.ideashower.readitlater.pro" idType="id"/>
+                                                    </ViewGroup>
+                                                </FrameLayout>
+                                                <TextView idEntry="in_form_button" idPackage="com.ideashower.readitlater.pro" idType="id"/>
+                                            </ViewGroup>
+                                        </FrameLayout>
+                                    </ViewGroup>
+                                    <TextView idEntry="fixed_button" idPackage="com.ideashower.readitlater.pro" idType="id"/>
+                                </ViewGroup>
+                                <ViewGroup idEntry="signup" idPackage="com.ideashower.readitlater.pro" idType="id"/>
+                                <View idEntry="firefox_stub" idPackage="com.ideashower.readitlater.pro" idType="id"/>
+                                <RelativeLayout idEntry="apple" idPackage="com.ideashower.readitlater.pro" idType="id">
+                                    <ViewGroup idEntry="appbar_apple" idPackage="com.ideashower.readitlater.pro" idType="id">
+                                        <ImageView idEntry="leftIcon" idPackage="com.ideashower.readitlater.pro" idType="id"/>
+                                        <View idEntry="divider" idPackage="com.ideashower.readitlater.pro" idType="id"/>
+                                        <TextView idEntry="title" idPackage="com.ideashower.readitlater.pro" idType="id"/>
+                                        <View idEntry="titleBarrier" idPackage="com.ideashower.readitlater.pro" idType="id"/>
+                                        <FrameLayout idEntry="centerContainer" idPackage="com.ideashower.readitlater.pro" idType="id"/>
+                                        <LinearLayout idEntry="actions" idPackage="com.ideashower.readitlater.pro" idType="id"/>
+                                    </ViewGroup>
+                                    <FrameLayout idEntry="apple_frame" idPackage="com.ideashower.readitlater.pro" idType="id">
+                                        <form webDomain="appleid.apple.com" name="">
+                                            <input hint="" name="ac-gn-menustate" type="checkbox" label="" id="ac-gn-menustate"/>
+                                            <input hint="" name="ac-localnav-menustate" type="checkbox" label="" id="ac-localnav-menustate"/>
+                                            <input hint="" autofillHints="off" name="account_name_text_field" type="text" label="Use your Apple ID to sign in to Pocket: Save. Read. Grow.. Apple ID" id="account_name_text_field" maxlength="2147483647" autofillId="autofillId-username"/>
+                                            <input hint="" autofillHints="off" name="password_text_field" type="password" label="Password" id="password_text_field" maxlength="2147483647"/>
+                                        </form>
+                                    </FrameLayout>
+                                </RelativeLayout>
+                            </ViewGroup>
+                        </FrameLayout>
+                        <View idEntry="stub_listen" idPackage="com.ideashower.readitlater.pro" idType="id"/>
+                        <View idEntry="stub_lock" idPackage="com.ideashower.readitlater.pro" idType="id"/>
+                    </RelativeLayout>
+                </FrameLayout>
+            </LinearLayout>
+        </FrameLayout>
+    </LinearLayout>
+    <View idEntry="navigationBarBackground" idPackage="android" idType="id"/>
+    <View idEntry="statusBarBackground" idPackage="android" idType="id"/>
+</FrameLayout>
