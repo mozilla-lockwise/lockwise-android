@@ -8,7 +8,7 @@
             <ViewGroup>
                <ViewGroup/>
                <ViewGroup/>
-               <MultiAutoCompleteTextView autofillValue="" inputType="80001"/>
+               <MultiAutoCompleteTextView autofillValue="" inputType="80001" autofillId="autofillId-username"/>
                <ViewGroup/>
                <MultiAutoCompleteTextView inputType="80081"/>
                <ViewGroup>

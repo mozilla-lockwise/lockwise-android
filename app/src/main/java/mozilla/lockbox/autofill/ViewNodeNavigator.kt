@@ -24,11 +24,13 @@ interface AutofillNodeNavigator<Node, Id> {
     fun autofillId(node: Node): Id?
     fun isEditText(node: Node): Boolean
     fun isHtmlInputField(node: Node): Boolean
+    fun isHtmlForm(node: Node): Boolean
     fun packageName(node: Node): String?
     fun webDomain(node: Node): String?
     fun currentText(node: Node): String?
     fun inputType(node: Node): Int
     fun isPasswordField(node: Node): Boolean = (inputType(node) and passwordMask) > 0
+    fun isFocused(node: Node): Boolean
     fun build(
         usernameId: Id?,
         passwordId: Id?,
@@ -36,7 +38,7 @@ interface AutofillNodeNavigator<Node, Id> {
         packageName: String
     ): ParsedStructureData<Id>
 
-    fun <T> findFirst(transform: (Node) -> T?): T? {
+    private fun <T> findFirstRoots(transform: (Node) -> T?): T? {
         rootNodes
             .forEach { node ->
                 findFirst(node, transform)?.let { result ->
@@ -46,7 +48,9 @@ interface AutofillNodeNavigator<Node, Id> {
         return null
     }
 
-    fun <T> findFirst(node: Node, transform: (Node) -> T?): T? {
+    fun <T> findFirst(rootNode: Node? = null, transform: (Node) -> T?): T? {
+        val node = rootNode ?: return findFirstRoots(transform)
+
         transform(node)?.let {
             return it
         }
@@ -99,8 +103,14 @@ class ViewNodeNavigator(
     override fun inputType(node: ViewNode) = node.inputType
 
     override fun isHtmlInputField(node: ViewNode) =
+        htmlTagName(node) == "input"
+
+    private fun htmlTagName(node: ViewNode) =
         // Use English locale, as the HTML tags are all in English.
-        node.htmlInfo?.tag?.toLowerCase(Locale.ENGLISH) == "input"
+        node.htmlInfo?.tag?.toLowerCase(Locale.ENGLISH)
+
+    override fun isHtmlForm(node: ViewNode) =
+        htmlTagName(node) == "form"
 
     override fun packageName(node: ViewNode): String? = node.idPackage
 
@@ -113,6 +123,8 @@ class ViewNodeNavigator(
             null
         }
     }
+
+    override fun isFocused(node: ViewNode) = node.isFocused
 
     override fun build(
         usernameId: AutofillId?,

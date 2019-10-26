@@ -13,7 +13,14 @@ fun AssistStructure.ViewNode.dump(): String {
 @TargetApi(Build.VERSION_CODES.O)
 private fun AssistStructure.ViewNode.dumpNode(sb: StringBuilder = StringBuilder()): StringBuilder {
 
-    val name = htmlInfo?.tag ?: className?.split('.')?.last() ?: "unknown"
+    val tag = htmlInfo?.tag?.let {
+        if (it.isNotBlank()) {
+            it
+        } else {
+            "UnspecifiedTag"
+        }
+    }
+    val name = tag ?: className?.split('.')?.last() ?: "unknown"
 
     val viewAttrs = listOf(
         "idEntry" to idEntry,

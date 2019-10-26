@@ -26,7 +26,7 @@
                            <TextView idEntry="header_subtitle" idPackage="com.twitter.android" idType="id" />
                         </LinearLayout>
                         <LinearLayout idEntry="login_form" idPackage="com.twitter.android" idType="id">
-                           <EditText idEntry="login_identifier" idPackage="com.twitter.android" idType="id" autofillValue="" />
+                           <EditText idEntry="login_identifier" idPackage="com.twitter.android" idType="id" autofillValue="" autofillId="autofillId-username" />
                            <EditText idEntry="login_password" idPackage="com.twitter.android" idType="id" />
                            <TextView idEntry="password_reset" idPackage="com.twitter.android" idType="id" />
                         </LinearLayout>

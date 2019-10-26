@@ -25,8 +25,8 @@
               <input webDomain="www.amazon.co.uk" name="openid.return_to" type="hidden"/>
               <input webDomain="www.amazon.co.uk" name="prevRID" type="hidden"/>
               <input webDomain="www.amazon.co.uk" name="workflowState" type="hidden"/>
-              <input webDomain="www.amazon.co.uk" autofillHints="emailAddress" inputType="21" autocorrect="off" id="ap_email_login" name="email" type="email" maxlength="128" placeholder="Email (phone for mobile accounts)" autocapitalize="off"/>
-              <input webDomain="www.amazon.co.uk" autofillHints="password" inputType="e1" id="ap-credential-autofill-hint" name="password" type="password" maxlength="1024"/>
+              <input webDomain="www.amazon.co.uk" autofillHints="emailAddress" inputType="21" autocorrect="off" id="ap_email_login" name="email" type="email" maxlength="128" placeholder="Email (phone for mobile accounts)" autocapitalize="off" focus="true" autofillId="autofillId-username"/>
+              <input webDomain="www.amazon.co.uk" autofillHints="password" inputType="e1" id="ap-credential-autofill-hint" name="password" type="password" maxlength="1024" autofillId="autofillId-password"/>
               <input webDomain="www.amazon.co.uk" id="continue" type="submit" class="a-button-input" aria-labelledby="continue-announce"/>
             </form>
           </FrameLayout>

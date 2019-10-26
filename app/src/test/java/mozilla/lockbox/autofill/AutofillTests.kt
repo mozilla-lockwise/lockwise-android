@@ -44,7 +44,7 @@ class AutofillTests {
                 val subject = ParsedStructureBuilder(navigator).build()
 
                 assertNotNull(subject.usernameId)
-                assertTrue("${subject.usernameId!!} starts with u", subject.usernameId!!.startsWith("u"))
+                assertEquals("autofillId-username", subject.usernameId)
                 assertNotNull(subject.passwordId)
                 assertTrue("${subject.passwordId!!} starts with p", subject.passwordId!!.startsWith("p"))
             }
@@ -60,12 +60,18 @@ class AutofillTests {
             Fixture("html_facebook", "m.facebook.com", ""),
             Fixture("html_gmail_1", "accounts.google.com", ""),
             Fixture("html_gmail_2", "accounts.google.com", ""),
+
+            // Fixtures with non-english hints.
             Fixture("app_fortuneo", null, "com.fortuneo.android"),
 
             // Fixtures using consecutive edit texts, the second with a password field.
             Fixture("app_facebook_lite", null, "com.facebook.lite"),
-            // This currently works, but only in en_ locales.
-            Fixture("app_facebook", null, "com.facebook.katana")
+            Fixture("app_facebook", null, "com.facebook.katana"),
+
+            // Fixtures with two web forms. Added a 'focus' attribute to the XML to select which is
+            // focused.
+            Fixture("html_amazon_signin", "www.amazon.co.uk", ""),
+            Fixture("html_amazon_register", "www.amazon.co.uk", "")
         )
 
         fixtures.forEach { fixture ->
@@ -75,6 +81,7 @@ class AutofillTests {
 
             assertNotNull("${fixture.filename} password detected", subject.passwordId)
             assertNotNull("${fixture.filename} username detected", subject.usernameId)
+            assertEquals("autofillId-username", subject.usernameId)
 
             if (fixture.webDomain != null) {
                 assertEquals("${fixture.filename} webDomain detected", fixture.webDomain, subject.webDomain)
@@ -124,30 +131,36 @@ class DOMNavigator(
         val attributes = node.attributes
         return (0 until attributes.length)
             .map { attributes.item(it) }
-            .map { it.nodeValue }
+            .mapNotNull { if (it.nodeName != "hint") it.nodeValue else null }
     }
 
     override fun autofillId(node: Element): String? {
-        return if (isEditText(node) || isHtmlInputField(node)) { clues(node).joinToString("|") } else { null }
+        return if (isEditText(node) || isHtmlInputField(node)) {
+            attr(node, "autofillId") ?: clues(node).joinToString("|")
+        } else {
+            null
+        }
     }
 
     override fun isEditText(node: Element): Boolean =
-        node.tagName == "EditText" || (inputType(node) and editTextMask) > 0
+        tagName(node) == "EditText" || (inputType(node) and editTextMask) > 0
 
-    override fun isHtmlInputField(node: Element): Boolean {
-        return node.tagName == "input"
-    }
+    override fun isHtmlInputField(node: Element) = tagName(node) == "input"
 
-    override fun packageName(node: Element): String? {
-        return node.attributes.getNamedItem("idPackage")?.nodeValue
-    }
+    private fun tagName(node: Element) = node.tagName
 
-    override fun webDomain(node: Element): String? {
-        return node.attributes.getNamedItem("webDomain")?.nodeValue
-    }
+    override fun isHtmlForm(node: Element): Boolean = node.tagName == "form"
+
+    fun attr(node: Element, name: String) = node.attributes.getNamedItem(name)?.nodeValue
+
+    override fun isFocused(node: Element) = attr(node, "focus") == "true"
+
+    override fun packageName(node: Element) = attr(node, "idPackage")
+
+    override fun webDomain(node: Element) = attr(node, "webDomain")
 
     override fun inputType(node: Element): Int =
-        node.attributes.getNamedItem("inputType")?.nodeValue?.let {
+        attr(node, "inputType")?.let {
             Integer.parseInt(it, 16)
         } ?: 0
 

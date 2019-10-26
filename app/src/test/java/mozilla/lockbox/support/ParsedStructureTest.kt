@@ -1,6 +1,7 @@
 package mozilla.lockbox.support
 
 import android.app.assist.AssistStructure
+import android.text.InputType
 import android.view.View
 import android.view.autofill.AutofillId
 import mozilla.lockbox.autofill.ParsedStructureBuilder
@@ -30,11 +31,13 @@ class ParsedStructureTest {
         whenCalled(usernameViewNode.autofillHints).thenReturn(arrayOf(View.AUTOFILL_HINT_USERNAME))
         whenCalled(usernameViewNode.autofillId).thenReturn(usernameId)
         whenCalled(usernameViewNode.className).thenReturn("android.widget.EditText")
+        whenCalled(usernameViewNode.inputType).thenReturn(InputType.TYPE_CLASS_TEXT)
 
         val passwordViewNode = mock(AssistStructure.ViewNode::class.java)
         whenCalled(passwordViewNode.autofillHints).thenReturn(arrayOf(View.AUTOFILL_HINT_PASSWORD))
         whenCalled(passwordViewNode.autofillId).thenReturn(passwordId)
         whenCalled(passwordViewNode.className).thenReturn("android.widget.EditText")
+        whenCalled(passwordViewNode.inputType).thenReturn(InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD)
 
         whenCalled(rootViewNode.childCount).thenReturn(2)
         whenCalled(rootViewNode.getChildAt(0)).thenReturn(usernameViewNode)
@@ -91,10 +94,12 @@ class ParsedStructureTest {
         whenCalled(usernameViewNode.autofillId).thenReturn(usernameId)
         whenCalled(usernameViewNode.text).thenReturn("Email Address")
         whenCalled(usernameViewNode.className).thenReturn("android.widget.EditText")
+        whenCalled(usernameViewNode.inputType).thenReturn(InputType.TYPE_CLASS_TEXT)
         val passwordViewNode = mock(AssistStructure.ViewNode::class.java)
         whenCalled(passwordViewNode.autofillId).thenReturn(passwordId)
         whenCalled(passwordViewNode.text).thenReturn("Password")
         whenCalled(passwordViewNode.className).thenReturn("android.widget.EditText")
+        whenCalled(passwordViewNode.inputType).thenReturn(InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD)
 
         whenCalled(rootViewNode.childCount).thenReturn(2)
         whenCalled(rootViewNode.getChildAt(0)).thenReturn(usernameViewNode)
@@ -126,6 +131,7 @@ class ParsedStructureTest {
         val usernameViewNode = mock(AssistStructure.ViewNode::class.java)
         whenCalled(usernameViewNode.autofillId).thenReturn(usernameId)
         whenCalled(usernameViewNode.className).thenReturn("android.widget.EditText")
+        whenCalled(usernameViewNode.inputType).thenReturn(InputType.TYPE_CLASS_TEXT)
 
         val passwordTextViewNode = mock(AssistStructure.ViewNode::class.java)
         whenCalled(passwordTextViewNode.autofillId).thenReturn(passwordTextViewId)
@@ -134,6 +140,7 @@ class ParsedStructureTest {
         val passwordViewNode = mock(AssistStructure.ViewNode::class.java)
         whenCalled(passwordViewNode.autofillId).thenReturn(passwordId)
         whenCalled(passwordViewNode.className).thenReturn("android.widget.EditText")
+        whenCalled(passwordViewNode.inputType).thenReturn(InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD)
 
         whenCalled(rootViewNode.childCount).thenReturn(4)
         whenCalled(rootViewNode.getChildAt(0)).thenReturn(usernameTextViewNode)

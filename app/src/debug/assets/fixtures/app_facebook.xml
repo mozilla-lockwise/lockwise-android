@@ -9,7 +9,7 @@
     <LinearLayout idEntry="(name removed)" idPackage="com.facebook.katana" idType="id">
         <FrameLayout idEntry="(name removed)" idPackage="com.facebook.katana" idType="id">
             <FrameLayout idEntry="(name removed)" idPackage="com.facebook.katana" idType="id">
-                <EditText inputType="21"/>
+                <EditText inputType="21" autofillId="autofillId-username"/>
                 <EditText inputType="81"/>
             </FrameLayout>
         </FrameLayout>

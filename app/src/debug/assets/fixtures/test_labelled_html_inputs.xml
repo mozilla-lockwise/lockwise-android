@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FrameLayout>
     <form>
-        <label autofillHints="username"/>
-        <input id="u"/>
+        <label autofillHints="username" />
+        <input id="u" autofillId="autofillId-username"/>
         <label autofillHints="password"/>
         <input id="p"/>
     </form>

@@ -9,7 +9,8 @@ class ParsedStructureBuilder<ViewNode, AutofillId>(
     private val navigator: AutofillNodeNavigator<ViewNode, AutofillId>
 ) {
     fun build(): ParsedStructureData<AutofillId> {
-        val (usernameId, passwordId) = findAutofillIds()
+        val formNode = findFocusedForm()
+        val (usernameId, passwordId) = findAutofillIds(formNode)
         val hostnameClue = usernameId ?: passwordId
 
         return navigator.build(
@@ -20,32 +21,45 @@ class ParsedStructureBuilder<ViewNode, AutofillId>(
         )
     }
 
-    private fun findAutofillIds(): Pair<AutofillId?, AutofillId?> =
-        checkForAdjacentFields() ?: getUsernameId() to getPasswordId()
+    private fun findFocusedForm(): ViewNode? {
+        val focusPath = findMatchedNodeAncestors {
+            navigator.isFocused(it)
+        }
 
-    private fun getUsernameId(): AutofillId? {
+        return focusPath?.lastOrNull {
+            navigator.isHtmlForm(it)
+        }
+    }
+
+    private fun findAutofillIds(rootNode: ViewNode?): Pair<AutofillId?, AutofillId?> =
+        checkForAdjacentFields(rootNode) ?: getUsernameId(rootNode) to getPasswordId(rootNode)
+
+    private fun getUsernameId(rootNode: ViewNode?): AutofillId? {
         // how do we localize the "email" and "username"?
-        return getAutofillIdForKeywords(listOf(
-            View.AUTOFILL_HINT_USERNAME,
-            View.AUTOFILL_HINT_EMAIL_ADDRESS,
-            "email",
-            "username",
-            "user name",
-            "identifier"
-        ))
+        return getAutofillIdForKeywords(
+            rootNode,
+            listOf(
+                View.AUTOFILL_HINT_USERNAME,
+                View.AUTOFILL_HINT_EMAIL_ADDRESS,
+                "email",
+                "username",
+                "user name",
+                "identifier"
+            )
+        )
     }
 
-    private fun getPasswordId(): AutofillId? {
+    private fun getPasswordId(rootNode: ViewNode?): AutofillId? {
         // similar l10n question for password
-        return getAutofillIdForKeywords(listOf(View.AUTOFILL_HINT_PASSWORD, "password"))
+        return getAutofillIdForKeywords(rootNode, listOf(View.AUTOFILL_HINT_PASSWORD, "password"))
     }
 
-    private fun getAutofillIdForKeywords(keywords: Collection<String>): AutofillId? {
-        return searchBasicAutofillContent(keywords) ?: checkForConsecutiveKeywordAndField(keywords) ?: checkForNestedLayoutAndField(keywords)
+    private fun getAutofillIdForKeywords(rootNode: ViewNode?, keywords: Collection<String>): AutofillId? {
+        return searchBasicAutofillContent(rootNode, keywords) ?: checkForConsecutiveKeywordAndField(keywords) ?: checkForNestedLayoutAndField(keywords)
     }
 
-    private fun searchBasicAutofillContent(keywords: Collection<String>): AutofillId? {
-        return navigator.findFirst { node: ViewNode ->
+    private fun searchBasicAutofillContent(rootNode: ViewNode?, keywords: Collection<String>): AutofillId? {
+        return navigator.findFirst(rootNode) { node: ViewNode ->
             if (isAutoFillableEditText(node, keywords) || isAutoFillableInputField(node, keywords)) {
                 navigator.autofillId(node)
             } else {
@@ -91,8 +105,8 @@ class ParsedStructureBuilder<ViewNode, AutofillId>(
         }
     }
 
-    private fun checkForAdjacentFields(): Pair<AutofillId?, AutofillId?>? {
-        return navigator.findFirst { node: ViewNode ->
+    private fun checkForAdjacentFields(rootNode: ViewNode?): Pair<AutofillId?, AutofillId?>? {
+        return navigator.findFirst(rootNode) { node: ViewNode ->
             val childNodes = navigator.childNodes(node).filter {
                 navigator.isEditText(it) && navigator.autofillId(it) != null
             }

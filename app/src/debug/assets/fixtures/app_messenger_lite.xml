@@ -8,7 +8,7 @@
             <LinearLayout idEntry="username_password_form" idPackage="com.facebook.mlite" idType="id">
                <TextView idEntry="login_message" idPackage="com.facebook.mlite" idType="id"/>
                <LinearLayout idEntry="login_username_text" idPackage="com.facebook.mlite" idType="id">
-                  <EditText inputType="1"/>
+                  <EditText inputType="1" autofillId="autofillId-username"/>
                </LinearLayout>
                <LinearLayout idEntry="login_password_edit_text" idPackage="com.facebook.mlite" idType="id">
                   <EditText inputType="81"/>

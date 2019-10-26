@@ -30,7 +30,7 @@
                     <Button idEntry="go_back_to_saved_identifier_button" idPackage="com.fortuneo.android" idType="id"/>
                     <Button idEntry="account_lost_password_button" idPackage="com.fortuneo.android" idType="id"/>
                     <LinearLayout idEntry="login_area_layout" idPackage="com.fortuneo.android" idType="id">
-                        <EditText idEntry="account_identifier_edit_text" idPackage="com.fortuneo.android" idType="id" hint="Identifiant" inputType="2"/>
+                        <EditText idEntry="account_identifier_edit_text" idPackage="com.fortuneo.android" idType="id" hint="Identifiant" inputType="2" autofillId="autofillId-username"/>
                         <CheckBox idEntry="account_save_identifier_checkbox" idPackage="com.fortuneo.android" idType="id"/>
                         <EditText idEntry="account_password_edit_text" idPackage="com.fortuneo.android" idType="id" hint="Mot de passe" inputType="81"/>
                         <Button idEntry="account_validate_button" idPackage="com.fortuneo.android" idType="id"/>
