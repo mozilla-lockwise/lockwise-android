@@ -18,9 +18,6 @@
         android:fitsSystemWindows="true"
         android:windowActionBarOverlay="true"
         android:importantForAutofill="noExcludeDescendants"
-        android:clickable="true"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
         tools:ignore="UnusedAttribute"
         style="@style/EditItemDetail">
 
@@ -150,7 +147,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingStart="16dp"
-                        android:textColorHint="@color/hint_edit_text"
+                        android:colorControlHighlight="@color/black_60_percent"
+                        android:colorControlActivated="@color/black_60_percent"
+                        android:textColorHint="@color/black_60_percent"
                         android:contentDescription="@string/web_address_description"
                         app:layout_constraintTop_toTopOf="parent"
                         card_view:layout_constraintStart_toStartOf="parent"
@@ -163,7 +162,7 @@
                             android:fontFamily="sans-serif"
                             android:textStyle="normal"
                             android:textColor="@color/gray_73_percent"
-                            android:textColorHint="@color/hint_edit_text"
+                            android:textColorHint="@color/black_60_percent"
                             android:letterSpacing="0.01"
                             android:lineSpacingExtra="8sp"
                             android:layout_width="match_parent"
@@ -173,8 +172,8 @@
                             android:ellipsize="end"
                             android:maxLines="1"
                             android:singleLine="true"
-                            android:clickable="true"
-                            android:focusable="true"
+                            android:clickable="false"
+                            android:focusable="false"
                             android:textCursorDrawable="@android:color/transparent"
                             app:backgroundTint="@color/gray_divider"
                             tools:ignore="Autofill"/>
@@ -289,7 +288,7 @@
                         android:background="@color/gray_divider"
                         android:layout_marginStart="18dp"
                         android:layout_marginEnd="2dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="9dp"
                         card_view:layout_constraintTop_toBottomOf="@id/btnPasswordToggle" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
