@@ -110,18 +110,31 @@ class ParsedStructureBuilder<ViewNode, AutofillId>(
 
     private fun checkForAdjacentFields(rootNode: ViewNode?): Pair<AutofillId?, AutofillId?>? {
         return navigator.findFirst(rootNode) { node: ViewNode ->
-            val childNodes = navigator.childNodes(node).filter {
-                navigator.isEditText(it) && navigator.autofillId(it) != null
+
+            val childNodes = navigator.childNodes(node)
+            // XXX we only look at the list of edit texts before the first button.
+            // This is because we are can see the invisible fields, but not that they are
+            // invisible. https://bugzilla.mozilla.org/show_bug.cgi?id=1592047
+            val firstButtonIndex = childNodes.indexOfFirst { navigator.isButton(it) }
+
+            val firstFewNodes = if (firstButtonIndex >= 0) {
+                childNodes.subList(0, firstButtonIndex)
+            } else {
+                childNodes
+            }
+
+            val inputFields = firstFewNodes.filter {
+                navigator.isEditText(it) && navigator.autofillId(it) != null && navigator.isVisible(it)
             }
 
             // we must have a minimum of two EditText boxes in order to have a pair.
-            if (childNodes.size < 2) {
+            if (inputFields.size < 2) {
                 return@findFirst null
             }
 
-            for (i in 1.until(childNodes.size)) {
-                val prevNode = childNodes[i - 1]
-                val currentNode = childNodes[i]
+            for (i in 1.until(inputFields.size)) {
+                val prevNode = inputFields[i - 1]
+                val currentNode = inputFields[i]
                 if (navigator.isPasswordField(currentNode) && navigator.isPasswordField(prevNode).not()) {
                     return@findFirst navigator.autofillId(prevNode) to navigator.autofillId(currentNode)
                 }

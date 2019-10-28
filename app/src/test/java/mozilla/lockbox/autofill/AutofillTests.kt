@@ -68,6 +68,9 @@ class AutofillTests {
             Fixture("app_facebook_lite", null, "com.facebook.lite"),
             Fixture("app_facebook", null, "com.facebook.katana"),
 
+            // Fixtures with multiple input fields. Only consider fields that happen before a button.
+            Fixture("html_auth0", "auth.mozilla.auth0.com", ""),
+
             // Fixtures with two web forms. Added a 'focus' attribute to the XML to select which is
             // focused.
             Fixture("html_amazon_signin", "www.amazon.co.uk", ""),
@@ -156,9 +159,24 @@ class DOMNavigator(
 
     override fun isFocused(node: Element) = attr(node, "focus") == "true"
 
+    override fun isVisible(node: Element) = attr(node, "visibility")?.let { it == "0" } ?: true
+
     override fun packageName(node: Element) = attr(node, "idPackage")
 
     override fun webDomain(node: Element) = attr(node, "webDomain")
+
+    override fun isButton(node: Element): Boolean {
+        when (node.tagName) {
+            "Button" -> return true
+            "button" -> return true
+        }
+
+        return when (attr(node, "type")) {
+            "submit" -> true
+            "button" -> true
+            else -> false
+        }
+    }
 
     override fun inputType(node: Element): Int =
         attr(node, "inputType")?.let {

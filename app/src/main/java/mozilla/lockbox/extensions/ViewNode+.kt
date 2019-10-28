@@ -31,7 +31,8 @@ private fun AssistStructure.ViewNode.dumpNode(sb: StringBuilder = StringBuilder(
         "autofillValue" to autofillValue?.let { if (it.isText) it.textValue.toString() else null },
         "autofillHints" to autofillHints?.joinToString(", "),
         "autofillOptions" to autofillOptions?.joinToString(", "),
-        "inputType" to if (inputType > 0) inputType.toString(16) else null
+        "inputType" to if (inputType > 0) inputType.toString(16) else null,
+        "visibility" to visibility.toString(16) // visible == 0, invisible == 4, gone == 8
     )
 
     val htmlAttrs = htmlInfo?.attributes?.map { it.first to it.second } ?: emptyList()
