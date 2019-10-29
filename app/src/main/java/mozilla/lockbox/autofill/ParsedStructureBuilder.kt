@@ -56,12 +56,12 @@ class ParsedStructureBuilder<ViewNode, AutofillId>(
     }
 
     private fun getAutofillIdForKeywords(rootNode: ViewNode?, keywords: Collection<String>): AutofillId? {
-        return searchBasicAutofillContent(rootNode, keywords) ?:
-            checkForConsecutiveKeywordAndField(rootNode, keywords) ?:
-            checkForNestedLayoutAndField(rootNode, keywords)
+        return checkForNamedTextField(rootNode, keywords)
+            ?: checkForConsecutiveLabelAndField(rootNode, keywords)
+            ?: checkForNestedLayoutAndField(rootNode, keywords)
     }
 
-    private fun searchBasicAutofillContent(rootNode: ViewNode?, keywords: Collection<String>): AutofillId? {
+    private fun checkForNamedTextField(rootNode: ViewNode?, keywords: Collection<String>): AutofillId? {
         return navigator.findFirst(rootNode) { node: ViewNode ->
             if (isAutoFillableEditText(node, keywords) || isAutoFillableInputField(node, keywords)) {
                 navigator.autofillId(node)
@@ -71,7 +71,7 @@ class ParsedStructureBuilder<ViewNode, AutofillId>(
         }
     }
 
-    private fun checkForConsecutiveKeywordAndField(rootNode: ViewNode?, keywords: Collection<String>): AutofillId? {
+    private fun checkForConsecutiveLabelAndField(rootNode: ViewNode?, keywords: Collection<String>): AutofillId? {
         return navigator.findFirst(rootNode) { node: ViewNode ->
             val childNodes = navigator.childNodes(node)
             // check for consecutive views with keywords followed by possible fill locations
