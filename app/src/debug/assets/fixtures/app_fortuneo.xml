@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ This Source Code Form is subject to the terms of the Mozilla Public
+  ~ License, v. 2.0. If a copy of the MPL was not distributed with this
+  ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
+  -->
+
+<FrameLayout>
+    <FrameLayout idEntry="action_bar_root" idPackage="" idType="id">
+        <ViewGroup idEntry="inner_content" idPackage="com.fortuneo.android" idType="id">
+            <LinearLayout idEntry="app_bar" idPackage="com.fortuneo.android" idType="id">
+                <FrameLayout idEntry="collapsingtoolbar" idPackage="com.fortuneo.android" idType="id">
+                    <LinearLayout idEntry="header_content" idPackage="com.fortuneo.android" idType="id"/>
+                    <ViewGroup idEntry="toolbar" idPackage="com.fortuneo.android" idType="id">
+                        <ViewGroup idEntry="profile_button" idPackage="com.fortuneo.android" idType="id">
+                            <TextView idEntry="unread_notifications_number_textview" idPackage="com.fortuneo.android" idType="id"/>
+                        </ViewGroup>
+                        <TextView idEntry="toolbar_title" idPackage="com.fortuneo.android" idType="id"/>
+                        <Spinner idEntry="spinner" idPackage="com.fortuneo.android" idType="id"/>
+                        <TextView idEntry="toolbar_subtitle" idPackage="com.fortuneo.android" idType="id"/>
+                        <TextView/>
+                        <TextView idEntry="action_bar_contact_us_button" idPackage="com.fortuneo.android" idType="id"/>
+                    </ViewGroup>
+                    <RelativeLayout idEntry="secondary_toolbar" idPackage="com.fortuneo.android" idType="id"/>
+                </FrameLayout>
+                <LinearLayout idEntry="tabcontainerlayout" idPackage="com.fortuneo.android" idType="id"/>
+            </LinearLayout>
+            <FrameLayout idEntry="container" idPackage="com.fortuneo.android" idType="id">
+                <FrameLayout idEntry="login_layout_container" idPackage="com.fortuneo.android" idType="id">
+                    <Button idEntry="go_back_to_saved_identifier_button" idPackage="com.fortuneo.android" idType="id"/>
+                    <Button idEntry="account_lost_password_button" idPackage="com.fortuneo.android" idType="id"/>
+                    <LinearLayout idEntry="login_area_layout" idPackage="com.fortuneo.android" idType="id">
+                        <EditText idEntry="account_identifier_edit_text" idPackage="com.fortuneo.android" idType="id" hint="Identifiant" inputType="2" autofillId="autofillId-username"/>
+                        <CheckBox idEntry="account_save_identifier_checkbox" idPackage="com.fortuneo.android" idType="id"/>
+                        <EditText idEntry="account_password_edit_text" idPackage="com.fortuneo.android" idType="id" hint="Mot de passe" inputType="81"/>
+                        <Button idEntry="account_validate_button" idPackage="com.fortuneo.android" idType="id"/>
+                    </LinearLayout>
+                </FrameLayout>
+                <LinearLayout idEntry="progress_mask" idPackage="com.fortuneo.android" idType="id"/>
+            </FrameLayout>
+            <LinearLayout idEntry="layout_step_indicator" idPackage="com.fortuneo.android" idType="id">
+                <View idEntry="step_indicator" idPackage="com.fortuneo.android" idType="id"/>
+                <View idEntry="background_step_indicator" idPackage="com.fortuneo.android" idType="id"/>
+            </LinearLayout>
+            <FrameLayout idEntry="bottom_tabbar" idPackage="com.fortuneo.android" idType="id">
+                <FrameLayout idEntry="tabbar_nav_accounts" idPackage="com.fortuneo.android" idType="id">
+                    <TextView idEntry="smallLabel" idPackage="com.fortuneo.android" idType="id"/>
+                    <TextView idEntry="largeLabel" idPackage="com.fortuneo.android" idType="id"/>
+                </FrameLayout>
+                <FrameLayout idEntry="tabbar_nav_lists" idPackage="com.fortuneo.android" idType="id">
+                    <TextView idEntry="smallLabel" idPackage="com.fortuneo.android" idType="id"/>
+                    <TextView idEntry="largeLabel" idPackage="com.fortuneo.android" idType="id"/>
+                </FrameLayout>
+                <FrameLayout idEntry="tabbar_nav_market" idPackage="com.fortuneo.android" idType="id">
+                    <TextView idEntry="smallLabel" idPackage="com.fortuneo.android" idType="id"/>
+                    <TextView idEntry="largeLabel" idPackage="com.fortuneo.android" idType="id"/>
+                </FrameLayout>
+                <FrameLayout idEntry="tabbar_nav_plus" idPackage="com.fortuneo.android" idType="id">
+                    <TextView idEntry="smallLabel" idPackage="com.fortuneo.android" idType="id"/>
+                    <TextView idEntry="largeLabel" idPackage="com.fortuneo.android" idType="id"/>
+                </FrameLayout>
+            </FrameLayout>
+        </ViewGroup>
+        <View idEntry="action_mode_bar_stub" idPackage="com.fortuneo.android" idType="id"/>
+    </FrameLayout>
+</FrameLayout>

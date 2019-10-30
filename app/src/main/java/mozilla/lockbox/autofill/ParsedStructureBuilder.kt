@@ -9,8 +9,8 @@ class ParsedStructureBuilder<ViewNode, AutofillId>(
     private val navigator: AutofillNodeNavigator<ViewNode, AutofillId>
 ) {
     fun build(): ParsedStructureData<AutofillId> {
-        val usernameId = getUsernameId()
-        val passwordId = getPasswordId()
+        val formNode = findFocusedForm()
+        val (usernameId, passwordId) = findAutofillIds(formNode)
         val hostnameClue = usernameId ?: passwordId
 
         return navigator.build(
@@ -21,29 +21,48 @@ class ParsedStructureBuilder<ViewNode, AutofillId>(
         )
     }
 
-    private fun getUsernameId(): AutofillId? {
+    private fun findFocusedForm(): ViewNode? {
+        val focusPath = findMatchedNodeAncestors {
+            navigator.isFocused(it)
+        }
+
+        return focusPath?.lastOrNull {
+            navigator.isHtmlForm(it)
+        }
+    }
+
+    private fun findAutofillIds(rootNode: ViewNode?): Pair<AutofillId?, AutofillId?> =
+        checkForAdjacentFields(rootNode) ?: getUsernameId(rootNode) to getPasswordId(rootNode)
+
+    private fun getUsernameId(rootNode: ViewNode?): AutofillId? {
         // how do we localize the "email" and "username"?
-        return getAutofillIdForKeywords(listOf(
-            View.AUTOFILL_HINT_USERNAME,
-            View.AUTOFILL_HINT_EMAIL_ADDRESS,
-            "email",
-            "username",
-            "user name",
-            "identifier"
-        ))
+        return getAutofillIdForKeywords(
+            rootNode,
+            listOf(
+                View.AUTOFILL_HINT_USERNAME,
+                View.AUTOFILL_HINT_EMAIL_ADDRESS,
+                "email",
+                "username",
+                "user name",
+                "identifier",
+                "account_name"
+            )
+        )
     }
 
-    private fun getPasswordId(): AutofillId? {
+    private fun getPasswordId(rootNode: ViewNode?): AutofillId? {
         // similar l10n question for password
-        return getAutofillIdForKeywords(listOf(View.AUTOFILL_HINT_PASSWORD, "password"))
+        return getAutofillIdForKeywords(rootNode, listOf(View.AUTOFILL_HINT_PASSWORD, "password"))
     }
 
-    private fun getAutofillIdForKeywords(keywords: Collection<String>): AutofillId? {
-        return searchBasicAutofillContent(keywords) ?: checkForConsecutiveKeywordAndField(keywords)
+    private fun getAutofillIdForKeywords(rootNode: ViewNode?, keywords: Collection<String>): AutofillId? {
+        return checkForNamedTextField(rootNode, keywords)
+            ?: checkForConsecutiveLabelAndField(rootNode, keywords)
+            ?: checkForNestedLayoutAndField(rootNode, keywords)
     }
 
-    private fun searchBasicAutofillContent(keywords: Collection<String>): AutofillId? {
-        return navigator.findFirst { node: ViewNode ->
+    private fun checkForNamedTextField(rootNode: ViewNode?, keywords: Collection<String>): AutofillId? {
+        return navigator.findFirst(rootNode) { node: ViewNode ->
             if (isAutoFillableEditText(node, keywords) || isAutoFillableInputField(node, keywords)) {
                 navigator.autofillId(node)
             } else {
@@ -52,8 +71,8 @@ class ParsedStructureBuilder<ViewNode, AutofillId>(
         }
     }
 
-    private fun checkForConsecutiveKeywordAndField(keywords: Collection<String>): AutofillId? {
-        return navigator.findFirst { node: ViewNode ->
+    private fun checkForConsecutiveLabelAndField(rootNode: ViewNode?, keywords: Collection<String>): AutofillId? {
+        return navigator.findFirst(rootNode) { node: ViewNode ->
             val childNodes = navigator.childNodes(node)
             // check for consecutive views with keywords followed by possible fill locations
             for (i in 1.until(childNodes.size)) {
@@ -66,6 +85,61 @@ class ParsedStructureBuilder<ViewNode, AutofillId>(
                     }
                 }
             }
+            null
+        }
+    }
+
+    private fun checkForNestedLayoutAndField(rootNode: ViewNode?, keywords: Collection<String>): AutofillId? {
+        return navigator.findFirst(rootNode) { node: ViewNode ->
+            val childNodes = navigator.childNodes(node)
+
+            if (childNodes.size != 1) {
+                return@findFirst null
+            }
+
+            val child = childNodes[0]
+            val id = navigator.autofillId(child) ?: return@findFirst null
+            if (navigator.isEditText(child) || navigator.isHtmlInputField(child)) {
+                if (containsKeywords(node, keywords)) {
+                    return@findFirst id
+                }
+            }
+            null
+        }
+    }
+
+    private fun checkForAdjacentFields(rootNode: ViewNode?): Pair<AutofillId?, AutofillId?>? {
+        return navigator.findFirst(rootNode) { node: ViewNode ->
+
+            val childNodes = navigator.childNodes(node)
+            // XXX we only look at the list of edit texts before the first button.
+            // This is because we are can see the invisible fields, but not that they are
+            // invisible. https://bugzilla.mozilla.org/show_bug.cgi?id=1592047
+            val firstButtonIndex = childNodes.indexOfFirst { navigator.isButton(it) }
+
+            val firstFewNodes = if (firstButtonIndex >= 0) {
+                childNodes.subList(0, firstButtonIndex)
+            } else {
+                childNodes
+            }
+
+            val inputFields = firstFewNodes.filter {
+                navigator.isEditText(it) && navigator.autofillId(it) != null && navigator.isVisible(it)
+            }
+
+            // we must have a minimum of two EditText boxes in order to have a pair.
+            if (inputFields.size < 2) {
+                return@findFirst null
+            }
+
+            for (i in 1.until(inputFields.size)) {
+                val prevNode = inputFields[i - 1]
+                val currentNode = inputFields[i]
+                if (navigator.isPasswordField(currentNode) && navigator.isPasswordField(prevNode).not()) {
+                    return@findFirst navigator.autofillId(prevNode) to navigator.autofillId(currentNode)
+                }
+            }
+
             null
         }
     }

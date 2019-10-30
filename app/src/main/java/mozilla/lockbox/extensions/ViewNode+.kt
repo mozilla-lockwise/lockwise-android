@@ -13,7 +13,14 @@ fun AssistStructure.ViewNode.dump(): String {
 @TargetApi(Build.VERSION_CODES.O)
 private fun AssistStructure.ViewNode.dumpNode(sb: StringBuilder = StringBuilder()): StringBuilder {
 
-    val name = htmlInfo?.tag ?: className?.split('.')?.last() ?: "unknown"
+    val tag = htmlInfo?.tag?.let {
+        if (it.isNotBlank()) {
+            it
+        } else {
+            "UnspecifiedTag"
+        }
+    }
+    val name = tag ?: className?.split('.')?.last() ?: "unknown"
 
     val viewAttrs = listOf(
         "idEntry" to idEntry,
@@ -23,7 +30,9 @@ private fun AssistStructure.ViewNode.dumpNode(sb: StringBuilder = StringBuilder(
         "hint" to hint,
         "autofillValue" to autofillValue?.let { if (it.isText) it.textValue.toString() else null },
         "autofillHints" to autofillHints?.joinToString(", "),
-        "autofillOptions" to autofillOptions?.joinToString(", ")
+        "autofillOptions" to autofillOptions?.joinToString(", "),
+        "inputType" to if (inputType > 0) inputType.toString(16) else null,
+        "visibility" to visibility.toString(16) // visible == 0, invisible == 4, gone == 8
     )
 
     val htmlAttrs = htmlInfo?.attributes?.map { it.first to it.second } ?: emptyList()
