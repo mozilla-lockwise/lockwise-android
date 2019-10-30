@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ This Source Code Form is subject to the terms of the Mozilla Public
+  ~ License, v. 2.0. If a copy of the MPL was not distributed with this
+  ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
+  -->
 <FrameLayout>
    <TextView idEntry="title" idPackage="android" idType="id" />
    <LinearLayout idEntry="container" idPackage="org.chromium.webview_shell" idType="id">
       <EditText idEntry="url_field" idPackage="org.chromium.webview_shell" idType="id" />
       <form webDomain="m.facebook.com" name="login_form">
-         <input hint="Mobile number or email address" autofillHints="on" name="email" type="email" label="Mobile number or email address" id="m_login_email" />
+         <input hint="Mobile number or email address" autofillHints="on" name="email" type="email" label="Mobile number or email address" id="m_login_email" autofillId="autofillId-username"/>
          <input hint="Password" autofillHints="on" name="pass" type="password" label="Password" id="m_login_password" />
       </form>
    </LinearLayout>

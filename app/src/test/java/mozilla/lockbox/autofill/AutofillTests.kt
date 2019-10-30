@@ -10,6 +10,7 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.LockboxApplication
+import mozilla.lockbox.autofill.AutofillNodeNavigator.Companion.editTextMask
 import mozilla.lockbox.support.isDebug
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -43,7 +44,7 @@ class AutofillTests {
                 val subject = ParsedStructureBuilder(navigator).build()
 
                 assertNotNull(subject.usernameId)
-                assertTrue("${subject.usernameId!!} starts with u", subject.usernameId!!.startsWith("u"))
+                assertEquals("autofillId-username", subject.usernameId)
                 assertNotNull(subject.passwordId)
                 assertTrue("${subject.passwordId!!} starts with p", subject.passwordId!!.startsWith("p"))
             }
@@ -52,11 +53,29 @@ class AutofillTests {
     @Test
     fun testRealFixtures() {
         val fixtures = listOf(
+            Fixture("app_twitter_2", null, "com.twitter.android"),
+            Fixture("app_messenger_lite", null, "com.facebook.mlite"),
             Fixture("app_twitter", null, "com.twitter.android"),
             Fixture("html_twitter", "mobile.twitter.com", ""),
             Fixture("html_facebook", "m.facebook.com", ""),
             Fixture("html_gmail_1", "accounts.google.com", ""),
-            Fixture("html_gmail_2", "accounts.google.com", "")
+            Fixture("html_gmail_2", "accounts.google.com", ""),
+
+            // Fixtures with non-english hints.
+            Fixture("app_fortuneo", null, "com.fortuneo.android"),
+
+            // Fixtures using consecutive edit texts, the second with a password field.
+            Fixture("app_facebook_lite", null, "com.facebook.lite"),
+            Fixture("app_facebook", null, "com.facebook.katana"),
+
+            // Fixtures with multiple input fields. Only consider fields that happen before a button.
+            Fixture("html_auth0", "auth.mozilla.auth0.com", ""),
+
+            // Fixtures with two web forms. Added a 'focus' attribute to the XML to select which is
+            // focused.
+            Fixture("html_amazon_signin", "www.amazon.co.uk", ""),
+            Fixture("html_amazon_register", "www.amazon.co.uk", ""),
+            Fixture("app_pocket_apple_id", "appleid.apple.com", "")
         )
 
         fixtures.forEach { fixture ->
@@ -64,14 +83,15 @@ class AutofillTests {
                 DOMNavigator(context, fixture.filename, fixture.filename)
             val subject = ParsedStructureBuilder(navigator).build()
 
+            assertNotNull("${fixture.filename} password detected", subject.passwordId)
+            assertNotNull("${fixture.filename} username detected", subject.usernameId)
+            assertEquals("autofillId-username", subject.usernameId)
+
             if (fixture.webDomain != null) {
                 assertEquals("${fixture.filename} webDomain detected", fixture.webDomain, subject.webDomain)
             } else {
                 assertEquals("${fixture.filename} packageName detected", fixture.packageName, subject.packageName)
             }
-
-            assertNotNull(subject.passwordId, "${fixture.filename} password detected")
-            assertNotNull(subject.usernameId, "${fixture.filename} username detected")
         }
     }
 }
@@ -115,28 +135,53 @@ class DOMNavigator(
         val attributes = node.attributes
         return (0 until attributes.length)
             .map { attributes.item(it) }
-            .map { it.nodeValue }
+            .mapNotNull { if (it.nodeName != "hint") it.nodeValue else null }
     }
 
     override fun autofillId(node: Element): String? {
-        return if (isEditText(node) || isHtmlInputField(node)) { clues(node).joinToString("|") } else { null }
+        return if (isEditText(node) || isHtmlInputField(node)) {
+            attr(node, "autofillId") ?: clues(node).joinToString("|")
+        } else {
+            null
+        }
     }
 
-    override fun isEditText(node: Element): Boolean {
-        return node.tagName == "EditText"
+    override fun isEditText(node: Element): Boolean =
+        tagName(node) == "EditText" || (inputType(node) and editTextMask) > 0
+
+    override fun isHtmlInputField(node: Element) = tagName(node) == "input"
+
+    private fun tagName(node: Element) = node.tagName
+
+    override fun isHtmlForm(node: Element): Boolean = node.tagName == "form"
+
+    fun attr(node: Element, name: String) = node.attributes.getNamedItem(name)?.nodeValue
+
+    override fun isFocused(node: Element) = attr(node, "focus") == "true"
+
+    override fun isVisible(node: Element) = attr(node, "visibility")?.let { it == "0" } ?: true
+
+    override fun packageName(node: Element) = attr(node, "idPackage")
+
+    override fun webDomain(node: Element) = attr(node, "webDomain")
+
+    override fun isButton(node: Element): Boolean {
+        when (node.tagName) {
+            "Button" -> return true
+            "button" -> return true
+        }
+
+        return when (attr(node, "type")) {
+            "submit" -> true
+            "button" -> true
+            else -> false
+        }
     }
 
-    override fun isHtmlInputField(node: Element): Boolean {
-        return node.tagName == "input"
-    }
-
-    override fun packageName(node: Element): String? {
-        return node.attributes.getNamedItem("idPackage")?.nodeValue
-    }
-
-    override fun webDomain(node: Element): String? {
-        return node.attributes.getNamedItem("webDomain")?.nodeValue
-    }
+    override fun inputType(node: Element): Int =
+        attr(node, "inputType")?.let {
+            Integer.parseInt(it, 16)
+        } ?: 0
 
     override fun build(
         usernameId: String?,

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ This Source Code Form is subject to the terms of the Mozilla Public
+  ~ License, v. 2.0. If a copy of the MPL was not distributed with this
+  ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
+  -->
+<FrameLayout visibility="0">
+    <LinearLayout idEntry="action_bar_root" idPackage="org.mozilla.fenix.nightly" idType="id" visibility="0">
+        <View idEntry="action_mode_bar_stub" idPackage="org.mozilla.fenix.nightly" idType="id" visibility="8"/>
+        <FrameLayout idEntry="container" idPackage="org.mozilla.fenix.nightly" idType="id" visibility="0">
+            <ViewGroup idEntry="browserLayout" idPackage="org.mozilla.fenix.nightly" idType="id" visibility="0">
+                <ViewGroup idEntry="swipeRefresh" idPackage="org.mozilla.fenix.nightly" idType="id" visibility="0">
+                    <FrameLayout idEntry="engineView" idPackage="org.mozilla.fenix.nightly" idType="id" visibility="0">
+                        <UnspecifiedTag visibility="0">
+                            <form webDomain="auth.mozilla.auth0.com" visibility="0" data-decorator="init-auth handle-submit" action="/" method="post" lock-state="loading" id="nlx-form">
+                                <fieldset webDomain="auth.mozilla.auth0.com" visibility="0" data-decorator="decide-screen" class=""/>
+                                <input autofillId="autofillId-username" webDomain="auth.mozilla.auth0.com" autofillHints="emailAddress" inputType="21" visibility="0" data-decorator="watch-contents" autocomplete="email" id="field-email" name="username" type="email" autofocus=""/>
+                                <input webDomain="auth.mozilla.auth0.com" visibility="0" id="enter-initial" type="submit" class="button button--full-width"/>
+                                <button webDomain="auth.mozilla.auth0.com" visibility="0" data-handler="authorise-firefoxaccounts" type="button" class="button button--full-width button--social button--secondary"/>
+                                <button webDomain="auth.mozilla.auth0.com" visibility="0" data-handler="authorise-github" type="button" class="button button--github button--full-width button--social button--secondary"/>
+                                <button webDomain="auth.mozilla.auth0.com" visibility="0" data-handler="authorise-google" type="button" class="button button--full-width button--social button--secondary"/>
+                                <input webDomain="auth.mozilla.auth0.com" visibility="0" data-decorator="set-autologin-preference" id="use-autologin" type="checkbox" checked=""/>
+                                <input webDomain="auth.mozilla.auth0.com" autofillHints="emailAddress" inputType="21" visibility="0" data-decorator="watch-contents" autocomplete="email" id="field-email-signup" name="username" type="email"/>
+                                <input webDomain="auth.mozilla.auth0.com" visibility="0" id="enter-initial-signup" type="submit" class="button button--full-width"/>
+                                <button webDomain="auth.mozilla.auth0.com" visibility="0" data-handler="authorise-firefoxaccounts" type="button" class="button button--full-width button--social button--secondary"/>
+                                <button webDomain="auth.mozilla.auth0.com" visibility="0" data-handler="authorise-github" type="button" class="button button--github button--full-width button--social button--secondary"/>
+                                <button webDomain="auth.mozilla.auth0.com" visibility="0" data-handler="authorise-google" type="button" class="button button--full-width button--social button--secondary"/>
+                                <input webDomain="auth.mozilla.auth0.com" visibility="0" data-decorator="set-autologin-preference" id="use-autologin-2" type="checkbox" checked=""/>
+                                <input webDomain="auth.mozilla.auth0.com" autofillHints="password" inputType="e1" visibility="0" data-decorator="submit-with-enter watch-contents" autocomplete="current-password" data-continue-with="authorise-ldap-credentials" id="field-password" name="password" type="password"/>
+                                <input webDomain="auth.mozilla.auth0.com" visibility="0" id="authorise-ldap-credentials" type="submit" class="button button--full-width"/>
+                                <button webDomain="auth.mozilla.auth0.com" visibility="0" data-handler="go-to-initial-page" type="button" class="button button--text-only card__back button--unpadded"/>
+                                <button webDomain="auth.mozilla.auth0.com" visibility="0" data-handler="send-passwordless-link" type="button" class="button button--full-width button--secondary"/>
+                                <button webDomain="auth.mozilla.auth0.com" visibility="0" data-handler="authorise-firefoxaccounts" type="button" class="button button--full-width button--social button--secondary"/>
+                                <button webDomain="auth.mozilla.auth0.com" visibility="0" data-handler="authorise-github" type="button" class="button button--github button--full-width button--social button--secondary"/>
+                                <button webDomain="auth.mozilla.auth0.com" visibility="0" data-handler="authorise-google" type="button" class="button button--full-width button--social button--secondary"/>
+                                <button webDomain="auth.mozilla.auth0.com" visibility="0" data-handler="go-to-initial-page" type="button" class="button button--text-only card__back button--unpadded"/>
+                                <button webDomain="auth.mozilla.auth0.com" visibility="0" data-handler="go-to-initial-page" id="back" type="button" class="button button--text-only card__back  button--unpadded"/>
+                                <input webDomain="auth.mozilla.auth0.com" autofillHints="password" inputType="e1" visibility="0" data-decorator="submit-with-enter watch-contents" autocomplete="current-password" data-continue-with="authorise-ldap-credentials" id="field-password-try-2" name="password" type="password"/>
+                                <input webDomain="auth.mozilla.auth0.com" visibility="0" id="authorise-ldap-credentials-try-2" type="submit" class="button button--full-width"/>
+                                <button webDomain="auth.mozilla.auth0.com" visibility="0" data-handler="go-to-initial-page" type="button" class="button button--text-only card__back button--unpadded"/>
+                                <button webDomain="auth.mozilla.auth0.com" visibility="0" data-handler="go-to-initial-page" type="button" class="button button--text-only card__back  button--unpadded"/>
+                                <button webDomain="auth.mozilla.auth0.com" visibility="0" data-handler="go-to-initial-page" type="button" class="button button--text-only card__back button--unpadded"/>
+                                <button webDomain="auth.mozilla.auth0.com" visibility="0" data-handler="go-to-initial-page" type="button" class="button button--text-only card__back button--unpadded"/>
+                                <input webDomain="auth.mozilla.auth0.com" visibility="0" data-decorator="set-autologin-preference" id="use-autologin-2" type="checkbox" checked=""/>
+                                <input webDomain="auth.mozilla.auth0.com" visibility="0" data-decorator="set-autologin-preference" id="use-autologin-3" type="checkbox" checked=""/>
+                                <input webDomain="auth.mozilla.auth0.com" autofillHints="password" inputType="e1" visibility="0" autocomplete="current-password" id="hidden-lastpass-password" name="hidden-lastpass-password" type="password" aria-hidden=""/>
+                            </form>
+                        </UnspecifiedTag>
+                    </FrameLayout>
+                </ViewGroup>
+                <FrameLayout idEntry="nestedScrollQuickAction" idPackage="org.mozilla.fenix.nightly" idType="id" visibility="0">
+                    <ViewGroup idEntry="quick_action_sheet" idPackage="org.mozilla.fenix.nightly" idType="id" visibility="0">
+                        <ViewGroup idEntry="quick_action_sheet" idPackage="org.mozilla.fenix.nightly" idType="id" visibility="0">
+                            <View idEntry="quick_action_sheet_faded_handle" idPackage="org.mozilla.fenix.nightly" idType="id" visibility="0"/>
+                            <LinearLayout idEntry="quick_action_buttons_layout" idPackage="org.mozilla.fenix.nightly" idType="id" visibility="0">
+                                <Button idEntry="quick_action_share" idPackage="org.mozilla.fenix.nightly" idType="id" visibility="0"/>
+                                <Button idEntry="quick_action_downloads" idPackage="org.mozilla.fenix.nightly" idType="id" visibility="8"/>
+                                <Button idEntry="quick_action_bookmark" idPackage="org.mozilla.fenix.nightly" idType="id" visibility="0"/>
+                                <Button idEntry="quick_action_appearance" idPackage="org.mozilla.fenix.nightly" idType="id" visibility="8"/>
+                                <Button idEntry="quick_action_open_app_link" idPackage="org.mozilla.fenix.nightly" idType="id" visibility="8"/>
+                                <Button idEntry="quick_action_read" idPackage="org.mozilla.fenix.nightly" idType="id" visibility="8"/>
+                            </LinearLayout>
+                            <View idEntry="quick_action_overlay" idPackage="org.mozilla.fenix.nightly" idType="id" visibility="0"/>
+                        </ViewGroup>
+                    </ViewGroup>
+                </FrameLayout>
+                <View idEntry="stubFindInPage" idPackage="org.mozilla.fenix.nightly" idType="id" visibility="8"/>
+                <ViewGroup idEntry="toolbar" idPackage="org.mozilla.fenix.nightly" idType="id" visibility="0">
+                    <LinearLayout idEntry="mozac_browser_toolbar_navigation_actions" idPackage="org.mozilla.fenix.nightly" idType="id" visibility="8"/>
+                    <LinearLayout idEntry="mozac_browser_toolbar_origin_view" idPackage="org.mozilla.fenix.nightly" idType="id" visibility="0">
+                        <TextView idEntry="mozac_browser_toolbar_title_view" idPackage="org.mozilla.fenix.nightly" idType="id" visibility="8"/>
+                        <TextView idEntry="mozac_browser_toolbar_url_view" idPackage="org.mozilla.fenix.nightly" idType="id" hint="Search or enter address" visibility="0"/>
+                    </LinearLayout>
+                    <LinearLayout idEntry="mozac_browser_toolbar_page_actions" idPackage="org.mozilla.fenix.nightly" idType="id" visibility="8"/>
+                    <LinearLayout idEntry="mozac_browser_toolbar_browser_actions" idPackage="org.mozilla.fenix.nightly" idType="id" visibility="0">
+                        <FrameLayout idEntry="counter_root" idPackage="org.mozilla.fenix.nightly" idType="id" visibility="0">
+                            <TextView idEntry="counter_text" idPackage="org.mozilla.fenix.nightly" idType="id" visibility="0"/>
+                        </FrameLayout>
+                    </LinearLayout>
+                    <FrameLayout idEntry="mozac_browser_toolbar_menu" idPackage="org.mozilla.fenix.nightly" idType="id" visibility="0"/>
+                    <ProgressBar idEntry="mozac_browser_toolbar_progress" idPackage="org.mozilla.fenix.nightly" idType="id" visibility="8"/>
+                    <EditText idEntry="mozac_browser_toolbar_edit_url_view" idPackage="org.mozilla.fenix.nightly" idType="id" inputType="11" visibility="0"/>
+                    <LinearLayout idEntry="mozac_browser_toolbar_edit_actions" idPackage="org.mozilla.fenix.nightly" idType="id" visibility="8"/>
+                </ViewGroup>
+                <ViewGroup idEntry="readerViewControlsBar" idPackage="org.mozilla.fenix.nightly" idType="id" visibility="8"/>
+            </ViewGroup>
+        </FrameLayout>
+        <ViewGroup idEntry="navigationToolbar" idPackage="org.mozilla.fenix.nightly" idType="id" visibility="8"/>
+    </LinearLayout>
+</FrameLayout>
