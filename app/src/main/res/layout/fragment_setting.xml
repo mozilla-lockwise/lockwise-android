@@ -12,7 +12,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:theme="@style/AppTheme"
-    tools:context=".view.SettingFragment">
+    tools:context=".view.SettingFragment"
+    android:background="@color/background_white">
 
     <include layout="@layout/include_backable"/>
 

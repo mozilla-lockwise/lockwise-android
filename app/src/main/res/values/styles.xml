@@ -12,9 +12,9 @@
         <item name="colorPrimaryDark">@color/color_primary_dark</item>
         <item name="android:textColor">@color/text_white</item>
         <item name="android:windowTranslucentStatus">false</item>
-        <item name="android:windowBackground">@null</item>
+        <item name="android:windowBackground">@color/background_white</item>
         <item name="android:colorControlActivated">@color/switch_activated</item>
-        <item name="android:background">@color/background_white</item>
+        <item name="android:background">@android:color/transparent</item>
         <item name="actionMenuTextAppearance">@style/NavDrawerStyle</item>
         <item name="android:actionMenuTextAppearance">@style/NavDrawerStyle</item>
         <item name="actionMenuTextColor">@style/NavDrawerStyle</item>
@@ -52,6 +52,12 @@
     <style name="BackableToolBar" parent="ToolBar">
         <item name="android:background">@color/color_primary</item>
     </style>
+
+    <style name="EditTextHandlesReset">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:colorControlActivated">@color/violet_70</item>
+    </style>
+
 
     <style name="EditItemDetail" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:popupBackground">@android:color/transparent</item>
