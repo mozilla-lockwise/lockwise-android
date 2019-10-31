@@ -26,7 +26,8 @@
             android:textColorHint="@color/white_60_percent"
             android:textCursorDrawable="@null"
             android:inputType="textAutoComplete"
-            tools:ignore="Autofill" />
+            tools:ignore="Autofill"
+            android:theme="@style/EditTextHandlesReset"/>
 
         <ImageButton
             android:id="@+id/cancelButton"

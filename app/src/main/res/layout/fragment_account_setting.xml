@@ -10,7 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".view.AccountSettingFragment"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@color/background_white">
 
     <include layout="@layout/include_backable"/>
 
