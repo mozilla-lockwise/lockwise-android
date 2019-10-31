@@ -6,7 +6,6 @@
 /captures
 .externalNativeBuild
 /site
-.idea/
 .idea/assetWizardSettings.xml
 .idea/codeStyles/Project.xml
 .idea/gradle.xml
