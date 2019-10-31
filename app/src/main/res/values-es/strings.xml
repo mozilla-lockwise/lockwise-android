@@ -259,10 +259,6 @@
     <string name="delete_description">Se eliminará el inicio de sesión tanto de %1$s como de Firefox.</string>
     <!-- This is the text on an item in the item detail toolbar menu to edit an entry. -->
     <string name="edit">Editar</string>
-    <!-- This is the hint in the edit entry view for the entry name. -->
-    <string name="entry_name_description">El nombre de la entrada</string>
-    <!-- This is a heading that appears above an entry name in context of a edit item view -->
-    <string name="hint_entryname">Nombre</string>
     <string name="entry_password_description">Contraseña para esta entrada.</string>
     <!-- This is the title text on the dialog when you attempt to close the edit view and changes have been made. -->
     <string name="discard_changes">¿Descartar los cambios?</string>

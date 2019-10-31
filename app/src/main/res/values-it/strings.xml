@@ -264,12 +264,6 @@
     <string name="delete_description">Questa operazione eliminerà le credenziali sia da %1$s che da Firefox.</string>
     <!-- This is the text on an item in the item detail toolbar menu to edit an entry. -->
     <string name="edit">Modifica</string>
-    <!-- This is the hint in the edit entry view for the entry name. -->
-    <string name="entry_name_description">Nome voce</string>
-    <!-- This is a heading that appears above an entry name in context of a edit item view -->
-    <string name="hint_entryname">Nome</string>
-    <!-- This is the hint in the edit entry view for formatting the entry hostname. -->
-<!--    <string name="hostname_entry_description">Assicurarsi che corrisponda esattamente al dominio del sito web a cui fa riferimento (inclusi “https://” e “www“).</string>-->
     <string name="entry_password_description">Password per questa voce.</string>
     <!-- This is the title text on the dialog when you attempt to close the edit view and changes have been made. -->
     <string name="discard_changes">Ignorare le modifiche?</string>

@@ -263,10 +263,6 @@
     <string name="delete_description">This will delete the login from both %1$s and Firefox.</string>
     <!-- This is the text on an item in the item detail toolbar menu to edit an entry. -->
     <string name="edit">Edit</string>
-    <!-- This is the hint in the edit entry view for the entry name. -->
-    <string name="entry_name_description">The entry name</string>
-    <!-- This is a heading that appears above an entry name in context of an edit item view -->
-    <string name="hint_entryname">Name</string>
 
     <!-- This is the description for the entry password in context of an edit item view. -->
     <string name="entry_password_description">Password for this entry.</string>
