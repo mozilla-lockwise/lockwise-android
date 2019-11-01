@@ -149,6 +149,8 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         toolbar.entryTitle.gravity = Gravity.CENTER_VERTICAL
         toolbar.contentInsetStartWithNavigation = 0
 
+        inputLayoutPassword.setHintTextAppearance(R.style.PasswordHint)
+
         inputLayoutHostname.isHintAnimationEnabled = false
         inputLayoutUsername.isHintAnimationEnabled = false
         inputLayoutPassword.isHintAnimationEnabled = false
