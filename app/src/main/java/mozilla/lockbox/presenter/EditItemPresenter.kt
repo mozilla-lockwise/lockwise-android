@@ -58,6 +58,7 @@ class EditItemPresenter(
     // These should move to the ItemDetailStore.
     // https://github.com/mozilla-lockwise/lockwise-android/issues/977
     private var credentials: ServerPassword? = null
+    private var edited: ServerPassword? = null
     private var unavailableUsernames: Set<String?> = emptySet()
 
     override fun onViewReady() {
@@ -67,7 +68,10 @@ class EditItemPresenter(
 
         val getItem = dataStore.get(itemId)
             .filterNotNull()
-            .doOnNext { credentials = it }
+            .doOnNext {
+                credentials = it
+                edited = it
+            }
 
         getItem
             .map { it.toDetailViewModel() }
@@ -111,7 +115,7 @@ class EditItemPresenter(
 
         view.closeEntryClicks
             .subscribe {
-                dispatcher.dispatch(DialogAction.DiscardChangesDialog(itemId))
+                checkDismissChanges(itemId)
             }
             .addTo(compositeDisposable)
 
@@ -147,16 +151,27 @@ class EditItemPresenter(
 
         view.saveEntryClicks
             .subscribe {
-                credentials?.let {
+                edited?.let {
                     dispatcher.dispatch(DataStoreAction.UpdateItemDetail(it))
                     view.closeKeyboard()
+                    edited = null
                     dispatcher.dispatch(RouteAction.ItemList)
-                } ?: pushError(
-                    NullPointerException("Credentials are null"),
-                    "Error editing credential with id ${credentials?.id}"
-                )
+                }
             }
             .addTo(compositeDisposable)
+    }
+
+    private fun checkDismissChanges(itemId: String) {
+        val action = edited?.let {
+            edited = null
+            if (it != credentials) {
+                DialogAction.DiscardChangesDialog(itemId)
+            } else {
+                null
+            }
+        } ?: RouteAction.ItemDetail(itemId)
+
+        dispatcher.dispatch(action)
     }
 
     private fun usernameError(inputText: String) =
@@ -177,18 +192,14 @@ class EditItemPresenter(
         newUsername: String? = null,
         newPassword: String? = null
     ) {
-        credentials?.let { cred ->
-            credentials = ServerPassword(
-                id = cred.id,
-                hostname = newHostname ?: cred.hostname,
-                username = newUsername ?: cred.username,
-                password = newPassword ?: cred.password,
-                httpRealm = cred.httpRealm,
-                formSubmitURL = cred.formSubmitURL
-            )
-        } ?: pushError(
+        val old = edited ?: credentials ?: return pushError(
             NullPointerException("Credentials are null"),
-            "Error editing credential with id ${credentials?.id}"
+            "Error editing credential with id $itemId"
+        )
+        edited = old.copy(
+            hostname = newHostname ?: old.hostname,
+            username = newUsername ?: old.username,
+            password = newPassword ?: old.password
         )
     }
 }

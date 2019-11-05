@@ -217,9 +217,23 @@ class EditItemPresenterTest {
     }
 
     @Test
-    fun `tapping on close button`() {
+    fun `tapping on close button with no change`() {
         setUpTestSubject(fakeCredential)
 
+        view.closeEntryClicksStub.onNext(Unit)
+
+        dispatcherObserver.assertValueSequence(
+            listOf(
+                RouteAction.ItemDetail(fakeCredential.id)
+            )
+        )
+    }
+
+    @Test
+    fun `tapping on close button with change`() {
+        setUpTestSubject(fakeCredential)
+
+        view.usernameClicksStub.onNext("all-change")
         view.closeEntryClicksStub.onNext(Unit)
 
         dispatcherObserver.assertValueSequence(
