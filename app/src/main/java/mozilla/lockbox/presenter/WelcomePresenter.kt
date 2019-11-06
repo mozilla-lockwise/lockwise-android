@@ -24,6 +24,8 @@ interface WelcomeView {
     val getStartedAutomaticallyClicks: Observable<Unit>
     val getStartedManuallyClicks: Observable<Unit>
     val learnMoreClicks: Observable<Unit>
+    val switchServiceClicks: Observable<Unit>
+    fun hideSwitchService()
     fun showExistingAccount(email: String)
     fun hideExistingAccount()
 }
@@ -31,6 +33,7 @@ interface WelcomeView {
 @ExperimentalCoroutinesApi
 class WelcomePresenter(
     private val view: WelcomeView,
+    private val chinaBuild: Boolean,
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val accountStore: AccountStore = AccountStore.shared,
     private val fingerprintStore: FingerprintStore = FingerprintStore.shared
@@ -51,6 +54,10 @@ class WelcomePresenter(
             view.hideExistingAccount()
         }
 
+        if (!chinaBuild) {
+            view.hideSwitchService()
+        }
+
         view.getStartedManuallyClicks
             .map {
                 routeToLoginManually()
@@ -62,6 +69,13 @@ class WelcomePresenter(
             .subscribe {
                 dispatcher.dispatch(AppWebPageAction.FaqWelcome)
             }
+            .addTo(compositeDisposable)
+
+        view.switchServiceClicks
+            .map {
+                RouteAction.SettingList
+            }
+            .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
     }
 

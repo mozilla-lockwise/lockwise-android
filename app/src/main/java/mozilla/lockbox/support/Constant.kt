@@ -54,6 +54,8 @@ object Constant {
         val autoLockTime = Setting.AutoLockTime.FiveMinutes
         val noSecurityAutoLockTime = Setting.AutoLockTime.Never
         const val sendUsageData = true
+        const val useLocalServiceFalse = false
+        const val useLocalServiceTrue = true
         const val unlockWithFingerprint = false
     }
 

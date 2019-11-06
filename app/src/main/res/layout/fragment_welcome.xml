@@ -134,5 +134,21 @@
             android:letterSpacing="0.04"
             android:layout_gravity="center"
         />
+
+        <TextView
+                android:id="@+id/textViewSwitchService"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/welcome_switch_service_btn"
+                android:textStyle="bold"
+                android:textAllCaps="true"
+                android:background="@android:color/transparent"
+                android:textColor="@color/link_pressed"
+                android:textSize="12sp"
+                android:textAlignment="center"
+                android:letterSpacing="0.04"
+                android:layout_gravity="center"
+                />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

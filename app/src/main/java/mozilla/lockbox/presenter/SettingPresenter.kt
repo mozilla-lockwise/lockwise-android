@@ -12,6 +12,7 @@ import io.reactivex.Observable
 import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.BuildConfig
 import mozilla.lockbox.R
 import mozilla.lockbox.action.AppWebPageAction
@@ -27,6 +28,7 @@ import mozilla.lockbox.adapter.TextSettingConfiguration
 import mozilla.lockbox.adapter.ToggleSettingConfiguration
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
+import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.SettingStore
 
@@ -37,9 +39,12 @@ interface SettingView {
     )
 }
 
+@ExperimentalCoroutinesApi
 class SettingPresenter(
     val view: SettingView,
+    val chinaBuild: Boolean,
     private val dispatcher: Dispatcher = Dispatcher.shared,
+    private val accountStore: AccountStore = AccountStore.shared,
     private val settingStore: SettingStore = SettingStore.shared,
     private val fingerprintStore: FingerprintStore = FingerprintStore.shared
 ) : Presenter() {
@@ -81,6 +86,11 @@ class SettingPresenter(
     private val sendUsageDataObserver: Consumer<Boolean>
         get() = Consumer { newValue ->
             dispatcher.dispatch(SettingAction.SendUsageData(newValue))
+        }
+
+    private val useLocalServiceObserver: Consumer<Boolean>
+        get() = Consumer { newValue ->
+            dispatcher.dispatch((SettingAction.UseLocalService(newValue)))
         }
 
     private val learnMoreSendUsageDataObserver: Consumer<Unit>
@@ -163,11 +173,31 @@ class SettingPresenter(
             )
         )
 
+        val serviceSettings = listOf(
+            ToggleSettingConfiguration(
+                title = R.string.use_local_service,
+                contentDescription = R.string.use_local_service_description,
+                toggleDriver = settingStore.useLocalService,
+                toggleObserver = useLocalServiceObserver
+            )
+        )
         val sections = listOf(
             SectionedAdapter.Section(0, R.string.configuration_title),
             SectionedAdapter.Section(configurationSettings.size, R.string.support_title)
         )
+        val sectionsSync = listOf(
+            SectionedAdapter.Section(0, R.string.service_title),
+            SectionedAdapter.Section(serviceSettings.size, R.string.support_title)
+        )
 
-        view.updateSettingList(configurationSettings + supportSettings, sections)
+        if (chinaBuild) {
+            if (accountStore.checkAccountExisting()) {
+                view.updateSettingList(configurationSettings + supportSettings, sections)
+            } else {
+                view.updateSettingList(serviceSettings + supportSettings, sectionsSync)
+            }
+        } else {
+            view.updateSettingList(configurationSettings + supportSettings, sections)
+        }
     }
 }
