@@ -7,12 +7,14 @@
 package mozilla.lockbox.view
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Bitmap
 import android.os.Bundle
 import androidx.annotation.StringRes
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import mozilla.lockbox.R
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -45,11 +47,23 @@ class AppWebPageFragment : BackableFragment(), WebPageView {
 
         presenter = AppWebPagePresenter(this, url)
 
-        var view = inflater.inflate(R.layout.fragment_webview, container, false)
+        val view = inflater.inflate(R.layout.fragment_webview, container, false)
         view.webView.settings.javaScriptEnabled = true
         view.toolbar.title = getString(toolbarTitle!!)
 
         return view
+    }
+
+    override fun onPause() {
+        super.onPause()
+        closeKeyboard()
+    }
+
+    private fun closeKeyboard() {
+        val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        if (imm.isAcceptingText) {
+            imm.hideSoftInputFromWindow(view!!.windowToken, 0)
+        }
     }
 
     override fun loadURL(url: String) {
