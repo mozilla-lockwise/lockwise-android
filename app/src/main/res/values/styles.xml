@@ -60,11 +60,6 @@
         <item name="android:colorControlNormal">@color/violet_70</item>
     </style>
 
-    <style name="EditTextHandlesReset">
-        <item name="android:background">@android:color/transparent</item>
-        <item name="android:colorControlActivated">@color/violet_70</item>
-    </style>
-
 
     <style name="EditItemDetail" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:popupBackground">@android:color/transparent</item>
