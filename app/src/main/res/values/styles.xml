@@ -123,13 +123,12 @@
         <item name="android:backgroundTint">@color/background_white</item>
         <item name="android:popupBackground">@android:color/transparent</item>
     </style>
-    <style name="PasswordTextStyle" parent="@android:style/Widget.EditText">
-        <item name="android:textSize">16sp</item>
-        <item name="android:fontFamily">monospace</item>
+
+    <style name="PasswordHint" parent="@android:style/Widget.EditText">
+        <item name="android:fontFamily">sans-serif</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textColor">@color/text_ink</item>
         <item name="android:letterSpacing">0.01</item>
-        <item name="android:lineSpacingExtra">8sp</item>
         <item name="android:backgroundTint">@color/background_white</item>
         <item name="android:popupBackground">@android:color/transparent</item>
     </style>

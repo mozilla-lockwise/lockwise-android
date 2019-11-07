@@ -1,5 +1,18 @@
 # Release Notes
 
+## 3.1.0 (Build 5356)
+
+Improve autofill detection and increase target SDK to 28.
+
+All changes since version 3.0.1:
+
+- Hide soft keyboard on unlock with pin (#1024)
+- Fixup crash in isButton with Java/Kotlin null dereference (#1039)
+- Make autofill detection more robust (#1031)
+- Increase target sdk to 28 (#1026)
+- Remove color state change on hostname when clicking outside of the cardview (#1030)
+- Remove name field from edit view (#1025)
+
 ## 3.0.1 (Build 5215)
 
 Improve threading and log in keyboard experience.

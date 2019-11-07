@@ -116,8 +116,9 @@ class ViewNodeNavigator(
         node.htmlInfo?.attributes?.find { name == it.first }?.second
 
     override fun isButton(node: ViewNode): Boolean {
+        val className = node.className ?: ""
         when {
-            node.className.contains("Button") -> return true
+            className.contains("Button") -> return true
             htmlTagName(node) == "button" -> return true
             htmlTagName(node) != "input" -> return false
         }
