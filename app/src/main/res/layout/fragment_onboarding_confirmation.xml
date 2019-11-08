@@ -9,7 +9,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:theme="@style/OnboardingConfirmation"
+        android:theme="@style/AppTheme"
         android:id="@+id/fragment_onboarding_confirmation">
 
     <TextView
