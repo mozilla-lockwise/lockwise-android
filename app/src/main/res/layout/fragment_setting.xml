@@ -11,8 +11,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:theme="@style/AppTheme"
-    tools:context=".view.SettingFragment">
+    android:theme="@style/AppSettings"
+    tools:context=".view.SettingFragment" >
 
     <include layout="@layout/include_backable"/>
 
