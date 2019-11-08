@@ -10,7 +10,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:theme="@style/Filter"
+    android:backgroundTint="@color/background_grey"
     android:importantForAutofill="noExcludeDescendants"
     tools:context=".view.FilterFragment"
     tools:ignore="UnusedAttribute">
