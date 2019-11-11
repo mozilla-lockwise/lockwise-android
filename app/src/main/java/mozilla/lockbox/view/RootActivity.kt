@@ -40,4 +40,15 @@ class RootActivity : AppCompatActivity() {
         super.onResume()
         presenter.onResume()
     }
+
+    override fun onStop() {
+        super.onStop()
+        presenter.onStop()
+    }
+
+    override fun onBackPressed() {
+        if (!presenter.onBackPressed()) {
+            super.onBackPressed()
+        }
+    }
 }
