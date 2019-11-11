@@ -12,7 +12,6 @@ import io.reactivex.disposables.CompositeDisposable
 abstract class Presenter {
     val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
-    @CallSuper
     open fun onViewReady() {
         // NOOP
     }

@@ -6,10 +6,16 @@
 
 package mozilla.lockbox.action
 
+import mozilla.appservices.logins.ServerPassword
+
 sealed class ItemDetailAction(
     override val eventMethod: TelemetryEventMethod,
     override val eventObject: TelemetryEventObject
 ) : TelemetryAction {
     data class SetPasswordVisibility(val visible: Boolean) :
         ItemDetailAction(TelemetryEventMethod.tap, TelemetryEventObject.reveal_password)
+    data class SaveChanges(val item: ServerPassword) :
+        ItemDetailAction(TelemetryEventMethod.tap, TelemetryEventObject.update_credential)
+    data class DiscardChanges(val itemId: String) :
+        ItemDetailAction(TelemetryEventMethod.tap, TelemetryEventObject.back)
 }

@@ -7,10 +7,13 @@
 package mozilla.lockbox.store
 
 import io.reactivex.rxkotlin.addTo
+import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.DisposingTest
+import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.ItemDetailAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.assertLastValue
+import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import org.junit.Assert
@@ -64,5 +67,37 @@ class ItemDetailStoreTest : DisposingTest() {
 
         dispatcher.dispatch(ItemDetailAction.SetPasswordVisibility(false))
         observer.assertLastValue(false)
+    }
+
+    @Test
+    fun `isEditing is toggled via actions`() {
+        val observer = createTestObserver<Boolean>()
+        subject.isEditing.subscribe(observer)
+
+        val itemId = "id"
+        dispatcher.dispatch(RouteAction.EditItemDetail(itemId))
+        observer.assertLastValue(true)
+
+        dispatcher.dispatch(ItemDetailAction.DiscardChanges(itemId))
+        observer.assertLastValue(false)
+    }
+
+    @Test
+    fun `Save Changes is achieved by actions`() {
+        val observer = createTestObserver<ServerPassword>()
+        dispatcher.register
+            .filterByType(DataStoreAction.UpdateItemDetail::class.java)
+            .map { it.item }
+            .subscribe(observer)
+
+        val itemId = "id"
+        val item = ServerPassword(id = itemId,
+            hostname = "hostname.com",
+            password = "password"
+        )
+
+        dispatcher.dispatch(ItemDetailAction.SaveChanges(item))
+
+        observer.assertLastValue(item)
     }
 }

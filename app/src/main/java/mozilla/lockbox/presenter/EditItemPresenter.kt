@@ -15,7 +15,6 @@ import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.R
-import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.ItemDetailAction
 import mozilla.lockbox.action.RouteAction
@@ -97,26 +96,30 @@ class EditItemPresenter(
             .subscribe { view.isPasswordVisible = it }
             .addTo(compositeDisposable)
 
-        view.togglePasswordVisibility
-            .subscribe {
-                dispatcher.dispatch(
-                    ItemDetailAction.SetPasswordVisibility(view.isPasswordVisible.not())
-                )
+        itemDetailStore.isEditing
+            .distinctUntilChanged()
+            .filter { !it }
+            .flatMapIterable {
+                edited = null
+                view.closeKeyboard()
+                listOf(RouteAction.ItemList, RouteAction.ItemDetail(itemId))
             }
+            .subscribe(dispatcher::dispatch)
+            .addTo(compositeDisposable)
+
+        view.togglePasswordVisibility
+            .map { ItemDetailAction.SetPasswordVisibility(view.isPasswordVisible.not()) }
+            .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
 
         view.togglePasswordClicks
-            .subscribe {
-                dispatcher.dispatch(
-                    ItemDetailAction.SetPasswordVisibility(view.isPasswordVisible.not())
-                )
-            }
+            .map { ItemDetailAction.SetPasswordVisibility(view.isPasswordVisible.not()) }
+            .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
 
         view.closeEntryClicks
-            .subscribe {
-                checkDismissChanges(itemId)
-            }
+            .map { checkDismissChanges(itemId) }
+            .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
 
         view.hostnameChanged
@@ -150,28 +153,27 @@ class EditItemPresenter(
             .addTo(compositeDisposable)
 
         view.saveEntryClicks
-            .subscribe {
-                edited?.let {
-                    dispatcher.dispatch(DataStoreAction.UpdateItemDetail(it))
-                    view.closeKeyboard()
-                    edited = null
-                    dispatcher.dispatch(RouteAction.ItemList)
-                }
+            .map {
+                edited?.let { ItemDetailAction.SaveChanges(it) }
+                    ?: ItemDetailAction.DiscardChanges(itemId)
             }
+            .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
     }
 
-    private fun checkDismissChanges(itemId: String) {
-        val action = edited?.let {
-            edited = null
+    private fun checkDismissChanges(itemId: String) =
+        edited?.let {
             if (it != credentials) {
                 DialogAction.DiscardChangesDialog(itemId)
             } else {
                 null
             }
-        } ?: RouteAction.ItemDetail(itemId)
+        } ?: ItemDetailAction.DiscardChanges(itemId)
 
-        dispatcher.dispatch(action)
+    override fun onBackPressed(): Boolean {
+        val itemId = credentials?.id ?: return false
+        dispatcher.dispatch(checkDismissChanges(itemId))
+        return true
     }
 
     private fun usernameError(inputText: String) =
