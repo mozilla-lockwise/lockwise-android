@@ -42,7 +42,7 @@ object Constant {
     }
 
     object Privacy {
-        const val uri = "https://lockwise.firefox.com/privacy.html"
+        const val uri = "https://support.mozilla.org/en-US/kb/firefox-lockwise-and-privacy"
     }
 
     object SendFeedback {
