@@ -7,18 +7,18 @@
 <resources>
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/color_primary</item>
         <item name="colorPrimaryDark">@color/color_primary_dark</item>
         <item name="android:textColor">@color/text_white</item>
         <item name="android:windowTranslucentStatus">false</item>
-        <item name="android:windowBackground">@null</item>
+        <item name="android:windowBackground">@color/background_white</item>
         <item name="android:colorControlActivated">@color/switch_activated</item>
-        <item name="android:background">@color/background_white</item>
+        <item name="android:background">@android:color/transparent</item>
         <item name="actionMenuTextAppearance">@style/NavDrawerStyle</item>
         <item name="android:actionMenuTextAppearance">@style/NavDrawerStyle</item>
         <item name="actionMenuTextColor">@style/NavDrawerStyle</item>
         <item name="android:titleTextAppearance">@style/NavDrawerStyle</item>
+        <item name="android:colorAccent">@color/violet_70</item>
         <item name="popupMenuStyle">@style/PopupMenu</item>
     </style>
 
@@ -51,7 +51,15 @@
 
     <style name="BackableToolBar" parent="ToolBar">
         <item name="android:background">@color/color_primary</item>
+        <item name="android:colorControlActivated">@color/violet_70</item>
+        <item name="android:textColor">@color/violet_70</item>
+        <item name="android:colorAccent">@color/violet_70</item>
+        <item name="android:editTextColor">@color/violet_70</item>
+        <item name="colorPrimary">@color/color_primary</item>
+        <item name="colorPrimaryDark">@color/color_primary_dark</item>
+        <item name="android:colorControlNormal">@color/violet_70</item>
     </style>
+
 
     <style name="EditItemDetail" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:popupBackground">@android:color/transparent</item>
@@ -87,6 +95,7 @@
         <item name="android:background">@color/color_primary</item>
         <item name="android:popupBackground">@android:color/transparent</item>
     </style>
+
     <style name="TextAppearance">
         <item name="android:letterSpacing">0.02</item>
         <item name="android:fontFamily">sans-serif</item>
@@ -94,15 +103,18 @@
         <item name="android:lineSpacingExtra">6sp</item>
         <item name="android:popupBackground">@android:color/transparent</item>
     </style>
+
     <style name="TextAppearanceSortMenuItem" parent="@style/TextAppearance">
         <item name="android:textColor">@color/black_87_percent</item>
     </style>
+
     <style name="ToolbarButton">
         <item name="android:tint">@android:color/white</item>
         <item name="android:background">@null</item>
         <item name="android:textColorPrimary">@android:color/white</item>
         <item name="android:textColorSecondary">@android:color/white</item>
     </style>
+
     <style name="EditTextStyle" parent="@android:style/Widget.EditText">
         <item name="android:textSize">16sp</item>
         <item name="android:fontFamily">sans-serif</item>
@@ -126,11 +138,50 @@
         <item name="android:backgroundTint">@color/background_white</item>
         <item name="android:popupBackground">@android:color/transparent</item>
     </style>
+
     <style name="WelcomeScreen" parent="AppTheme">
         <item name="android:background">@color/color_primary</item>
         <item name="android:windowBackground">@color/color_primary</item>
         <item name="android:colorBackground">@color/color_primary</item>
+        <item name="android:colorControlActivated">@color/violet_70</item>
     </style>
+
+    <style name="AccountSettings" parent="AppTheme">
+        <item name="android:background">@color/background_white</item>
+        <item name="android:colorControlActivated">@color/violet_70</item>
+    </style>
+
+    <style name="AppSettings" parent="AppTheme">
+        <item name="android:background">@color/background_white</item>
+        <item name="android:colorControlActivated">@color/violet_70</item>
+    </style>
+
+    <style name="NavHeader" parent="AppTheme">
+        <item name="android:background">@color/color_primary_dark</item>
+        <item name="android:colorControlActivated">@color/violet_70</item>
+    </style>
+
+    <style name="ListCellItem" parent="AppTheme">
+        <item name="android:background">@color/background_white</item>
+        <item name="android:colorControlActivated">@color/violet_70</item>
+    </style>
+
+    <style name="Filter" parent="AppTheme">
+        <item name="android:background">@color/background_grey</item>
+        <item name="android:colorControlActivated">@color/violet_70</item>
+        <item name="android:textColor">@color/violet_70</item>
+        <item name="android:colorAccent">@color/violet_70</item>
+        <item name="android:editTextColor">@color/violet_70</item>
+        <item name="colorPrimary">@color/color_primary</item>
+        <item name="colorPrimaryDark">@color/color_primary_dark</item>
+        <item name="android:colorControlNormal">@color/violet_70</item>
+    </style>
+
+    <style name="OnboardingConfirmation" parent="AppTheme">
+        <item name="android:background">@color/background_white</item>
+        <item name="android:colorControlActivated">@color/violet_70</item>
+    </style>
+
     <style name="AlertDialogStyle" parent="Theme.AppCompat.Light.Dialog">
         <item name="android:windowBackground">@drawable/rounded_corner_bg_white</item>
         <item name="android:textColorPrimary">@color/text_ink</item>

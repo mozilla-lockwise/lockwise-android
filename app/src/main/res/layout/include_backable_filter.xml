@@ -4,12 +4,14 @@
   ~ License, v. 2.0. If a copy of the MPL was not distributed with this
   ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
   -->
-<androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.Toolbar
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
-    android:theme="@style/BackableToolBar">
+    android:theme="@style/BackableToolBar" >
+
     <LinearLayout android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -26,7 +28,8 @@
             android:textColorHint="@color/white_60_percent"
             android:textCursorDrawable="@null"
             android:inputType="textAutoComplete"
-            tools:ignore="Autofill" />
+            tools:ignore="Autofill"
+            android:theme="@style/NoBackgroundTheme"/>
 
         <ImageButton
             android:id="@+id/cancelButton"
