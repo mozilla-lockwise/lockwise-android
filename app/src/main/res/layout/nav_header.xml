@@ -11,8 +11,7 @@
     android:orientation="vertical"
     android:paddingStart="16dp"
     android:paddingEnd="16dp"
-    android:theme="@style/AppTheme"
-    android:backgroundTint="@color/color_primary_dark"
+    android:theme="@style/NavHeader"
     android:id="@+id/menuHeader"
     tools:ignore="UseCompoundDrawables">
 

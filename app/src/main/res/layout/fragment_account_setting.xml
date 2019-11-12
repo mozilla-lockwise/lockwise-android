@@ -5,12 +5,13 @@
   ~  file, You can obtain one at http://mozilla.org/MPL/2.0/.
   -->
 <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".view.AccountSettingFragment"
-        android:orientation="vertical">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:theme="@style/AccountSettings"
+    tools:context=".view.AccountSettingFragment" >
 
     <include layout="@layout/include_backable"/>
 
