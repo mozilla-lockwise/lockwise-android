@@ -16,6 +16,6 @@ sealed class ItemDetailAction(
         ItemDetailAction(TelemetryEventMethod.tap, TelemetryEventObject.reveal_password)
     data class SaveChanges(val item: ServerPassword) :
         ItemDetailAction(TelemetryEventMethod.tap, TelemetryEventObject.update_credential)
-    data class DiscardChanges(val itemId: String) :
+    data class EndEditing(val itemId: String) :
         ItemDetailAction(TelemetryEventMethod.tap, TelemetryEventObject.back)
 }

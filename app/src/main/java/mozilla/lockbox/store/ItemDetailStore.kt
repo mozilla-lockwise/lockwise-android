@@ -50,7 +50,7 @@ class ItemDetailStore(
                 when (action) {
                     is ItemDetailAction.SetPasswordVisibility -> _passwordVisible.onNext(action.visible)
                     is ItemDetailAction.SaveChanges -> saveItem(action.item)
-                    is ItemDetailAction.DiscardChanges -> stopEditing()
+                    is ItemDetailAction.EndEditing -> stopEditing()
                 }
             }
             .addTo(compositeDisposable)

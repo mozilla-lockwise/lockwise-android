@@ -56,8 +56,24 @@ class EditItemPresenter(
 
     // These should move to the ItemDetailStore.
     // https://github.com/mozilla-lockwise/lockwise-android/issues/977
-    private var credentials: ServerPassword? = null
-    private var edited: ServerPassword? = null
+    private var credentialsAtStart: ServerPassword? = null
+        set(newValue) {
+            credentialsEdited = null
+            field = newValue
+        }
+    private var credentialsEdited: ServerPassword? = null
+
+    private val credentialsToSave: ServerPassword?
+        get() {
+            return credentialsEdited?.let {
+                if (it != credentialsAtStart) {
+                    it
+                } else {
+                    null
+                }
+            }
+        }
+
     private var unavailableUsernames: Set<String?> = emptySet()
 
     override fun onViewReady() {
@@ -68,8 +84,7 @@ class EditItemPresenter(
         val getItem = dataStore.get(itemId)
             .filterNotNull()
             .doOnNext {
-                credentials = it
-                edited = it
+                credentialsAtStart = it
             }
 
         getItem
@@ -100,7 +115,6 @@ class EditItemPresenter(
             .distinctUntilChanged()
             .filter { !it }
             .flatMapIterable {
-                edited = null
                 view.closeKeyboard()
                 listOf(RouteAction.ItemList, RouteAction.ItemDetail(itemId))
             }
@@ -154,24 +168,23 @@ class EditItemPresenter(
 
         view.saveEntryClicks
             .map {
-                edited?.let { ItemDetailAction.SaveChanges(it) }
-                    ?: ItemDetailAction.DiscardChanges(itemId)
+                // When there's something changed, then save them,
+                // otherwise, go back to the item detail screen.
+                credentialsToSave?.let { ItemDetailAction.SaveChanges(it) }
+                    ?: ItemDetailAction.EndEditing(itemId)
             }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
     }
 
     private fun checkDismissChanges(itemId: String) =
-        edited?.let {
-            if (it != credentials) {
-                DialogAction.DiscardChangesDialog(itemId)
-            } else {
-                null
-            }
-        } ?: ItemDetailAction.DiscardChanges(itemId)
+        // When something has changes, then check with a dialog.
+        // otherwise, go back to the item detail screen.
+        credentialsToSave?.let { DialogAction.DiscardChangesDialog(itemId) }
+            ?: ItemDetailAction.EndEditing(itemId)
 
     override fun onBackPressed(): Boolean {
-        val itemId = credentials?.id ?: return false
+        val itemId = credentialsAtStart?.id ?: return false
         dispatcher.dispatch(checkDismissChanges(itemId))
         return true
     }
@@ -194,11 +207,11 @@ class EditItemPresenter(
         newUsername: String? = null,
         newPassword: String? = null
     ) {
-        val old = edited ?: credentials ?: return pushError(
+        val old = credentialsEdited ?: credentialsAtStart ?: return pushError(
             NullPointerException("Credentials are null"),
             "Error editing credential with id $itemId"
         )
-        edited = old.copy(
+        credentialsEdited = old.copy(
             hostname = newHostname ?: old.hostname,
             username = newUsername ?: old.username,
             password = newPassword ?: old.password

@@ -78,7 +78,7 @@ class ItemDetailStoreTest : DisposingTest() {
         dispatcher.dispatch(RouteAction.EditItemDetail(itemId))
         observer.assertLastValue(true)
 
-        dispatcher.dispatch(ItemDetailAction.DiscardChanges(itemId))
+        dispatcher.dispatch(ItemDetailAction.EndEditing(itemId))
         observer.assertLastValue(false)
     }
 

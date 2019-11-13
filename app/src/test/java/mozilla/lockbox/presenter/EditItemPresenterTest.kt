@@ -234,7 +234,7 @@ class EditItemPresenterTest {
 
         dispatcherObserver.assertValueSequence(
             listOf(
-                ItemDetailAction.DiscardChanges(fakeCredential.id)
+                ItemDetailAction.EndEditing(fakeCredential.id)
             )
         )
     }
@@ -254,14 +254,28 @@ class EditItemPresenterTest {
     }
 
     @Test
-    fun `tapping on save button`() {
+    fun `tapping on save button with no changes`() {
         setUpTestSubject(fakeCredential)
 
         view.saveEntryClicksStub.onNext(Unit)
 
         dispatcherObserver.assertValueSequence(
             listOf(
-                ItemDetailAction.SaveChanges(fakeCredential)
+                ItemDetailAction.EndEditing(fakeCredential.id)
+            )
+        )
+    }
+
+    @Test
+    fun `tapping on save button`() {
+        setUpTestSubject(fakeCredential)
+
+        view.usernameClicksStub.onNext("all-change")
+        view.saveEntryClicksStub.onNext(Unit)
+
+        dispatcherObserver.assertValueSequence(
+            listOf(
+                ItemDetailAction.SaveChanges(fakeCredential.copy(username = "all-change"))
             )
         )
     }
