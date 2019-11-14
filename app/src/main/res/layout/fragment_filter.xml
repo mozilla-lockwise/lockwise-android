@@ -1,25 +1,24 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ This Source Code Form is subject to the terms of the Mozilla Public
   ~ License, v. 2.0. If a copy of the MPL was not distributed with this
   ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:theme="@style/Filter"
-    android:importantForAutofill="noExcludeDescendants"
-    tools:context=".view.FilterFragment"
-    tools:ignore="UnusedAttribute">
-
-    <include layout="@layout/include_backable_filter"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/entriesView"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:ignore="Autofill"/>
+        android:importantForAutofill="noExcludeDescendants"
+        android:orientation="vertical"
+        android:theme="@style/Filter"
+        tools:context=".view.FilterFragment"
+        tools:ignore="UnusedAttribute">
+
+    <include layout="@layout/include_backable_filter" />
+
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/entriesView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:ignore="Autofill" />
 </LinearLayout>
