@@ -33,6 +33,7 @@ interface EditItemDetailView {
     var isPasswordVisible: Boolean
     val togglePasswordClicks: Observable<Unit>
     val togglePasswordVisibility: Observable<Unit>
+    val usernameFieldClicks: Observable<Unit>
     val closeEntryClicks: Observable<Unit>
     val saveEntryClicks: Observable<Unit>
     val hostnameChanged: Observable<String>
@@ -43,6 +44,7 @@ interface EditItemDetailView {
     fun displayUsernameError(@StringRes errorMessage: Int? = null)
     fun displayPasswordError(@StringRes errorMessage: Int? = null)
     fun setSaveEnabled(enabled: Boolean)
+    fun setTextSelectionOnPasswordToggle()
 }
 
 @ExperimentalCoroutinesApi
@@ -129,8 +131,18 @@ class EditItemPresenter(
             .addTo(compositeDisposable)
 
         view.togglePasswordClicks
-            .map { ItemDetailAction.SetPasswordVisibility(view.isPasswordVisible.not()) }
-            .subscribe(dispatcher::dispatch)
+            .subscribe {
+                dispatcher.dispatch(
+                    ItemDetailAction.SetPasswordVisibility(view.isPasswordVisible.not())
+                )
+                view.setTextSelectionOnPasswordToggle()
+            }
+            .addTo(compositeDisposable)
+
+        view.usernameFieldClicks
+            .subscribe {
+                view.setTextSelectionOnPasswordToggle()
+            }
             .addTo(compositeDisposable)
 
         view.closeEntryClicks

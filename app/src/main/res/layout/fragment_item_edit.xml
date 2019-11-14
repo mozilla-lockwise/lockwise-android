@@ -17,6 +17,8 @@
         android:windowSoftInputMode="adjustPan"
         android:fitsSystemWindows="true"
         android:windowActionBarOverlay="true"
+        android:clickable="true"
+        android:focusable="true"
         android:importantForAutofill="noExcludeDescendants"
         tools:ignore="UnusedAttribute"
         style="@style/EditItemDetail">
@@ -97,6 +99,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingEnd="16dp"
+                    android:clickable="false"
+                    android:focusable="false"
                     app:layout_constraintTop_toTopOf="parent" >
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -104,6 +108,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingStart="16dp"
+                        android:clickable="false"
+                        android:focusable="false"
                         android:colorControlHighlight="@color/black_60_percent"
                         android:colorControlActivated="@color/black_60_percent"
                         android:textColorHint="@color/black_60_percent"
@@ -120,6 +126,8 @@
                             android:textStyle="normal"
                             android:textColor="@color/gray_73_percent"
                             android:textColorHint="@color/black_60_percent"
+                            android:colorControlHighlight="@color/black_60_percent"
+                            android:colorControlActivated="@color/black_60_percent"
                             android:letterSpacing="0.01"
                             android:lineSpacingExtra="8sp"
                             android:layout_width="match_parent"
@@ -136,7 +144,6 @@
                             tools:ignore="Autofill"/>
                 </com.google.android.material.textfield.TextInputLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
-
 
             <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/entryUsername"
@@ -214,6 +221,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/hint_password"
+                            android:inputType="textNoSuggestions"
                             android:colorControlActivated="@color/violet_70"
                             android:singleLine="true"
                             android:clickable="true"

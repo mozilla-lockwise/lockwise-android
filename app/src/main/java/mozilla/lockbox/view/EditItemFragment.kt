@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.text.method.PasswordTransformationMethod
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
@@ -38,6 +39,9 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
 
     override val togglePasswordClicks: Observable<Unit>
         get() = view!!.btnPasswordToggle.clicks()
+
+    override val usernameFieldClicks: Observable<Unit>
+        get() = view!!.inputUsername.clicks()
 
     override val closeEntryClicks: Observable<Unit>
         get() = view!!.toolbar.navigationClicks()
@@ -123,19 +127,37 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
     }
 
     private fun setupKeyboardFocus(view: View) {
-        val focusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+//        else if (view?.inputUsername?.hasFocus() == true) {
+//            view?.inputUsername?.setSelection(view?.inputUsername?.length() ?: 0)
+//        }
+
+        view.inputUsername.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) {
                 closeKeyboard()
+            } else {
+                view.inputUsername?.setSelection(view.inputUsername?.length() ?: 0)
             }
         }
 
-        view.inputUsername.onFocusChangeListener = focusChangeListener
+        view.fragment_item_edit.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                closeKeyboard()
+            }
+        }
 
         view.inputPassword.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
             togglePasswordVisibility.accept(Unit)
             if (!hasFocus) {
                 closeKeyboard()
+            } else {
+                view.inputPassword?.setSelection(view.inputPassword?.length() ?: 0)
             }
+        }
+
+        view.fragment_item_edit.setOnTouchListener { _, _ ->
+            closeKeyboard()
+            view.clearFocus()
+            true
         }
     }
 
@@ -178,6 +200,10 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
                 errorIconDrawable = null
             }
         }
+    }
+
+    override fun setTextSelectionOnPasswordToggle() {
+        view?.inputPassword?.setSelection(view?.inputPassword?.length() ?: 0)
     }
 
     override fun onDestroyView() {
