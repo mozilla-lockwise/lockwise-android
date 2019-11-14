@@ -64,4 +64,12 @@ open class Fragment : AndroidFragment() {
             return null
         }
     }
+
+    /**
+     * Called if the back button is pressed.
+     *
+     * @return `true` if the back button event has been handled. By default, returns false, in which
+     * case Android handles the event.
+     */
+    fun onBackPressed(): Boolean = presenter.onBackPressed()
 }
