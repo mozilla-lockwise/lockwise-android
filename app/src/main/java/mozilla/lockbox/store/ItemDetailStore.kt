@@ -10,6 +10,8 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.BehaviorSubject
+import mozilla.appservices.logins.ServerPassword
+import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.ItemDetailAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.filterByType
@@ -27,6 +29,9 @@ class ItemDetailStore(
     internal val _passwordVisible = BehaviorSubject.createDefault(false)
     val isPasswordVisible: Observable<Boolean> = _passwordVisible
 
+    internal val _isEditing = BehaviorSubject.createDefault(false)
+    val isEditing: Observable<Boolean> = _isEditing
+
     init {
         dispatcher.register
             .filterByType(RouteAction::class.java)
@@ -34,7 +39,7 @@ class ItemDetailStore(
                 when (action) {
                     is RouteAction.ItemDetail -> _passwordVisible.onNext(false)
                     is RouteAction.ItemList -> _passwordVisible.onNext(false)
-                    is RouteAction.EditItemDetail -> _passwordVisible.onNext(false)
+                    is RouteAction.EditItemDetail -> startEditing()
                 }
             }
             .addTo(compositeDisposable)
@@ -44,8 +49,24 @@ class ItemDetailStore(
             .subscribe { action ->
                 when (action) {
                     is ItemDetailAction.SetPasswordVisibility -> _passwordVisible.onNext(action.visible)
+                    is ItemDetailAction.SaveChanges -> saveItem(action.item)
+                    is ItemDetailAction.EndEditing -> stopEditing()
                 }
             }
             .addTo(compositeDisposable)
+    }
+
+    private fun startEditing() {
+        _passwordVisible.onNext(false)
+        _isEditing.onNext(true)
+    }
+
+    private fun saveItem(item: ServerPassword) {
+        dispatcher.dispatch(DataStoreAction.UpdateItemDetail(item))
+        stopEditing()
+    }
+
+    private fun stopEditing() {
+        _isEditing.onNext(false)
     }
 }

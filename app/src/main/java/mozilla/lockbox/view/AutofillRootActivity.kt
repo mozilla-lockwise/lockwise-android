@@ -27,8 +27,19 @@ class AutofillRootActivity : AppCompatActivity() {
         presenter.onViewReady()
     }
 
+    override fun onStop() {
+        super.onStop()
+        presenter.onStop()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         presenter.onDestroy()
+    }
+
+    override fun onBackPressed() {
+        if (!presenter.onBackPressed()) {
+            super.onBackPressed()
+        }
     }
 }

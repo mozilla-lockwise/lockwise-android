@@ -12,14 +12,15 @@ import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
-import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.DialogAction
+import mozilla.lockbox.action.ItemDetailAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.log
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.store.DataStore
+import mozilla.lockbox.store.ItemDetailStore
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.asOptional
 import org.junit.Assert.assertEquals
@@ -104,6 +105,10 @@ class EditItemPresenterTest {
     private val getStub = PublishSubject.create<Optional<ServerPassword>>()
     private val listStub = PublishSubject.create<List<ServerPassword>>()
 
+    val itemDetailStore = PowerMockito.mock(ItemDetailStore::class.java)!!
+    private val isPasswordVisibleStub = PublishSubject.create<Boolean>()
+    private val isEditingStub = PublishSubject.create<Boolean>()
+
     val dispatcher = Dispatcher()
     val dispatcherObserver = TestObserver.create<Action>()!!
 
@@ -156,10 +161,15 @@ class EditItemPresenterTest {
         dispatcher.register.subscribe(dispatcherObserver)
         Mockito.`when`(dataStore.get(ArgumentMatchers.anyString())).thenReturn(getStub)
         Mockito.`when`(dataStore.list).thenReturn(listStub)
+
+        Mockito.`when`(itemDetailStore.isPasswordVisible).thenReturn(isPasswordVisibleStub)
+        Mockito.`when`(itemDetailStore.isEditing).thenReturn(isEditingStub)
+
+        isEditingStub.onNext(true)
     }
 
     private fun setUpTestSubject(item: ServerPassword?) {
-        subject = EditItemPresenter(view, item?.id, dispatcher, dataStore)
+        subject = EditItemPresenter(view, item?.id, dispatcher, dataStore, itemDetailStore)
         subject.onViewReady()
 
         getStub.onNext(item.asOptional())
@@ -217,9 +227,23 @@ class EditItemPresenterTest {
     }
 
     @Test
-    fun `tapping on close button`() {
+    fun `tapping on close button with no change`() {
         setUpTestSubject(fakeCredential)
 
+        view.closeEntryClicksStub.onNext(Unit)
+
+        dispatcherObserver.assertValueSequence(
+            listOf(
+                ItemDetailAction.EndEditing(fakeCredential.id)
+            )
+        )
+    }
+
+    @Test
+    fun `tapping on close button with change`() {
+        setUpTestSubject(fakeCredential)
+
+        view.usernameClicksStub.onNext("all-change")
         view.closeEntryClicksStub.onNext(Unit)
 
         dispatcherObserver.assertValueSequence(
@@ -230,15 +254,41 @@ class EditItemPresenterTest {
     }
 
     @Test
-    fun `tapping on save button`() {
+    fun `tapping on save button with no changes`() {
         setUpTestSubject(fakeCredential)
 
         view.saveEntryClicksStub.onNext(Unit)
 
         dispatcherObserver.assertValueSequence(
             listOf(
-                DataStoreAction.UpdateItemDetail(fakeCredential),
-                RouteAction.ItemList
+                ItemDetailAction.EndEditing(fakeCredential.id)
+            )
+        )
+    }
+
+    @Test
+    fun `tapping on save button`() {
+        setUpTestSubject(fakeCredential)
+
+        view.usernameClicksStub.onNext("all-change")
+        view.saveEntryClicksStub.onNext(Unit)
+
+        dispatcherObserver.assertValueSequence(
+            listOf(
+                ItemDetailAction.SaveChanges(fakeCredential.copy(username = "all-change"))
+            )
+        )
+    }
+
+    @Test
+    fun `stopping editing sends you back to the item detail`() {
+        setUpTestSubject(fakeCredential)
+        isEditingStub.onNext(false)
+
+        dispatcherObserver.assertValueSequence(
+            listOf(
+                RouteAction.ItemList,
+                RouteAction.ItemDetail(fakeCredential.id)
             )
         )
     }

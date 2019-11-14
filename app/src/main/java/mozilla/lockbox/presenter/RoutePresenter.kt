@@ -30,6 +30,7 @@ import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.view.DialogFragment
+import mozilla.lockbox.view.Fragment as SpecializedFragment
 
 @ExperimentalCoroutinesApi
 abstract class RoutePresenter(
@@ -59,6 +60,12 @@ abstract class RoutePresenter(
         override fun handleOnBackPressed() {
             dispatcher.dispatch(RouteAction.InternalBack)
         }
+    }
+
+    override fun onBackPressed(): Boolean {
+        dispatcher.dispatch(RouteAction.InternalBack)
+        val fragment = currentFragment as? SpecializedFragment
+        return fragment?.onBackPressed() ?: false
     }
 
     private val onBackPressedDispatcher = activity.onBackPressedDispatcher

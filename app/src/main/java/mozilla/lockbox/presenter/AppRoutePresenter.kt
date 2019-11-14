@@ -37,6 +37,7 @@ class AppRoutePresenter(
 ) : RoutePresenter(activity, dispatcher, routeStore) {
 
     override fun onViewReady() {
+        super.onViewReady()
         navController = Navigation.findNavController(activity, R.id.fragment_nav_host)
     }
 
