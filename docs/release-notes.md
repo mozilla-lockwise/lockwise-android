@@ -1,6 +1,20 @@
 # Release Notes
 
-## 3.1.0 (Build 5361)
+## 3.2.0 (Build 5522)
+
+Stability and UI cleanup.
+
+All changes since version 3.1.0:
+
+- Search bar text handles have violet background (#1035)
+- Reconcile l10n strings for translation #1020
+- Close keyboard when exiting feedback form (#1057)
+- Update ---feature.md (#1063)
+- The device back button doesn't have the same functionality with the X button in Edit Login Mode (994)
+- Remove "name" field from the edit view (#1010)
+- Whooops! Wrong URL displayed when accessing Learn More from Lockwise settings (#1048)
+
+## 3.1.0 (Build 5356)
 
 Improve autofill detection and increase target SDK to 28.
 
