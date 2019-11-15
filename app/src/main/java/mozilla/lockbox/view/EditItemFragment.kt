@@ -6,7 +6,6 @@
 
 package mozilla.lockbox.view
 
-import android.content.Context
 import android.os.Bundle
 import android.text.method.PasswordTransformationMethod
 import android.view.Gravity
@@ -14,7 +13,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.Toolbar
@@ -172,10 +170,7 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
     }
 
     override fun closeKeyboard() {
-        val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        if (imm.isAcceptingText) {
-            imm.hideSoftInputFromWindow(view!!.windowToken, 0)
-        }
+        super.closeKeyboard(view)
     }
 
     private fun setupToolbar(toolbar: Toolbar) {

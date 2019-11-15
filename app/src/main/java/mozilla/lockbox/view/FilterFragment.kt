@@ -6,12 +6,10 @@
 
 package mozilla.lockbox.view
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jakewharton.rxbinding2.view.clicks
@@ -56,17 +54,12 @@ class FilterFragment : BackableFragment(), FilterView {
     override fun onResume() {
         super.onResume()
         view!!.filterField.requestFocus()
-
-        val inputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.showSoftInput(view!!.filterField, InputMethodManager.SHOW_IMPLICIT)
+        openKeyboard(view?.filterField)
     }
 
     override fun onPause() {
         super.onPause()
-        val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        if (imm.isAcceptingText) {
-            imm.hideSoftInputFromWindow(view!!.filterField.windowToken, 0)
-        }
+        closeKeyboard(view?.filterField)
     }
 
     override val filterTextEntered: Observable<CharSequence>
