@@ -6,13 +6,11 @@
 
 package mozilla.lockbox.view
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
@@ -36,7 +34,7 @@ class LockedFragment : Fragment(), LockedView {
 
     override fun onPause() {
         super.onPause()
-        closeKeyboard()
+        closeKeyboard(view)
     }
 
     override val unlockButtonTaps: Observable<Unit>
@@ -45,10 +43,5 @@ class LockedFragment : Fragment(), LockedView {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         _onActivityResult.onNext(Pair(requestCode, resultCode))
-    }
-
-    private fun closeKeyboard() {
-        val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(view!!.windowToken, 0)
     }
 }
