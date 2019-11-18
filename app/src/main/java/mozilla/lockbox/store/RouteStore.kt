@@ -55,7 +55,6 @@ open class RouteStore(
                         is DialogAction,
                         is RouteAction.AutoLockSetting,
                         is RouteAction.DialogFragment,
-                        is RouteAction.EditItemDetail,
                         is RouteAction.SystemIntent -> true
                         else -> false
                     }
@@ -78,12 +77,19 @@ open class RouteStore(
 
     private fun dataStoreToRouteActions(storageState: DataStore.State): Optional<RouteAction> {
         return when (storageState) {
-            is DataStore.State.Unlocked -> RouteAction.ItemList
+            is DataStore.State.Unlocked -> unlockScreenAction(_routes.getValue())
             is DataStore.State.Locked -> RouteAction.LockScreen
             is DataStore.State.Unprepared -> RouteAction.Welcome
             else -> null
         }.asOptional()
     }
+
+    private fun unlockScreenAction(current: RouteAction?) =
+        when (current) {
+            null, RouteAction.LockScreen
+                -> RouteAction.ItemList
+            else -> null
+        }
 
     fun clearBackStack() {
         _routes.trimTail()
