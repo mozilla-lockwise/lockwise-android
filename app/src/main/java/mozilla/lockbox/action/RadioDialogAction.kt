@@ -1,2 +1,0 @@
-package mozilla.lockbox.action 
-

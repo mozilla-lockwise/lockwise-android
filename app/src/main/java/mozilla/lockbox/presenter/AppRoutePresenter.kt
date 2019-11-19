@@ -17,9 +17,6 @@ import mozilla.lockbox.R
 import mozilla.lockbox.action.AppWebPageAction
 import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.RouteAction
-import mozilla.lockbox.action.Setting
-import mozilla.lockbox.action.SettingAction
-import mozilla.lockbox.extensions.view.AlertDialogHelper
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.store.SettingStore

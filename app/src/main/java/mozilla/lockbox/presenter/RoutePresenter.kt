@@ -17,14 +17,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
-import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.BuildConfig
 import mozilla.lockbox.R
 import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.RouteAction
-import mozilla.lockbox.extensions.view.AlertDialogHelper
-import mozilla.lockbox.extensions.view.AlertState
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
