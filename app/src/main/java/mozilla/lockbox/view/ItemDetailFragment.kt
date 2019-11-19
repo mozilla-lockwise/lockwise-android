@@ -102,6 +102,7 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
 
     override fun showPopup() {
         val wrapper = ContextThemeWrapper(context, R.style.PopupKebabMenu)
+
         val popupMenu = PopupMenu(
             wrapper,
             this.kebabMenuButton,
@@ -123,7 +124,6 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
                 else -> false
             }
         }
-
         popupMenu.inflate(R.menu.item_detail_menu)
 
         val builder = popupMenu.menu as MenuBuilder

@@ -12,7 +12,7 @@ import mozilla.lockbox.support.DataStoreSupport
 import mozilla.lockbox.support.FixedDataStoreSupport
 import mozilla.lockbox.support.FxASyncDataStoreSupport
 
-private val emptyString = ""
+private const val emptyString = ""
 
 interface SyncCredentials {
     val isNew: Boolean

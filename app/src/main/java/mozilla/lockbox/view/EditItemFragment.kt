@@ -10,7 +10,6 @@ import android.os.Bundle
 import android.text.method.PasswordTransformationMethod
 import android.view.Gravity
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
@@ -127,10 +126,6 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
     }
 
     private fun setupKeyboardFocus(view: View) {
-//        else if (view?.inputUsername?.hasFocus() == true) {
-//            view?.inputUsername?.setSelection(view?.inputUsername?.length() ?: 0)
-//        }
-
         view.inputUsername.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) {
                 closeKeyboard()
