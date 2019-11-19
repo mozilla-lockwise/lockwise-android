@@ -12,10 +12,14 @@ import androidx.lifecycle.ProcessLifecycleOwner
 import com.adjust.sdk.Adjust
 import com.adjust.sdk.AdjustConfig
 import com.squareup.leakcanary.LeakCanary
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.Megazord
 import mozilla.components.support.rusthttp.RustHttpConfig
 import mozilla.components.lib.fetch.httpurlconnection.HttpURLConnectionClient
+import mozilla.components.service.glean.Glean
+import mozilla.components.service.glean.config.Configuration
 import mozilla.components.support.base.log.Log
 import mozilla.components.support.base.log.logger.Logger
 import mozilla.components.support.base.log.sink.AndroidLogSink
@@ -53,6 +57,7 @@ open class LockboxApplication : Application() {
     open val unitTesting = false
 
     private lateinit var presenter: ApplicationPresenter
+    private val compositeDisposable = CompositeDisposable()
 
     override fun onCreate() {
         super.onCreate()
@@ -61,6 +66,8 @@ open class LockboxApplication : Application() {
         setupDataStoreSupport()
         injectContext()
         setupLifecycleListener()
+
+        setupGlean()
 
         // Adjust Integration
         val appToken = Constant.App.appToken
@@ -95,6 +102,20 @@ open class LockboxApplication : Application() {
         orderedStores.forEach {
             log.info("${it.javaClass.simpleName} initialized")
         }
+    }
+
+    private fun setupGlean() {
+        // Propagate changes to the "data collection" pref to the Glean SDK.
+        // Note that we require `setUploadEnabled` to be called at least once
+        // before Glean.initialize().
+        SettingStore.shared.sendUsageData
+            .subscribe {
+                Glean.setUploadEnabled(it)
+            }
+            .addTo(compositeDisposable)
+
+        // Initialize the Glean SDK.
+        Glean.initialize(applicationContext, Configuration(channel = BuildConfig.BUILD_TYPE))
     }
 
     private fun injectContext() {
