@@ -45,24 +45,28 @@ class EditItemPresenterTest {
 
     class FakeView : EditItemDetailView {
 
-        val togglePasswordVisibilityStub = PublishSubject.create<Unit>()
+        private val togglePasswordVisibilityStub = PublishSubject.create<Unit>()
         override val togglePasswordVisibility: Observable<Unit>
             get() = togglePasswordVisibilityStub
 
-        val passwordVisibleStub = false
+        private val passwordVisibleStub = false
         override var isPasswordVisible: Boolean = passwordVisibleStub
 
-        val togglePwdClicksStub = PublishSubject.create<Unit>()
+        private val togglePwdClicksStub = PublishSubject.create<Unit>()
         override val togglePasswordClicks: Observable<Unit>
             get() = togglePwdClicksStub
 
-        val hostnameClicksStub = PublishSubject.create<String>()
+        private val hostnameClicksStub = PublishSubject.create<String>()
         override val hostnameChanged: Observable<String>
             get() = hostnameClicksStub
 
         val usernameClicksStub = PublishSubject.create<String>()
         override val usernameChanged: Observable<String>
             get() = usernameClicksStub
+
+        private val usernameFieldClicksStub = PublishSubject.create<Unit>()
+        override val usernameFieldClicks: Observable<Unit>
+            get() = usernameFieldClicksStub
 
         val pwdClicksStub = PublishSubject.create<String>()
         override val passwordChanged: Observable<String>
@@ -97,6 +101,11 @@ class EditItemPresenterTest {
         }
         override fun setSaveEnabled(enabled: Boolean) {
             _saveEnabled = enabled
+        }
+
+        override fun setTextSelectionOnPasswordToggle() {
+            // make sure the text selector is at the end of the line when password is toggled
+            // NOOP
         }
     }
 
