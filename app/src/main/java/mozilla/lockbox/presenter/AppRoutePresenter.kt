@@ -181,24 +181,11 @@ class AppRoutePresenter(
     }
 
     private fun showAutoLockSelections() {
-        val autoLockValues = Setting.AutoLockTime.values()
-        val items = autoLockValues.map { it.stringValue }.toTypedArray()
-
-        settingStore.autoLockTime.take(1)
-            .map { autoLockValues.indexOf(it) }
-            .flatMap {
-                AlertDialogHelper.showRadioAlertDialog(
-                    activity,
-                    R.string.auto_lock,
-                    items,
-                    it,
-                    negativeButtonTitle = R.string.cancel
-                )
+        settingStore.autoLockTime
+            .take(1)
+            .subscribe {
+                alertDialogStore.showAutoLockSelections(it, activity)
             }
-            .flatMapIterable {
-                listOf(RouteAction.InternalBack, SettingAction.AutoLockTime(autoLockValues[it]))
-            }
-            .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
     }
 }

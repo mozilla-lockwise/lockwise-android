@@ -38,7 +38,7 @@ abstract class RoutePresenter(
     private val activity: AppCompatActivity,
     private val dispatcher: Dispatcher,
     private val routeStore: RouteStore,
-    private val alertDialogStore: AlertDialogStore = AlertDialogStore.shared
+    internal val alertDialogStore: AlertDialogStore = AlertDialogStore.shared
 ) : Presenter() {
 
     lateinit var navController: NavController

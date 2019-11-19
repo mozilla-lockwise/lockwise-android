@@ -7,10 +7,14 @@
 package mozilla.lockbox.store
 
 import android.app.Activity
+import androidx.appcompat.app.AppCompatActivity
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
+import mozilla.lockbox.R
 import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.action.Setting
+import mozilla.lockbox.action.SettingAction
 import mozilla.lockbox.extensions.view.AlertDialogHelper
 import mozilla.lockbox.extensions.view.AlertState
 import mozilla.lockbox.flux.Dispatcher
@@ -40,5 +44,24 @@ class AlertDialogStore(
             .flatMapIterable { listOf(RouteAction.InternalBack) + it }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
+    }
+
+    fun showAutoLockSelections(value: Setting.AutoLockTime, activity: AppCompatActivity) {
+        val autoLockValues = Setting.AutoLockTime.values()
+        val items = autoLockValues.map { it.stringValue }.toTypedArray()
+        val index = autoLockValues.indexOf(value)
+
+        AlertDialogHelper.showRadioAlertDialog(
+            activity,
+            R.string.auto_lock,
+            items,
+            index,
+            negativeButtonTitle = R.string.cancel
+        )
+        .flatMapIterable {
+            listOf(RouteAction.InternalBack, SettingAction.AutoLockTime(autoLockValues[it]))
+        }
+        .subscribe(dispatcher::dispatch)
+        .addTo(compositeDisposable)
     }
 }
