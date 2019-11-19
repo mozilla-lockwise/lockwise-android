@@ -5,8 +5,9 @@ _Last Updated: Feb 4, 2019_
 <!-- TOC depthFrom:2 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
 - [Analysis](#analysis)
-- [Collection](#collection)
+- [Collection](#collection-legacy)
 - [List of Implemented Events](#list-of-implemented-events)
+- [Mozilla Glean SDK](#mozilla-glean-sdk)
 - [Adjust SDK](#adjust-sdk)
 - [References](#references)
 
@@ -50,7 +51,7 @@ In service to validating the above hypothesis, we plan on answering these specif
 
 In addition to answering the above questions that directly concern actions in the app, we will also analyze telemetry emitted from the password manager that exists in the the Firefox desktop browser. These analyses will primarily examine whether users of Lockwise start active curation of their credentials in the desktop browser (Lockwise users will not be able to edit credentials directly from the app).
 
-## Collection
+## Collection (legacy)
 
 *Note: There is currently a new Mozilla mobile telemetry SDK under development, however it will not ship prior to the Lockwise for Android app. Once the new SDK ships we will evaluate whether or not to tear out the old implementation and replace it with the new SDK.*
 
@@ -179,6 +180,15 @@ https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/c
 	* `value`: null
 	* `extras`: null
 
+## Mozilla Glean SDK
+
+Lockwise for Android uses the [Glean SDK](https://mozilla.github.io/glean/book/index.html) to collect telemetry. The Glean SDK provides a handful of [pings and metrics out of the box](https://mozilla.github.io/glean/book/user/pings/index.html). The data review for using the Glean SDK is available at [this link](TODO).
+
+Lockwise for Android also uses the following Glean-enabled components of [Android Components](https://github.com/mozilla-mobile/android-components/), which are sending telemetry:
+
+|Name|Description|Collected metrics|Data review|
+|---|---|---|---|
+|[Firefox accounts](https://github.com/mozilla-mobile/android-components/tree/master/components/service/firefox-accounts)|A library for integrating with Firefox Accounts.| [docs](https://github.com/mozilla-mobile/android-components/blob/master/components/support/sync-telemetry/docs/metrics.md)| [review](TODO) |
 
 ## Adjust SDK
 
@@ -186,7 +196,9 @@ The app also includes a version of the [adjust SDK](https://github.com/adjust/an
 
 ## References
 
-[Library used to collect and send telemetry on Android](https://github.com/mozilla-mobile/android-components/blob/master/components/service/telemetry/README.md)
+[Glean SDK repository, used to collect and send telemetry](https://github.com/mozilla/glean/)
+
+[Legacy library used to collect and send telemetry on Android](https://github.com/mozilla-mobile/android-components/blob/master/components/service/telemetry/README.md)
 
 [Description of the "Core" ping](https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/data/core-ping.html)
 
