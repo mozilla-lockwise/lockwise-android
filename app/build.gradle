@@ -12,6 +12,7 @@ plugins {
     id 'kotlin-android'
     id 'io.sentry.android.gradle'
     id 'jacoco'
+    id "com.jetbrains.python.envs" version "0.0.26"
 }
 
 android {
@@ -103,6 +104,7 @@ dependencies {
     implementation "org.mozilla.components:service-sync-logins:${rootProject.ext.android_components_version}"
     implementation "org.mozilla.components:service-firefox-accounts:${rootProject.ext.android_components_version}"
     implementation "org.mozilla.components:service-telemetry:${rootProject.ext.android_components_version}"
+    implementation "org.mozilla.components:service-glean:${rootProject.ext.android_components_version}"
     implementation "org.mozilla.components:lib-dataprotect:${rootProject.ext.android_components_version}"
     implementation "org.mozilla.components:lib-fetch-httpurlconnection:${rootProject.ext.android_components_version}"
     implementation "org.mozilla.components:lib-publicsuffixlist:${rootProject.ext.android_components_version}"
@@ -260,6 +262,11 @@ if (project.hasProperty("coverage")) {
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
     kotlinOptions.allWarningsAsErrors = true
 }
+
+// Generate markdown docs for the collected metrics.
+ext.gleanGenerateMarkdownDocs = true
+ext.gleanDocsDirectory = "$rootDir/docs/glean"
+apply from: 'https://github.com/mozilla-mobile/android-components/raw/v' + rootProject.ext.android_components_version + '/components/service/glean/scripts/sdk_generator.gradle'
 
 // Internal, but stable and convenient.
 import org.gradle.api.internal.artifacts.DefaultModuleIdentifier
