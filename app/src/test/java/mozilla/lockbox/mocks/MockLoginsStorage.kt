@@ -76,6 +76,19 @@ open class MockLoginsStorage : LoginsStorage {
     override fun wipe() {}
 
     override fun wipeLocal() {}
+
+    override fun getByHostname(hostname: String): List<ServerPassword> {
+        return all.filter { hostname == it.hostname }
+    }
+
+    override fun getHandle(): Long {
+        throw UnsupportedOperationException()
+    }
+
+    override fun importLogins(logins: Array<ServerPassword>): Long {
+        all.addAll(logins)
+        return 0 // no errors
+    }
 }
 
 class MockDataStoreSupport : DataStoreSupport {

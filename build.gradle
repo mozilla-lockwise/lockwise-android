@@ -9,9 +9,9 @@
 buildscript {
     ext.android_support_version = '28.0.0'
     ext.kotlin_version = '1.3.0'
-    ext.android_components_version = '9.0.0'
+    ext.android_components_version = '19.0.1'
     // Determined from
-    // https://github.com/mozilla-mobile/android-components/blob/v0.51.0/buildSrc/src/main/java/Dependencies.kt,
+    // https://github.com/mozilla-mobile/android-components/blob/v19.0.1/buildSrc/src/main/java/Dependencies.kt,
     // where the version in the URL is the tag corresponding to `android_components_version`.
     ext.mozilla_appservices_version = '0.42.0'
     ext.lifecycle_version = '1.1.1'

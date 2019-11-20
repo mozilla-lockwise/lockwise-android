@@ -281,6 +281,7 @@ open class AccountStore(
 
         fxa.beginOAuthFlowAsync(Constant.FxA.scopes)
             .asMaybe(coroutineContext)
+            .map { it.url }
             .subscribe((this.loginURL as Subject)::onNext, this::pushError)
             .addTo(compositeDisposable)
     }
