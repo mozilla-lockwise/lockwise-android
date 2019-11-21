@@ -197,7 +197,10 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
         }
     }
 
-    override fun setTextSelectionOnPasswordToggle() {
+    /**
+     *  Ensure that the text selector is at the end of the line when password visibility is toggled.
+     */
+    override fun setTextSelectionToEndOfLine() {
         view?.inputPassword?.setSelection(view?.inputPassword?.length() ?: 0)
     }
 

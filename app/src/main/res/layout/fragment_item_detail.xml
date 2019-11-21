@@ -88,7 +88,7 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="26dp"
                 android:paddingEnd="14dp"
-                android:paddingBottom="26dp"
+                android:paddingBottom="36dp"
                 tools:ignore="RtlSymmetry">
 
             <androidx.constraintlayout.widget.ConstraintLayout

@@ -103,8 +103,9 @@ class EditItemPresenterTest {
             _saveEnabled = enabled
         }
 
-        override fun setTextSelectionOnPasswordToggle() {
+        override fun setTextSelectionToEndOfLine() {
             // make sure the text selector is at the end of the line when password is toggled
+            // or a field is selected
             // NOOP
         }
     }

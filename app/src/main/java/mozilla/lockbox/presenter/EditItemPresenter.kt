@@ -44,7 +44,7 @@ interface EditItemDetailView {
     fun displayUsernameError(@StringRes errorMessage: Int? = null)
     fun displayPasswordError(@StringRes errorMessage: Int? = null)
     fun setSaveEnabled(enabled: Boolean)
-    fun setTextSelectionOnPasswordToggle()
+    fun setTextSelectionToEndOfLine()
 }
 
 @ExperimentalCoroutinesApi
@@ -135,13 +135,13 @@ class EditItemPresenter(
                 dispatcher.dispatch(
                     ItemDetailAction.SetPasswordVisibility(view.isPasswordVisible.not())
                 )
-                view.setTextSelectionOnPasswordToggle()
+                view.setTextSelectionToEndOfLine()
             }
             .addTo(compositeDisposable)
 
         view.usernameFieldClicks
             .subscribe {
-                view.setTextSelectionOnPasswordToggle()
+                view.setTextSelectionToEndOfLine()
             }
             .addTo(compositeDisposable)
 
