@@ -1,5 +1,6 @@
 package mozilla.lockbox.uiTests
 
+import androidx.test.espresso.Espresso.pressBack
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -71,6 +72,7 @@ open class ItemDetailsTest {
             tapOnUserName()
             editUserName("UsernameChanged")
             saveChanges() }
+        pressBack()
         // Check that changes in entry are saved
         itemList {
             exists()
@@ -86,6 +88,12 @@ open class ItemDetailsTest {
         kebabMenu { tapEditButton() }
         editCredential {
             closeEditChanges() }
+        navigator.gotoItemDetailKebabMenu()
+        kebabMenu { tapEditButton() }
+        editCredential {
+            editUserName("foo")
+            closeEditChanges()
+        }
         editCredentialDisclaimer { tapCancelButton() }
         // User is taken to ItemDetail View
         // Now Tap on Discard edit credential
