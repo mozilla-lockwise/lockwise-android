@@ -86,7 +86,17 @@ open class RouteStore(
 
     private fun unlockScreenAction(current: RouteAction?) =
         when (current) {
-            null, RouteAction.LockScreen
+            // We only want to route to the item list if the app has just been opened
+            // or actually unlocked by the user.
+            null,
+            is RouteAction.LockScreen,
+            // The app should also go to the item list after our first login
+            // and onboarding, because that's when we unlock the data store for the
+            // first time.
+            // If we add more ways of logging in, which allow you to skip the onboarding
+            // we should add exceptions here.
+            is RouteAction.Login,
+            is RouteAction.Onboarding
                 -> RouteAction.ItemList
             else -> null
         }
