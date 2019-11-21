@@ -64,4 +64,8 @@ class AlertDialogStore(
         .subscribe(dispatcher::dispatch)
         .addTo(compositeDisposable)
     }
+
+    fun dismissDialogs() {
+        compositeDisposable.clear()
+    }
 }

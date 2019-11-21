@@ -85,7 +85,7 @@ class AppRoutePresenter(
             is RouteAction.ItemList -> navigateToFragment(R.id.fragment_item_list)
             is RouteAction.SettingList -> navigateToFragment(R.id.fragment_setting)
             is RouteAction.AccountSetting -> navigateToFragment(R.id.fragment_account_setting)
-            is RouteAction.LockScreen -> navigateToFragment(R.id.fragment_locked)
+            is RouteAction.LockScreen -> showLockScreen()
             is RouteAction.Filter -> navigateToFragment(R.id.fragment_filter)
             is RouteAction.ItemDetail -> navigateToFragment(R.id.fragment_item_detail, bundle(action))
             is RouteAction.EditItemDetail -> navigateToFragment(R.id.fragment_item_edit, bundle(action))
@@ -98,6 +98,11 @@ class AppRoutePresenter(
             is DialogAction -> showDialog(action)
             is AppWebPageAction -> navigateToFragment(R.id.fragment_webview, bundle(action))
         }
+    }
+
+    private fun showLockScreen() {
+        alertDialogStore.dismissDialogs()
+        navigateToFragment(R.id.fragment_locked)
     }
 
     override fun findTransitionId(@IdRes src: Int, @IdRes dest: Int): Int? {
