@@ -98,10 +98,10 @@ class EditItemPresenter(
         Observables.combineLatest(getItem, dataStore.list)
             .map { (item, list) ->
                 list.filter(
-                    hostname = item.hostname,
-                    httpRealm = item.httpRealm,
-                    formSubmitURL = item.formSubmitURL
-                )
+                        hostname = item.hostname,
+                        httpRealm = item.httpRealm,
+                        formSubmitURL = item.formSubmitURL
+                    )
                     .map { it.username }
                     .toSet()
                     .minus(item.username)
@@ -129,11 +129,8 @@ class EditItemPresenter(
             .addTo(compositeDisposable)
 
         view.togglePasswordClicks
-            .subscribe {
-                dispatcher.dispatch(
-                    ItemDetailAction.SetPasswordVisibility(view.isPasswordVisible.not())
-                )
-            }
+            .map { ItemDetailAction.SetPasswordVisibility(view.isPasswordVisible.not()) }
+            .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
 
         view.closeEntryClicks
@@ -183,7 +180,7 @@ class EditItemPresenter(
     }
 
     private fun checkDismissChanges(itemId: String) =
-    // When something has changes, then check with a dialog.
+        // When something has changes, then check with a dialog.
         // otherwise, go back to the item detail screen.
         credentialsToSave?.let { DialogAction.DiscardChangesDialog(itemId) }
             ?: ItemDetailAction.EndEditing(itemId)
