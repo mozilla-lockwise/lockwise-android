@@ -18,8 +18,8 @@ import mozilla.lockbox.R
 import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.ItemDetailAction
 import mozilla.lockbox.action.RouteAction
-import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.extensions.filter
+import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.extensions.toDetailViewModel
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
@@ -33,7 +33,6 @@ interface EditItemDetailView {
     var isPasswordVisible: Boolean
     val togglePasswordClicks: Observable<Unit>
     val togglePasswordVisibility: Observable<Unit>
-    val usernameFieldClicks: Observable<Unit>
     val closeEntryClicks: Observable<Unit>
     val saveEntryClicks: Observable<Unit>
     val hostnameChanged: Observable<String>
@@ -44,7 +43,6 @@ interface EditItemDetailView {
     fun displayUsernameError(@StringRes errorMessage: Int? = null)
     fun displayPasswordError(@StringRes errorMessage: Int? = null)
     fun setSaveEnabled(enabled: Boolean)
-    fun setTextSelectionToEndOfLine()
 }
 
 @ExperimentalCoroutinesApi
@@ -100,10 +98,10 @@ class EditItemPresenter(
         Observables.combineLatest(getItem, dataStore.list)
             .map { (item, list) ->
                 list.filter(
-                        hostname = item.hostname,
-                        httpRealm = item.httpRealm,
-                        formSubmitURL = item.formSubmitURL
-                    )
+                    hostname = item.hostname,
+                    httpRealm = item.httpRealm,
+                    formSubmitURL = item.formSubmitURL
+                )
                     .map { it.username }
                     .toSet()
                     .minus(item.username)
@@ -135,13 +133,6 @@ class EditItemPresenter(
                 dispatcher.dispatch(
                     ItemDetailAction.SetPasswordVisibility(view.isPasswordVisible.not())
                 )
-                view.setTextSelectionToEndOfLine()
-            }
-            .addTo(compositeDisposable)
-
-        view.usernameFieldClicks
-            .subscribe {
-                view.setTextSelectionToEndOfLine()
             }
             .addTo(compositeDisposable)
 
@@ -192,7 +183,7 @@ class EditItemPresenter(
     }
 
     private fun checkDismissChanges(itemId: String) =
-        // When something has changes, then check with a dialog.
+    // When something has changes, then check with a dialog.
         // otherwise, go back to the item detail screen.
         credentialsToSave?.let { DialogAction.DiscardChangesDialog(itemId) }
             ?: ItemDetailAction.EndEditing(itemId)

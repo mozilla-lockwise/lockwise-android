@@ -39,9 +39,6 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
     override val togglePasswordClicks: Observable<Unit>
         get() = view!!.btnPasswordToggle.clicks()
 
-    override val usernameFieldClicks: Observable<Unit>
-        get() = view!!.inputUsername.clicks()
-
     override val closeEntryClicks: Observable<Unit>
         get() = view!!.toolbar.navigationClicks()
 
@@ -65,6 +62,8 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
         }
 
     private fun updatePasswordVisibility(visible: Boolean) {
+        view?.inputPassword?.setSelection(view?.inputPassword?.length() ?: 0)
+
         if (visible) {
             inputPassword.transformationMethod = null
             btnPasswordToggle.setImageResource(R.drawable.ic_hide)
@@ -195,13 +194,6 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
                 errorIconDrawable = null
             }
         }
-    }
-
-    /**
-     *  Ensure that the text selector is at the end of the line when password visibility is toggled.
-     */
-    override fun setTextSelectionToEndOfLine() {
-        view?.inputPassword?.setSelection(view?.inputPassword?.length() ?: 0)
     }
 
     override fun onDestroyView() {

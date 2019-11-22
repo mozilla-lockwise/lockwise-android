@@ -64,10 +64,6 @@ class EditItemPresenterTest {
         override val usernameChanged: Observable<String>
             get() = usernameClicksStub
 
-        private val usernameFieldClicksStub = PublishSubject.create<Unit>()
-        override val usernameFieldClicks: Observable<Unit>
-            get() = usernameFieldClicksStub
-
         val pwdClicksStub = PublishSubject.create<String>()
         override val passwordChanged: Observable<String>
             get() = pwdClicksStub
@@ -77,8 +73,10 @@ class EditItemPresenterTest {
         }
 
         var item: ItemDetailViewModel? = null
-        @StringRes var usernameError: Int? = null
-        @StringRes var passwordError: Int? = null
+        @StringRes
+        var usernameError: Int? = null
+        @StringRes
+        var passwordError: Int? = null
         var _saveEnabled = true
 
         val closeEntryClicksStub = PublishSubject.create<Unit>()
@@ -96,17 +94,13 @@ class EditItemPresenterTest {
         override fun displayUsernameError(@StringRes errorMessage: Int?) {
             usernameError = errorMessage
         }
+
         override fun displayPasswordError(@StringRes errorMessage: Int?) {
             passwordError = errorMessage
         }
+
         override fun setSaveEnabled(enabled: Boolean) {
             _saveEnabled = enabled
-        }
-
-        override fun setTextSelectionToEndOfLine() {
-            // make sure the text selector is at the end of the line when password is toggled
-            // or a field is selected
-            // NOOP
         }
     }
 
@@ -183,10 +177,12 @@ class EditItemPresenterTest {
         subject.onViewReady()
 
         getStub.onNext(item.asOptional())
-        listStub.onNext(listOf(
-            fakeCredential,
-            fakeCredentialNoUsername
-        ))
+        listStub.onNext(
+            listOf(
+                fakeCredential,
+                fakeCredentialNoUsername
+            )
+        )
     }
 
     @Test
