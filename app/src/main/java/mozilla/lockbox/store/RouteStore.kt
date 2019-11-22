@@ -55,7 +55,6 @@ open class RouteStore(
                         is DialogAction,
                         is RouteAction.AutoLockSetting,
                         is RouteAction.DialogFragment,
-                        is RouteAction.EditItemDetail,
                         is RouteAction.SystemIntent -> true
                         else -> false
                     }
@@ -78,12 +77,29 @@ open class RouteStore(
 
     private fun dataStoreToRouteActions(storageState: DataStore.State): Optional<RouteAction> {
         return when (storageState) {
-            is DataStore.State.Unlocked -> RouteAction.ItemList
+            is DataStore.State.Unlocked -> unlockScreenAction(_routes.getValue())
             is DataStore.State.Locked -> RouteAction.LockScreen
             is DataStore.State.Unprepared -> RouteAction.Welcome
             else -> null
         }.asOptional()
     }
+
+    private fun unlockScreenAction(current: RouteAction?) =
+        when (current) {
+            // We only want to route to the item list if the app has just been opened
+            // or actually unlocked by the user.
+            null,
+            is RouteAction.LockScreen,
+            // The app should also go to the item list after our first login
+            // and onboarding, because that's when we unlock the data store for the
+            // first time.
+            // If we add more ways of logging in, which allow you to skip the onboarding
+            // we should add exceptions here.
+            is RouteAction.Login,
+            is RouteAction.Onboarding
+                -> RouteAction.ItemList
+            else -> null
+        }
 
     fun clearBackStack() {
         _routes.trimTail()

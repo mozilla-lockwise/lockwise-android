@@ -99,6 +99,27 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
             layout.hintTextColor = context?.getColorStateList(R.color.hint_edit_text)
             layout.setHintTextAppearance(R.style.HintText)
         }
+
+        setupItemDisplay()
+    }
+
+    private fun setupItemDisplay() {
+        view?.apply {
+            toolbar.elevation = resources.getDimension(R.dimen.larger_toolbar_elevation)
+            toolbar.editLoginTitle.gravity = Gravity.CENTER_VERTICAL
+
+            inputLayoutHostname.isHintAnimationEnabled = false
+            inputLayoutUsername.isHintAnimationEnabled = false
+            inputLayoutPassword.isHintAnimationEnabled = false
+
+            inputHostname.readOnly = true
+
+            inputUsername.isFocusable = true
+            inputUsername.isClickable = true
+
+            inputPassword.isFocusable = true
+            inputPassword.isClickable = true
+        }
     }
 
     private fun setupKeyboardFocus(view: View) {
@@ -181,21 +202,8 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
 
     override fun updateItem(item: ItemDetailViewModel) {
         assertOnUiThread()
-        toolbar.elevation = resources.getDimension(R.dimen.larger_toolbar_elevation)
+
         toolbar.title = item.title
-        toolbar.editLoginTitle.gravity = Gravity.CENTER_VERTICAL
-
-        inputLayoutHostname.isHintAnimationEnabled = false
-        inputLayoutUsername.isHintAnimationEnabled = false
-        inputLayoutPassword.isHintAnimationEnabled = false
-
-        inputHostname.readOnly = true
-
-        inputUsername.isFocusable = true
-        inputUsername.isClickable = true
-
-        inputPassword.isFocusable = true
-        inputPassword.isClickable = true
 
         inputHostname.setText(item.hostname, TextView.BufferType.NORMAL)
         inputPassword.setText(item.password, TextView.BufferType.NORMAL)

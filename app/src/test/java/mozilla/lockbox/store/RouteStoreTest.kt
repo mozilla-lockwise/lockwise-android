@@ -88,10 +88,36 @@ class RouteStoreTest {
         stateStub.onNext(DataStore.State.Unprepared)
         routeObserver.assertLastValue(RouteAction.Welcome)
 
+        dispatcher.dispatch(RouteAction.LockScreen)
         stateStub.onNext(DataStore.State.Unlocked)
         routeObserver.assertLastValue(RouteAction.ItemList)
 
         stateStub.onNext(DataStore.State.Locked)
         routeObserver.assertLastValue(RouteAction.LockScreen)
+    }
+
+    @Test
+    fun `unlock datastore actions only unlock when showing the lock screen`() {
+        // These tests show that the datastore is locked when the app is backgrounded,
+        // and unlocked when they re-foreground. However, they shouldn't cause the app to go back
+        // to the default screen (ItemList), but stay where they are.
+
+        // changes from lock screen to item list.
+        dispatcher.dispatch(RouteAction.LockScreen)
+        stateStub.onNext(DataStore.State.Unlocked)
+        routeObserver.assertLastValue(RouteAction.ItemList)
+
+        // no changes when the datastore is unlocked again.
+        dispatcher.dispatch(RouteAction.Filter)
+        stateStub.onNext(DataStore.State.Unlocked)
+        routeObserver.assertLastValue(RouteAction.Filter)
+
+        dispatcher.dispatch(RouteAction.ItemDetail(""))
+        stateStub.onNext(DataStore.State.Unlocked)
+        routeObserver.assertLastValue(RouteAction.ItemDetail(""))
+
+        dispatcher.dispatch(RouteAction.AccountSetting)
+        stateStub.onNext(DataStore.State.Unlocked)
+        routeObserver.assertLastValue(RouteAction.AccountSetting)
     }
 }

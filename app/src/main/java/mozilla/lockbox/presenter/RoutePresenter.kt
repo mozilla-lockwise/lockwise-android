@@ -17,17 +17,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
-import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.BuildConfig
 import mozilla.lockbox.R
 import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.RouteAction
-import mozilla.lockbox.extensions.view.AlertDialogHelper
-import mozilla.lockbox.extensions.view.AlertState
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
+import mozilla.lockbox.store.AlertDialogStore
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.view.DialogFragment
 import mozilla.lockbox.view.Fragment as SpecializedFragment
@@ -36,7 +34,8 @@ import mozilla.lockbox.view.Fragment as SpecializedFragment
 abstract class RoutePresenter(
     private val activity: AppCompatActivity,
     private val dispatcher: Dispatcher,
-    private val routeStore: RouteStore
+    private val routeStore: RouteStore,
+    internal val alertDialogStore: AlertDialogStore = AlertDialogStore.shared
 ) : Presenter() {
 
     lateinit var navController: NavController
@@ -92,20 +91,7 @@ abstract class RoutePresenter(
     protected abstract fun findTransitionId(@IdRes src: Int, @IdRes dest: Int): Int?
 
     fun showDialog(destination: DialogAction) {
-        AlertDialogHelper.showAlertDialog(activity, destination.viewModel)
-            .map { alertState ->
-                when (alertState) {
-                    AlertState.BUTTON_POSITIVE -> {
-                        destination.positiveButtonActionList
-                    }
-                    AlertState.BUTTON_NEGATIVE -> {
-                        destination.negativeButtonActionList
-                    }
-                }
-            }
-            .flatMapIterable { listOf(RouteAction.InternalBack) + it }
-            .subscribe(dispatcher::dispatch)
-            .addTo(compositeDisposable)
+        alertDialogStore.showDialog(activity, destination)
     }
 
     open fun showDialogFragment(dialogFragment: DialogFragment, destination: RouteAction.DialogFragment) {
