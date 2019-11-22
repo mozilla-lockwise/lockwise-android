@@ -17,9 +17,6 @@ import mozilla.lockbox.R
 import mozilla.lockbox.action.AppWebPageAction
 import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.RouteAction
-import mozilla.lockbox.action.Setting
-import mozilla.lockbox.action.SettingAction
-import mozilla.lockbox.extensions.view.AlertDialogHelper
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.store.SettingStore
@@ -88,7 +85,7 @@ class AppRoutePresenter(
             is RouteAction.ItemList -> navigateToFragment(R.id.fragment_item_list)
             is RouteAction.SettingList -> navigateToFragment(R.id.fragment_setting)
             is RouteAction.AccountSetting -> navigateToFragment(R.id.fragment_account_setting)
-            is RouteAction.LockScreen -> navigateToFragment(R.id.fragment_locked)
+            is RouteAction.LockScreen -> showLockScreen()
             is RouteAction.Filter -> navigateToFragment(R.id.fragment_filter)
             is RouteAction.ItemDetail -> navigateToFragment(R.id.fragment_item_detail, bundle(action))
             is RouteAction.EditItemDetail -> navigateToFragment(R.id.fragment_item_edit, bundle(action))
@@ -101,6 +98,11 @@ class AppRoutePresenter(
             is DialogAction -> showDialog(action)
             is AppWebPageAction -> navigateToFragment(R.id.fragment_webview, bundle(action))
         }
+    }
+
+    private fun showLockScreen() {
+        alertDialogStore.dismissDialogs()
+        navigateToFragment(R.id.fragment_locked)
     }
 
     override fun findTransitionId(@IdRes src: Int, @IdRes dest: Int): Int? {
@@ -181,24 +183,11 @@ class AppRoutePresenter(
     }
 
     private fun showAutoLockSelections() {
-        val autoLockValues = Setting.AutoLockTime.values()
-        val items = autoLockValues.map { it.stringValue }.toTypedArray()
-
-        settingStore.autoLockTime.take(1)
-            .map { autoLockValues.indexOf(it) }
-            .flatMap {
-                AlertDialogHelper.showRadioAlertDialog(
-                    activity,
-                    R.string.auto_lock,
-                    items,
-                    it,
-                    negativeButtonTitle = R.string.cancel
-                )
+        settingStore.autoLockTime
+            .take(1)
+            .subscribe {
+                alertDialogStore.showAutoLockSelections(it, activity)
             }
-            .flatMapIterable {
-                listOf(RouteAction.InternalBack, SettingAction.AutoLockTime(autoLockValues[it]))
-            }
-            .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
     }
 }

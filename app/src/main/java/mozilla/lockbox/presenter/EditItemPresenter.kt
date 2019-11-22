@@ -83,11 +83,13 @@ class EditItemPresenter(
 
         val getItem = dataStore.get(itemId)
             .filterNotNull()
+            .distinctUntilChanged()
             .doOnNext {
                 credentialsAtStart = it
             }
 
         getItem
+            .filter { credentialsToSave == null }
             .map { it.toDetailViewModel() }
             .observeOn(mainThread())
             .subscribe(view::updateItem)
