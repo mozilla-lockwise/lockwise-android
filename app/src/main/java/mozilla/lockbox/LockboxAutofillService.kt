@@ -30,10 +30,13 @@ import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.AutofillStore
+import mozilla.lockbox.store.ContextStore
 import mozilla.lockbox.store.DataStore
+import mozilla.lockbox.store.GleanTelemetryStore
 import mozilla.lockbox.store.TelemetryStore
 import mozilla.lockbox.support.FxASyncDataStoreSupport
 import mozilla.lockbox.support.Constant
+import mozilla.lockbox.support.FeatureFlags
 import mozilla.lockbox.support.PublicSuffixSupport
 import mozilla.lockbox.support.SecurePreferences
 import mozilla.lockbox.support.asOptional
@@ -46,7 +49,6 @@ class LockboxAutofillService(
     private val dataStore: DataStore = DataStore.shared,
     private val securePreferences: SecurePreferences = SecurePreferences.shared,
     private val fxaSupport: FxASyncDataStoreSupport = FxASyncDataStoreSupport.shared,
-    private val telemetryStore: TelemetryStore = TelemetryStore.shared,
     private val autofillStore: AutofillStore = AutofillStore.shared,
     val dispatcher: Dispatcher = Dispatcher.shared
 ) : AutofillService() {
@@ -147,6 +149,8 @@ class LockboxAutofillService(
 
     private fun intializeService() {
         isRunning = true
+
+        val telemetryStore: ContextStore = if (FeatureFlags.USE_GLEAN) GleanTelemetryStore.shared else TelemetryStore.shared
 
         val contextInjectables = arrayOf(
             telemetryStore,

@@ -47,4 +47,19 @@ object FeatureFlags {
         isRelease -> true
         else -> true
     }
+
+    /**
+     * Use the Glean telemetry store.
+     *
+     * If false, the legacy telemetry-service is used.
+     * If true, the glean telemetry service is used.
+     *
+     * Either way, the user can opt out of this from the settings.
+     */
+    val USE_GLEAN = when {
+        isDebug -> true
+        isTesting -> false
+        isRelease -> false
+        else -> false
+    }
 }

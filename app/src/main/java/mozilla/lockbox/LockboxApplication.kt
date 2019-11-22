@@ -26,6 +26,7 @@ import mozilla.lockbox.store.ClipboardStore
 import mozilla.lockbox.store.ContextStore
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.FingerprintStore
+import mozilla.lockbox.store.GleanTelemetryStore
 import mozilla.lockbox.store.LockedStore
 import mozilla.lockbox.store.NetworkStore
 import mozilla.lockbox.store.SentryStore
@@ -34,6 +35,7 @@ import mozilla.lockbox.store.TelemetryStore
 import mozilla.lockbox.support.AdjustSupport
 import mozilla.lockbox.support.TimingSupport
 import mozilla.lockbox.support.Constant
+import mozilla.lockbox.support.FeatureFlags
 import mozilla.lockbox.support.FxASyncDataStoreSupport
 import mozilla.lockbox.support.PublicSuffixSupport
 import mozilla.lockbox.support.SecurePreferences
@@ -106,7 +108,7 @@ open class LockboxApplication : Application() {
             NetworkStore.shared,
             TimingSupport.shared,
             AccountStore.shared,
-            TelemetryStore.shared,
+            if (FeatureFlags.USE_GLEAN) GleanTelemetryStore.shared else TelemetryStore.shared,
             SentryStore.shared,
             PublicSuffixSupport.shared
         )
