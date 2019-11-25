@@ -42,7 +42,7 @@ open class AppRoutePresenterTest {
 
     @Test
     fun testItemList() {
-        navigator.gotoItemList(false)
+        navigator.gotoItemList()
         navigator.checkAtItemList()
     }
 
