@@ -11,6 +11,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.robots.disconnectDisclaimer
 import mozilla.lockbox.robots.filteredItemList
+import mozilla.lockbox.robots.itemList
+import mozilla.lockbox.robots.settings
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.view.RootActivity
 import org.junit.Ignore
@@ -42,7 +44,7 @@ open class AppRoutePresenterTest {
 
     @Test
     fun testItemList() {
-        navigator.gotoItemList()
+        navigator.gotoItemList(false)
         navigator.checkAtItemList()
     }
 
@@ -61,11 +63,16 @@ open class AppRoutePresenterTest {
             back()
         }
         navigator.checkAtFilterList()
+        navigator.back()
     }
 
     @Test
     fun testSettings() {
-        navigator.gotoSettings()
+        navigator.gotoItemList(true)
+        itemList {
+            tapSettings()
+        }
+        settings { exists() }
         navigator.back()
         navigator.checkAtItemList()
     }
@@ -82,6 +89,7 @@ open class AppRoutePresenterTest {
         navigator.gotoDisconnectDisclaimer()
         navigator.back()
         navigator.checkAtAccountSetting()
+        navigator.back()
     }
 
     @Ignore("619-ui-tests-bitrise (#620)")

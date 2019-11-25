@@ -28,9 +28,10 @@ open class ItemDetailsTest {
 
     @Test
     fun itemDetailsAreDisplayed() {
-        navigator.gotoItemList()
+        navigator.gotoItemList(false)
         itemList { selectItem() }
         itemDetail { exists() }
+        navigator.back()
     }
 
     @Test
@@ -38,18 +39,21 @@ open class ItemDetailsTest {
         navigator.gotoItemDetail()
         itemDetail { tapCopyUsername() }
         itemDetail { toastIsDisplayed(R.string.toast_username_copied, activityRule) }
+        navigator.back()
     }
 
     @Test
     fun showToastWhenPassCopied() {
-        navigator.gotoItemDetail()
+        navigator.gotoItemList(true)
+        itemList { selectItem(0) }
         itemDetail { tapCopyPass() }
         itemDetail { toastIsDisplayed(R.string.toast_password_copied, activityRule) }
+        navigator.back()
     }
 
     @Test
     fun deleteItem() {
-        navigator.gotoItemDetailKebabMenu()
+        itemDetail { tapKebabMenu() }
         kebabMenu { tapDeleteButton() }
         // First tap on Cancel delete credential
         deleteCredentialDisclaimer { tapCancelButton() }
@@ -64,7 +68,7 @@ open class ItemDetailsTest {
 
     @Test
     fun editItem() {
-        navigator.gotoItemDetailKebabMenu()
+        itemDetail { tapKebabMenu() }
         kebabMenu { tapEditButton() }
         // Edit entry Hostname and Username
         editCredential {
@@ -79,6 +83,7 @@ open class ItemDetailsTest {
             editedCredentialUsernameExists("UsernameChanged")
             openCredential("UsernameChanged")
         }
+        navigator.back()
     }
 
     @Test
@@ -88,7 +93,7 @@ open class ItemDetailsTest {
         kebabMenu { tapEditButton() }
         editCredential {
             closeEditChanges() }
-        navigator.gotoItemDetailKebabMenu()
+        itemDetail { tapKebabMenu() }
         kebabMenu { tapEditButton() }
         editCredential {
             editUserName("foo")
@@ -104,11 +109,12 @@ open class ItemDetailsTest {
         // User is taken to ItemList View
         // No changes are applied
         itemDetail { exists() }
+        navigator.back()
     }
 
     @Test
     fun editItemInvalidTextFieldInput() {
-        navigator.gotoItemDetailKebabMenu()
+        itemDetail { tapKebabMenu() }
         kebabMenu { tapEditButton() }
         editCredential {
             editPassword("")
@@ -117,5 +123,6 @@ open class ItemDetailsTest {
             sleep(1000)
             noErrorEmptyPassword()
         }
+        navigator.back()
     }
 }
