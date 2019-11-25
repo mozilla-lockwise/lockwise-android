@@ -88,7 +88,9 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="26dp"
                 android:paddingEnd="14dp"
-                android:paddingBottom="36dp"
+                android:paddingStart="16dp"
+
+                android:paddingBottom="32dp"
                 tools:ignore="RtlSymmetry">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -105,7 +107,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:contentDescription="@string/launch_hostname_content_description"
-                        android:paddingStart="16dp"
                         android:paddingEnd="42dp"
                         android:scrollbars="none"
                         android:textColorHint="@color/black_60_percent"
@@ -137,7 +138,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:background="@null"
-                        android:paddingStart="16dp"
                         android:paddingTop="8dp"
                         android:paddingEnd="16dp"
                         android:paddingBottom="8dp"
@@ -150,7 +150,7 @@
                 <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:layout_marginStart="18dp"
+                        android:layout_marginStart="4dp"
                         android:layout_marginTop="2dp"
                         android:layout_marginEnd="11dp"
                         android:background="@color/gray_divider"
@@ -168,17 +168,16 @@
                         android:id="@+id/inputLayoutUsername"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="17dp"
                         android:layout_weight="1"
                         android:contentDescription="@string/copy_username_content_description"
-                        android:paddingStart="16dp"
+                        android:paddingTop="1dp"
                         android:paddingEnd="42dp"
                         android:textColorHint="@color/black_60_percent"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:ignore="RtlSymmetry">
+                        app:layout_constraintTop_toTopOf="parent">
 
                     <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/inputUsername"
@@ -187,8 +186,10 @@
                             android:layout_height="wrap_content"
                             android:colorControlActivated="@color/violet_70"
                             android:ellipsize="end"
+                            android:layout_weight="1"
                             android:hint="@string/hint_username"
                             android:inputType="textNoSuggestions"
+                            android:paddingBottom="15dp"
                             android:lines="1"
                             app:layout_constraintEnd_toEndOf="@+id/inputLayoutUsername"
                             app:layout_constraintTop_toTopOf="@+id/inputLayoutUsername"
@@ -202,7 +203,7 @@
                         android:background="@null"
                         android:paddingTop="8dp"
                         android:paddingEnd="16dp"
-                        android:paddingBottom="8dp"
+                        android:paddingBottom="7dp"
                         app:layout_constraintBottom_toBottomOf="@+id/inputLayoutUsername"
                         app:layout_constraintRight_toRightOf="@+id/inputLayoutUsername"
                         app:layout_constraintTop_toTopOf="@+id/inputLayoutUsername"
@@ -212,9 +213,9 @@
                 <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:layout_marginStart="18dp"
-                        android:layout_marginTop="3dp"
+                        android:layout_marginTop="2dp"
                         android:layout_marginEnd="11dp"
+                        android:layout_marginStart="4dp"
                         android:background="@color/gray_divider"
                         card_view:layout_constraintTop_toBottomOf="@id/btnUsernameCopy" />
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -223,8 +224,7 @@
                     android:id="@+id/password"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="13dp"
                     android:layout_marginEnd="12dp"
                     android:fontFamily="sans-serif"
                     android:orientation="horizontal"
@@ -250,7 +250,6 @@
                             android:id="@+id/inputPassword"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_gravity="center_vertical|start"
                             android:backgroundTint="@color/background_white"
                             android:clickable="true"
                             android:colorControlActivated="@color/violet_70"
@@ -261,6 +260,7 @@
                             android:isScrollContainer="false"
                             android:letterSpacing="0.01"
                             android:lineSpacingExtra="8sp"
+                            android:paddingBottom="16dp"
                             android:popupBackground="@android:color/transparent"
                             android:singleLine="true"
                             android:textColor="@color/black_87_percent"
@@ -278,7 +278,6 @@
                         android:contentDescription="@string/display_password_content_description"
                         android:paddingStart="16dp"
                         android:paddingTop="10dp"
-                        android:paddingBottom="8dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/btnPasswordCopy"
                         app:layout_constraintTop_toTopOf="parent"
@@ -294,7 +293,6 @@
                         android:paddingStart="16dp"
                         android:paddingTop="8dp"
                         android:paddingEnd="4dp"
-                        android:paddingBottom="8dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -303,8 +301,8 @@
                 <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:layout_marginStart="6dp"
-                        android:layout_marginTop="5dp"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginTop="8dp"
                         android:background="@color/gray_divider"
                         card_view:layout_constraintTop_toBottomOf="@id/btnPasswordCopy" />
             </androidx.constraintlayout.widget.ConstraintLayout>

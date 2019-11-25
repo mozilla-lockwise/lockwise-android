@@ -124,6 +124,7 @@
                             android:textSize="16sp"
                             android:fontFamily="sans-serif"
                             android:textStyle="normal"
+                            android:paddingBottom="13dp"
                             android:textColor="@color/gray_73_percent"
                             android:textColorHint="@color/black_60_percent"
                             android:colorControlHighlight="@color/black_60_percent"
@@ -149,6 +150,7 @@
                     android:id="@+id/entryUsername"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:foregroundGravity="center_vertical"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
                     app:layout_constraintTop_toBottomOf="@id/entryHostname" >
@@ -157,6 +159,7 @@
                         android:id="@+id/inputLayoutUsername"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:paddingStart="16dp"
                         android:textColorHint="@color/black_60_percent"
                         android:colorControlActivated="@color/violet_70"
@@ -180,11 +183,13 @@
                             android:inputType="textNoSuggestions"
                             android:singleLine="true"
                             android:ellipsize="end"
+                            android:drawablePadding="5dp"
+                            android:paddingBottom="14dp"
                             android:maxLines="1"
                             android:clickable="true"
                             android:focusable="true"
                             app:backgroundTint="@color/gray_divider"
-                            tools:ignore="Autofill"/>
+                            tools:ignore="Autofill" />
                 </com.google.android.material.textfield.TextInputLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -196,7 +201,6 @@
                     android:paddingEnd="16dp"
                     android:fontFamily="sans-serif"
                     app:layout_constraintTop_toBottomOf="@id/entryUsername" >
-
                 <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/inputLayoutPassword"
                         android:layout_width="match_parent"
@@ -213,7 +217,7 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/inputPassword"
-                            android:textSize="15sp"
+                            android:textSize="16sp"
                             android:textStyle="normal"
                             android:textColor="@color/black_87_percent"
                             android:lineSpacingExtra="8sp"
@@ -226,6 +230,8 @@
                             android:singleLine="true"
                             android:clickable="true"
                             android:focusable="true"
+                            android:paddingBottom="12dp"
+                            android:foregroundGravity="center_vertical"
                             app:backgroundTint="@android:color/transparent"
                             tools:ignore="Autofill"/>
                 </com.google.android.material.textfield.TextInputLayout>
@@ -234,8 +240,8 @@
                         android:id="@+id/btnPasswordToggle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="5dp"
-                        android:layout_marginBottom="8dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="13dp"
                         android:background="@null"
                         android:foregroundGravity="center_horizontal|center_vertical"
                         android:contentDescription="@string/display_password_content_description"
@@ -249,8 +255,8 @@
                         android:layout_width="match_parent"
                         android:background="@color/gray_divider"
                         android:layout_marginStart="20dp"
-                        android:layout_marginEnd="2dp"
-                        android:layout_marginTop="9dp"
+                        android:layout_marginEnd="4dp"
+                        android:layout_marginTop="9.5dp"
                         card_view:layout_constraintTop_toBottomOf="@id/btnPasswordToggle" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
