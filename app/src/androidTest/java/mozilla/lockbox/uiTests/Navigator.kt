@@ -149,16 +149,8 @@ class Navigator {
         welcome { exists() }
     }
 
-    fun gotoItemList(goManually: Boolean = false) {
-        if (goManually) {
-            bypassOnboarding()
-        } else {
-            Dispatcher.shared.dispatch(LifecycleAction.UseTestData)
-            log.info("blocking for the routes")
-            // block until onboarding
-            // tap skip
-            blockUntil(RouteStore.shared.routes, RouteAction.ItemList)
-        }
+    fun gotoItemList() {
+        bypassOnboarding()
         checkAtItemList()
     }
 

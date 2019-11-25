@@ -28,7 +28,7 @@ open class ItemDetailsTest {
 
     @Test
     fun itemDetailsAreDisplayed() {
-        navigator.gotoItemList(false)
+        navigator.gotoItemList()
         itemList { selectItem() }
         itemDetail { exists() }
     }
