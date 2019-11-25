@@ -22,7 +22,6 @@ import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Dispatcher
-import mozilla.lockbox.log
 import mozilla.lockbox.robots.accountSettingScreen
 import mozilla.lockbox.robots.autofillOnboardingScreen
 import mozilla.lockbox.robots.disconnectDisclaimer
@@ -114,7 +113,7 @@ class Navigator {
     }
 
     fun gotoAutofillOnboarding() {
-        gotoFxALogin()
+        // gotoFxALogin()
         fxaLogin { tapPlaceholderLogin() }
         if (FingerprintStore.shared.isDeviceSecure) {
             checkAtFingerprintOnboarding()
@@ -146,12 +145,16 @@ class Navigator {
     }
 
     fun checkAtWelcome() {
+        blockUntil(RouteStore.shared.routes, RouteAction.Login)
         welcome { exists() }
     }
 
-    fun gotoItemList() {
-        bypassOnboarding()
-        checkAtItemList()
+    fun gotoItemList(goManually: Boolean = false) {
+        if (goManually) {
+            bypassOnboarding()
+        } else {
+            checkAtItemList()
+        }
     }
 
     private fun bypassOnboarding() {
@@ -276,7 +279,7 @@ class Navigator {
         gotoItemDetail_from_itemList(position)
     }
 
-    private fun gotoItemDetail_from_itemList(position: Int = 0) {
+    fun gotoItemDetail_from_itemList(position: Int = 0) {
         itemList { selectItem(position) }
         checkAtItemDetail()
     }
