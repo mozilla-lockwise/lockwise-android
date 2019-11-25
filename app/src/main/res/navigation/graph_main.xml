@@ -59,6 +59,11 @@
                 app:launchSingleTop="true"
                 app:popUpTo="@id/fragment_onboarding_confirmation"
                 app:popUpToInclusive="true" />
+        <action android:id="@+id/action_init_to_item_edit"
+                app:destination="@id/fragment_display_item"
+                app:launchSingleTop="true"
+                app:popUpTo="@id/fragment_display_item"
+                app:popUpToInclusive="true" />
     </fragment>
 
     <fragment

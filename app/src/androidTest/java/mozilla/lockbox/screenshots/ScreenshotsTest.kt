@@ -70,7 +70,7 @@ open class ScreenshotsTest {
     @Test
     fun testItemList() {
         Screengrab.setDefaultScreenshotStrategy(UiAutomatorScreenshotStrategy())
-        navigator.gotoItemList(false)
+        navigator.checkAtItemList()
         Screengrab.screenshot("all-logins-screen")
 
         itemList {
@@ -88,24 +88,35 @@ open class ScreenshotsTest {
     }
 
     @Test
-    fun testAppSettingsMenu() {
+    fun testSettingsAccountMenu() {
         Screengrab.setDefaultScreenshotStrategy(UiAutomatorScreenshotStrategy())
-        navigator.gotoSettings()
-        Screengrab.screenshot("settings-menu-screen")
-
-        navigator.gotoAccountSetting()
-        Screengrab.screenshot("settings-account-screen")
-
+        navigator.checkAtItemList()
+        itemList {
+            tapAccountSetting()
+            Screengrab.screenshot("settings-account-screen")
+        }
         accountSettingScreen { tapDisconnect()
             Screengrab.screenshot("disconnect-account-screen")
             pressBack()
         }
+        pressBack()
+    }
+
+    @Test
+    fun testSettingsMenu() {
+        Screengrab.setDefaultScreenshotStrategy(UiAutomatorScreenshotStrategy())
+        navigator.checkAtItemList()
+        itemList {
+            tapSettings()
+            Screengrab.screenshot("settings-menu-screen")
+        }
+        pressBack()
     }
 
     @Test
     fun testEditDetailView() {
         Screengrab.setDefaultScreenshotStrategy(UiAutomatorScreenshotStrategy())
-        navigator.gotoItemDetail(1)
+        navigator.gotoItemDetail_from_itemList(1)
         itemDetail {
             tapCopyPass()
             Screengrab.screenshot("password-copied-screen")
@@ -135,5 +146,6 @@ open class ScreenshotsTest {
             Screengrab.screenshot("error-empty-field")
             saveChanges()
         }
+        pressBack()
     }
 }
