@@ -190,6 +190,7 @@
         <item name="colorAccent">@color/violet_70</item>
         <item name="buttonBarButtonStyle">@style/AlertButtonStyle</item>
     </style>
+
     <style name="DeleteDialogStyle" parent="Theme.AppCompat.Light.Dialog">
         <item name="android:windowBackground">@drawable/rounded_corner_bg_white</item>
         <item name="android:textColorPrimary">@color/black_60_percent</item>
@@ -197,6 +198,7 @@
         <item name="buttonBarButtonStyle">@style/AlertButtonStyle</item>
         <item name="android:lineSpacingExtra">8sp</item>
     </style>
+
     <style name="AlertButtonStyle" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:textColor">@color/violet_70</item>
         <item name="android:letterSpacing">0.09</item>
@@ -205,6 +207,7 @@
         <item name="android:textSize">14sp</item>
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>
+
     <style name="NavDrawerStyle" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:textSize">16sp</item>
         <item name="android:fontFamily">sans-serif-medium</item>
@@ -212,6 +215,7 @@
         <item name="android:lineSpacingExtra">6.5sp</item>
         <item name="android:drawableTint">@color/color_primary_dark</item>
     </style>
+
     <style name="NavDrawerButtonStyle" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:textSize">16sp</item>
         <item name="android:textAllCaps">false</item>
@@ -221,6 +225,7 @@
         <item name="android:stateListAnimator">@null</item>
         <item name="android:drawableTint">@color/color_primary_dark</item>
     </style>
+
     <style name="NoTitleDialog" parent="@android:style/Theme.Dialog">
         <item name="android:windowFrame">@null</item>
         <item name="android:windowNoTitle">true</item>
@@ -229,6 +234,7 @@
         <item name="android:background">@android:color/transparent</item>
         <item name="android:popupBackground">@android:color/transparent</item>
     </style>
+
     <style name="PopupMenu" parent="@style/Widget.AppCompat.PopupWindow">
         <item name="android:popupBackground">@null</item>
         <item name="android:background">@drawable/rounded_corner_bg_white</item>
@@ -236,7 +242,6 @@
         <item name="android:textColor">@color/black_87_percent</item>
         <item name="android:textSize">14sp</item>
         <item name="android:fontFamily">sans-serif</item>
-        <item name="android:dropDownWidth">128dp</item>
         <item name="android:textStyle">normal</item>
         <item name="android:letterSpacing">0.02</item>
         <item name="android:lineSpacingExtra">6sp</item>
@@ -247,6 +252,7 @@
         <item name="android:popupElevation">14dp</item>
         <item name="android:elevation">0dp</item>
     </style>
+
     <style name="PopupKebabMenu" parent="@style/Widget.AppCompat.PopupWindow">
         <item name="android:popupBackground">@null</item>
         <item name="android:background">@drawable/rounded_corner_bg_white</item>
@@ -256,6 +262,7 @@
         <item name="android:textSize">14sp</item>
         <item name="android:fontFamily">sans-serif</item>
         <item name="android:dropDownWidth">wrap_content</item>
+        <item name="android:minWidth">20dp</item>
         <item name="android:textStyle">normal</item>
         <item name="android:letterSpacing">0.02</item>
         <item name="android:lineSpacingExtra">6sp</item>
@@ -266,12 +273,14 @@
         <item name="android:popupElevation">20dp</item>
         <item name="android:elevation">0dp</item>
     </style>
+
     <style name="ToastTextAppearance" parent="@style/TextAppearance">
         <item name="android:background">@android:color/transparent</item>
         <item name="android:textColor">@color/text_white</item>
         <item name="android:layout_marginStart">20dp</item>
         <item name="android:layout_marginEnd">20dp</item>
     </style>
+
     <style name="NoConnectivityWarning">
         <item name="android:background">@color/color_primary_dark</item>
     </style>

@@ -7,14 +7,14 @@
 <menu
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/item_detail_menu"
-        android:theme="@style/PopupKebabMenu"
-        android:layout_width="wrap_content"
-        android:dropDownWidth="wrap_content" >
+        android:popupMenuStyle="@style/PopupKebabMenu"
+        android:theme="@style/PopupKebabMenu">
     <item
             android:id="@+id/edit"
             android:icon="@drawable/ic_edit"
             android:padding="20dp"
             android:elevation="15dp"
+            android:minWidth="82dp"
             android:paddingStart="20dp"
             android:title="@string/edit"
             android:colorBackground="@color/menu_item_selected"
@@ -24,5 +24,9 @@
     <item
             android:id="@+id/delete"
             android:icon="@drawable/ic_delete"
-            android:title="@string/delete" />
+            android:title="@string/delete"
+            android:minWidth="82dp"
+            android:colorBackground="@color/menu_item_selected"
+            android:textColor="@color/black_87_percent"
+            android:listSelector="@color/menu_item_selected"/>
 </menu>
