@@ -60,8 +60,15 @@
         <item name="android:colorControlNormal">@color/violet_70</item>
     </style>
 
-
     <style name="EditItemDetail" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:popupBackground">@android:color/transparent</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:textColorHint">@color/black_60_percent</item>
+        <item name="android:colorControlNormal">@color/dark_grey</item>
+        <item name="errorTextAppearance">@style/ErrorText</item>
+    </style>
+
+    <style name="CreateScreen" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:popupBackground">@android:color/transparent</item>
         <item name="android:background">@android:color/transparent</item>
         <item name="android:textColorHint">@color/black_60_percent</item>

@@ -281,5 +281,14 @@
 
     <!-- This is the error message that is shown in edit or create view when input text for password is not valid. -->
     <string name="password_invalid_text">Password cannot be empty</string>
+
+    <!-- This is the error message that is shown in edit or create view when a username matches a previously existing credential for that domain combination. -->
     <string name="username_duplicate_exists">A login with that username already exists</string>
+
+    <!-- This is the helper text that is shown in the manual create view to describe a valid hostname. -->
+    <string name="create_hostname_description">Make sure this matches the exact domain for the website you are referencing (“https://” and “www” included).</string>
+
+    <!-- This is the title of the create new login page. -->
+    <string name="create_title">New Login</string>
+
 </resources>
