@@ -37,12 +37,11 @@ class GleanTelemetryStore(
     private val compositeDisposable = CompositeDisposable()
 
     override fun injectContext(context: Context) {
-        gleanWrapper.initialize(context, BuildConfig.BUILD_TYPE)
-
         settingStore.sendUsageData
             .subscribe {
                 gleanWrapper.uploadEnabled = it
             }
             .addTo(compositeDisposable)
+        gleanWrapper.initialize(context, BuildConfig.BUILD_TYPE)
     }
 }

@@ -100,7 +100,7 @@ open class LockboxApplication : Application() {
     }
 
     private fun injectContext() {
-        val contextStoreList: List<ContextStore> = listOf(
+        val contextStoreList: List<ContextStore> = listOfNotNull(
             FingerprintStore.shared,
             SettingStore.shared,
             SecurePreferences.shared,
@@ -108,7 +108,8 @@ open class LockboxApplication : Application() {
             NetworkStore.shared,
             TimingSupport.shared,
             AccountStore.shared,
-            if (FeatureFlags.USE_GLEAN) GleanTelemetryStore.shared else TelemetryStore.shared,
+            if (FeatureFlags.INCLUDE_DEPRECATED_TELEMETRY) TelemetryStore.shared else null,
+            GleanTelemetryStore.shared,
             SentryStore.shared,
             PublicSuffixSupport.shared
         )
