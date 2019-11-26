@@ -62,6 +62,8 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
         }
 
     private fun updatePasswordVisibility(visible: Boolean) {
+        view?.inputPassword?.setSelection(view?.inputPassword?.length() ?: 0)
+
         if (visible) {
             inputPassword.transformationMethod = null
             btnPasswordToggle.setImageResource(R.drawable.ic_hide)
@@ -123,19 +125,33 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
     }
 
     private fun setupKeyboardFocus(view: View) {
-        val focusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+        view.inputUsername.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) {
                 closeKeyboard()
+            } else {
+                view.inputUsername?.setSelection(view.inputUsername?.length() ?: 0)
             }
         }
 
-        view.inputUsername.onFocusChangeListener = focusChangeListener
+        view.fragment_item_edit.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                closeKeyboard()
+            }
+        }
 
         view.inputPassword.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
             togglePasswordVisibility.accept(Unit)
             if (!hasFocus) {
                 closeKeyboard()
+            } else {
+                view.inputPassword?.setSelection(view.inputPassword?.length() ?: 0)
             }
+        }
+
+        view.fragment_item_edit.setOnTouchListener { _, _ ->
+            closeKeyboard()
+            view.clearFocus()
+            true
         }
     }
 

@@ -18,8 +18,8 @@ import mozilla.lockbox.R
 import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.ItemDetailAction
 import mozilla.lockbox.action.RouteAction
-import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.extensions.filter
+import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.extensions.toDetailViewModel
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter

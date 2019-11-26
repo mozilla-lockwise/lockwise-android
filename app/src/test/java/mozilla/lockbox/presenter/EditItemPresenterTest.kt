@@ -45,18 +45,18 @@ class EditItemPresenterTest {
 
     class FakeView : EditItemDetailView {
 
-        val togglePasswordVisibilityStub = PublishSubject.create<Unit>()
+        private val togglePasswordVisibilityStub = PublishSubject.create<Unit>()
         override val togglePasswordVisibility: Observable<Unit>
             get() = togglePasswordVisibilityStub
 
-        val passwordVisibleStub = false
+        private val passwordVisibleStub = false
         override var isPasswordVisible: Boolean = passwordVisibleStub
 
-        val togglePwdClicksStub = PublishSubject.create<Unit>()
+        private val togglePwdClicksStub = PublishSubject.create<Unit>()
         override val togglePasswordClicks: Observable<Unit>
             get() = togglePwdClicksStub
 
-        val hostnameClicksStub = PublishSubject.create<String>()
+        private val hostnameClicksStub = PublishSubject.create<String>()
         override val hostnameChanged: Observable<String>
             get() = hostnameClicksStub
 
@@ -73,8 +73,10 @@ class EditItemPresenterTest {
         }
 
         var item: ItemDetailViewModel? = null
-        @StringRes var usernameError: Int? = null
-        @StringRes var passwordError: Int? = null
+        @StringRes
+        var usernameError: Int? = null
+        @StringRes
+        var passwordError: Int? = null
         var _saveEnabled = true
 
         val closeEntryClicksStub = PublishSubject.create<Unit>()
@@ -92,9 +94,11 @@ class EditItemPresenterTest {
         override fun displayUsernameError(@StringRes errorMessage: Int?) {
             usernameError = errorMessage
         }
+
         override fun displayPasswordError(@StringRes errorMessage: Int?) {
             passwordError = errorMessage
         }
+
         override fun setSaveEnabled(enabled: Boolean) {
             _saveEnabled = enabled
         }
@@ -173,10 +177,12 @@ class EditItemPresenterTest {
         subject.onViewReady()
 
         getStub.onNext(item.asOptional())
-        listStub.onNext(listOf(
-            fakeCredential,
-            fakeCredentialNoUsername
-        ))
+        listStub.onNext(
+            listOf(
+                fakeCredential,
+                fakeCredentialNoUsername
+            )
+        )
     }
 
     @Test
