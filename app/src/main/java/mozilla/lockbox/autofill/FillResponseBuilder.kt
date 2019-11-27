@@ -103,6 +103,10 @@ open class FillResponseBuilder(
         return builder.build()
     }
 
+    open fun buildSelectedDatasetResponse(context: Context, credential: ServerPassword): Dataset {
+        return serverPasswordToDataset(context, credential)
+    }
+
     private fun setupSaveInfo(builder: FillResponse.Builder) {
         if (FeatureFlags.AUTOFILL_CAPTURE) {
             builder.setSaveInfo(buildSaveInfo())

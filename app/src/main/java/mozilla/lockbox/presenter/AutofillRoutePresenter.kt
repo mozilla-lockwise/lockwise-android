@@ -3,7 +3,7 @@ package mozilla.lockbox.presenter
 import android.app.Activity
 import android.content.Intent
 import android.os.Build
-import android.service.autofill.FillResponse
+import android.os.Parcelable
 import android.view.autofill.AutofillManager
 import androidx.annotation.IdRes
 import androidx.annotation.RequiresApi
@@ -129,7 +129,10 @@ open class AutofillRoutePresenter(
     }
 
     private fun finishResponse(passwords: List<ServerPassword>) {
-        val response = responseBuilder.buildFilteredFillResponse(activity, passwords)
+        val response = if (passwords.size == 1)
+                responseBuilder.buildSelectedDatasetResponse(activity, passwords.first())
+            else
+                responseBuilder.buildFilteredFillResponse(activity, passwords)
         response?.let { setFillResponseAndFinish(it) } ?: cancelAndFinish()
     }
 
@@ -138,7 +141,7 @@ open class AutofillRoutePresenter(
         activity.finish()
     }
 
-    private fun setFillResponseAndFinish(fillResponse: FillResponse) {
+    private fun setFillResponseAndFinish(fillResponse: Parcelable) {
         val results = Intent().putExtra(AutofillManager.EXTRA_AUTHENTICATION_RESULT, fillResponse)
         activity.setResult(Activity.RESULT_OK, results)
         activity.finish()
