@@ -35,7 +35,7 @@ open class OnboardingTest {
             acceptDisconnect()
         }
     }
-
+    @Ignore("1082-UItests-update (#1083)")
     @Test
     fun testFxALogin() {
         // There is a check that the view is correct
@@ -68,6 +68,7 @@ open class OnboardingTest {
         navigator.checkAtItemList()
     }
 
+    @Ignore("1082-UItests-update (#1083)")
     @Test
     fun autofillSkipButtonNavigatesToItemList() {
         navigator.gotoAutofillOnboarding()
