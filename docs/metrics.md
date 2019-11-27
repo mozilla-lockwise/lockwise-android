@@ -182,13 +182,13 @@ https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/c
 
 ## Mozilla Glean SDK
 
-Lockwise for Android uses the [Glean SDK](https://mozilla.github.io/glean/book/index.html) to collect telemetry. The Glean SDK provides a handful of [pings and metrics out of the box](https://mozilla.github.io/glean/book/user/pings/index.html). The data review for using the Glean SDK is available at [this link](TODO).
+Lockwise for Android uses the [Glean SDK](https://mozilla.github.io/glean/book/index.html) to collect telemetry. The Glean SDK provides a handful of [pings and metrics out of the box](https://mozilla.github.io/glean/book/user/pings/index.html). The data review for using the Glean SDK is available at [this link](https://github.com/mozilla-lockwise/lockwise-android/pull/1085#issuecomment-558767676).
 
 Lockwise for Android also uses the following Glean-enabled components of [Android Components](https://github.com/mozilla-mobile/android-components/), which are sending telemetry:
 
 |Name|Description|Collected metrics|Data review|
 |---|---|---|---|
-|[Firefox accounts](https://github.com/mozilla-mobile/android-components/tree/master/components/service/firefox-accounts)|A library for integrating with Firefox Accounts.| [docs](https://github.com/mozilla-mobile/android-components/blob/master/components/support/sync-telemetry/docs/metrics.md)| [review](TODO) |
+|[Firefox accounts](https://github.com/mozilla-mobile/android-components/tree/master/components/service/firefox-accounts)|A library for integrating with Firefox Accounts.| [docs](https://github.com/mozilla-mobile/android-components/blob/master/components/support/sync-telemetry/docs/metrics.md)| [review](https://github.com/mozilla-lockwise/lockwise-android/pull/1085#issuecomment-558767676) |
 
 ## Adjust SDK
 
