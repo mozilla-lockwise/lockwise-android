@@ -216,12 +216,13 @@ class LockboxAutofillService(
         pslSuffix.take(1)
             .map { suffix ->
                 val domain = "https://${suffix.fullDomain}"
+                val webDomain = parsedStructure.webDomain?.let { "https://$it" }
                 ServerPassword(
                     id = emptyId,
                     hostname = domain,
                     username = capturedUsername,
                     password = capturedPassword,
-                    formSubmitURL = parsedStructure.webDomain ?: domain
+                    formSubmitURL = webDomain ?: domain
                 )
             }
             .doOnComplete {
