@@ -44,7 +44,7 @@ open class ItemDetailsTest {
 
     @Test
     fun showToastWhenPassCopied() {
-        navigator.gotoItemList(true)
+        navigator.gotoItemList(false)
         itemList { selectItem(0) }
         itemDetail { tapCopyPass() }
         itemDetail { toastIsDisplayed(R.string.toast_password_copied, activityRule) }
