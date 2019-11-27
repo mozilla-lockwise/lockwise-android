@@ -16,6 +16,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.R
 import mozilla.lockbox.action.AutofillAction
+import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.autofill.FillResponseBuilder
 import mozilla.lockbox.autofill.IntentBuilder
@@ -130,6 +131,15 @@ open class AutofillRoutePresenter(
 
     private fun finishResponse(passwords: List<ServerPassword>) {
         val response = responseBuilder.buildFilteredFillResponse(activity, passwords)
+
+        // In Android O, if we just finish with a single dataset, then this counts as
+        // a TYPE_DATASET_SELECTED event; we're counting all those as touch events.
+        // However, following O, this was supposed to be a separate event, detect and register this
+        // here too.
+        if (passwords.size == 1 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            val id = passwords.first().id
+            dispatcher.dispatch(DataStoreAction.AutofillTouch(id))
+        }
         response?.let { setFillResponseAndFinish(it) } ?: cancelAndFinish()
     }
 

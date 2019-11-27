@@ -110,6 +110,7 @@ open class DataStore(
                     is DataStoreAction.Unlock -> unlock()
                     is DataStoreAction.Sync -> sync()
                     is DataStoreAction.Touch -> touch(action.id)
+                    is DataStoreAction.AutofillTouch -> autofillTouch(action.id)
                     is DataStoreAction.Reset -> reset()
                     is DataStoreAction.UpdateSyncCredentials -> updateCredentials(action.syncCredentials)
                     is DataStoreAction.Delete -> delete(action.item)
@@ -224,12 +225,14 @@ open class DataStore(
             backendEnsureUnlocked()
                 .switchMap { backendAdd(item) }
                 .switchMap { backendEnsureLocked() }
+                .subscribe()
         } else {
             backendAdd(item)
+                .map { Unit }
+                .subscribe(this::updateList, this::pushError)
         }
 
-        addItem.subscribe()
-            .addTo(compositeDisposable)
+        addItem.addTo(compositeDisposable)
     }
 
     private fun backendEnsureLocked() =
@@ -241,6 +244,9 @@ open class DataStore(
     private fun backendAdd(item: ServerPassword) =
         backend.add(item).asSingle(coroutineContext).toObservable()
 
+    private fun backendTouch(id: String) =
+        backend.touch(id).asSingle(coroutineContext).toObservable()
+
     private fun touch(id: String) {
         if (!backend.isLocked()) {
             backend.touch(id)
@@ -248,6 +254,21 @@ open class DataStore(
                 .subscribe(this::updateList, this::pushError)
                 .addTo(compositeDisposable)
         }
+    }
+
+    private fun autofillTouch(id: String) {
+        val touchItem = if (backend.isLocked()) {
+            backendEnsureUnlocked()
+                .switchMap { backendTouch(id) }
+                .switchMap { backendEnsureLocked() }
+                .subscribe()
+        } else {
+            backendTouch(id)
+                .map { Unit }
+                .subscribe(this::updateList, this::pushError)
+        }
+
+        touchItem.addTo(compositeDisposable)
     }
 
     private fun unlock() {
