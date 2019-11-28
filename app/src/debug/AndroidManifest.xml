@@ -19,12 +19,10 @@
     <application android:fullBackupContent="false">
         <activity android:name=".view.UITestActivity" android:label="@string/activityName">
             <!-- You can add this as a launcher, but we should probably have it disabled by default. -->
-            <!--
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-            -->
         </activity>
     </application>
 </manifest>

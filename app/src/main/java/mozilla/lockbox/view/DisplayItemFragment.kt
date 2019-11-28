@@ -16,6 +16,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
+import androidx.annotation.StringRes
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.appcompat.widget.PopupMenu
@@ -26,9 +27,11 @@ import kotlinx.android.synthetic.main.fragment_display_item.*
 import kotlinx.android.synthetic.main.fragment_display_item.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
+import mozilla.lockbox.log
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.presenter.DisplayItemPresenter
 import mozilla.lockbox.presenter.DisplayItemView
+import mozilla.lockbox.support.FeatureFlags
 import mozilla.lockbox.support.assertOnUiThread
 
 @ExperimentalCoroutinesApi
@@ -90,6 +93,7 @@ class DisplayItemFragment : BackableFragment(), DisplayItemView {
 
     override val editClicks: Observable<Unit> = PublishSubject.create()
     override val deleteClicks: Observable<Unit> = PublishSubject.create()
+    override val autochangePasswordClicks: Observable<Boolean> = PublishSubject.create()
 
     override var isPasswordVisible: Boolean = false
         set(value) {
@@ -119,10 +123,23 @@ class DisplayItemFragment : BackableFragment(), DisplayItemView {
                     (deleteClicks as PublishSubject).onNext(Unit)
                     true
                 }
+                R.id.autochange_password_fake ->{
+                    (autochangePasswordClicks as PublishSubject).onNext(false)
+                    true
+                }
+                R.id.autochange_password -> {
+                    (autochangePasswordClicks as PublishSubject).onNext(true)
+                    true
+                }
                 else -> false
             }
         }
         popupMenu.inflate(R.menu.item_detail_menu)
+
+        if (!FeatureFlags.PASSWORD_AUTOCHANGE) {
+            popupMenu.menu.findItem(R.id.autochange_password_fake).isVisible = false
+            popupMenu.menu.findItem(R.id.autochange_password).isVisible = false
+        }
 
         val builder = popupMenu.menu as MenuBuilder
         builder.setOptionalIconsVisible(true)
@@ -207,6 +224,19 @@ class DisplayItemFragment : BackableFragment(), DisplayItemView {
         } else {
             errorHelper.hideNetworkError(view!!, view!!.cardView, R.dimen.hidden_network_error)
         }
+    }
+
+    override fun showProgressText(@StringRes message: Int) {
+        val text = context?.getText(message)
+        log.info("Autochange: $text")
+        view!!.progressToast.apply {
+            progressText.text = text
+            visibility = View.VISIBLE
+        }
+    }
+
+    override fun hideProgressToast() {
+        view?.progressToast?.visibility = View.GONE
     }
 }
 

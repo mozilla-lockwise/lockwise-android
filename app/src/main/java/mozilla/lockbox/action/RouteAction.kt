@@ -30,6 +30,7 @@ open class RouteAction(
     object DiscardCreateItemNoChanges : RouteAction(TelemetryEventMethod.tap, TelemetryEventObject.discard_manual_create_no_changes)
     data class DisplayItem(val id: String) : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.entry_detail)
     data class EditItem(val id: String) : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.edit_entry_detail)
+    data class AutoChangePassword(val id: String): RouteAction(TelemetryEventMethod.edit, TelemetryEventObject.edit_entry_detail)
 
     // This should _only_ be triggered by pressing the back button.
     object InternalBack : RouteAction(TelemetryEventMethod.tap, TelemetryEventObject.back)

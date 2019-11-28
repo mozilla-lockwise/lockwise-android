@@ -1,0 +1,11 @@
+{
+  "name": "autochange",
+  "version": "1.0.0",
+  "description": "Testing infra for the autochange scripts",
+  "main": "index.js",
+  "license": "MPL v2.0",
+  "private": true,
+  "dependencies": {
+    "tap": "^14.10.5"
+  }
+}

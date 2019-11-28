@@ -6,6 +6,7 @@
 
 package mozilla.lockbox.presenter
 
+import androidx.annotation.StringRes
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.rxkotlin.addTo
@@ -17,10 +18,12 @@ import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.ItemDetailAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.ToastNotificationAction
+import mozilla.lockbox.autochange.AutoChangeActionCreator
 import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.extensions.toDetailViewModel
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
+import mozilla.lockbox.log
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.ItemDetailStore
@@ -39,12 +42,15 @@ interface DisplayItemView {
     val kebabMenuClicks: Observable<Unit>
     val editClicks: Observable<Unit>
     val deleteClicks: Observable<Unit>
+    val autochangePasswordClicks: Observable<Boolean>
     var isPasswordVisible: Boolean
     fun showKebabMenu()
     fun hideKebabMenu()
     fun updateItem(item: ItemDetailViewModel)
     fun showPopup()
     fun handleNetworkError(networkErrorVisibility: Boolean)
+    fun showProgressText(@StringRes message: Int)
+    fun hideProgressToast()
 //    val retryNetworkConnectionClicks: Observable<Unit>
 }
 
@@ -127,6 +133,23 @@ class DisplayItemPresenter(
             }
         }
 
+
+        view.autochangePasswordClicks
+            .filter {
+                credentials?.let {
+                    !it.hostname.isNullOrBlank() && !it.username.isNullOrBlank()
+                } ?: false
+            }
+            .map { credentials!! to it }
+            .subscribe { (cred, real) ->
+                if (real) {
+                    dispatcher.dispatch(RouteAction.AutoChangePassword(cred.id))
+                } else {
+                    handlePasswordChange(cred)
+                }
+            }
+            .addTo(compositeDisposable)
+
         view.togglePasswordClicks
             .subscribe {
                 dispatcher.dispatch(
@@ -171,6 +194,25 @@ class DisplayItemPresenter(
         view.kebabMenuClicks
             .subscribe {
                 view.showPopup()
+            }
+            .addTo(compositeDisposable)
+    }
+
+    private fun handlePasswordChange(item: ServerPassword) {
+        val changer = AutoChangeActionCreator.shared.create(item)
+        changer.progress
+            .observeOn(mainThread())
+            .doOnComplete {
+                view.hideProgressToast()
+            }
+            .subscribe {
+                view.showProgressText(it.message)
+            }
+            .addTo(compositeDisposable)
+
+        changer.invoke()
+            .subscribe {
+                log.info("Changed password")
             }
             .addTo(compositeDisposable)
     }

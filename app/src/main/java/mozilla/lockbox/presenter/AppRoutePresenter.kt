@@ -22,6 +22,7 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.view.AppWebPageFragmentArgs
+import mozilla.lockbox.view.AutoChangeFragmentArgs
 import mozilla.lockbox.view.DisplayItemFragmentArgs
 import mozilla.lockbox.view.EditItemFragmentArgs
 import mozilla.lockbox.view.FingerprintAuthDialogFragment
@@ -74,6 +75,13 @@ class AppRoutePresenter(
             .toBundle()
     }
 
+    private fun bundle(action: RouteAction.AutoChangePassword): Bundle? {
+        return AutoChangeFragmentArgs.Builder()
+            .setItemId(action.id)
+            .build()
+            .toBundle()
+    }
+
     override fun route(action: RouteAction) {
         activity.setTheme(R.style.AppTheme)
         when (action) {
@@ -92,6 +100,7 @@ class AppRoutePresenter(
             is RouteAction.EditItem -> navigateToFragment(R.id.fragment_edit_item, bundle(action))
             is RouteAction.CreateItem -> navigateToFragment(R.id.fragment_create_item)
             is RouteAction.DiscardCreateItemNoChanges -> navigateToFragment(R.id.fragment_item_list)
+            is RouteAction.AutoChangePassword -> navigateToFragment(R.id.fragment_autochange, bundle(action))
             is RouteAction.OpenWebsite -> openWebsite(action.url)
             is RouteAction.SystemSetting -> openSetting(action)
             is RouteAction.UnlockFallbackDialog -> showUnlockFallback(action)
@@ -162,6 +171,7 @@ class AppRoutePresenter(
             R.id.fragment_display_item to R.id.fragment_item_list -> R.id.action_to_itemList
             R.id.fragment_display_item to R.id.fragment_edit_item -> R.id.action_displayItem_to_editItem
             R.id.fragment_display_item to R.id.fragment_locked -> R.id.action_itemDetail_to_locked
+            R.id.fragment_display_item to R.id.fragment_autochange -> R.id.action_itemDetail_to_autochange
 
             R.id.fragment_edit_item to R.id.fragment_item_list -> R.id.action_editItem_to_itemList
             R.id.fragment_edit_item to R.id.fragment_display_item -> R.id.action_editItem_to_displayItem
@@ -184,6 +194,8 @@ class AppRoutePresenter(
 
             R.id.fragment_create_item to R.id.fragment_item_list -> R.id.action_manualCreate_to_itemList
             R.id.fragment_create_item to R.id.fragment_locked -> R.id.action_manualCreate_to_locked
+
+            R.id.fragment_autochange to R.id.fragment_item_list -> R.id.action_autochange_to_itemList
 
             else -> null
         } ?: when (dest) {

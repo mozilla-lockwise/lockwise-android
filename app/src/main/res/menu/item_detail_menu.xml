@@ -29,4 +29,20 @@
             android:colorBackground="@color/menu_item_selected"
             android:textColor="@color/black_87_percent"
             android:listSelector="@color/menu_item_selected"/>
+    <item
+            android:id="@+id/autochange_password_fake"
+            android:icon="@drawable/ic_sync"
+            android:title="@string/autochange_password_fake"
+            android:minWidth="82dp"
+            android:colorBackground="@color/menu_item_selected"
+            android:textColor="@color/black_87_percent"
+            android:listSelector="@color/menu_item_selected"/>
+    <item
+            android:id="@+id/autochange_password"
+            android:icon="@drawable/ic_sync"
+            android:title="@string/autochange_password"
+            android:minWidth="82dp"
+            android:colorBackground="@color/menu_item_selected"
+            android:textColor="@color/black_87_percent"
+            android:listSelector="@color/menu_item_selected"/>
 </menu>

@@ -315,4 +315,50 @@
     <!-- This is the toast message that appears when an entry has been successfully deleted.  -->
     <string name="entry_deleted_toast">%1$s deleted</string>
 
+    <!-- This is the title of the menu option displayed in the item detail screen to attempt to change the password automatically -->
+    <string name="autochange_password">Refresh password</string>
+    <!-- This is the title of the menu option displayed in the item detail screen to attempt to change the password automatically. This is developer option only -->
+    <string name="autochange_password_fake">Refresh password (UI)</string>
+
+    <!-- This is the status/progress message while the app is autochanging the password. The host is being loaded -->
+    <string name="autochange_homepage_finding">Loading website</string>
+    <!-- This is the status/progress message while the app is autochanging the password. The host has loaded -->
+    <string name="autochange_homepage_found">Loaded website</string>
+    <!-- This is the status/progress message while the app is autochanging the password. We're now looking for the login page. -->
+    <string name="autochange_login_finding">Finding the login page</string>
+    <!-- This is the status/progress message while the app is autochanging the password. We've found the login page and are now trying to sign in -->
+    <string name="autochange_login_found">Logging in with account details</string>
+    <!-- This is the status/progress message while the app is autochanging the password. We've successfully logged in -->
+    <string name="autochange_login_success">Logged in</string>
+
+    <!-- This is the status/progress message while the app is autochanging the password. We're now looking for the password change screen. -->
+    <string name="autochange_password_change_finding">Finding the password change screen</string>
+    <!-- This is the status/progress message while the app is autochanging the password. We've found the password change screen and are now trying to change the password -->
+    <string name="autochange_password_change_found">Changing to a new strong password</string>
+
+    <!-- This is the status/progress message while the app is autochanging the password. We've changed the password -->
+    <string name="autochange_password_change_success">Finding the password change screen</string>
+
+    <!-- This is the status/progress message while the app is autochanging the password. We're trying to log out -->
+    <string name="autochange_log_out_finding">Logging out</string>
+    <!-- This is the status/progress message while the app is autochanging the password. We've logged out, and we're done. -->
+    <string name="autochange_log_out_success">Logged out</string>
+
+    <!-- This is problem/nuisance message while the app is autochanging the password. The credentials we have are not valid -->
+    <string name="autochange_error_bad_credentials">The stored credentials aren\'t valid</string>
+    <!-- This is problem/nuisance message while the app is autochanging the password. A Captcha has been discovered -->
+    <string name="autochange_error_captcha">AutochangeBot failed the Are You A Bot? question</string>
+    <!-- This is problem/nuisance message while the app is autochanging the password. 2FA is needed -->
+    <string name="autochange_error_2fa">Second factor authentication stops us</string>
+    <!-- This is problem/nuisance message while the app is autochanging the password. A terms of service checkbox needs to be ticked by the user -->
+    <string name="autochange_error_tos_blocking">A terms of service form blocks us</string>
+    <!-- This is problem/nuisance message while the app is autochanging the password. We can't find the login page. -->
+    <string name="autochange_error_login_not_found">Can\'t find the login page</string>
+    <!-- This is problem/nuisance message while the app is autochanging the password. We can't find the password change page. -->
+    <string name="autochange_error_password_change_not_found">Can\'t find the account page</string>
+    <!-- This is problem/nuisance message while the app is autochanging the password. We can't find the logout page. -->
+    <string name="autochange_error_logout_not_found">Can\'t find the logout page</string>
+    <!-- This is problem/nuisance message while the app is autochanging the password. We have generated a password of an unaccepted format. -->
+    <string name="autochange_error_password_change_not_accepted">Our new password has not been accepted</string>
+
 </resources>

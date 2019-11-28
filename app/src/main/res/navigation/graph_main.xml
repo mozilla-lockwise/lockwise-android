@@ -213,6 +213,13 @@
                 android:id="@+id/action_itemDetail_to_locked"
                 app:destination="@id/fragment_locked"
                 app:popUpToInclusive="true"/>
+
+        <action android:id="@+id/action_itemDetail_to_autochange"
+                app:destination="@id/fragment_autochange"
+                app:enterAnim="@anim/slide_in_bottom"
+                app:exitAnim="@anim/none"
+                app:popExitAnim="@anim/slide_out_bottom"
+                app:popEnterAnim="@anim/none"/>
     </fragment>
 
     <fragment
@@ -362,4 +369,24 @@
             app:exitAnim="@anim/none"
             app:popExitAnim="@anim/slide_out_bottom"
             app:popEnterAnim="@anim/none"/>
+
+    <fragment
+            android:id="@+id/fragment_autochange"
+            android:name="mozilla.lockbox.view.AutoChangeFragment"
+            tools:layout="@layout/fragment_autochange" >
+
+        <argument
+            android:name="itemId"
+            android:defaultValue="MISSING_ID"
+            app:argType="string"/>
+
+
+        <action android:id="@+id/action_autochange_to_itemList"
+                app:destination="@id/fragment_item_list"
+                app:enterAnim="@anim/slide_in_bottom"
+                app:exitAnim="@anim/none"
+                app:popExitAnim="@anim/slide_out_bottom"
+                app:popEnterAnim="@anim/none"/>
+    </fragment>
+
 </navigation>

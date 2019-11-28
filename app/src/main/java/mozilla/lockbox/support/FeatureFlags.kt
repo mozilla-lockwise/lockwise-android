@@ -70,4 +70,14 @@ object FeatureFlags {
         isRelease -> true
         else -> true
     }
+
+    /**
+     * Allow autochanging of passwords. Very experimental.
+     */
+    val PASSWORD_AUTOCHANGE = when {
+        isDebug -> true
+        isTesting -> true
+        isRelease -> false
+        else -> false
+    }
 }

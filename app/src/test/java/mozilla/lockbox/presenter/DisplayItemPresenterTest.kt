@@ -8,6 +8,7 @@ package mozilla.lockbox.presenter
 
 import android.content.Context
 import android.net.ConnectivityManager
+import androidx.annotation.StringRes
 import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
@@ -70,6 +71,10 @@ class DisplayItemPresenterTest {
         override val kebabMenuClicks: Observable<Unit>
             get() = kebabMenuClickStub
 
+        private val autochangePasswordClicksStub = PublishSubject.create<Boolean>()
+        override val autochangePasswordClicks: Observable<Boolean>
+            get() = autochangePasswordClicksStub
+
 //        private val retryButtonStub = PublishSubject.create<Unit>()
 //        override val retryNetworkConnectionClicks: Observable<Unit>
 //            get() = retryButtonStub
@@ -97,6 +102,13 @@ class DisplayItemPresenterTest {
         override fun updateItem(item: ItemDetailViewModel) {
             this.item = item
             showPlaceholderUsernameStub = !item.hasUsername
+        }
+
+        override fun showProgressText(@StringRes message: Int) {
+            toastNotificationArgument = message
+        }
+        override fun hideProgressToast() {
+            toastNotificationArgument = null
         }
     }
 
