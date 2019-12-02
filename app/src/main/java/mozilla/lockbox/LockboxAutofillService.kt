@@ -31,9 +31,12 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.AutofillStore
 import mozilla.lockbox.store.DataStore
+import mozilla.lockbox.store.GleanTelemetryStore
+import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.store.TelemetryStore
 import mozilla.lockbox.support.FxASyncDataStoreSupport
 import mozilla.lockbox.support.Constant
+import mozilla.lockbox.support.FeatureFlags
 import mozilla.lockbox.support.PublicSuffixSupport
 import mozilla.lockbox.support.SecurePreferences
 import mozilla.lockbox.support.asOptional
@@ -44,9 +47,10 @@ import mozilla.lockbox.support.isDebug
 class LockboxAutofillService(
     private val accountStore: AccountStore = AccountStore.shared,
     private val dataStore: DataStore = DataStore.shared,
+    private val settingStore: SettingStore = SettingStore.shared,
     private val securePreferences: SecurePreferences = SecurePreferences.shared,
     private val fxaSupport: FxASyncDataStoreSupport = FxASyncDataStoreSupport.shared,
-    private val telemetryStore: TelemetryStore = TelemetryStore.shared,
+    private val gleanTelemetryStore: GleanTelemetryStore = GleanTelemetryStore.shared,
     private val autofillStore: AutofillStore = AutofillStore.shared,
     val dispatcher: Dispatcher = Dispatcher.shared
 ) : AutofillService() {
@@ -148,8 +152,10 @@ class LockboxAutofillService(
     private fun intializeService() {
         isRunning = true
 
-        val contextInjectables = arrayOf(
-            telemetryStore,
+        val contextInjectables = listOfNotNull(
+            settingStore,
+            gleanTelemetryStore,
+            if (FeatureFlags.INCLUDE_DEPRECATED_TELEMETRY) TelemetryStore.shared else null,
             securePreferences,
             accountStore,
             fxaSupport

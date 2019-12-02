@@ -47,4 +47,20 @@ object FeatureFlags {
         isRelease -> true
         else -> true
     }
+
+    /**
+     * Include the legacy telemetry service. As part of our migration to the Glean, we will want
+     * to keep the legacy service running in parallel.
+     *
+     * If true, the legacy telemetry-service is used.
+     * If false, the legacy telemetry-service is not.
+     *
+     * Either way, the user can opt out of this from the settings.
+     */
+    val INCLUDE_DEPRECATED_TELEMETRY = when {
+        isDebug -> true
+        isTesting -> true
+        isRelease -> true
+        else -> true
+    }
 }
