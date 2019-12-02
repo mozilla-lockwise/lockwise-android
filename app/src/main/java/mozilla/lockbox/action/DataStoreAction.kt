@@ -99,7 +99,10 @@ sealed class DataStoreAction(
     /**
      * Dispatched when the user edits or saves an entry.
      */
-    data class UpdateItemDetail(val item: ServerPassword)
+    data class UpdateItemDetail(
+        val previous: ServerPassword,
+        val next: ServerPassword
+    )
         : DataStoreAction(
             TelemetryEventMethod.edit,
             TelemetryEventObject.update_credential

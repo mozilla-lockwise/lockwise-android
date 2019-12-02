@@ -172,8 +172,10 @@ class EditItemPresenter(
             .map {
                 // When there's something changed, then save them,
                 // otherwise, go back to the item detail screen.
-                credentialsToSave?.let { ItemDetailAction.SaveChanges(it) }
-                    ?: ItemDetailAction.EndEditing(itemId)
+                if (credentialsAtStart != null && credentialsToSave != null)
+                    ItemDetailAction.SaveChanges(credentialsAtStart!!, credentialsToSave!!)
+                else
+                    ItemDetailAction.EndEditing(itemId)
             }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)

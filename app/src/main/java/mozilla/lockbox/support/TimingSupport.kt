@@ -36,6 +36,9 @@ open class TimingSupport(
     open val shouldSync: Boolean
         get() = syncCurrentlyRequired()
 
+    val currentTimeMillis: Long
+        get() = systemTimingSupport.currentTimeMillis
+
     override fun injectContext(context: Context) {
         preferences = PreferenceManager.getDefaultSharedPreferences(context)
     }

@@ -281,7 +281,7 @@ class EditItemPresenterTest {
 
         dispatcherObserver.assertValueSequence(
             listOf(
-                ItemDetailAction.SaveChanges(fakeCredential.copy(username = "all-change"))
+                ItemDetailAction.SaveChanges(fakeCredential, fakeCredential.copy(username = "all-change"))
             )
         )
     }
