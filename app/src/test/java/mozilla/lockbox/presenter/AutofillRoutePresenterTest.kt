@@ -10,6 +10,7 @@ import android.app.Activity
 import android.app.KeyguardManager
 import android.content.Context
 import android.content.Intent
+import android.service.autofill.Dataset
 import android.service.autofill.FillResponse
 import android.view.autofill.AutofillManager
 import androidx.activity.OnBackPressedDispatcher
@@ -125,9 +126,14 @@ class AutofillRoutePresenterTest {
         @Mock
         val filteredFillResponse: FillResponse = mock(FillResponse::class.java)
 
+        @Mock
+        val singleDataset: Dataset = mock(Dataset::class.java)
+
         val asyncFilterStub = PublishSubject.create<List<ServerPassword>>()
 
         var filteredFillResponsePasswordsArgument: List<ServerPassword>? = null
+
+        var datasetResponse: Dataset? = null
 
         override fun buildFilteredFillResponse(
             context: Context,
@@ -135,6 +141,15 @@ class AutofillRoutePresenterTest {
         ): FillResponse? {
             filteredFillResponsePasswordsArgument = filteredPasswords
             return filteredFillResponse
+        }
+
+        override fun buildSelectedDatasetResponse(
+            context: Context,
+            credential: ServerPassword
+        ): Dataset {
+            filteredFillResponsePasswordsArgument = listOf(credential)
+            datasetResponse = singleDataset
+            return singleDataset
         }
 
         override fun asyncFilter(
@@ -283,10 +298,11 @@ class AutofillRoutePresenterTest {
         autofillStore.autofillActionStub.onNext(AutofillAction.Complete(login))
 
         Assert.assertEquals(listOf(login), responseBuilder.filteredFillResponsePasswordsArgument)
+        assertEquals(responseBuilder.singleDataset, responseBuilder.singleDataset)
 
         verify(activity).setResult(eq(Activity.RESULT_OK), any<Intent>())
         verify(activity).finish()
-        verify(intent).putExtra(AutofillManager.EXTRA_AUTHENTICATION_RESULT, responseBuilder.filteredFillResponse)
+        verify(intent).putExtra(AutofillManager.EXTRA_AUTHENTICATION_RESULT, responseBuilder.singleDataset)
     }
 
     @Test
