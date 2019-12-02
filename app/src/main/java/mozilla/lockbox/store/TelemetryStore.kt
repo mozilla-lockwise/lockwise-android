@@ -12,6 +12,7 @@
 package mozilla.lockbox.store
 
 import android.content.Context
+import androidx.annotation.VisibleForTesting
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import mozilla.components.lib.fetch.httpurlconnection.HttpURLConnectionClient
@@ -91,7 +92,8 @@ open class TelemetryStore(
 
     internal val compositeDisposable = CompositeDisposable()
 
-    init {
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun register() {
         dispatcher.register
             .filterByType(TelemetryAction::class.java)
             .subscribe {
@@ -108,6 +110,7 @@ open class TelemetryStore(
     }
 
     override fun injectContext(context: Context) {
+        register()
         wrapper.lateinitContext(context)
         settingStore
             .sendUsageData

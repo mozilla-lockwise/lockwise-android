@@ -88,6 +88,7 @@ class TelemetryStoreTest : DisposingTest() {
         val uploadObserver = createTestObserver<Int>()
         wrapper.eventsSubject.subscribe(eventsObserver)
         wrapper.uploadSubject.subscribe(uploadObserver)
+        subject.register()
 
         var action: TelemetryAction = LifecycleAction.Foreground
         dispatcher.dispatch(action)
