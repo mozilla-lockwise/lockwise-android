@@ -117,7 +117,6 @@ class DataStoreTest : DisposingTest() {
         val change2 = original.copy(username = "newuser")
         val fixup2 = subject.fixupMutationMetadata(original, change2)
         assertEquals(change2.timePasswordChanged, fixup2.timePasswordChanged)
-
     }
 
     @Test
