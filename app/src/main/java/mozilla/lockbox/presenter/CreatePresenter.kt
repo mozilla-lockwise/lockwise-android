@@ -47,7 +47,7 @@ interface CreateView {
 
 @ExperimentalCoroutinesApi
 class CreatePresenter(
-    private val view: EditItemDetailView,
+    private val view: EditItemView,
     val itemId: String?,
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val dataStore: DataStore = DataStore.shared,

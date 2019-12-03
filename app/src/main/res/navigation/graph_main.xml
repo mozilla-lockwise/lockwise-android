@@ -173,6 +173,11 @@
                 app:popUpTo="@+id/fragment_locked"
                 app:popUpToInclusive="true"/>
         <action
+                android:id="@+id/action_itemList_to_manualCreate"
+                app:destination="@+id/fragment_create"
+                app:launchSingleTop="true"
+                app:popUpToInclusive="true"/>
+        <action
                 android:id="@+id/action_itemList_to_filter"
                 app:destination="@id/fragment_filter"/>
     </fragment>
@@ -202,8 +207,8 @@
 
     <fragment
             android:id="@+id/fragment_item_edit"
-            android:name="mozilla.lockbox.view.EditItemFragment"
-            tools:layout="@layout/fragment_item_edit">
+            android:name="mozilla.lockbox.view.EditFragment"
+            tools:layout="@layout/fragment_edit">
         <argument
                 android:name="itemId"
                 android:defaultValue="MISSING_ID"
@@ -223,6 +228,29 @@
                 app:popUpToInclusive="true"/>
         <action
                 android:id="@+id/action_itemEdit_to_locked"
+                app:destination="@id/fragment_locked"
+                app:popUpToInclusive="true"/>
+    </fragment>
+
+    <fragment
+            android:id="@+id/fragment_create"
+            android:name="mozilla.lockbox.view.CreateFragment"
+            tools:layout="@layout/fragment_create">
+        <action
+                android:id="@+id/action_manualCreate_to_itemList"
+                app:destination="@id/fragment_item_list"
+                app:launchSingleTop="true"
+                app:popUpToInclusive="true"/>
+        <action
+                android:id="@+id/action_manualCreate_to_itemDetail"
+                app:destination="@id/fragment_item_detail"
+                app:popEnterAnim="@anim/none"
+                app:popExitAnim="@anim/none"
+                app:enterAnim="@anim/none"
+                app:exitAnim="@anim/none"
+                app:popUpToInclusive="true"/>
+        <action
+                android:id="@+id/action_manualCreate_to_locked"
                 app:destination="@id/fragment_locked"
                 app:popUpToInclusive="true"/>
     </fragment>
@@ -296,6 +324,11 @@
         <action
                 android:id="@+id/action_locked_to_welcome"
                 app:destination="@id/fragment_welcome"
+                app:launchSingleTop="true"/>
+
+        <action
+                android:id="@+id/action_locked_to_manualCreate"
+                app:destination="@id/fragment_create"
                 app:launchSingleTop="true"/>
     </fragment>
 

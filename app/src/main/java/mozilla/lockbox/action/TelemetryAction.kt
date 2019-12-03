@@ -93,5 +93,6 @@ enum class TelemetryEventObject {
     datastore,
     delete_credential,
     edit_entry_detail,
-    update_credential
+    update_credential,
+    manual_create
 }

@@ -22,17 +22,17 @@ import com.jakewharton.rxbinding2.view.clicks
 import com.jakewharton.rxbinding2.widget.textChanges
 import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Observable
-import kotlinx.android.synthetic.main.fragment_item_edit.*
-import kotlinx.android.synthetic.main.fragment_item_edit.view.*
+import kotlinx.android.synthetic.main.fragment_edit.*
+import kotlinx.android.synthetic.main.fragment_edit.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
 import mozilla.lockbox.model.ItemDetailViewModel
-import mozilla.lockbox.presenter.EditItemDetailView
-import mozilla.lockbox.presenter.EditItemPresenter
+import mozilla.lockbox.presenter.EditItemView
+import mozilla.lockbox.presenter.EditPresenter
 import mozilla.lockbox.support.assertOnUiThread
 
 @ExperimentalCoroutinesApi
-class EditItemFragment : BackableFragment(), EditItemDetailView {
+class EditFragment : BackableFragment(), EditItemView {
 
     override val togglePasswordVisibility: BehaviorRelay<Unit> = BehaviorRelay.create()
 
@@ -82,9 +82,9 @@ class EditItemFragment : BackableFragment(), EditItemDetailView {
             EditItemFragmentArgs.fromBundle(it).itemId
         }
 
-        presenter = EditItemPresenter(this, itemId)
+        presenter = EditPresenter(this, itemId)
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
-        return inflater.inflate(R.layout.fragment_item_edit, container, false)
+        return inflater.inflate(R.layout.fragment_edit, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

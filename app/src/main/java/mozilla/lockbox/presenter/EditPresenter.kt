@@ -29,7 +29,7 @@ import mozilla.lockbox.store.ItemDetailStore
 import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.support.pushError
 
-interface EditItemDetailView {
+interface EditItemView {
     var isPasswordVisible: Boolean
     val togglePasswordClicks: Observable<Unit>
     val togglePasswordVisibility: Observable<Unit>
@@ -46,8 +46,8 @@ interface EditItemDetailView {
 }
 
 @ExperimentalCoroutinesApi
-class EditItemPresenter(
-    private val view: EditItemDetailView,
+class EditPresenter(
+    private val view: EditItemView,
     val itemId: String?,
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val dataStore: DataStore = DataStore.shared,

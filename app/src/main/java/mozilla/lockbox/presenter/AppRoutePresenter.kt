@@ -28,7 +28,7 @@ import mozilla.lockbox.view.ItemDetailFragmentArgs
 @ExperimentalCoroutinesApi
 class AppRoutePresenter(
     private val activity: AppCompatActivity,
-    private val dispatcher: Dispatcher = Dispatcher.shared,
+    dispatcher: Dispatcher = Dispatcher.shared,
     private val routeStore: RouteStore = RouteStore.shared,
     private val settingStore: SettingStore = SettingStore.shared
 ) : RoutePresenter(activity, dispatcher, routeStore) {
@@ -89,6 +89,7 @@ class AppRoutePresenter(
             is RouteAction.Filter -> navigateToFragment(R.id.fragment_filter)
             is RouteAction.ItemDetail -> navigateToFragment(R.id.fragment_item_detail, bundle(action))
             is RouteAction.EditItemDetail -> navigateToFragment(R.id.fragment_item_edit, bundle(action))
+            is RouteAction.Create -> navigateToFragment(R.id.fragment_create)
             is RouteAction.OpenWebsite -> openWebsite(action.url)
             is RouteAction.SystemSetting -> openSetting(action)
             is RouteAction.UnlockFallbackDialog -> showUnlockFallback(action)
@@ -119,7 +120,7 @@ class AppRoutePresenter(
             R.id.fragment_null to R.id.fragment_filter -> R.id.action_init_to_filter
             R.id.fragment_null to R.id.fragment_fxa_login -> R.id.action_init_to_fxa_login
             R.id.fragment_null to R.id.fragment_onboarding_confirmation ->
-            R.id.action_init_to_onboarding_confirmation
+                R.id.action_init_to_onboarding_confirmation
 
             R.id.fragment_welcome to R.id.fragment_fxa_login -> R.id.action_welcome_to_fxaLogin
             R.id.fragment_welcome to R.id.fragment_item_list -> R.id.action_welcome_to_autoLogin
@@ -142,6 +143,7 @@ class AppRoutePresenter(
 
             R.id.fragment_locked to R.id.fragment_item_list -> R.id.action_locked_to_itemList
             R.id.fragment_locked to R.id.fragment_welcome -> R.id.action_locked_to_welcome
+            R.id.fragment_locked to R.id.fragment_create -> R.id.action_locked_to_manualCreate
 
             R.id.fragment_item_list to R.id.fragment_item_detail -> R.id.action_itemList_to_itemDetail
             R.id.fragment_item_list to R.id.fragment_setting -> R.id.action_itemList_to_setting
@@ -149,6 +151,7 @@ class AppRoutePresenter(
             R.id.fragment_item_list to R.id.fragment_locked -> R.id.action_itemList_to_locked
             R.id.fragment_item_list to R.id.fragment_filter -> R.id.action_itemList_to_filter
             R.id.fragment_item_list to R.id.fragment_webview -> R.id.action_to_webview
+            R.id.fragment_item_list to R.id.fragment_create -> R.id.action_itemList_to_manualCreate
 
             R.id.fragment_item_detail to R.id.fragment_webview -> R.id.action_to_webview
             R.id.fragment_item_detail to R.id.fragment_item_list -> R.id.action_to_itemList
@@ -173,6 +176,10 @@ class AppRoutePresenter(
             R.id.fragment_filter_backdrop to R.id.fragment_item_detail -> R.id.action_filter_to_itemDetail
             R.id.fragment_filter to R.id.fragment_item_detail -> R.id.action_filter_to_itemDetail
             R.id.fragment_filter to R.id.fragment_item_list -> R.id.action_filter_to_itemList
+
+            R.id.fragment_create to R.id.fragment_item_list -> R.id.action_manualCreate_to_itemList
+            R.id.fragment_create to R.id.fragment_item_detail -> R.id.action_manualCreate_to_itemDetail
+            R.id.fragment_create to R.id.fragment_locked -> R.id.action_manualCreate_to_locked
 
             else -> null
         } ?: when (dest) {
