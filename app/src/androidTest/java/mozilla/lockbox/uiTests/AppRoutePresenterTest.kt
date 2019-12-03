@@ -11,8 +11,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.robots.disconnectDisclaimer
 import mozilla.lockbox.robots.filteredItemList
-import mozilla.lockbox.robots.itemList
-import mozilla.lockbox.robots.settings
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.view.RootActivity
 import org.junit.Ignore
@@ -63,16 +61,12 @@ open class AppRoutePresenterTest {
             back()
         }
         navigator.checkAtFilterList()
-        navigator.back()
+        // navigator.back()
     }
 
     @Test
     fun testSettings() {
-        navigator.gotoItemList(true)
-        itemList {
-            tapSettings()
-        }
-        settings { exists() }
+        navigator.gotoSettings()
         navigator.back()
         navigator.checkAtItemList()
     }

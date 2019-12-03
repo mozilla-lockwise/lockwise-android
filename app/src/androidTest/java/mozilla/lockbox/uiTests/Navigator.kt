@@ -113,7 +113,7 @@ class Navigator {
     }
 
     fun gotoAutofillOnboarding() {
-        // gotoFxALogin()
+        gotoFxALogin()
         fxaLogin { tapPlaceholderLogin() }
         if (FingerprintStore.shared.isDeviceSecure) {
             checkAtFingerprintOnboarding()
@@ -145,7 +145,7 @@ class Navigator {
     }
 
     fun checkAtWelcome() {
-        blockUntil(RouteStore.shared.routes, RouteAction.Login)
+        // blockUntil(RouteStore.shared.routes, RouteAction.Login)
         welcome { exists() }
     }
 
@@ -153,8 +153,14 @@ class Navigator {
         if (goManually) {
             bypassOnboarding()
         } else {
-            checkAtItemList()
+            Dispatcher.shared.dispatch(RouteAction.LockScreen)
+            Dispatcher.shared.dispatch(LifecycleAction.UseTestData)
+            // log.info("blocking for the routes")
+            // block until onboarding
+            // tap skip
+            // blockUntil(RouteStore.shared.routes, RouteAction.ItemList)
         }
+        checkAtItemList()
     }
 
     private fun bypassOnboarding() {

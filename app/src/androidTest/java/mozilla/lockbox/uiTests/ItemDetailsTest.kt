@@ -31,7 +31,7 @@ open class ItemDetailsTest {
         navigator.gotoItemList(false)
         itemList { selectItem() }
         itemDetail { exists() }
-        navigator.back()
+        // navigator.back()
     }
 
     @Test
@@ -39,21 +39,19 @@ open class ItemDetailsTest {
         navigator.gotoItemDetail()
         itemDetail { tapCopyUsername() }
         itemDetail { toastIsDisplayed(R.string.toast_username_copied, activityRule) }
-        navigator.back()
+        // navigator.back()
     }
 
     @Test
     fun showToastWhenPassCopied() {
-        navigator.gotoItemList(false)
-        itemList { selectItem(0) }
+        navigator.gotoItemDetail()
         itemDetail { tapCopyPass() }
         itemDetail { toastIsDisplayed(R.string.toast_password_copied, activityRule) }
-        navigator.back()
     }
 
     @Test
     fun deleteItem() {
-        itemDetail { tapKebabMenu() }
+        navigator.gotoItemDetailKebabMenu()
         kebabMenu { tapDeleteButton() }
         // First tap on Cancel delete credential
         deleteCredentialDisclaimer { tapCancelButton() }
@@ -68,7 +66,7 @@ open class ItemDetailsTest {
 
     @Test
     fun editItem() {
-        itemDetail { tapKebabMenu() }
+        navigator.gotoItemDetailKebabMenu()
         kebabMenu { tapEditButton() }
         // Edit entry Hostname and Username
         editCredential {
@@ -83,7 +81,7 @@ open class ItemDetailsTest {
             editedCredentialUsernameExists("UsernameChanged")
             openCredential("UsernameChanged")
         }
-        navigator.back()
+        // navigator.back()
     }
 
     @Test
@@ -93,7 +91,8 @@ open class ItemDetailsTest {
         kebabMenu { tapEditButton() }
         editCredential {
             closeEditChanges() }
-        itemDetail { tapKebabMenu() }
+        navigator.gotoItemDetailKebabMenu()
+        // itemDetail { tapKebabMenu() }
         kebabMenu { tapEditButton() }
         editCredential {
             editUserName("foo")
@@ -109,12 +108,13 @@ open class ItemDetailsTest {
         // User is taken to ItemList View
         // No changes are applied
         itemDetail { exists() }
-        navigator.back()
+        // navigator.back()
     }
 
     @Test
     fun editItemInvalidTextFieldInput() {
-        itemDetail { tapKebabMenu() }
+        // itemDetail { tapKebabMenu() }
+        navigator.gotoItemDetailKebabMenu()
         kebabMenu { tapEditButton() }
         editCredential {
             editPassword("")
@@ -123,6 +123,6 @@ open class ItemDetailsTest {
             sleep(1000)
             noErrorEmptyPassword()
         }
-        navigator.back()
+        // navigator.back()
     }
 }
