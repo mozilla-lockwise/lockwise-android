@@ -79,7 +79,7 @@ class EditFragment : BackableFragment(), EditItemView {
         savedInstanceState: Bundle?
     ): View? {
         val itemId = arguments?.let {
-            EditItemFragmentArgs.fromBundle(it).itemId
+            EditFragmentArgs.fromBundle(it).itemId
         }
 
         presenter = EditPresenter(this, itemId)

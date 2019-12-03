@@ -116,6 +116,7 @@ open class DataStore(
                     is DataStoreAction.Delete -> delete(action.item)
                     is DataStoreAction.UpdateItemDetail -> updateItem(action.previous, action.next)
                     is DataStoreAction.AutofillCapture -> autofillAdd(action.item)
+                    is DataStoreAction.CreateNewItem -> add(action.item)
                 }
             }
             .addTo(compositeDisposable)

@@ -106,4 +106,17 @@ sealed class DialogAction(
             ItemDetailAction.EndEditing(itemId)
         )
     )
+
+    object DiscardChangesCreateDialog : DialogAction(
+        DialogViewModel(
+            R.string.discard_changes,
+            R.string.discard_changes_description,
+            R.string.discard,
+            R.string.cancel,
+            R.color.red
+        ),
+        listOf(
+            ItemDetailAction.DiscardManualCreate
+        )
+    )
 }

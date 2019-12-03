@@ -27,8 +27,8 @@ import kotlinx.android.synthetic.main.fragment_edit.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
 import mozilla.lockbox.model.ItemDetailViewModel
+import mozilla.lockbox.presenter.CreatePresenter
 import mozilla.lockbox.presenter.CreateView
-import mozilla.lockbox.presenter.EditPresenter
 import mozilla.lockbox.support.assertOnUiThread
 
 @ExperimentalCoroutinesApi
@@ -78,11 +78,7 @@ class CreateFragment : BackableFragment(), CreateView {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val itemId = arguments?.let {
-            EditItemFragmentArgs.fromBundle(it).itemId
-        }
-
-        presenter = EditPresenter(this, itemId)
+        presenter = CreatePresenter(this)
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
         return inflater.inflate(R.layout.fragment_edit, container, false)
     }
@@ -126,6 +122,7 @@ class CreateFragment : BackableFragment(), CreateView {
 
     private fun setupKeyboardFocus(view: View) {
         view.inputUsername.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            view.inputLayoutUsername.hint = resources.getString(R.string.create_hostname_helper_text)
             if (!hasFocus) {
                 closeKeyboard()
             } else {

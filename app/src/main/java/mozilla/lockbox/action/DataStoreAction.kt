@@ -115,4 +115,14 @@ sealed class DataStoreAction(
         TelemetryEventMethod.autofill_add,
         TelemetryEventObject.datastore
     )
+
+    /**
+     * Dispatched when the user manually creates a new entry.
+     */
+    data class CreateNewItem(val item: ServerPassword)
+        : DataStoreAction(
+        TelemetryEventMethod.create,
+        TelemetryEventObject.manual_create_datastore_save
+    )
+
 }

@@ -7,6 +7,7 @@
 package mozilla.lockbox.presenter
 
 import android.text.TextUtils
+import android.webkit.URLUtil
 import androidx.annotation.StringRes
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
@@ -47,8 +48,7 @@ interface CreateView {
 
 @ExperimentalCoroutinesApi
 class CreatePresenter(
-    private val view: EditItemView,
-    val itemId: String?,
+    private val view: CreateView,
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val dataStore: DataStore = DataStore.shared,
     private val itemDetailStore: ItemDetailStore = ItemDetailStore.shared
@@ -77,34 +77,19 @@ class CreatePresenter(
     private var unavailableUsernames: Set<String?> = emptySet()
 
     override fun onViewReady() {
-        val itemId = this.itemId ?: return
-
         view.isPasswordVisible = false
 
-        val getItem = dataStore.get(itemId)
-            .filterNotNull()
-            .distinctUntilChanged()
-            .doOnNext {
-                credentialsAtStart = it
-            }
-
-        getItem
-            .filter { credentialsToSave == null }
-            .map { it.toDetailViewModel() }
-            .observeOn(mainThread())
-            .subscribe(view::updateItem)
-            .addTo(compositeDisposable)
-
-        Observables.combineLatest(getItem, dataStore.list)
-            .map { (item, list) ->
+        // when do we want to check for dupes?
+        dataStore.list
+            .map { list ->
                 list.filter(
-                        hostname = item.hostname,
-                        httpRealm = item.httpRealm,
-                        formSubmitURL = item.formSubmitURL
+                        hostname = credentialsToSave?.hostname,
+                        httpRealm = credentialsToSave?.httpRealm,
+                        formSubmitURL = credentialsToSave?.formSubmitURL
                     )
                     .map { it.username }
                     .toSet()
-                    .minus(item.username)
+                    .minus(credentialsToSave.username)
             }
             .subscribe { unavailableUsernames = it }
             .addTo(compositeDisposable)
@@ -118,45 +103,18 @@ class CreatePresenter(
             .filter { !it }
             .flatMapIterable {
                 view.closeKeyboard()
-                listOf(RouteAction.ItemList, RouteAction.ItemDetail(itemId))
+                listOf(RouteAction.ItemList)
             }
-            .subscribe(dispatcher::dispatch)
-            .addTo(compositeDisposable)
-
-        view.togglePasswordVisibility
-            .map { ItemDetailAction.SetPasswordVisibility(view.isPasswordVisible.not()) }
-            .subscribe(dispatcher::dispatch)
-            .addTo(compositeDisposable)
-
-        view.togglePasswordClicks
-            .map { ItemDetailAction.SetPasswordVisibility(view.isPasswordVisible.not()) }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
 
         view.closeEntryClicks
-            .map { checkDismissChanges(itemId) }
+            .map { checkDismissChanges() }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
 
-        view.hostnameChanged
-            .subscribe {
-                updateCredentials(newHostname = it)
-            }
-            .addTo(compositeDisposable)
-
-        view.usernameChanged
-            .subscribe {
-                updateCredentials(newUsername = it)
-            }
-            .addTo(compositeDisposable)
-
-        view.passwordChanged
-            .subscribe {
-                updateCredentials(newPassword = it)
-            }
-            .addTo(compositeDisposable)
-
         Observables.combineLatest(
+            view.hostnameChanged.map(this::hostnameError),
             view.usernameChanged.map(this::usernameError),
             view.passwordChanged.map(this::passwordError)
         )
@@ -171,25 +129,31 @@ class CreatePresenter(
         view.saveEntryClicks
             .map {
                 // When there's something changed, then save them,
-                // otherwise, go back to the item detail screen.
-                credentialsToSave?.let { ItemDetailAction.SaveChanges(it) }
-                    ?: ItemDetailAction.EndEditing(itemId)
+                // otherwise, go back to the item list.
+                credentialsToSave?.let { ItemDetailAction.Create(it) }
+                    ?: ItemDetailAction.DiscardManualCreate
             }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
     }
 
-    private fun checkDismissChanges(itemId: String) =
+    private fun checkDismissChanges() =
         // When something has changes, then check with a dialog.
         // otherwise, go back to the item detail screen.
-        credentialsToSave?.let { DialogAction.DiscardChangesDialog(itemId) }
-            ?: ItemDetailAction.EndEditing(itemId)
+        credentialsToSave?.let { DialogAction.DiscardChangesCreateDialog }
+            ?: ItemDetailAction.DiscardManualCreate
 
     override fun onBackPressed(): Boolean {
-        val itemId = credentialsAtStart?.id ?: return false
-        dispatcher.dispatch(checkDismissChanges(itemId))
+        dispatcher.dispatch(checkDismissChanges())
         return true
     }
+
+    private fun hostnameError(inputText: String) =
+        when {
+            TextUtils.isEmpty(inputText) -> R.string.hostname_empty_invalid_text
+            !URLUtil.isHttpUrl(inputText) || !URLUtil.isHttpsUrl(inputText) -> R.string.hostname_invalid_text
+            else -> null
+        }.asOptional()
 
     private fun usernameError(inputText: String) =
         when {
@@ -203,20 +167,4 @@ class CreatePresenter(
             TextUtils.isEmpty(inputText) -> R.string.password_invalid_text
             else -> null
         }.asOptional()
-
-    private fun updateCredentials(
-        newHostname: String? = null,
-        newUsername: String? = null,
-        newPassword: String? = null
-    ) {
-        val old = credentialsEdited ?: credentialsAtStart ?: return pushError(
-            NullPointerException("Credentials are null"),
-            "Error editing credential with id $itemId"
-        )
-        credentialsEdited = old.copy(
-            hostname = newHostname ?: old.hostname,
-            username = newUsername ?: old.username,
-            password = newPassword ?: old.password
-        )
-    }
 }

@@ -50,10 +50,16 @@ class ItemDetailStore(
                 when (action) {
                     is ItemDetailAction.SetPasswordVisibility -> _passwordVisible.onNext(action.visible)
                     is ItemDetailAction.SaveChanges -> saveItem(action.previous, action.next)
+                    is ItemDetailAction.Create -> createNewItem(action.item)
                     is ItemDetailAction.EndEditing -> stopEditing()
                 }
             }
             .addTo(compositeDisposable)
+    }
+
+    private fun createNewItem(item: ServerPassword) {
+        dispatcher.dispatch(DataStoreAction.CreateNewItem(item))
+        stopEditing()
     }
 
     private fun startEditing() {
