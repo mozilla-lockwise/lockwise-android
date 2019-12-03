@@ -20,14 +20,14 @@ open class ItemListTest {
 
     @Test
     fun openSortMenuOnTap() {
-        navigator.gotoItemList()
+        navigator.gotoItemList(false)
         itemList { tapSortButton() }
         itemList { sortMenuIsDisplayed() }
     }
 
     @Test
     fun spinnerTitleChangesIfOtherItemIsSelected() {
-        navigator.gotoItemList()
+        navigator.gotoItemList(false)
         itemList { tapSortButton() }
         itemList { selectFirstItemInSortMenu() }
         itemList { spinnerDisplaysFirstItemSelection() }
@@ -38,7 +38,7 @@ open class ItemListTest {
 
     @Test
     fun spinnerTitleDoesNotChangeIfSameItemIsSelected() {
-        navigator.gotoItemList()
+        navigator.gotoItemList(false)
         itemList { tapSortButton() }
         itemList { selectFirstItemInSortMenu() }
         itemList { spinnerDisplaysFirstItemSelection() }
@@ -49,7 +49,7 @@ open class ItemListTest {
 
     @Test
     fun testPullToRefresh() {
-        navigator.gotoItemList()
+        navigator.gotoItemList(false)
         itemList { pullToRefresh() }
         navigator.checkAtItemList()
     }
