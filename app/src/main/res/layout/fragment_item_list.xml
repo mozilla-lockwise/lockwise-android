@@ -179,4 +179,18 @@
                 tools:ignore="RtlSymmetry"/>
         </LinearLayout>
     </com.google.android.material.navigation.NavigationView>
+
+    <ImageView
+            android:id="@+id/createButton"
+            android:contentDescription="@string/profile_image_content_description"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="67dp"
+            android:layout_gravity="center_horizontal"
+            android:elevation="1dp"
+            android:background="@drawable/create_button"
+            android:src="@android:drawable/ic_input_add"
+            android:tint="@color/background_white"
+            android:scaleType="centerCrop"
+            />
 </androidx.drawerlayout.widget.DrawerLayout>
