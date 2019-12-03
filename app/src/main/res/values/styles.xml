@@ -69,8 +69,8 @@
     </style>
 
     <style name="CreateScreen" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:popupBackground">@android:color/transparent</item>
-        <item name="android:background">@android:color/transparent</item>
+        <item name="android:popupBackground">@color/background_grey</item>
+        <item name="android:background">@color/background_grey</item>
         <item name="android:textColorHint">@color/black_60_percent</item>
         <item name="android:colorControlNormal">@color/dark_grey</item>
         <item name="errorTextAppearance">@style/ErrorText</item>

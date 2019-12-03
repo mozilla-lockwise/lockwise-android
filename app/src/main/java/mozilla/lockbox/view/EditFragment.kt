@@ -27,12 +27,12 @@ import kotlinx.android.synthetic.main.fragment_edit.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
 import mozilla.lockbox.model.ItemDetailViewModel
-import mozilla.lockbox.presenter.EditItemView
+import mozilla.lockbox.presenter.EditView
 import mozilla.lockbox.presenter.EditPresenter
 import mozilla.lockbox.support.assertOnUiThread
 
 @ExperimentalCoroutinesApi
-class EditFragment : BackableFragment(), EditItemView {
+class EditFragment : BackableFragment(), EditView {
 
     override val togglePasswordVisibility: BehaviorRelay<Unit> = BehaviorRelay.create()
 

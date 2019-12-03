@@ -43,8 +43,7 @@ import org.robolectric.annotation.Config
 @Config(application = TestApplication::class)
 class EditPresenterTest {
 
-    class FakeView : EditItemView {
-
+    class FakeEditView : EditView {
         private val togglePasswordVisibilityStub = PublishSubject.create<Unit>()
         override val togglePasswordVisibility: Observable<Unit>
             get() = togglePasswordVisibilityStub
@@ -116,7 +115,7 @@ class EditPresenterTest {
     val dispatcher = Dispatcher()
     val dispatcherObserver = TestObserver.create<Action>()!!
 
-    val view: FakeView = spy(FakeView())
+    val editView: FakeEditView = spy(FakeEditView())
 
     private val fakeCredential: ServerPassword by lazy {
         ServerPassword(
@@ -173,7 +172,7 @@ class EditPresenterTest {
     }
 
     private fun setUpTestSubject(item: ServerPassword?) {
-        subject = EditPresenter(view, item?.id, dispatcher, dataStore, itemDetailStore)
+        subject = EditPresenter(editView, item?.id, dispatcher, dataStore, itemDetailStore)
         subject.onViewReady()
 
         getStub.onNext(item.asOptional())
@@ -190,7 +189,7 @@ class EditPresenterTest {
         setUpTestSubject(fakeCredential)
 
         // test the results that the view gets.
-        val obs = view.item ?: return fail("Expected an item")
+        val obs = editView.item ?: return fail("Expected an item")
         assertEquals(fakeCredential.hostname, obs.hostname)
         assertEquals(fakeCredential.username, obs.username)
         assertEquals(fakeCredential.password, obs.password)
@@ -201,7 +200,7 @@ class EditPresenterTest {
     fun `sends a detail view model to view with null username`() {
         setUpTestSubject(fakeCredentialNoUsername)
 
-        view.updateItem(
+        editView.updateItem(
             ItemDetailViewModel(
                 fakeCredentialNoUsername.id,
                 fakeCredentialNoUsername.hostname,
@@ -213,7 +212,7 @@ class EditPresenterTest {
 
         verify(dataStore).get(fakeCredentialNoUsername.id)
 
-        val obs = view.item ?: return fail("Expected an item")
+        val obs = editView.item ?: return fail("Expected an item")
         assertEquals(fakeCredentialNoUsername.hostname, obs.hostname)
         assertEquals(fakeCredentialNoUsername.username, obs.username)
         assertEquals(fakeCredentialNoUsername.password, obs.password)
@@ -223,20 +222,20 @@ class EditPresenterTest {
     @Test
     fun `sends a list of duplicates to the view model`() {
         setUpTestSubject(fakeCredentialNoUsername)
-        view.usernameClicksStub.onNext("")
-        view.pwdClicksStub.onNext(fakeCredentialNoUsername.password)
+        editView.usernameClicksStub.onNext("")
+        editView.pwdClicksStub.onNext(fakeCredentialNoUsername.password)
 
         // now do the test.
-        view.usernameClicksStub.onNext(fakeCredential.username ?: "")
+        editView.usernameClicksStub.onNext(fakeCredential.username ?: "")
 
-        assertNotNull(view.usernameError)
+        assertNotNull(editView.usernameError)
     }
 
     @Test
     fun `tapping on close button with no change`() {
         setUpTestSubject(fakeCredential)
 
-        view.closeEntryClicksStub.onNext(Unit)
+        editView.closeEntryClicksStub.onNext(Unit)
 
         dispatcherObserver.assertValueSequence(
             listOf(
@@ -249,8 +248,8 @@ class EditPresenterTest {
     fun `tapping on close button with change`() {
         setUpTestSubject(fakeCredential)
 
-        view.usernameClicksStub.onNext("all-change")
-        view.closeEntryClicksStub.onNext(Unit)
+        editView.usernameClicksStub.onNext("all-change")
+        editView.closeEntryClicksStub.onNext(Unit)
 
         dispatcherObserver.assertValueSequence(
             listOf(
@@ -263,7 +262,7 @@ class EditPresenterTest {
     fun `tapping on save button with no changes`() {
         setUpTestSubject(fakeCredential)
 
-        view.saveEntryClicksStub.onNext(Unit)
+        editView.saveEntryClicksStub.onNext(Unit)
 
         dispatcherObserver.assertValueSequence(
             listOf(
@@ -276,8 +275,8 @@ class EditPresenterTest {
     fun `tapping on save button`() {
         setUpTestSubject(fakeCredential)
 
-        view.usernameClicksStub.onNext("all-change")
-        view.saveEntryClicksStub.onNext(Unit)
+        editView.usernameClicksStub.onNext("all-change")
+        editView.saveEntryClicksStub.onNext(Unit)
 
         dispatcherObserver.assertValueSequence(
             listOf(

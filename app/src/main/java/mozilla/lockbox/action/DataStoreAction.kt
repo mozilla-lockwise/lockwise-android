@@ -124,5 +124,4 @@ sealed class DataStoreAction(
         TelemetryEventMethod.create,
         TelemetryEventObject.manual_create_datastore_save
     )
-
 }

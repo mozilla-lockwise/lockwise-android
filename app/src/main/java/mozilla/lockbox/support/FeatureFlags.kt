@@ -25,6 +25,13 @@ object FeatureFlags {
         else -> true
     }
 
+    val CRUD_MANUAL_CREATE = when {
+        isDebug -> true
+        isTesting -> true
+        isRelease -> false
+        else -> false
+    }
+
     /**
      * Use existing apps' FxA credentials to login.
      *

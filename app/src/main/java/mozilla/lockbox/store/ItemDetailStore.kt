@@ -16,6 +16,8 @@ import mozilla.lockbox.action.ItemDetailAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.log
+import mozilla.lockbox.model.ItemDetailViewModel
 
 class ItemDetailStore(
     val dispatcher: Dispatcher = Dispatcher.shared
@@ -57,9 +59,22 @@ class ItemDetailStore(
             .addTo(compositeDisposable)
     }
 
-    private fun createNewItem(item: ServerPassword) {
-        dispatcher.dispatch(DataStoreAction.CreateNewItem(item))
+    private fun createNewItem(item: ItemDetailViewModel?) {
+        if (item != null) {
+            dispatcher.dispatch(DataStoreAction.CreateNewItem(mapToServerPassword(item)))
+        } else {
+            log.info("Null item: $item")
+        }
         stopEditing()
+    }
+
+    private fun mapToServerPassword(item: ItemDetailViewModel): ServerPassword {
+        return ServerPassword(
+                id = item.id,
+                hostname = item.hostname,
+                username = item.username,
+                password = item.password
+            )
     }
 
     private fun startEditing() {

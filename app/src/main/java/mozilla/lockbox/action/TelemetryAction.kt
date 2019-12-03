@@ -96,7 +96,7 @@ enum class TelemetryEventObject {
     edit_entry_detail,
     update_credential,
     manual_create,
-    manual_create_discard_changes,
+    discard_manual_create_no_changes,
     manual_create_save,
     manual_create_datastore_save
 }

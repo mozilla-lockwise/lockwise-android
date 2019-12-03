@@ -7,6 +7,7 @@
 package mozilla.lockbox.action
 
 import mozilla.appservices.logins.ServerPassword
+import mozilla.lockbox.model.ItemDetailViewModel
 
 sealed class ItemDetailAction(
     override val eventMethod: TelemetryEventMethod,
@@ -18,8 +19,6 @@ sealed class ItemDetailAction(
         ItemDetailAction(TelemetryEventMethod.tap, TelemetryEventObject.update_credential)
     data class EndEditing(val itemId: String) :
         ItemDetailAction(TelemetryEventMethod.tap, TelemetryEventObject.back)
-    data class Create(val item: ServerPassword) :
+    data class Create(val item: ItemDetailViewModel?) :
         ItemDetailAction(TelemetryEventMethod.tap, TelemetryEventObject.manual_create_save)
-    object DiscardManualCreate :
-        ItemDetailAction(TelemetryEventMethod.tap, TelemetryEventObject.manual_create_discard_changes)
 }

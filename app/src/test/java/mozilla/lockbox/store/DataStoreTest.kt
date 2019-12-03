@@ -24,6 +24,7 @@ import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.mocks.MockDataStoreSupport
 import mozilla.lockbox.model.FixedSyncCredentials
+import mozilla.lockbox.model.titleFromHostname
 import mozilla.lockbox.store.DataStore.State
 import mozilla.lockbox.support.TimingSupport
 import mozilla.lockbox.support.asOptional
@@ -77,13 +78,13 @@ class DataStoreTest : DisposingTest() {
     fun `update item details`() {
         val stateIterator = this.subject.state.blockingIterable().iterator()
         val listIterator = this.subject.list.blockingIterable().iterator()
-        Assert.assertEquals(0, listIterator.next().size)
+        assertEquals(0, listIterator.next().size)
         clearInvocations(support.storage)
         whenCalled(timingSupport.shouldSync).thenReturn(false)
 
         dispatcher.dispatch(DataStoreAction.Unlock)
-        Assert.assertEquals(State.Unlocked, stateIterator.next())
-        Assert.assertEquals(10, listIterator.next().size)
+        assertEquals(State.Unlocked, stateIterator.next())
+        assertEquals(10, listIterator.next().size)
 
         val item = listIterator.next()[0]
         val newHostname = "https://ilovecats.com"
@@ -125,18 +126,19 @@ class DataStoreTest : DisposingTest() {
         Assert.assertNull(support.syncConfig)
         subject.sync()
         Assert.assertNull(support.syncConfig)
-        Assert.assertEquals(subject.syncStateSubject.value, DataStore.SyncState.NotSyncing)
+        assertEquals(subject.syncStateSubject.value, DataStore.SyncState.NotSyncing)
     }
 
-    fun testAddNewEntry() {
+    @Test
+    fun testAddNewEntryFromAutofill() {
         // set up unlocked store
         val stateIterator = this.subject.state.blockingIterable().iterator()
         val listIterator = this.subject.list.blockingIterable().iterator()
-        Assert.assertEquals(0, listIterator.next().size)
+        assertEquals(0, listIterator.next().size)
 
         dispatcher.dispatch(DataStoreAction.Unlock)
-        Assert.assertEquals(State.Unlocked, stateIterator.next())
-        Assert.assertEquals(10, listIterator.next().size)
+        assertEquals(State.Unlocked, stateIterator.next())
+        assertEquals(10, listIterator.next().size)
         clearInvocations(support.storage)
 
         // create new entry and add
@@ -153,25 +155,50 @@ class DataStoreTest : DisposingTest() {
     }
 
     @Test
+    fun testAddNewEntryFromManualCreate() {
+        // set up unlocked store
+        val stateIterator = this.subject.state.blockingIterable().iterator()
+        val listIterator = this.subject.list.blockingIterable().iterator()
+        assertEquals(0, listIterator.next().size)
+
+        dispatcher.dispatch(DataStoreAction.Unlock)
+        assertEquals(State.Unlocked, stateIterator.next())
+        assertEquals(10, listIterator.next().size)
+        clearInvocations(support.storage)
+
+        // create new entry and add
+        val newEntry = ServerPassword(
+            id = "",
+            hostname = "cats.com",
+            username = "feline",
+            password = "iLUVkatz"
+        )
+
+        dispatcher.dispatch(DataStoreAction.CreateNewItem(newEntry))
+
+        verify(support.storage).add(newEntry)
+    }
+
+    @Test
     fun testLockUnlock() {
         val stateIterator = this.subject.state.blockingIterable().iterator()
         val listIterator = this.subject.list.blockingIterable().iterator()
-        Assert.assertEquals(0, listIterator.next().size)
+        assertEquals(0, listIterator.next().size)
         clearInvocations(support.storage)
         whenCalled(timingSupport.shouldSync).thenReturn(true)
 
         dispatcher.dispatch(DataStoreAction.Unlock)
-        Assert.assertEquals(State.Unlocked, stateIterator.next())
-        Assert.assertEquals(10, listIterator.next().size)
-        Assert.assertEquals(10, listIterator.next().size)
-        Assert.assertEquals(10, listIterator.next().size)
+        assertEquals(State.Unlocked, stateIterator.next())
+        assertEquals(10, listIterator.next().size)
+        assertEquals(10, listIterator.next().size)
+        assertEquals(10, listIterator.next().size)
         verify(support.storage).sync(support.syncConfig!!)
         verify(support.storage, times(3)).list()
         verify(timingSupport).storeNextSyncTime()
 
         dispatcher.dispatch(DataStoreAction.Lock)
-        Assert.assertEquals(State.Locked, stateIterator.next())
-        Assert.assertEquals(0, listIterator.next().size)
+        assertEquals(State.Locked, stateIterator.next())
+        assertEquals(0, listIterator.next().size)
     }
 
     @Test
@@ -194,20 +221,20 @@ class DataStoreTest : DisposingTest() {
     fun testLockUnlock_shouldNotSync() {
         val stateIterator = this.subject.state.blockingIterable().iterator()
         val listIterator = this.subject.list.blockingIterable().iterator()
-        Assert.assertEquals(0, listIterator.next().size)
+        assertEquals(0, listIterator.next().size)
         clearInvocations(support.storage)
         whenCalled(timingSupport.shouldSync).thenReturn(false)
 
         dispatcher.dispatch(DataStoreAction.Unlock)
-        Assert.assertEquals(State.Unlocked, stateIterator.next())
-        Assert.assertEquals(10, listIterator.next().size)
-        Assert.assertEquals(10, listIterator.next().size)
+        assertEquals(State.Unlocked, stateIterator.next())
+        assertEquals(10, listIterator.next().size)
+        assertEquals(10, listIterator.next().size)
         verify(support.storage, times(2)).list()
         verify(timingSupport, never()).storeNextSyncTime()
 
         dispatcher.dispatch(DataStoreAction.Lock)
-        Assert.assertEquals(State.Locked, stateIterator.next())
-        Assert.assertEquals(0, listIterator.next().size)
+        assertEquals(State.Locked, stateIterator.next())
+        assertEquals(0, listIterator.next().size)
     }
 
     @Test
@@ -215,11 +242,11 @@ class DataStoreTest : DisposingTest() {
     fun testTouch() {
         val stateIterator = this.subject.state.blockingIterable().iterator()
         val listIterator = this.subject.list.blockingIterable().iterator()
-        Assert.assertEquals(0, listIterator.next().size)
+        assertEquals(0, listIterator.next().size)
 
         dispatcher.dispatch(DataStoreAction.Unlock)
-        Assert.assertEquals(State.Unlocked, stateIterator.next())
-        Assert.assertEquals(10, listIterator.next().size)
+        assertEquals(State.Unlocked, stateIterator.next())
+        assertEquals(10, listIterator.next().size)
         clearInvocations(support.storage)
 
         val id = "lkjhkj"
@@ -234,7 +261,7 @@ class DataStoreTest : DisposingTest() {
     fun testResetUnpreparedState() {
         val stateIterator = this.subject.state.blockingIterable().iterator()
         dispatcher.dispatch(DataStoreAction.Reset)
-        Assert.assertEquals(State.Unprepared, stateIterator.next())
+        assertEquals(State.Unprepared, stateIterator.next())
         Mockito.verifyNoMoreInteractions(support.storage)
     }
 
@@ -242,16 +269,16 @@ class DataStoreTest : DisposingTest() {
     fun testReset() {
         val stateIterator = this.subject.state.blockingIterable().iterator()
         val listIterator = this.subject.list.blockingIterable().iterator()
-        Assert.assertEquals(0, listIterator.next().size)
+        assertEquals(0, listIterator.next().size)
 
         dispatcher.dispatch(DataStoreAction.Unlock)
-        Assert.assertEquals(State.Unlocked, stateIterator.next())
-        Assert.assertEquals(10, listIterator.next().size)
-        Assert.assertEquals(10, listIterator.next().size)
+        assertEquals(State.Unlocked, stateIterator.next())
+        assertEquals(10, listIterator.next().size)
+        assertEquals(10, listIterator.next().size)
 
         dispatcher.dispatch(DataStoreAction.Reset)
-        Assert.assertEquals(State.Unprepared, stateIterator.next())
-        Assert.assertEquals(0, listIterator.next().size)
+        assertEquals(State.Unprepared, stateIterator.next())
+        assertEquals(0, listIterator.next().size)
 
         verify(support.storage).wipeLocal()
     }
@@ -260,10 +287,10 @@ class DataStoreTest : DisposingTest() {
     fun testUserReset() {
 //        val stateIterator = this.subject.state.blockingIterable().iterator()
         val listIterator = this.subject.list.blockingIterable().iterator()
-        Assert.assertEquals(0, listIterator.next().size)
+        assertEquals(0, listIterator.next().size)
 
         dispatcher.dispatch(DataStoreAction.Unlock)
-        Assert.assertEquals(10, listIterator.next().size)
+        assertEquals(10, listIterator.next().size)
         clearInvocations(support.storage)
 
         dispatcher.dispatch(LifecycleAction.UserReset)
@@ -284,7 +311,7 @@ class DataStoreTest : DisposingTest() {
         Assert.assertSame("Support should be the new one", newSupport, this.subject.support)
 
         dispatcher.dispatch(DataStoreAction.Unlock)
-        Assert.assertEquals(State.Unlocked, stateIterator.next())
+        assertEquals(State.Unlocked, stateIterator.next())
 
         this.subject.resetSupport(MockDataStoreSupport())
         verify(newSupport.asyncStorage).wipeLocal()
@@ -319,13 +346,13 @@ class DataStoreTest : DisposingTest() {
             tokenServerURL
         )
 
-        Assert.assertEquals(expectedSyncUnlockInfo.kid, support.syncConfig!!.kid)
-        Assert.assertEquals(
+        assertEquals(expectedSyncUnlockInfo.kid, support.syncConfig!!.kid)
+        assertEquals(
             expectedSyncUnlockInfo.fxaAccessToken,
             support.syncConfig!!.fxaAccessToken
         )
-        Assert.assertEquals(expectedSyncUnlockInfo.syncKey, support.syncConfig!!.syncKey)
-        Assert.assertEquals(
+        assertEquals(expectedSyncUnlockInfo.syncKey, support.syncConfig!!.syncKey)
+        assertEquals(
             expectedSyncUnlockInfo.tokenserverURL,
             support.syncConfig!!.tokenserverURL
         )
@@ -334,26 +361,26 @@ class DataStoreTest : DisposingTest() {
     @Test
     fun testSync() {
         val syncIterator = this.subject.syncState.blockingIterable().iterator()
-        Assert.assertEquals(DataStore.SyncState.NotSyncing, syncIterator.next())
+        assertEquals(DataStore.SyncState.NotSyncing, syncIterator.next())
 
         dispatcher.dispatch(DataStoreAction.Sync)
-        Assert.assertEquals(DataStore.SyncState.Syncing, syncIterator.next())
+        assertEquals(DataStore.SyncState.Syncing, syncIterator.next())
     }
 
     @Test
     fun testGet() {
         val stateIterator = this.subject.state.blockingIterable().iterator()
         val listIterator = this.subject.list.blockingIterable().iterator()
-        Assert.assertEquals(0, listIterator.next().size)
+        assertEquals(0, listIterator.next().size)
 
         dispatcher.dispatch(DataStoreAction.Unlock)
-        Assert.assertEquals(State.Unlocked, stateIterator.next())
+        assertEquals(State.Unlocked, stateIterator.next())
         val serverPassword = listIterator.next()[4]
 
         val serverPasswordIterator =
             this.subject.get(serverPassword.id).blockingIterable().iterator()
 
-        Assert.assertEquals(serverPassword.asOptional(), serverPasswordIterator.next())
+        assertEquals(serverPassword.asOptional(), serverPasswordIterator.next())
     }
 
     @Test fun `find matching credentials`() {
@@ -415,10 +442,10 @@ class DataStoreTest : DisposingTest() {
     fun testLockWhenLocked() {
         val stateIterator = this.subject.state.blockingIterable().iterator()
         val listIterator = this.subject.list.blockingIterable().iterator()
-        Assert.assertEquals(0, listIterator.next().size)
+        assertEquals(0, listIterator.next().size)
 
         dispatcher.dispatch(DataStoreAction.Lock)
-        Assert.assertEquals(State.Locked, stateIterator.next())
+        assertEquals(State.Locked, stateIterator.next())
     }
 
     @Test
@@ -426,10 +453,10 @@ class DataStoreTest : DisposingTest() {
     fun `receiving background actions when unlocked`() {
         val stateIterator = this.subject.state.blockingIterable().iterator()
         val listIterator = this.subject.list.blockingIterable().iterator()
-        Assert.assertEquals(0, listIterator.next().size)
+        assertEquals(0, listIterator.next().size)
 
         dispatcher.dispatch(DataStoreAction.Unlock)
-        Assert.assertEquals(State.Unlocked, stateIterator.next())
+        assertEquals(State.Unlocked, stateIterator.next())
         verify(timingSupport).forwardDateNextLockTime()
 
         (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Background)
@@ -442,15 +469,15 @@ class DataStoreTest : DisposingTest() {
     fun `receiving background actions when locked`() {
         val stateIterator = this.subject.state.blockingIterable().iterator()
         val listIterator = this.subject.list.blockingIterable().iterator()
-        Assert.assertEquals(0, listIterator.next().size)
+        assertEquals(0, listIterator.next().size)
 
         dispatcher.dispatch(DataStoreAction.Unlock)
-        Assert.assertEquals(State.Unlocked, stateIterator.next())
+        assertEquals(State.Unlocked, stateIterator.next())
         verify(timingSupport).forwardDateNextLockTime()
 
         dispatcher.dispatch(DataStoreAction.Lock)
         verify(timingSupport).backdateNextLockTime()
-        Assert.assertEquals(State.Locked, stateIterator.next())
+        assertEquals(State.Locked, stateIterator.next())
         clearInvocations(support.storage)
 
         (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.AutofillEnd)
@@ -462,29 +489,29 @@ class DataStoreTest : DisposingTest() {
     fun `receiving foreground actions when should lock`() {
         val stateIterator = this.subject.state.blockingIterable().iterator()
         val listIterator = this.subject.list.blockingIterable().iterator()
-        Assert.assertEquals(0, listIterator.next().size)
+        assertEquals(0, listIterator.next().size)
 
         dispatcher.dispatch(DataStoreAction.Unlock)
-        Assert.assertEquals(State.Unlocked, stateIterator.next())
+        assertEquals(State.Unlocked, stateIterator.next())
         whenCalled(timingSupport.shouldLock).thenReturn(true)
 
         (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Foreground)
 
-        Assert.assertEquals(State.Locked, stateIterator.next())
+        assertEquals(State.Locked, stateIterator.next())
     }
 
     @Test
     fun `receiving foreground actions when should not lock`() {
         val stateIterator = this.subject.state.blockingIterable().iterator()
         val listIterator = this.subject.list.blockingIterable().iterator()
-        Assert.assertEquals(0, listIterator.next().size)
+        assertEquals(0, listIterator.next().size)
 
         dispatcher.dispatch(DataStoreAction.Unlock)
-        Assert.assertEquals(State.Unlocked, stateIterator.next())
+        assertEquals(State.Unlocked, stateIterator.next())
         clearInvocations(support.storage)
         whenCalled(timingSupport.shouldLock).thenReturn(false)
         (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.Foreground)
-        Assert.assertEquals(State.Unlocked, stateIterator.next())
+        assertEquals(State.Unlocked, stateIterator.next())
         verify(support.storage).ensureUnlocked(support.encryptionKey)
     }
 
@@ -492,10 +519,10 @@ class DataStoreTest : DisposingTest() {
     fun `receiving autofill end actions when unlocked`() {
         val stateIterator = this.subject.state.blockingIterable().iterator()
         val listIterator = this.subject.list.blockingIterable().iterator()
-        Assert.assertEquals(0, listIterator.next().size)
+        assertEquals(0, listIterator.next().size)
 
         dispatcher.dispatch(DataStoreAction.Unlock)
-        Assert.assertEquals(State.Unlocked, stateIterator.next())
+        assertEquals(State.Unlocked, stateIterator.next())
         verify(timingSupport).forwardDateNextLockTime()
 
         (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.AutofillEnd)
@@ -507,10 +534,10 @@ class DataStoreTest : DisposingTest() {
     fun `receiving autofill end actions when locked`() {
         val stateIterator = this.subject.state.blockingIterable().iterator()
         val listIterator = this.subject.list.blockingIterable().iterator()
-        Assert.assertEquals(0, listIterator.next().size)
+        assertEquals(0, listIterator.next().size)
 
         dispatcher.dispatch(DataStoreAction.Unlock)
-        Assert.assertEquals(State.Unlocked, stateIterator.next())
+        assertEquals(State.Unlocked, stateIterator.next())
         verify(timingSupport).forwardDateNextLockTime()
 
         dispatcher.dispatch(DataStoreAction.Lock)
@@ -524,25 +551,25 @@ class DataStoreTest : DisposingTest() {
     fun `receiving autofill start actions when should lock`() {
         val stateIterator = this.subject.state.blockingIterable().iterator()
         val listIterator = this.subject.list.blockingIterable().iterator()
-        Assert.assertEquals(0, listIterator.next().size)
+        assertEquals(0, listIterator.next().size)
 
         dispatcher.dispatch(DataStoreAction.Unlock)
-        Assert.assertEquals(State.Unlocked, stateIterator.next())
+        assertEquals(State.Unlocked, stateIterator.next())
         whenCalled(timingSupport.shouldLock).thenReturn(true)
 
         (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.AutofillStart)
 
-        Assert.assertEquals(State.Locked, stateIterator.next())
+        assertEquals(State.Locked, stateIterator.next())
     }
 
     @Test
     fun `receiving autofill start actions when should not lock`() {
         val stateIterator = this.subject.state.blockingIterable().iterator()
         val listIterator = this.subject.list.blockingIterable().iterator()
-        Assert.assertEquals(0, listIterator.next().size)
+        assertEquals(0, listIterator.next().size)
 
         dispatcher.dispatch(DataStoreAction.Unlock)
-        Assert.assertEquals(State.Unlocked, stateIterator.next())
+        assertEquals(State.Unlocked, stateIterator.next())
         whenCalled(timingSupport.shouldLock).thenReturn(false)
         (lifecycleStore.lifecycleEvents as Subject).onNext(LifecycleAction.AutofillStart)
     }

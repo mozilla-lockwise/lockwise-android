@@ -13,7 +13,6 @@
         android:layout_height="match_parent"
         android:id="@+id/fragment_item_edit"
         android:overScrollMode="ifContentScrolls"
-        android:background="@color/background_grey"
         android:windowSoftInputMode="adjustPan"
         android:fitsSystemWindows="true"
         android:windowActionBarOverlay="true"

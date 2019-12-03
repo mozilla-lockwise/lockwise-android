@@ -180,17 +180,25 @@
         </LinearLayout>
     </com.google.android.material.navigation.NavigationView>
 
-    <ImageView
-            android:id="@+id/createButton"
-            android:contentDescription="@string/profile_image_content_description"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_marginTop="67dp"
-            android:layout_gravity="center_horizontal"
-            android:elevation="1dp"
-            android:background="@drawable/create_button"
-            android:src="@android:drawable/ic_input_add"
-            android:tint="@color/background_white"
-            android:scaleType="centerCrop"
-            />
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <ImageView
+                android:id="@+id/createButton"
+                android:contentDescription="@string/profile_image_content_description"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:elevation="5dp"
+                android:src="@drawable/ic_add"
+                android:background="@drawable/create_button"
+                android:tint="@color/background_white"
+                android:padding="21dp"
+                android:scaleType="centerCrop"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+        />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.drawerlayout.widget.DrawerLayout>

@@ -90,6 +90,7 @@ class AppRoutePresenter(
             is RouteAction.ItemDetail -> navigateToFragment(R.id.fragment_item_detail, bundle(action))
             is RouteAction.EditItemDetail -> navigateToFragment(R.id.fragment_item_edit, bundle(action))
             is RouteAction.Create -> navigateToFragment(R.id.fragment_create)
+            is RouteAction.DiscardCreateNoChanges -> navigateToFragment(R.id.fragment_item_list)
             is RouteAction.OpenWebsite -> openWebsite(action.url)
             is RouteAction.SystemSetting -> openSetting(action)
             is RouteAction.UnlockFallbackDialog -> showUnlockFallback(action)

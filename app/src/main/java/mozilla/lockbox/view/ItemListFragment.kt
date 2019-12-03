@@ -49,6 +49,7 @@ import mozilla.lockbox.model.AccountViewModel
 import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.presenter.ItemListPresenter
 import mozilla.lockbox.presenter.ItemListView
+import mozilla.lockbox.support.FeatureFlags
 import mozilla.lockbox.support.assertOnUiThread
 import mozilla.lockbox.support.showAndRemove
 
@@ -82,6 +83,13 @@ class ItemListFragment : Fragment(), ItemListView {
         setupListView(view.entriesView)
         setupSortDropdown(view)
         view.refreshContainer.setColorSchemeResources(R.color.refresh_violet)
+
+        if (FeatureFlags.CRUD_MANUAL_CREATE) {
+            view.createButton.visibility = View.VISIBLE
+        } else {
+            view.createButton.visibility = View.INVISIBLE
+        }
+
         super.onViewCreated(view, savedInstanceState)
     }
 
@@ -175,6 +183,9 @@ class ItemListFragment : Fragment(), ItemListView {
 
     override val lockNowClick: Observable<Unit>
         get() = view!!.lockNow.clicks()
+
+    override val createNewEntryClick: Observable<Unit>
+        get() = view!!.createButton.clicks()
 
     private val sortMenuOptions: Array<Setting.ItemListSort>
         get() = Setting.ItemListSort.values()
