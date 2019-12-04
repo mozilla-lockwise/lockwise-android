@@ -88,7 +88,7 @@ open class ScreenshotsTest {
     }
 
     @Test
-    fun testSettingsAccountMenu() {
+    fun testAppSettingsMenu() {
         Screengrab.setDefaultScreenshotStrategy(UiAutomatorScreenshotStrategy())
         navigator.gotoSettings()
         Screengrab.screenshot("settings-menu-screen")
