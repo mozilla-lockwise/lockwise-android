@@ -129,10 +129,11 @@ open class AutofillRoutePresenter(
     }
 
     private fun finishResponse(passwords: List<ServerPassword>) {
-        val response = if (passwords.size == 1)
-                responseBuilder.buildSelectedDatasetResponse(activity, passwords.first())
-            else
-                responseBuilder.buildFilteredFillResponse(activity, passwords)
+        val response = if (passwords.size == 1) {
+            responseBuilder.buildSelectedDatasetResponse(activity, passwords.first())
+        } else {
+            responseBuilder.buildFilteredFillResponse(activity, passwords)
+        }
         response?.let { setFillResponseAndFinish(it) } ?: cancelAndFinish()
     }
 
