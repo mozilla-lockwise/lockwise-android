@@ -153,12 +153,9 @@ class Navigator {
         if (goManually) {
             bypassOnboarding()
         } else {
+            // Go to ItemList after unlocking the device
             Dispatcher.shared.dispatch(RouteAction.LockScreen)
             Dispatcher.shared.dispatch(LifecycleAction.UseTestData)
-            // log.info("blocking for the routes")
-            // block until onboarding
-            // tap skip
-            // blockUntil(RouteStore.shared.routes, RouteAction.ItemList)
         }
         checkAtItemList()
     }
@@ -285,7 +282,7 @@ class Navigator {
         gotoItemDetail_from_itemList(position)
     }
 
-    fun gotoItemDetail_from_itemList(position: Int = 0) {
+    private fun gotoItemDetail_from_itemList(position: Int = 0) {
         itemList { selectItem(position) }
         checkAtItemDetail()
     }

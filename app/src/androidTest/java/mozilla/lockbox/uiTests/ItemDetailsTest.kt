@@ -31,7 +31,6 @@ open class ItemDetailsTest {
         navigator.gotoItemList(false)
         itemList { selectItem() }
         itemDetail { exists() }
-        // navigator.back()
     }
 
     @Test
@@ -39,7 +38,6 @@ open class ItemDetailsTest {
         navigator.gotoItemDetail()
         itemDetail { tapCopyUsername() }
         itemDetail { toastIsDisplayed(R.string.toast_username_copied, activityRule) }
-        // navigator.back()
     }
 
     @Test
@@ -81,7 +79,6 @@ open class ItemDetailsTest {
             editedCredentialUsernameExists("UsernameChanged")
             openCredential("UsernameChanged")
         }
-        // navigator.back()
     }
 
     @Test
@@ -108,12 +105,10 @@ open class ItemDetailsTest {
         // User is taken to ItemList View
         // No changes are applied
         itemDetail { exists() }
-        // navigator.back()
     }
 
     @Test
     fun editItemInvalidTextFieldInput() {
-        // itemDetail { tapKebabMenu() }
         navigator.gotoItemDetailKebabMenu()
         kebabMenu { tapEditButton() }
         editCredential {
@@ -123,6 +118,5 @@ open class ItemDetailsTest {
             sleep(1000)
             noErrorEmptyPassword()
         }
-        // navigator.back()
     }
 }
