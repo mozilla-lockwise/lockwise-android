@@ -61,7 +61,6 @@ open class AppRoutePresenterTest {
             back()
         }
         navigator.checkAtFilterList()
-        // navigator.back()
     }
 
     @Test
@@ -83,7 +82,6 @@ open class AppRoutePresenterTest {
         navigator.gotoDisconnectDisclaimer()
         navigator.back()
         navigator.checkAtAccountSetting()
-        navigator.back()
     }
 
     @Ignore("619-ui-tests-bitrise (#620)")
