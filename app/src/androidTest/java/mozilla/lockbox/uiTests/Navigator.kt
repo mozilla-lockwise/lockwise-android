@@ -145,7 +145,6 @@ class Navigator {
     }
 
     fun checkAtWelcome() {
-        // blockUntil(RouteStore.shared.routes, RouteAction.Login)
         welcome { exists() }
     }
 

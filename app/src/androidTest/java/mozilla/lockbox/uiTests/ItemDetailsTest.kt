@@ -89,7 +89,6 @@ open class ItemDetailsTest {
         editCredential {
             closeEditChanges() }
         navigator.gotoItemDetailKebabMenu()
-        // itemDetail { tapKebabMenu() }
         kebabMenu { tapEditButton() }
         editCredential {
             editUserName("foo")
