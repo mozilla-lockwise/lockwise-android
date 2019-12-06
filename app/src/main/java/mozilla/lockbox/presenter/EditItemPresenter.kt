@@ -7,8 +7,6 @@
 package mozilla.lockbox.presenter
 
 import android.text.TextUtils
-import androidx.annotation.StringRes
-import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
@@ -22,64 +20,29 @@ import mozilla.lockbox.extensions.filter
 import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.extensions.toDetailViewModel
 import mozilla.lockbox.flux.Dispatcher
-import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.ItemDetailStore
 import mozilla.lockbox.support.asOptional
 import mozilla.lockbox.support.pushError
 
-interface EditView {
-    var isPasswordVisible: Boolean
-    val togglePasswordClicks: Observable<Unit>
-    val togglePasswordVisibility: Observable<Unit>
-    val closeEntryClicks: Observable<Unit>
-    val saveEntryClicks: Observable<Unit>
-    val hostnameChanged: Observable<String>
-    val usernameChanged: Observable<String>
-    val passwordChanged: Observable<String>
-    fun updateItem(item: ItemDetailViewModel)
-    fun closeKeyboard()
-    fun displayUsernameError(@StringRes errorMessage: Int? = null)
-    fun displayPasswordError(@StringRes errorMessage: Int? = null)
-    fun setSaveEnabled(enabled: Boolean)
+interface EditItemView : ItemMutationView {
+    override fun updateItem(item: ItemDetailViewModel)
 }
 
 @ExperimentalCoroutinesApi
-class EditPresenter(
-    private val view: EditView,
+class EditItemPresenter(
+    private val view: EditItemView,
     val itemId: String?,
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val dataStore: DataStore = DataStore.shared,
     private val itemDetailStore: ItemDetailStore = ItemDetailStore.shared
-) : Presenter() {
-
-    // These should move to the ItemDetailStore.
-    // https://github.com/mozilla-lockwise/lockwise-android/issues/977
-    private var credentialsAtStart: ServerPassword? = null
-        set(newValue) {
-            credentialsEdited = null
-            field = newValue
-        }
-    private var credentialsEdited: ServerPassword? = null
-
-    private val credentialsToSave: ServerPassword?
-        get() {
-            return credentialsEdited?.let {
-                if (it != credentialsAtStart) {
-                    it
-                } else {
-                    null
-                }
-            }
-        }
-
-    private var unavailableUsernames: Set<String?> = emptySet()
+) : ItemMutationPresenter(view, itemId, dispatcher, dataStore, itemDetailStore) {
 
     override fun onViewReady() {
-        val itemId = this.itemId ?: return
+        super.onViewReady()
 
-        view.isPasswordVisible = false
+        val itemId = this.itemId ?: return
 
         val getItem = dataStore.get(itemId)
             .filterNotNull()
@@ -98,19 +61,15 @@ class EditPresenter(
         Observables.combineLatest(getItem, dataStore.list)
             .map { (item, list) ->
                 list.filter(
-                        hostname = item.hostname,
-                        httpRealm = item.httpRealm,
-                        formSubmitURL = item.formSubmitURL
-                    )
+                    hostname = item.hostname,
+                    httpRealm = item.httpRealm,
+                    formSubmitURL = item.formSubmitURL
+                )
                     .map { it.username }
                     .toSet()
                     .minus(item.username)
             }
             .subscribe { unavailableUsernames = it }
-            .addTo(compositeDisposable)
-
-        itemDetailStore.isPasswordVisible
-            .subscribe { view.isPasswordVisible = it }
             .addTo(compositeDisposable)
 
         itemDetailStore.isEditing
@@ -120,21 +79,6 @@ class EditPresenter(
                 view.closeKeyboard()
                 listOf(RouteAction.ItemList, RouteAction.ItemDetail(itemId))
             }
-            .subscribe(dispatcher::dispatch)
-            .addTo(compositeDisposable)
-
-        view.togglePasswordVisibility
-            .map { ItemDetailAction.SetPasswordVisibility(view.isPasswordVisible.not()) }
-            .subscribe(dispatcher::dispatch)
-            .addTo(compositeDisposable)
-
-        view.togglePasswordClicks
-            .map { ItemDetailAction.SetPasswordVisibility(view.isPasswordVisible.not()) }
-            .subscribe(dispatcher::dispatch)
-            .addTo(compositeDisposable)
-
-        view.closeEntryClicks
-            .map { checkDismissChanges(itemId) }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
 
@@ -156,6 +100,14 @@ class EditPresenter(
             }
             .addTo(compositeDisposable)
 
+        view.saveEntryClicks
+            .subscribe {
+                checkSaveChanges(credentialsToSave)
+            }
+            .addTo(compositeDisposable)
+    }
+
+    override fun observeChangeErrors() {
         Observables.combineLatest(
             view.usernameChanged.map(this::usernameError),
             view.passwordChanged.map(this::passwordError)
@@ -167,25 +119,22 @@ class EditPresenter(
                 view.setSaveEnabled(usernameError.value == null && passwordError.value == null)
             }
             .addTo(compositeDisposable)
-
-        view.saveEntryClicks
-            .map {
-                // When there's something changed, then save them,
-                // otherwise, go back to the item detail screen.
-                if (credentialsAtStart != null && credentialsToSave != null)
-                    ItemDetailAction.SaveChanges(credentialsAtStart!!, credentialsToSave!!)
-                else
-                    ItemDetailAction.EndEditing(itemId)
-            }
-            .subscribe(dispatcher::dispatch)
-            .addTo(compositeDisposable)
     }
 
-    private fun checkDismissChanges(itemId: String) =
-        // When something has changes, then check with a dialog.
+    override fun checkSaveChanges(credentialsToSave: ServerPassword?) {
+        // When there's something changed, then save them,
         // otherwise, go back to the item detail screen.
-        credentialsToSave?.let { DialogAction.DiscardChangesDialog(itemId) }
-            ?: ItemDetailAction.EndEditing(itemId)
+        if (credentialsAtStart != null && credentialsToSave != null)
+            ItemDetailAction.SaveChanges(credentialsAtStart!!, credentialsToSave!!)
+        else
+            ItemDetailAction.EndEditing(itemId ?: return)
+    }
+
+    override fun checkDismissChanges(itemId: String?) =
+    // When something has changes, then check with a dialog.
+        // otherwise, go back to the item detail screen.
+        credentialsToSave?.let { DialogAction.DiscardChangesDialog(itemId ?: "") }
+            ?: ItemDetailAction.EndEditing(itemId ?: "")
 
     override fun onBackPressed(): Boolean {
         val itemId = credentialsAtStart?.id ?: return false
@@ -193,14 +142,14 @@ class EditPresenter(
         return true
     }
 
-    private fun usernameError(inputText: String) =
+    override fun usernameError(inputText: String) =
         when {
             TextUtils.isEmpty(inputText) -> null
             unavailableUsernames.contains(inputText) -> R.string.username_duplicate_exists
             else -> null
         }.asOptional()
 
-    private fun passwordError(inputText: String) =
+    override fun passwordError(inputText: String) =
         when {
             TextUtils.isEmpty(inputText) -> R.string.password_invalid_text
             else -> null
@@ -211,7 +160,7 @@ class EditPresenter(
         newUsername: String? = null,
         newPassword: String? = null
     ) {
-        val old = credentialsEdited ?: credentialsAtStart ?: return pushError(
+        val old: ServerPassword = credentialsEdited ?: credentialsAtStart ?: return pushError(
             NullPointerException("Credentials are null"),
             "Error editing credential with id $itemId"
         )

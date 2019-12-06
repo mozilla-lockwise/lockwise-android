@@ -19,10 +19,12 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.log
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.model.titleFromHostname
+import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.ItemDetailStore
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.Mockito.spy
 import org.powermock.api.mockito.PowerMockito
@@ -32,9 +34,9 @@ import org.robolectric.annotation.Config
 @ExperimentalCoroutinesApi
 @RunWith(RobolectricTestRunner::class)
 @Config(application = TestApplication::class)
-class CreatePresenterTest {
+class CreateItemPresenterTest {
 
-    class FakeCreateView : CreateView {
+    class FakeCreateView : CreateItemView {
         private val togglePasswordVisibilityStub = PublishSubject.create<Unit>()
         override val togglePasswordVisibility: Observable<Unit>
             get() = togglePasswordVisibilityStub
@@ -55,6 +57,10 @@ class CreatePresenterTest {
         val passwordClicksStub = PublishSubject.create<String>()
         override val passwordChanged: Observable<String>
             get() = passwordClicksStub
+
+        override fun updateItem(item: ItemDetailViewModel) {
+            TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
+        }
 
         override fun closeKeyboard() {
             log.info("close keyboard")
@@ -119,17 +125,20 @@ class CreatePresenterTest {
     val dispatcherObserver = TestObserver.create<Action>()!!
     val view: FakeCreateView = spy(FakeCreateView())
 
+    @Mock
+    val dataStore = PowerMockito.mock(DataStore::class.java)!!
+
     val itemDetailStore = PowerMockito.mock(ItemDetailStore::class.java)!!
     private val isPasswordVisibleStub = PublishSubject.create<Boolean>()
 
-    lateinit var subject: CreatePresenter
+    lateinit var subject: CreateItemPresenter
 
     @Before
     fun setUp() {
         dispatcher.register.subscribe(dispatcherObserver)
         Mockito.`when`(itemDetailStore.isPasswordVisible).thenReturn(isPasswordVisibleStub)
 
-        subject = CreatePresenter(view, dispatcher, itemDetailStore)
+        subject = CreateItemPresenter(view, dispatcher, dataStore, itemDetailStore)
         subject.onViewReady()
     }
 

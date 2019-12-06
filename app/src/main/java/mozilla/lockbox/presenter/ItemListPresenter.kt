@@ -133,9 +133,8 @@ class ItemListPresenter(
             .addTo(compositeDisposable)
 
         view.createNewEntryClick
-            .subscribe {
-                dispatcher.dispatch(RouteAction.Create)
-            }
+            .map { RouteAction.Create }
+            .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
 
         view.sortItemSelection

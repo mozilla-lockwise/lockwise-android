@@ -84,11 +84,12 @@ class ItemListFragment : Fragment(), ItemListView {
         setupSortDropdown(view)
         view.refreshContainer.setColorSchemeResources(R.color.refresh_violet)
 
-        if (FeatureFlags.CRUD_MANUAL_CREATE) {
-            view.createButton.visibility = View.VISIBLE
-        } else {
-            view.createButton.visibility = View.INVISIBLE
-        }
+        view.createButton.visibility =
+            if (FeatureFlags.CRUD_MANUAL_CREATE) {
+                View.VISIBLE
+            } else {
+                View.INVISIBLE
+            }
 
         super.onViewCreated(view, savedInstanceState)
     }

@@ -51,9 +51,9 @@ import org.robolectric.annotation.Config
 @ExperimentalCoroutinesApi
 @RunWith(RobolectricTestRunner::class)
 @Config(application = TestApplication::class)
-class ItemDetailPresenterTest {
+class DisplayItemPresenterTest {
 
-    class FakeView : ItemDetailView {
+    class FakeView : DisplayItemView {
         override fun showKebabMenu() {}
         override fun hideKebabMenu() {}
 
@@ -153,7 +153,7 @@ class ItemDetailPresenterTest {
         )
     }
 
-    lateinit var subject: ItemDetailPresenter
+    lateinit var subject: DisplayItemPresenter
 
     @Mock
     val context: Context = Mockito.mock(Context::class.java)
@@ -168,7 +168,7 @@ class ItemDetailPresenterTest {
     }
 
     private fun setUpTestSubject(item: Optional<ServerPassword>) {
-        subject = ItemDetailPresenter(view, item.value?.id, dispatcher, networkStore, dataStore, itemDetailStore)
+        subject = DisplayItemPresenter(view, item.value?.id, dispatcher, networkStore, dataStore, itemDetailStore)
         subject.onViewReady()
         getStub.onNext(item)
         dispatcher.register.subscribe(dispatcherObserver)

@@ -21,7 +21,7 @@ class ItemDetailOptionMenu(
     var dismissListener: (() -> Unit)? = null
 
     init {
-        contentView = LayoutInflater.from(context).inflate(R.layout.fragment_item_detail, null)
+        contentView = LayoutInflater.from(context).inflate(R.layout.fragment_display_item, null)
         setBackgroundDrawable(context.getDrawable(R.drawable.sort_menu_bg))
         isFocusable = true
         height = ViewGroup.LayoutParams.WRAP_CONTENT

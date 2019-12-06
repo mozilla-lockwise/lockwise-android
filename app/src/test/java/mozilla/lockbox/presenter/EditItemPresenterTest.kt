@@ -41,9 +41,9 @@ import org.robolectric.annotation.Config
 @ExperimentalCoroutinesApi
 @RunWith(RobolectricTestRunner::class)
 @Config(application = TestApplication::class)
-class EditPresenterTest {
+class EditItemPresenterTest {
 
-    class FakeEditView : EditView {
+    class FakeEditItemView : EditItemView {
         private val togglePasswordVisibilityStub = PublishSubject.create<Unit>()
         override val togglePasswordVisibility: Observable<Unit>
             get() = togglePasswordVisibilityStub
@@ -115,7 +115,7 @@ class EditPresenterTest {
     val dispatcher = Dispatcher()
     val dispatcherObserver = TestObserver.create<Action>()!!
 
-    val editView: FakeEditView = spy(FakeEditView())
+    val editView: FakeEditItemView = spy(FakeEditItemView())
 
     private val fakeCredential: ServerPassword by lazy {
         ServerPassword(
@@ -156,7 +156,7 @@ class EditPresenterTest {
         )
     }
 
-    lateinit var subject: EditPresenter
+    lateinit var subject: EditItemPresenter
 
     @Before
     fun setUp() {
@@ -172,7 +172,7 @@ class EditPresenterTest {
     }
 
     private fun setUpTestSubject(item: ServerPassword?) {
-        subject = EditPresenter(editView, item?.id, dispatcher, dataStore, itemDetailStore)
+        subject = EditItemPresenter(editView, item?.id, dispatcher, dataStore, itemDetailStore)
         subject.onViewReady()
 
         getStub.onNext(item.asOptional())

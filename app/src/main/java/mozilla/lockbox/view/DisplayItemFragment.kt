@@ -24,17 +24,17 @@ import androidx.appcompat.widget.PopupMenu
 import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
-import kotlinx.android.synthetic.main.fragment_item_detail.*
-import kotlinx.android.synthetic.main.fragment_item_detail.view.*
+import kotlinx.android.synthetic.main.fragment_display_item.*
+import kotlinx.android.synthetic.main.fragment_display_item.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
 import mozilla.lockbox.model.ItemDetailViewModel
-import mozilla.lockbox.presenter.ItemDetailPresenter
-import mozilla.lockbox.presenter.ItemDetailView
+import mozilla.lockbox.presenter.DisplayItemPresenter
+import mozilla.lockbox.presenter.DisplayItemView
 import mozilla.lockbox.support.assertOnUiThread
 
 @ExperimentalCoroutinesApi
-class ItemDetailFragment : BackableFragment(), ItemDetailView {
+class DisplayItemFragment : BackableFragment(), DisplayItemView {
 
     private var itemId: String? = null
     private var kebabMenu: ItemDetailOptionMenu? = null
@@ -45,13 +45,13 @@ class ItemDetailFragment : BackableFragment(), ItemDetailView {
         savedInstanceState: Bundle?
     ): View? {
         itemId = arguments?.let {
-            ItemDetailFragmentArgs.fromBundle(it).itemId
+            DisplayItemFragmentArgs.fromBundle(it).itemId
         }
 
         this.setHasOptionsMenu(true)
-        presenter = ItemDetailPresenter(this, itemId)
+        presenter = DisplayItemPresenter(this, itemId)
 
-        return inflater.inflate(R.layout.fragment_item_detail, container, false)
+        return inflater.inflate(R.layout.fragment_display_item, container, false)
     }
 
     override fun onPause() {

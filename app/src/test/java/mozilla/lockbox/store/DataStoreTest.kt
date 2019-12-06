@@ -17,14 +17,13 @@ import mozilla.components.concept.sync.AccessTokenInfo
 import mozilla.lockbox.DisposingTest
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
+import mozilla.lockbox.extensions.filter
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.extensions.matches
-import mozilla.lockbox.extensions.filter
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.mocks.MockDataStoreSupport
 import mozilla.lockbox.model.FixedSyncCredentials
-import mozilla.lockbox.model.titleFromHostname
 import mozilla.lockbox.store.DataStore.State
 import mozilla.lockbox.support.TimingSupport
 import mozilla.lockbox.support.asOptional
@@ -383,7 +382,8 @@ class DataStoreTest : DisposingTest() {
         assertEquals(serverPassword.asOptional(), serverPasswordIterator.next())
     }
 
-    @Test fun `find matching credentials`() {
+    @Test
+    fun `find matching credentials`() {
         val item = ServerPassword(
             id = "id1",
             hostname = "example1.com",
@@ -397,8 +397,20 @@ class DataStoreTest : DisposingTest() {
         assertFalse(item.matches(hostname = "nonmatching.com"))
         assertTrue(item.matches(hostname = "example1.com", formSubmitURL = "form1"))
         assertFalse(item.matches(hostname = "example1.com", formSubmitURL = "nonmatching"))
-        assertTrue(item.matches(hostname = "example1.com", formSubmitURL = "form1", httpRealm = "realm1"))
-        assertFalse(item.matches(hostname = "example1.com", formSubmitURL = "form1", httpRealm = "nonmatching"))
+        assertTrue(
+            item.matches(
+                hostname = "example1.com",
+                formSubmitURL = "form1",
+                httpRealm = "realm1"
+            )
+        )
+        assertFalse(
+            item.matches(
+                hostname = "example1.com",
+                formSubmitURL = "form1",
+                httpRealm = "nonmatching"
+            )
+        )
 
         val list = listOf(
             ServerPassword(

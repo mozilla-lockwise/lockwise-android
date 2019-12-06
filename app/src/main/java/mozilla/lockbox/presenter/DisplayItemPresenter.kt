@@ -29,7 +29,7 @@ import mozilla.lockbox.store.NetworkStore
 import mozilla.lockbox.support.FeatureFlags
 import mozilla.lockbox.support.pushError
 
-interface ItemDetailView {
+interface DisplayItemView {
     val usernameCopyClicks: Observable<Unit>
     val usernameFieldClicks: Observable<Unit>
     val passwordCopyClicks: Observable<Unit>
@@ -51,8 +51,8 @@ interface ItemDetailView {
 }
 
 @ExperimentalCoroutinesApi
-class ItemDetailPresenter(
-    private val view: ItemDetailView,
+class DisplayItemPresenter(
+    private val view: DisplayItemView,
     val itemId: String?,
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val networkStore: NetworkStore = NetworkStore.shared,
