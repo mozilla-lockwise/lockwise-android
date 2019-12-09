@@ -239,7 +239,7 @@ class EditItemPresenterTest {
 
         dispatcherObserver.assertValueSequence(
             listOf(
-                ItemDetailAction.EndEditing(fakeCredential.id)
+                ItemDetailAction.EndEditSession()
             )
         )
     }
@@ -266,7 +266,7 @@ class EditItemPresenterTest {
 
         dispatcherObserver.assertValueSequence(
             listOf(
-                ItemDetailAction.EndEditing(fakeCredential.id)
+                ItemDetailAction.EndEditSession()
             )
         )
     }
@@ -280,7 +280,7 @@ class EditItemPresenterTest {
 
         dispatcherObserver.assertValueSequence(
             listOf(
-                ItemDetailAction.SaveChanges(fakeCredential, fakeCredential.copy(username = "all-change"))
+                ItemDetailAction.EditItemSaveChanges()
             )
         )
     }
@@ -293,7 +293,7 @@ class EditItemPresenterTest {
         dispatcherObserver.assertValueSequence(
             listOf(
                 RouteAction.ItemList,
-                RouteAction.ItemDetail(fakeCredential.id)
+                RouteAction.DisplayItem(fakeCredential.id)
             )
         )
     }

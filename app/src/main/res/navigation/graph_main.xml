@@ -173,7 +173,7 @@
                 app:popUpTo="@+id/fragment_locked"
                 app:popUpToInclusive="true"/>
         <action
-                android:id="@+id/action_itemList_to_manualCreate"
+                android:id="@+id/action_itemList_to_createItem"
                 app:destination="@+id/fragment_create_item"
                 app:launchSingleTop="true"
                 app:popUpToInclusive="true"/>
@@ -240,14 +240,6 @@
                 android:id="@+id/action_manualCreate_to_itemList"
                 app:destination="@id/fragment_item_list"
                 app:launchSingleTop="true"
-                app:popUpToInclusive="true"/>
-        <action
-                android:id="@+id/action_manualCreate_to_displayItem"
-                app:destination="@id/fragment_display_item"
-                app:popEnterAnim="@anim/none"
-                app:popExitAnim="@anim/none"
-                app:enterAnim="@anim/none"
-                app:exitAnim="@anim/none"
                 app:popUpToInclusive="true"/>
         <action
                 android:id="@+id/action_manualCreate_to_locked"

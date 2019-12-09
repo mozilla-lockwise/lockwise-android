@@ -59,14 +59,14 @@ class AppRoutePresenter(
             .toBundle()
     }
 
-    fun bundle(action: RouteAction.ItemDetail): Bundle {
+    fun bundle(action: RouteAction.DisplayItem): Bundle {
         return DisplayItemFragmentArgs.Builder()
             .setItemId(action.id)
             .build()
             .toBundle()
     }
 
-    fun bundle(action: RouteAction.EditItemDetail): Bundle {
+    fun bundle(action: RouteAction.EditItem): Bundle {
         return EditItemFragmentArgs.Builder()
             .setItemId(action.id)
             .build()
@@ -87,10 +87,10 @@ class AppRoutePresenter(
             is RouteAction.AccountSetting -> navigateToFragment(R.id.fragment_account_setting)
             is RouteAction.LockScreen -> showLockScreen()
             is RouteAction.Filter -> navigateToFragment(R.id.fragment_filter)
-            is RouteAction.ItemDetail -> navigateToFragment(R.id.fragment_display_item, bundle(action))
-            is RouteAction.EditItemDetail -> navigateToFragment(R.id.fragment_edit_item, bundle(action))
-            is RouteAction.Create -> navigateToFragment(R.id.fragment_create_item)
-            is RouteAction.DiscardCreateNoChanges -> navigateToFragment(R.id.fragment_item_list)
+            is RouteAction.DisplayItem -> navigateToFragment(R.id.fragment_display_item, bundle(action))
+            is RouteAction.EditItem -> navigateToFragment(R.id.fragment_edit_item, bundle(action))
+            is RouteAction.CreateItem -> navigateToFragment(R.id.fragment_create_item)
+            is RouteAction.DiscardCreateItemNoChanges -> navigateToFragment(R.id.fragment_item_list)
             is RouteAction.OpenWebsite -> openWebsite(action.url)
             is RouteAction.SystemSetting -> openSetting(action)
             is RouteAction.UnlockFallbackDialog -> showUnlockFallback(action)
@@ -152,7 +152,7 @@ class AppRoutePresenter(
             R.id.fragment_item_list to R.id.fragment_locked -> R.id.action_itemList_to_locked
             R.id.fragment_item_list to R.id.fragment_filter -> R.id.action_itemList_to_filter
             R.id.fragment_item_list to R.id.fragment_webview -> R.id.action_to_webview
-            R.id.fragment_item_list to R.id.fragment_create_item -> R.id.action_itemList_to_manualCreate
+            R.id.fragment_item_list to R.id.fragment_create_item -> R.id.action_itemList_to_createItem
 
             R.id.fragment_display_item to R.id.fragment_webview -> R.id.action_to_webview
             R.id.fragment_display_item to R.id.fragment_item_list -> R.id.action_to_itemList
@@ -179,7 +179,6 @@ class AppRoutePresenter(
             R.id.fragment_filter to R.id.fragment_item_list -> R.id.action_filter_to_itemList
 
             R.id.fragment_create_item to R.id.fragment_item_list -> R.id.action_manualCreate_to_itemList
-            R.id.fragment_create_item to R.id.fragment_display_item -> R.id.action_manualCreate_to_displayItem
             R.id.fragment_create_item to R.id.fragment_locked -> R.id.action_manualCreate_to_locked
 
             else -> null

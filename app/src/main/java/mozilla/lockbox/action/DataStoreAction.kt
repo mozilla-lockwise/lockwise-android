@@ -119,9 +119,18 @@ sealed class DataStoreAction(
     /**
      * Dispatched when the user manually creates a new entry.
      */
-    data class CreateNewItem(val item: ServerPassword)
+    data class CreateItem(val item: ServerPassword)
         : DataStoreAction(
         TelemetryEventMethod.create,
         TelemetryEventObject.manual_create_datastore_save
+    )
+
+    /**
+     * Emitted when an item is attempted to be saved to the DataStore and results in an error.
+     */
+    data class CreateItemError(val error: String) : DataStoreAction(
+        TelemetryEventMethod.create_item_error,
+        TelemetryEventObject.datastore,
+        error
     )
 }

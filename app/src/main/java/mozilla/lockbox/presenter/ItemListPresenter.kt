@@ -105,7 +105,7 @@ class ItemListPresenter(
             .addTo(compositeDisposable)
 
         view.itemSelection
-            .map { RouteAction.ItemDetail(it.id) }
+            .map { RouteAction.DisplayItem(it.id) }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
 
@@ -133,7 +133,7 @@ class ItemListPresenter(
             .addTo(compositeDisposable)
 
         view.createNewEntryClick
-            .map { RouteAction.Create }
+            .map { RouteAction.CreateItem }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
 

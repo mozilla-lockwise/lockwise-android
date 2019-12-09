@@ -112,9 +112,9 @@ class RouteStoreTest {
         stateStub.onNext(DataStore.State.Unlocked)
         routeObserver.assertLastValue(RouteAction.Filter)
 
-        dispatcher.dispatch(RouteAction.ItemDetail(""))
+        dispatcher.dispatch(RouteAction.DisplayItem(""))
         stateStub.onNext(DataStore.State.Unlocked)
-        routeObserver.assertLastValue(RouteAction.ItemDetail(""))
+        routeObserver.assertLastValue(RouteAction.DisplayItem(""))
 
         dispatcher.dispatch(RouteAction.AccountSetting)
         stateStub.onNext(DataStore.State.Unlocked)

@@ -103,7 +103,7 @@ sealed class DialogAction(
             R.color.red
         ),
         listOf(
-            ItemDetailAction.EndEditing(itemId)
+            ItemDetailAction.EndEditSession
         )
     )
 
@@ -117,7 +117,7 @@ sealed class DialogAction(
             R.color.red
         ),
         listOf(
-            DiscardCreateNoChanges
+            DiscardCreateItemNoChanges
         )
     )
 }

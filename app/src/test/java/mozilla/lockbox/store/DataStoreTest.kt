@@ -173,7 +173,7 @@ class DataStoreTest : DisposingTest() {
             password = "iLUVkatz"
         )
 
-        dispatcher.dispatch(DataStoreAction.CreateNewItem(newEntry))
+        dispatcher.dispatch(DataStoreAction.CreateItem(newEntry))
 
         verify(support.storage).add(newEntry)
     }

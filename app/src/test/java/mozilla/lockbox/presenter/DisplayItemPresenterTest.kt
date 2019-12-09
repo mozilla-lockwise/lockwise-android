@@ -386,6 +386,6 @@ class DisplayItemPresenterTest {
     fun `select edit from kebab menu`() {
         setUpTestSubject(fakeCredential.asOptional())
         view.editClicksStub.accept(Unit)
-        dispatcherObserver.assertValue(RouteAction.EditItemDetail(fakeCredential.id))
+        dispatcherObserver.assertValue(RouteAction.EditItem(fakeCredential.id))
     }
 }

@@ -18,7 +18,6 @@ import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.log
 import mozilla.lockbox.model.ItemDetailViewModel
-import mozilla.lockbox.model.titleFromHostname
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.ItemDetailStore
 import org.junit.Before
@@ -58,10 +57,6 @@ class CreateItemPresenterTest {
         override val passwordChanged: Observable<String>
             get() = passwordClicksStub
 
-        override fun updateItem(item: ItemDetailViewModel) {
-            TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
-        }
-
         override fun closeKeyboard() {
             log.info("close keyboard")
         }
@@ -79,15 +74,14 @@ class CreateItemPresenterTest {
             )
         }
 
-        var itemDetailViewModelStub = ItemDetailViewModel(
+        var itemDetailViewModelStub = ServerPassword(
             id = "",
-            title = titleFromHostname(fakeCredential.hostname),
             hostname = fakeCredential.hostname,
             username = fakeCredential.username,
             password = fakeCredential.password
         )
 
-        override fun mapToItemDetailView(): ItemDetailViewModel {
+        override fun mapToServerPassword(): ServerPassword {
             return itemDetailViewModelStub
         }
 
@@ -138,7 +132,7 @@ class CreateItemPresenterTest {
         dispatcher.register.subscribe(dispatcherObserver)
         Mockito.`when`(itemDetailStore.isPasswordVisible).thenReturn(isPasswordVisibleStub)
 
-        subject = CreateItemPresenter(view, dispatcher, dataStore, itemDetailStore)
+        subject = CreateItemPresenter(view, dispatcher, itemDetailStore)
         subject.onViewReady()
     }
 
@@ -148,7 +142,7 @@ class CreateItemPresenterTest {
         view.saveEntryClicks.onNext(Unit)
         dispatcherObserver.assertValueSequence(
             listOf(
-                ItemDetailAction.Create(view.itemDetailViewModelStub),
+                ItemDetailAction.CreateItemSaveChanges(),
                 RouteAction.ItemList
             )
         )
@@ -157,7 +151,7 @@ class CreateItemPresenterTest {
     @Test
     fun `tapping on close button`() {
         view.closeEntryClicks.onNext(Unit)
-        dispatcherObserver.assertValue(RouteAction.DiscardCreateNoChanges)
+        dispatcherObserver.assertValue(RouteAction.DiscardCreateItemNoChanges)
     }
 
     // TODO: https://github.com/mozilla-lockwise/lockwise-android/issues/822

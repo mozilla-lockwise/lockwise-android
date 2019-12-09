@@ -20,7 +20,7 @@
         android:focusable="true"
         android:importantForAutofill="noExcludeDescendants"
         tools:ignore="UnusedAttribute"
-        style="@style/CreateScreen">
+        style="@style/CreateItem">
 
     <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -28,6 +28,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             android:theme="@style/ToolBar"
+            android:elevation="@dimen/larger_toolbar_elevation"
             app:navigationIcon="@drawable/ic_close"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -41,7 +42,8 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:ellipsize="end"
-                    android:id="@+id/createEntryTitle"
+                    android:id="@+id/toolbarTitle"
+                    android:gravity="center_vertical"
                     android:paddingEnd="50dp"
                     android:maxLines="1"
                     android:textSize="20sp"
@@ -50,7 +52,7 @@
                     android:textColor="@color/text_white"
                     android:letterSpacing="0.01"
                     android:layout_gravity="center_vertical|start"
-                    android:text="@string/create_title"
+                    android:text="@null"
                     app:layout_constraintEnd_toStartOf="@id/saveEntryButton"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -73,7 +75,7 @@
     </androidx.appcompat.widget.Toolbar>
 
     <androidx.cardview.widget.CardView
-            style="@style/CreateScreen"
+            style="@style/CreateItem"
             android:id="@+id/cardView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -116,6 +118,7 @@
                         android:backgroundTint="@color/black_60_percent"
                         android:letterSpacing="0.03"
                         android:lineSpacingExtra="4sp"
+                        android:text="@string/hint_hostname"
                         tools:text="@string/hint_hostname"
                         app:layout_constraintTop_toTopOf="parent"
                 />
@@ -139,20 +142,20 @@
                             android:id="@+id/inputHostname"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:clickable="true"
+                            android:focusableInTouchMode="true"
                             android:colorControlActivated="@color/violet_70"
                             android:colorControlHighlight="@color/black_60_percent"
                             android:ellipsize="end"
+                            android:clickable="true"
                             android:focusable="true"
+                            android:singleLine="true"
                             android:fontFamily="sans-serif"
                             android:inputType="textNoSuggestions"
                             android:letterSpacing="0.01"
                             android:lineSpacingExtra="8sp"
                             android:maxLines="1"
                             android:paddingBottom="13dp"
-                            android:singleLine="true"
                             android:textColor="@color/black_87_percent"
-                            android:textCursorDrawable="@android:color/transparent"
                             android:textSize="16sp"
                             android:textStyle="normal"
                             app:backgroundTint="@color/gray_divider"
@@ -171,6 +174,7 @@
                         android:textColor="@color/black_60_percent"
                         android:letterSpacing="0.03"
                         android:lineSpacingExtra="4sp"
+                        android:text="@string/create_hostname_description"
                         tools:text="@string/create_hostname_description"
                         app:layout_constraintTop_toBottomOf="@id/inputLayoutHostname"
                     />
@@ -199,6 +203,7 @@
                         android:backgroundTint="@color/black_60_percent"
                         android:letterSpacing="0.03"
                         android:lineSpacingExtra="4sp"
+                        android:text="@string/hint_username"
                         tools:text="@string/hint_username"
                         app:layout_constraintTop_toTopOf="parent"
                         />

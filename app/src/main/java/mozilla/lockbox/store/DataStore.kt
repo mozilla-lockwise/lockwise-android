@@ -116,7 +116,7 @@ open class DataStore(
                     is DataStoreAction.Delete -> delete(action.item)
                     is DataStoreAction.UpdateItemDetail -> updateItem(action.previous, action.next)
                     is DataStoreAction.AutofillCapture -> autofillAdd(action.item)
-                    is DataStoreAction.CreateNewItem -> add(action.item)
+                    is DataStoreAction.CreateItem -> add(action.item)
                 }
             }
             .addTo(compositeDisposable)
@@ -221,6 +221,7 @@ open class DataStore(
             )
         }
 
+    // Note: in order to add, we need a ServerPassword with exactly one of formSubmitURL and httpRealm
     @VisibleForTesting(
         otherwise = VisibleForTesting.PRIVATE
     )

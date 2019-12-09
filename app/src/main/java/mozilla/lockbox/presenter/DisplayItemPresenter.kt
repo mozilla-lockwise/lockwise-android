@@ -148,7 +148,7 @@ class DisplayItemPresenter(
         view.editClicks
             .subscribe {
                 dispatcher.dispatch(
-                    RouteAction.EditItemDetail(
+                    RouteAction.EditItem(
                         credentials?.id.toString()
                     )
                 )

@@ -19,7 +19,7 @@ import mozilla.lockbox.flux.Dispatcher
 import org.junit.Assert
 import org.junit.Test
 
-class ItemDetailStoreTest : DisposingTest() {
+class DisplayItemStoreTest : DisposingTest() {
     val dispatcher = Dispatcher()
     val dispatcherObserver = createTestObserver<Action>()
 
@@ -53,7 +53,7 @@ class ItemDetailStoreTest : DisposingTest() {
             isPasswordVisible.subscribe(observer)
         }
 
-        dispatcher.dispatch(RouteAction.ItemDetail("id00000"))
+        dispatcher.dispatch(RouteAction.DisplayItem("id00000"))
         observer.assertLastValue(false)
     }
 
@@ -75,10 +75,10 @@ class ItemDetailStoreTest : DisposingTest() {
         subject.isEditing.subscribe(observer)
 
         val itemId = "id"
-        dispatcher.dispatch(RouteAction.EditItemDetail(itemId))
+        dispatcher.dispatch(RouteAction.EditItem(itemId))
         observer.assertLastValue(true)
 
-        dispatcher.dispatch(ItemDetailAction.EndEditing(itemId))
+        dispatcher.dispatch(ItemDetailAction.EndEditSession())
         observer.assertLastValue(false)
     }
 
@@ -98,7 +98,7 @@ class ItemDetailStoreTest : DisposingTest() {
 
         val mutated = original.copy(password = "password1")
 
-        dispatcher.dispatch(ItemDetailAction.SaveChanges(original, mutated))
+        dispatcher.dispatch(ItemDetailAction.EditItemSaveChanges())
 
         observer.assertLastValue(mutated)
     }

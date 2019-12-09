@@ -60,15 +60,15 @@
         <item name="android:colorControlNormal">@color/violet_70</item>
     </style>
 
-    <style name="EditItemDetail" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="EditItem" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:popupBackground">@android:color/transparent</item>
-        <item name="android:background">@android:color/transparent</item>
+        <item name="android:background">@color/background_grey</item>
         <item name="android:textColorHint">@color/black_60_percent</item>
         <item name="android:colorControlNormal">@color/dark_grey</item>
         <item name="errorTextAppearance">@style/ErrorText</item>
     </style>
 
-    <style name="CreateScreen" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="CreateItem" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:popupBackground">@color/background_grey</item>
         <item name="android:background">@color/background_grey</item>
         <item name="android:textColorHint">@color/black_60_percent</item>
@@ -122,7 +122,7 @@
         <item name="android:textColorSecondary">@android:color/white</item>
     </style>
 
-    <style name="EditTextStyle" parent="@android:style/Widget.EditText">
+    <style name="EditItemTextStyle" parent="@android:style/Widget.EditText">
         <item name="android:textSize">16sp</item>
         <item name="android:fontFamily">sans-serif</item>
         <item name="android:textStyle">normal</item>

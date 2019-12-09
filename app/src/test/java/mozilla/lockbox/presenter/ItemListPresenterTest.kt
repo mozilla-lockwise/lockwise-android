@@ -229,7 +229,7 @@ open class ItemListPresenterTest {
         val id = "the_guid"
         view.itemSelectedStub.onNext(ItemViewModel("title", "subtitle", id))
 
-        dispatcherObserver.assertLastValue(RouteAction.ItemDetail(id))
+        dispatcherObserver.assertLastValue(RouteAction.DisplayItem(id))
     }
 
     @Test
@@ -300,7 +300,7 @@ open class ItemListPresenterTest {
     @Test
     fun `click on create button takes you to manual create view`() {
         view.createNewEntryClickStub.onNext(Unit)
-        Assert.assertTrue(dispatcherObserver.values().last() is RouteAction.Create)
+        Assert.assertTrue(dispatcherObserver.values().last() is RouteAction.CreateItem)
     }
 
     @Test

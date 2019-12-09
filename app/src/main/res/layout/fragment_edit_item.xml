@@ -20,7 +20,7 @@
         android:focusable="true"
         android:importantForAutofill="noExcludeDescendants"
         tools:ignore="UnusedAttribute"
-        style="@style/EditItemDetail">
+        style="@style/EditItem">
 
     <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -40,7 +40,8 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:ellipsize="end"
-                    android:id="@+id/editLoginTitle"
+                    android:id="@+id/toolbarTitle"
+                    android:gravity="center_vertical"
                     android:paddingEnd="50dp"
                     android:maxLines="1"
                     android:textSize="20sp"
@@ -49,7 +50,7 @@
                     android:textColor="@color/text_white"
                     android:letterSpacing="0.01"
                     android:layout_gravity="center_vertical|start"
-                    android:text="@string/edit_login_title"
+                    android:text="@null"
                     app:layout_constraintEnd_toStartOf="@id/saveEntryButton"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -73,7 +74,7 @@
 
     <androidx.cardview.widget.CardView
             xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            style="@style/EditItemDetail"
+            style="@style/EditItem"
             android:id="@+id/cardView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
