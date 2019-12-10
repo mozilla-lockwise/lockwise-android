@@ -122,6 +122,8 @@ open class FillResponseBuilder(
         val title = titleFromHostname(credential.hostname)
         val username = credential.username ?: context.getString(R.string.no_username)
 
+        datasetBuilder.setId(credential.id)
+
         parsedStructure.usernameId?.let { id ->
             val presentation = RemoteViews(context.packageName, R.layout.autofill_item)
                 .apply {

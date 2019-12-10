@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.CancellationSignal
 import android.service.autofill.AutofillService
 import android.service.autofill.FillCallback
+import android.service.autofill.FillEventHistory
 import android.service.autofill.FillRequest
 import android.service.autofill.SaveCallback
 import android.service.autofill.SaveRequest
@@ -72,10 +73,12 @@ class LockboxAutofillService(
     }
 
     override fun onFillRequest(request: FillRequest, cancellationSignal: CancellationSignal, callback: FillCallback) {
+        touchRecentlyUsedDatasets()
+
         val structure = request.fillContexts.last().structure
         val activityPackageName = structure.activityComponent.packageName
         if (this.packageName == activityPackageName) {
-            callback.onSuccess(null)
+            callback.onFailure(null)
             return
         }
 
@@ -87,11 +90,11 @@ class LockboxAutofillService(
                 val xml = structure.getWindowNodeAt(0).rootViewNode.dump()
                 log.debug("Autofilling $activityPackageName failed for:\n$xml")
             }
-            callback.onSuccess(null)
+            callback.onFailure(null)
             return
         }
 
-        intializeService()
+        initializeService()
 
         val builder = FillResponseBuilder(parsedStructure)
 
@@ -149,7 +152,26 @@ class LockboxAutofillService(
             .addTo(compositeDisposable)
     }
 
-    private fun intializeService() {
+    private fun touchRecentlyUsedDatasets() {
+        val selectedDatasetIds = fillEventHistory?.events?.let { list ->
+            list.filter { it.type == FillEventHistory.Event.TYPE_DATASET_SELECTED }
+                .mapNotNull { it.datasetId }
+        }
+        if (selectedDatasetIds?.isEmpty() != false) {
+            return
+        }
+        initializeService()
+        selectedDatasetIds
+            .map { DataStoreAction.AutofillTouch(it) }
+            .forEach(dispatcher::dispatch)
+    }
+
+    private fun initializeService() {
+        if (isRunning) {
+            // we might have already been called when logging
+            // a previously chosen dataset.
+            return
+        }
         isRunning = true
 
         val contextInjectables = listOfNotNull(
@@ -194,12 +216,13 @@ class LockboxAutofillService(
         pslSuffix.take(1)
             .map { suffix ->
                 val domain = "https://${suffix.fullDomain}"
+                val webDomain = parsedStructure.webDomain?.let { "https://$it" }
                 ServerPassword(
                     id = emptyId,
                     hostname = domain,
                     username = capturedUsername,
                     password = capturedPassword,
-                    formSubmitURL = parsedStructure.webDomain ?: domain
+                    formSubmitURL = webDomain ?: domain
                 )
             }
             .doOnComplete {

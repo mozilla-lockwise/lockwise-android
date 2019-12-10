@@ -71,6 +71,15 @@ sealed class DataStoreAction(
     )
 
     /**
+     * Dispatched when the user accesses a credential in the context of autofill.
+     */
+    data class AutofillTouch(val id: String) : DataStoreAction(
+        TelemetryEventMethod.touch,
+        TelemetryEventObject.datastore,
+        "ID: $id"
+    )
+
+    /**
      * Dispatched when the user logs in or starts the app with a logged in state.
      */
     data class UpdateSyncCredentials(val syncCredentials: SyncCredentials) : DataStoreAction(
@@ -90,7 +99,10 @@ sealed class DataStoreAction(
     /**
      * Dispatched when the user edits or saves an entry.
      */
-    data class UpdateItemDetail(val item: ServerPassword)
+    data class UpdateItemDetail(
+        val previous: ServerPassword,
+        val next: ServerPassword
+    )
         : DataStoreAction(
             TelemetryEventMethod.edit,
             TelemetryEventObject.update_credential

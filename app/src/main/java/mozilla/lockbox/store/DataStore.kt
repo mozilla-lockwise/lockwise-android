@@ -110,10 +110,11 @@ open class DataStore(
                     is DataStoreAction.Unlock -> unlock()
                     is DataStoreAction.Sync -> sync()
                     is DataStoreAction.Touch -> touch(action.id)
+                    is DataStoreAction.AutofillTouch -> autofillTouch(action.id)
                     is DataStoreAction.Reset -> reset()
                     is DataStoreAction.UpdateSyncCredentials -> updateCredentials(action.syncCredentials)
                     is DataStoreAction.Delete -> delete(action.item)
-                    is DataStoreAction.UpdateItemDetail -> update(action.item)
+                    is DataStoreAction.UpdateItemDetail -> updateItem(action.previous, action.next)
                     is DataStoreAction.AutofillCapture -> autofillAdd(action.item)
                 }
             }
@@ -142,9 +143,10 @@ open class DataStore(
         }
     }
 
-    private fun update(item: ServerPassword) {
+    private fun updateItem(previous: ServerPassword, next: ServerPassword) {
         try {
-            backend.update(item)
+            val updatedCredentials = fixupMutationMetadata(previous, next)
+            backend.update(updatedCredentials)
                 .asSingle(coroutineContext)
                 .subscribe({
                     this.updateList(it)
@@ -157,6 +159,18 @@ open class DataStore(
             pushError(loginsStorageException)
         }
     }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun fixupMutationMetadata(
+        previous: ServerPassword,
+        next: ServerPassword
+    ) = when {
+            // if the only thing changed is the password, then update the time we've updated
+            // the password.
+            previous.password != next.password && previous.copy(password = next.password) == next ->
+                next.copy(timePasswordChanged = timingSupport.currentTimeMillis)
+            else -> null
+        } ?: next
 
     private fun shutdown() {
         // rather than calling `close`, which will make the `AsyncLoginsStorage` instance unusable,
@@ -224,12 +238,14 @@ open class DataStore(
             backendEnsureUnlocked()
                 .switchMap { backendAdd(item) }
                 .switchMap { backendEnsureLocked() }
+                .subscribe()
         } else {
             backendAdd(item)
+                .map { Unit }
+                .subscribe(this::updateList, this::pushError)
         }
 
-        addItem.subscribe()
-            .addTo(compositeDisposable)
+        addItem.addTo(compositeDisposable)
     }
 
     private fun backendEnsureLocked() =
@@ -241,6 +257,9 @@ open class DataStore(
     private fun backendAdd(item: ServerPassword) =
         backend.add(item).asSingle(coroutineContext).toObservable()
 
+    private fun backendTouch(id: String) =
+        backend.touch(id).asSingle(coroutineContext).toObservable()
+
     private fun touch(id: String) {
         if (!backend.isLocked()) {
             backend.touch(id)
@@ -248,6 +267,21 @@ open class DataStore(
                 .subscribe(this::updateList, this::pushError)
                 .addTo(compositeDisposable)
         }
+    }
+
+    private fun autofillTouch(id: String) {
+        val touchItem = if (backend.isLocked()) {
+            backendEnsureUnlocked()
+                .switchMap { backendTouch(id) }
+                .switchMap { backendEnsureLocked() }
+                .subscribe()
+        } else {
+            backendTouch(id)
+                .map { Unit }
+                .subscribe(this::updateList, this::pushError)
+        }
+
+        touchItem.addTo(compositeDisposable)
     }
 
     private fun unlock() {

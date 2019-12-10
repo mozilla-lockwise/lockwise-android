@@ -30,12 +30,14 @@ import mozilla.lockbox.support.asOptional
 import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito
+import org.mockito.Mockito.`when`
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.clearInvocations
 import org.mockito.Mockito.never
@@ -66,6 +68,8 @@ class DataStoreTest : DisposingTest() {
         PowerMockito.whenNew(TimingSupport::class.java).withAnyArguments().thenReturn(timingSupport)
         dispatcher.register.subscribe(dispatcherObserver)
 
+        `when`(timingSupport.currentTimeMillis).thenReturn(System.currentTimeMillis())
+
         subject = DataStore(dispatcher, support, timingSupport, lifecycleStore)
     }
 
@@ -84,7 +88,7 @@ class DataStoreTest : DisposingTest() {
         val item = listIterator.next()[0]
         val newHostname = "https://ilovecats.com"
 
-        val updatedItem = ServerPassword(
+        val originalItem = ServerPassword(
             id = item.id,
             hostname = newHostname,
             username = item.username,
@@ -93,10 +97,26 @@ class DataStoreTest : DisposingTest() {
             formSubmitURL = item.formSubmitURL
         )
 
-        dispatcher.dispatch(DataStoreAction.UpdateItemDetail(updatedItem))
+        val updatedItem = originalItem.copy(password = "new password")
+
+        dispatcher.dispatch(DataStoreAction.UpdateItemDetail(originalItem, updatedItem))
 
         // check if the list is updated
         dispatcherObserver.assertValueAt(1, DataStoreAction.ListUpdate)
+    }
+
+    @Test
+    fun `test fixupMutationMetadata`() {
+        val original = ServerPassword(id = "id", hostname = "hostname.com", username = "username", password = "password")
+        val change1 = original.copy(password = "newpassword")
+        assertEquals(0, change1.timePasswordChanged)
+
+        val fixup1 = subject.fixupMutationMetadata(original, change1)
+        assertNotEquals(change1.timePasswordChanged, fixup1.timePasswordChanged)
+
+        val change2 = original.copy(username = "newuser")
+        val fixup2 = subject.fixupMutationMetadata(original, change2)
+        assertEquals(change2.timePasswordChanged, fixup2.timePasswordChanged)
     }
 
     @Test
