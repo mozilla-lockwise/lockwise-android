@@ -14,7 +14,7 @@ sealed class ItemDetailAction(
 ) : TelemetryAction {
     data class SetPasswordVisibility(val visible: Boolean) :
         ItemDetailAction(TelemetryEventMethod.tap, TelemetryEventObject.reveal_password)
-    data class SaveChanges(val item: ServerPassword) :
+    data class SaveChanges(val previous: ServerPassword, val next: ServerPassword) :
         ItemDetailAction(TelemetryEventMethod.tap, TelemetryEventObject.update_credential)
     data class EndEditing(val itemId: String) :
         ItemDetailAction(TelemetryEventMethod.tap, TelemetryEventObject.back)

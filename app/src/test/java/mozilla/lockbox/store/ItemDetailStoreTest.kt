@@ -87,17 +87,19 @@ class ItemDetailStoreTest : DisposingTest() {
         val observer = createTestObserver<ServerPassword>()
         dispatcher.register
             .filterByType(DataStoreAction.UpdateItemDetail::class.java)
-            .map { it.item }
+            .map { it.next }
             .subscribe(observer)
 
         val itemId = "id"
-        val item = ServerPassword(id = itemId,
+        val original = ServerPassword(id = itemId,
             hostname = "hostname.com",
             password = "password"
         )
 
-        dispatcher.dispatch(ItemDetailAction.SaveChanges(item))
+        val mutated = original.copy(password = "password1")
 
-        observer.assertLastValue(item)
+        dispatcher.dispatch(ItemDetailAction.SaveChanges(original, mutated))
+
+        observer.assertLastValue(mutated)
     }
 }

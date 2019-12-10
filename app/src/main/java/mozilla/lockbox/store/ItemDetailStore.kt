@@ -49,7 +49,7 @@ class ItemDetailStore(
             .subscribe { action ->
                 when (action) {
                     is ItemDetailAction.SetPasswordVisibility -> _passwordVisible.onNext(action.visible)
-                    is ItemDetailAction.SaveChanges -> saveItem(action.item)
+                    is ItemDetailAction.SaveChanges -> saveItem(action.previous, action.next)
                     is ItemDetailAction.EndEditing -> stopEditing()
                 }
             }
@@ -61,8 +61,8 @@ class ItemDetailStore(
         _isEditing.onNext(true)
     }
 
-    private fun saveItem(item: ServerPassword) {
-        dispatcher.dispatch(DataStoreAction.UpdateItemDetail(item))
+    private fun saveItem(previous: ServerPassword, next: ServerPassword) {
+        dispatcher.dispatch(DataStoreAction.UpdateItemDetail(previous, next))
         stopEditing()
     }
 
