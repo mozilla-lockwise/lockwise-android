@@ -189,7 +189,7 @@
     <!-- This label is used by screenreaders to inform the user that the message contains an image of a warning icon -->
     <string name="warningIcon">Icône d’avertissement</string>
     <!-- This is used as the title for an alert message to inform the user that the app does not detect network connectivity -->
-    <string name="no_internet_connection">Aucune connexion Internet</string>
+    <string name="no_internet_connection">Aucune connexion internet</string>
     <!-- This is used in the app logs to inform that network connectivity has successfully been detected -->
     <string name="network_connection_success">Connexion au réseau réussie.</string>
 
@@ -220,7 +220,7 @@
     <!-- This description of the app functionality is shown on the final onboarding screen -->
     <string name="access_description">Accédez depuis votre téléphone aux identifiants enregistrés dans Firefox</string>
     <!-- This description of the app security is shown on the final onboarding screen. %s will be replaced with the security link. -->
-    <string name="security_description">Synchronisez vos appareils avec un chiffrement 256 bits</string>
+    <string name="security_description">Synchronisez vos appareils avec un chiffrement 256 bits</string>
     <!-- This description of the app convenience is shown on the final onboarding screen. -->
     <string name="convenience_description">Déverrouillez facilement l’application avec votre empreinte digitale</string>
 
@@ -253,9 +253,11 @@
     <!-- This is the confirmation message title seen when attempting to delete a login. -->
     <string name="delete_this_login">Supprimer cet identifiant ?</string>
     <!-- This is the description for the deletion dialog. -->
-    <string name="delete_description">Cette action supprimera l’identifiant à la fois de %1$s et de Firefox.</string>
+    <string name="delete_description">Cette action supprimera l’identifiant à la fois pour %1$s et pour Firefox.</string>
     <!-- This is the text on an item in the item detail toolbar menu to edit an entry. -->
     <string name="edit">Modifier</string>
+
+    <!-- This is the description for the entry password in context of an edit item view. -->
     <string name="entry_password_description">Mot de passe pour cette entrée.</string>
     <!-- This is the title text on the dialog when you attempt to close the edit view and changes have been made. -->
     <string name="discard_changes">Abandonner les modifications ?</string>
@@ -269,4 +271,9 @@
     <string name="username_description">Nom d’utilisateur</string>
     <!-- This is the title of the edit login page. -->
     <string name="edit_login_title">Modifier l’identifiant</string>
+
+    <!-- This is the error message that is shown in edit or create view when input text for password is not valid. -->
+    <string name="password_invalid_text">Le champ mot de passe ne peut pas être vide</string>
+
+    <string name="username_duplicate_exists">Un identifiant avec ce nom d’utilisateur existe déjà</string>
 </resources>

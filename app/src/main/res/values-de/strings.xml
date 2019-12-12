@@ -222,7 +222,7 @@
     <string name="finish">Abschließen</string>
     <!-- This description of the app functionality is shown on the final onboarding screen -->
     <string name="access_description">Greife über dein Handy auf alle in Firefox gespeicherten Zugangsdaten zu</string>
-    <!-- This description of the app security is shown on the final onboarding screen. %s will be replaced with the security link. -->
+    <!-- This description of the app security is shown on the final onboarding screen. -->
     <string name="security_description">Synchronisiere zwischen Geräten mit sicherer 256-Bit-Verschlüsselung</string>
     <!-- This description of the app convenience is shown on the final onboarding screen. -->
     <string name="convenience_description">Entsperre die App einfach per Fingerabdruck</string>
@@ -259,6 +259,8 @@
     <string name="delete_description">Dies löscht diese Zugangsdaten von %1$s und Firefox.</string>
     <!-- This is the text on an item in the item detail toolbar menu to edit an entry. -->
     <string name="edit">Bearbeiten</string>
+
+    <!-- This is the description for the entry password in context of an edit item view. -->
     <string name="entry_password_description">Passwort für diesen Eintrag.</string>
     <!-- This is the title text on the dialog when you attempt to close the edit view and changes have been made. -->
     <string name="discard_changes">Änderungen verwerfen?</string>
@@ -272,4 +274,9 @@
     <string name="username_description">Der Benutzername</string>
     <!-- This is the title of the edit login page. -->
     <string name="edit_login_title">Zugangsdaten bearbeiten</string>
+
+    <!-- This is the error message that is shown in edit or create view when input text for password is not valid. -->
+    <string name="password_invalid_text">Passwort kann nicht leer sein</string>
+
+    <string name="username_duplicate_exists">Es existieren bereits Zugangsdaten mit diesem Benutzernamen</string>
 </resources>
