@@ -1,5 +1,19 @@
 # Release Notes
 
+## 3.3.0 (Build 5783)
+
+Stability and UI cleanup.
+
+All changes since version 3.2.0:
+
+- Bump the required Android Components version to 19.0.1 (#1070)
+- Update ui tests (#1083)
+- Fix interrupts causing the app to go to the item list. (#1075)
+- UX cleanup part deux (#1071)
+- Introduce Glean SDK (#1085)
+- Metadata cleanups for datastore and autofill. (#1102)
+- Localization updates (#1110)
+
 ## 3.3.0 (Build 5658)
 
 Stability and UI cleanup.
