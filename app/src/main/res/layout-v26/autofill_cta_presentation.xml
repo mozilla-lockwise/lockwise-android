@@ -12,6 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme"
+        android:background="@color/background_white"
 >
     <TextView
             android:layout_width="225dp"
