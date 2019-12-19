@@ -29,9 +29,11 @@ class CreateItemPresenter(
 ) : ItemMutationPresenter(view, dispatcher, itemDetailStore) {
 
     override fun onViewReady() {
-        super.onViewReady()
+
         dispatcher.dispatch(ItemDetailAction.BeginCreateItemSession)
         view.isPasswordVisible = false
+
+        super.onViewReady()
 
         view.hostnameChanged
             .map {
@@ -64,7 +66,7 @@ class CreateItemPresenter(
     override fun hostnameError(inputText: String) =
         when {
             TextUtils.isEmpty(inputText) -> R.string.hostname_empty_invalid_text
-            !URLUtil.isHttpUrl(inputText) || !URLUtil.isHttpsUrl(inputText) -> R.string.hostname_invalid_text
+            !URLUtil.isHttpUrl(inputText) && !URLUtil.isHttpsUrl(inputText) -> R.string.hostname_invalid_text
             else -> null
         }.asOptional()
 }

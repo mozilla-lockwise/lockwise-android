@@ -36,16 +36,12 @@ class EditItemPresenter(
     override fun onViewReady() {
         val itemId = this.itemId ?: return
         dispatcher.dispatch(ItemDetailAction.BeginEditItemSession(itemId))
-        super.onViewReady()
 
-        val getItem = itemDetailStore.originalItem
+        itemDetailStore.originalItem
             .filterNotNull()
-            .distinctUntilChanged()
-
-        getItem
             // so we don't overwrite changes when we come back from an
             // interrupt.
-            .concatMap { item ->
+            .flatMap { item ->
                 itemDetailStore.isDirty
                     .take(1)
                     .map { item to it }
@@ -55,6 +51,8 @@ class EditItemPresenter(
             .observeOn(mainThread())
             .subscribe(view::updateItem)
             .addTo(compositeDisposable)
+
+        super.onViewReady()
     }
 
     override fun saveChangesAction(hasChanges: Boolean) =

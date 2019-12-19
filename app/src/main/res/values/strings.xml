@@ -301,6 +301,6 @@
     <string name="hostname_invalid_text">Web address must contain \“https://\“ or \“http://\“</string>
 
     <!-- This is the error message that is shown in the create view when input text for hostname is empty. -->
-    <string name="hostname_empty_invalid_text">Password cannot be empty</string>
+    <string name="hostname_empty_invalid_text">Hostname cannot be empty</string>
 
 </resources>

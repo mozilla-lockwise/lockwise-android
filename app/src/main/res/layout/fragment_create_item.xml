@@ -268,6 +268,7 @@
                         android:backgroundTint="@color/black_60_percent"
                         android:letterSpacing="0.03"
                         android:lineSpacingExtra="4sp"
+                        android:text="@string/hint_password"
                         tools:text="@string/hint_password"
                         app:layout_constraintTop_toTopOf="parent"
                         />

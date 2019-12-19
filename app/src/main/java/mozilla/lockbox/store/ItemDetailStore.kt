@@ -12,6 +12,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.ReplaySubject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
@@ -24,7 +25,6 @@ import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.asOptional
-import mozilla.lockbox.support.pushError
 
 @ExperimentalCoroutinesApi
 class ItemDetailStore(
@@ -42,7 +42,7 @@ class ItemDetailStore(
     internal val _passwordVisible = BehaviorSubject.createDefault(false)
     val isPasswordVisible: Observable<Boolean> = _passwordVisible
 
-    internal val _isEditing = BehaviorSubject.createDefault(false)
+    internal val _isEditing = PublishSubject.create<Boolean>()
     val isEditing: Observable<Boolean> = _isEditing
 
     private val _originalItem = ReplaySubject.createWithSize<Optional<ServerPassword>>(1)
@@ -68,13 +68,17 @@ class ItemDetailStore(
             }
             .addTo(compositeDisposable)
 
+        originalItem
+            .subscribe(_itemToSave::onNext)
+            .addTo(compositeDisposable)
+
         dispatcher.register
             .filterByType(ItemDetailAction::class.java)
             .subscribe { action ->
                 when (action) {
                     is ItemDetailAction.SetPasswordVisibility -> _passwordVisible.onNext(action.visible)
                     is ItemDetailAction.EditField ->
-                        updateCredentialField(action.hostname, action.username, action.hostname)
+                        updateCredentialField(action.hostname, action.username, action.password)
 
                     is ItemDetailAction.BeginEditItemSession -> startEditing(action.itemId)
                     is ItemDetailAction.BeginCreateItemSession -> startCreating()
@@ -92,37 +96,45 @@ class ItemDetailStore(
             .map {
                 it.first != it.second
             }
-            .subscribe { _isDirty.onNext(it) }
+            .subscribe(_isDirty::onNext)
             .addTo(compositeDisposable)
     }
 
     private fun updateCredentialField(hostname: String?, username: String?, password: String?) {
-        val old = _itemToSave.value?.value ?: return pushError(
-            NullPointerException("Credentials are null"),
-            "Error editing credential"
-        )
-        val new = old.copy(
-            hostname = hostname ?: old.hostname,
-            username = if (!TextUtils.isEmpty(username)) username else old.username,
-            password = password ?: old.password,
+        itemToSave.take(1)
+            .map { opt ->
+                opt.value?.let { old ->
+                    old.copy(
+                        hostname = hostname ?: old.hostname,
+                        username = if (!TextUtils.isEmpty(username)) username else old.username,
+                        password = password ?: old.password,
 
-            formSubmitURL = if (!TextUtils.isEmpty(hostname)) hostname else old.formSubmitURL
-        )
-
-        _itemToSave.onNext(new.asOptional())
+                        // This is only used in the create flow, so we're not
+                        // going to be overwriting a formSubmitURL captured
+                        // from the web.
+                        formSubmitURL = if (!TextUtils.isEmpty(hostname)) hostname else old.formSubmitURL
+                    )
+                }.asOptional()
+            }
+            .subscribe(_itemToSave::onNext)
+            .addTo(sessionDisposable)
     }
+
+    private val emptyCredentials = ServerPassword(id = "", hostname = "", password = "")
 
     private fun startCreating() {
         _passwordVisible.onNext(false)
         _isEditing.onNext(true)
-
+        _originalItem.onNext(emptyCredentials.asOptional())
         calculateUnavailableUsernames(itemToSave, false)
     }
 
     private fun saveCreateChanges() {
-        _itemToSave.value?.value?.let {
-            dispatcher.dispatch(DataStoreAction.CreateItem(it))
-        }
+        itemToSave.take(1)
+            .filterNotNull()
+            .map { DataStoreAction.CreateItem(it) }
+            .subscribe(dispatcher::dispatch)
+            .addTo(sessionDisposable)
         stopCreating()
     }
 
@@ -134,22 +146,11 @@ class ItemDetailStore(
         _passwordVisible.onNext(false)
         _isEditing.onNext(true)
 
-        val getItem = dataStore.get(itemId)
-
-        getItem
-            .subscribe { _originalItem.onNext(it) }
+        dataStore.get(itemId).take(1)
+            .subscribe(_originalItem::onNext)
             .addTo(sessionDisposable)
 
-        _originalItem
-            .map {
-                it.value ?: ServerPassword(id = "", hostname = "", password = "")
-            }
-            .subscribe {
-                _itemToSave.onNext(it.asOptional())
-            }
-            .addTo(sessionDisposable)
-
-        calculateUnavailableUsernames(getItem, true)
+        calculateUnavailableUsernames(originalItem, true)
     }
 
     private fun calculateUnavailableUsernames(getItem: Observable<Optional<ServerPassword>>, excludeItem: Boolean) {
@@ -182,16 +183,20 @@ class ItemDetailStore(
     }
 
     private fun saveEditChanges() {
-        val previous = _originalItem.value?.value ?: return
-        val next = _itemToSave.value?.value ?: return
-        dispatcher.dispatch(DataStoreAction.UpdateItemDetail(previous, next))
+        Observables.combineLatest(
+                originalItem.take(1).filterNotNull(),
+                itemToSave.take(1).filterNotNull()
+            )
+            .map { (previous, next) ->
+                DataStoreAction.UpdateItemDetail(previous, next)
+            }
+            .subscribe(dispatcher::dispatch)
+            .addTo(sessionDisposable)
     }
 
     private fun stopEditing() {
         _isEditing.onNext(false)
-        _originalItem.onNext(Optional(null))
-        _originalItem.cleanupBuffer()
-
+        _originalItem.onNext(null.asOptional())
         sessionDisposable.clear()
     }
 }

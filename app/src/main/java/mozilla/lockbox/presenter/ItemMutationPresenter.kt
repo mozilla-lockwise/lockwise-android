@@ -15,7 +15,6 @@ import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
 import mozilla.lockbox.action.ItemDetailAction
-import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.flux.Dispatcher
