@@ -122,7 +122,7 @@ class DisplayItemPresenterTest {
     val view: FakeView = spy(FakeView())
 
     private val getStub = PublishSubject.create<Optional<ServerPassword>>()
-    private val itemDetailStore = ItemDetailStore(dispatcher)
+    private val itemDetailStore = ItemDetailStore(dataStore, dispatcher)
 
     private var isConnected: Observable<Boolean> = PublishSubject.create()
     private var isConnectedObserver: TestObserver<Boolean> = TestObserver.create<Boolean>()

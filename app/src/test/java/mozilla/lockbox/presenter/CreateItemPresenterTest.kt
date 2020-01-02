@@ -20,6 +20,7 @@ import mozilla.lockbox.log
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.ItemDetailStore
+import mozilla.lockbox.support.asOptional
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -36,10 +37,6 @@ import org.robolectric.annotation.Config
 class CreateItemPresenterTest {
 
     class FakeCreateView : CreateItemView {
-        private val togglePasswordVisibilityStub = PublishSubject.create<Unit>()
-        override val togglePasswordVisibility: Observable<Unit>
-            get() = togglePasswordVisibilityStub
-
         private val passwordVisibleStub = false
         override var isPasswordVisible: Boolean = passwordVisibleStub
 
@@ -81,10 +78,6 @@ class CreateItemPresenterTest {
             password = fakeCredential.password
         )
 
-        override fun mapToServerPassword(): ServerPassword {
-            return itemDetailViewModelStub
-        }
-
         var item: ItemDetailViewModel? = null
 
         @StringRes
@@ -120,8 +113,6 @@ class CreateItemPresenterTest {
     val view: FakeCreateView = spy(FakeCreateView())
 
     @Mock
-    val dataStore = PowerMockito.mock(DataStore::class.java)!!
-
     val itemDetailStore = PowerMockito.mock(ItemDetailStore::class.java)!!
     private val isPasswordVisibleStub = PublishSubject.create<Boolean>()
 
@@ -142,7 +133,7 @@ class CreateItemPresenterTest {
         view.saveEntryClicks.onNext(Unit)
         dispatcherObserver.assertValueSequence(
             listOf(
-                ItemDetailAction.CreateItemSaveChanges(),
+                ItemDetailAction.CreateItemSaveChanges,
                 RouteAction.ItemList
             )
         )
@@ -170,8 +161,13 @@ class CreateItemPresenterTest {
     // TODO: https://github.com/mozilla-lockwise/lockwise-android/issues/823
     /* @Test
     fun `tapping on close button with no change`() {
-        setUpTestSubject(fakeCredential)
-
+        getStub.onNext(item.asOptional())
+        listStub.onNext(
+            listOf(
+                fakeCredential,
+                fakeCredentialNoUsername
+            )
+        )
         view.closeEntryClicksStub.onNext(Unit)
 
         dispatcherObserver.assertValueSequence(

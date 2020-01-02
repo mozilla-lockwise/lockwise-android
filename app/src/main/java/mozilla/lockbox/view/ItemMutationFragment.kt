@@ -17,8 +17,18 @@ import com.jakewharton.rxbinding2.view.clicks
 import com.jakewharton.rxbinding2.widget.textChanges
 import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Observable
+import kotlinx.android.synthetic.main.fragment_create_item.view.*
 import kotlinx.android.synthetic.main.fragment_edit_item.*
 import kotlinx.android.synthetic.main.fragment_edit_item.view.*
+import kotlinx.android.synthetic.main.fragment_edit_item.view.btnPasswordToggle
+import kotlinx.android.synthetic.main.fragment_edit_item.view.inputHostname
+import kotlinx.android.synthetic.main.fragment_edit_item.view.inputLayoutHostname
+import kotlinx.android.synthetic.main.fragment_edit_item.view.inputLayoutPassword
+import kotlinx.android.synthetic.main.fragment_edit_item.view.inputLayoutUsername
+import kotlinx.android.synthetic.main.fragment_edit_item.view.inputPassword
+import kotlinx.android.synthetic.main.fragment_edit_item.view.inputUsername
+import kotlinx.android.synthetic.main.fragment_edit_item.view.saveEntryButton
+import kotlinx.android.synthetic.main.fragment_edit_item.view.toolbar
 import mozilla.lockbox.R
 import mozilla.lockbox.presenter.ItemMutationView
 import mozilla.lockbox.support.assertOnUiThread
@@ -71,7 +81,8 @@ open class ItemMutationFragment : BackableFragment(), ItemMutationView {
             layout?.setHintTextAppearance(R.style.HintText)
             layout?.isHintAnimationEnabled = false
         }
-
+        view.inputLayoutHostname.error = null
+        view.inputHostname.error = null
         view.apply {
             toolbar.elevation = resources.getDimension(R.dimen.larger_toolbar_elevation)
 

@@ -48,11 +48,12 @@ class CreateItemFragment : ItemMutationFragment(), CreateItemView {
 
     override fun setupItemDisplay(view: View) {
         super.setupItemDisplay(view)
-        // We have to do this here, because we want to disable the hint becoming the title,
-        // which is what happens if we do it in XML.
+        view.toolbarTitle.text = getString(R.string.create_title)
+
+        // We have to set the hint manually here because we want to disable the hint becoming
+        // the title, which is what happens if we do it in the XML.
         view.inputHostname.hint = getString(R.string.create_hostname_hint_text)
         view.inputUsername.hint = getString(R.string.create_username_hint_text)
         view.inputPassword.hint = getString(R.string.hint_password)
-        view.toolbarTitle.text = getString(R.string.create_title)
     }
 }

@@ -87,22 +87,22 @@ abstract class ItemMutationPresenter(
         )
 
         Observables.combineLatest(fieldsChanged, itemDetailStore.unavailableUsernames)
-        .map { (fields, unavailableUsernames) ->
-            Triple(
-                hostnameError(fields.first),
-                usernameError(fields.second, unavailableUsernames),
-                passwordError(fields.third)
-            )
-        }
-        .observeOn(mainThread())
-        .subscribe { (hostnameError, usernameError, passwordError) ->
-            view.displayHostnameError(hostnameError.value)
-            view.displayUsernameError(usernameError.value)
-            view.displayPasswordError(passwordError.value)
+            .map { (fields, unavailableUsernames) ->
+                Triple(
+                    hostnameError(fields.first),
+                    usernameError(fields.second, unavailableUsernames),
+                    passwordError(fields.third)
+                )
+            }
+            .observeOn(mainThread())
+            .subscribe { (hostnameError, usernameError, passwordError) ->
+                view.displayHostnameError(hostnameError.value)
+                view.displayUsernameError(usernameError.value)
+                view.displayPasswordError(passwordError.value)
 
-            view.setSaveEnabled(hostnameError.value == null && usernameError.value == null && passwordError.value == null)
-        }
-        .addTo(compositeDisposable)
+                view.setSaveEnabled(hostnameError.value == null && usernameError.value == null && passwordError.value == null)
+            }
+            .addTo(compositeDisposable)
 
         // Configure what happens when we finish with this screen.
         itemDetailStore.isEditing

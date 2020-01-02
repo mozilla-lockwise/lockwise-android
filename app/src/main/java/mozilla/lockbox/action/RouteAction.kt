@@ -26,7 +26,7 @@ open class RouteAction(
     object AutoLockSetting : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.settings_autolock)
     object LockScreen : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.lock_screen)
     object Filter : RouteAction(TelemetryEventMethod.tap, TelemetryEventObject.filter)
-    object CreateItem : RouteAction(TelemetryEventMethod.tap, TelemetryEventObject.manual_create)
+    object CreateItem : RouteAction(TelemetryEventMethod.tap, TelemetryEventObject.begin_manual_create_session)
     object DiscardCreateItemNoChanges : RouteAction(TelemetryEventMethod.tap, TelemetryEventObject.discard_manual_create_no_changes)
     data class DisplayItem(val id: String) : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.entry_detail)
     data class EditItem(val id: String) : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.edit_entry_detail)

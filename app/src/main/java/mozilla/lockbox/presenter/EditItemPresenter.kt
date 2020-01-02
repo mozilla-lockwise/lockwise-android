@@ -62,7 +62,7 @@ class EditItemPresenter(
             } else {
                 null
             }
-        } ?: ItemDetailAction.EndEditSession
+        } ?: ItemDetailAction.EndEditItemSession
 
     override fun dismissChangesAction(hasChanges: Boolean) =
         itemId?.let {
@@ -71,7 +71,7 @@ class EditItemPresenter(
             } else {
                 null
             }
-        } ?: ItemDetailAction.EndEditSession
+        } ?: ItemDetailAction.EndEditItemSession
 
     override fun endEditingAction(): List<Action> {
         return itemId?.let {

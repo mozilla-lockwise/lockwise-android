@@ -27,7 +27,7 @@ import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.asOptional
 
 @ExperimentalCoroutinesApi
-class ItemDetailStore(
+open class ItemDetailStore(
     val dataStore: DataStore = DataStore.shared,
     val dispatcher: Dispatcher = Dispatcher.shared
 ) {
@@ -86,8 +86,8 @@ class ItemDetailStore(
                     is ItemDetailAction.EditItemSaveChanges -> saveEditChanges()
                     is ItemDetailAction.CreateItemSaveChanges -> saveCreateChanges()
 
-                    is ItemDetailAction.EndCreateSession -> stopCreating()
-                    is ItemDetailAction.EndEditSession -> stopEditing()
+                    is ItemDetailAction.EndCreateItemSession -> stopCreating()
+                    is ItemDetailAction.EndEditItemSession -> stopEditing()
                 }
             }
             .addTo(compositeDisposable)

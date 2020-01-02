@@ -7,6 +7,7 @@
 package mozilla.lockbox.store
 
 import io.reactivex.rxkotlin.addTo
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.DisposingTest
 import mozilla.lockbox.action.DataStoreAction
@@ -18,12 +19,16 @@ import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import org.junit.Assert
 import org.junit.Test
+import org.powermock.api.mockito.PowerMockito
 
+@ExperimentalCoroutinesApi
 class DisplayItemStoreTest : DisposingTest() {
     val dispatcher = Dispatcher()
     val dispatcherObserver = createTestObserver<Action>()
 
-    val subject = ItemDetailStore(dispatcher)
+    val dataStore: DataStore = PowerMockito.mock(DataStore::class.java)
+
+    val subject = ItemDetailStore(dataStore, dispatcher)
 
     @Test
     fun `test initial state`() {
@@ -78,7 +83,7 @@ class DisplayItemStoreTest : DisposingTest() {
         dispatcher.dispatch(RouteAction.EditItem(itemId))
         observer.assertLastValue(true)
 
-        dispatcher.dispatch(ItemDetailAction.EndEditSession())
+        dispatcher.dispatch(ItemDetailAction.EndEditItemSession)
         observer.assertLastValue(false)
     }
 
@@ -98,7 +103,7 @@ class DisplayItemStoreTest : DisposingTest() {
 
         val mutated = original.copy(password = "password1")
 
-        dispatcher.dispatch(ItemDetailAction.EditItemSaveChanges())
+        dispatcher.dispatch(ItemDetailAction.EditItemSaveChanges)
 
         observer.assertLastValue(mutated)
     }

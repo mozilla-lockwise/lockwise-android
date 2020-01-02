@@ -30,7 +30,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers
-import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.Mockito.spy
 import org.mockito.Mockito.verify
@@ -44,10 +43,6 @@ import org.robolectric.annotation.Config
 class EditItemPresenterTest {
 
     class FakeEditItemView : EditItemView {
-        private val togglePasswordVisibilityStub = PublishSubject.create<Unit>()
-        override val togglePasswordVisibility: Observable<Unit>
-            get() = togglePasswordVisibilityStub
-
         private val passwordVisibleStub = false
         override var isPasswordVisible: Boolean = passwordVisibleStub
 
@@ -72,26 +67,33 @@ class EditItemPresenterTest {
         }
 
         var item: ItemDetailViewModel? = null
+
+        @StringRes
+        var hostnameError: Int? = null
         @StringRes
         var usernameError: Int? = null
         @StringRes
         var passwordError: Int? = null
-        var _saveEnabled = true
 
+        var _saveEnabled = true
         val closeEntryClicksStub = PublishSubject.create<Unit>()
+
         override val closeEntryClicks: Observable<Unit>
             get() = closeEntryClicksStub
-
         val saveEntryClicksStub = PublishSubject.create<Unit>()
+
         override val saveEntryClicks: Observable<Unit>
             get() = saveEntryClicksStub
-
         override fun updateItem(item: ItemDetailViewModel) {
             this.item = item
         }
 
         override fun displayUsernameError(@StringRes errorMessage: Int?) {
             usernameError = errorMessage
+        }
+
+        override fun displayHostnameError(errorMessage: Int?) {
+            hostnameError = errorMessage
         }
 
         override fun displayPasswordError(@StringRes errorMessage: Int?) {
@@ -103,12 +105,11 @@ class EditItemPresenterTest {
         }
     }
 
-    @Mock
-    val dataStore = PowerMockito.mock(DataStore::class.java)!!
+    val dataStore: DataStore = PowerMockito.mock(DataStore::class.java)
     private val getStub = PublishSubject.create<Optional<ServerPassword>>()
     private val listStub = PublishSubject.create<List<ServerPassword>>()
 
-    val itemDetailStore = PowerMockito.mock(ItemDetailStore::class.java)!!
+    val itemDetailStore: ItemDetailStore = PowerMockito.mock(ItemDetailStore::class.java)
     private val isPasswordVisibleStub = PublishSubject.create<Boolean>()
     private val isEditingStub = PublishSubject.create<Boolean>()
 
@@ -161,7 +162,10 @@ class EditItemPresenterTest {
     @Before
     fun setUp() {
         PowerMockito.whenNew(DataStore::class.java).withAnyArguments().thenReturn(dataStore)
+        PowerMockito.whenNew(ItemDetailStore::class.java).withAnyArguments().thenReturn(itemDetailStore)
+
         dispatcher.register.subscribe(dispatcherObserver)
+        
         Mockito.`when`(dataStore.get(ArgumentMatchers.anyString())).thenReturn(getStub)
         Mockito.`when`(dataStore.list).thenReturn(listStub)
 
@@ -172,7 +176,7 @@ class EditItemPresenterTest {
     }
 
     private fun setUpTestSubject(item: ServerPassword?) {
-        subject = EditItemPresenter(editView, item?.id, dispatcher, dataStore, itemDetailStore)
+        subject = EditItemPresenter(editView, item?.id, dispatcher, itemDetailStore)
         subject.onViewReady()
 
         getStub.onNext(item.asOptional())
@@ -239,7 +243,7 @@ class EditItemPresenterTest {
 
         dispatcherObserver.assertValueSequence(
             listOf(
-                ItemDetailAction.EndEditSession()
+                ItemDetailAction.EndEditItemSession
             )
         )
     }
@@ -266,7 +270,7 @@ class EditItemPresenterTest {
 
         dispatcherObserver.assertValueSequence(
             listOf(
-                ItemDetailAction.EndEditSession()
+                ItemDetailAction.EndEditItemSession
             )
         )
     }
@@ -280,7 +284,7 @@ class EditItemPresenterTest {
 
         dispatcherObserver.assertValueSequence(
             listOf(
-                ItemDetailAction.EditItemSaveChanges()
+                ItemDetailAction.EditItemSaveChanges
             )
         )
     }
