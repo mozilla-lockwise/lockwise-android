@@ -1,12 +1,16 @@
 basepath = "."
 
 locales = [
+  "cs",
   "de",
+  "en-GB",
   "es",
   "fr",
   "it",
   "ru",
+  "uk",
   "vi",
+  "zh-TW",
 ]
 [env]
 

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- This string is a promotional sentence used across all the applications to describe the purpose of the application. -->
+    <string name="app_tagline">Майте доступ до своїх паролів всюди.</string>
+    <!-- This is used for screenreaders to know the application logo image is currently selected. %1$s will be replaced with application name. -->
+    <string name="app_logo">Логотип %1$s</string>
+
+    <!-- This is the text on a button to cancel the current operation or request such as unlocking the application with a fingerprint. -->
+    <string name="cancel">Скасувати</string>
+    <!-- This is the title of a link for users to tap to open a web page to learn more about a related setting or feature. -->
+    <string name="learn_more">Докладніше</string>
+    <!-- This is the label a screenreader uses to inform the user they selected a link that will open a webpage to learn more about the feature or setting. -->
+    <string name="learn_more_description">Відкрийте посилання, щоб дізнатися більше</string>
+
+    <!-- This is used as the label on a button on a first-run welcome screen to automatically sign in to an existing account and start using the application -->
+    <string name="welcome_start_automatic_btn">%s</string>
+    <!-- This is used as the label on a button on a first-run welcome screen to force manual sign in and start using the application -->
+    <string name="welcome_start_force_manual_btn">Інший обліковий запис</string>
+    <!-- This is used as the label on a button on a first-run welcome screen to manually sign in (no existing account) and start using the application -->
+    <string name="welcome_start_btn">Розпочнімо</string>
+    <!-- This provides context near a button on the first-run welcome screen to describe application requirements. Firefox Account is to be translated consistently to match use in other Firefox products. %1$s will be replaced with application name. -->
+    <string name="welcome_instructions">Щоб використовувати %1$s, вам необхідний обліковий запис Firefox зі збереженими паролями.</string>
+    <!-- This is the link on the first-run welcome screen to learn more about the requirements of the application -->
+    <string name="welcome_learn_more_btn">Докладніше</string>
+
+    <!-- This is the label used for the title in the web view of the account's authentication instances. -->
+    <string name="get_started_title">Розпочнімо</string>
+
+    <!-- This is the label used by screenreaders to inform the user the navigation button selected is to go backwards from where they came from -->
+    <string name="backable_description">Назад</string>
+    <!-- This is the label used by screenreaders to inform the user the button selected is meant to open a navigation menu -->
+    <string name="menu_description">Меню</string>
+
+    <!-- This is the label for the navigation item that opens a Frequently Asked Questions web page -->
+    <string name="nav_menu_faq">ЧаП</string>
+    <!-- This is the label for the navigation item that opens a survey or feedback web page to submit to the developers -->
+    <string name="nav_menu_feedback">Залишити відгук</string>
+    <!-- This is the label for the navigation item that opens a screen to manage the user account currently signed in to the application -->
+    <string name="nav_menu_account">Обліковий запис</string>
+    <!-- This is the label for the navigation item that opens a settings screen with options and preferences and more application information -->
+    <string name="nav_menu_settings">Налаштування</string>
+    <!-- This is the label for a button, primarily in the navigation drawer, that securely locks the application requiring the user to unlock it -->
+    <string name="lock_now">Заблокувати</string>
+
+    <!-- This label is used by screenreaders to inform the user they have selected an image of a lock -->
+    <string name="lock_icon_description">Зображення піктограми блокування</string>
+    <!-- This is the label for the button to unlock the application for use while on a lock screen -->
+    <string name="unlock_button">Розблокувати</string>
+
+    <!-- This message appears in a toast informing the user it is currently downloading and syncing login (a saved login is basically the URL, username and password) data -->
+    <string name="syncing_logins">Ваші паролі синхронізуються…</string>
+
+    <!-- This is the label used by screenreaders to inform the user the selected menu is for sorting the saved logins in the list -->
+    <string name="sort_description">Сортувати записи</string>
+    <!-- This is the label for the sorting option of the list of passwords to be in alphabetical order -->
+    <string name="sort_menu_az">За алфавітом</string>
+    <!-- This is a corresponding heading to describe the list view is showing all saved logins sorted alphabetically -->
+    <string name="all_logins_a_z">Усі записи (A-Z)</string>
+    <!-- This is the label for the sorting option of the list of passwords to be in order of recency the item was accessed or used -->
+    <string name="sort_menu_recent">Недавно використані</string>
+    <!-- This is a corresponding heading to describe the list view is showing all saved logins sorted by recent use -->
+    <string name="all_logins_recent">Усі записи (Останні)</string>
+    <!-- This is the label used by screenreaders to inform the user the selected text area is used to search the logins in the list -->
+    <string name="search_description">Шукати паролі</string>
+    <!-- This is the placeholder text to visibly describe a text area is to be used to search all the logins seen in the list view -->
+    <string name="search_logins">шукати паролі</string>
+    <!-- This is the placeholder text to visibly describe a text area is to be used to search all the logins seen in the list view with the first letter capitalized -->
+    <string name="search_logins_cap">Шукати паролі</string>
+    <!-- This is the label used by screenreaders to inform the user the selected button will clear the text currently input in the search area -->
+    <string name="search_clear_content_description">Очистити текст рядка пошуку</string>
+    <!-- This is shown when a user has entered search terms that have filtered the list of logins to find no results -->
+    <string name="no_matching_logins">Немає відповідних записів.</string>
+
+    <!-- This is a heading that appears above the URL in context of a detailed item view -->
+    <string name="hint_hostname">Веб-адреса</string>
+    <!-- This is a heading that appears above the username in context of a detailed item view -->
+    <string name="hint_username">Ім’я користувача</string>
+    <!-- This is a heading that appears above a password in context of a detailed item view -->
+    <string name="hint_password">Пароль</string>
+
+    <!-- This describes an icon to screenreaders that the button tapped will open the web address in a web browser -->
+    <string name="launch_hostname_content_description">Відкрити цю веб-адресу в браузері</string>
+
+    </resources>

@@ -1,279 +1,279 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- This string is a promotional sentence used across all the applications to describe the purpose of the application. -->
-    <string name="app_tagline">Emportez vos mots de passe partout.</string>
+    <string name="app_tagline">密碼隨身帶著走。</string>
     <!-- This is used for screenreaders to know the application logo image is currently selected. %1$s will be replaced with application name. -->
-    <string name="app_logo">Logo %1$s</string>
+    <string name="app_logo">%1$s 圖示</string>
 
     <!-- This is the text on a button to cancel the current operation or request such as unlocking the application with a fingerprint. -->
-    <string name="cancel">Annuler</string>
+    <string name="cancel">取消</string>
     <!-- This is the title of a link for users to tap to open a web page to learn more about a related setting or feature. -->
-    <string name="learn_more">En savoir plus</string>
+    <string name="learn_more">了解更多</string>
     <!-- This is the label a screenreader uses to inform the user they selected a link that will open a webpage to learn more about the feature or setting. -->
-    <string name="learn_more_description">Ouvrir un lien pour en savoir plus</string>
+    <string name="learn_more_description">開啟能讓您了解更多資訊的鏈結</string>
 
     <!-- This is used as the label on a button on a first-run welcome screen to automatically sign in to an existing account and start using the application -->
     <string name="welcome_start_automatic_btn">%s</string>
     <!-- This is used as the label on a button on a first-run welcome screen to force manual sign in and start using the application -->
-    <string name="welcome_start_force_manual_btn">Changer de compte</string>
+    <string name="welcome_start_force_manual_btn">其他帳號</string>
     <!-- This is used as the label on a button on a first-run welcome screen to manually sign in (no existing account) and start using the application -->
-    <string name="welcome_start_btn">Démarrer</string>
+    <string name="welcome_start_btn">開始使用</string>
     <!-- This provides context near a button on the first-run welcome screen to describe application requirements. Firefox Account is to be translated consistently to match use in other Firefox products. %1$s will be replaced with application name. -->
-    <string name="welcome_instructions">Pour utiliser %1$s, vous aurez besoin d’un compte Firefox avec des noms d’utilisateur enregistrés.</string>
+    <string name="welcome_instructions">若要使用 %1$s，需要有儲存了登入資訊的 Firefox 帳號。</string>
     <!-- This is the link on the first-run welcome screen to learn more about the requirements of the application -->
-    <string name="welcome_learn_more_btn">En savoir plus</string>
+    <string name="welcome_learn_more_btn">了解更多</string>
 
     <!-- This is the label used for the title in the web view of the account's authentication instances. -->
-    <string name="get_started_title">Lancez-vous</string>
+    <string name="get_started_title">開始使用</string>
 
     <!-- This is the label used by screenreaders to inform the user the navigation button selected is to go backwards from where they came from -->
-    <string name="backable_description">Retour</string>
+    <string name="backable_description">上一頁</string>
     <!-- This is the label used by screenreaders to inform the user the button selected is meant to open a navigation menu -->
-    <string name="menu_description">Menu</string>
+    <string name="menu_description">選單</string>
 
     <!-- This is the label for the navigation item that opens a Frequently Asked Questions web page -->
-    <string name="nav_menu_faq">Questions fréquentes</string>
+    <string name="nav_menu_faq">常見問題</string>
     <!-- This is the label for the navigation item that opens a survey or feedback web page to submit to the developers -->
-    <string name="nav_menu_feedback">Donner votre avis</string>
+    <string name="nav_menu_feedback">提供意見回饋</string>
     <!-- This is the label for the navigation item that opens a screen to manage the user account currently signed in to the application -->
-    <string name="nav_menu_account">Compte</string>
+    <string name="nav_menu_account">帳號</string>
     <!-- This is the label for the navigation item that opens a settings screen with options and preferences and more application information -->
-    <string name="nav_menu_settings">Paramètres</string>
+    <string name="nav_menu_settings">設定</string>
     <!-- This is the label for a button, primarily in the navigation drawer, that securely locks the application requiring the user to unlock it -->
-    <string name="lock_now">Verrouiller maintenant</string>
+    <string name="lock_now">立即鎖定</string>
 
     <!-- This label is used by screenreaders to inform the user they have selected an image of a lock -->
-    <string name="lock_icon_description">Icône de verrou</string>
+    <string name="lock_icon_description">鎖頭圖片</string>
     <!-- This is the label for the button to unlock the application for use while on a lock screen -->
-    <string name="unlock_button">Déverrouiller</string>
+    <string name="unlock_button">解鎖</string>
 
     <!-- This message appears in a toast informing the user it is currently downloading and syncing login (a saved login is basically the URL, username and password) data -->
-    <string name="syncing_logins">Synchronisation de vos identifiants…</string>
+    <string name="syncing_logins">正在同步您的登入資訊…</string>
 
     <!-- This is the label used by screenreaders to inform the user the selected menu is for sorting the saved logins in the list -->
-    <string name="sort_description">Trier les identifiants</string>
+    <string name="sort_description">排序登入資訊</string>
     <!-- This is the label for the sorting option of the list of passwords to be in alphabetical order -->
-    <string name="sort_menu_az">Alphabétiquement</string>
+    <string name="sort_menu_az">按字母順序</string>
     <!-- This is a corresponding heading to describe the list view is showing all saved logins sorted alphabetically -->
-    <string name="all_logins_a_z">Tous les identifiants (A à Z)</string>
+    <string name="all_logins_a_z">所有登入資訊（A-Z）</string>
     <!-- This is the label for the sorting option of the list of passwords to be in order of recency the item was accessed or used -->
-    <string name="sort_menu_recent">Récemment utilisés</string>
+    <string name="sort_menu_recent">最近使用</string>
     <!-- This is a corresponding heading to describe the list view is showing all saved logins sorted by recent use -->
-    <string name="all_logins_recent">Tous les identifiants (récents)</string>
+    <string name="all_logins_recent">所有登入資訊（最近使用）</string>
     <!-- This is the label used by screenreaders to inform the user the selected text area is used to search the logins in the list -->
-    <string name="search_description">Rechercher des identifiants</string>
+    <string name="search_description">搜尋登入資訊</string>
     <!-- This is the placeholder text to visibly describe a text area is to be used to search all the logins seen in the list view -->
-    <string name="search_logins">rechercher des identifiants</string>
+    <string name="search_logins">搜尋登入資訊</string>
     <!-- This is the placeholder text to visibly describe a text area is to be used to search all the logins seen in the list view with the first letter capitalized -->
-    <string name="search_logins_cap">Rechercher des identifiants</string>
+    <string name="search_logins_cap">搜尋登入資訊</string>
     <!-- This is the label used by screenreaders to inform the user the selected button will clear the text currently input in the search area -->
-    <string name="search_clear_content_description">Effacer le texte de la barre de recherche</string>
+    <string name="search_clear_content_description">清除搜尋列文字</string>
     <!-- This is shown when a user has entered search terms that have filtered the list of logins to find no results -->
-    <string name="no_matching_logins">Aucun identifiant correspondant.</string>
+    <string name="no_matching_logins">沒有符合的登入資訊。</string>
 
     <!-- This is a heading that appears above the URL in context of a detailed item view -->
-    <string name="hint_hostname">Adresse web</string>
+    <string name="hint_hostname">網址</string>
     <!-- This is a heading that appears above the username in context of a detailed item view -->
-    <string name="hint_username">Nom d’utilisateur</string>
+    <string name="hint_username">使用者名稱</string>
     <!-- This is a heading that appears above a password in context of a detailed item view -->
-    <string name="hint_password">Mot de passe</string>
+    <string name="hint_password">密碼</string>
 
     <!-- This describes an icon to screenreaders that the button tapped will open the web address in a web browser -->
-    <string name="launch_hostname_content_description">Ouvrir une adresse web dans un navigateur web</string>
+    <string name="launch_hostname_content_description">用瀏覽器開啟此網址</string>
     <!-- This describes an icon to screenreaders that the button tapped will copy the username to the device clipboard to paste and use in another application -->
-    <string name="copy_username_content_description">Copier le nom d’utilisateur</string>
+    <string name="copy_username_content_description">複製使用者名稱</string>
     <!-- This message appears when the user taps to copy the username to the device clipboard -->
-    <string name="toast_username_copied">Nom d’utilisateur copié</string>
+    <string name="toast_username_copied">已複製使用者名稱</string>
     <!-- This describes an icon to screenreaders that the button tapped will copy the password to the device clipboard to paste and use in another application -->
-    <string name="copy_password_content_description">Copier le mot de passe</string>
+    <string name="copy_password_content_description">複製密碼</string>
     <!-- This message appears when the user taps to copy the password to the device clipboard -->
-    <string name="toast_password_copied">Mot de passe copié</string>
+    <string name="toast_password_copied">已複製密碼</string>
     <!-- This describes an icon to screenreaders that the button tapped will display the password in plain text for immediate reading or use -->
-    <string name="display_password_content_description">Afficher votre mot de passe en texte brut</string>
+    <string name="display_password_content_description">顯示密碼文字</string>
 
     <!-- This is a heading that appears above a group of application settings to configure the user experience -->
-    <string name="configuration_title">Configuration</string>
+    <string name="configuration_title">設定</string>
     <!-- This is a heading that appears above a group of application settings or links related to what is supported by the application -->
-    <string name="support_title">Assistance</string>
+    <string name="support_title">技術支援</string>
 
     <!-- This is the title of a setting that allows the user to change the time duration before the application locks and requires unlocking -->
-    <string name="auto_lock">Verrouillage automatique</string>
+    <string name="auto_lock">自動鎖定</string>
     <!-- This is the label a screenreader uses to inform the user they selected the auto lock setting toggle -->
-    <string name="auto_lock_description">Paramètre de verrouillage automatique</string>
+    <string name="auto_lock_description">自動鎖定設定</string>
     <!-- This is a time duration for the automatic application locking setting equal to 1 minute -->
-    <string name="one_minute">1 minute</string>
+    <string name="one_minute">1 分鐘</string>
     <!-- This is a time duration for the automatic application locking setting equal to 5 minutes -->
-    <string name="five_minutes">5 minutes</string>
+    <string name="five_minutes">5 分鐘</string>
     <!-- This is a time duration for the automatic application locking setting equal to 15 minutes -->
-    <string name="fifteen_minutes">15 minutes</string>
+    <string name="fifteen_minutes">15 分鐘</string>
     <!-- This is a time duration for the automatic application locking setting equal to 30 minutes -->
-    <string name="thirty_minutes">30 minutes</string>
+    <string name="thirty_minutes">30 分鐘</string>
     <!-- This is a time duration for the automatic application locking setting equal to 1 hour -->
-    <string name="one_hour">1 heure</string>
+    <string name="one_hour">1 小時</string>
     <!-- This is a time duration for the automatic application locking setting equal to 12 hours -->
-    <string name="twelve_hours">12 heures</string>
+    <string name="twelve_hours">12 小時</string>
     <!-- This is a time duration for the automatic application locking setting equal to 24 hours -->
-    <string name="twenty_four_hours">24 heures</string>
+    <string name="twenty_four_hours">24 小時</string>
     <!-- This is a time duration for the automatic application locking setting that means it will never automatically lock -->
-    <string name="never">Jamais</string>
+    <string name="never">永不</string>
 
     <!-- This is the title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application. Autofill should match the Android name for this system feature -->
-    <string name="autofill">Remplissage automatique</string>
+    <string name="autofill">自動填寫</string>
     <!-- This is the sub-title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application. %1$s will be replaced with application name -->
-    <string name="autofill_summary">Laissez %1$s renseigner les identifiants pour vous</string>
+    <string name="autofill_summary">讓 %1$s 為您自動填寫登入資訊</string>
     <!-- This is the label a screenreader uses to inform the user they selected the autofill setting toggle. Autofill should match the Android name for this system feature -->
-    <string name="autofill_description">Paramètre de remplissage automatique de l’application</string>
+    <string name="autofill_description">應用程式自動填寫設定</string>
 
     <!-- This is the title of a setting that allows the user to enable and disable the sending of telemetry usage data to Mozilla -->
-    <string name="send_usage_data">Envoyer des données d’utilisation</string>
+    <string name="send_usage_data">傳送使用資料</string>
     <!-- This is the sub-title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application -->
-    <string name="send_usage_data_summary">Mozilla veille à collecter uniquement les données nécessaires afin d’offrir et d’améliorer Firefox pour tout le monde.</string>
+    <string name="send_usage_data_summary">Mozilla 致力於只收集用來為眾人改善 Firefox 所需的必要資料。</string>
 
     <!-- This is the label a screenreader uses to inform the user they selected a label on the screen that includes the application version number -->
-    <string name="app_version_description">Numéro de version de l’application</string>
+    <string name="app_version_description">應用程式版本</string>
 
     <!-- This is the title of a setting that shows the version and the build number of an app -->
-    <string name="app_version_title">Version de l’application : %1$s (%2$d)</string>
+    <string name="app_version_title">應用程式版本: %1$s（%2$d）</string>
 
     <!-- This is the title of a setting that allows the user to use the device fingerprint biometrics to unlock the application -->
-    <string name="unlock">Déverrouiller avec l’empreinte digitale</string>
+    <string name="unlock">用指紋解鎖</string>
     <!-- This is the label a screenreader uses to inform the user they selected the fingerprint setting toggle -->
-    <string name="fingerprint_description">Activer le paramètre des empreintes digitales</string>
+    <string name="fingerprint_description">開啟指紋設定</string>
     <!-- This is the title of a dialog that pops up to unlock the application when the unlock with fingerprint setting is enabled. %1$s will be replaced with application name -->
-    <string name="fingerprint_dialog_title">Déverrouillez %1$s</string>
+    <string name="fingerprint_dialog_title">解鎖 %1$s</string>
     <!-- This is the message displayed to the user to unlock the application. %1$s will be replaced with application name -->
-    <string name="unlock_fallback_title">Déverrouillez %1$s</string>
+    <string name="unlock_fallback_title">解鎖 %1$s</string>
     <!-- This is an instructional message displayed to use the fingerprint sensor to unlock the application -->
-    <string name="touch_fingerprint_sensor">Touchez le capteur d’empreinte digitale.</string>
+    <string name="touch_fingerprint_sensor">觸摸指紋辨識器。</string>
     <!-- This is the title of a dialog requesting permission for the application to unlock using the device fingerprint sensor -->
-    <string name="enable_fingerprint_dialog_title">Activer les empreintes digitales</string>
+    <string name="enable_fingerprint_dialog_title">開啟指紋辨識</string>
     <!-- This is the message requesting permission for the application to unlock using the device fingerprint sensor. %1$s will be replaced with application name -->
-    <string name="enable_fingerprint_dialog_subtitle">Autorisez %1$s à déverrouiller cette application avec le capteur d’empreintes digitales.</string>
+    <string name="enable_fingerprint_dialog_subtitle">授權 %1$s 使用指紋辨識來解鎖本應用程式。</string>
     <!-- This is the error displayed when attempting to unlock the application with a fingerprint and the device does not recognize it as a match -->
-    <string name="fingerprint_not_recognized">Non reconnue</string>
+    <string name="fingerprint_not_recognized">識別失敗</string>
     <!-- This is the success message displayed after using the fingerprint sensor to unlock the application -->
-    <string name="fingerprint_success">Déverrouillage réussi.</string>
+    <string name="fingerprint_success">成功！</string>
     <!-- This is the error displayed when attempting to unlock the application with a fingerprint and after multiple tries a match is not made -->
-    <string name="fingerprint_error_lockout">Nombre maximum de tentatives dépassé.</string>
+    <string name="fingerprint_error_lockout">嘗試次數太多。</string>
     <!-- This is the error displayed when attempting to unlock the application with a fingerprint and the device returns a generic error to the application -->
-    <string name="fingerprint_sensor_error">Erreur du capteur d’empreinte digitale</string>
+    <string name="fingerprint_sensor_error">指紋辨識器發生錯誤</string>
     <!-- This is an instructional message displayed to use the device-provided unlock features to unlock the application -->
-    <string name="confirm_pattern">Saisissez le schéma, le code PIN ou le mot de passe de votre appareil.</string>
+    <string name="confirm_pattern">請輸入您的裝置解鎖圖形、PIN 碼或密碼。</string>
 
     <!-- This is the title of a dialog displayed to encourage the user to enable security to lock their device and the application -->
-    <string name="no_device_security_title">Sécurisez votre appareil.</string>
+    <string name="no_device_security_title">保護您的裝置。</string>
     <!-- This is a message displayed requiring the user to enable device-provided security to lock their device and the application. -->
-    <string name="no_device_security_message">Pour paramétrer la minuterie du verrouillage automatique, il est nécessaire de configurer un schéma, un code PIN ou un mot de passe sur votre appareil.</string>
+    <string name="no_device_security_message">需要先在裝置上設定解鎖圖形、PIN 碼或密碼，才能設定自動鎖定。</string>
     <!-- This is the message displayed on a button to open the device settings for the user to set up device-provided security protections -->
-    <string name="set_up_security_button">Configurer maintenant</string>
+    <string name="set_up_security_button">現在設定</string>
 
     <!-- This is used for screenreaders to inform the user they have selected the account profile image. Firefox Account is to be translated consistently to match use in other Firefox products. -->
-    <string name="profile_image_content_description">Image de profil du compte Firefox</string>
+    <string name="profile_image_content_description">Firefox Account 個人資料圖片</string>
     <!-- This message is displayed to inform users how to change their Firefox Account profile details on a setting screen. Firefox Account is to be translated consistently to match use in other Firefox products. -->
-    <string name="account_information">Pour apporter des modifications à votre compte, connectez-vous à votre compte Firefox à partir de n’importe quel navigateur.</string>
+    <string name="account_information">若要變更您的帳號資訊，請使用任何瀏覽器登入您的 Firefox 帳號。</string>
     <!-- This is the text on a button to sign out and disconnect the account from the application. %1$s will be replaced with application name -->
-    <string name="disconnect_button">Déconnecter %1$s</string>
+    <string name="disconnect_button">與 %1$s 取消連線</string>
     <!-- This message is displayed near a button to sign out and disconnect the account from the application explaining this does not affect the data stored with Firefox. %1$s will be replaced with application name -->
-    <string name="disconnect_disclaimer">Cette action supprimera les identifiants synchronisés de %1$s, mais ne supprimera pas vos identifiants de Firefox.</string>
+    <string name="disconnect_disclaimer">將從 %1$s 移除同步的登入資訊，但不會刪除您儲存於 Firefox 的登入資訊。</string>
     <!-- This is the text on a final confirmation button to sign out and disconnect the account from the application. %1$s will be replaced with application name -->
-    <string name="disconnect_disclaimer_title">Se déconnecter de %1$s ?</string>
+    <string name="disconnect_disclaimer_title">要與 %1$s 取消連線嗎？</string>
     <!-- This message is displayed on a final confirmation dialog to sign out and disconnect their account from the application. Firefox Account is to be translated consistently to match use in other Firefox products. %1$s will be replaced with application name -->
-    <string name="disconnect_disclaimer_message">Cette action supprimera de %1$s les informations de votre compte Firefox et tous les identifiants enregistrés.</string>
+    <string name="disconnect_disclaimer_message">將從 %1$s 刪除您的 Firefox 帳號資訊與所有儲存的登入資訊。</string>
     <!-- This is the text on a final confirmation button to sign out and disconnect the account from the application -->
-    <string name="disconnect">Se déconnecter</string>
+    <string name="disconnect">取消連線</string>
     <!-- This is the hint value for an autofill box that appears when suggesting a value for a password field. It is interpolated with the user's account name. -->
-    <string name="password_for">Mot de passe pour %1$s</string>
+    <string name="password_for">%1$s 的密碼</string>
 
     <!-- This label is used by screenreaders to inform the user that their device is not connected to the internet -->
-    <string name="networkWarningMessage">Attention : appareil non connecté à Internet.</string>
+    <string name="networkWarningMessage">警告: 裝置並未連線到網際網路。</string>
     <!-- This label is used by screenreaders to inform the user that the message contains an image of a warning icon -->
-    <string name="warningIcon">Icône d’avertissement</string>
+    <string name="warningIcon">警告圖示</string>
     <!-- This is used as the title for an alert message to inform the user that the app does not detect network connectivity -->
-    <string name="no_internet_connection">Aucune connexion internet</string>
+    <string name="no_internet_connection">沒有網際網路連線</string>
     <!-- This is used in the app logs to inform that network connectivity has successfully been detected -->
-    <string name="network_connection_success">Connexion au réseau réussie.</string>
+    <string name="network_connection_success">成功連線上網路。</string>
 
     <!-- This is used to inform the user that there are no saved logins in the list -->
-    <string name="no_logins_found">Aucun identifiant trouvé</string>
+    <string name="no_logins_found">找不到登入資訊</string>
     <!-- This explains the steps the user should take, if no saved logins are found: sign in and sync in Firefox. %1$s will be replaced with application name -->
-    <string name="no_logins_description">%1$s vous permet d’accéder aux mots de passe que vous avez déjà enregistrés dans Firefox. Pour afficher vos identifiants ici, vous devez vous connecter et activer la synchronisation dans Firefox.</string>
+    <string name="no_logins_description">%1$s 讓您可以使用儲存於 Firefox 的密碼。若要在此檢視登入資訊，需要先登入並與 Firefox 同步。</string>
     <!-- This is the title for the biometric unlock onboarding screen. %1$s will be replaced with application name -->
-    <string name="onboarding_unlock_title">Déverrouillez %1$s avec votre empreinte digitale.</string>
+    <string name="onboarding_unlock_title">用指紋解鎖 %1$s。</string>
     <!-- This is the onboarding description for enabling biometric unlock with the fingerprint sensor. %1$s will be replaced with application name -->
-    <string name="onboarding_unlock_description">Autorisez %1$s à déverrouiller cette application avec le capteur d’empreintes digitales.</string>
+    <string name="onboarding_unlock_description">授權 %1$s 使用指紋辨識來解鎖本應用程式。</string>
+
     <!-- This is the description of the button to skip the onboarding for biometric unlock with the fingerprint sensor. -->
-    <string name="onboarding_skip">Ignorer pour l’instant</string>
+    <string name="onboarding_skip">先略過</string>
     <!-- This is the description of the fingerprint icon on the onboarding screen -->
-    <string name="fingerprint_icon_description">Image d’empreinte digitale</string>
+    <string name="fingerprint_icon_description">指紋圖示</string>
     <!-- This is the title of the autofill onboarding screen. %1$s will be replaced with application name -->
-    <string name="onboarding_autofill_title">Laissez %1$s renseigner vos mots de passe.</string>
+    <string name="onboarding_autofill_title">讓 %1$s 為您輸入密碼。</string>
     <!-- This is the onboarding description for enabling the application as an autofill provider through the device's autofill settings. -->
-    <string name="onboarding_autofill_description">Renseignez facilement les noms d’utilisateur et mots de passe là où vous en avez le plus besoin.</string>
+    <string name="onboarding_autofill_description">在您需要的地方輕鬆代填帳號密碼。</string>
     <!-- This button will take you to your phone's autofill settings screen. -->
-    <string name="go_to_settings">Ouvrir les paramètres</string>
+    <string name="go_to_settings">開啟設定</string>
     <!-- This is the content description for the autofill image on the autofill onboarding screen. %1$s will be replaced with application name. Autofill should match the Android name for this system feature -->
-    <string name="onboarding_autofill_image_description">Remplissage automatique de %1$s</string>
+    <string name="onboarding_autofill_image_description">%1$s 自動填寫</string>
     <!-- This is the title for the final onboarding screen -->
-    <string name="all_set">C’est tout !</string>
+    <string name="all_set">準備就緒！</string>
     <!-- This is the button to dismiss the final onboarding screen -->
-    <string name="finish">Terminer</string>
+    <string name="finish">完成</string>
     <!-- This description of the app functionality is shown on the final onboarding screen -->
-    <string name="access_description">Accédez depuis votre téléphone aux identifiants enregistrés dans Firefox</string>
-    <!-- This description of the app security is shown on the final onboarding screen. -->
-    <string name="security_description">Synchronisez vos appareils avec un chiffrement 256 bits</string>
+    <string name="access_description">在您的手機使用儲存到 Firefox 的登入資訊</string>
+    <!-- This description of the app security is shown on the final onboarding screen. %s will be replaced with the security link. -->
+    <string name="security_description">使用 256 位元加密，安全於裝置間同步</string>
     <!-- This description of the app convenience is shown on the final onboarding screen. -->
-    <string name="convenience_description">Déverrouillez facilement l’application avec votre empreinte digitale</string>
+    <string name="convenience_description">輕鬆使用指紋解鎖應用程式</string>
 
     <!-- This is the title of the device security dialog box. -->
-    <string name="secure_your_device">Sécurisez votre appareil.</string>
+    <string name="secure_your_device">保護您的裝置。</string>
     <!-- This is the description explaining the device security requirements. -->
-    <string name="device_security_description">Vous devriez utiliser un schéma, un code PIN ou un mot de passe pour verrouiller votre téléphone. Sinon, toute personne disposant de votre téléphone peut accéder aux informations qui y sont enregistrées.</string>
+    <string name="device_security_description">您應該設定解鎖圖形、PIN 碼或密碼來鎖定手機。若不做這層保護，任何碰得到您手機的人，都可以獲得您儲存下來的登入資訊。</string>
     <!-- This is the skip button description on the device security dialog box. -->
-    <string name="skip_button">Ignorer</string>
+    <string name="skip_button">略過</string>
     <!-- This is the the button description on the device security dialog box which routes to system security settings. -->
-    <string name="set_up_now">Configurer maintenant</string>
+    <string name="set_up_now">現在設定</string>
 
     <!-- This header appears above the Privacy page of the application website. -->
-    <string name="privacy">Vie privée</string>
+    <string name="privacy">隱私權</string>
 
     <!-- This is the prompt when autofill is triggered and the application is locked. It appears on top of the login form as an action available to the user to take. %1$s will be replaced with application name -->
-    <string name="autofill_authenticate_cta">Déverrouiller %1$s</string>
+    <string name="autofill_authenticate_cta">解鎖 %1$s</string>
     <!-- This is the message suggesting that if the user does not see the matching login to autofill into a form, they can search all their logins by opening this action. %1$s will be replaced with application name. -->
-    <string name="autofill_search_cta">Rechercher dans %1$s</string>
+    <string name="autofill_search_cta">搜尋 %1$s</string>
     <!-- This is the error message when autofill is triggered and the application is in an error state. %1$s will be replaced with application name. %2$s refers to the localized error message that will be provided by the system. -->
-    <string name="autofill_error_toast">%1$s a rencontré une erreur : %2$s</string>
+    <string name="autofill_error_toast">%1$s 遇到錯誤: %2$s</string>
 
     <!-- This is the placeholder text for an empty or null username. -->
-    <string name="no_username">(aucun nom d’utilisateur)</string>
+    <string name="no_username">（無使用者名稱）</string>
 
     <!-- This is the description for the kebab menu in the item detail toolbar. -->
-    <string name="kebab_menu">Plus d’options</string>
+    <string name="kebab_menu">更多選項</string>
     <!-- This is the text on an item in the item detail toolbar menu to delete an entry. -->
-    <string name="delete">Supprimer</string>
+    <string name="delete">刪除</string>
     <!-- This is the confirmation message title seen when attempting to delete a login. -->
-    <string name="delete_this_login">Supprimer cet identifiant ?</string>
+    <string name="delete_this_login">要刪除這筆登入資訊嗎？</string>
     <!-- This is the description for the deletion dialog. -->
-    <string name="delete_description">Cette action supprimera l’identifiant à la fois pour %1$s et pour Firefox.</string>
+    <string name="delete_description">將從 %1$s 與 Firefox 刪除該筆登入資訊。</string>
     <!-- This is the text on an item in the item detail toolbar menu to edit an entry. -->
-    <string name="edit">Modifier</string>
+    <string name="edit">編輯</string>
 
     <!-- This is the description for the entry password in context of an edit item view. -->
-    <string name="entry_password_description">Mot de passe pour cette entrée.</string>
+    <string name="entry_password_description">這筆項目的密碼。</string>
     <!-- This is the title text on the dialog when you attempt to close the edit view and changes have been made. -->
-    <string name="discard_changes">Abandonner les modifications ?</string>
+    <string name="discard_changes">要捨棄變更嗎？</string>
     <!-- This is the additional text when you attempt to close the edit view and changes have been made. -->
-    <string name="discard_changes_description">Vos modifications ne seront pas enregistrées.</string>
+    <string name="discard_changes_description">不會儲存您的修改內容。</string>
     <!-- This is the text on the button to discard your current changes from the edit entry view. -->
-    <string name="discard">Abandonner</string>
+    <string name="discard">捨棄</string>
     <!-- This is the description for the hostname in the edit entry view. -->
-    <string name="web_address_description">Nom d’hôte</string>
+    <string name="web_address_description">主機名稱</string>
     <!-- This is the description for the username in the edit entry view. -->
-    <string name="username_description">Nom d’utilisateur</string>
+    <string name="username_description">使用者名稱</string>
     <!-- This is the title of the edit login page. -->
-    <string name="edit_login_title">Modifier l’identifiant</string>
+    <string name="edit_login_title">編輯登入資訊</string>
 
     <!-- This is the error message that is shown in edit or create view when input text for password is not valid. -->
-    <string name="password_invalid_text">Le champ mot de passe ne peut pas être vide</string>
-
-    <string name="username_duplicate_exists">Un identifiant avec ce nom d’utilisateur existe déjà</string>
+    <string name="password_invalid_text">密碼不得為空白</string>
+    <string name="username_duplicate_exists">已有該使用者名稱的登入資訊</string>
 </resources>
