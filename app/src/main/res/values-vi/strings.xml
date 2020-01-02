@@ -221,8 +221,8 @@
     <string name="finish">Kết thúc</string>
     <!-- This description of the app functionality is shown on the final onboarding screen -->
     <string name="access_description">Truy cập thông tin đăng nhập được lưu vào Firefox từ điện thoại của bạn</string>
-    <!-- This description of the app security is shown on the final onboarding screen. %s will be replaced with the security link. -->
-    <string name="security_description">Đồng bộ hóa giữa các thiết bị với %s</string>
+    <!-- This description of the app security is shown on the final onboarding screen. -->
+    <string name="security_description">Đồng bộ hóa giữa các thiết bị với Mã hóa 256-bit</string>
     <!-- This description of the app convenience is shown on the final onboarding screen. -->
     <string name="convenience_description">Mở khóa ứng dụng một cách dễ dàng bằng dấu vân tay của bạn</string>
 
