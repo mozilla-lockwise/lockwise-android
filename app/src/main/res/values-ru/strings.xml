@@ -1,280 +1,280 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- This string is a promotional sentence used across all the applications to describe the purpose of the application. -->
-    <string name="app_tagline">Lleva tus contraseñas a todas partes.</string>
+    <string name="app_tagline">Возьмите свои пароли с собой.</string>
     <!-- This is used for screenreaders to know the application logo image is currently selected. %1$s will be replaced with application name. -->
-    <string name="app_logo">Logo de %1$s</string>
+    <string name="app_logo">Логотип %1$s</string>
 
     <!-- This is the text on a button to cancel the current operation or request such as unlocking the application with a fingerprint. -->
-    <string name="cancel">Cancelar</string>
+    <string name="cancel">Отмена</string>
     <!-- This is the title of a link for users to tap to open a web page to learn more about a related setting or feature. -->
-    <string name="learn_more">Saber más</string>
+    <string name="learn_more">Узнать больше</string>
     <!-- This is the label a screenreader uses to inform the user they selected a link that will open a webpage to learn more about the feature or setting. -->
-    <string name="learn_more_description">Abre un enlace para saber más</string>
+    <string name="learn_more_description">Перейдите по ссылке, чтобы узнать больше</string>
 
     <!-- This is used as the label on a button on a first-run welcome screen to automatically sign in to an existing account and start using the application -->
     <string name="welcome_start_automatic_btn">%s</string>
     <!-- This is used as the label on a button on a first-run welcome screen to force manual sign in and start using the application -->
-    <string name="welcome_start_force_manual_btn">Cuenta diferente</string>
+    <string name="welcome_start_force_manual_btn">Другой аккаунт</string>
     <!-- This is used as the label on a button on a first-run welcome screen to manually sign in (no existing account) and start using the application -->
-    <string name="welcome_start_btn">Comenzar</string>
+    <string name="welcome_start_btn">Начало работы</string>
     <!-- This provides context near a button on the first-run welcome screen to describe application requirements. Firefox Account is to be translated consistently to match use in other Firefox products. %1$s will be replaced with application name. -->
-    <string name="welcome_instructions">Para usar %1$s necesitas una cuenta Firefox con inicios de sesión guardados.</string>
+    <string name="welcome_instructions">Для использования %1$s, вам необходим Аккаунт Firefox с сохранёнными логинами.</string>
     <!-- This is the link on the first-run welcome screen to learn more about the requirements of the application -->
-    <string name="welcome_learn_more_btn">Saber más</string>
+    <string name="welcome_learn_more_btn">Узнать больше</string>
 
     <!-- This is the label used for the title in the web view of the account's authentication instances. -->
-    <string name="get_started_title">Comenzar</string>
+    <string name="get_started_title">Начало работы</string>
 
     <!-- This is the label used by screenreaders to inform the user the navigation button selected is to go backwards from where they came from -->
-    <string name="backable_description">Atrás</string>
+    <string name="backable_description">Назад</string>
     <!-- This is the label used by screenreaders to inform the user the button selected is meant to open a navigation menu -->
-    <string name="menu_description">Menú</string>
+    <string name="menu_description">Меню</string>
 
     <!-- This is the label for the navigation item that opens a Frequently Asked Questions web page -->
     <string name="nav_menu_faq">FAQ</string>
     <!-- This is the label for the navigation item that opens a survey or feedback web page to submit to the developers -->
-    <string name="nav_menu_feedback">Enviar comentario</string>
+    <string name="nav_menu_feedback">Отправьте отзыв</string>
     <!-- This is the label for the navigation item that opens a screen to manage the user account currently signed in to the application -->
-    <string name="nav_menu_account">Cuenta</string>
+    <string name="nav_menu_account">Аккаунт</string>
     <!-- This is the label for the navigation item that opens a settings screen with options and preferences and more application information -->
-    <string name="nav_menu_settings">Ajustes</string>
+    <string name="nav_menu_settings">Настройки</string>
     <!-- This is the label for a button, primarily in the navigation drawer, that securely locks the application requiring the user to unlock it -->
-    <string name="lock_now">Bloquear ahora</string>
+    <string name="lock_now">Заблокировать сейчас</string>
 
     <!-- This label is used by screenreaders to inform the user they have selected an image of a lock -->
-    <string name="lock_icon_description">Imagen del icono de bloqueo</string>
+    <string name="lock_icon_description">Изображение значка блокировки</string>
     <!-- This is the label for the button to unlock the application for use while on a lock screen -->
-    <string name="unlock_button">Desbloquear</string>
+    <string name="unlock_button">Разблокировать</string>
 
     <!-- This message appears in a toast informing the user it is currently downloading and syncing login (a saved login is basically the URL, username and password) data -->
-    <string name="syncing_logins">Sincronizando tus usuarios…</string>
+    <string name="syncing_logins">Синхронизирую ваши логины…</string>
 
     <!-- This is the label used by screenreaders to inform the user the selected menu is for sorting the saved logins in the list -->
-    <string name="sort_description">Ordenar usuarios</string>
+    <string name="sort_description">Сортировать логины</string>
     <!-- This is the label for the sorting option of the list of passwords to be in alphabetical order -->
-    <string name="sort_menu_az">Alfabéticamente</string>
+    <string name="sort_menu_az">По алфавиту</string>
     <!-- This is a corresponding heading to describe the list view is showing all saved logins sorted alphabetically -->
-    <string name="all_logins_a_z">Todos los usuarios (A-Z)</string>
+    <string name="all_logins_a_z">Все логины (A-Z)</string>
     <!-- This is the label for the sorting option of the list of passwords to be in order of recency the item was accessed or used -->
-    <string name="sort_menu_recent">Usados recientemente</string>
+    <string name="sort_menu_recent">По последнему использованию</string>
     <!-- This is a corresponding heading to describe the list view is showing all saved logins sorted by recent use -->
-    <string name="all_logins_recent">Todos los usuarios (recientes)</string>
+    <string name="all_logins_recent">Все логины (недавно использованные)</string>
     <!-- This is the label used by screenreaders to inform the user the selected text area is used to search the logins in the list -->
-    <string name="search_description">Buscar usuarios</string>
+    <string name="search_description">Поиск логинов</string>
     <!-- This is the placeholder text to visibly describe a text area is to be used to search all the logins seen in the list view -->
-    <string name="search_logins">buscar usuarios</string>
+    <string name="search_logins">поиск логинов</string>
     <!-- This is the placeholder text to visibly describe a text area is to be used to search all the logins seen in the list view with the first letter capitalized -->
-    <string name="search_logins_cap">Buscar usuarios</string>
+    <string name="search_logins_cap">Поиск логинов</string>
     <!-- This is the label used by screenreaders to inform the user the selected button will clear the text currently input in the search area -->
-    <string name="search_clear_content_description">Borrar texto de la barra de búsqueda</string>
+    <string name="search_clear_content_description">Очистить панель поиска</string>
     <!-- This is shown when a user has entered search terms that have filtered the list of logins to find no results -->
-    <string name="no_matching_logins">No coincide ningún usuario.</string>
+    <string name="no_matching_logins">Нет подходящих логинов.</string>
 
     <!-- This is a heading that appears above the URL in context of a detailed item view -->
-    <string name="hint_hostname">Dirección web</string>
+    <string name="hint_hostname">Веб-адрес</string>
     <!-- This is a heading that appears above the username in context of a detailed item view -->
-    <string name="hint_username">Nombre de usuario</string>
+    <string name="hint_username">Имя пользователя</string>
     <!-- This is a heading that appears above a password in context of a detailed item view -->
-    <string name="hint_password">Contraseña</string>
+    <string name="hint_password">Пароль</string>
 
     <!-- This describes an icon to screenreaders that the button tapped will open the web address in a web browser -->
-    <string name="launch_hostname_content_description">Abrir dirección web en el navegador</string>
+    <string name="launch_hostname_content_description">Откройте веб-адрес в браузере</string>
     <!-- This describes an icon to screenreaders that the button tapped will copy the username to the device clipboard to paste and use in another application -->
-    <string name="copy_username_content_description">Copiar nombre de usuario</string>
+    <string name="copy_username_content_description">Копировать имя пользователя</string>
     <!-- This message appears when the user taps to copy the username to the device clipboard -->
-    <string name="toast_username_copied">Nombre de usuario copiado</string>
+    <string name="toast_username_copied">Имя пользователя скопировано</string>
     <!-- This describes an icon to screenreaders that the button tapped will copy the password to the device clipboard to paste and use in another application -->
-    <string name="copy_password_content_description">Copiar contraseña</string>
+    <string name="copy_password_content_description">Копировать пароль</string>
     <!-- This message appears when the user taps to copy the password to the device clipboard -->
-    <string name="toast_password_copied">Contraseña copiada</string>
+    <string name="toast_password_copied">Пароль скопирован</string>
     <!-- This describes an icon to screenreaders that the button tapped will display the password in plain text for immediate reading or use -->
-    <string name="display_password_content_description">Mostrar contraseña como texto sin formato</string>
+    <string name="display_password_content_description">Показывает пароль в открытом виде</string>
 
     <!-- This is a heading that appears above a group of application settings to configure the user experience -->
-    <string name="configuration_title">Configuración</string>
+    <string name="configuration_title">Конфигурация</string>
     <!-- This is a heading that appears above a group of application settings or links related to what is supported by the application -->
-    <string name="support_title">Asistencia</string>
+    <string name="support_title">Поддержка</string>
 
     <!-- This is the title of a setting that allows the user to change the time duration before the application locks and requires unlocking -->
-    <string name="auto_lock">Bloqueo automático</string>
+    <string name="auto_lock">Автоблокировка</string>
     <!-- This is the label a screenreader uses to inform the user they selected the auto lock setting toggle -->
-    <string name="auto_lock_description">Ajustes del bloqueo automático</string>
+    <string name="auto_lock_description">Настройка автоблокировки</string>
     <!-- This is a time duration for the automatic application locking setting equal to 1 minute -->
-    <string name="one_minute">1 minuto</string>
+    <string name="one_minute">1 минута</string>
     <!-- This is a time duration for the automatic application locking setting equal to 5 minutes -->
-    <string name="five_minutes">5 minutos</string>
+    <string name="five_minutes">5 минут</string>
     <!-- This is a time duration for the automatic application locking setting equal to 15 minutes -->
-    <string name="fifteen_minutes">15 minutos</string>
+    <string name="fifteen_minutes">15 минут</string>
     <!-- This is a time duration for the automatic application locking setting equal to 30 minutes -->
-    <string name="thirty_minutes">30 minutos</string>
+    <string name="thirty_minutes">30 минут</string>
     <!-- This is a time duration for the automatic application locking setting equal to 1 hour -->
-    <string name="one_hour">1 hora</string>
+    <string name="one_hour">1 час</string>
     <!-- This is a time duration for the automatic application locking setting equal to 12 hours -->
-    <string name="twelve_hours">12 horas</string>
+    <string name="twelve_hours">12 часов</string>
     <!-- This is a time duration for the automatic application locking setting equal to 24 hours -->
-    <string name="twenty_four_hours">24 horas</string>
+    <string name="twenty_four_hours">24 часа</string>
     <!-- This is a time duration for the automatic application locking setting that means it will never automatically lock -->
-    <string name="never">Nunca</string>
+    <string name="never">Никогда</string>
 
     <!-- This is the title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application. Autofill should match the Android name for this system feature -->
-    <string name="autofill">Autocompletado</string>
+    <string name="autofill">Автозаполнение</string>
     <!-- This is the sub-title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application. %1$s will be replaced with application name -->
-    <string name="autofill_summary">Permitir que %1$s autocomplete los formularios</string>
+    <string name="autofill_summary">Позвольте %1$s вводить логины за вас</string>
     <!-- This is the label a screenreader uses to inform the user they selected the autofill setting toggle. Autofill should match the Android name for this system feature -->
-    <string name="autofill_description">Ajustes de la función de autocompletado</string>
+    <string name="autofill_description">Настройки автозаполнения в приложении</string>
 
     <!-- This is the title of a setting that allows the user to enable and disable the sending of telemetry usage data to Mozilla -->
-    <string name="send_usage_data">Enviar datos de consumo</string>
-
+    <string name="send_usage_data">Отправлять данные об использовании</string>
     <!-- This is the sub-title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application -->
-    <string name="send_usage_data_summary">Mozilla se compromete a recopilar solo los datos que ayudan a mejorar Firefox.</string>
+    <string name="send_usage_data_summary">Mozilla обязуется собирать только ту информацию, которая необходима для работы Firefox и его улучшения в будущем. </string>
 
     <!-- This is the label a screenreader uses to inform the user they selected a label on the screen that includes the application version number -->
-    <string name="app_version_description">Número de versión de la aplicación</string>
+    <string name="app_version_description">Номер версии приложения</string>
 
     <!-- This is the title of a setting that shows the version and the build number of an app -->
-    <string name="app_version_title">Versión de la aplicación: %1$s (%2$d)</string>
+    <string name="app_version_title">Версия приложения: %1$s (%2$d)</string>
 
     <!-- This is the title of a setting that allows the user to use the device fingerprint biometrics to unlock the application -->
-    <string name="unlock">Desbloquear con huella digital</string>
+    <string name="unlock">Разблокировка с помощью отпечатка пальца</string>
     <!-- This is the label a screenreader uses to inform the user they selected the fingerprint setting toggle -->
-    <string name="fingerprint_description">Habilitar ajustes de la huella digital</string>
+    <string name="fingerprint_description">Включать отпечаток пальца</string>
     <!-- This is the title of a dialog that pops up to unlock the application when the unlock with fingerprint setting is enabled. %1$s will be replaced with application name -->
-    <string name="fingerprint_dialog_title">Desbloquear %1$s</string>
+    <string name="fingerprint_dialog_title">Разблокировать %1$s</string>
     <!-- This is the message displayed to the user to unlock the application. %1$s will be replaced with application name -->
-    <string name="unlock_fallback_title">Desbloquear %1$s</string>
+    <string name="unlock_fallback_title">Разблокировать %1$s</string>
     <!-- This is an instructional message displayed to use the fingerprint sensor to unlock the application -->
-    <string name="touch_fingerprint_sensor">Toca el sensor de la huella digital.</string>
+    <string name="touch_fingerprint_sensor">Прикоснитесь к датчику отпечатка пальца.</string>
     <!-- This is the title of a dialog requesting permission for the application to unlock using the device fingerprint sensor -->
-    <string name="enable_fingerprint_dialog_title">Habilitar huella digital</string>
-
+    <string name="enable_fingerprint_dialog_title">Включить отпечаток пальца</string>
     <!-- This is the message requesting permission for the application to unlock using the device fingerprint sensor. %1$s will be replaced with application name -->
-    <string name="enable_fingerprint_dialog_subtitle">Dar permiso a %1$s para que desbloquee esta aplicación con el sensor de huella digital.</string>
+    <string name="enable_fingerprint_dialog_subtitle">Предоставьте %1$s разрешение, чтобы разблокировать это приложение при помощи отпечатка пальца.</string>
     <!-- This is the error displayed when attempting to unlock the application with a fingerprint and the device does not recognize it as a match -->
-    <string name="fingerprint_not_recognized">No se reconoce</string>
+    <string name="fingerprint_not_recognized">Не распознано</string>
     <!-- This is the success message displayed after using the fingerprint sensor to unlock the application -->
-    <string name="fingerprint_success">¡Listo!</string>
+    <string name="fingerprint_success">Успех!</string>
     <!-- This is the error displayed when attempting to unlock the application with a fingerprint and after multiple tries a match is not made -->
-    <string name="fingerprint_error_lockout">Demasiados intentos.</string>
+    <string name="fingerprint_error_lockout">Превышено число попыток.</string>
     <!-- This is the error displayed when attempting to unlock the application with a fingerprint and the device returns a generic error to the application -->
-    <string name="fingerprint_sensor_error">Error en el sensor de la huella digital</string>
+    <string name="fingerprint_sensor_error">Ошибка датчика отпечатка пальца</string>
     <!-- This is an instructional message displayed to use the device-provided unlock features to unlock the application -->
-    <string name="confirm_pattern">Introduce el patrón, PIN o contraseña.</string>
+    <string name="confirm_pattern">Введите графический ключ, PIN-код или пароль.</string>
 
     <!-- This is the title of a dialog displayed to encourage the user to enable security to lock their device and the application -->
-    <string name="no_device_security_title">Protege tu dispositivo.</string>
+    <string name="no_device_security_title">Защитите своё устройство.</string>
     <!-- This is a message displayed requiring the user to enable device-provided security to lock their device and the application. -->
-    <string name="no_device_security_message">Tienes que configurar un patrón, PIN o contraseña para poder configurar el bloqueo automático.</string>
+    <string name="no_device_security_message">Чтобы установить таймер автоблокировки, на вашем устройстве должен быть установлен графический ключ, PIN-код или пароль.</string>
     <!-- This is the message displayed on a button to open the device settings for the user to set up device-provided security protections -->
-    <string name="set_up_security_button">Configurar ahora</string>
+    <string name="set_up_security_button">Настроить сейчас</string>
 
     <!-- This is used for screenreaders to inform the user they have selected the account profile image. Firefox Account is to be translated consistently to match use in other Firefox products. -->
-    <string name="profile_image_content_description">Imagen de perfil de la cuenta Firefox</string>
+    <string name="profile_image_content_description">Аватар Аккаунта Firefox</string>
     <!-- This message is displayed to inform users how to change their Firefox Account profile details on a setting screen. Firefox Account is to be translated consistently to match use in other Firefox products. -->
-    <string name="account_information">Para hacer cambios en tu cuenta, inicia primero sesión desde cualquier navegador.</string>
+    <string name="account_information">Чтобы внести изменения в свой аккаунт, войдите в свой Аккаунт Firefox в любом браузере.</string>
     <!-- This is the text on a button to sign out and disconnect the account from the application. %1$s will be replaced with application name -->
-    <string name="disconnect_button">Desconectar %1$s</string>
+    <string name="disconnect_button">Отсоединить %1$s</string>
     <!-- This message is displayed near a button to sign out and disconnect the account from the application explaining this does not affect the data stored with Firefox. %1$s will be replaced with application name -->
-    <string name="disconnect_disclaimer">Se elimiarán los usuarios sincronizados desde %1$s, pero no se eliminarán los usuarios de Firefox.</string>
+    <string name="disconnect_disclaimer">Это действие удалит синхронизированные логины из %1$s, но не удалит ваши логины из Firefox.</string>
     <!-- This is the text on a final confirmation button to sign out and disconnect the account from the application. %1$s will be replaced with application name -->
-    <string name="disconnect_disclaimer_title">¿Quieres desconectar %1$s?</string>
+    <string name="disconnect_disclaimer_title">Отсоединить %1$s?</string>
     <!-- This message is displayed on a final confirmation dialog to sign out and disconnect their account from the application. Firefox Account is to be translated consistently to match use in other Firefox products. %1$s will be replaced with application name -->
-    <string name="disconnect_disclaimer_message">Se eliminará la información de tu cuenta Firefox y todos los usuarios guardados desde %1$s.</string>
+    <string name="disconnect_disclaimer_message">Это удалит информацию вашего Аккаунта Firefox и все сохранённые логины из %1$s.</string>
     <!-- This is the text on a final confirmation button to sign out and disconnect the account from the application -->
-    <string name="disconnect">Desconectar</string>
+    <string name="disconnect">Отсоединить</string>
     <!-- This is the hint value for an autofill box that appears when suggesting a value for a password field. It is interpolated with the user's account name. -->
-    <string name="password_for">Contraseña para %1$s</string>
+    <string name="password_for">Пароль для %1$s</string>
 
     <!-- This label is used by screenreaders to inform the user that their device is not connected to the internet -->
-    <string name="networkWarningMessage">Advertencia: el dispositivo no está conectado a Internet.</string>
+    <string name="networkWarningMessage">Предупреждение: устройство не подключено к интернету.</string>
     <!-- This label is used by screenreaders to inform the user that the message contains an image of a warning icon -->
-    <string name="warningIcon">Icono de advertencia</string>
+    <string name="warningIcon">Значок предупреждения</string>
     <!-- This is used as the title for an alert message to inform the user that the app does not detect network connectivity -->
-    <string name="no_internet_connection">No hay conexión a Internet</string>
+    <string name="no_internet_connection">Нет соединения с Интернетом</string>
     <!-- This is used in the app logs to inform that network connectivity has successfully been detected -->
-    <string name="network_connection_success">Se conectó correctamente a la red.</string>
+    <string name="network_connection_success">Соединение с интернетом установлено.</string>
 
     <!-- This is used to inform the user that there are no saved logins in the list -->
-    <string name="no_logins_found">No se encontraron usuarios</string>
+    <string name="no_logins_found">Логины не найдены</string>
     <!-- This explains the steps the user should take, if no saved logins are found: sign in and sync in Firefox. %1$s will be replaced with application name -->
-    <string name="no_logins_description">%1$s te permite acceder a las contraseñas que hayas guardado en Firefox.
-        Para que te aparezcan aquí los usuarios, inicia sesión y sincroniza Firefox.</string>
+    <string name="no_logins_description">%1$s позволяет получить доступ к паролям, которые вы уже сохранили в Firefox. Чтобы
+        просмотреть ваши логины здесь, вам нужно войти и синхронизироваться с Firefox.
+    </string>
     <!-- This is the title for the biometric unlock onboarding screen. %1$s will be replaced with application name -->
-    <string name="onboarding_unlock_title">Desbloquear %1$s con la huella digital.</string>
+    <string name="onboarding_unlock_title">Разблокируйте %1$s с помощью отпечатка пальца.</string>
     <!-- This is the onboarding description for enabling biometric unlock with the fingerprint sensor. %1$s will be replaced with application name -->
-    <string name="onboarding_unlock_description">Dar permiso a %1$s para que desbloquee esta aplicación con el sensor de huella digital.</string>
+    <string name="onboarding_unlock_description">Предоставьте %1$s разрешение, чтобы разблокировать это приложение при помощи отпечатка пальца.</string>
     <!-- This is the description of the button to skip the onboarding for biometric unlock with the fingerprint sensor. -->
-    <string name="onboarding_skip">Saltar por ahora</string>
+    <string name="onboarding_skip">Пока пропустить</string>
     <!-- This is the description of the fingerprint icon on the onboarding screen -->
-    <string name="fingerprint_icon_description">Imagen de la huella digital</string>
+    <string name="fingerprint_icon_description">Значок отпечатков пальцев</string>
     <!-- This is the title of the autofill onboarding screen. %1$s will be replaced with application name -->
-    <string name="onboarding_autofill_title">Permitir que %1$s autocomplete las contraseñas.</string>
+    <string name="onboarding_autofill_title">Позвольте %1$s вводить логины за вас.</string>
     <!-- This is the onboarding description for enabling the application as an autofill provider through the device's autofill settings. -->
-    <string name="onboarding_autofill_description">Autocompletará los nombres de usuario y contraseñas cuando más lo necesites.</string>
+    <string name="onboarding_autofill_description">Легко заполняйте имена пользователей и пароли там, где они нужны вам больше всего.</string>
     <!-- This button will take you to your phone's autofill settings screen. -->
-    <string name="go_to_settings">Ir a Ajustes</string>
+    <string name="go_to_settings">Перейти в настройки</string>
     <!-- This is the content description for the autofill image on the autofill onboarding screen. %1$s will be replaced with application name. Autofill should match the Android name for this system feature -->
-    <string name="onboarding_autofill_image_description">Autocompletado de %1$s</string>
+    <string name="onboarding_autofill_image_description">Автозаполнение %1$s</string>
     <!-- This is the title for the final onboarding screen -->
-    <string name="all_set">¡Ya está!</string>
+    <string name="all_set">Всё готово!</string>
     <!-- This is the button to dismiss the final onboarding screen -->
-    <string name="finish">Terminar</string>
+    <string name="finish">Завершить</string>
     <!-- This description of the app functionality is shown on the final onboarding screen -->
-    <string name="access_description">Acceder a los usuarios guardados en Firefox desde el teléfono</string>
+    <string name="access_description">Получите доступ к логинам, сохранённым в Firefox, с вашего телефона</string>
     <!-- This description of the app security is shown on the final onboarding screen. %s will be replaced with the security link. -->
-    <string name="security_description">Sincroniza dispositivos con la seguridad que te ofrece %s</string>
+    <string name="security_description">Синхронизация между устройствами с безопасным 256-битным шифрованием</string>
     <!-- This description of the app convenience is shown on the final onboarding screen. -->
-    <string name="convenience_description">Desbloquea rápidamente la aplicación mediante tu huella digital</string>
+    <string name="convenience_description">Разблокируйте приложение с легкостью, используя отпечаток пальца</string>
 
     <!-- This is the title of the device security dialog box. -->
-    <string name="secure_your_device">Protege tu dispositivo.</string>
+    <string name="secure_your_device">Защитите своё устройство.</string>
     <!-- This is the description explaining the device security requirements. -->
-    <string name="device_security_description">Deberías usar un patrón, PIN o contraseña para bloquear el teléfono. Si no los usas, cualquiera que tenga tu teléfono puede acceder a la información que tengas almacenada.</string>
+    <string name="device_security_description">Для блокировки вашего телефона вы должны использовать графический ключ, PIN-код или пароль. Без этого, кто угодно с доступом к вашему телефону может получить доступ к сохранённой здесь информации.</string>
     <!-- This is the skip button description on the device security dialog box. -->
-    <string name="skip_button">Saltar</string>
+    <string name="skip_button">Пропустить</string>
     <!-- This is the the button description on the device security dialog box which routes to system security settings. -->
-    <string name="set_up_now">Configurar ahora</string>
+    <string name="set_up_now">Настроить сейчас</string>
 
     <!-- This header appears above the Privacy page of the application website. -->
-    <string name="privacy">Privacidad</string>
+    <string name="privacy">Приватность</string>
 
     <!-- This is the prompt when autofill is triggered and the application is locked. It appears on top of the login form as an action available to the user to take. %1$s will be replaced with application name -->
-    <string name="autofill_authenticate_cta">Desbloquear %1$s</string>
+    <string name="autofill_authenticate_cta">Разблокировать %1$s</string>
     <!-- This is the message suggesting that if the user does not see the matching login to autofill into a form, they can search all their logins by opening this action. %1$s will be replaced with application name. -->
-    <string name="autofill_search_cta">Buscar %1$s</string>
+    <string name="autofill_search_cta">Поиск по %1$s</string>
     <!-- This is the error message when autofill is triggered and the application is in an error state. %1$s will be replaced with application name. %2$s refers to the localized error message that will be provided by the system. -->
-    <string name="autofill_error_toast">%1$s encontró un error: %2$s</string>
+    <string name="autofill_error_toast">%1$s столкнулся с ошибкой: %2$s</string>
 
     <!-- This is the placeholder text for an empty or null username. -->
-    <string name="no_username">(no existe usuario)</string>
+    <string name="no_username">(нет имени пользователя)</string>
 
     <!-- This is the description for the kebab menu in the item detail toolbar. -->
-    <string name="kebab_menu">Más opciones</string>
+    <string name="kebab_menu">Другие настройки</string>
     <!-- This is the text on an item in the item detail toolbar menu to delete an entry. -->
-    <string name="delete">Eliminar</string>
+    <string name="delete">Удалить</string>
     <!-- This is the confirmation message title seen when attempting to delete a login. -->
-    <string name="delete_this_login">¿Eliminar este inicio de sesión?</string>
+    <string name="delete_this_login">Удалить этот логин?</string>
     <!-- This is the description for the deletion dialog. -->
-    <string name="delete_description">Se eliminará el inicio de sesión tanto de %1$s como de Firefox.</string>
+    <string name="delete_description">Это удалит логин как из %1$s, так и из Firefox.</string>
     <!-- This is the text on an item in the item detail toolbar menu to edit an entry. -->
-    <string name="edit">Editar</string>
+    <string name="edit">Изменить</string>
 
     <!-- This is the description for the entry password in context of an edit item view. -->
-    <string name="entry_password_description">Contraseña para esta entrada.</string>
+    <string name="entry_password_description">Пароль для этого логина.</string>
     <!-- This is the title text on the dialog when you attempt to close the edit view and changes have been made. -->
-    <string name="discard_changes">¿Descartar los cambios?</string>
+    <string name="discard_changes">Сбросить изменения?</string>
     <!-- This is the additional text when you attempt to close the edit view and changes have been made. -->
-    <string name="discard_changes_description">No se guardarán tus ediciones.</string>
+    <string name="discard_changes_description">Ваши изменения не будут сохранены.</string>
     <!-- This is the text on the button to discard your current changes from the edit entry view. -->
-    <string name="discard">Descartar</string>
+    <string name="discard">Сбросить</string>
     <!-- This is the description for the hostname in the edit entry view. -->
-    <string name="web_address_description">El nombre del servidor</string>
+    <string name="web_address_description">Имя узла</string>
     <!-- This is the description for the username in the edit entry view. -->
-    <string name="username_description">El nombre de usuario</string>
+    <string name="username_description">Имя пользователя</string>
     <!-- This is the title of the edit login page. -->
-    <string name="edit_login_title">Editar inicio de sesión</string>
+    <string name="edit_login_title">Изменить логин</string>
 
     <!-- This is the error message that is shown in edit or create view when input text for password is not valid. -->
-    <string name="password_invalid_text">La contraseña no puede estar vacía</string>
-    </resources>
+    <string name="password_invalid_text">Пароль не может быть пустым</string>
+    <string name="username_duplicate_exists">Логин с таким именем пользователя уже существует</string>
+</resources>
