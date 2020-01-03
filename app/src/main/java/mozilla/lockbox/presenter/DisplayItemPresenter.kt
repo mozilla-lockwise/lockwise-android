@@ -28,6 +28,7 @@ import mozilla.lockbox.store.ItemDetailStore
 import mozilla.lockbox.store.NetworkStore
 import mozilla.lockbox.support.FeatureFlags
 import mozilla.lockbox.support.pushError
+import mozilla.lockbox.view.RootActivity
 
 interface DisplayItemView {
     val usernameCopyClicks: Observable<Unit>
@@ -52,6 +53,7 @@ interface DisplayItemView {
 
 @ExperimentalCoroutinesApi
 class DisplayItemPresenter(
+    private val activity: RootActivity,
     private val view: DisplayItemView,
     val itemId: String?,
     private val dispatcher: Dispatcher = Dispatcher.shared,

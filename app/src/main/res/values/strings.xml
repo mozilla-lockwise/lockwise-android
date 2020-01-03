@@ -306,4 +306,6 @@
     <!-- This is the error message that is shown in the create view when input text for hostname is empty. -->
     <string name="hostname_empty_invalid_text">Hostname cannot be empty</string>
 
+    <!-- This is the toast message that is shown when a new entry has been successfully created. -->
+    <string name="successful_create_toast">Login added successfully</string>
 </resources>

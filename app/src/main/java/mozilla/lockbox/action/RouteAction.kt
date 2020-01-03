@@ -8,6 +8,7 @@ package mozilla.lockbox.action
 
 import android.net.Uri
 import android.os.Build
+import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import mozilla.lockbox.R
@@ -30,6 +31,12 @@ open class RouteAction(
     object DiscardCreateItemNoChanges : RouteAction(TelemetryEventMethod.tap, TelemetryEventObject.discard_manual_create_no_changes)
     data class DisplayItem(val id: String) : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.entry_detail)
     data class EditItem(val id: String) : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.edit_entry_detail)
+
+    data class ShowToastNotification(
+        @StringRes val strId: Int? = null,
+        val text: String? = null,
+        val viewGroup: ViewGroup
+    ) : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.successful_save_toast)
 
     // This should _only_ be triggered by pressing the back button.
     object InternalBack : RouteAction(TelemetryEventMethod.tap, TelemetryEventObject.back)

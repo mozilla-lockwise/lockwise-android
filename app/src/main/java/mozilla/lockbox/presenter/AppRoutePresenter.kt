@@ -24,6 +24,8 @@ import mozilla.lockbox.view.AppWebPageFragmentArgs
 import mozilla.lockbox.view.EditItemFragmentArgs
 import mozilla.lockbox.view.DisplayItemFragmentArgs
 import mozilla.lockbox.view.FingerprintAuthDialogFragment
+import mozilla.lockbox.view.RootActivity
+import okhttp3.Route
 
 @ExperimentalCoroutinesApi
 class AppRoutePresenter(
@@ -97,9 +99,18 @@ class AppRoutePresenter(
             is RouteAction.AutoLockSetting -> showAutoLockSelections()
             is RouteAction.DialogFragment.FingerprintDialog ->
                 showDialogFragment(FingerprintAuthDialogFragment(), action)
+            is RouteAction.ShowToastNotification -> showToast(action)
             is DialogAction -> showDialog(action)
             is AppWebPageAction -> navigateToFragment(R.id.fragment_webview, bundle(action))
         }
+    }
+
+    private fun showToast(action: RouteAction.ShowToastNotification) {
+        (activity as RootActivity).showToastNotification(
+            strId = action.strId,
+            text = action.text,
+            viewGroup = action.viewGroup
+        )
     }
 
     private fun showLockScreen() {

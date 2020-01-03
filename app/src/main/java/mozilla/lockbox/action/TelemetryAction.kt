@@ -102,5 +102,6 @@ enum class TelemetryEventObject {
     end_manual_create_session,
     discard_manual_create_no_changes,
     manual_create_save,
-    manual_create_datastore_save;
+    manual_create_datastore_save,
+    successful_save_toast;
 }

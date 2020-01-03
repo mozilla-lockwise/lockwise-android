@@ -15,6 +15,7 @@ import kotlinx.android.synthetic.main.fragment_create_item.*
 import kotlinx.android.synthetic.main.fragment_create_item.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
+import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.presenter.CreateItemPresenter
 import mozilla.lockbox.presenter.CreateItemView
 
@@ -55,5 +56,9 @@ class CreateItemFragment : ItemMutationFragment(), CreateItemView {
         view.inputHostname.hint = getString(R.string.create_hostname_hint_text)
         view.inputUsername.hint = getString(R.string.create_username_hint_text)
         view.inputPassword.hint = getString(R.string.hint_password)
+    }
+
+    override fun getToastAction(strId: Int?): RouteAction {
+        return RouteAction.ShowToastNotification(strId = strId, viewGroup = this.view as ViewGroup)
     }
 }

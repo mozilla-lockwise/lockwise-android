@@ -7,11 +7,17 @@
 package mozilla.lockbox.view
 
 import android.os.Bundle
+import android.view.Gravity
+import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.TextView
+import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
 import mozilla.lockbox.presenter.AppRoutePresenter
+import mozilla.lockbox.support.assertOnUiThread
 import mozilla.lockbox.support.isDebug
 
 @ExperimentalCoroutinesApi
@@ -50,5 +56,19 @@ class RootActivity : AppCompatActivity() {
         if (!presenter.onBackPressed()) {
             super.onBackPressed()
         }
+    }
+
+    fun showToastNotification(@StringRes strId: Int? = null, text: String? = null, viewGroup: ViewGroup) {
+        assertOnUiThread()
+        val toast = Toast(this)
+
+        toast.duration = Toast.LENGTH_SHORT
+        toast.view = layoutInflater.inflate(R.layout.toast_view, viewGroup, false)
+        toast.setGravity(Gravity.FILL_HORIZONTAL or Gravity.BOTTOM, 0, 0)
+
+        val view = toast.view.findViewById(R.id.message) as TextView
+        view.text = text?.plus(" deleted.") ?: resources.getString(strId!!)
+
+        toast.show()
     }
 }

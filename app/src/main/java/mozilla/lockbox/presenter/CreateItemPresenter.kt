@@ -8,6 +8,7 @@ package mozilla.lockbox.presenter
 
 import android.text.TextUtils
 import android.webkit.URLUtil
+import androidx.annotation.StringRes
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
@@ -18,7 +19,9 @@ import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.ItemDetailStore
 
-interface CreateItemView : ItemMutationView
+interface CreateItemView : ItemMutationView {
+    fun getToastAction(@StringRes strId: Int? = null): RouteAction
+}
 
 private val minimalHostRegex = (
         "^https?" + // scheme
@@ -64,7 +67,10 @@ class CreateItemPresenter(
     }
 
     override fun endEditingAction(): List<Action> {
-        return listOf(RouteAction.ItemList)
+        return listOf(
+            RouteAction.ItemList,
+            view.getToastAction(R.string.successful_create_toast)
+        )
     }
 
     override fun hostnameError(inputText: String, showingErrors: Boolean): Int? =

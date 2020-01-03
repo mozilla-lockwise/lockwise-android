@@ -49,7 +49,7 @@ class DisplayItemFragment : BackableFragment(), DisplayItemView {
         }
 
         this.setHasOptionsMenu(true)
-        presenter = DisplayItemPresenter(this, itemId)
+        presenter = DisplayItemPresenter(activity as RootActivity,this, itemId)
 
         return inflater.inflate(R.layout.fragment_display_item, container, false)
     }
@@ -192,14 +192,7 @@ class DisplayItemFragment : BackableFragment(), DisplayItemView {
     }
 
     override fun showToastNotification(@StringRes strId: Int) {
-        assertOnUiThread()
-        val toast = Toast(activity)
-        toast.duration = Toast.LENGTH_SHORT
-        toast.view = layoutInflater.inflate(R.layout.toast_view, this.view as ViewGroup, false)
-        toast.setGravity(Gravity.FILL_HORIZONTAL or Gravity.BOTTOM, 0, 0)
-        val v = toast.view.findViewById(R.id.message) as TextView
-        v.text = resources.getString(strId)
-        toast.show()
+        (activity as RootActivity).showToastNotification(strId = strId, viewGroup = this.view as ViewGroup)
     }
 
     // used for feature flag

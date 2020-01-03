@@ -31,7 +31,7 @@ class ItemDetailRobot : BaseTestRobot {
     fun tapCopyPass() = ClickActions.click { id(R.id.btnPasswordCopy) }
 
     fun toastIsDisplayed(id: Int, activityRule: ActivityTestRule<RootActivity>) =
-        onView(withText(id)).inRoot(withDecorView(not(`is`(activityRule.activity.getWindow().decorView))))
+        onView(withText(id)).inRoot(withDecorView(not(`is`(activityRule.activity.window.decorView))))
             .check(matches(isDisplayed()))
 
     fun tapKebabMenu() = ClickActions.click { id(R.id.kebabMenuButton) }
