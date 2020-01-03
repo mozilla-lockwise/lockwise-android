@@ -13,7 +13,7 @@ buildscript {
     // Determined from
     // https://github.com/mozilla-mobile/android-components/blob/v19.0.1/buildSrc/src/main/java/Dependencies.kt,
     // where the version in the URL is the tag corresponding to `android_components_version`.
-    ext.mozilla_appservices_version = '0.42.0'
+    ext.mozilla_appservices_version = '0.46.0'
     ext.lifecycle_version = '1.1.1'
     ext.navigation_version = '1.0.0'
     ext.rxbinding_version = '2.2.0'
