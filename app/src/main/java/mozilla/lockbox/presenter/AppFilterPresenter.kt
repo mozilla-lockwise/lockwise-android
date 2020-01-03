@@ -21,7 +21,7 @@ open class AppFilterPresenter(
     override val dataStore: DataStore = DataStore.shared
 ) : FilterPresenter(view, dispatcher, dataStore) {
     override fun Observable<ItemViewModel>.itemSelectionActionMap(): Observable<Action> {
-        return this.map { RouteAction.ItemDetail(it.id) }
+        return this.map { RouteAction.DisplayItem(it.id) }
     }
 
     override fun Observable<Pair<CharSequence, List<ItemViewModel>>>.itemListMap(): Observable<List<ItemViewModel>> {

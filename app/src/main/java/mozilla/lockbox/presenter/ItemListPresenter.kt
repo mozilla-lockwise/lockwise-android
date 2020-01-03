@@ -40,6 +40,7 @@ interface ItemListView {
     val noEntriesClicks: Observable<Unit>
     val menuItemSelections: Observable<Int>
     val lockNowClick: Observable<Unit>
+    val createNewEntryClick: Observable<Unit>
     val sortItemSelection: Observable<Setting.ItemListSort>
     fun updateItems(itemList: List<ItemViewModel>)
     fun updateAccountProfile(profile: AccountViewModel)
@@ -104,7 +105,7 @@ class ItemListPresenter(
             .addTo(compositeDisposable)
 
         view.itemSelection
-            .map { RouteAction.ItemDetail(it.id) }
+            .map { RouteAction.DisplayItem(it.id) }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
 
@@ -128,6 +129,11 @@ class ItemListPresenter(
                     DataStoreAction.Lock
                 else DialogAction.SecurityDisclaimer
             }
+            .subscribe(dispatcher::dispatch)
+            .addTo(compositeDisposable)
+
+        view.createNewEntryClick
+            .map { RouteAction.CreateItem }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
 

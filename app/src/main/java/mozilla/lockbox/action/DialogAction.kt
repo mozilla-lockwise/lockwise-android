@@ -103,7 +103,21 @@ sealed class DialogAction(
             R.color.red
         ),
         listOf(
-            ItemDetailAction.EndEditing(itemId)
+            ItemDetailAction.EndEditItemSession
+        )
+    )
+
+    // TODO in https://github.com/mozilla-lockwise/lockwise-android/issues/822
+    object DiscardChangesCreateDialog : DialogAction(
+        DialogViewModel(
+            R.string.discard_changes,
+            R.string.discard_changes_description,
+            R.string.discard,
+            R.string.cancel,
+            R.color.red
+        ),
+        listOf(
+            DiscardCreateItemNoChanges
         )
     )
 }

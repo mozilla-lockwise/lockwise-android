@@ -40,9 +40,9 @@
                 app:popUpTo="@id/fragment_account_setting"
                 app:popUpToInclusive="true" />
         <action android:id="@+id/action_init_to_item_detail"
-                app:destination="@id/fragment_item_detail"
+                app:destination="@id/fragment_display_item"
                 app:launchSingleTop="true"
-                app:popUpTo="@id/fragment_item_detail"
+                app:popUpTo="@id/fragment_display_item"
                 app:popUpToInclusive="true" />
         <action android:id="@+id/action_init_to_filter"
                 app:destination="@id/fragment_filter"
@@ -147,7 +147,7 @@
             tools:layout="@layout/fragment_item_list">
         <action
                 android:id="@+id/action_itemList_to_itemDetail"
-                app:destination="@id/fragment_item_detail"/>
+                app:destination="@id/fragment_display_item"/>
         <action
                 android:id="@+id/action_itemList_to_setting"
                 app:destination="@id/fragment_setting"
@@ -173,26 +173,31 @@
                 app:popUpTo="@+id/fragment_locked"
                 app:popUpToInclusive="true"/>
         <action
+                android:id="@+id/action_itemList_to_createItem"
+                app:destination="@+id/fragment_create_item"
+                app:launchSingleTop="true"
+                app:popUpToInclusive="true"/>
+        <action
                 android:id="@+id/action_itemList_to_filter"
                 app:destination="@id/fragment_filter"/>
     </fragment>
 
     <fragment
-            android:id="@+id/fragment_item_detail"
-            android:name="mozilla.lockbox.view.ItemDetailFragment"
-            tools:layout="@layout/fragment_item_detail">
+            android:id="@+id/fragment_display_item"
+            android:name="mozilla.lockbox.view.DisplayItemFragment"
+            tools:layout="@layout/fragment_display_item">
         <argument
                 android:name="itemId"
                 android:defaultValue="MISSING_ID"
                 app:argType="string"/>
         <action
-                android:id="@+id/action_itemDetail_to_edit"
-                app:destination="@id/fragment_item_edit"
+                android:id="@+id/action_displayItem_to_editItem"
+                app:destination="@id/fragment_edit_item"
                 app:popEnterAnim="@anim/none"
                 app:popExitAnim="@anim/none"
                 app:enterAnim="@anim/none"
                 app:exitAnim="@anim/none"
-                app:popUpTo="@id/fragment_item_edit"
+                app:popUpTo="@id/fragment_edit_item"
                 app:popUpToInclusive="true"/>
         <action
                 android:id="@+id/action_itemDetail_to_locked"
@@ -201,28 +206,43 @@
     </fragment>
 
     <fragment
-            android:id="@+id/fragment_item_edit"
+            android:id="@+id/fragment_edit_item"
             android:name="mozilla.lockbox.view.EditItemFragment"
-            tools:layout="@layout/fragment_item_edit">
+            tools:layout="@layout/fragment_edit_item">
         <argument
                 android:name="itemId"
                 android:defaultValue="MISSING_ID"
                 app:argType="string"/>
         <action
-                android:id="@+id/action_itemEdit_to_itemList"
+                android:id="@+id/action_editItem_to_itemList"
                 app:destination="@id/fragment_item_list"
                 app:launchSingleTop="true"
                 app:popUpToInclusive="true"/>
         <action
-                android:id="@+id/action_itemEdit_to_itemDetail"
-                app:destination="@id/fragment_item_detail"
+                android:id="@+id/action_editItem_to_displayItem"
+                app:destination="@id/fragment_display_item"
                 app:popEnterAnim="@anim/none"
                 app:popExitAnim="@anim/none"
                 app:enterAnim="@anim/none"
                 app:exitAnim="@anim/none"
                 app:popUpToInclusive="true"/>
         <action
-                android:id="@+id/action_itemEdit_to_locked"
+                android:id="@+id/action_editItem_to_locked"
+                app:destination="@id/fragment_locked"
+                app:popUpToInclusive="true"/>
+    </fragment>
+
+    <fragment
+            android:id="@+id/fragment_create_item"
+            android:name="mozilla.lockbox.view.CreateItemFragment"
+            tools:layout="@layout/fragment_create_item">
+        <action
+                android:id="@+id/action_manualCreate_to_itemList"
+                app:destination="@id/fragment_item_list"
+                app:launchSingleTop="true"
+                app:popUpToInclusive="true"/>
+        <action
+                android:id="@+id/action_manualCreate_to_locked"
                 app:destination="@id/fragment_locked"
                 app:popUpToInclusive="true"/>
     </fragment>
@@ -273,7 +293,7 @@
             tools:layout="@layout/fragment_filter">
         <action
                 android:id="@+id/action_filter_to_itemDetail"
-                app:destination="@id/fragment_item_detail"/>
+                app:destination="@id/fragment_display_item"/>
         <action
                 android:id="@+id/action_filter_to_itemList"
                 app:destination="@id/fragment_item_list"/>
@@ -296,6 +316,11 @@
         <action
                 android:id="@+id/action_locked_to_welcome"
                 app:destination="@id/fragment_welcome"
+                app:launchSingleTop="true"/>
+
+        <action
+                android:id="@+id/action_locked_to_manualCreate"
+                app:destination="@id/fragment_create_item"
                 app:launchSingleTop="true"/>
     </fragment>
 

@@ -16,7 +16,7 @@ import mozilla.lockbox.R
 
 class EditCredentialRobot : BaseTestRobot {
 
-    override fun exists() = VisibilityAssertions.displayed { id(R.id.editLoginTitle) }
+    override fun exists() = VisibilityAssertions.displayed { id(R.id.toolbarTitle) }
 
     fun saveChanges() = ClickActions.click { id(R.id.saveEntryButton) }
     fun closeEditChanges() = ClickActions.click { contentDescription("Back") }

@@ -4,179 +4,205 @@
   ~ License, v. 2.0. If a copy of the MPL was not distributed with this
   ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
   -->
-<androidx.drawerlayout.widget.DrawerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/appDrawer"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".view.ItemListFragment"
-    android:theme="@style/AppTheme">
-
-    <LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/fragment_item_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="false"
-        android:orientation="vertical"
-        android:background="@color/background_white">
-
-        <androidx.appcompat.widget.Toolbar
-                android:id="@+id/navToolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
-                android:theme="@style/ToolBar">
-            <androidx.constraintlayout.widget.ConstraintLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                <LinearLayout
-                        android:orientation="horizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginEnd="66dp"
-                        app:layout_constraintStart_toStartOf="parent">
-                    <Spinner
-                            android:id="@+id/sortButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:textAllCaps="false"
-                            android:drawableEnd="@drawable/ic_down_caret"
-                            android:contentDescription="@string/sort_description"
-                            android:overlapAnchor="false"
-                            android:popupElevation="8dp"
-                            android:dropDownWidth="170dp"
-                            android:dropDownSelector="@color/selection"
-                            android:spinnerMode="dropdown"
-                            android:popupBackground="@drawable/sort_menu_bg"
-                            android:textSize="20sp"
-                            style="@style/PopupMenu"
-                            android:background="@null"/>
-                </LinearLayout>
-                <LinearLayout
-                        android:orientation="horizontal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        app:layout_constraintEnd_toEndOf="parent">
-                    <Button
-                            android:id="@+id/filterButton"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:drawableEnd="@drawable/ic_search"
-                            android:drawablePadding="16dp"
-                            android:paddingEnd="16dp"
-                            android:textSize="20sp"
-                            android:contentDescription="@string/search_description"
-                            style="@style/ToolbarButton"
-                            tools:ignore="RtlSymmetry"/>
-                </LinearLayout>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </androidx.appcompat.widget.Toolbar>
-
-        <include layout="@layout/fragment_warning"
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content"
-                 app:layout_constraintTop_toBottomOf="@id/toolbar"
-                 app:layout_constraintBottom_toTopOf="@id/entriesView"
-                 tools:text="@string/no_internet_connection" />
-
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/refreshContainer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/entriesView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-        <RelativeLayout
-            android:id="@+id/loadingView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/background_grey">
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                android:contentDescription="@null"
-                android:scaleType="fitXY"
-                app:srcCompat="@drawable/ic_placeholder_entries" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_alignParentBottom="true"
-                android:layout_margin="10dp"
-                android:elevation="2dp"
-                android:background="@drawable/rounded_corner_bg"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <ProgressBar
-                    android:id="@+id/updateProgressBar"
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="16dp"
-                    android:background="@android:color/transparent"
-                    android:indeterminateDrawable="@drawable/progress_icon" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
-                    android:fontFamily="sans-serif"
-                    android:letterSpacing="0.02"
-                    android:lineSpacingExtra="6sp"
-                    android:text="@string/syncing_logins"
-                    android:textColor="@android:color/white"
-                    android:textSize="14sp"
-                    android:textStyle="normal" />
-            </LinearLayout>
-        </RelativeLayout>
-    </LinearLayout>
-
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/navView"
-        android:layout_width="wrap_content"
+        android:theme="@style/AppTheme"
+        >
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/appDrawer"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:fitsSystemWindows="true"
-        android:theme="@style/NavDrawerStyle"
-        app:headerLayout="@layout/nav_header"
-        app:itemTextAppearance="@style/NavDrawerStyle"
-        app:itemTextColor="@color/text_ink"
-        app:menu="@menu/nav_menu">
+        tools:context=".view.ItemListFragment"
+        android:theme="@style/AppTheme">
 
         <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_gravity="bottom">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="false"
+            android:orientation="vertical"
+            android:background="@color/background_white">
 
-            <Button
-                android:id="@+id/lockNow"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:backgroundTint="@color/background_white"
-                android:drawableStart="@drawable/ic_lock"
-                android:drawablePadding="32dp"
-                android:elevation="0dp"
-                android:paddingStart="16dp"
-                android:paddingTop="16dp"
-                android:paddingBottom="16dp"
-                android:stateListAnimator="@null"
-                android:text="@string/lock_now"
-                android:textAlignment="viewStart"
-                android:textColor="@color/text_ink"
-                android:theme="@style/NavDrawerButtonStyle"
-                tools:ignore="RtlSymmetry"/>
+            <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/navToolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="?attr/colorPrimary"
+                    android:theme="@style/ToolBar">
+                <androidx.constraintlayout.widget.ConstraintLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                    <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginEnd="66dp"
+                            app:layout_constraintStart_toStartOf="parent">
+                        <Spinner
+                                android:id="@+id/sortButton"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:textAllCaps="false"
+                                android:drawableEnd="@drawable/ic_down_caret"
+                                android:contentDescription="@string/sort_description"
+                                android:overlapAnchor="false"
+                                android:popupElevation="8dp"
+                                android:dropDownWidth="170dp"
+                                android:dropDownSelector="@color/selection"
+                                android:spinnerMode="dropdown"
+                                android:popupBackground="@drawable/sort_menu_bg"
+                                android:textSize="20sp"
+                                style="@style/PopupMenu"
+                                android:background="@null"/>
+                    </LinearLayout>
+                    <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            app:layout_constraintEnd_toEndOf="parent">
+                        <Button
+                                android:id="@+id/filterButton"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:drawableEnd="@drawable/ic_search"
+                                android:drawablePadding="16dp"
+                                android:paddingEnd="16dp"
+                                android:textSize="20sp"
+                                android:contentDescription="@string/search_description"
+                                style="@style/ToolbarButton"
+                                tools:ignore="RtlSymmetry"/>
+                    </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.appcompat.widget.Toolbar>
+
+            <include layout="@layout/fragment_warning"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     app:layout_constraintTop_toBottomOf="@id/toolbar"
+                     app:layout_constraintBottom_toTopOf="@id/entriesView"
+                     tools:text="@string/no_internet_connection" />
+
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                    android:id="@+id/refreshContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/entriesView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+            <RelativeLayout
+                android:id="@+id/loadingView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/background_grey">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@null"
+                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/ic_placeholder_entries" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_margin="10dp"
+                    android:elevation="2dp"
+                    android:background="@drawable/rounded_corner_bg"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ProgressBar
+                        android:id="@+id/updateProgressBar"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="16dp"
+                        android:background="@android:color/transparent"
+                        android:indeterminateDrawable="@drawable/progress_icon" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:fontFamily="sans-serif"
+                        android:letterSpacing="0.02"
+                        android:lineSpacingExtra="6sp"
+                        android:text="@string/syncing_logins"
+                        android:textColor="@android:color/white"
+                        android:textSize="14sp"
+                        android:textStyle="normal" />
+                </LinearLayout>
+            </RelativeLayout>
         </LinearLayout>
-    </com.google.android.material.navigation.NavigationView>
-</androidx.drawerlayout.widget.DrawerLayout>
+
+        <com.google.android.material.navigation.NavigationView
+            android:id="@+id/navView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:fitsSystemWindows="true"
+            android:theme="@style/NavDrawerStyle"
+            app:headerLayout="@layout/nav_header"
+            app:itemTextAppearance="@style/NavDrawerStyle"
+            app:itemTextColor="@color/text_ink"
+            app:menu="@menu/nav_menu">
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_gravity="bottom">
+
+                <Button
+                    android:id="@+id/lockNow"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/background_white"
+                    android:drawableStart="@drawable/ic_lock"
+                    android:drawablePadding="32dp"
+                    android:elevation="0dp"
+                    android:paddingStart="16dp"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="16dp"
+                    android:stateListAnimator="@null"
+                    android:text="@string/lock_now"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/text_ink"
+                    android:theme="@style/NavDrawerButtonStyle"
+                    tools:ignore="RtlSymmetry"/>
+            </LinearLayout>
+        </com.google.android.material.navigation.NavigationView>
+
+    </androidx.drawerlayout.widget.DrawerLayout>
+
+    <ImageButton
+            android:id="@+id/createItemButton"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/create_button"
+            android:contentDescription="@string/create_title"
+            android:elevation="5dp"
+            android:padding="21dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_add"
+            android:tint="@color/text_white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+    />
+</androidx.constraintlayout.widget.ConstraintLayout>

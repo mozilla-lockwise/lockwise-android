@@ -101,7 +101,7 @@ class AppRoutePresenterTest {
 
     @Test
     fun `item detail bundle is created`() {
-        val action = RouteAction.ItemDetail("id")
+        val action = RouteAction.DisplayItem("id")
         val result = subject.bundle(action)
         Assert.assertThat(result, CoreMatchers.instanceOf(Bundle::class.java))
     }

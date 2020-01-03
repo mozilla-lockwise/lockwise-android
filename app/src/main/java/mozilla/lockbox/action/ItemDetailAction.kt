@@ -6,16 +6,30 @@
 
 package mozilla.lockbox.action
 
-import mozilla.appservices.logins.ServerPassword
-
 sealed class ItemDetailAction(
     override val eventMethod: TelemetryEventMethod,
     override val eventObject: TelemetryEventObject
 ) : TelemetryAction {
     data class SetPasswordVisibility(val visible: Boolean) :
         ItemDetailAction(TelemetryEventMethod.tap, TelemetryEventObject.reveal_password)
-    data class SaveChanges(val previous: ServerPassword, val next: ServerPassword) :
+
+    data class BeginEditItemSession(val itemId: String) :
+        ItemDetailAction(TelemetryEventMethod.tap, TelemetryEventObject.begin_edit_item_session)
+    object EditItemSaveChanges :
         ItemDetailAction(TelemetryEventMethod.tap, TelemetryEventObject.update_credential)
-    data class EndEditing(val itemId: String) :
-        ItemDetailAction(TelemetryEventMethod.tap, TelemetryEventObject.back)
+    object EndEditItemSession :
+        ItemDetailAction(TelemetryEventMethod.tap, TelemetryEventObject.end_edit_item_session)
+
+    object BeginCreateItemSession :
+        ItemDetailAction(TelemetryEventMethod.tap, TelemetryEventObject.begin_manual_create_session)
+    object CreateItemSaveChanges :
+        ItemDetailAction(TelemetryEventMethod.tap, TelemetryEventObject.manual_create_save)
+    object EndCreateItemSession :
+        ItemDetailAction(TelemetryEventMethod.tap, TelemetryEventObject.end_manual_create_session)
+
+    data class EditField(
+        val username: String? = null,
+        val password: String? = null,
+        val hostname: String? = null
+    ) : ItemDetailAction(TelemetryEventMethod.edit, TelemetryEventObject.update_credential)
 }

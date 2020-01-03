@@ -40,10 +40,10 @@ open class NetworkErrorHelper {
         child.layoutParams = viewParams
     }
 
-    fun hideNetworkError(parent: View?, child: RecyclerView) {
+    fun hideNetworkError(parent: View?, child: RecyclerView?) {
         hideNetworkError(parent)
-        val marginLayoutParams = ViewGroup.MarginLayoutParams(child.layoutParams)
+        val marginLayoutParams = ViewGroup.MarginLayoutParams(child?.layoutParams)
         marginLayoutParams.setMargins(0, 0, 0, 0)
-        child.layoutParams = marginLayoutParams
+        child?.layoutParams = marginLayoutParams
     }
 }

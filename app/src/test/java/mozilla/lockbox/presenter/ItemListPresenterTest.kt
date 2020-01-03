@@ -81,6 +81,7 @@ open class ItemListPresenterTest {
         val itemSelectedStub = PublishSubject.create<ItemViewModel>()
         val filterClickStub = PublishSubject.create<Unit>()
         val noEntriesClickStub = PublishSubject.create<Unit>()
+        val createNewEntryClickStub = PublishSubject.create<Unit>()
         val sortItemSelectionStub = PublishSubject.create<Setting.ItemListSort>()
         val disclaimerActionStub = PublishSubject.create<AlertState>()
         val lockNowSelectionStub = PublishSubject.create<Unit>()
@@ -100,6 +101,9 @@ open class ItemListPresenterTest {
 
         override val lockNowClick: Observable<Unit>
             get() = lockNowSelectionStub
+
+        override val createNewEntryClick: Observable<Unit>
+            get() = createNewEntryClickStub
 
         override val noEntriesClicks: Observable<Unit>
             get() = noEntriesClickStub
@@ -225,7 +229,7 @@ open class ItemListPresenterTest {
         val id = "the_guid"
         view.itemSelectedStub.onNext(ItemViewModel("title", "subtitle", id))
 
-        dispatcherObserver.assertLastValue(RouteAction.ItemDetail(id))
+        dispatcherObserver.assertLastValue(RouteAction.DisplayItem(id))
     }
 
     @Test
@@ -291,6 +295,12 @@ open class ItemListPresenterTest {
     fun `filter clicks cause RouteAction Filter`() {
         view.filterClickStub.onNext(Unit)
         Assert.assertTrue(dispatcherObserver.values().last() is RouteAction.Filter)
+    }
+
+    @Test
+    fun `click on create button takes you to manual create view`() {
+        view.createNewEntryClickStub.onNext(Unit)
+        Assert.assertTrue(dispatcherObserver.values().last() is RouteAction.CreateItem)
     }
 
     @Test

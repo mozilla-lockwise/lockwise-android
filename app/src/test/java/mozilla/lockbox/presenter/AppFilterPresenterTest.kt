@@ -58,7 +58,7 @@ class AppFilterPresenterTest {
             .blockingIterable()
             .iterator()
 
-        Assert.assertEquals(RouteAction.ItemDetail(id), action.next())
+        Assert.assertEquals(RouteAction.DisplayItem(id), action.next())
     }
 
     @Test

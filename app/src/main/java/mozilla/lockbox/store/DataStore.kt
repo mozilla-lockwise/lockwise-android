@@ -23,8 +23,8 @@ import mozilla.components.service.sync.logins.AsyncLoginsStorage
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.SentryAction
-import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.extensions.filter
+import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.log
 import mozilla.lockbox.model.SyncCredentials
@@ -116,6 +116,7 @@ open class DataStore(
                     is DataStoreAction.Delete -> delete(action.item)
                     is DataStoreAction.UpdateItemDetail -> updateItem(action.previous, action.next)
                     is DataStoreAction.AutofillCapture -> autofillAdd(action.item)
+                    is DataStoreAction.CreateItem -> add(action.item)
                 }
             }
             .addTo(compositeDisposable)
@@ -220,6 +221,7 @@ open class DataStore(
             )
         }
 
+    // Note: in order to add, we need a ServerPassword with exactly one of formSubmitURL and httpRealm
     @VisibleForTesting(
         otherwise = VisibleForTesting.PRIVATE
     )
