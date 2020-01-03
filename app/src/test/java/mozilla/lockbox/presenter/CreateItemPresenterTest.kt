@@ -9,23 +9,22 @@ package mozilla.lockbox.presenter
 import androidx.annotation.StringRes
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
+import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import mozilla.appservices.logins.ServerPassword
+import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.ItemDetailAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.log
 import mozilla.lockbox.model.ItemDetailViewModel
-import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.ItemDetailStore
-import mozilla.lockbox.support.asOptional
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.Mockito
+import org.mockito.Mockito.`when`
 import org.mockito.Mockito.spy
 import org.powermock.api.mockito.PowerMockito
 import org.robolectric.RobolectricTestRunner
@@ -42,41 +41,21 @@ class CreateItemPresenterTest {
 
         override val togglePasswordClicks = PublishSubject.create<Unit>()
 
-        val hostnameClicksStub = PublishSubject.create<String>()
+        val hostnameChangedStub = BehaviorSubject.createDefault("")
         override val hostnameChanged: Observable<String>
-            get() = hostnameClicksStub
+            get() = hostnameChangedStub
 
-        val usernameClicksStub = PublishSubject.create<String>()
+        val usernameChangedStub = BehaviorSubject.createDefault("")
         override val usernameChanged: Observable<String>
-            get() = usernameClicksStub
+            get() = usernameChangedStub
 
-        val passwordClicksStub = PublishSubject.create<String>()
+        val passwordChangedStub = BehaviorSubject.createDefault("")
         override val passwordChanged: Observable<String>
-            get() = passwordClicksStub
+            get() = passwordChangedStub
 
         override fun closeKeyboard() {
             log.info("close keyboard")
         }
-
-        val fakeCredential: ServerPassword by lazy {
-            ServerPassword(
-                "id0",
-                "https://www.mozilla.org",
-                "dogs@dogs.com",
-                "woof",
-                timesUsed = 0,
-                timeCreated = 0L,
-                timeLastUsed = 0L,
-                timePasswordChanged = 0L
-            )
-        }
-
-        var itemDetailViewModelStub = ServerPassword(
-            id = "",
-            hostname = fakeCredential.hostname,
-            username = fakeCredential.username,
-            password = fakeCredential.password
-        )
 
         var item: ItemDetailViewModel? = null
 
@@ -90,7 +69,7 @@ class CreateItemPresenterTest {
         override val closeEntryClicks = PublishSubject.create<Unit>()
         override val saveEntryClicks = PublishSubject.create<Unit>()
 
-        override fun displayHostnameError(errorMessage: Int?) {
+        override fun displayHostnameError(@StringRes errorMessage: Int?) {
             hostnameError = errorMessage
         }
 
@@ -112,25 +91,65 @@ class CreateItemPresenterTest {
     val dispatcherObserver = TestObserver.create<Action>()!!
     val view: FakeCreateView = spy(FakeCreateView())
 
-    @Mock
-    val itemDetailStore = PowerMockito.mock(ItemDetailStore::class.java)!!
-    private val isPasswordVisibleStub = PublishSubject.create<Boolean>()
+    private val isPasswordVisibleStub = BehaviorSubject.createDefault(false)
+    private val unavailableUsernamesStub = BehaviorSubject.createDefault(emptySet<String>())
+    private val isDirtyStub = BehaviorSubject.createDefault(false)
+    private val isEditingStub = BehaviorSubject.createDefault(true)
+
+    val itemDetailStore: ItemDetailStore by lazy {
+        val store = PowerMockito.mock(ItemDetailStore::class.java)!!
+        `when`(store.isPasswordVisible).thenReturn(isPasswordVisibleStub)
+        `when`(store.unavailableUsernames).thenReturn(unavailableUsernamesStub)
+        `when`(store.isDirty).thenReturn(isDirtyStub)
+        `when`(store.isEditing).thenReturn(isEditingStub)
+        store
+    }
 
     lateinit var subject: CreateItemPresenter
 
     @Before
     fun setUp() {
-        dispatcher.register.subscribe(dispatcherObserver)
-        Mockito.`when`(itemDetailStore.isPasswordVisible).thenReturn(isPasswordVisibleStub)
-
         subject = CreateItemPresenter(view, dispatcher, itemDetailStore)
         subject.onViewReady()
+
+        dispatcher.register.subscribe(dispatcherObserver)
     }
 
     @Test
-    fun `tapping on save button`() {
-        view.setSaveEnabled(true)
+    fun testViewReady() {
+        val testObserver = TestObserver.create<Action>()
+        dispatcher.register.subscribe(testObserver)
+        val subject = CreateItemPresenter(view, dispatcher, itemDetailStore)
+        subject.onViewReady()
+
+        testObserver.assertValueSequence(
+            listOf(
+                ItemDetailAction.BeginCreateItemSession,
+                ItemDetailAction.EditField(username = ""),
+                ItemDetailAction.EditField(password = ""),
+                ItemDetailAction.EditField(hostname = "")
+            )
+        )
+    }
+
+    @Test
+    fun `tapping on save button when not dirty`() {
+        isDirtyStub.onNext(false)
         view.saveEntryClicks.onNext(Unit)
+        isEditingStub.onNext(false)
+        dispatcherObserver.assertValueSequence(
+            listOf(
+                ItemDetailAction.EndCreateItemSession,
+                RouteAction.ItemList
+            )
+        )
+    }
+
+    @Test
+    fun `tapping on save button when dirty`() {
+        isDirtyStub.onNext(true)
+        view.saveEntryClicks.onNext(Unit)
+        isEditingStub.onNext(false)
         dispatcherObserver.assertValueSequence(
             listOf(
                 ItemDetailAction.CreateItemSaveChanges,
@@ -140,68 +159,40 @@ class CreateItemPresenterTest {
     }
 
     @Test
-    fun `tapping on close button`() {
+    fun `tapping on close button when not dirty`() {
+        isDirtyStub.onNext(false)
         view.closeEntryClicks.onNext(Unit)
-        dispatcherObserver.assertValue(RouteAction.DiscardCreateItemNoChanges)
-    }
-
-    // TODO: https://github.com/mozilla-lockwise/lockwise-android/issues/822
-    /* @Test
-    fun `sends a list of duplicates to the view model`() {
-        setUpTestSubject(fakeCredentialNoUsername)
-        view.usernameClicksStub.onNext("")
-        view.pwdClicksStub.onNext(fakeCredentialNoUsername.password)
-
-        // now do the test.
-        view.usernameClicksStub.onNext(fakeCredential.username ?: "")
-
-        assertNotNull(view.usernameError)
-    } */
-
-    // TODO: https://github.com/mozilla-lockwise/lockwise-android/issues/823
-    /* @Test
-    fun `tapping on close button with no change`() {
-        getStub.onNext(item.asOptional())
-        listStub.onNext(
-            listOf(
-                fakeCredential,
-                fakeCredentialNoUsername
-            )
-        )
-        view.closeEntryClicksStub.onNext(Unit)
-
+        isEditingStub.onNext(false)
         dispatcherObserver.assertValueSequence(
             listOf(
-                ItemDetailAction.EndEditing(fakeCredential.id)
+                ItemDetailAction.EndCreateItemSession,
+                RouteAction.ItemList
             )
         )
-    }*/
+    }
 
-    // TODO: https://github.com/mozilla-lockwise/lockwise-android/issues/823
-    /* @Test
-    fun `tapping on close button with change`() {
-        setUpTestSubject(fakeCredential)
-
-        view.usernameClicksStub.onNext("all-change")
-        view.closeEntryClicksStub.onNext(Unit)
-
+    @Test
+    fun `tapping on close button when dirty`() {
+        isDirtyStub.onNext(true)
+        view.closeEntryClicks.onNext(Unit)
         dispatcherObserver.assertValueSequence(
             listOf(
                 DialogAction.DiscardChangesCreateDialog
             )
         )
-    }*/
+    }
 
-    // TODO: https://github.com/mozilla-lockwise/lockwise-android/issues/823
-    /* @Test
-    fun `discard changes sends you back to the item list`() {
-        setUpTestSubject(fakeCredential)
-        isEditingStub.onNext(false)
-
-        dispatcherObserver.assertValueSequence(
-            listOf(
-                RouteAction.ItemList
-            )
+    @Test
+    fun `a duplicated username causes an error`() {
+        val username = "jane.doe"
+        unavailableUsernamesStub.onNext(
+            setOf(username)
         )
-    }*/
+
+        view.usernameChangedStub.onNext(username)
+        Assert.assertNotNull(view.usernameError)
+
+        view.usernameChangedStub.onNext("jane.appleseed")
+        Assert.assertNull(view.usernameError)
+    }
 }

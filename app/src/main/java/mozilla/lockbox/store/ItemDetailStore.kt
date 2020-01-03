@@ -32,7 +32,7 @@ open class ItemDetailStore(
     val dispatcher: Dispatcher = Dispatcher.shared
 ) {
     companion object {
-        val shared = ItemDetailStore()
+        val shared by lazy { ItemDetailStore() }
     }
 
     private val compositeDisposable = CompositeDisposable()
