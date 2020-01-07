@@ -6,15 +6,8 @@
 
 package mozilla.lockbox.flux
 
-import android.view.Gravity
-import android.view.ViewGroup
-import android.widget.TextView
-import android.widget.Toast
 import androidx.annotation.CallSuper
-import androidx.annotation.StringRes
 import io.reactivex.disposables.CompositeDisposable
-import mozilla.lockbox.R
-import mozilla.lockbox.support.assertOnUiThread
 
 abstract class Presenter {
     val compositeDisposable: CompositeDisposable = CompositeDisposable()
@@ -50,5 +43,4 @@ abstract class Presenter {
      * By default, returns false, in which case Android handles the event.
      */
     open fun onBackPressed(): Boolean = false
-
 }

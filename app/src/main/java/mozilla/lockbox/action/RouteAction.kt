@@ -8,7 +8,6 @@ package mozilla.lockbox.action
 
 import android.net.Uri
 import android.os.Build
-import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import mozilla.lockbox.R

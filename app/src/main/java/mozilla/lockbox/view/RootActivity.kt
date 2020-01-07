@@ -70,6 +70,8 @@ class RootActivity : AppCompatActivity() {
         val view = toast.view.findViewById(R.id.message) as TextView
         view.text = action.viewModel.text?.plus(" deleted.") ?: resources.getString(action.viewModel.strId!!)
 
+        val drawable = this.getDrawable(action.viewModel.img ?: R.drawable.ic_check)
+        view.setCompoundDrawables(drawable, null, null, null)
         toast.show()
     }
 }

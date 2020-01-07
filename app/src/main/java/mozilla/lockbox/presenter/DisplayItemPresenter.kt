@@ -6,13 +6,11 @@
 
 package mozilla.lockbox.presenter
 
-import androidx.annotation.StringRes
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
-import mozilla.lockbox.R
 import mozilla.lockbox.action.ClipboardAction
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.DialogAction
@@ -29,7 +27,6 @@ import mozilla.lockbox.store.ItemDetailStore
 import mozilla.lockbox.store.NetworkStore
 import mozilla.lockbox.support.FeatureFlags
 import mozilla.lockbox.support.pushError
-import mozilla.lockbox.view.RootActivity
 
 interface DisplayItemView {
     val usernameCopyClicks: Observable<Unit>

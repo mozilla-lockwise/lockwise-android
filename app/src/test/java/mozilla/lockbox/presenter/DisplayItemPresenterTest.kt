@@ -8,7 +8,6 @@ package mozilla.lockbox.presenter
 
 import android.content.Context
 import android.net.ConnectivityManager
-import androidx.annotation.StringRes
 import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver

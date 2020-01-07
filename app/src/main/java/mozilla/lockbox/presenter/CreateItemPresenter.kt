@@ -8,7 +8,6 @@ package mozilla.lockbox.presenter
 
 import android.text.TextUtils
 import android.webkit.URLUtil
-import androidx.annotation.StringRes
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R

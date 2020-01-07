@@ -27,7 +27,8 @@ sealed class ToastNotificationAction(
 
     object ShowSuccessfulCreateToast : ToastNotificationAction(
         ToastNotificationViewModel(
-            strId = R.string.successful_create_toast
+            strId = R.string.successful_create_toast,
+            img = R.drawable.ic_success
         )
     )
 

@@ -11,11 +11,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import kotlinx.android.synthetic.main.fragment_create_item.*
 import kotlinx.android.synthetic.main.fragment_create_item.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
-import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.presenter.CreateItemPresenter
 import mozilla.lockbox.presenter.CreateItemView
 

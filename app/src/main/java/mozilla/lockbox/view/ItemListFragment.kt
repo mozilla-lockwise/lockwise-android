@@ -7,13 +7,11 @@
 package mozilla.lockbox.view
 
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.Spinner
-import androidx.annotation.StringRes
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -48,7 +46,6 @@ import mozilla.lockbox.model.ItemViewModel
 import mozilla.lockbox.presenter.ItemListPresenter
 import mozilla.lockbox.presenter.ItemListView
 import mozilla.lockbox.support.FeatureFlags
-import mozilla.lockbox.support.assertOnUiThread
 import mozilla.lockbox.support.showAndRemove
 
 @ExperimentalCoroutinesApi

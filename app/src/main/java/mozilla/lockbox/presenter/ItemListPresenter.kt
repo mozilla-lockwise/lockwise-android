@@ -7,7 +7,6 @@
 package mozilla.lockbox.presenter
 
 import androidx.annotation.IdRes
-import androidx.annotation.StringRes
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.Observables
@@ -28,7 +27,6 @@ import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
 import mozilla.lockbox.model.AccountViewModel
 import mozilla.lockbox.model.ItemViewModel
-import mozilla.lockbox.model.ToastNotificationViewModel
 import mozilla.lockbox.model.titleFromHostname
 import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.DataStore
