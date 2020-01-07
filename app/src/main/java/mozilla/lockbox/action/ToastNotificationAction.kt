@@ -15,13 +15,15 @@ sealed class ToastNotificationAction(
 
     object ShowCopyUsernameToast : ToastNotificationAction(
         ToastNotificationViewModel(
-            strId = R.string.toast_username_copied
+            strId = R.string.toast_username_copied,
+            img = R.drawable.ic_check
         )
     )
 
     object ShowCopyPasswordToast : ToastNotificationAction(
         ToastNotificationViewModel(
-            strId = R.string.toast_password_copied
+            strId = R.string.toast_password_copied,
+            img = R.drawable.ic_check
         )
     )
 
@@ -34,13 +36,15 @@ sealed class ToastNotificationAction(
 
     object ShowAutofillErrorToast : ToastNotificationAction(
         ToastNotificationViewModel(
-            strId = R.string.autofill_error_toast
+            strId = R.string.autofill_error_toast,
+            img = R.drawable.ic_check
         )
     )
 
     data class ShowDeleteToast(val text: String?) : ToastNotificationAction(
         ToastNotificationViewModel(
-            text = text?.plus(" deleted.")
+            text = text?.plus(" deleted."),
+            img = R.drawable.ic_check
         )
     )
 }

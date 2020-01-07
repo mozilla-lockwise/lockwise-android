@@ -30,6 +30,7 @@ import mozilla.lockbox.store.AlertDialogStore
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.view.DialogFragment
 import mozilla.lockbox.view.RootActivity
+import java.lang.Exception
 import mozilla.lockbox.view.Fragment as SpecializedFragment
 
 @ExperimentalCoroutinesApi
@@ -96,8 +97,12 @@ abstract class RoutePresenter(
         alertDialogStore.showDialog(activity, destination)
     }
 
-    fun showToastNotification(destination: ToastNotificationAction) {
-        (activity as RootActivity).showToastNotification(destination)
+    fun showToastNotification(action: ToastNotificationAction) {
+        try {
+            (activity as RootActivity).showToastNotification(action)
+        } catch (e: Exception) {
+            log.error("Could not show toast notification.")
+        }
     }
 
     open fun showDialogFragment(dialogFragment: DialogFragment, destination: RouteAction.DialogFragment) {

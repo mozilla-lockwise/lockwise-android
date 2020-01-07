@@ -100,8 +100,15 @@ class AppRoutePresenterTest {
     }
 
     @Test
-    fun `item detail bundle is created`() {
+    fun `display item bundle is created`() {
         val action = RouteAction.DisplayItem("id")
+        val result = subject.bundle(action)
+        Assert.assertThat(result, CoreMatchers.instanceOf(Bundle::class.java))
+    }
+
+    @Test
+    fun `edit item bundle is created`() {
+        val action = RouteAction.EditItem("id")
         val result = subject.bundle(action)
         Assert.assertThat(result, CoreMatchers.instanceOf(Bundle::class.java))
     }

@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.view.Gravity
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -60,18 +61,21 @@ class RootActivity : AppCompatActivity() {
 
     fun showToastNotification(action: ToastNotificationAction) {
         assertOnUiThread()
+
         val toast = Toast(this)
         toast.duration = Toast.LENGTH_SHORT
-
-        val viewGroup: ViewGroup = findViewById(R.id.toast_notification)
-        toast.view = layoutInflater.inflate(R.layout.toast_view, viewGroup, false)
+        val container = window.decorView.rootView as ViewGroup
+        toast.view = layoutInflater.inflate(R.layout.toast_view, container, false)
         toast.setGravity(Gravity.FILL_HORIZONTAL or Gravity.BOTTOM, 0, 0)
 
+        // set text
         val view = toast.view.findViewById(R.id.message) as TextView
-        view.text = action.viewModel.text?.plus(" deleted.") ?: resources.getString(action.viewModel.strId!!)
+        view.text = action.viewModel.text ?: resources.getString(action.viewModel.strId!!)
 
-        val drawable = this.getDrawable(action.viewModel.img ?: R.drawable.ic_check)
-        view.setCompoundDrawables(drawable, null, null, null)
+        // set icon
+        val image = toast.view.findViewById(R.id.icon) as ImageView
+        image.setImageResource(action.viewModel.img)
+
         toast.show()
     }
 }

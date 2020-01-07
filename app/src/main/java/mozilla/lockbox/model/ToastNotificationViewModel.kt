@@ -12,5 +12,5 @@ import androidx.annotation.StringRes
 data class ToastNotificationViewModel(
     val text: String? = null,
     @StringRes val strId: Int? = null,
-    @DrawableRes val img: Int? = null
+    @DrawableRes val img: Int
 )
