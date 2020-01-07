@@ -123,6 +123,7 @@ class AppRoutePresenter(
             R.id.fragment_null to R.id.fragment_onboarding_confirmation -> R.id.action_init_to_onboarding_confirmation
             R.id.fragment_null to R.id.fragment_display_item ->
             R.id.action_init_to_item_edit
+            R.id.fragment_null to R.id.fragment_edit_item -> R.id.action_init_to_edit_item
 
             R.id.fragment_welcome to R.id.fragment_fxa_login -> R.id.action_welcome_to_fxaLogin
             R.id.fragment_welcome to R.id.fragment_item_list -> R.id.action_welcome_to_autoLogin
