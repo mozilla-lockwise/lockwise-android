@@ -12,7 +12,6 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
@@ -63,8 +62,11 @@ class RootActivity : AppCompatActivity() {
         assertOnUiThread()
         val toast = Toast(this)
         toast.duration = Toast.LENGTH_SHORT
-        toast.view = layoutInflater.inflate(R.layout.toast_view, this.view, false)
+
+        val viewGroup: ViewGroup = findViewById(R.id.toast_notification)
+        toast.view = layoutInflater.inflate(R.layout.toast_view, viewGroup, false)
         toast.setGravity(Gravity.FILL_HORIZONTAL or Gravity.BOTTOM, 0, 0)
+
         val view = toast.view.findViewById(R.id.message) as TextView
         view.text = action.viewModel.text?.plus(" deleted.") ?: resources.getString(action.viewModel.strId!!)
 
