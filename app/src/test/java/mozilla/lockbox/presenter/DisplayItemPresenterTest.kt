@@ -15,7 +15,6 @@ import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.BuildConfig
-import mozilla.lockbox.R
 import mozilla.lockbox.action.ClipboardAction
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.DialogAction

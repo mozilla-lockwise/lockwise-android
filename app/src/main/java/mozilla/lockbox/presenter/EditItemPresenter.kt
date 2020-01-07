@@ -57,11 +57,11 @@ class EditItemPresenter(
     override fun saveChangesAction(hasChanges: Boolean) =
         itemId?.let {
             if (hasChanges) {
-                ItemDetailAction.EditItemSaveChanges
+                listOf<Action>(ItemDetailAction.EditItemSaveChanges)
             } else {
-                null
+                listOf(ItemDetailAction.EndEditItemSession)
             }
-        } ?: ItemDetailAction.EndEditItemSession
+        } ?: listOf(ItemDetailAction.EndEditItemSession)
 
     override fun dismissChangesAction(hasChanges: Boolean) =
         itemId?.let {

@@ -22,6 +22,7 @@ import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.action.SettingAction
+import mozilla.lockbox.action.ToastNotificationAction
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.extensions.toViewModel
 import mozilla.lockbox.extensions.view.AlertState
@@ -335,7 +336,7 @@ open class ItemListPresenterTest {
         val item = ServerPasswordTestHelper().item1
         val hostname = item.hostname
         deleteItemSubjectStub.onNext(Consumable(item))
-        Assert.assertEquals(hostname, view.toastNotificationArgText)
+        dispatcherObserver.assertLastValue(ToastNotificationAction.ShowDeleteToast(hostname))
     }
 
     @Test

@@ -308,4 +308,7 @@
 
     <!-- This is the toast message that is shown when a new entry has been successfully created. -->
     <string name="successful_create_toast">Login added successfully</string>
+
+    <!-- This is the content description for the icon that appears on the toast notification. -->
+    <string name="toast_icon_description">The icon that appears on a toast notification.</string>
 </resources>
