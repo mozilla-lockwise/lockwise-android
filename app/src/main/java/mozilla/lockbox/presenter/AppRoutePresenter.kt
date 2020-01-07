@@ -17,6 +17,7 @@ import mozilla.lockbox.R
 import mozilla.lockbox.action.AppWebPageAction
 import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.action.ToastNotificationAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.store.SettingStore
@@ -99,18 +100,10 @@ class AppRoutePresenter(
             is RouteAction.AutoLockSetting -> showAutoLockSelections()
             is RouteAction.DialogFragment.FingerprintDialog ->
                 showDialogFragment(FingerprintAuthDialogFragment(), action)
-            is RouteAction.ShowToastNotification -> showToast(action)
+            is ToastNotificationAction -> showToastNotification(action)
             is DialogAction -> showDialog(action)
             is AppWebPageAction -> navigateToFragment(R.id.fragment_webview, bundle(action))
         }
-    }
-
-    private fun showToast(action: RouteAction.ShowToastNotification) {
-        (activity as RootActivity).showToastNotification(
-            strId = action.strId,
-            text = action.text,
-            viewGroup = action.viewGroup
-        )
     }
 
     private fun showLockScreen() {

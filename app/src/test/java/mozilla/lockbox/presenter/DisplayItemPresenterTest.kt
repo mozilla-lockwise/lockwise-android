@@ -99,10 +99,6 @@ class DisplayItemPresenterTest {
             this.item = item
             showPlaceholderUsernameStub = !item.hasUsername
         }
-
-        override fun showToastNotification(@StringRes strId: Int) {
-            toastNotificationArgument = strId
-        }
     }
 
     @Mock

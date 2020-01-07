@@ -22,12 +22,14 @@ import mozilla.lockbox.BuildConfig
 import mozilla.lockbox.R
 import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.action.ToastNotificationAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
 import mozilla.lockbox.store.AlertDialogStore
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.view.DialogFragment
+import mozilla.lockbox.view.RootActivity
 import mozilla.lockbox.view.Fragment as SpecializedFragment
 
 @ExperimentalCoroutinesApi
@@ -92,6 +94,10 @@ abstract class RoutePresenter(
 
     fun showDialog(destination: DialogAction) {
         alertDialogStore.showDialog(activity, destination)
+    }
+
+    fun showToastNotification(destination: ToastNotificationAction) {
+        (activity as RootActivity).showToastNotification(destination)
     }
 
     open fun showDialogFragment(dialogFragment: DialogFragment, destination: RouteAction.DialogFragment) {

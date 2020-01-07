@@ -250,14 +250,6 @@ class ItemListFragment : Fragment(), ItemListView {
         }
     }
 
-    override fun showToastNotification(@StringRes strId: Int) {
-        (activity as RootActivity).showToastNotification(strId = strId, viewGroup = this.view as ViewGroup)
-    }
-
-    override fun showDeleteToastNotification(text: String) {
-        (activity as RootActivity).showToastNotification(text = text, viewGroup = this.view as ViewGroup)
-    }
-
 //    override val retryNetworkConnectionClicks: Observable<Unit>
 //        get() = view!!.networkWarning.retryButton.clicks()
 }

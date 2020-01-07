@@ -32,12 +32,6 @@ open class RouteAction(
     data class DisplayItem(val id: String) : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.entry_detail)
     data class EditItem(val id: String) : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.edit_entry_detail)
 
-    data class ShowToastNotification(
-        @StringRes val strId: Int? = null,
-        val text: String? = null,
-        val viewGroup: ViewGroup
-    ) : RouteAction(TelemetryEventMethod.show, TelemetryEventObject.successful_save_toast)
-
     // This should _only_ be triggered by pressing the back button.
     object InternalBack : RouteAction(TelemetryEventMethod.tap, TelemetryEventObject.back)
 

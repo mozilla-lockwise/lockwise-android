@@ -20,6 +20,7 @@ import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.action.SettingAction
+import mozilla.lockbox.action.ToastNotificationAction
 import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.extensions.mapToItemViewModelList
 import mozilla.lockbox.flux.Dispatcher
@@ -27,6 +28,7 @@ import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
 import mozilla.lockbox.model.AccountViewModel
 import mozilla.lockbox.model.ItemViewModel
+import mozilla.lockbox.model.ToastNotificationViewModel
 import mozilla.lockbox.model.titleFromHostname
 import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.DataStore
@@ -51,8 +53,6 @@ interface ItemListView {
     val refreshItemList: Observable<Unit>
     val isRefreshing: Boolean
     fun stopRefreshing()
-    fun showToastNotification(@StringRes strId: Int)
-    fun showDeleteToastNotification(text: String)
 }
 
 @ExperimentalCoroutinesApi
@@ -171,10 +171,11 @@ class ItemListPresenter(
             .addTo(compositeDisposable)
 
         dataStore.deletedItem
-            .subscribe {
-                val event = it.get() ?: return@subscribe
-                view.showDeleteToastNotification(event.formSubmitURL ?: event.hostname)
+            .map {
+                val event = it.get()
+                ToastNotificationAction.ShowDeleteToast(event?.formSubmitURL ?: event?.hostname)
             }
+            .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
 
         // TODO: make this more robust to retry loading the correct page again (loadUrl)

@@ -134,14 +134,6 @@ open class ItemListPresenterTest {
         override val isRefreshing: Boolean = false
 
         override fun stopRefreshing() {}
-
-        override fun showToastNotification(strId: Int) {
-            toastNotificationArgStrId = strId
-        }
-
-        override fun showDeleteToastNotification(text: String) {
-            toastNotificationArgText = text
-        }
     }
 
     val listStub = PublishSubject.create<List<ServerPassword>>()

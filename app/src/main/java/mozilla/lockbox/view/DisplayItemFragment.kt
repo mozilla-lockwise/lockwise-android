@@ -16,8 +16,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
-import androidx.annotation.StringRes
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.appcompat.widget.PopupMenu
@@ -49,7 +47,7 @@ class DisplayItemFragment : BackableFragment(), DisplayItemView {
         }
 
         this.setHasOptionsMenu(true)
-        presenter = DisplayItemPresenter(activity as RootActivity,this, itemId)
+        presenter = DisplayItemPresenter(this, itemId)
 
         return inflater.inflate(R.layout.fragment_display_item, container, false)
     }
@@ -189,10 +187,6 @@ class DisplayItemFragment : BackableFragment(), DisplayItemView {
 
         // effect password visibility state
         updatePasswordVisibility(isPasswordVisible)
-    }
-
-    override fun showToastNotification(@StringRes strId: Int) {
-        (activity as RootActivity).showToastNotification(strId = strId, viewGroup = this.view as ViewGroup)
     }
 
     // used for feature flag

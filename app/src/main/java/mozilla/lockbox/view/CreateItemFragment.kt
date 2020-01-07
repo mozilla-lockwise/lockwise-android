@@ -57,8 +57,4 @@ class CreateItemFragment : ItemMutationFragment(), CreateItemView {
         view.inputUsername.hint = getString(R.string.create_username_hint_text)
         view.inputPassword.hint = getString(R.string.hint_password)
     }
-
-    override fun getToastAction(strId: Int?): RouteAction {
-        return RouteAction.ShowToastNotification(strId = strId, viewGroup = this.view as ViewGroup)
-    }
 }
