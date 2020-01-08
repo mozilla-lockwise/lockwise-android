@@ -291,4 +291,8 @@
     <style name="NoConnectivityWarning">
         <item name="android:background">@color/color_primary_dark</item>
     </style>
+
+    <style name="AutofillRemoteViewSyle" parent="@style/AppTheme">
+        <item name="android:background">@color/background_white</item>
+    </style>
 </resources>
