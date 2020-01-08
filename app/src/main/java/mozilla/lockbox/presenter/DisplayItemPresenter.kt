@@ -138,10 +138,12 @@ class DisplayItemPresenter(
             .addTo(compositeDisposable)
 
         networkStore.isConnected
+            .observeOn(mainThread())
             .subscribe(view::handleNetworkError)
             .addTo(compositeDisposable)
 
         itemDetailStore.isPasswordVisible
+            .observeOn(mainThread())
             .subscribe { view.isPasswordVisible = it }
             .addTo(compositeDisposable)
 
