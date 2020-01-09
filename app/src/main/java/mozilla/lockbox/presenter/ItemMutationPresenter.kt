@@ -68,12 +68,8 @@ abstract class ItemMutationPresenter(
 
         view.saveEntryClicks
             .flatMap { itemDetailStore.isDirty.take(1) }
-            .map { saveChangesAction(it) }
-            .subscribe { itemDetailActions ->
-                itemDetailActions.filterNotNull().forEach { action ->
-                    dispatcher.dispatch(action)
-                }
-            }
+            .flatMapIterable { saveChangesActions(it) }
+            .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
 
         view.usernameChanged
@@ -203,6 +199,6 @@ abstract class ItemMutationPresenter(
     }
 
     abstract fun dismissChangesAction(hasChanges: Boolean): Action
-    abstract fun saveChangesAction(hasChanges: Boolean): List<Action?>
+    abstract fun saveChangesActions(hasChanges: Boolean): List<Action>
     abstract fun endEditingAction(): List<Action>
 }

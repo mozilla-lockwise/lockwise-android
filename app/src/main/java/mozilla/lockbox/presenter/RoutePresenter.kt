@@ -11,6 +11,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.provider.DocumentsContract
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
@@ -97,11 +98,11 @@ abstract class RoutePresenter(
         alertDialogStore.showDialog(activity, destination)
     }
 
+    // todo: ELISE how to make this RootActivity without explicitly "as"ing it
     fun showToastNotification(action: ToastNotificationAction) {
-        try {
-            (activity as RootActivity).showToastNotification(action)
-        } catch (e: Exception) {
-            log.error("Could not show toast notification.")
+        activity.apply {
+            this.showToastNotification(action)
+//            (this as RootActivity).showToastNotification(action)
         }
     }
 

@@ -15,36 +15,37 @@ sealed class ToastNotificationAction(
 
     object ShowCopyUsernameToast : ToastNotificationAction(
         ToastNotificationViewModel(
-            strId = R.string.toast_username_copied,
-            img = R.drawable.ic_check
+            R.string.toast_username_copied,
+            R.drawable.ic_check
         )
     )
 
     object ShowCopyPasswordToast : ToastNotificationAction(
         ToastNotificationViewModel(
-            strId = R.string.toast_password_copied,
-            img = R.drawable.ic_check
+            R.string.toast_password_copied,
+            R.drawable.ic_check
         )
     )
 
     object ShowSuccessfulCreateToast : ToastNotificationAction(
         ToastNotificationViewModel(
-            strId = R.string.successful_create_toast,
-            img = R.drawable.ic_success
+            R.string.successful_create_toast,
+            R.drawable.ic_success
         )
     )
 
     object ShowAutofillErrorToast : ToastNotificationAction(
         ToastNotificationViewModel(
-            strId = R.string.autofill_error_toast,
-            img = R.drawable.ic_check
+            R.string.autofill_error_toast,
+            R.drawable.ic_check
         )
     )
 
-    data class ShowDeleteToast(val text: String?) : ToastNotificationAction(
+    // todo: ELISE pass entry name to entry_deleted_toast string
+    data class ShowDeleteToast(val entryName: String?) : ToastNotificationAction(
         ToastNotificationViewModel(
-            text = text?.plus(" deleted."),
-            img = R.drawable.ic_check
+            R.string.entry_deleted_toast,
+            R.drawable.ic_check
         )
     )
 }

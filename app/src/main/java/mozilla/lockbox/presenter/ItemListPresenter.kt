@@ -33,6 +33,7 @@ import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.NetworkStore
 import mozilla.lockbox.store.SettingStore
+import mozilla.lockbox.support.asOptional
 
 interface ItemListView {
     val itemSelection: Observable<ItemViewModel>
@@ -169,11 +170,11 @@ class ItemListPresenter(
             .addTo(compositeDisposable)
 
         dataStore.deletedItem
-            .map {
-                val event = it.get()
-                ToastNotificationAction.ShowDeleteToast(event?.formSubmitURL ?: event?.hostname)
+            .map { event ->
+                event.get()?.let { it.formSubmitURL ?: it.hostname }.asOptional()
             }
-            .subscribe(dispatcher::dispatch)
+            .filterNotNull()
+            .subscribe { dispatcher.dispatch(ToastNotificationAction.ShowDeleteToast(it)) }
             .addTo(compositeDisposable)
 
         // TODO: make this more robust to retry loading the correct page again (loadUrl)

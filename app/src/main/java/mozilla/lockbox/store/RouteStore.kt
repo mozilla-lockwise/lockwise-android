@@ -16,6 +16,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.OnboardingStatusAction
 import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.action.ToastNotificationAction
 import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.flux.Dispatcher
@@ -55,7 +56,8 @@ open class RouteStore(
                         is DialogAction,
                         is RouteAction.AutoLockSetting,
                         is RouteAction.DialogFragment,
-                        is RouteAction.SystemIntent -> true
+                        is RouteAction.SystemIntent,
+                        is ToastNotificationAction -> true
                         else -> false
                     }
                 }

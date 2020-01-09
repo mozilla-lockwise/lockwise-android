@@ -54,7 +54,7 @@ class EditItemPresenter(
         super.onViewReady()
     }
 
-    override fun saveChangesAction(hasChanges: Boolean) =
+    override fun saveChangesActions(hasChanges: Boolean) =
         itemId?.let {
             if (hasChanges) {
                 listOf<Action>(ItemDetailAction.EditItemSaveChanges)

@@ -48,7 +48,7 @@ class CreateItemPresenter(
             .addTo(compositeDisposable)
     }
 
-    override fun saveChangesAction(hasChanges: Boolean): List<Action> {
+    override fun saveChangesActions(hasChanges: Boolean): List<Action> {
         return if (hasChanges) {
             listOf(
                 ItemDetailAction.CreateItemSaveChanges,
