@@ -160,7 +160,8 @@ open class ItemDetailStore(
 
                 val usernames = list
                     .filter(
-                        hostname = item.hostname,
+                        // Default to a blank space, otherwise we get all usernames for any hostname.
+                        hostname = if (item.hostname.isNullOrBlank()) " " else item.hostname,
                         httpRealm = item.httpRealm,
                         formSubmitURL = item.formSubmitURL
                     )
