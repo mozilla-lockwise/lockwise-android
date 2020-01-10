@@ -133,9 +133,9 @@ open class ItemDetailStore(
         itemToSave.take(1)
             .filterNotNull()
             .map { DataStoreAction.CreateItem(it) }
+            .doAfterNext { stopCreating() }
             .subscribe(dispatcher::dispatch)
             .addTo(sessionDisposable)
-        stopCreating()
     }
 
     private fun stopCreating() {
@@ -190,6 +190,7 @@ open class ItemDetailStore(
             .map { (previous, next) ->
                 DataStoreAction.UpdateItemDetail(previous, next)
             }
+            .doAfterNext { stopEditing() }
             .subscribe(dispatcher::dispatch)
             .addTo(sessionDisposable)
     }
