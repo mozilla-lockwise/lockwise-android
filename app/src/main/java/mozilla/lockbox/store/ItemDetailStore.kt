@@ -154,7 +154,7 @@ open class ItemDetailStore(
     }
 
     private fun calculateUnavailableUsernames(getItem: Observable<Optional<ServerPassword>>, excludeItem: Boolean) {
-        Observables.combineLatest(getItem, dataStore.list)
+        Observables.combineLatest(getItem, dataStore.list.take(1))
             .map { (opt, list) ->
                 val item = opt.value ?: return@map emptySet<String>()
 
