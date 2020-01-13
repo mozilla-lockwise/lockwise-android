@@ -133,9 +133,9 @@ open class ItemDetailStore(
         itemToSave.take(1)
             .filterNotNull()
             .map { DataStoreAction.CreateItem(it) }
+            .doAfterNext { stopCreating() }
             .subscribe(dispatcher::dispatch)
             .addTo(sessionDisposable)
-        stopCreating()
     }
 
     private fun stopCreating() {
@@ -154,13 +154,14 @@ open class ItemDetailStore(
     }
 
     private fun calculateUnavailableUsernames(getItem: Observable<Optional<ServerPassword>>, excludeItem: Boolean) {
-        Observables.combineLatest(getItem, dataStore.list)
+        Observables.combineLatest(getItem, dataStore.list.take(1))
             .map { (opt, list) ->
                 val item = opt.value ?: return@map emptySet<String>()
 
                 val usernames = list
                     .filter(
-                        hostname = item.hostname,
+                        // Default to a blank space, otherwise we get all usernames for any hostname.
+                        hostname = if (item.hostname.isNullOrBlank()) " " else item.hostname,
                         httpRealm = item.httpRealm,
                         formSubmitURL = item.formSubmitURL
                     )
@@ -190,6 +191,7 @@ open class ItemDetailStore(
             .map { (previous, next) ->
                 DataStoreAction.UpdateItemDetail(previous, next)
             }
+            .doAfterNext { stopEditing() }
             .subscribe(dispatcher::dispatch)
             .addTo(sessionDisposable)
     }

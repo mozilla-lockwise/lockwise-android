@@ -39,6 +39,7 @@ class EditItemPresenter(
 
         itemDetailStore.originalItem
             .filterNotNull()
+            .take(1)
             // so we don't overwrite changes when we come back from an
             // interrupt.
             .flatMap { item ->
