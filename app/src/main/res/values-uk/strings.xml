@@ -81,4 +81,225 @@
     <!-- This describes an icon to screenreaders that the button tapped will open the web address in a web browser -->
     <string name="launch_hostname_content_description">Відкрити цю веб-адресу в браузері</string>
 
-    </resources>
+    <!-- This describes an icon to screenreaders that the button tapped will copy the username to the device clipboard to paste and use in another application -->
+    <string name="copy_username_content_description">Копіювати ім’я користувача</string>
+    <!-- This message appears when the user taps to copy the username to the device clipboard -->
+    <string name="toast_username_copied">Ім’я користувача скопійовано</string>
+    <!-- This describes an icon to screenreaders that the button tapped will copy the password to the device clipboard to paste and use in another application -->
+    <string name="copy_password_content_description">Копіювати пароль</string>
+    <!-- This message appears when the user taps to copy the password to the device clipboard -->
+    <string name="toast_password_copied">Пароль скопійовано</string>
+    <!-- This describes an icon to screenreaders that the button tapped will display the password in plain text for immediate reading or use -->
+    <string name="display_password_content_description">Показати пароль у вигляді тексту</string>
+
+    <!-- This is a heading that appears above a group of application settings to configure the user experience -->
+    <string name="configuration_title">Конфігурація</string>
+    <!-- This is a heading that appears above a group of application settings or links related to what is supported by the application -->
+    <string name="support_title">Підтримка</string>
+
+    <!-- This is the title of a setting that allows the user to change the time duration before the application locks and requires unlocking -->
+    <string name="auto_lock">Автоблокування</string>
+    <!-- This is the label a screenreader uses to inform the user they selected the auto lock setting toggle -->
+    <string name="auto_lock_description">Налаштування автоблокування</string>
+    <!-- This is a time duration for the automatic application locking setting equal to 1 minute -->
+    <string name="one_minute">1 хвилина</string>
+    <!-- This is a time duration for the automatic application locking setting equal to 5 minutes -->
+    <string name="five_minutes">5 хвилин</string>
+    <!-- This is a time duration for the automatic application locking setting equal to 15 minutes -->
+    <string name="fifteen_minutes">15 хвилин</string>
+    <!-- This is a time duration for the automatic application locking setting equal to 30 minutes -->
+    <string name="thirty_minutes">30 хвилин</string>
+    <!-- This is a time duration for the automatic application locking setting equal to 1 hour -->
+    <string name="one_hour">1 година</string>
+    <!-- This is a time duration for the automatic application locking setting equal to 12 hours -->
+    <string name="twelve_hours">12 годин</string>
+    <!-- This is a time duration for the automatic application locking setting equal to 24 hours -->
+    <string name="twenty_four_hours">24 години</string>
+    <!-- This is a time duration for the automatic application locking setting that means it will never automatically lock -->
+    <string name="never">Ніколи</string>
+
+    <!-- This is the title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application. Autofill should match the Android name for this system feature -->
+    <string name="autofill">Автозаповнення</string>
+    <!-- This is the sub-title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application. %1$s will be replaced with application name -->
+    <string name="autofill_summary">Дозволити %1$s заповнювати дані входів</string>
+    <!-- This is the label a screenreader uses to inform the user they selected the autofill setting toggle. Autofill should match the Android name for this system feature -->
+    <string name="autofill_description">Налаштування автозаповнення</string>
+
+    <!-- This is the title of a setting that allows the user to enable and disable the sending of telemetry usage data to Mozilla -->
+    <string name="send_usage_data">Надсилати дані про використання</string>
+    <!-- This is the sub-title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application -->
+    <string name="send_usage_data_summary">Mozilla намагається збирати лише дані, що необхідні для роботи і вдосконалення Firefox. </string>
+
+    <!-- This is the label a screenreader uses to inform the user they selected a label on the screen that includes the application version number -->
+    <string name="app_version_description">Версія програми</string>
+
+    <!-- This is the title of a setting that shows the version and the build number of an app -->
+    <string name="app_version_title">Версія програми: %1$s (%2$d)</string>
+
+    <!-- This is the title of a setting that allows the user to use the device fingerprint biometrics to unlock the application -->
+    <string name="unlock">Розблокування відбитком</string>
+    <!-- This is the label a screenreader uses to inform the user they selected the fingerprint setting toggle -->
+    <string name="fingerprint_description">Увімкнути відбитки пальців</string>
+    <!-- This is the title of a dialog that pops up to unlock the application when the unlock with fingerprint setting is enabled. %1$s will be replaced with application name -->
+    <string name="fingerprint_dialog_title">Розблокувати %1$s</string>
+    <!-- This is the message displayed to the user to unlock the application. %1$s will be replaced with application name -->
+    <string name="unlock_fallback_title">Розблокувати %1$s</string>
+    <!-- This is an instructional message displayed to use the fingerprint sensor to unlock the application -->
+    <string name="touch_fingerprint_sensor">Торкніться датчика відбитків.</string>
+    <!-- This is the title of a dialog requesting permission for the application to unlock using the device fingerprint sensor -->
+    <string name="enable_fingerprint_dialog_title">Увімкнути відбитки пальців</string>
+    <!-- This is the message requesting permission for the application to unlock using the device fingerprint sensor. %1$s will be replaced with application name -->
+    <string name="enable_fingerprint_dialog_subtitle">Надайте дозвіл %1$s для можливості розблокування відбитками пальців.</string>
+    <!-- This is the error displayed when attempting to unlock the application with a fingerprint and the device does not recognize it as a match -->
+    <string name="fingerprint_not_recognized">Не розпізнано</string>
+    <!-- This is the success message displayed after using the fingerprint sensor to unlock the application -->
+    <string name="fingerprint_success">Успішно!</string>
+    <!-- This is the error displayed when attempting to unlock the application with a fingerprint and after multiple tries a match is not made -->
+    <string name="fingerprint_error_lockout">Занадто багато спроб.</string>
+    <!-- This is the error displayed when attempting to unlock the application with a fingerprint and the device returns a generic error to the application -->
+    <string name="fingerprint_sensor_error">Помилка датчика відбитків пальців</string>
+
+    <!-- This is an instructional message displayed to use the device-provided unlock features to unlock the application -->
+    <string name="confirm_pattern">Введіть графічний ключ, ПІН, чи пароль пристрою.</string>
+
+    <!-- This is the title of a dialog displayed to encourage the user to enable security to lock their device and the application -->
+    <string name="no_device_security_title">Захистіть свій пристрій.</string>
+    <!-- This is a message displayed requiring the user to enable device-provided security to lock their device and the application. -->
+    <string name="no_device_security_message">Щоб встановити таймер автоблокування, необхідно налаштувати графічний ключ, ПІН, або пароль пристрою.</string>
+    <!-- This is the message displayed on a button to open the device settings for the user to set up device-provided security protections -->
+    <string name="set_up_security_button">Налаштувати</string>
+
+    <!-- This is used for screenreaders to inform the user they have selected the account profile image. Firefox Account is to be translated consistently to match use in other Firefox products. -->
+    <string name="profile_image_content_description">Зображення профілю облікового запису Firefox</string>
+    <!-- This message is displayed to inform users how to change their Firefox Account profile details on a setting screen. Firefox Account is to be translated consistently to match use in other Firefox products. -->
+    <string name="account_information">Щоб змінити свій обліковий запис, увійдіть до нього з будь-якого браузера.</string>
+    <!-- This is the text on a button to sign out and disconnect the account from the application. %1$s will be replaced with application name -->
+    <string name="disconnect_button">Від’єднати %1$s</string>
+    <!-- This message is displayed near a button to sign out and disconnect the account from the application explaining this does not affect the data stored with Firefox. %1$s will be replaced with application name -->
+    <string name="disconnect_disclaimer">Це видаляє синхронізовані паролі з %1$s, але не видалить їх з Firefox.</string>
+    <!-- This is the text on a final confirmation button to sign out and disconnect the account from the application. %1$s will be replaced with application name -->
+    <string name="disconnect_disclaimer_title">Від’єднати %1$s?</string>
+    <!-- This message is displayed on a final confirmation dialog to sign out and disconnect their account from the application. Firefox Account is to be translated consistently to match use in other Firefox products. %1$s will be replaced with application name -->
+    <string name="disconnect_disclaimer_message">Це видалить інформацію про ваш обліковий запис Firefox і всі збережені паролі з %1$s.</string>
+    <!-- This is the text on a final confirmation button to sign out and disconnect the account from the application -->
+    <string name="disconnect">Від’єднатись</string>
+    <!-- This is the hint value for an autofill box that appears when suggesting a value for a password field. It is interpolated with the user's account name. -->
+    <string name="password_for">Пароль для %1$s</string>
+
+    <!-- This label is used by screenreaders to inform the user that their device is not connected to the internet -->
+    <string name="networkWarningMessage">Попередження: пристрій не підключено до Інтернету.</string>
+
+    <!-- This label is used by screenreaders to inform the user that the message contains an image of a warning icon -->
+    <string name="warningIcon">Піктограма попередження</string>
+    <!-- This is used as the title for an alert message to inform the user that the app does not detect network connectivity -->
+    <string name="no_internet_connection">Немає з’єднання з Інтернетом</string>
+    <!-- This is used in the app logs to inform that network connectivity has successfully been detected -->
+    <string name="network_connection_success">З’єднання з Інтернетом успішне.</string>
+
+    <!-- This is used to inform the user that there are no saved logins in the list -->
+    <string name="no_logins_found">Паролів не знайдено</string>
+    <!-- This explains the steps the user should take, if no saved logins are found: sign in and sync in Firefox. %1$s will be replaced with application name -->
+    <string name="no_logins_description">%1$s дозволяє отримати доступ до паролів, які ви вже зберегли у Firefox. Щоб
+        переглянути тут свої паролі, вам необхідно буде увійти та синхронізуватися з Firefox.
+    </string>
+    <!-- This is the title for the biometric unlock onboarding screen. %1$s will be replaced with application name -->
+    <string name="onboarding_unlock_title">Розблокуйте %1$s з відбитком пальця.</string>
+    <!-- This is the onboarding description for enabling biometric unlock with the fingerprint sensor. %1$s will be replaced with application name -->
+    <string name="onboarding_unlock_description">Надайте дозвіл %1$s для можливості розблокування відбитками пальців.</string>
+    <!-- This is the description of the button to skip the onboarding for biometric unlock with the fingerprint sensor. -->
+    <string name="onboarding_skip">Пропустити цього разу</string>
+    <!-- This is the description of the fingerprint icon on the onboarding screen -->
+    <string name="fingerprint_icon_description">Зображення відбитку пальця</string>
+    <!-- This is the title of the autofill onboarding screen. %1$s will be replaced with application name -->
+    <string name="onboarding_autofill_title">Дозвольте %1$s заповнювати паролі.</string>
+    <!-- This is the onboarding description for enabling the application as an autofill provider through the device's autofill settings. -->
+    <string name="onboarding_autofill_description">Легко заповнюйте ім’я користувача і пароль, де вам потрібно.</string>
+    <!-- This button will take you to your phone's autofill settings screen. -->
+    <string name="go_to_settings">Перейти до налаштувань</string>
+    <!-- This is the content description for the autofill image on the autofill onboarding screen. %1$s will be replaced with application name. Autofill should match the Android name for this system feature -->
+    <string name="onboarding_autofill_image_description">Автозаповнення %1$s</string>
+    <!-- This is the title for the final onboarding screen -->
+    <string name="all_set">Все готово!</string>
+    <!-- This is the button to dismiss the final onboarding screen -->
+    <string name="finish">Завершити</string>
+    <!-- This description of the app functionality is shown on the final onboarding screen -->
+    <string name="access_description">Доступ до збережених у Firefox паролів з телефону</string>
+    <!-- This description of the app security is shown on the final onboarding screen. %s will be replaced with the security link. -->
+    <string name="security_description">Синхронізуйте між пристроями із захищеним 256-бітним шифруванням</string>
+    <!-- This description of the app convenience is shown on the final onboarding screen. -->
+    <string name="convenience_description">Просте розблокування за допомогою відбитку пальця</string>
+
+    <!-- This is the title of the device security dialog box. -->
+    <string name="secure_your_device">Захистіть свій пристрій.</string>
+    <!-- This is the description explaining the device security requirements. -->
+    <string name="device_security_description">Вам слід використовувати графічний ключ, ПІН, або пароль для блокування телефону. Без цього будь-хто, маючи доступ до вашого телефону, матиме можливість доступу до збереженої там інформації.</string>
+    <!-- This is the skip button description on the device security dialog box. -->
+    <string name="skip_button">Пропустити</string>
+    <!-- This is the the button description on the device security dialog box which routes to system security settings. -->
+    <string name="set_up_now">Налаштувати</string>
+
+    <!-- This header appears above the Privacy page of the application website. -->
+    <string name="privacy">Приватність</string>
+
+    <!-- This is the prompt when autofill is triggered and the application is locked. It appears on top of the login form as an action available to the user to take. %1$s will be replaced with application name -->
+    <string name="autofill_authenticate_cta">Розблокувати %1$s</string>
+
+    <!-- This is the message suggesting that if the user does not see the matching login to autofill into a form, they can search all their logins by opening this action. %1$s will be replaced with application name. -->
+    <string name="autofill_search_cta">Пошук в %1$s</string>
+    <!-- This is the error message when autofill is triggered and the application is in an error state. %1$s will be replaced with application name. %2$s refers to the localized error message that will be provided by the system. -->
+    <string name="autofill_error_toast">%1$s зіткнувся з помилкою: %2$s</string>
+
+    <!-- This is the placeholder text for an empty or null username. -->
+    <string name="no_username">(без імені користувача)</string>
+
+    <!-- This is the description for the kebab menu in the item detail toolbar. -->
+    <string name="kebab_menu">Додатково</string>
+    <!-- This is the text on an item in the item detail toolbar menu to delete an entry. -->
+    <string name="delete">Видалити</string>
+    <!-- This is the confirmation message title seen when attempting to delete a login. -->
+    <string name="delete_this_login">Видалити цей пароль?</string>
+    <!-- This is the description for the deletion dialog. -->
+    <string name="delete_description">Це видалить запис із %1$s та Firefox.</string>
+    <!-- This is the text on an item in the item detail toolbar menu to edit an entry. -->
+    <string name="edit">Редагувати</string>
+
+    <!-- This is the description for the entry password in context of an edit item view. -->
+    <string name="entry_password_description">Пароль для цього запису.</string>
+    <!-- This is the title text on the dialog when you attempt to close the edit view and changes have been made. -->
+    <string name="discard_changes">Відхилити зміни?</string>
+    <!-- This is the additional text when you attempt to close the edit view and changes have been made. -->
+    <string name="discard_changes_description">Ваші зміни не будуть збережені.</string>
+    <!-- This is the text on the button to discard your current changes from the edit entry view. -->
+    <string name="discard">Відхилити</string>
+    <!-- This is the description for the hostname in the edit entry view. -->
+    <string name="web_address_description">Назва вузла</string>
+    <!-- This is the description for the username in the edit entry view. -->
+    <string name="username_description">Ім’я користувача</string>
+    <!-- This is the title of the edit login page. -->
+    <string name="edit_login_title">Змінити пароль</string>
+
+    <!-- This is the error message that is shown in edit or create view when input text for password is not valid. -->
+    <string name="password_invalid_text">Пароль не може бути порожнім</string>
+
+    <!-- This is the error message that is shown in edit or create view when a username matches a previously existing credential for that domain combination. -->
+    <string name="username_duplicate_exists">Запис з таким іменем користувача вже існує</string>
+
+    <!-- This is the text description that is shown in the manual create view underneath the hostname field to describe a valid hostname. -->
+    <string name="create_hostname_description">Переконайтеся у точній відповідності домену для пов’язаного веб-сайту (включаючи “https://” та “www”).</string>
+
+    <!-- This is the title of the create new login page. -->
+    <string name="create_title">Новий запис</string>
+
+    <!-- This is the hint text that is shown inline on the username field of the create new login page. -->
+    <string name="create_username_hint_text">наприклад, janedoe</string>
+
+    <!-- This is the hint text that is shown inline on the hostname field of the create new login page. -->
+    <string name="create_hostname_hint_text">https://www.example.com</string>
+
+    <!-- This is an error message shown below the hostname field of the create new login page when a hostname is invalid. -->
+    <string name="hostname_invalid_text">Веб-адреса повинна містити \“https://\“ або \“http://\“</string>
+
+    <!-- This is the error message that is shown in the create view when input text for hostname is empty. -->
+    <string name="hostname_empty_invalid_text">Назва вузла не може бути порожньою</string>
+
+</resources>
