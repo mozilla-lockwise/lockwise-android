@@ -277,5 +277,25 @@
     <!-- This is the error message that is shown in edit or create view when input text for password is not valid. -->
     <string name="password_invalid_text">Mật khẩu không được để trống</string>
 
+    <!-- This is the error message that is shown in edit or create view when a username matches a previously existing credential for that domain combination. -->
     <string name="username_duplicate_exists">Một thông tin đăng nhập với tên người dùng đó đã tồn tại</string>
+
+    <!-- This is the text description that is shown in the manual create view underneath the hostname field to describe a valid hostname. -->
+    <string name="create_hostname_description">Đảm bảo tên này khớp với tên miền chính xác cho trang web bạn đang tham khảo (bao gồm “https://” và “www”).</string>
+
+    <!-- This is the title of the create new login page. -->
+    <string name="create_title">Đăng nhập mới</string>
+
+    <!-- This is the hint text that is shown inline on the username field of the create new login page. -->
+    <string name="create_username_hint_text">ví dụ: janedoe</string>
+
+    <!-- This is the hint text that is shown inline on the hostname field of the create new login page. -->
+    <string name="create_hostname_hint_text">https://www.example.com</string>
+
+    <!-- This is an error message shown below the hostname field of the create new login page when a hostname is invalid. -->
+    <string name="hostname_invalid_text">Địa chỉ web phải chứa \“https://\“ hoặc \“http://\“</string>
+
+    <!-- This is the error message that is shown in the create view when input text for hostname is empty. -->
+    <string name="hostname_empty_invalid_text">Tên máy chủ không thể để trống</string>
+
 </resources>

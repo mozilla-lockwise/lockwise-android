@@ -275,5 +275,22 @@
     <!-- This is the error message that is shown in edit or create view when input text for password is not valid. -->
     <string name="password_invalid_text">Le champ mot de passe ne peut pas être vide</string>
 
+    <!-- This is the error message that is shown in edit or create view when a username matches a previously existing credential for that domain combination. -->
     <string name="username_duplicate_exists">Un identifiant avec ce nom d’utilisateur existe déjà</string>
+
+    <!-- This is the text description that is shown in the manual create view underneath the hostname field to describe a valid hostname. -->
+    <string name="create_hostname_description">Assurez-vous que cela correspond au domaine exact du site web que vous recherchez (« https:// » et « www » inclus).</string>
+
+    <!-- This is the title of the create new login page. -->
+    <string name="create_title">Nouvel identifiant</string>
+
+    <!-- This is the hint text that is shown inline on the hostname field of the create new login page. -->
+    <string name="create_hostname_hint_text">https://www.example.com</string>
+
+    <!-- This is an error message shown below the hostname field of the create new login page when a hostname is invalid. -->
+    <string name="hostname_invalid_text">L’adresse web doit contenir « https:// » ou « http:// »</string>
+
+    <!-- This is the error message that is shown in the create view when input text for hostname is empty. -->
+    <string name="hostname_empty_invalid_text">Le nom d’hôte ne peut pas rester vide</string>
+
 </resources>

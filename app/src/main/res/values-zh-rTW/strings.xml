@@ -275,5 +275,26 @@
 
     <!-- This is the error message that is shown in edit or create view when input text for password is not valid. -->
     <string name="password_invalid_text">密碼不得為空白</string>
+
+    <!-- This is the error message that is shown in edit or create view when a username matches a previously existing credential for that domain combination. -->
     <string name="username_duplicate_exists">已有該使用者名稱的登入資訊</string>
+
+    <!-- This is the text description that is shown in the manual create view underneath the hostname field to describe a valid hostname. -->
+    <string name="create_hostname_description">此欄位內容需與要對應的網域完全相同（包含「https://」與「www」）。</string>
+
+    <!-- This is the title of the create new login page. -->
+    <string name="create_title">新增登入資訊</string>
+
+    <!-- This is the hint text that is shown inline on the username field of the create new login page. -->
+    <string name="create_username_hint_text">例如: janedoe</string>
+
+    <!-- This is the hint text that is shown inline on the hostname field of the create new login page. -->
+    <string name="create_hostname_hint_text">https://www.example.com</string>
+
+    <!-- This is an error message shown below the hostname field of the create new login page when a hostname is invalid. -->
+    <string name="hostname_invalid_text">網址須包含「https://」或「http://」</string>
+
+    <!-- This is the error message that is shown in the create view when input text for hostname is empty. -->
+    <string name="hostname_empty_invalid_text">主機名稱不得為空白。</string>
+
 </resources>
