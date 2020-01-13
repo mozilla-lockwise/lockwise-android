@@ -219,8 +219,8 @@
     <string name="finish">Terminer</string>
     <!-- This description of the app functionality is shown on the final onboarding screen -->
     <string name="access_description">Accédez depuis votre téléphone aux identifiants enregistrés dans Firefox</string>
-    <!-- This description of the app security is shown on the final onboarding screen. %s will be replaced with the security link. -->
-    <string name="security_description">Synchronisez vos appareils avec un %s</string>
+    <!-- This description of the app security is shown on the final onboarding screen. -->
+    <string name="security_description">Synchronisez vos appareils avec un chiffrement 256 bits</string>
     <!-- This description of the app convenience is shown on the final onboarding screen. -->
     <string name="convenience_description">Déverrouillez facilement l’application avec votre empreinte digitale</string>
 
