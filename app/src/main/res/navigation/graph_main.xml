@@ -69,6 +69,11 @@
             app:launchSingleTop="true"
             app:popUpTo="@id/fragment_edit_item"
             app:popUpToInclusive="true" />
+        <action android:id="@+id/action_init_to_create_item"
+            app:destination="@id/fragment_create_item"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/fragment_create_item"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
