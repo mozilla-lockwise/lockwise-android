@@ -56,6 +56,9 @@ open class MockLoginsStorage : LoginsStorage {
         this._locked = false
     }
 
+    override fun ensureValid(login: ServerPassword) {
+    }
+
     override fun ensureUnlocked(encryptionKey: ByteArray) {
         this._locked = false
     }
