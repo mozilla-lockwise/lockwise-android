@@ -74,6 +74,8 @@ class ItemListRobot : BaseTestRobot {
     fun selectItem(position: Int = 0) = clickListItem(R.id.entriesView, position)
 
     fun pullToRefresh() = swipeDown(R.id.entriesView)
+
+    fun addNewCredential() = click { id(R.id.createItemButton) }
 }
 
 fun itemList(f: ItemListRobot.() -> Unit) = ItemListRobot().apply(f)

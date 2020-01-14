@@ -4,6 +4,7 @@ import androidx.test.rule.ActivityTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.robots.itemList
+import mozilla.lockbox.robots.newManualCreateLogin
 import mozilla.lockbox.view.RootActivity
 import org.junit.Rule
 import org.junit.Test
@@ -52,5 +53,43 @@ open class ItemListTest {
         navigator.gotoItemList(false)
         itemList { pullToRefresh() }
         navigator.checkAtItemList()
+    }
+
+    @Test
+    fun testCreateNewCredentialButton() {
+        navigator.gotoItemList(false)
+        itemList { addNewCredential() }
+        newManualCreateLogin { exists() }
+    }
+
+    @Test
+    fun testCreateNewCredentialInvalidValues() {
+        navigator.gotoItemList(false)
+        itemList { addNewCredential() }
+        newManualCreateLogin {
+            assertErrorEmptyHostname()
+            assertErrorEmptyPassord()
+            // Type New Hostname - invalid
+            newHostname("foo")
+            assertErrorWrongHostname()
+            // While there are errors the save button is disabled
+            saveButtonIsNotClickable()
+        }
+    }
+
+    @Test
+    fun testCreateNewCredentialValidValues() {
+        navigator.gotoItemList(false)
+        itemList { addNewCredential() }
+        newManualCreateLogin {
+            saveButtonIsNotClickable()
+            assertErrorEmptyHostname()
+            assertErrorEmptyPassord()
+            // Type new Hostname
+            newHostname("http://example.com")
+            newPassword("foo")
+            // Using valid fields allows to save the entry
+            saveButtonIsClickable()
+        }
     }
 }
