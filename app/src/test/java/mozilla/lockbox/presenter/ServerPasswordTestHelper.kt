@@ -35,7 +35,7 @@ open class ServerPasswordTestHelper {
     val item3 = ServerPassword(
         "ioupiouiuy",
         "www.dogs.org",
-        username = null,
+        username = "",
         password = "baaaaa",
         timesUsed = 0,
         timeCreated = 0L,
