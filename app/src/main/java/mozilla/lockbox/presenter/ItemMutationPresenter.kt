@@ -27,9 +27,15 @@ interface ItemMutationView {
     val togglePasswordClicks: Observable<Unit>
     val closeEntryClicks: Observable<Unit>
     val saveEntryClicks: Observable<Unit>
+
     val hostnameChanged: Observable<String>
     val usernameChanged: Observable<String>
     val passwordChanged: Observable<String>
+
+    val passwordFocus: Observable<Boolean>
+    val usernameFocus: Observable<Boolean>
+    val hostnameFocus: Observable<Boolean>
+
     fun closeKeyboard()
     fun displayHostnameError(@StringRes errorMessage: Int? = null)
     fun displayUsernameError(@StringRes errorMessage: Int? = null)
@@ -86,21 +92,45 @@ abstract class ItemMutationPresenter(
             view.hostnameChanged, view.usernameChanged, view.passwordChanged
         )
 
-        Observables.combineLatest(fieldsChanged, itemDetailStore.unavailableUsernames)
-            .map { (fields, unavailableUsernames) ->
+        val blurredOnce = Observables.combineLatest(
+            blurredOnce(view.hostnameFocus),
+            blurredOnce(view.usernameFocus),
+            blurredOnce(view.passwordFocus)
+        )
+
+        Observables.combineLatest(fieldsChanged, itemDetailStore.unavailableUsernames, blurredOnce)
+            .map { (fields, unavailableUsernames, blurredOnce3) ->
                 Triple(
-                    hostnameError(fields.first),
-                    usernameError(fields.second, unavailableUsernames),
-                    passwordError(fields.third)
+                    hostnameError(fields.first, blurredOnce3.first),
+                    usernameError(fields.second, unavailableUsernames, blurredOnce3.second),
+                    passwordError(fields.third, blurredOnce3.third)
                 )
             }
             .observeOn(mainThread())
             .subscribe { (hostnameError, usernameError, passwordError) ->
-                view.displayHostnameError(hostnameError.value)
-                view.displayUsernameError(usernameError.value)
-                view.displayPasswordError(passwordError.value)
+                val errorFunctions = listOf(
+                    view::displayHostnameError to hostnameError.value,
+                    view::displayUsernameError to usernameError.value,
+                    view::displayPasswordError to passwordError.value
+                )
 
-                view.setSaveEnabled(hostnameError.value == null && usernameError.value == null && passwordError.value == null)
+                errorFunctions.forEach { (fn, error) ->
+                    val toDisplay = if (error != R.string.undisplayed_credential_mutation_error) {
+                        // We use a marker error for an error we don't tell the user about,
+                        // but will cause the save button to be disabled.
+                        error
+                    } else {
+                        // `null` clears an existing error.
+                        null
+                    }
+                    fn.invoke(toDisplay)
+                }
+
+                val errorDetected = errorFunctions.fold(false) { acc, (_, error) ->
+                    acc || (error != null)
+                }
+
+                view.setSaveEnabled(!errorDetected)
             }
             .addTo(compositeDisposable)
 
@@ -116,9 +146,27 @@ abstract class ItemMutationPresenter(
             .addTo(compositeDisposable)
     }
 
+    fun blurredOnce(focusChange: Observable<Boolean>): Observable<Boolean> {
+        var focusOnce = false
+        var blurredOnce = false
+
+        return focusChange
+            .doOnNext {
+                if (it) {
+                    focusOnce = true
+                } else if (focusOnce) {
+                    blurredOnce = true
+                }
+            }
+            .map {
+                blurredOnce
+            }
+    }
+
     open fun usernameError(
         inputText: String,
-        unavailableUsernames: Set<String>
+        unavailableUsernames: Set<String>,
+        blurredOnce: Boolean
     ) =
         when {
             TextUtils.isEmpty(inputText) -> null
@@ -126,13 +174,17 @@ abstract class ItemMutationPresenter(
             else -> null
         }.asOptional()
 
-    open fun passwordError(inputText: String) =
+    open fun passwordError(inputText: String, blurredOnce: Boolean) =
         when {
-            TextUtils.isEmpty(inputText) -> R.string.password_invalid_text
+            TextUtils.isEmpty(inputText) -> if (blurredOnce) {
+                R.string.password_invalid_text
+            } else {
+                R.string.undisplayed_credential_mutation_error
+            }
             else -> null
         }.asOptional()
 
-    abstract fun hostnameError(inputText: String): Optional<Int>
+    abstract fun hostnameError(inputText: String, blurredOnce: Boolean): Optional<Int>
 
     override fun onBackPressed(): Boolean {
         itemDetailStore.isDirty

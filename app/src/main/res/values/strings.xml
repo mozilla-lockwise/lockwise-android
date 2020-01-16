@@ -279,6 +279,8 @@
     <!-- This is the title of the edit login page. -->
     <string name="edit_login_title">Edit Login</string>
 
+    <string name="undisplayed_credential_mutation_error" translatable="false">Undisplayed</string>
+
     <!-- This is the error message that is shown in edit or create view when input text for password is not valid. -->
     <string name="password_invalid_text">Password cannot be empty</string>
 
@@ -299,6 +301,9 @@
 
     <!-- This is an error message shown below the hostname field of the create new login page when a hostname is invalid. -->
     <string name="hostname_invalid_text">Web address must contain \“https://\“ or \“http://\“</string>
+
+    <!-- This is an error message shown below the hostname field of the create new login page when a hostname is invalid. -->
+    <string name="hostname_invalid_host">Web address must have a valid hostname</string>
 
     <!-- This is the error message that is shown in the create view when input text for hostname is empty. -->
     <string name="hostname_empty_invalid_text">Hostname cannot be empty</string>

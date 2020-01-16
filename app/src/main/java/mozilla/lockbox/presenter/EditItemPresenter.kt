@@ -80,5 +80,5 @@ class EditItemPresenter(
         } ?: listOf(RouteAction.ItemList)
     }
 
-    override fun hostnameError(inputText: String): Optional<Int> = null.asOptional()
+    override fun hostnameError(inputText: String, blurredOnce: Boolean): Optional<Int> = null.asOptional()
 }

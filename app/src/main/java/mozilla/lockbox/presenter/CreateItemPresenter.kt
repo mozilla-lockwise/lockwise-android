@@ -21,6 +21,12 @@ import mozilla.lockbox.support.asOptional
 
 interface CreateItemView : ItemMutationView
 
+private val minimalHostRegex = (
+        "^https?" + // scheme
+        "://" + // ://
+        "(\\w+\\.\\w+)[^\\s]*$" // minimal host
+    ).toRegex()
+
 @ExperimentalCoroutinesApi
 class CreateItemPresenter(
     private val view: CreateItemView,
@@ -62,14 +68,30 @@ class CreateItemPresenter(
         return listOf(RouteAction.ItemList)
     }
 
-    override fun hostnameError(inputText: String) =
+    override fun hostnameError(inputText: String, blurredOnce: Boolean) =
         when {
-            TextUtils.isEmpty(inputText) -> {
-                R.string.hostname_empty_invalid_text
-            }
-            !URLUtil.isHttpUrl(inputText) && !URLUtil.isHttpsUrl(inputText) -> {
+            TextUtils.isEmpty(inputText) ->
+                R.string.hostname_empty_invalid_text after blurredOnce
+
+            inputText.length <= 7 && "http://".startsWith(inputText) ->
+                R.string.hostname_invalid_text after blurredOnce
+
+            inputText.length <= 8 && "https://".startsWith(inputText) ->
+                R.string.hostname_invalid_text after blurredOnce
+
+            !URLUtil.isHttpUrl(inputText) && !URLUtil.isHttpsUrl(inputText) ->
                 R.string.hostname_invalid_text
-            }
-            else -> { null }
+
+            !minimalHostRegex.matches(inputText) ->
+                R.string.hostname_invalid_host after blurredOnce
+
+            else -> null
         }.asOptional()
+
+    private infix fun Int.after(blurredOnce: Boolean) =
+        if (blurredOnce) {
+            this
+        } else {
+            R.string.undisplayed_credential_mutation_error
+        }
 }
