@@ -19,8 +19,6 @@ import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.ItemDetailStore
-import mozilla.lockbox.support.Optional
-import mozilla.lockbox.support.asOptional
 
 interface ItemMutationView {
     var isPasswordVisible: Boolean
@@ -92,30 +90,30 @@ abstract class ItemMutationPresenter(
             view.hostnameChanged, view.usernameChanged, view.passwordChanged
         )
 
-        val blurredOnce = Observables.combineLatest(
-            blurredOnce(view.hostnameFocus),
-            blurredOnce(view.usernameFocus),
-            blurredOnce(view.passwordFocus)
+        val fieldsShowingErrors = Observables.combineLatest(
+            focusLostOnce(view.hostnameFocus),
+            focusLostOnce(view.usernameFocus),
+            focusLostOnce(view.passwordFocus)
         )
 
-        Observables.combineLatest(fieldsChanged, itemDetailStore.unavailableUsernames, blurredOnce)
-            .map { (fields, unavailableUsernames, blurredOnce3) ->
+        Observables.combineLatest(fieldsChanged, itemDetailStore.unavailableUsernames, fieldsShowingErrors)
+            .map { (fields, unavailableUsernames, showingErrors) ->
                 Triple(
-                    hostnameError(fields.first, blurredOnce3.first),
-                    usernameError(fields.second, unavailableUsernames, blurredOnce3.second),
-                    passwordError(fields.third, blurredOnce3.third)
+                    hostnameError(fields.first, showingErrors.first),
+                    usernameError(fields.second, unavailableUsernames, showingErrors.second),
+                    passwordError(fields.third, showingErrors.third)
                 )
             }
             .observeOn(mainThread())
             .subscribe { (hostnameError, usernameError, passwordError) ->
                 val errorFunctions = listOf(
-                    view::displayHostnameError to hostnameError.value,
-                    view::displayUsernameError to usernameError.value,
-                    view::displayPasswordError to passwordError.value
+                    view::displayHostnameError to hostnameError,
+                    view::displayUsernameError to usernameError,
+                    view::displayPasswordError to passwordError
                 )
 
-                errorFunctions.forEach { (fn, error) ->
-                    val toDisplay = if (error != R.string.undisplayed_credential_mutation_error) {
+                errorFunctions.forEach { (displayFunction, error) ->
+                    val errorMessage = if (error != R.string.hidden_credential_mutation_error) {
                         // We use a marker error for an error we don't tell the user about,
                         // but will cause the save button to be disabled.
                         error
@@ -123,7 +121,7 @@ abstract class ItemMutationPresenter(
                         // `null` clears an existing error.
                         null
                     }
-                    fn.invoke(toDisplay)
+                    displayFunction.invoke(errorMessage)
                 }
 
                 val errorDetected = errorFunctions.fold(false) { acc, (_, error) ->
@@ -146,45 +144,48 @@ abstract class ItemMutationPresenter(
             .addTo(compositeDisposable)
     }
 
-    fun blurredOnce(focusChange: Observable<Boolean>): Observable<Boolean> {
+    // Returns an observable that emits with the same frequency as `focusChanges`
+    // but emits `true` if and only if the input observable has emitted `true` first time and then a
+    // subsequent `false`.
+    private fun focusLostOnce(focusChange: Observable<Boolean>): Observable<Boolean> {
         var focusOnce = false
-        var blurredOnce = false
+        var lostFocusOnce = false
 
         return focusChange
             .doOnNext {
                 if (it) {
                     focusOnce = true
                 } else if (focusOnce) {
-                    blurredOnce = true
+                    lostFocusOnce = true
                 }
             }
             .map {
-                blurredOnce
+                lostFocusOnce
             }
     }
 
     open fun usernameError(
         inputText: String,
         unavailableUsernames: Set<String>,
-        blurredOnce: Boolean
+        showingErrors: Boolean
     ) =
         when {
             TextUtils.isEmpty(inputText) -> null
             unavailableUsernames.contains(inputText) -> R.string.username_duplicate_exists
             else -> null
-        }.asOptional()
+        }
 
-    open fun passwordError(inputText: String, blurredOnce: Boolean) =
+    open fun passwordError(inputText: String, showingErrors: Boolean) =
         when {
-            TextUtils.isEmpty(inputText) -> if (blurredOnce) {
+            TextUtils.isEmpty(inputText) -> if (showingErrors) {
                 R.string.password_invalid_text
             } else {
-                R.string.undisplayed_credential_mutation_error
+                R.string.hidden_credential_mutation_error
             }
             else -> null
-        }.asOptional()
+        }
 
-    abstract fun hostnameError(inputText: String, blurredOnce: Boolean): Optional<Int>
+    abstract fun hostnameError(inputText: String, showingErrors: Boolean): Int?
 
     override fun onBackPressed(): Boolean {
         itemDetailStore.isDirty

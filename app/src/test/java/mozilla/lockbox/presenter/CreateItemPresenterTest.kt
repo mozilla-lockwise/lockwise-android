@@ -212,31 +212,31 @@ class CreateItemPresenterTest {
     @Test
     fun `testing various hostname errors`() {
         // empty string
-        assertEquals(R.string.undisplayed_credential_mutation_error, subject.hostnameError("", false).value)
-        assertEquals(R.string.hostname_empty_invalid_text, subject.hostnameError("", true).value)
+        assertEquals(R.string.hidden_credential_mutation_error, subject.hostnameError("", false))
+        assertEquals(R.string.hostname_empty_invalid_text, subject.hostnameError("", true))
 
         // not starting with http or https
-        assertEquals(R.string.undisplayed_credential_mutation_error, subject.hostnameError("h", false).value)
-        assertEquals(R.string.undisplayed_credential_mutation_error, subject.hostnameError("ht", false).value)
-        assertEquals(R.string.undisplayed_credential_mutation_error, subject.hostnameError("htt", false).value)
-        assertEquals(R.string.undisplayed_credential_mutation_error, subject.hostnameError("http", false).value)
-        assertEquals(R.string.undisplayed_credential_mutation_error, subject.hostnameError("https", false).value)
-        assertEquals(R.string.undisplayed_credential_mutation_error, subject.hostnameError("https:", false).value)
-        assertEquals(R.string.undisplayed_credential_mutation_error, subject.hostnameError("https://", false).value)
-        assertEquals(R.string.undisplayed_credential_mutation_error, subject.hostnameError("http://", false).value)
+        assertEquals(R.string.hidden_credential_mutation_error, subject.hostnameError("h", false))
+        assertEquals(R.string.hidden_credential_mutation_error, subject.hostnameError("ht", false))
+        assertEquals(R.string.hidden_credential_mutation_error, subject.hostnameError("htt", false))
+        assertEquals(R.string.hidden_credential_mutation_error, subject.hostnameError("http", false))
+        assertEquals(R.string.hidden_credential_mutation_error, subject.hostnameError("https", false))
+        assertEquals(R.string.hidden_credential_mutation_error, subject.hostnameError("https:", false))
+        assertEquals(R.string.hidden_credential_mutation_error, subject.hostnameError("https://", false))
+        assertEquals(R.string.hidden_credential_mutation_error, subject.hostnameError("http://", false))
 
-        assertEquals(R.string.hostname_invalid_text, subject.hostnameError("f", false).value)
-        assertEquals(R.string.hostname_invalid_text, subject.hostnameError("f", true).value)
-        assertEquals(R.string.hostname_invalid_text, subject.hostnameError("htt", true).value)
+        assertEquals(R.string.hostname_invalid_text, subject.hostnameError("f", false))
+        assertEquals(R.string.hostname_invalid_text, subject.hostnameError("f", true))
+        assertEquals(R.string.hostname_invalid_text, subject.hostnameError("htt", true))
 
         // not being a valid URL
-        assertEquals(R.string.hostname_invalid_host, subject.hostnameError("https://a", true).value)
+        assertEquals(R.string.hostname_invalid_host, subject.hostnameError("https://a", true))
 
         // but being a valid URL is ok.
-        assertNull(subject.hostnameError("https://mozilla.com", false).value)
-        assertNull(subject.hostnameError("https://mozilla.com", true).value)
+        assertNull(subject.hostnameError("https://mozilla.com", false))
+        assertNull(subject.hostnameError("https://mozilla.com", true))
 
-        assertNull(subject.hostnameError("https://127.0.0.1", true).value)
-        assertNull(subject.hostnameError("https://127.0.0.1:44", true).value)
+        assertNull(subject.hostnameError("https://127.0.0.1", true))
+        assertNull(subject.hostnameError("https://127.0.0.1:44", true))
     }
 }

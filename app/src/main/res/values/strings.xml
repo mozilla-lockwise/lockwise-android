@@ -279,8 +279,6 @@
     <!-- This is the title of the edit login page. -->
     <string name="edit_login_title">Edit Login</string>
 
-    <string name="undisplayed_credential_mutation_error" translatable="false">Undisplayed</string>
-
     <!-- This is the error message that is shown in edit or create view when input text for password is not valid. -->
     <string name="password_invalid_text">Password cannot be empty</string>
 

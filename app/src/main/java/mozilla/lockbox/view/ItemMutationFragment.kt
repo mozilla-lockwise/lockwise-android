@@ -114,7 +114,7 @@ open class ItemMutationFragment : BackableFragment(), ItemMutationView {
         }
 
     open fun setupKeyboardFocus(view: View) {
-        // NOP
+        // Empty here, but will have implementations specific to create and edit.
     }
 
     override fun setSaveEnabled(enabled: Boolean) {
