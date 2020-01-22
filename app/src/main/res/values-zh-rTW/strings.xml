@@ -219,11 +219,11 @@
     <!-- This is the button to dismiss the final onboarding screen -->
     <string name="finish">完成</string>
     <!-- This description of the app functionality is shown on the final onboarding screen -->
-    <string name="access_description">在您的手機使用儲存到 Firefox 的登入資訊</string>
+    <string name="onboarding_access_description">在您的手機使用儲存到 Firefox 的登入資訊</string>
     <!-- This description of the app security is shown on the final onboarding screen. %s will be replaced with the security link. -->
-    <string name="security_description">使用 256 位元加密，安全於裝置間同步</string>
+    <string name="onboarding_security_description">使用 256 位元加密，安全於裝置間同步</string>
     <!-- This description of the app convenience is shown on the final onboarding screen. -->
-    <string name="convenience_description">輕鬆使用指紋解鎖應用程式</string>
+    <string name="onboarding_convenience_description">輕鬆使用指紋解鎖應用程式</string>
 
     <!-- This is the title of the device security dialog box. -->
     <string name="secure_your_device">保護您的裝置。</string>

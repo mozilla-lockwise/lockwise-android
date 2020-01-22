@@ -225,11 +225,11 @@
     <!-- This is the button to dismiss the final onboarding screen -->
     <string name="finish">Finish</string>
     <!-- This description of the app functionality is shown on the final onboarding screen -->
-    <string name="access_description">Access logins saved to Firefox from your phone</string>
+    <string name="onboarding_access_description">Access logins saved to Firefox from your phone</string>
     <!-- This description of the app security is shown on the final onboarding screen. %s will be replaced with the security link. -->
-    <string name="security_description">Sync between devices with secure 256-bit encryption</string>
+    <string name="onboarding_security_description">Sync between devices with secure 256-bit encryption</string>
     <!-- This description of the app convenience is shown on the final onboarding screen. -->
-    <string name="convenience_description">Unlock the app with ease using your fingerprint</string>
+    <string name="onboarding_convenience_description">Unlock the app with ease using your fingerprint</string>
 
     <!-- This is the title of the device security dialog box. -->
     <string name="secure_your_device">Secure your device.</string>
