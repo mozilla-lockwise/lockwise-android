@@ -285,7 +285,7 @@
     <string name="username_duplicate_exists">Запис з таким іменем користувача вже існує</string>
 
     <!-- This is the text description that is shown in the manual create view underneath the hostname field to describe a valid hostname. -->
-    <string name="create_hostname_description">Переконайтеся у точній відповідності домену для пов’язаного веб-сайту (включаючи “https://” та “www”).</string>
+    <string name="create_hostname_description">Переконайтеся у точній відповідності домену для пов’язаного вебсайту (включаючи “https://” та “www”).</string>
 
     <!-- This is the title of the create new login page. -->
     <string name="create_title">Новий запис</string>
