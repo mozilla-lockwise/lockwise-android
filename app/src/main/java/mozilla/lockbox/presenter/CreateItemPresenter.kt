@@ -14,6 +14,7 @@ import mozilla.lockbox.R
 import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.ItemDetailAction
 import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.action.ToastNotificationAction
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.ItemDetailStore
@@ -47,11 +48,14 @@ class CreateItemPresenter(
             .addTo(compositeDisposable)
     }
 
-    override fun saveChangesAction(hasChanges: Boolean): ItemDetailAction {
+    override fun saveChangesActions(hasChanges: Boolean): List<Action> {
         return if (hasChanges) {
-            ItemDetailAction.CreateItemSaveChanges
+            listOf(
+                ItemDetailAction.CreateItemSaveChanges,
+                ToastNotificationAction.ShowSuccessfulCreateToast
+            )
         } else {
-            ItemDetailAction.EndCreateItemSession
+            listOf(ItemDetailAction.EndCreateItemSession)
         }
     }
 
@@ -63,8 +67,10 @@ class CreateItemPresenter(
         }
     }
 
-    override fun endEditingAction(): List<Action> {
-        return listOf(RouteAction.ItemList)
+    override fun endEditingActions(): List<Action> {
+        return listOf(
+            RouteAction.ItemList
+        )
     }
 
     override fun hostnameError(inputText: String, showingErrors: Boolean): Int? =

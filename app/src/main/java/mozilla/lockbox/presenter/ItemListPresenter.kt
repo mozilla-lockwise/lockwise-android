@@ -7,7 +7,6 @@
 package mozilla.lockbox.presenter
 
 import androidx.annotation.IdRes
-import androidx.annotation.StringRes
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.Observables
@@ -51,8 +50,6 @@ interface ItemListView {
     val refreshItemList: Observable<Unit>
     val isRefreshing: Boolean
     fun stopRefreshing()
-    fun showToastNotification(@StringRes strId: Int)
-    fun showDeleteToastNotification(text: String)
 }
 
 @ExperimentalCoroutinesApi
@@ -168,13 +165,6 @@ class ItemListPresenter(
 
         networkStore.isConnected
             .subscribe(view::handleNetworkError)
-            .addTo(compositeDisposable)
-
-        dataStore.deletedItem
-            .subscribe {
-                val event = it.get() ?: return@subscribe
-                view.showDeleteToastNotification(event.formSubmitURL ?: event.hostname)
-            }
             .addTo(compositeDisposable)
 
         // TODO: make this more robust to retry loading the correct page again (loadUrl)

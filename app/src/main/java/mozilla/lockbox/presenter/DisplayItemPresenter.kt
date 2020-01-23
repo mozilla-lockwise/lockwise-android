@@ -6,18 +6,17 @@
 
 package mozilla.lockbox.presenter
 
-import androidx.annotation.StringRes
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
-import mozilla.lockbox.R
 import mozilla.lockbox.action.ClipboardAction
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.ItemDetailAction
 import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.action.ToastNotificationAction
 import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.extensions.toDetailViewModel
 import mozilla.lockbox.flux.Dispatcher
@@ -45,7 +44,6 @@ interface DisplayItemView {
     fun hideKebabMenu()
     fun updateItem(item: ItemDetailViewModel)
     fun showPopup()
-    fun showToastNotification(@StringRes strId: Int)
     fun handleNetworkError(networkErrorVisibility: Boolean)
 //    val retryNetworkConnectionClicks: Observable<Unit>
 }
@@ -89,7 +87,7 @@ class DisplayItemPresenter(
             if (!it.username.isNullOrBlank()) {
                 dispatcher.dispatch(ClipboardAction.CopyUsername(it.username.toString()))
                 dispatcher.dispatch(DataStoreAction.Touch(it.id))
-                view.showToastNotification(R.string.toast_username_copied)
+                dispatcher.dispatch(ToastNotificationAction.ShowCopyUsernameToast)
             }
         }
 
@@ -97,7 +95,7 @@ class DisplayItemPresenter(
             if (!it.username.isNullOrBlank()) {
                 dispatcher.dispatch(ClipboardAction.CopyUsername(it.username.toString()))
                 dispatcher.dispatch(DataStoreAction.Touch(it.id))
-                view.showToastNotification(R.string.toast_username_copied)
+                dispatcher.dispatch(ToastNotificationAction.ShowCopyUsernameToast)
             }
         }
 
@@ -105,7 +103,7 @@ class DisplayItemPresenter(
             if (it.password.isNotEmpty()) {
                 dispatcher.dispatch(ClipboardAction.CopyPassword(it.password))
                 dispatcher.dispatch(DataStoreAction.Touch(it.id))
-                view.showToastNotification(R.string.toast_password_copied)
+                dispatcher.dispatch(ToastNotificationAction.ShowCopyPasswordToast)
             }
         }
 
@@ -113,7 +111,7 @@ class DisplayItemPresenter(
             if (it.password.isNotEmpty()) {
                 dispatcher.dispatch(ClipboardAction.CopyPassword(it.password))
                 dispatcher.dispatch(DataStoreAction.Touch(it.id))
-                view.showToastNotification(R.string.toast_password_copied)
+                dispatcher.dispatch(ToastNotificationAction.ShowCopyPasswordToast)
             }
         }
 

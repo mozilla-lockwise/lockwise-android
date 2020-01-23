@@ -17,12 +17,13 @@ import mozilla.lockbox.R
 import mozilla.lockbox.action.AppWebPageAction
 import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.action.ToastNotificationAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.RouteStore
 import mozilla.lockbox.store.SettingStore
 import mozilla.lockbox.view.AppWebPageFragmentArgs
-import mozilla.lockbox.view.EditItemFragmentArgs
 import mozilla.lockbox.view.DisplayItemFragmentArgs
+import mozilla.lockbox.view.EditItemFragmentArgs
 import mozilla.lockbox.view.FingerprintAuthDialogFragment
 
 @ExperimentalCoroutinesApi
@@ -97,6 +98,7 @@ class AppRoutePresenter(
             is RouteAction.AutoLockSetting -> showAutoLockSelections()
             is RouteAction.DialogFragment.FingerprintDialog ->
                 showDialogFragment(FingerprintAuthDialogFragment(), action)
+            is ToastNotificationAction -> showToastNotification(action)
             is DialogAction -> showDialog(action)
             is AppWebPageAction -> navigateToFragment(R.id.fragment_webview, bundle(action))
         }

@@ -16,8 +16,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
-import androidx.annotation.StringRes
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.appcompat.widget.PopupMenu
@@ -189,17 +187,6 @@ class DisplayItemFragment : BackableFragment(), DisplayItemView {
 
         // effect password visibility state
         updatePasswordVisibility(isPasswordVisible)
-    }
-
-    override fun showToastNotification(@StringRes strId: Int) {
-        assertOnUiThread()
-        val toast = Toast(activity)
-        toast.duration = Toast.LENGTH_SHORT
-        toast.view = layoutInflater.inflate(R.layout.toast_view, this.view as ViewGroup, false)
-        toast.setGravity(Gravity.FILL_HORIZONTAL or Gravity.BOTTOM, 0, 0)
-        val v = toast.view.findViewById(R.id.message) as TextView
-        v.text = resources.getString(strId)
-        toast.show()
     }
 
     // used for feature flag

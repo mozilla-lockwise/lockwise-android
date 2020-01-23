@@ -16,8 +16,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
 import mozilla.lockbox.action.ItemDetailAction
 import mozilla.lockbox.flux.Action
-import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.store.ItemDetailStore
 
 interface ItemMutationView {
@@ -68,7 +68,7 @@ abstract class ItemMutationPresenter(
 
         view.saveEntryClicks
             .flatMap { itemDetailStore.isDirty.take(1) }
-            .map { saveChangesAction(it) }
+            .flatMapIterable { saveChangesActions(it) }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
 
@@ -138,7 +138,7 @@ abstract class ItemMutationPresenter(
             .filter { !it }
             .flatMapIterable {
                 view.closeKeyboard()
-                endEditingAction()
+                endEditingActions()
             }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
@@ -199,6 +199,6 @@ abstract class ItemMutationPresenter(
     }
 
     abstract fun dismissChangesAction(hasChanges: Boolean): Action
-    abstract fun saveChangesAction(hasChanges: Boolean): ItemDetailAction
-    abstract fun endEditingAction(): List<Action>
+    abstract fun saveChangesActions(hasChanges: Boolean): List<Action>
+    abstract fun endEditingActions(): List<Action>
 }

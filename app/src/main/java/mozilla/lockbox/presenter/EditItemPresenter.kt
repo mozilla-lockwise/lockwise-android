@@ -54,14 +54,14 @@ class EditItemPresenter(
         super.onViewReady()
     }
 
-    override fun saveChangesAction(hasChanges: Boolean) =
+    override fun saveChangesActions(hasChanges: Boolean) =
         itemId?.let {
             if (hasChanges) {
-                ItemDetailAction.EditItemSaveChanges
+                listOf<Action>(ItemDetailAction.EditItemSaveChanges)
             } else {
                 null
             }
-        } ?: ItemDetailAction.EndEditItemSession
+        } ?: listOf(ItemDetailAction.EndEditItemSession)
 
     override fun dismissChangesAction(hasChanges: Boolean) =
         itemId?.let {
@@ -72,11 +72,10 @@ class EditItemPresenter(
             }
         } ?: ItemDetailAction.EndEditItemSession
 
-    override fun endEditingAction(): List<Action> {
-        return itemId?.let {
+    override fun endEditingActions() =
+        itemId?.let {
             listOf(RouteAction.ItemList, RouteAction.DisplayItem(it))
         } ?: listOf(RouteAction.ItemList)
-    }
 
     override fun hostnameError(inputText: String, showingErrors: Boolean): Int? = null
 }

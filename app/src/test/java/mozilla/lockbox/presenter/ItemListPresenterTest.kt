@@ -34,7 +34,6 @@ import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.NetworkStore
 import mozilla.lockbox.store.SettingStore
-import mozilla.lockbox.support.Consumable
 import mozilla.lockbox.support.Optional
 import org.junit.Assert
 import org.junit.Before
@@ -134,14 +133,6 @@ open class ItemListPresenterTest {
         override val isRefreshing: Boolean = false
 
         override fun stopRefreshing() {}
-
-        override fun showToastNotification(strId: Int) {
-            toastNotificationArgStrId = strId
-        }
-
-        override fun showDeleteToastNotification(text: String) {
-            toastNotificationArgText = text
-        }
     }
 
     val listStub = PublishSubject.create<List<ServerPassword>>()
@@ -172,7 +163,6 @@ open class ItemListPresenterTest {
     private var isConnected: Observable<Boolean> = PublishSubject.create()
     private var isConnectedObserver: TestObserver<Boolean> = TestObserver.create<Boolean>()
     private val profileStub = PublishSubject.create<Optional<Profile>>()
-    private var deleteItemSubjectStub = PublishSubject.create<Consumable<ServerPassword>>()
 
     val view: FakeView = spy(FakeView())
     val dispatcher = Dispatcher()
@@ -188,7 +178,6 @@ open class ItemListPresenterTest {
         PowerMockito.`when`(settingStore.itemListSortOrder).thenReturn(itemListSortStub)
         PowerMockito.`when`(dataStore.list).thenReturn(listStub)
         PowerMockito.`when`(dataStore.syncState).thenReturn(syncStateStub)
-        PowerMockito.`when`(dataStore.deletedItem).thenReturn(deleteItemSubjectStub)
 
         PowerMockito.whenNew(AccountStore::class.java).withAnyArguments().thenReturn(accountStore)
         PowerMockito.whenNew(SettingStore::class.java).withAnyArguments().thenReturn(settingStore)
@@ -336,14 +325,6 @@ open class ItemListPresenterTest {
     fun `remove sync loading indicator`() {
         syncStateStub.onNext(DataStore.SyncState.NotSyncing)
         Assert.assertEquals(false, view.isLoading)
-    }
-
-    @Test
-    fun `item deleted toast`() {
-        val item = ServerPasswordTestHelper().item1
-        val hostname = item.hostname
-        deleteItemSubjectStub.onNext(Consumable(item))
-        Assert.assertEquals(hostname, view.toastNotificationArgText)
     }
 
     @Test

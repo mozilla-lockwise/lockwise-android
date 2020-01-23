@@ -6,7 +6,6 @@
 
 package mozilla.lockbox.presenter
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.OnBackPressedDispatcher
@@ -47,9 +46,6 @@ class AppRoutePresenterTest {
 
     @Mock
     val activity: AppCompatActivity = Mockito.mock(AppCompatActivity::class.java)
-
-    @Mock
-    val context: Context = Mockito.mock(Context::class.java)
 
     @Mock
     val navController: NavController = Mockito.mock(NavController::class.java)
@@ -100,8 +96,15 @@ class AppRoutePresenterTest {
     }
 
     @Test
-    fun `item detail bundle is created`() {
+    fun `display item bundle is created`() {
         val action = RouteAction.DisplayItem("id")
+        val result = subject.bundle(action)
+        Assert.assertThat(result, CoreMatchers.instanceOf(Bundle::class.java))
+    }
+
+    @Test
+    fun `edit item bundle is created`() {
+        val action = RouteAction.EditItem("id")
         val result = subject.bundle(action)
         Assert.assertThat(result, CoreMatchers.instanceOf(Bundle::class.java))
     }

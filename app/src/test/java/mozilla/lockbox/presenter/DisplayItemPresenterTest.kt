@@ -8,7 +8,6 @@ package mozilla.lockbox.presenter
 
 import android.content.Context
 import android.net.ConnectivityManager
-import androidx.annotation.StringRes
 import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
@@ -16,12 +15,12 @@ import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.BuildConfig
-import mozilla.lockbox.R
 import mozilla.lockbox.action.ClipboardAction
 import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.ItemDetailAction
 import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.action.ToastNotificationAction
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
@@ -98,10 +97,6 @@ class DisplayItemPresenterTest {
         override fun updateItem(item: ItemDetailViewModel) {
             this.item = item
             showPlaceholderUsernameStub = !item.hasUsername
-        }
-
-        override fun showToastNotification(@StringRes strId: Int) {
-            toastNotificationArgument = strId
         }
     }
 
@@ -260,11 +255,10 @@ class DisplayItemPresenterTest {
         dispatcherObserver.assertValueSequence(
             listOf(
                 ClipboardAction.CopyUsername(fakeCredential.username!!),
-                DataStoreAction.Touch(fakeCredential.id)
+                DataStoreAction.Touch(fakeCredential.id),
+                ToastNotificationAction.ShowCopyUsernameToast
             )
         )
-
-        assertEquals(R.string.toast_username_copied, view.toastNotificationArgument)
     }
 
     @Test
@@ -275,11 +269,10 @@ class DisplayItemPresenterTest {
         dispatcherObserver.assertValueSequence(
             listOf(
                 ClipboardAction.CopyUsername(fakeCredential.username!!),
-                DataStoreAction.Touch(fakeCredential.id)
+                DataStoreAction.Touch(fakeCredential.id),
+                ToastNotificationAction.ShowCopyUsernameToast
             )
         )
-
-        assertEquals(R.string.toast_username_copied, view.toastNotificationArgument)
     }
 
     @Test
@@ -291,8 +284,6 @@ class DisplayItemPresenterTest {
         dispatcherObserver.assertValueSequence(
             emptyList()
         )
-
-        assertEquals(null, view.toastNotificationArgument)
     }
 
     @Test
@@ -304,11 +295,10 @@ class DisplayItemPresenterTest {
         dispatcherObserver.assertValueSequence(
             listOf(
                 ClipboardAction.CopyPassword(fakeCredential.password),
-                DataStoreAction.Touch(fakeCredential.id)
+                DataStoreAction.Touch(fakeCredential.id),
+                ToastNotificationAction.ShowCopyPasswordToast
             )
         )
-
-        assertEquals(R.string.toast_password_copied, view.toastNotificationArgument)
     }
 
     @Test
@@ -320,11 +310,10 @@ class DisplayItemPresenterTest {
         dispatcherObserver.assertValueSequence(
             listOf(
                 ClipboardAction.CopyPassword(fakeCredential.password),
-                DataStoreAction.Touch(fakeCredential.id)
+                DataStoreAction.Touch(fakeCredential.id),
+                ToastNotificationAction.ShowCopyPasswordToast
             )
         )
-
-        assertEquals(R.string.toast_password_copied, view.toastNotificationArgument)
     }
 
     @Test
