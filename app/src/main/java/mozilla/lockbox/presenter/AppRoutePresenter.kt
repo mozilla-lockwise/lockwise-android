@@ -6,7 +6,6 @@
 
 package mozilla.lockbox.presenter
 
-import android.content.Context
 import android.os.Bundle
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity

@@ -19,7 +19,6 @@ import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.Setting
 import mozilla.lockbox.action.SettingAction
-import mozilla.lockbox.action.ToastNotificationAction
 import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.extensions.mapToItemViewModelList
 import mozilla.lockbox.flux.Dispatcher
@@ -33,7 +32,6 @@ import mozilla.lockbox.store.DataStore
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.NetworkStore
 import mozilla.lockbox.store.SettingStore
-import mozilla.lockbox.support.asOptional
 
 interface ItemListView {
     val itemSelection: Observable<ItemViewModel>
@@ -167,14 +165,6 @@ class ItemListPresenter(
 
         networkStore.isConnected
             .subscribe(view::handleNetworkError)
-            .addTo(compositeDisposable)
-
-        dataStore.deletedItem
-            .map { event ->
-                event.get()?.let { it.formSubmitURL ?: it.hostname }.asOptional()
-            }
-            .filterNotNull()
-            .subscribe { dispatcher.dispatch(ToastNotificationAction.ShowDeleteToast(it)) }
             .addTo(compositeDisposable)
 
         // TODO: make this more robust to retry loading the correct page again (loadUrl)

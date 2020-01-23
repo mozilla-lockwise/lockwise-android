@@ -28,7 +28,6 @@ import mozilla.lockbox.extensions.filterByType
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.log
 import mozilla.lockbox.model.SyncCredentials
-import mozilla.lockbox.support.Consumable
 import mozilla.lockbox.support.DataStoreSupport
 import mozilla.lockbox.support.FxASyncDataStoreSupport
 import mozilla.lockbox.support.Optional
@@ -65,12 +64,10 @@ open class DataStore(
         BehaviorRelay.createDefault(SyncState.NotSyncing)
     private val listSubject: BehaviorRelay<List<ServerPassword>> =
         BehaviorRelay.createDefault(emptyList())
-    private val deletedItemSubject = ReplayRelay.create<Consumable<ServerPassword>>()
 
     open val state: Observable<State> = stateSubject
     open val syncState: Observable<SyncState> = syncStateSubject
     open val list: Observable<List<ServerPassword>> get() = listSubject
-    open val deletedItem: Observable<Consumable<ServerPassword>> get() = deletedItemSubject
 
     private val exceptionHandler: CoroutineExceptionHandler
         get() = CoroutineExceptionHandler { _, e ->
@@ -129,7 +126,8 @@ open class DataStore(
         setupAutoLock()
     }
 
-    private fun delete(item: ServerPassword) {
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun delete(item: ServerPassword) {
         try {
             backend.delete(item.id)
                 .asSingle(coroutineContext)
@@ -137,8 +135,6 @@ open class DataStore(
                     dispatcher.dispatch(DataStoreAction.Sync)
                 }
                 .addTo(compositeDisposable)
-
-            deletedItemSubject.accept(Consumable(item))
         } catch (loginsStorageException: LoginsStorageException) {
             pushError(loginsStorageException)
         }

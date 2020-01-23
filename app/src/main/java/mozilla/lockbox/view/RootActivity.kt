@@ -7,18 +7,11 @@
 package mozilla.lockbox.view
 
 import android.os.Bundle
-import android.view.Gravity
-import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
-import mozilla.lockbox.action.ToastNotificationAction
 import mozilla.lockbox.presenter.AppRoutePresenter
-import mozilla.lockbox.support.assertOnUiThread
 import mozilla.lockbox.support.isDebug
 
 @ExperimentalCoroutinesApi
