@@ -98,11 +98,9 @@ abstract class RoutePresenter(
         alertDialogStore.showDialog(activity, destination)
     }
 
-    // todo: ELISE how to make this RootActivity without explicitly "as"ing it
     fun showToastNotification(action: ToastNotificationAction) {
         activity.apply {
-            this.showToastNotification(action)
-//            (this as RootActivity).showToastNotification(action)
+            (this as RootActivity).showToastNotification(action)
         }
     }
 

@@ -11,5 +11,6 @@ import androidx.annotation.StringRes
 
 data class ToastNotificationViewModel(
     @StringRes val strId: Int,
-    @DrawableRes val img: Int
+    @DrawableRes val img: Int,
+    val deletedItem: String? = null
 )

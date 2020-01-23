@@ -34,18 +34,11 @@ sealed class ToastNotificationAction(
         )
     )
 
-    object ShowAutofillErrorToast : ToastNotificationAction(
-        ToastNotificationViewModel(
-            R.string.autofill_error_toast,
-            R.drawable.ic_check
-        )
-    )
-
-    // todo: ELISE pass entry name to entry_deleted_toast string
     data class ShowDeleteToast(val entryName: String?) : ToastNotificationAction(
         ToastNotificationViewModel(
             R.string.entry_deleted_toast,
-            R.drawable.ic_check
+            R.drawable.ic_check,
+            entryName
         )
     )
 }

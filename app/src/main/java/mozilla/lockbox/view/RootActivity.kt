@@ -68,9 +68,12 @@ class RootActivity : AppCompatActivity() {
         toast.view = layoutInflater.inflate(R.layout.toast_view, container, false)
         toast.setGravity(Gravity.FILL_HORIZONTAL or Gravity.BOTTOM, 0, 0)
 
-        // set text
         val view = toast.view.findViewById(R.id.message) as TextView
-        view.text = action.viewModel.text ?: resources.getString(action.viewModel.strId!!)
+        view.text = if (action.viewModel.deletedItem == null) {
+            resources.getString(action.viewModel.strId)
+        } else {
+            resources.getString(action.viewModel.strId, action.viewModel.deletedItem)
+        }
 
         // set icon
         val image = toast.view.findViewById(R.id.icon) as ImageView
