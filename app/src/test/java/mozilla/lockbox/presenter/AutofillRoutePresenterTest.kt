@@ -172,9 +172,6 @@ class AutofillRoutePresenterTest {
         }
     }
 
-    @Mock
-    val context: Context = Mockito.mock(Context::class.java)
-
     private val dispatcher = Dispatcher()
     private val responseBuilder = FakeResponseBuilder()
     private val autofillStore = FakeAutofillStore()
@@ -227,7 +224,6 @@ class AutofillRoutePresenterTest {
         whenCalled(activity.onBackPressedDispatcher).thenReturn(onBackPressedDispatcher)
 
         subject = AutofillRoutePresenter(
-            context,
             activity,
             responseBuilder,
             dispatcher,

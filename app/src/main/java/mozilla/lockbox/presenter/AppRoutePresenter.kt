@@ -30,11 +30,10 @@ import mozilla.lockbox.view.FingerprintAuthDialogFragment
 @ExperimentalCoroutinesApi
 class AppRoutePresenter(
     private val activity: AppCompatActivity,
-    context: Context,
     dispatcher: Dispatcher = Dispatcher.shared,
     private val routeStore: RouteStore = RouteStore.shared,
     private val settingStore: SettingStore = SettingStore.shared
-) : RoutePresenter(activity, context, dispatcher, routeStore) {
+) : RoutePresenter(activity, dispatcher, routeStore) {
 
     override fun onViewReady() {
         super.onViewReady()

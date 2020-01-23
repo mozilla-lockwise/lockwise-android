@@ -23,7 +23,7 @@ import mozilla.lockbox.support.isDebug
 
 @ExperimentalCoroutinesApi
 class RootActivity : AppCompatActivity() {
-    private var presenter: AppRoutePresenter = AppRoutePresenter(this, applicationContext)
+    private var presenter: AppRoutePresenter = AppRoutePresenter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

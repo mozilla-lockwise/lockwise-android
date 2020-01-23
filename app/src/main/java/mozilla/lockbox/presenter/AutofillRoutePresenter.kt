@@ -34,7 +34,6 @@ import mozilla.lockbox.view.FingerprintAuthDialogFragment
 @ExperimentalCoroutinesApi
 @RequiresApi(Build.VERSION_CODES.O)
 open class AutofillRoutePresenter(
-    context: Context,
     private val activity: AppCompatActivity,
     private val responseBuilder: FillResponseBuilder,
     private val dispatcher: Dispatcher = Dispatcher.shared,
@@ -42,7 +41,7 @@ open class AutofillRoutePresenter(
     private val autofillStore: AutofillStore = AutofillStore.shared,
     private val dataStore: DataStore = DataStore.shared,
     private val pslSupport: PublicSuffixSupport = PublicSuffixSupport.shared
-) : RoutePresenter(activity, context, dispatcher, routeStore) {
+) : RoutePresenter(activity, dispatcher, routeStore) {
 
     override fun onViewReady() {
         navController = Navigation.findNavController(activity, R.id.autofill_fragment_nav_host)

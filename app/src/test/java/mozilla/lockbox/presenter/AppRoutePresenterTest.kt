@@ -49,9 +49,6 @@ class AppRoutePresenterTest {
     val activity: AppCompatActivity = Mockito.mock(AppCompatActivity::class.java)
 
     @Mock
-    val context: Context = Mockito.mock(Context::class.java)
-
-    @Mock
     val navController: NavController = Mockito.mock(NavController::class.java)
 
     @Mock
@@ -85,7 +82,6 @@ class AppRoutePresenterTest {
 
         subject = AppRoutePresenter(
             activity,
-            context,
             dispatcher,
             routeStore,
             settingStore

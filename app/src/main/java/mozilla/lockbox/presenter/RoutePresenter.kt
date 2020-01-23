@@ -41,7 +41,6 @@ import mozilla.lockbox.view.Fragment as SpecializedFragment
 @ExperimentalCoroutinesApi
 abstract class RoutePresenter(
     private val activity: AppCompatActivity,
-    private val context: Context,
     private val dispatcher: Dispatcher,
     private val routeStore: RouteStore,
     internal val alertDialogStore: AlertDialogStore = AlertDialogStore.shared
@@ -116,24 +115,22 @@ abstract class RoutePresenter(
     fun showToastNotification(action: ToastNotificationAction) {
         assertOnUiThread()
 
-        val toast = Toast(context)
+        val toast = Toast(activity)
         toast.duration = Toast.LENGTH_SHORT
         val container = activity.window.decorView.rootView as ViewGroup
 
-        val layoutInflater = LayoutInflater.from(context)
+        val layoutInflater = LayoutInflater.from(activity)
 
         toast.view = layoutInflater.inflate(R.layout.toast_view, container, false)
         toast.setGravity(Gravity.FILL_HORIZONTAL or Gravity.BOTTOM, 0, 0)
 
         val view = toast.view.findViewById(R.id.message) as TextView
-        view.text = if (action.viewModel.untranslatableString == null) {
-            activity.getString(action.viewModel.strId)
-        } else {
-            activity.getString(action.viewModel.strId, action.viewModel.untranslatableString)
-        }
+        val message = action.viewModel.message
+        view.text = action.viewModel.messageParam?.let { activity.getString(message, it) }
+            ?: activity.getString(message)
 
-        val image = toast.view.findViewById(R.id.icon) as ImageView
-        image.setImageResource(action.viewModel.img)
+        val icon = toast.view.findViewById(R.id.icon) as ImageView
+        icon.setImageResource(action.viewModel.icon)
 
         toast.show()
     }

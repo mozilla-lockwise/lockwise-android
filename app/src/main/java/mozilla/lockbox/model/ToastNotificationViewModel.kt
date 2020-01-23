@@ -10,7 +10,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 
 data class ToastNotificationViewModel(
-    @StringRes val strId: Int,
-    @DrawableRes val img: Int,
-    val untranslatableString: String? = null
+    @StringRes val message: Int,
+    @DrawableRes val icon: Int,
+    val messageParam: String? = null
 )
