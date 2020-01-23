@@ -18,8 +18,6 @@ import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.store.ItemDetailStore
-import mozilla.lockbox.support.Optional
-import mozilla.lockbox.support.asOptional
 
 interface EditItemView : ItemMutationView {
     fun updateItem(item: ItemDetailViewModel)
@@ -80,5 +78,5 @@ class EditItemPresenter(
         } ?: listOf(RouteAction.ItemList)
     }
 
-    override fun hostnameError(inputText: String): Optional<Int> = null.asOptional()
+    override fun hostnameError(inputText: String, showingErrors: Boolean): Int? = null
 }

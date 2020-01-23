@@ -19,17 +19,21 @@ import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.ItemDetailStore
-import mozilla.lockbox.support.Optional
-import mozilla.lockbox.support.asOptional
 
 interface ItemMutationView {
     var isPasswordVisible: Boolean
     val togglePasswordClicks: Observable<Unit>
     val closeEntryClicks: Observable<Unit>
     val saveEntryClicks: Observable<Unit>
+
     val hostnameChanged: Observable<String>
     val usernameChanged: Observable<String>
     val passwordChanged: Observable<String>
+
+    val passwordFocus: Observable<Boolean>
+    val usernameFocus: Observable<Boolean>
+    val hostnameFocus: Observable<Boolean>
+
     fun closeKeyboard()
     fun displayHostnameError(@StringRes errorMessage: Int? = null)
     fun displayUsernameError(@StringRes errorMessage: Int? = null)
@@ -86,21 +90,45 @@ abstract class ItemMutationPresenter(
             view.hostnameChanged, view.usernameChanged, view.passwordChanged
         )
 
-        Observables.combineLatest(fieldsChanged, itemDetailStore.unavailableUsernames)
-            .map { (fields, unavailableUsernames) ->
+        val fieldsShowingErrors = Observables.combineLatest(
+            focusLostOnce(view.hostnameFocus),
+            focusLostOnce(view.usernameFocus),
+            focusLostOnce(view.passwordFocus)
+        )
+
+        Observables.combineLatest(fieldsChanged, itemDetailStore.unavailableUsernames, fieldsShowingErrors)
+            .map { (fields, unavailableUsernames, showingErrors) ->
                 Triple(
-                    hostnameError(fields.first),
-                    usernameError(fields.second, unavailableUsernames),
-                    passwordError(fields.third)
+                    hostnameError(fields.first, showingErrors.first),
+                    usernameError(fields.second, unavailableUsernames, showingErrors.second),
+                    passwordError(fields.third, showingErrors.third)
                 )
             }
             .observeOn(mainThread())
             .subscribe { (hostnameError, usernameError, passwordError) ->
-                view.displayHostnameError(hostnameError.value)
-                view.displayUsernameError(usernameError.value)
-                view.displayPasswordError(passwordError.value)
+                val errorFunctions = listOf(
+                    view::displayHostnameError to hostnameError,
+                    view::displayUsernameError to usernameError,
+                    view::displayPasswordError to passwordError
+                )
 
-                view.setSaveEnabled(hostnameError.value == null && usernameError.value == null && passwordError.value == null)
+                errorFunctions.forEach { (displayFunction, error) ->
+                    val errorMessage = if (error != R.string.hidden_credential_mutation_error) {
+                        // We use a marker error for an error we don't tell the user about,
+                        // but will cause the save button to be disabled.
+                        error
+                    } else {
+                        // `null` clears an existing error.
+                        null
+                    }
+                    displayFunction.invoke(errorMessage)
+                }
+
+                val errorDetected = errorFunctions.fold(false) { acc, (_, error) ->
+                    acc || (error != null)
+                }
+
+                view.setSaveEnabled(!errorDetected)
             }
             .addTo(compositeDisposable)
 
@@ -116,23 +144,48 @@ abstract class ItemMutationPresenter(
             .addTo(compositeDisposable)
     }
 
+    // Returns an observable that emits with the same frequency as `focusChanges`
+    // but emits `true` if and only if the input observable has emitted `true` first time and then a
+    // subsequent `false`.
+    private fun focusLostOnce(focusChange: Observable<Boolean>): Observable<Boolean> {
+        var focusOnce = false
+        var lostFocusOnce = false
+
+        return focusChange
+            .doOnNext {
+                if (it) {
+                    focusOnce = true
+                } else if (focusOnce) {
+                    lostFocusOnce = true
+                }
+            }
+            .map {
+                lostFocusOnce
+            }
+    }
+
     open fun usernameError(
         inputText: String,
-        unavailableUsernames: Set<String>
+        unavailableUsernames: Set<String>,
+        showingErrors: Boolean
     ) =
         when {
             TextUtils.isEmpty(inputText) -> null
             unavailableUsernames.contains(inputText) -> R.string.username_duplicate_exists
             else -> null
-        }.asOptional()
+        }
 
-    open fun passwordError(inputText: String) =
+    open fun passwordError(inputText: String, showingErrors: Boolean) =
         when {
-            TextUtils.isEmpty(inputText) -> R.string.password_invalid_text
+            TextUtils.isEmpty(inputText) -> if (showingErrors) {
+                R.string.password_invalid_text
+            } else {
+                R.string.hidden_credential_mutation_error
+            }
             else -> null
-        }.asOptional()
+        }
 
-    abstract fun hostnameError(inputText: String): Optional<Int>
+    abstract fun hostnameError(inputText: String, showingErrors: Boolean): Int?
 
     override fun onBackPressed(): Boolean {
         itemDetailStore.isDirty

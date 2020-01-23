@@ -18,7 +18,8 @@
     <string name="telemetry_server_endpoint" translatable="false">https://incoming.telemetry.mozilla.org</string>
     <!-- This is the label for a button only available on test builds to skip the authentication step and immediately use test data -->
     <string name="placeholder_skip_fxa">Use test data</string>
-
+    <!-- The text is never displayed, but the error is a placeholder to stop the save button being enabled. -->
+    <string name="hidden_credential_mutation_error" translatable="false">Hidden</string>
     <!-- CURRENTLY UNUSED BUT RESERVED FOR FUTURE USE -->
     <!-- This is the text displayed on the button of the network availability error message -->
     <!--<string name="retry">Retry</string>-->

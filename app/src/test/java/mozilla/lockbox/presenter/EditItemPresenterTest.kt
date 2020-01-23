@@ -59,6 +59,17 @@ class EditItemPresenterTest {
         override val passwordChanged: Observable<String>
             get() = passwordChangedStub
 
+        private val hostnameFocusStub = BehaviorSubject.createDefault(false)
+        private val usernameFocusStub = BehaviorSubject.createDefault(false)
+        private val passwordFocusStub = BehaviorSubject.createDefault(false)
+
+        override val hostnameFocus: Observable<Boolean>
+            get() = hostnameFocusStub
+        override val usernameFocus: Observable<Boolean>
+            get() = usernameFocusStub
+        override val passwordFocus: Observable<Boolean>
+            get() = passwordFocusStub
+
         override fun closeKeyboard() {
             log.info("close keyboard")
         }
