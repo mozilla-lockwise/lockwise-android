@@ -51,6 +51,7 @@ import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.eq
 import org.mockito.Mock
+import org.mockito.Mockito
 import org.mockito.Mockito.any
 import org.mockito.Mockito.anyString
 import org.mockito.Mockito.mock
@@ -171,6 +172,9 @@ class AutofillRoutePresenterTest {
         }
     }
 
+    @Mock
+    val context: Context = Mockito.mock(Context::class.java)
+
     private val dispatcher = Dispatcher()
     private val responseBuilder = FakeResponseBuilder()
     private val autofillStore = FakeAutofillStore()
@@ -223,6 +227,7 @@ class AutofillRoutePresenterTest {
         whenCalled(activity.onBackPressedDispatcher).thenReturn(onBackPressedDispatcher)
 
         subject = AutofillRoutePresenter(
+            context,
             activity,
             responseBuilder,
             dispatcher,

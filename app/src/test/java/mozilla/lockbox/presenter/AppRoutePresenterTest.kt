@@ -85,6 +85,7 @@ class AppRoutePresenterTest {
 
         subject = AppRoutePresenter(
             activity,
+            context,
             dispatcher,
             routeStore,
             settingStore

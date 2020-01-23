@@ -11,7 +11,12 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.DocumentsContract
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
@@ -29,14 +34,14 @@ import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
 import mozilla.lockbox.store.AlertDialogStore
 import mozilla.lockbox.store.RouteStore
+import mozilla.lockbox.support.assertOnUiThread
 import mozilla.lockbox.view.DialogFragment
-import mozilla.lockbox.view.RootActivity
-import java.lang.Exception
 import mozilla.lockbox.view.Fragment as SpecializedFragment
 
 @ExperimentalCoroutinesApi
 abstract class RoutePresenter(
     private val activity: AppCompatActivity,
+    private val context: Context,
     private val dispatcher: Dispatcher,
     private val routeStore: RouteStore,
     internal val alertDialogStore: AlertDialogStore = AlertDialogStore.shared
@@ -98,12 +103,6 @@ abstract class RoutePresenter(
         alertDialogStore.showDialog(activity, destination)
     }
 
-    fun showToastNotification(action: ToastNotificationAction) {
-        activity.apply {
-            (this as RootActivity).showToastNotification(action)
-        }
-    }
-
     open fun showDialogFragment(dialogFragment: DialogFragment, destination: RouteAction.DialogFragment) {
         try {
             dialogFragment.setTargetFragment(currentFragment, 0)
@@ -112,6 +111,31 @@ abstract class RoutePresenter(
         } catch (e: IllegalStateException) {
             log.error("Could not show dialog", e)
         }
+    }
+
+    fun showToastNotification(action: ToastNotificationAction) {
+        assertOnUiThread()
+
+        val toast = Toast(context)
+        toast.duration = Toast.LENGTH_SHORT
+        val container = activity.window.decorView.rootView as ViewGroup
+
+        val layoutInflater = LayoutInflater.from(context)
+
+        toast.view = layoutInflater.inflate(R.layout.toast_view, container, false)
+        toast.setGravity(Gravity.FILL_HORIZONTAL or Gravity.BOTTOM, 0, 0)
+
+        val view = toast.view.findViewById(R.id.message) as TextView
+        view.text = if (action.viewModel.untranslatableString == null) {
+            activity.getString(action.viewModel.strId)
+        } else {
+            activity.getString(action.viewModel.strId, action.viewModel.untranslatableString)
+        }
+
+        val image = toast.view.findViewById(R.id.icon) as ImageView
+        image.setImageResource(action.viewModel.img)
+
+        toast.show()
     }
 
     fun openWebsite(url: String) {

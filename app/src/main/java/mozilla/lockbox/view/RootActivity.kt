@@ -23,7 +23,7 @@ import mozilla.lockbox.support.isDebug
 
 @ExperimentalCoroutinesApi
 class RootActivity : AppCompatActivity() {
-    private var presenter: AppRoutePresenter = AppRoutePresenter(this)
+    private var presenter: AppRoutePresenter = AppRoutePresenter(this, applicationContext)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,28 +57,5 @@ class RootActivity : AppCompatActivity() {
         if (!presenter.onBackPressed()) {
             super.onBackPressed()
         }
-    }
-
-    fun showToastNotification(action: ToastNotificationAction) {
-        assertOnUiThread()
-
-        val toast = Toast(this)
-        toast.duration = Toast.LENGTH_SHORT
-        val container = window.decorView.rootView as ViewGroup
-        toast.view = layoutInflater.inflate(R.layout.toast_view, container, false)
-        toast.setGravity(Gravity.FILL_HORIZONTAL or Gravity.BOTTOM, 0, 0)
-
-        val view = toast.view.findViewById(R.id.message) as TextView
-        view.text = if (action.viewModel.deletedItem == null) {
-            resources.getString(action.viewModel.strId)
-        } else {
-            resources.getString(action.viewModel.strId, action.viewModel.deletedItem)
-        }
-
-        // set icon
-        val image = toast.view.findViewById(R.id.icon) as ImageView
-        image.setImageResource(action.viewModel.img)
-
-        toast.show()
     }
 }
