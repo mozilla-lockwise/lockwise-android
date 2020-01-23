@@ -138,7 +138,7 @@ abstract class ItemMutationPresenter(
             .filter { !it }
             .flatMapIterable {
                 view.closeKeyboard()
-                endEditingAction()
+                endEditingActions()
             }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
@@ -200,5 +200,5 @@ abstract class ItemMutationPresenter(
 
     abstract fun dismissChangesAction(hasChanges: Boolean): Action
     abstract fun saveChangesActions(hasChanges: Boolean): List<Action>
-    abstract fun endEditingAction(): List<Action>
+    abstract fun endEditingActions(): List<Action>
 }

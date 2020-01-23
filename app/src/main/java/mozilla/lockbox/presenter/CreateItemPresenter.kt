@@ -67,7 +67,7 @@ class CreateItemPresenter(
         }
     }
 
-    override fun endEditingAction(): List<Action> {
+    override fun endEditingActions(): List<Action> {
         return listOf(
             RouteAction.ItemList
         )

@@ -59,7 +59,7 @@ class EditItemPresenter(
             if (hasChanges) {
                 listOf<Action>(ItemDetailAction.EditItemSaveChanges)
             } else {
-                listOf(ItemDetailAction.EndEditItemSession)
+                null
             }
         } ?: listOf(ItemDetailAction.EndEditItemSession)
 
@@ -72,11 +72,10 @@ class EditItemPresenter(
             }
         } ?: ItemDetailAction.EndEditItemSession
 
-    override fun endEditingAction(): List<Action> {
-        return itemId?.let {
+    override fun endEditingActions() =
+        itemId?.let {
             listOf(RouteAction.ItemList, RouteAction.DisplayItem(it))
         } ?: listOf(RouteAction.ItemList)
-    }
 
     override fun hostnameError(inputText: String, showingErrors: Boolean): Int? = null
 }
