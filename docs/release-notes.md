@@ -1,6 +1,6 @@
 # Release Notes
 
-## 4.0.0 (Build XXXX)
+## 4.0.0 (Build 6013)
 
 Manual create.
 
