@@ -106,7 +106,7 @@ open class ItemDetailStore(
                 opt.value?.let { old ->
                     old.copy(
                         hostname = hostname ?: old.hostname,
-                        username = if (!TextUtils.isEmpty(username)) username else old.username,
+                        username = username ?: old.username,
                         password = password ?: old.password,
 
                         // This is only used in the create flow, so we're not
