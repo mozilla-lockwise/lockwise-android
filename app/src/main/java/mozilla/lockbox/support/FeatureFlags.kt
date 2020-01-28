@@ -28,8 +28,8 @@ object FeatureFlags {
     val CRUD_MANUAL_CREATE = when {
         isDebug -> true
         isTesting -> true
-        isRelease -> false
-        else -> false
+        isRelease -> true
+        else -> true
     }
 
     /**
