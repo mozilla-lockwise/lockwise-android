@@ -1,5 +1,22 @@
 # Release Notes
 
+## 4.0.0 (Build XXXX)
+
+Manual create.
+
+All changes since version 3.3.0:
+
+- Import l10n: add EN-GB, UK, RU, ZH-RTW, CS (#1119)
+- Manual create (#1093)
+- Fixup autofill footer in dark mode. (#1115)
+- Add missing locales screengrab file (#1132)
+- Fixup edit regressions introduced during edit/create refactor (#1133)
+- Update app services to version 0.46.0 (#1124)
+- Update string names to send update upstream to l10n (#1142)
+- Show errors in create and edit only after the user makes one (#1140)
+- Successful create toast notification (#1123)
+- Use red trash icon and fix deleted toast (#1146)
+
 ## 3.3.0 (Build 5783)
 
 Stability and UI cleanup.
