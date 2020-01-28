@@ -37,7 +37,7 @@ sealed class ToastNotificationAction(
     data class ShowDeleteToast(val entryName: String?) : ToastNotificationAction(
         ToastNotificationViewModel(
             R.string.entry_deleted_toast,
-            R.drawable.ic_check,
+            R.drawable.ic_delete_red,
             entryName
         )
     )
