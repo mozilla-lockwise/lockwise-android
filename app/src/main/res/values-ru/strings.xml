@@ -220,11 +220,11 @@
     <!-- This is the button to dismiss the final onboarding screen -->
     <string name="finish">Завершить</string>
     <!-- This description of the app functionality is shown on the final onboarding screen -->
-    <string name="access_description">Получите доступ к логинам, сохранённым в Firefox, с вашего телефона</string>
+    <string name="onboarding_access_description">Получите доступ к логинам, сохранённым в Firefox, с вашего телефона</string>
     <!-- This description of the app security is shown on the final onboarding screen. %s will be replaced with the security link. -->
-    <string name="security_description">Синхронизация между устройствами с безопасным 256-битным шифрованием</string>
+    <string name="onboarding_security_description">Синхронизация между устройствами с безопасным 256-битным шифрованием</string>
     <!-- This description of the app convenience is shown on the final onboarding screen. -->
-    <string name="convenience_description">Разблокируйте приложение с легкостью, используя отпечаток пальца</string>
+    <string name="onboarding_convenience_description">Разблокируйте приложение с легкостью, используя отпечаток пальца</string>
 
     <!-- This is the title of the device security dialog box. -->
     <string name="secure_your_device">Защитите своё устройство.</string>

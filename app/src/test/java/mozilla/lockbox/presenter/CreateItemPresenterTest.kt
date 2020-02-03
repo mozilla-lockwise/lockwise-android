@@ -12,20 +12,23 @@ import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import mozilla.lockbox.R
 import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.ItemDetailAction
 import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.action.ToastNotificationAction
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.log
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.store.ItemDetailStore
 import org.junit.Assert
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.`when`
-import org.mockito.Mockito.spy
 import org.powermock.api.mockito.PowerMockito
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
@@ -52,6 +55,17 @@ class CreateItemPresenterTest {
         val passwordChangedStub = BehaviorSubject.createDefault("")
         override val passwordChanged: Observable<String>
             get() = passwordChangedStub
+
+        private val hostnameFocusStub = BehaviorSubject.createDefault(false)
+        private val usernameFocusStub = BehaviorSubject.createDefault(false)
+        private val passwordFocusStub = BehaviorSubject.createDefault(false)
+
+        override val hostnameFocus: Observable<Boolean>
+            get() = hostnameFocusStub
+        override val usernameFocus: Observable<Boolean>
+            get() = usernameFocusStub
+        override val passwordFocus: Observable<Boolean>
+            get() = passwordFocusStub
 
         override fun closeKeyboard() {
             log.info("close keyboard")
@@ -89,7 +103,7 @@ class CreateItemPresenterTest {
 
     val dispatcher = Dispatcher()
     val dispatcherObserver = TestObserver.create<Action>()!!
-    val view: FakeCreateView = spy(FakeCreateView())
+    val view: FakeCreateView = FakeCreateView()
 
     private val isPasswordVisibleStub = BehaviorSubject.createDefault(false)
     private val unavailableUsernamesStub = BehaviorSubject.createDefault(emptySet<String>())
@@ -153,6 +167,7 @@ class CreateItemPresenterTest {
         dispatcherObserver.assertValueSequence(
             listOf(
                 ItemDetailAction.CreateItemSaveChanges,
+                ToastNotificationAction.ShowSuccessfulCreateToast,
                 RouteAction.ItemList
             )
         )
@@ -194,5 +209,36 @@ class CreateItemPresenterTest {
 
         view.usernameChangedStub.onNext("jane.appleseed")
         Assert.assertNull(view.usernameError)
+    }
+
+    @Test
+    fun `testing various hostname errors`() {
+        // empty string
+        assertEquals(R.string.hidden_credential_mutation_error, subject.hostnameError("", false))
+        assertEquals(R.string.hostname_empty_invalid_text, subject.hostnameError("", true))
+
+        // not starting with http or https
+        assertEquals(R.string.hidden_credential_mutation_error, subject.hostnameError("h", false))
+        assertEquals(R.string.hidden_credential_mutation_error, subject.hostnameError("ht", false))
+        assertEquals(R.string.hidden_credential_mutation_error, subject.hostnameError("htt", false))
+        assertEquals(R.string.hidden_credential_mutation_error, subject.hostnameError("http", false))
+        assertEquals(R.string.hidden_credential_mutation_error, subject.hostnameError("https", false))
+        assertEquals(R.string.hidden_credential_mutation_error, subject.hostnameError("https:", false))
+        assertEquals(R.string.hidden_credential_mutation_error, subject.hostnameError("https://", false))
+        assertEquals(R.string.hidden_credential_mutation_error, subject.hostnameError("http://", false))
+
+        assertEquals(R.string.hostname_invalid_text, subject.hostnameError("f", false))
+        assertEquals(R.string.hostname_invalid_text, subject.hostnameError("f", true))
+        assertEquals(R.string.hostname_invalid_text, subject.hostnameError("htt", true))
+
+        // not being a valid URL
+        assertEquals(R.string.hostname_invalid_host, subject.hostnameError("https://a", true))
+
+        // but being a valid URL is ok.
+        assertNull(subject.hostnameError("https://mozilla.com", false))
+        assertNull(subject.hostnameError("https://mozilla.com", true))
+
+        assertNull(subject.hostnameError("https://127.0.0.1", true))
+        assertNull(subject.hostnameError("https://127.0.0.1:44", true))
     }
 }

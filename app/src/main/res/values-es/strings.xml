@@ -221,11 +221,11 @@
     <!-- This is the button to dismiss the final onboarding screen -->
     <string name="finish">Terminar</string>
     <!-- This description of the app functionality is shown on the final onboarding screen -->
-    <string name="access_description">Acceder a los usuarios guardados en Firefox desde el teléfono</string>
+    <string name="onboarding_access_description">Acceder a los usuarios guardados en Firefox desde el teléfono</string>
     <!-- This description of the app security is shown on the final onboarding screen. -->
-    <string name="security_description">Sincroniza dispositivos con la seguridad que te ofrece Cifrado de 256 bit</string>
+    <string name="onboarding_security_description">Sincroniza dispositivos con la seguridad que te ofrece Cifrado de 256 bit</string>
     <!-- This description of the app convenience is shown on the final onboarding screen. -->
-    <string name="convenience_description">Desbloquea rápidamente la aplicación mediante tu huella digital</string>
+    <string name="onboarding_convenience_description">Desbloquea rápidamente la aplicación mediante tu huella digital</string>
 
     <!-- This is the title of the device security dialog box. -->
     <string name="secure_your_device">Protege tu dispositivo.</string>

@@ -8,15 +8,14 @@ package mozilla.lockbox.view
 
 import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment as AndroidFragment
-import androidx.core.view.ViewCompat
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
-import kotlinx.android.synthetic.main.include_backable_filter.view.*
+import androidx.core.view.ViewCompat
 import mozilla.lockbox.R
 import mozilla.lockbox.flux.Presenter
+import androidx.fragment.app.Fragment as AndroidFragment
 
 open class Fragment : AndroidFragment() {
     lateinit var presenter: Presenter

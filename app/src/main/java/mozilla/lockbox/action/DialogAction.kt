@@ -11,6 +11,7 @@ import mozilla.components.service.fxa.sharing.ShareableAccount
 import mozilla.lockbox.R
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.model.DialogViewModel
+import mozilla.lockbox.model.titleFromHostname
 
 /**
  * Dispatching a `DialogAction` causes a modal dialog to be displayed.
@@ -74,7 +75,8 @@ sealed class DialogAction(
         ),
         listOf(
             DataStoreAction.Delete(item),
-            ItemList
+            ItemList,
+            ToastNotificationAction.ShowDeleteToast(titleFromHostname(item.hostname))
         )
     )
 

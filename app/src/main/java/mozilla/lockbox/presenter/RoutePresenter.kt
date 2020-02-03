@@ -11,6 +11,12 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
@@ -22,11 +28,13 @@ import mozilla.lockbox.BuildConfig
 import mozilla.lockbox.R
 import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.action.ToastNotificationAction
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.flux.Presenter
 import mozilla.lockbox.log
 import mozilla.lockbox.store.AlertDialogStore
 import mozilla.lockbox.store.RouteStore
+import mozilla.lockbox.support.assertOnUiThread
 import mozilla.lockbox.view.DialogFragment
 import mozilla.lockbox.view.Fragment as SpecializedFragment
 
@@ -102,6 +110,29 @@ abstract class RoutePresenter(
         } catch (e: IllegalStateException) {
             log.error("Could not show dialog", e)
         }
+    }
+
+    fun showToastNotification(action: ToastNotificationAction) {
+        assertOnUiThread()
+
+        val toast = Toast(activity)
+        toast.duration = Toast.LENGTH_SHORT
+        val container = activity.window.decorView.rootView as ViewGroup
+
+        val layoutInflater = LayoutInflater.from(activity)
+
+        toast.view = layoutInflater.inflate(R.layout.toast_view, container, false)
+        toast.setGravity(Gravity.FILL_HORIZONTAL or Gravity.BOTTOM, 0, 216)
+
+        val view = toast.view.findViewById(R.id.message) as TextView
+        val message = action.viewModel.message
+        view.text = action.viewModel.messageParam?.let { activity.getString(message, it) }
+            ?: activity.getString(message)
+
+        val icon = toast.view.findViewById(R.id.icon) as ImageView
+        icon.setImageResource(action.viewModel.icon)
+
+        toast.show()
     }
 
     fun openWebsite(url: String) {

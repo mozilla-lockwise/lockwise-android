@@ -14,12 +14,18 @@ import mozilla.lockbox.R
 import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.ItemDetailAction
 import mozilla.lockbox.action.RouteAction
+import mozilla.lockbox.action.ToastNotificationAction
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.ItemDetailStore
-import mozilla.lockbox.support.asOptional
 
 interface CreateItemView : ItemMutationView
+
+private val minimalHostRegex = (
+        "^https?" + // scheme
+        "://" + // ://
+        "(\\w+\\.\\w+)[^\\s]*$" // minimal host
+    ).toRegex()
 
 @ExperimentalCoroutinesApi
 class CreateItemPresenter(
@@ -42,11 +48,14 @@ class CreateItemPresenter(
             .addTo(compositeDisposable)
     }
 
-    override fun saveChangesAction(hasChanges: Boolean): ItemDetailAction {
+    override fun saveChangesActions(hasChanges: Boolean): List<Action> {
         return if (hasChanges) {
-            ItemDetailAction.CreateItemSaveChanges
+            listOf(
+                ItemDetailAction.CreateItemSaveChanges,
+                ToastNotificationAction.ShowSuccessfulCreateToast
+            )
         } else {
-            ItemDetailAction.EndCreateItemSession
+            listOf(ItemDetailAction.EndCreateItemSession)
         }
     }
 
@@ -58,18 +67,36 @@ class CreateItemPresenter(
         }
     }
 
-    override fun endEditingAction(): List<Action> {
-        return listOf(RouteAction.ItemList)
+    override fun endEditingActions(): List<Action> {
+        return listOf(
+            RouteAction.ItemList
+        )
     }
 
-    override fun hostnameError(inputText: String) =
+    override fun hostnameError(inputText: String, showingErrors: Boolean): Int? =
         when {
-            TextUtils.isEmpty(inputText) -> {
-                R.string.hostname_empty_invalid_text
-            }
-            !URLUtil.isHttpUrl(inputText) && !URLUtil.isHttpsUrl(inputText) -> {
+            TextUtils.isEmpty(inputText) ->
+                R.string.hostname_empty_invalid_text `when` showingErrors
+
+            inputText.length <= 7 && "http://".startsWith(inputText) ->
+                R.string.hostname_invalid_text `when` showingErrors
+
+            inputText.length <= 8 && "https://".startsWith(inputText) ->
+                R.string.hostname_invalid_text `when` showingErrors
+
+            !URLUtil.isHttpUrl(inputText) && !URLUtil.isHttpsUrl(inputText) ->
                 R.string.hostname_invalid_text
-            }
-            else -> { null }
-        }.asOptional()
+
+            !minimalHostRegex.matches(inputText) ->
+                R.string.hostname_invalid_host `when` showingErrors
+
+            else -> null
+        }
+
+    private infix fun Int.`when`(showingErrors: Boolean) =
+        if (showingErrors) {
+            this
+        } else {
+            R.string.hidden_credential_mutation_error
+        }
 }

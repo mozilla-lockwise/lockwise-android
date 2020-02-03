@@ -9,13 +9,14 @@ package mozilla.lockbox.view
 import android.os.Bundle
 import android.text.method.PasswordTransformationMethod
 import android.view.View
+import android.widget.EditText
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.Toolbar
 import com.google.android.material.textfield.TextInputLayout
 import com.jakewharton.rxbinding2.support.v7.widget.navigationClicks
 import com.jakewharton.rxbinding2.view.clicks
+import com.jakewharton.rxbinding2.view.focusChanges
 import com.jakewharton.rxbinding2.widget.textChanges
-import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Observable
 import kotlinx.android.synthetic.main.fragment_create_item.view.*
 import kotlinx.android.synthetic.main.fragment_edit_item.*
@@ -34,11 +35,8 @@ import mozilla.lockbox.presenter.ItemMutationView
 import mozilla.lockbox.support.assertOnUiThread
 
 open class ItemMutationFragment : BackableFragment(), ItemMutationView {
-
-    private val togglePasswordVisibility: BehaviorRelay<Unit> = BehaviorRelay.create()
-
     override val togglePasswordClicks: Observable<Unit>
-        get() = view!!.btnPasswordToggle.clicks().mergeWith(togglePasswordVisibility)
+        get() = view!!.btnPasswordToggle.clicks().mergeWith(passwordFocus.map { Unit })
 
     override val closeEntryClicks: Observable<Unit>
         get() = view!!.toolbar.navigationClicks()
@@ -54,6 +52,15 @@ open class ItemMutationFragment : BackableFragment(), ItemMutationView {
 
     override val passwordChanged: Observable<String>
         get() = view!!.inputPassword.textChanges().map { it.toString() }
+
+    override val hostnameFocus
+        get() = focusChanges(view!!.inputHostname)
+
+    override val passwordFocus
+        get() = focusChanges(view!!.inputPassword)
+
+    override val usernameFocus
+        get() = focusChanges(view!!.inputUsername)
 
     override var isPasswordVisible: Boolean = false
         set(value) {
@@ -97,23 +104,17 @@ open class ItemMutationFragment : BackableFragment(), ItemMutationView {
         }
     }
 
-    open fun setupKeyboardFocus(view: View) {
-        view.inputUsername.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+    private fun focusChanges(view: EditText): Observable<Boolean> =
+        view.focusChanges().doOnNext { hasFocus ->
             if (!hasFocus) {
                 closeKeyboard()
             } else {
-                view.inputUsername?.setSelection(view.inputUsername?.length() ?: 0)
+                view.setSelection(view.length())
             }
         }
 
-        view.inputPassword.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-            togglePasswordVisibility.accept(Unit)
-            if (!hasFocus) {
-                closeKeyboard()
-            } else {
-                view.inputPassword?.setSelection(view.inputPassword?.length() ?: 0)
-            }
-        }
+    open fun setupKeyboardFocus(view: View) {
+        // Empty here, but will have implementations specific to create and edit.
     }
 
     override fun setSaveEnabled(enabled: Boolean) {
