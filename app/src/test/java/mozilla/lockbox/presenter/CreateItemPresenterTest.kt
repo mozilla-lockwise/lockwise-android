@@ -23,7 +23,6 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.log
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.store.ItemDetailStore
-import okhttp3.Route
 import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull

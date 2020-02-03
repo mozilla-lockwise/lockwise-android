@@ -10,7 +10,6 @@ import android.text.TextUtils
 import android.webkit.URLUtil
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.R
 import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.ItemDetailAction
