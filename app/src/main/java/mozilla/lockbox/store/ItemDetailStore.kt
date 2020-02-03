@@ -132,8 +132,12 @@ open class ItemDetailStore(
     private fun saveCreateChanges() {
         itemToSave.take(1)
             .filterNotNull()
-            .map { DataStoreAction.CreateItem(it) }
-            .doAfterNext { stopCreating() }
+            .map {
+                DataStoreAction.CreateItem(it)
+            }
+            .doAfterNext {
+                stopCreating()
+            }
             .subscribe(dispatcher::dispatch)
             .addTo(sessionDisposable)
     }
@@ -153,7 +157,10 @@ open class ItemDetailStore(
         calculateUnavailableUsernames(originalItem, true)
     }
 
-    private fun calculateUnavailableUsernames(getItem: Observable<Optional<ServerPassword>>, excludeItem: Boolean) {
+    private fun calculateUnavailableUsernames(
+        getItem: Observable<Optional<ServerPassword>>,
+        excludeItem: Boolean
+    ) {
         Observables.combineLatest(getItem, dataStore.list.take(1))
             .map { (opt, list) ->
                 val item = opt.value ?: return@map emptySet<String>()
@@ -185,9 +192,9 @@ open class ItemDetailStore(
 
     private fun saveEditChanges() {
         Observables.combineLatest(
-                originalItem.take(1).filterNotNull(),
-                itemToSave.take(1).filterNotNull()
-            )
+            originalItem.take(1).filterNotNull(),
+            itemToSave.take(1).filterNotNull()
+        )
             .map { (previous, next) ->
                 DataStoreAction.UpdateItemDetail(previous, next)
             }
@@ -200,5 +207,14 @@ open class ItemDetailStore(
         _isEditing.onNext(false)
         _originalItem.onNext(null.asOptional())
         sessionDisposable.clear()
+    }
+
+    fun findSavedItem(): Observable<List<ServerPassword>> {
+        val item = _itemToSave.value?.value
+        return dataStore.filteredList(
+            item?.username,
+            item?.password,
+            item?.hostname
+        )
     }
 }

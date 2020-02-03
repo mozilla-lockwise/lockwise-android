@@ -57,6 +57,7 @@ open class RouteStore(
                         is RouteAction.AutoLockSetting,
                         is RouteAction.DialogFragment,
                         is RouteAction.SystemIntent,
+                        is RouteAction.CreateItem,
                         is ToastNotificationAction -> true
                         else -> false
                     }

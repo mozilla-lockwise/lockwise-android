@@ -66,11 +66,11 @@ class EditItemPresenter(
     override fun dismissChangesAction(hasChanges: Boolean) =
         itemId?.let {
             if (hasChanges) {
-                DialogAction.DiscardChangesDialog(it)
+                listOf(DialogAction.DiscardChangesDialog(it))
             } else {
                 null
             }
-        } ?: ItemDetailAction.EndEditItemSession
+        } ?: listOf(ItemDetailAction.EndEditItemSession)
 
     override fun endEditingActions() =
         itemId?.let {

@@ -12,6 +12,7 @@ import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.R
 import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.ItemDetailAction
@@ -22,6 +23,7 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.log
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.store.ItemDetailStore
+import okhttp3.Route
 import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -105,10 +107,19 @@ class CreateItemPresenterTest {
     val dispatcherObserver = TestObserver.create<Action>()!!
     val view: FakeCreateView = FakeCreateView()
 
+    private val fakeItemId = "fakeitemid"
+    private val fakeItem = ServerPassword(
+        fakeItemId,
+        hostname = "https://www.cats4life.org",
+        username = "catlover12345@cats.com",
+        password = "mew!1"
+    )
+
     private val isPasswordVisibleStub = BehaviorSubject.createDefault(false)
     private val unavailableUsernamesStub = BehaviorSubject.createDefault(emptySet<String>())
     private val isDirtyStub = BehaviorSubject.createDefault(false)
     private val isEditingStub = BehaviorSubject.createDefault(true)
+    private val findSavedItemStub = Observable.just(listOf(fakeItem))
 
     val itemDetailStore: ItemDetailStore by lazy {
         val store = PowerMockito.mock(ItemDetailStore::class.java)!!
@@ -116,6 +127,7 @@ class CreateItemPresenterTest {
         `when`(store.unavailableUsernames).thenReturn(unavailableUsernamesStub)
         `when`(store.isDirty).thenReturn(isDirtyStub)
         `when`(store.isEditing).thenReturn(isEditingStub)
+        `when`(store.findSavedItem()).thenReturn(findSavedItemStub)
         store
     }
 
@@ -147,19 +159,6 @@ class CreateItemPresenterTest {
     }
 
     @Test
-    fun `tapping on save button when not dirty`() {
-        isDirtyStub.onNext(false)
-        view.saveEntryClicks.onNext(Unit)
-        isEditingStub.onNext(false)
-        dispatcherObserver.assertValueSequence(
-            listOf(
-                ItemDetailAction.EndCreateItemSession,
-                RouteAction.ItemList
-            )
-        )
-    }
-
-    @Test
     fun `tapping on save button when dirty`() {
         isDirtyStub.onNext(true)
         view.saveEntryClicks.onNext(Unit)
@@ -168,7 +167,9 @@ class CreateItemPresenterTest {
             listOf(
                 ItemDetailAction.CreateItemSaveChanges,
                 ToastNotificationAction.ShowSuccessfulCreateToast,
-                RouteAction.ItemList
+                ItemDetailAction.EndCreateItemSession,
+                RouteAction.ItemList,
+                RouteAction.DisplayItem(fakeItemId)
             )
         )
     }
@@ -178,12 +179,8 @@ class CreateItemPresenterTest {
         isDirtyStub.onNext(false)
         view.closeEntryClicks.onNext(Unit)
         isEditingStub.onNext(false)
-        dispatcherObserver.assertValueSequence(
-            listOf(
-                ItemDetailAction.EndCreateItemSession,
-                RouteAction.ItemList
-            )
-        )
+        dispatcherObserver.assertValueAt(0, ItemDetailAction.EndCreateItemSession)
+        dispatcherObserver.assertValueAt(1, RouteAction.ItemList)
     }
 
     @Test

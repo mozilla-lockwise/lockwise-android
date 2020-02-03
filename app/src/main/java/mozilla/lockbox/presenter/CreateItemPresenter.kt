@@ -10,6 +10,7 @@ import android.text.TextUtils
 import android.webkit.URLUtil
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import mozilla.appservices.logins.ServerPassword
 import mozilla.lockbox.R
 import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.ItemDetailAction
@@ -31,7 +32,7 @@ private val minimalHostRegex = (
 class CreateItemPresenter(
     private val view: CreateItemView,
     private val dispatcher: Dispatcher = Dispatcher.shared,
-    itemDetailStore: ItemDetailStore = ItemDetailStore.shared
+    private val itemDetailStore: ItemDetailStore = ItemDetailStore.shared
 ) : ItemMutationPresenter(view, dispatcher, itemDetailStore) {
 
     override fun onViewReady() {
@@ -52,24 +53,26 @@ class CreateItemPresenter(
         return if (hasChanges) {
             listOf(
                 ItemDetailAction.CreateItemSaveChanges,
-                ToastNotificationAction.ShowSuccessfulCreateToast
+                ToastNotificationAction.ShowSuccessfulCreateToast,
+                ItemDetailAction.EndCreateItemSession
             )
         } else {
             listOf(ItemDetailAction.EndCreateItemSession)
         }
     }
 
-    override fun dismissChangesAction(hasChanges: Boolean): Action {
-        return if (hasChanges) {
-            DialogAction.DiscardChangesCreateDialog
+    override fun dismissChangesAction(hasChanges: Boolean): List<Action> =
+        if (hasChanges) {
+            listOf(DialogAction.DiscardChangesCreateDialog)
         } else {
-            ItemDetailAction.EndCreateItemSession
+            listOf(ItemDetailAction.EndCreateItemSession, RouteAction.ItemList)
         }
-    }
 
     override fun endEditingActions(): List<Action> {
+        val list = itemDetailStore.findSavedItem().blockingIterable().iterator().next()
         return listOf(
-            RouteAction.ItemList
+            RouteAction.ItemList,
+            RouteAction.DisplayItem(list.first().id)
         )
     }
 

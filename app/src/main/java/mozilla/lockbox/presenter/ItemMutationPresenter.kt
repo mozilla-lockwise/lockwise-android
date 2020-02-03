@@ -62,7 +62,7 @@ abstract class ItemMutationPresenter(
 
         view.closeEntryClicks
             .flatMap { itemDetailStore.isDirty.take(1) }
-            .map { dismissChangesAction(it) }
+            .flatMapIterable { dismissChangesAction(it) }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
 
@@ -190,15 +190,13 @@ abstract class ItemMutationPresenter(
     override fun onBackPressed(): Boolean {
         itemDetailStore.isDirty
             .take(1)
-            .map {
-                dismissChangesAction(it)
-            }
+            .flatMapIterable { dismissChangesAction(it) }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
         return true
     }
 
-    abstract fun dismissChangesAction(hasChanges: Boolean): Action
+    abstract fun dismissChangesAction(hasChanges: Boolean): List<Action>
     abstract fun saveChangesActions(hasChanges: Boolean): List<Action>
     abstract fun endEditingActions(): List<Action>
 }
