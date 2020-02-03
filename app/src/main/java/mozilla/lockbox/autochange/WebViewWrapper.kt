@@ -28,8 +28,16 @@ class WebViewWrapper(
     private val secureToken: String,
     private vararg val sustitutions: Pair<String, String>
 ) {
-    val events
-        get() = transformPageLoadToTapEnd(embeddedObject.events)
+    fun events() = transformPageLoadToTapEnd(embeddedObject.events)
+
+    fun rawEvents() = webView.events()
+
+    val url
+        get() = webView.url
+
+    fun canGoBack() = webView.canGoBack()
+
+    fun goBack() = webView.goBack()
 
     fun setup() {
         setupWebViewDefaults(webView)
@@ -98,7 +106,7 @@ class WebViewWrapper(
     }
 
     private fun transformPageLoadToTapEnd(js2KotlinMessage: Observable<JS2KotlinMessage>): Observable<JS2KotlinMessage> {
-        val pageFinished = webView.events()
+        val pageFinished = this.rawEvents()
             .ofType(OnPageFinished::class.java)
 
         // substitute the pageFinished events for TapEnd ones corresponding to the last TapBegin one.

@@ -59,7 +59,7 @@ class WebViewAutoChangeHandler(
         webViewWrapper = createWebViewWrapper()
         val stateMachine = AutoChangeStateMachine(currentState)
 
-        Observables.combineLatest(currentState, webViewWrapper.events)
+        Observables.combineLatest(currentState, webViewWrapper.events())
             .map { (state: State, message: JS2KotlinMessage) ->
                 log.info("From webview: $message")
 

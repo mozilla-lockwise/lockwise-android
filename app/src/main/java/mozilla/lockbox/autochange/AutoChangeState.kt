@@ -22,6 +22,31 @@ enum class AutoChangeError(
     PASSWORD_CHANGE_NOT_ACCEPTED(R.string.autochange_error_password_change_not_accepted)
 }
 
+enum class AutoChangeDestination(
+    val jsName: String,
+    val finding: AutoChangeState,
+    val found: AutoChangeState,
+    val notFound: AutoChangeError
+) {
+    LOGIN("login",
+        AutoChangeState.LoginFinding,
+        AutoChangeState.LoginFound,
+        AutoChangeError.NOT_FOUND_LOGIN
+    ),
+
+    PASSWORD_CHANGE("passwordChange",
+        AutoChangeState.PasswordChangeFinding,
+        AutoChangeState.PasswordChangeFound,
+        AutoChangeError.NOT_FOUND_PASSWORD_CHANGE
+    ),
+
+    LOGOUT("logout",
+        AutoChangeState.LoggingOut,
+        AutoChangeState.LoggedOut,
+        AutoChangeError.NOT_FOUND_PASSWORD_CHANGE
+    )
+}
+
 sealed class AutoChangeState(
     @StringRes val message: Int
 ) {
