@@ -13,8 +13,16 @@ sealed class JS2KotlinMessage {
     data class TapEnd(val action: String) : JS2KotlinMessage()
     data class Arrived(val destination: String) : JS2KotlinMessage()
     data class DestinationInformation(val destination: String, val options: FormInfo?) : JS2KotlinMessage()
+    data class NodeInformation(val destination: String, val isDestination: Boolean, val numLinks: Int) : JS2KotlinMessage()
     data class FormFillSuccess(val formName: String) : JS2KotlinMessage()
     data class Fail(val action: String, val reason: AutoChangeError) : JS2KotlinMessage()
+}
+
+sealed class NavigationEvent {
+    data class NavigatedTo(val url: String) : NavigationEvent()
+    object GoneBack : NavigationEvent()
+    data class HasInfo(val info: JS2KotlinMessage.NodeInformation) : NavigationEvent()
+    data class ReloadedUrl(val url: String) : NavigationEvent()
 }
 
 sealed class Kotlin2JSMessage(val action: String, vararg val args: String, val options: Map<String, String>? = null) {
@@ -27,6 +35,23 @@ sealed class Kotlin2JSMessage(val action: String, vararg val args: String, val o
             formName,
             if (successIfPageChanged) "true" else ""
         )
+
+    // Five messages used in search.
+    //   - checks page to see if a) we're at the destination, b) how many child nodes we have.
+    //      The child nodes will be added to the agenda.
+    class GetInfo(destination: String) : Kotlin2JSMessage("getNodeInfo", destination)
+    //   - collects the relevant links and takes the index_th_ one.
+    class NavigateTo(destination: String, index: Int) : Kotlin2JSMessage("navigateTo", destination, index.toString())
+    //   - high level to start pop the next node off the agenda.
+    //      If reset = true, then we set the url of the webview to the search node. This allows us to keep in sync.
+    //      This does not go via JS.
+    data class AgendaPop(val reset: Boolean = false) : Kotlin2JSMessage("agendaPop")
+    //   - hit the browser back button
+    //      This does not go via JS.
+    object GoBack : Kotlin2JSMessage("goBack")
+    //   - reload the given url.
+    //      This does not go via JS.
+    data class ReloadUrl(val url: String) : Kotlin2JSMessage("reload")
 
     // This doesn't get sent to JS, but loads the URL directly
     class LoadURL(val url: String): Kotlin2JSMessage("loadURL")
