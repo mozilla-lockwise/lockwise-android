@@ -90,14 +90,14 @@ class WebViewAutoChangeHandler(
             .observeOn(mainThread())
             .subscribe { next ->
                 when (next) {
-                    is Kotlin2JSMessage.LoadURL -> {
+                    is NavigationMessage.LoadURL -> {
                         webViewWrapper.loadUrl(next.url)
                     }
-                    is Kotlin2JSMessage.Done -> {
+                    is NavigationMessage.Done -> {
                         finish()
                         returnValue.onComplete()
                     }
-                    else -> {
+                    is Kotlin2JSMessage -> {
                         webViewWrapper.evalJSCommand(next)
                     }
                 }

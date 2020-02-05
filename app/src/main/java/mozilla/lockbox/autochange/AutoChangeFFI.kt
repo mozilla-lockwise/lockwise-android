@@ -8,7 +8,11 @@ package mozilla.lockbox.autochange
 
 import org.json.JSONObject
 
-sealed class JS2KotlinMessage {
+
+interface FromWebView
+interface ToWebView
+
+sealed class JS2KotlinMessage : FromWebView {
     data class TapBegin(val action: String) : JS2KotlinMessage()
     data class TapEnd(val action: String) : JS2KotlinMessage()
     data class Arrived(val destination: String) : JS2KotlinMessage()
@@ -16,16 +20,35 @@ sealed class JS2KotlinMessage {
     data class NodeInformation(val destination: String, val isDestination: Boolean, val numLinks: Int) : JS2KotlinMessage()
     data class FormFillSuccess(val formName: String) : JS2KotlinMessage()
     data class Fail(val action: String, val reason: AutoChangeError) : JS2KotlinMessage()
+    data class HasInfo(val info: NodeInformation) : JS2KotlinMessage()
 }
 
-sealed class NavigationEvent {
+sealed class NavigationEvent : FromWebView {
     data class NavigatedTo(val url: String) : NavigationEvent()
     object GoneBack : NavigationEvent()
-    data class HasInfo(val info: JS2KotlinMessage.NodeInformation) : NavigationEvent()
     data class ReloadedUrl(val url: String) : NavigationEvent()
 }
 
-sealed class Kotlin2JSMessage(val action: String, vararg val args: String, val options: Map<String, String>? = null) {
+sealed class NavigationMessage : ToWebView {
+    //   - high level to start pop the next node off the agenda.
+    //      If reset = true, then we set the url of the webview to the search node. This allows us to keep in sync.
+    //      This does not go via JS.
+    data class AgendaPop(val reset: Boolean = false) : NavigationMessage()
+    //   - hit the browser back button
+    //      This does not go via JS.
+    object GoBack : NavigationMessage()
+
+    //   - load the given url.
+    //      This does not go via JS.
+    data class LoadURL(val url: String) : NavigationMessage()
+
+    // This is a terminator. It doesn't actually get sent to JS.
+    object Done : NavigationMessage()
+
+    data class Fail(val error: AutoChangeError): NavigationMessage()
+}
+
+sealed class Kotlin2JSMessage(val action: String, vararg val args: String, val options: Map<String, String>? = null) : ToWebView {
     class Advance(destination: String) : Kotlin2JSMessage("advance", destination)
     class ExamineDestination(destination: String) : Kotlin2JSMessage("examine", destination)
     class FillForm(formName: String, inputValues: Map<String, String>) : Kotlin2JSMessage("fillForm", formName, options = inputValues)
@@ -42,22 +65,6 @@ sealed class Kotlin2JSMessage(val action: String, vararg val args: String, val o
     class GetInfo(destination: String) : Kotlin2JSMessage("getNodeInfo", destination)
     //   - collects the relevant links and takes the index_th_ one.
     class NavigateTo(destination: String, index: Int) : Kotlin2JSMessage("navigateTo", destination, index.toString())
-    //   - high level to start pop the next node off the agenda.
-    //      If reset = true, then we set the url of the webview to the search node. This allows us to keep in sync.
-    //      This does not go via JS.
-    data class AgendaPop(val reset: Boolean = false) : Kotlin2JSMessage("agendaPop")
-    //   - hit the browser back button
-    //      This does not go via JS.
-    object GoBack : Kotlin2JSMessage("goBack")
-    //   - reload the given url.
-    //      This does not go via JS.
-    data class ReloadUrl(val url: String) : Kotlin2JSMessage("reload")
-
-    // This doesn't get sent to JS, but loads the URL directly
-    class LoadURL(val url: String): Kotlin2JSMessage("loadURL")
-
-    // This is a terminator. It doesn't actually get sent to JS.
-    object Done : Kotlin2JSMessage("done")
 }
 
 sealed class FormInfo {

@@ -12,7 +12,7 @@ import mozilla.lockbox.autochange.AutoChangeState as State
 
 class AutoChangeStateMachine(private val nextState: Subject<State>) {
 
-    fun nextCommand(currentState: State, message: JS2KotlinMessage, originalItem: ServerPassword, updatedItem: ServerPassword): Kotlin2JSMessage? =
+    fun nextCommand(currentState: State, message: FromWebView, originalItem: ServerPassword, updatedItem: ServerPassword): ToWebView? =
         when (currentState) {
             is State.HomepageFinding -> currentState.next(message)
             is State.HomepageFound -> currentState.next(message)
@@ -34,7 +34,7 @@ class AutoChangeStateMachine(private val nextState: Subject<State>) {
             null
         }
 
-    private fun State.HomepageFinding.next(event: JS2KotlinMessage): Kotlin2JSMessage? =
+    private fun State.HomepageFinding.next(event: FromWebView?): ToWebView? =
         when (event) {
             // we go directly to the Homepage via a loadUrl, so
             // immediately start looking for the login page.
@@ -45,7 +45,7 @@ class AutoChangeStateMachine(private val nextState: Subject<State>) {
             else -> null
         }
 
-    private fun State.HomepageFound.next(event: JS2KotlinMessage): Kotlin2JSMessage? =
+    private fun State.HomepageFound.next(event: FromWebView?): ToWebView? =
         when (event) {
             is JS2KotlinMessage.TapEnd -> {
                 nextState.onNext(State.LoginFinding)
@@ -54,7 +54,7 @@ class AutoChangeStateMachine(private val nextState: Subject<State>) {
             else -> null
         }
 
-    private fun State.LoginFinding.next(event: JS2KotlinMessage): Kotlin2JSMessage? =
+    private fun State.LoginFinding.next(event: FromWebView?): ToWebView? =
         when (event) {
             is JS2KotlinMessage.TapEnd -> {
                 Kotlin2JSMessage.Advance("login")
@@ -73,9 +73,9 @@ class AutoChangeStateMachine(private val nextState: Subject<State>) {
         }
 
     private fun State.LoginFound.next(
-        event: JS2KotlinMessage,
+        event: FromWebView,
         originalItem: ServerPassword
-    ): Kotlin2JSMessage? =
+    ): ToWebView? =
         when (event) {
             is JS2KotlinMessage.Arrived -> {
                 Kotlin2JSMessage.ExamineDestination("login")
@@ -107,7 +107,7 @@ class AutoChangeStateMachine(private val nextState: Subject<State>) {
             else -> null
         }
 
-    private fun State.LoginSuccessful.next(event: JS2KotlinMessage): Kotlin2JSMessage? =
+    private fun State.LoginSuccessful.next(event: FromWebView?): ToWebView? =
         when (event) {
             is JS2KotlinMessage.FormFillSuccess -> {
                 nextState.onNext(State.PasswordChangeFinding)
@@ -117,7 +117,7 @@ class AutoChangeStateMachine(private val nextState: Subject<State>) {
             else -> null
         }
 
-    private fun State.PasswordChangeFinding.next(event: JS2KotlinMessage): Kotlin2JSMessage? =
+    private fun State.PasswordChangeFinding.next(event: FromWebView?): ToWebView? =
         when (event) {
             is JS2KotlinMessage.FormFillSuccess, // this is the successful login
             is JS2KotlinMessage.TapEnd -> {
@@ -138,10 +138,10 @@ class AutoChangeStateMachine(private val nextState: Subject<State>) {
         }
 
     private fun State.PasswordChangeFound.next(
-        event: JS2KotlinMessage,
+        event: FromWebView,
         originalItem: ServerPassword,
         updatedItem: ServerPassword
-    ): Kotlin2JSMessage? =
+    ): ToWebView? =
         when (event) {
             is JS2KotlinMessage.Arrived -> {
                 Kotlin2JSMessage.ExamineDestination("passwordChange")
@@ -175,7 +175,7 @@ class AutoChangeStateMachine(private val nextState: Subject<State>) {
             else -> null
         }
 
-    private fun State.PasswordChangeSuccessful.next(event: JS2KotlinMessage): Kotlin2JSMessage? =
+    private fun State.PasswordChangeSuccessful.next(event: FromWebView?): ToWebView? =
         when (event) {
             is JS2KotlinMessage.FormFillSuccess -> {
                 nextState.onNext(State.LoggingOut)
@@ -184,10 +184,10 @@ class AutoChangeStateMachine(private val nextState: Subject<State>) {
             else -> null
         }
 
-    private fun State.LoggingOut.next(event: JS2KotlinMessage, updatedItem: ServerPassword): Kotlin2JSMessage? =
+    private fun State.LoggingOut.next(event: FromWebView?, updatedItem: ServerPassword): ToWebView? =
         when (event) {
             is JS2KotlinMessage.FormFillSuccess -> { // this is successful password change.
-                Kotlin2JSMessage.LoadURL(updatedItem.hostname)
+                NavigationMessage.LoadURL(updatedItem.hostname)
             }
             is JS2KotlinMessage.TapEnd -> {
                 Kotlin2JSMessage.Advance("logout")
@@ -206,11 +206,11 @@ class AutoChangeStateMachine(private val nextState: Subject<State>) {
             else -> null
         }
 
-    private fun State.LoggedOut.next(): Kotlin2JSMessage? =
-        Kotlin2JSMessage.Done
+    private fun State.LoggedOut.next(): ToWebView? =
+        NavigationMessage.Done
 
-    private fun State.Error.next(): Kotlin2JSMessage? =
-        Kotlin2JSMessage.Done
+    private fun State.Error.next(): ToWebView? =
+        NavigationMessage.Done
 
 
 }

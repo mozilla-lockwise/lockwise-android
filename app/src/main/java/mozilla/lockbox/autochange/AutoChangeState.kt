@@ -19,7 +19,9 @@ enum class AutoChangeError(
     NOT_FOUND_LOGIN(R.string.autochange_error_login_not_found),
     NOT_FOUND_LOGOUT(R.string.autochange_error_logout_not_found),
     NOT_FOUND_PASSWORD_CHANGE(R.string.autochange_error_password_change_not_found),
-    PASSWORD_CHANGE_NOT_ACCEPTED(R.string.autochange_error_password_change_not_accepted)
+    PASSWORD_CHANGE_NOT_ACCEPTED(R.string.autochange_error_password_change_not_accepted),
+
+    BUG(R.string.autochange_error_2fa)
 }
 
 enum class AutoChangeDestination(

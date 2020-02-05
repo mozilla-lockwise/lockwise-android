@@ -350,6 +350,8 @@
     <string name="autochange_error_captcha">AutochangeBot failed the Are You A Bot? question</string>
     <!-- This is problem/nuisance message while the app is autochanging the password. 2FA is needed -->
     <string name="autochange_error_2fa">Second factor authentication stops us</string>
+    <!-- This is problem/nuisance message while the app is autochanging the password. A internal programming error has been encountered -->
+    <string name="autochange_error_internal_error">An internal error has been detected</string>
     <!-- This is problem/nuisance message while the app is autochanging the password. A terms of service checkbox needs to be ticked by the user -->
     <string name="autochange_error_tos_blocking">A terms of service form blocks us</string>
     <!-- This is problem/nuisance message while the app is autochanging the password. We can't find the login page. -->
