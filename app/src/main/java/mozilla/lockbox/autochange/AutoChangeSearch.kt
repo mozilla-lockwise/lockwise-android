@@ -28,14 +28,14 @@ fun WebViewWrapper.search(destination: AutoChangeDestination): Observable<JS2Kot
 
     val webView = this
     val pageFinished = webView.rawEvents().ofType(OnPageFinished::class.java)
-    val causeOfNavigation = ReplaySubject.createWithSize<Kotlin2JSMessage>(1)
+    val causeOfNavigation = ReplaySubject.createWithSize<ToWebView>(1)
 
     val navigationEvents = pageFinished
         .flatMap { causeOfNavigation.take(1) }
         .map { cause ->
             when (cause) {
-                is Kotlin2JSMessage.GoBack -> NavigationEvent.GoneBack
-                is Kotlin2JSMessage.ReloadUrl -> NavigationEvent.ReloadedUrl(cause.url)
+                is NavigationMessage.GoBack -> NavigationEvent.GoneBack
+                is NavigationMessage.LoadURL -> NavigationEvent.ReloadedUrl(cause.url)
                 is Kotlin2JSMessage.NavigateTo -> NavigationEvent.NavigatedTo(webView.url)
                 else -> null
             }.asOptional()
@@ -44,10 +44,11 @@ fun WebViewWrapper.search(destination: AutoChangeDestination): Observable<JS2Kot
 
     val js2KotlinMessages = webView.events()
         .map {
-            when (it) {
-                is JS2KotlinMessage.NodeInformation -> NavigationEvent.HasInfo(it)
-                else -> null as NavigationEvent?
-            }.asOptional()
+            val hasInfo: FromWebView? = when (it) {
+                is JS2KotlinMessage.NodeInformation -> JS2KotlinMessage.HasInfo(it)
+                else -> null
+            }
+            hasInfo.asOptional()
         }
         .filterNotNull()
 
@@ -59,18 +60,18 @@ fun WebViewWrapper.search(destination: AutoChangeDestination): Observable<JS2Kot
         .map { message ->
             when (message) {
                 is NavigationEvent.ReloadedUrl -> {
-                    Kotlin2JSMessage.AgendaPop()
+                    NavigationMessage.AgendaPop()
                 }
 
                 is NavigationEvent.NavigatedTo -> {
                     Kotlin2JSMessage.GetInfo(destination.name)
                 }
 
-                is NavigationEvent.HasInfo -> {
+                is JS2KotlinMessage.HasInfo -> {
                     val info = message.info
                     when {
-                        info.isDestination -> Kotlin2JSMessage.Done
-                        info.numLinks == 0 -> Kotlin2JSMessage.GoBack
+                        info.isDestination -> NavigationMessage.Done
+                        info.numLinks == 0 -> NavigationMessage.GoBack
 
                         else -> {
                             val url = webView.url
@@ -78,38 +79,48 @@ fun WebViewWrapper.search(destination: AutoChangeDestination): Observable<JS2Kot
                                 .map { SearchNode(url, it) }
                                 .forEach { agenda.add(it) }
 
-                            Kotlin2JSMessage.AgendaPop()
+                            NavigationMessage.AgendaPop()
                         }
                     }
                 }
 
                 is NavigationEvent.GoneBack -> {
                     if (agenda.lastOrNull()?.url != webView.url && webView.canGoBack()) {
-                        Kotlin2JSMessage.GoBack
+                        NavigationMessage.GoBack
                     } else {
-                        Kotlin2JSMessage.AgendaPop(reset = true)
+                        NavigationMessage.AgendaPop(reset = true)
                     }
                 }
+
+                else -> NavigationMessage.Fail(AutoChangeError.BUG)
             }
         }
         .map { command ->
             when (command) {
-                is Kotlin2JSMessage.AgendaPop -> {
+                is NavigationMessage.AgendaPop -> {
                     if (agenda.isEmpty()) {
                         returnValue.onNext(JS2KotlinMessage.Fail("", destination.notFound))
                         returnValue.onComplete()
                         null
                     } else if (command.reset && agenda.last().url != webView.url) {
                         // If there's an error it's going to be here.
-                        Kotlin2JSMessage.ReloadUrl(agenda.last().url)
+                        NavigationMessage.LoadURL(
+                            agenda.last().url
+                        )
                     } else {
                         val node = agenda.removeAt(agenda.lastIndex)
                         Kotlin2JSMessage.NavigateTo(destination.jsName, node.linkIndex)
                     }
                 }
 
-                is Kotlin2JSMessage.Done -> {
+                is NavigationMessage.Done -> {
                     returnValue.onNext(JS2KotlinMessage.Arrived(destination.jsName))
+                    returnValue.onComplete()
+                    null
+                }
+
+                is NavigationMessage.Fail -> {
+                    returnValue.onNext(JS2KotlinMessage.Fail("", command.error))
                     returnValue.onComplete()
                     null
                 }
@@ -120,15 +131,13 @@ fun WebViewWrapper.search(destination: AutoChangeDestination): Observable<JS2Kot
         .filterNotNull()
         .observeOn(mainThread())
         .subscribe { toWebView ->
-
-
             if (toWebView is Kotlin2JSMessage.GetInfo) {
                 webView.evalJSCommand(toWebView)
             } else {
                 causeOfNavigation.onNext(toWebView).also {
                     when (toWebView) {
-                        is Kotlin2JSMessage.ReloadUrl -> webView.loadUrl(toWebView.url)
-                        is Kotlin2JSMessage.GoBack -> webView.goBack()
+                        is NavigationMessage.LoadURL -> webView.loadUrl(toWebView.url)
+                        is NavigationMessage.GoBack -> webView.goBack()
 
                         is Kotlin2JSMessage.NavigateTo -> webView.evalJSCommand(toWebView)
                     }
