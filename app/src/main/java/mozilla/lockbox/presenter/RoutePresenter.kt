@@ -122,7 +122,18 @@ abstract class RoutePresenter(
         val layoutInflater = LayoutInflater.from(activity)
 
         toast.view = layoutInflater.inflate(R.layout.toast_view, container, false)
-        toast.setGravity(Gravity.FILL_HORIZONTAL or Gravity.BOTTOM, 0, action.viewModel.bottomMargin)
+
+        val bottomMargin = if (action is ToastNotificationAction.ShowDeleteToast) {
+            R.dimen.toast_bottom_margin_large
+        } else {
+            R.dimen.toast_bottom_margin_small
+        }
+
+        toast.setGravity(
+            Gravity.FILL_HORIZONTAL or Gravity.BOTTOM,
+            0,
+            activity.resources.getDimension(bottomMargin).toInt()
+        )
 
         val view = toast.view.findViewById(R.id.message) as TextView
         val message = action.viewModel.message

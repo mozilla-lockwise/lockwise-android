@@ -109,7 +109,6 @@ sealed class DialogAction(
         )
     )
 
-    // TODO in https://github.com/mozilla-lockwise/lockwise-android/issues/822
     object DiscardChangesCreateDialog : DialogAction(
         DialogViewModel(
             R.string.discard_changes,
