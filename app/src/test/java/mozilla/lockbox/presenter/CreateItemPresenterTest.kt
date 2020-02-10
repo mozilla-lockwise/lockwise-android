@@ -23,6 +23,7 @@ import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.log
 import mozilla.lockbox.model.ItemDetailViewModel
 import mozilla.lockbox.store.ItemDetailStore
+import mozilla.lockbox.support.asOptional
 import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -118,7 +119,7 @@ class CreateItemPresenterTest {
     private val unavailableUsernamesStub = BehaviorSubject.createDefault(emptySet<String>())
     private val isDirtyStub = BehaviorSubject.createDefault(false)
     private val isEditingStub = BehaviorSubject.createDefault(true)
-    private val findSavedItemStub = Observable.just(listOf(fakeItem))
+    private val findSavedItemStub = Observable.just(fakeItem.asOptional())
 
     val itemDetailStore: ItemDetailStore by lazy {
         val store = PowerMockito.mock(ItemDetailStore::class.java)!!
