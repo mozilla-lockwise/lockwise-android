@@ -60,7 +60,7 @@ class CreateItemPresenter(
         }
     }
 
-    override fun dismissChangesAction(hasChanges: Boolean): List<Action> =
+    override fun dismissChangesActions(hasChanges: Boolean): List<Action> =
         if (hasChanges) {
             listOf(DialogAction.DiscardChangesCreateDialog)
         } else {
@@ -68,11 +68,15 @@ class CreateItemPresenter(
         }
 
     override fun endEditingActions(): List<Action> {
-        val list = itemDetailStore.findSavedItem().blockingIterable().iterator().next()
-        return listOf(
-            RouteAction.ItemList,
-            RouteAction.DisplayItem(list.first().id)
-        )
+        val latestSavedItem = itemDetailStore.findLatestSavedItem().blockingIterable().iterator().next()
+        return if (latestSavedItem.value != null) {
+            listOf(
+                RouteAction.ItemList,
+                RouteAction.DisplayItem(latestSavedItem.value.id)
+            )
+        } else {
+            listOf(RouteAction.ItemList)
+        }
     }
 
     override fun hostnameError(inputText: String, showingErrors: Boolean): Int? =

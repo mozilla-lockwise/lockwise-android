@@ -126,7 +126,7 @@ class CreateItemPresenterTest {
         `when`(store.unavailableUsernames).thenReturn(unavailableUsernamesStub)
         `when`(store.isDirty).thenReturn(isDirtyStub)
         `when`(store.isEditing).thenReturn(isEditingStub)
-        `when`(store.findSavedItem()).thenReturn(findSavedItemStub)
+        `when`(store.findLatestSavedItem()).thenReturn(findSavedItemStub)
         store
     }
 

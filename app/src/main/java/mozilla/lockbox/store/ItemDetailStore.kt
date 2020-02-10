@@ -209,12 +209,12 @@ open class ItemDetailStore(
         sessionDisposable.clear()
     }
 
-    fun findSavedItem(): Observable<List<ServerPassword>> {
+    fun findLatestSavedItem(): Observable<Optional<ServerPassword>> {
         val item = _itemToSave.value?.value
         return dataStore.filteredList(
             item?.username,
             item?.password,
             item?.hostname
-        )
+        ).map { it.firstOrNull().asOptional() }
     }
 }

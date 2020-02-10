@@ -63,7 +63,7 @@ class EditItemPresenter(
             }
         } ?: listOf(ItemDetailAction.EndEditItemSession)
 
-    override fun dismissChangesAction(hasChanges: Boolean) =
+    override fun dismissChangesActions(hasChanges: Boolean) =
         itemId?.let {
             if (hasChanges) {
                 listOf(DialogAction.DiscardChangesDialog(it))
