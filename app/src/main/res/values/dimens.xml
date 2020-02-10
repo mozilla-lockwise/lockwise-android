@@ -22,4 +22,6 @@
     <dimen name="onboarding_text_size">15sp</dimen>
     <dimen name="lock_icon_top_margin">238dp</dimen>
     <dimen name="menu_elevation">8dp</dimen>
+    <dimen name="toast_bottom_margin_small">10dp</dimen>
+    <dimen name="toast_bottom_margin_large">87dp</dimen>
 </resources>

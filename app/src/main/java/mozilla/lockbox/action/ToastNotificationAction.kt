@@ -16,24 +16,21 @@ sealed class ToastNotificationAction(
     object ShowCopyUsernameToast : ToastNotificationAction(
         ToastNotificationViewModel(
             R.string.toast_username_copied,
-            R.drawable.ic_check,
-            bottomMargin = 25
+            R.drawable.ic_check
         )
     )
 
     object ShowCopyPasswordToast : ToastNotificationAction(
         ToastNotificationViewModel(
             R.string.toast_password_copied,
-            R.drawable.ic_check,
-            bottomMargin = 25
+            R.drawable.ic_check
         )
     )
 
     object ShowSuccessfulCreateToast : ToastNotificationAction(
         ToastNotificationViewModel(
             R.string.successful_create_toast,
-            R.drawable.ic_success,
-            bottomMargin = 230
+            R.drawable.ic_success
         )
     )
 
@@ -41,8 +38,7 @@ sealed class ToastNotificationAction(
         ToastNotificationViewModel(
             R.string.entry_deleted_toast,
             R.drawable.ic_delete_red,
-            entryName,
-            230
+            entryName
         )
     )
 }
