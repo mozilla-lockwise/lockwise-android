@@ -102,7 +102,10 @@ abstract class RoutePresenter(
         alertDialogStore.showDialog(activity, destination)
     }
 
-    open fun showDialogFragment(dialogFragment: DialogFragment, destination: RouteAction.DialogFragment) {
+    open fun showDialogFragment(
+        dialogFragment: DialogFragment,
+        destination: RouteAction.DialogFragment
+    ) {
         try {
             dialogFragment.setTargetFragment(currentFragment, 0)
             dialogFragment.show(navHostFragmentManager, dialogFragment.javaClass.name)
@@ -123,11 +126,12 @@ abstract class RoutePresenter(
 
         toast.view = layoutInflater.inflate(R.layout.toast_view, container, false)
 
-        val bottomMargin = if (action is ToastNotificationAction.ShowDeleteToast) {
-            R.dimen.toast_bottom_margin_large
-        } else {
-            R.dimen.toast_bottom_margin_small
-        }
+        val bottomMargin =
+            if (navController.currentDestination?.id == R.id.fragment_item_list) {
+                R.dimen.toast_bottom_margin_large
+            } else {
+                R.dimen.toast_bottom_margin_small
+            }
 
         toast.setGravity(
             Gravity.FILL_HORIZONTAL or Gravity.BOTTOM,
