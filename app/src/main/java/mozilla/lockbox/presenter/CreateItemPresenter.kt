@@ -8,6 +8,7 @@ package mozilla.lockbox.presenter
 
 import android.text.TextUtils
 import android.webkit.URLUtil
+import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
@@ -15,6 +16,7 @@ import mozilla.lockbox.action.DialogAction
 import mozilla.lockbox.action.ItemDetailAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.action.ToastNotificationAction
+import mozilla.lockbox.extensions.filterNotNull
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
 import mozilla.lockbox.store.ItemDetailStore
@@ -56,7 +58,10 @@ class CreateItemPresenter(
                 ItemDetailAction.EndCreateItemSession
             )
         } else {
-            listOf(ItemDetailAction.EndCreateItemSession)
+            listOf(
+                RouteAction.ItemList,
+                ItemDetailAction.EndCreateItemSession
+            )
         }
     }
 
@@ -67,17 +72,17 @@ class CreateItemPresenter(
             listOf(ItemDetailAction.EndCreateItemSession, RouteAction.ItemList)
         }
 
-    override fun endEditingActions(): List<Action> {
-        val latestSavedItem = itemDetailStore.findLatestSavedItem().blockingIterable().iterator().next()
-        return if (latestSavedItem.value != null) {
-            listOf(
-                RouteAction.ItemList,
-                RouteAction.DisplayItem(latestSavedItem.value.id)
-            )
-        } else {
-            listOf(RouteAction.ItemList)
-        }
-    }
+    override fun endEditingActions(): Observable<List<Action>> =
+        itemDetailStore.recentActions
+            .take(1)
+            .map { record ->
+                record.let {
+                    listOf<Action>(
+                        RouteAction.ItemList,
+                        RouteAction.DisplayItem(it.id)
+                    )
+                } ?: listOf<Action>(RouteAction.ItemList)
+            }
 
     override fun hostnameError(inputText: String, showingErrors: Boolean): Int? =
         when {

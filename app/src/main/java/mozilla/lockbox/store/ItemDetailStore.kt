@@ -51,6 +51,8 @@ open class ItemDetailStore(
     private val _itemToSave = ReplaySubject.createWithSize<Optional<ServerPassword>>(1)
     val itemToSave: Observable<Optional<ServerPassword>> = _itemToSave
 
+    val recentActions: Observable<Optional<DataStore.ActionRecord>> = dataStore.actionRecord
+
     private val _unavailableUsernames = BehaviorSubject.createDefault(emptySet<String>())
     val unavailableUsernames: Observable<Set<String>> = _unavailableUsernames
 

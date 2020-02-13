@@ -6,6 +6,7 @@
 
 package mozilla.lockbox.presenter
 
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -72,10 +73,17 @@ class EditItemPresenter(
             }
         } ?: listOf(ItemDetailAction.EndEditItemSession)
 
-    override fun endEditingActions() =
+    override fun endEditingActions(): Observable<List<Action>> =
         itemId?.let {
-            listOf(RouteAction.ItemList, RouteAction.DisplayItem(it))
-        } ?: listOf(RouteAction.ItemList)
+            Observable.just(
+                listOf<Action>(
+                    RouteAction.ItemList,
+                    RouteAction.DisplayItem(it)
+                )
+            )
+        } ?: Observable.just(
+            listOf<Action>(RouteAction.ItemList)
+        )
 
     override fun hostnameError(inputText: String, showingErrors: Boolean): Int? = null
 }

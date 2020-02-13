@@ -10,6 +10,7 @@ import com.jakewharton.rxrelay2.ReplayRelay
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
+import io.reactivex.subjects.ReplaySubject
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -32,6 +33,7 @@ import mozilla.lockbox.support.DataStoreSupport
 import mozilla.lockbox.support.FxASyncDataStoreSupport
 import mozilla.lockbox.support.Optional
 import mozilla.lockbox.support.TimingSupport
+import mozilla.lockbox.support.asOptional
 import kotlin.coroutines.CoroutineContext
 
 @ExperimentalCoroutinesApi
@@ -52,6 +54,12 @@ open class DataStore(
         data class Errored(val error: LoginsStorageException) : State()
     }
 
+    sealed class ActionRecord {
+        data class Delete(val id: String) : ActionRecord()
+        data class Create(val id: String) : ActionRecord()
+        data class Edit(val id: String) : ActionRecord()
+    }
+
     enum class SyncState {
         Syncing, NotSyncing
     }
@@ -64,10 +72,21 @@ open class DataStore(
         BehaviorRelay.createDefault(SyncState.NotSyncing)
     private val listSubject: BehaviorRelay<List<ServerPassword>> =
         BehaviorRelay.createDefault(emptyList())
+    private val actionRecordSubject: BehaviorRelay<Optional<ActionRecord>> =
+        BehaviorRelay.createDefault(Optional<ActionRecord>(null))
 
     open val state: Observable<State> = stateSubject
     open val syncState: Observable<SyncState> = syncStateSubject
     open val list: Observable<List<ServerPassword>> get() = listSubject
+
+    open val actionRecord: Observable<Optional<ActionRecord>> =
+        stateSubject.switchMap { state ->
+            if (state is State.Unlocked) {
+                actionRecordSubject
+            } else {
+                Observable.never<Optional<ActionRecord>>()
+            }
+        }
 
     private val exceptionHandler: CoroutineExceptionHandler
         get() = CoroutineExceptionHandler { _, e ->
@@ -132,6 +151,7 @@ open class DataStore(
             backend.delete(item.id)
                 .asSingle(coroutineContext)
                 .subscribe { _ ->
+                    actionRecordSubject.accept(ActionRecord.Delete(item.id).asOptional())
                     dispatcher.dispatch(DataStoreAction.Sync)
                 }
                 .addTo(compositeDisposable)
@@ -147,6 +167,7 @@ open class DataStore(
                 .asSingle(coroutineContext)
                 .subscribe({
                     this.updateItemList(it)
+                    actionRecordSubject.accept(ActionRecord.Edit(next.id).asOptional())
                     dispatcher.dispatch(DataStoreAction.Sync)
                 }, {
                     this.pushError(it)
@@ -247,13 +268,20 @@ open class DataStore(
     }
 
     private fun backendEnsureLocked() =
-        backend.ensureLocked().asSingle(coroutineContext).toObservable()
+        backend.ensureLocked()
+            .asSingle(coroutineContext)
+            .toObservable()
 
     private fun backendEnsureUnlocked() =
         backend.ensureUnlocked(support.encryptionKey).asSingle(coroutineContext).toObservable()
 
     private fun backendAdd(item: ServerPassword) =
-        backend.add(item).asSingle(coroutineContext).toObservable()
+        backend.add(item)
+            .asSingle(coroutineContext)
+            .toObservable()
+            .doOnNext {
+                actionRecordSubject.accept(ActionRecord.Create(it).asOptional())
+            }
 
     private fun backendTouch(id: String) =
         backend.touch(id).asSingle(coroutineContext).toObservable()

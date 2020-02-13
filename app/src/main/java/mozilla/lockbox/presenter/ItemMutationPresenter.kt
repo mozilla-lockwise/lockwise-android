@@ -136,10 +136,9 @@ abstract class ItemMutationPresenter(
         itemDetailStore.isEditing
             .distinctUntilChanged()
             .filter { !it }
-            .flatMapIterable {
-                view.closeKeyboard()
-                endEditingActions()
-            }
+            .doOnNext{ view.closeKeyboard() }
+            .flatMap { endEditingActions() }
+            .flatMapIterable { it }
             .subscribe(dispatcher::dispatch)
             .addTo(compositeDisposable)
     }
@@ -198,5 +197,5 @@ abstract class ItemMutationPresenter(
 
     abstract fun dismissChangesActions(hasChanges: Boolean): List<Action>
     abstract fun saveChangesActions(hasChanges: Boolean): List<Action>
-    abstract fun endEditingActions(): List<Action>
+    abstract fun endEditingActions(): Observable<List<Action>>
 }
