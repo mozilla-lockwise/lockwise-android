@@ -1,7 +1,7 @@
 ---
 name: "\U0001F41E Bug report"
 about: Create a report to help us improve
-labels: "type: defect"
+labels: "defect"
 
 ---
 
