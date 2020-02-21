@@ -208,7 +208,7 @@ class CreateItemPresenterTest {
         Assert.assertNotNull(view.usernameError)
 
         view.usernameChangedStub.onNext("jane.appleseed")
-        Assert.assertNull(view.usernameError)
+        assertNull(view.usernameError)
     }
 
     @Test
@@ -227,12 +227,15 @@ class CreateItemPresenterTest {
         assertEquals(R.string.hidden_credential_mutation_error, subject.hostnameError("https://", false))
         assertEquals(R.string.hidden_credential_mutation_error, subject.hostnameError("http://", false))
 
-        assertEquals(R.string.hostname_invalid_text, subject.hostnameError("f", false))
+        // must start with http:// or https://
         assertEquals(R.string.hostname_invalid_text, subject.hostnameError("f", true))
+        assertEquals(R.string.hostname_invalid_text, subject.hostnameError("fhtt", true))
         assertEquals(R.string.hostname_invalid_text, subject.hostnameError("htt", true))
 
-        // not being a valid URL
+        // not a valid URL
         assertEquals(R.string.hostname_invalid_host, subject.hostnameError("https://a", true))
+        assertEquals(R.string.hostname_invalid_host, subject.hostnameError("http://", true))
+        assertEquals(R.string.hostname_invalid_host, subject.hostnameError("https://", true))
 
         // but being a valid URL is ok.
         assertNull(subject.hostnameError("https://mozilla.com", false))

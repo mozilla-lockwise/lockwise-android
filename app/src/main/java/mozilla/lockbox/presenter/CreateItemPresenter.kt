@@ -78,19 +78,17 @@ class CreateItemPresenter(
             TextUtils.isEmpty(inputText) ->
                 R.string.hostname_empty_invalid_text `when` showingErrors
 
-            !minimalHostRegex.matches(inputText) &&
-                "http://".startsWith(inputText) || "https://".startsWith(inputText) ->
-                R.string.hostname_invalid_host `when` showingErrors
-
-            inputText.length <= 7 && "http://".startsWith(inputText) ->
+            inputText.length < 7 && "http://".startsWith(inputText) ->
                 R.string.hostname_invalid_text `when` showingErrors
 
-            inputText.length <= 8 && "https://".startsWith(inputText) ->
+            inputText.length < 8 && "https://".startsWith(inputText) ->
                 R.string.hostname_invalid_text `when` showingErrors
 
             !URLUtil.isHttpUrl(inputText) && !URLUtil.isHttpsUrl(inputText) ->
                 R.string.hostname_invalid_text
 
+            !minimalHostRegex.matches(inputText) ->
+                R.string.hostname_invalid_host `when` showingErrors
 
             else -> null
         }
