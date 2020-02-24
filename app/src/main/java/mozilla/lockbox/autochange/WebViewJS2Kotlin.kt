@@ -64,5 +64,4 @@ class WebViewJS2Kotlin(
         }
         events.onNext(JS2KotlinMessage.DestinationInformation(destination, formInfo))
     }
-
 }

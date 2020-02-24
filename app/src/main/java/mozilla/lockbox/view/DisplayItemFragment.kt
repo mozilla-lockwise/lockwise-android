@@ -123,7 +123,7 @@ class DisplayItemFragment : BackableFragment(), DisplayItemView {
                     (deleteClicks as PublishSubject).onNext(Unit)
                     true
                 }
-                R.id.autochange_password_fake ->{
+                R.id.autochange_password_fake -> {
                     (autochangePasswordClicks as PublishSubject).onNext(false)
                     true
                 }

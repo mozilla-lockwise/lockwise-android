@@ -211,6 +211,4 @@ class AutoChangeStateMachine(private val nextState: Subject<State>) {
 
     private fun State.Error.next(): ToWebView? =
         NavigationMessage.Done
-
-
 }

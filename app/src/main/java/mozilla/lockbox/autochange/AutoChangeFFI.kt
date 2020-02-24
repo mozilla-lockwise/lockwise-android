@@ -8,7 +8,6 @@ package mozilla.lockbox.autochange
 
 import org.json.JSONObject
 
-
 interface FromWebView
 interface ToWebView
 
@@ -45,7 +44,7 @@ sealed class NavigationMessage : ToWebView {
     // This is a terminator. It doesn't actually get sent to JS.
     object Done : NavigationMessage()
 
-    data class Fail(val error: AutoChangeError): NavigationMessage()
+    data class Fail(val error: AutoChangeError) : NavigationMessage()
 }
 
 sealed class Kotlin2JSMessage(val action: String, vararg val args: String, val options: Map<String, String>? = null) : ToWebView {

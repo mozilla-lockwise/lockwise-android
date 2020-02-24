@@ -133,7 +133,6 @@ class DisplayItemPresenter(
             }
         }
 
-
         view.autochangePasswordClicks
             .filter {
                 credentials?.let {

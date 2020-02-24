@@ -60,11 +60,10 @@ class UITestActivity : AppCompatActivity() {
 
         val disqusCredentials = ServerPassword(
             id = "id",
-            hostname ="https://disqus.com",
+            hostname = "https://disqus.com",
             username = "lockwisedev@mailinator.com",
             password = "qwertyui1"
         )
-
 
         val dummyCredentials = ServerPassword(
             id = "id",

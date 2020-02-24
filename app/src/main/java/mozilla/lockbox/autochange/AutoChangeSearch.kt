@@ -150,8 +150,4 @@ fun WebViewWrapper.search(destination: AutoChangeDestination): Observable<JS2Kot
         .doOnComplete {
             compositeDisposable.clear()
         }
-
 }
-
-
-

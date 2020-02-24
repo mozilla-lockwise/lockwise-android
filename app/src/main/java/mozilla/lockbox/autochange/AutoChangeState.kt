@@ -21,7 +21,7 @@ enum class AutoChangeError(
     NOT_FOUND_PASSWORD_CHANGE(R.string.autochange_error_password_change_not_found),
     PASSWORD_CHANGE_NOT_ACCEPTED(R.string.autochange_error_password_change_not_accepted),
 
-    BUG(R.string.autochange_error_2fa)
+    BUG(R.string.autochange_error_internal_error)
 }
 
 enum class AutoChangeDestination(
