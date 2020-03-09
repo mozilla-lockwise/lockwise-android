@@ -26,25 +26,25 @@ enum class AutoChangeError(
 
 enum class AutoChangeDestination(
     val jsName: String,
-    val finding: AutoChangeState,
-    val found: AutoChangeState,
+    @StringRes val finding: Int,
+    @StringRes val found: Int,
     val notFound: AutoChangeError
 ) {
     LOGIN("login",
-        AutoChangeState.LoginFinding,
-        AutoChangeState.LoginFound,
+        R.string.autochange_login_finding,
+        R.string.autochange_login_found,
         AutoChangeError.NOT_FOUND_LOGIN
     ),
 
     PASSWORD_CHANGE("passwordChange",
-        AutoChangeState.PasswordChangeFinding,
-        AutoChangeState.PasswordChangeFound,
+        R.string.autochange_password_change_finding,
+        R.string.autochange_password_change_found,
         AutoChangeError.NOT_FOUND_PASSWORD_CHANGE
     ),
 
     LOGOUT("logout",
-        AutoChangeState.LoggingOut,
-        AutoChangeState.LoggedOut,
+        R.string.autochange_log_out_finding,
+        R.string.autochange_log_out_success,
         AutoChangeError.NOT_FOUND_PASSWORD_CHANGE
     )
 }
@@ -52,35 +52,38 @@ enum class AutoChangeDestination(
 sealed class AutoChangeState(
     @StringRes val message: Int
 ) {
+    open class Finding(val destination: AutoChangeDestination) : AutoChangeState(destination.finding)
+    open class Found(val destination: AutoChangeDestination) : AutoChangeState(destination.found)
+
     object HomepageFinding : AutoChangeState(
         R.string.autochange_homepage_finding
     )
     object HomepageFound : AutoChangeState(
         R.string.autochange_homepage_found
     )
-    object LoginFinding : AutoChangeState(
-        R.string.autochange_login_finding
+    object LoginFinding : Finding(
+        AutoChangeDestination.LOGIN
     )
-    object LoginFound : AutoChangeState(
-        R.string.autochange_login_found
+    object LoginFound : Found(
+        AutoChangeDestination.LOGIN
     )
     object LoginSuccessful : AutoChangeState(
         R.string.autochange_login_success
     )
-    object PasswordChangeFinding : AutoChangeState(
-        R.string.autochange_password_change_finding
+    object PasswordChangeFinding : Finding(
+        AutoChangeDestination.PASSWORD_CHANGE
     )
-    object PasswordChangeFound : AutoChangeState(
-        R.string.autochange_password_change_found
+    object PasswordChangeFound : Found(
+        AutoChangeDestination.PASSWORD_CHANGE
     )
     object PasswordChangeSuccessful : AutoChangeState(
         R.string.autochange_password_change_success
     )
-    object LoggingOut : AutoChangeState(
-        R.string.autochange_log_out_finding
+    object LoggingOut : Finding(
+        AutoChangeDestination.LOGOUT
     )
-    object LoggedOut : AutoChangeState(
-        R.string.autochange_log_out_success
+    object LoggedOut : Found(
+        AutoChangeDestination.LOGOUT
     )
 
     data class Error(val error: AutoChangeError) : AutoChangeState(error.message)

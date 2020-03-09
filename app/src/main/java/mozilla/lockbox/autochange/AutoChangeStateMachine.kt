@@ -29,6 +29,8 @@ class AutoChangeStateMachine(private val nextState: Subject<State>) {
             is State.LoggedOut -> currentState.next()
 
             is State.Error -> currentState.next()
+
+            else -> null
         } ?: (message as? JS2KotlinMessage.Fail)?.let {
             nextState.onNext(State.Error(it.reason))
             null

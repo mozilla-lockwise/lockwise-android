@@ -21,6 +21,10 @@ data class SearchNode(
     val linkIndex: Int
 )
 
+class AutoChangeSearch(val destination: AutoChangeDestination) {
+
+}
+
 fun WebViewWrapper.search(destination: AutoChangeDestination): Observable<JS2KotlinMessage> {
     val compositeDisposable = CompositeDisposable()
 

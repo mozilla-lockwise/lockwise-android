@@ -58,6 +58,8 @@ class WebViewAutoChangeHandler(
 
         webViewWrapper = createWebViewWrapper()
         val stateMachine = AutoChangeStateMachine(currentState)
+        var searchMachine: AutoChangeSearch? = null
+
 
         Observables.combineLatest(currentState, webViewWrapper.events())
             .map { (state: State, message: JS2KotlinMessage) ->
@@ -74,6 +76,14 @@ class WebViewAutoChangeHandler(
                         is FormInfo.PasswordChangeInfo -> updateItem(updatedItem, options)
                         else -> null
                     } ?: updatedItem
+                }
+
+                when (state) {
+                    is State.Finding -> {
+                        if (searchMachine == null) {
+                            searchMachine = AutoChangeSearch(state.destination)
+                        }
+                    }
                 }
 
                 stateMachine.nextCommand(
