@@ -68,9 +68,10 @@ object AlertDialogHelper {
 
         dialog.show()
 
-        viewModel.positiveButtonColor?.let {
-            dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(context.getColor(it))
-        } ?: run {
+        if (viewModel.isDestructive) {
+            val destructiveColor = context.getColor(R.color.red)
+            dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(destructiveColor)
+        } else {
             dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(defaultColor)
         }
         dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(defaultColor)
