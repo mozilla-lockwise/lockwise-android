@@ -15,3 +15,13 @@ sealed class AccountAction : Action {
     data class OauthRedirect(val url: String) : AccountAction()
     data class AutomaticLogin(val account: ShareableAccount) : AccountAction()
 }
+
+sealed class ManageAccountDataAction(
+    override val eventMethod: TelemetryEventMethod,
+    override val eventObject: TelemetryEventObject
+) : TelemetryAction {
+    object DeleteUserData : ManageAccountDataAction(
+        TelemetryEventMethod.manage_user_data,
+        TelemetryEventObject.delete_user_data
+    )
+}

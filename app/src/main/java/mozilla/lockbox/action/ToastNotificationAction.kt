@@ -41,4 +41,11 @@ sealed class ToastNotificationAction(
             entryName
         )
     )
+
+    object DeleteUserDataConfirmationToast : ToastNotificationAction(
+        ToastNotificationViewModel(
+            R.string.user_data_delete_confirmation,
+            R.drawable.ic_delete_red
+        )
+    )
 }

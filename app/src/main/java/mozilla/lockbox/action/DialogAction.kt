@@ -121,4 +121,21 @@ sealed class DialogAction(
             DiscardCreateItemNoChanges
         )
     )
+
+    object DeleteUserDataSettingsDialog : DialogAction(
+        DialogViewModel(
+            R.string.delete_user_data,
+            R.string.delete_data_more_info,
+            R.string.delete,
+            R.string.cancel,
+            R.color.red
+        ),
+        listOf(
+            SettingAction.UnlockWithFingerprint(false),
+            ManageAccountDataAction.DeleteUserData,
+            SettingList,
+            ToastNotificationAction.DeleteUserDataConfirmationToast
+        )
+    )
+
 }
