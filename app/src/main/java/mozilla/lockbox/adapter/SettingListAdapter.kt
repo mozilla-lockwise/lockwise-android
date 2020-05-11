@@ -64,11 +64,9 @@ class SettingListAdapter : RecyclerView.Adapter<SettingViewHolder>() {
                 holder.itemView.clicks()
                     .subscribe(configuration.clickListener)
                     .addTo(compositeDisposable)
-                configuration.detailTextDriver
-                    .subscribe {
+                configuration.detailTextDriver?.subscribe {
                         holder.detailTextRes = it
-                    }
-                    .addTo(compositeDisposable)
+                    }?.addTo(compositeDisposable)
             }
             holder is ToggleSettingViewHolder && configuration is ToggleSettingConfiguration -> {
                 holder.title = configuration.title
