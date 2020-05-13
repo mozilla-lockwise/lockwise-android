@@ -43,6 +43,7 @@ object Constant {
 
     object Privacy {
         const val uri = "https://support.mozilla.org/en-US/kb/firefox-lockwise-and-privacy"
+        const val telemetryData = "https://gdpr.eu/data-privacy/"
     }
 
     object SendFeedback {
