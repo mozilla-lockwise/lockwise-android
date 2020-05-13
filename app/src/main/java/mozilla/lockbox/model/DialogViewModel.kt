@@ -6,7 +6,6 @@
 
 package mozilla.lockbox.model
 
-import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
 
 data class DialogViewModel(
