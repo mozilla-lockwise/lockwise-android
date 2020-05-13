@@ -95,6 +95,11 @@ class SettingPresenter(
             dispatcher.dispatch(AppWebPageAction.Privacy)
         }
 
+    private val learnMoreDeleteUsageDataObserver: Consumer<Unit>
+        get() = Consumer {
+            dispatcher.dispatch(AppWebPageAction.TelemetryData)
+        }
+
     override fun onViewReady() {
         settingStore.onEnablingFingerprint
             .subscribe {
@@ -167,6 +172,9 @@ class SettingPresenter(
         val aboutAppSettings = listOf(
             TextSettingConfiguration(
                 title = R.string.delete_user_data,
+                subtitle = R.string.delete_user_data_subtitle,
+                buttonTitle = R.string.learn_more,
+                buttonObserver = learnMoreDeleteUsageDataObserver,
                 contentDescription = R.string.auto_lock_description,
                 detailTextDriver = null,
                 clickListener = deleteUserDataClickListener

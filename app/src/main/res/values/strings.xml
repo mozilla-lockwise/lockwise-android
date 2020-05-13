@@ -317,9 +317,12 @@
     <!-- This is the toast message that appears when an entry has been successfully deleted.  -->
     <string name="entry_deleted_toast">%1$s deleted</string>
 
-    <!-- This is the label a screenreader uses to inform the user they selected the setting for deleting their user data -->
-    <string name="delete_user_data">Delete user data</string>
+    <!-- This is setting title for deleting their telemetry data -->
+    <string name="delete_user_data">Delete user telemetry data</string>
+    <!-- This is subtitle explaining that the user can delete all of their telemetry data. -->
+    <string name="delete_user_data_subtitle">Delete all of the telemetry usage data associated with your account and prevent all future tracking of your user data.</string>
     <!-- This is the message requesting permission for the application to delete the user's data. %1$s will be replaced with application name -->
-    <string name="delete_data_more_info">Give %1$s permission to delete all user data.</string>
+    <string name="delete_data_permission">Give %1$s permission to delete all user data.</string>
+    <!-- This is the notification toast that the user sees after successfully deleting their telemetry data. -->
     <string name="user_data_delete_confirmation">User data has been deleted</string>
 </resources>
