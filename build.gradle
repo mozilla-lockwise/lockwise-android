@@ -38,6 +38,7 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "io.sentry:sentry-android-gradle-plugin:$sentry_version"
         classpath "android.arch.navigation:navigation-safe-args-gradle-plugin:$navigation_version"
+        classpath "org.mozilla.components:tooling-gradle-plugin:$android_components_version"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -61,3 +62,6 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
+// Set any parameters to send to the Glean plugin here (optional).
+ext.gleanGenerateMarkdownDocs = true
+apply plugin: "org.mozilla.telemetry.glean-gradle-plugin"
