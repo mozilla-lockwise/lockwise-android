@@ -53,13 +53,6 @@ class SettingPresenter(
             }
         }
 
-    private val deleteUserDataClickListener: Consumer<Unit>
-        get() = Consumer {
-            dispatcher.dispatch(
-                DialogAction.DeleteUserDataSettingsDialog
-            )
-        }
-
     private val enableFingerprintObserver: Consumer<Boolean>
         get() = Consumer { isToggleOn ->
             if (isToggleOn && fingerprintStore.isFingerprintAuthAvailable) {
@@ -93,11 +86,6 @@ class SettingPresenter(
     private val learnMoreSendUsageDataObserver: Consumer<Unit>
         get() = Consumer {
             dispatcher.dispatch(AppWebPageAction.Privacy)
-        }
-
-    private val learnMoreDeleteUsageDataObserver: Consumer<Unit>
-        get() = Consumer {
-            dispatcher.dispatch(AppWebPageAction.TelemetryData)
         }
 
     override fun onViewReady() {
@@ -166,18 +154,6 @@ class SettingPresenter(
                 buttonObserver = learnMoreSendUsageDataObserver,
                 toggleDriver = settingStore.sendUsageData,
                 toggleObserver = sendUsageDataObserver
-            )
-        )
-
-        val aboutAppSettings = listOf(
-            TextSettingConfiguration(
-                title = R.string.delete_user_data,
-                subtitle = R.string.delete_user_data_subtitle,
-                buttonTitle = R.string.learn_more,
-                buttonObserver = learnMoreDeleteUsageDataObserver,
-                contentDescription = R.string.auto_lock_description,
-                detailTextDriver = null,
-                clickListener = deleteUserDataClickListener
             ),
             AppVersionSettingConfiguration(
                 title = R.string.app_version_title,
@@ -187,16 +163,11 @@ class SettingPresenter(
             )
         )
 
-        val configSettingPosition = 0
-        val supportSettingPosition = configurationSettings.size
-        val aboutSettingPosition = (configurationSettings.size + supportSettings.size)
-
         val sections = listOf(
-            SectionedAdapter.Section(configSettingPosition, R.string.configuration_title),
-            SectionedAdapter.Section(supportSettingPosition, R.string.support_title),
-            SectionedAdapter.Section(aboutSettingPosition, R.string.about_app_title)
+            SectionedAdapter.Section(0, R.string.configuration_title),
+            SectionedAdapter.Section(configurationSettings.size, R.string.support_title)
         )
 
-        view.updateSettingList(configurationSettings + supportSettings + aboutAppSettings, sections)
+        view.updateSettingList(configurationSettings + supportSettings, sections)
     }
 }

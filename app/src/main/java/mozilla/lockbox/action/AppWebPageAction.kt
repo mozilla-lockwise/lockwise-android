@@ -36,11 +36,6 @@ sealed class AppWebPageAction(
         R.string.privacy,
         TelemetryEventObject.settings_faq)
 
-    object TelemetryData : AppWebPageAction(
-        Constant.Privacy.telemetryData,
-        R.string.privacy,
-        TelemetryEventObject.settings_faq)
-
     object SendFeedback : AppWebPageAction(
         Constant.SendFeedback.uri,
         R.string.nav_menu_feedback,
