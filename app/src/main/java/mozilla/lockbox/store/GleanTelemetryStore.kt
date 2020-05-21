@@ -12,6 +12,8 @@ import io.reactivex.rxkotlin.addTo
 import mozilla.components.service.glean.Glean
 import mozilla.components.service.glean.config.Configuration
 import mozilla.lockbox.BuildConfig
+import mozilla.lockbox.GleanMetrics.LegacyIds
+import java.util.UUID
 
 open class GleanWrapper {
     open var uploadEnabled: Boolean
@@ -43,5 +45,9 @@ class GleanTelemetryStore(
             }
             .addTo(compositeDisposable)
         gleanWrapper.initialize(context, BuildConfig.BUILD_TYPE)
+
+        // Get legacy telemetry ID
+        LegacyIds.clientId.generateAndSet() // Generate a new UUID and record it
+        LegacyIds.clientId.set(UUID.randomUUID()) // Set a UUID explicitly
     }
 }
