@@ -20,9 +20,7 @@ class TextSettingConfiguration(
     @StringRes override val title: Int,
     @StringRes override val subtitle: Int? = null,
     @StringRes override val contentDescription: Int,
-    @StringRes val buttonTitle: Int? = null,
-    val buttonObserver: Consumer<Unit>? = null,
-    val detailTextDriver: Observable<Int>?,
+    val detailTextDriver: Observable<Int>,
     val clickListener: Consumer<Unit>
 ) : SettingCellConfiguration(title, subtitle, contentDescription)
 

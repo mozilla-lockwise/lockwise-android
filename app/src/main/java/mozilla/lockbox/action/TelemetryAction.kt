@@ -57,8 +57,7 @@ enum class TelemetryEventMethod {
     autofill_filter,
     autofill_add,
     create,
-    create_item_error,
-    manage_user_data
+    create_item_error
 }
 
 enum class TelemetryEventObject {
@@ -104,6 +103,5 @@ enum class TelemetryEventObject {
     discard_manual_create_no_changes,
     manual_create_save,
     manual_create_datastore_save,
-    toast,
-    delete_user_data;
+    toast;
 }
