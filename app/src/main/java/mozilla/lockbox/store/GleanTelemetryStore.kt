@@ -4,6 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+@file:Suppress("DEPRECATION")
+
 package mozilla.lockbox.store
 
 import android.content.Context
@@ -13,6 +15,7 @@ import mozilla.components.service.glean.Glean
 import mozilla.components.service.glean.config.Configuration
 import mozilla.lockbox.BuildConfig
 import mozilla.lockbox.GleanMetrics.LegacyIds
+import org.mozilla.telemetry.TelemetryHolder
 import java.util.UUID
 
 open class GleanWrapper {
@@ -47,7 +50,7 @@ class GleanTelemetryStore(
         gleanWrapper.initialize(context, BuildConfig.BUILD_TYPE)
 
         // Get legacy telemetry ID
-        LegacyIds.clientId.generateAndSet() // Generate a new UUID and record it
-        LegacyIds.clientId.set(UUID.randomUUID()) // Set a UUID explicitly
+        val legacyId = UUID.fromString(TelemetryHolder.get().clientId)
+        LegacyIds.clientId.set(legacyId)
     }
 }
