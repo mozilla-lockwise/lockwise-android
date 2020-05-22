@@ -13,9 +13,9 @@ legacy.ids:
     send_in_pings:
       - deletion_request
     bugs:
-      - https://bugzilla.mozilla.org/show_bug.cgi?id=1635427
+      - https://github.com/mozilla-lockwise/lockwise-android/pull/1196
     data_reviews:
-      - https://bugzilla.mozilla.org/show_bug.cgi?id=1635427
+      - https://github.com/mozilla-lockwise/lockwise-android/pull/1196
     notification_emails:
       - lockwise-dev@mozilla.com
     expires: never

@@ -6,6 +6,7 @@
 
 package mozilla.lockbox.view
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.InputType
 import android.text.TextUtils
@@ -98,6 +99,7 @@ class DisplayItemFragment : BackableFragment(), DisplayItemView {
             updatePasswordVisibility(value)
         }
 
+    @SuppressLint("RestrictedApi")
     override fun showPopup() {
         val wrapper = ContextThemeWrapper(context, R.style.PopupKebabMenu)
 
