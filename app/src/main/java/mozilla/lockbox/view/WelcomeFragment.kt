@@ -25,7 +25,10 @@ class WelcomeFragment : Fragment(), WelcomeView {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        presenter = WelcomePresenter(this)
+        val chinaBuild = resources.configuration.locales.get(0).toString().equals("zh_CN_#Hans") &&
+            resources.configuration.locales.get(0).displayLanguage.equals("中文") &&
+            (!"com.android.vending".equals(context!!.packageManager.getInstallerPackageName(context!!.packageName)))
+        presenter = WelcomePresenter(this, chinaBuild)
         val view = inflater.inflate(R.layout.fragment_welcome, container, false)
         val appLabel = getString(R.string.app_label)
         view.textViewInstructions.text = getString(R.string.welcome_instructions, appLabel)
@@ -53,6 +56,12 @@ class WelcomeFragment : Fragment(), WelcomeView {
         }
     }
 
+    override fun hideSwitchService() {
+        view?.apply {
+            textViewSwitchService.visibility = View.GONE
+        }
+    }
+
     override val getStartedAutomaticallyClicks: Observable<Unit>
         get() = view!!.buttonGetStarted.clicks()
 
@@ -61,4 +70,7 @@ class WelcomeFragment : Fragment(), WelcomeView {
 
     override val learnMoreClicks: Observable<Unit>
         get() = view!!.textViewLearnMore.clicks()
+
+    override val switchServiceClicks: Observable<Unit>
+        get() = view!!.textViewSwitchService.clicks()
 }

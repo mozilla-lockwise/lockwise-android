@@ -59,6 +59,7 @@ import kotlin.coroutines.CoroutineContext
 @ExperimentalCoroutinesApi
 open class AccountStore(
     private val lifecycleStore: LifecycleStore = LifecycleStore.shared,
+    private val settingStore: SettingStore = SettingStore.shared,
     private val dispatcher: Dispatcher = Dispatcher.shared,
     private val securePreferences: SecurePreferences = SecurePreferences.shared,
     private val timingSupport: SystemTimingSupport = DeviceSystemTimingSupport.shared
@@ -142,6 +143,9 @@ open class AccountStore(
         this.context = context
     }
 
+    fun checkAccountExisting(): Boolean {
+        return (storedAccountJSON != null)
+    }
     fun shareableAccount(): ShareableAccount? {
         return AccountSharing.queryShareableAccounts(context).firstOrNull()
     }
@@ -266,9 +270,17 @@ open class AccountStore(
 
     private fun generateNewFirefoxAccount() {
         try {
-            val config = ServerConfig.release(Constant.FxA.clientID, Constant.FxA.redirectUri)
-            fxa = FirefoxAccount(config)
-            generateLoginURL()
+            settingStore.useLocalService.subscribe {
+                    val config: ServerConfig
+                    if (it)
+                        config = ServerConfig("https://accounts.firefox.com.cn", Constant.FxA.clientID, Constant.FxA.redirectUri)
+                    else
+                        config = ServerConfig.release(Constant.FxA.clientID, Constant.FxA.redirectUri)
+
+                    fxa = FirefoxAccount(config)
+                    generateLoginURL()
+                }
+                .addTo(compositeDisposable)
         } catch (e: FxaException) {
             this.pushError(e)
         }

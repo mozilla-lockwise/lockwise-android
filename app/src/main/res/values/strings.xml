@@ -28,6 +28,7 @@
     <!-- This is the link on the first-run welcome screen to learn more about the requirements of the application -->
     <string name="welcome_learn_more_btn">Learn More</string>
 
+    <string name="welcome_switch_service_btn" tools:ignore = "MissingTranslation">Switch Service</string>
     <!-- This is the label used for the title in the web view of the account's authentication instances. -->
     <string name="get_started_title">Get Started</string>
 
@@ -96,6 +97,7 @@
     <!-- This describes an icon to screenreaders that the button tapped will display the password in plain text for immediate reading or use -->
     <string name="display_password_content_description">Display your password in plain text</string>
 
+    <string name="service_title" tools:ignore= "MissingTranslation">Service</string>
     <!-- This is a heading that appears above a group of application settings to configure the user experience -->
     <string name="configuration_title">Configuration</string>
     <!-- This is a heading that appears above a group of application settings or links related to what is supported by the application -->
@@ -134,6 +136,8 @@
     <!-- This is the sub-title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application -->
     <string name="send_usage_data_summary">Mozilla strives to only collect what we need to provide and improve Firefox for everyone. </string>
 
+    <string name="use_local_service" tools:ignore = "MissingTranslation">Use Local Service</string>
+    <string name="use_local_service_description" tools:ignore = "MissingTranslation">Switch Sync Service</string>
     <!-- This is the label a screenreader uses to inform the user they selected a label on the screen that includes the application version number -->
     <string name="app_version_description">Application version number</string>
 

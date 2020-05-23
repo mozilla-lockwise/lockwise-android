@@ -7,8 +7,11 @@
 package mozilla.lockbox.store
 
 import android.content.Context
+import android.content.res.Resources
 import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.os.Build
+import android.os.LocaleList
 import android.preference.PreferenceManager
 import android.view.autofill.AutofillManager
 import com.f2prateek.rx.preferences2.Preference
@@ -41,6 +44,7 @@ import org.powermock.api.mockito.PowerMockito
 import org.powermock.core.classloader.annotations.PrepareForTest
 import org.powermock.modules.junit4.PowerMockRunner
 import org.robolectric.util.ReflectionHelpers
+import java.util.Locale
 import org.mockito.Mockito.`when` as whenCalled
 
 @RunWith(PowerMockRunner::class)
@@ -48,6 +52,18 @@ import org.mockito.Mockito.`when` as whenCalled
 class SettingStoreTest : DisposingTest() {
     @Mock
     val context: Context = Mockito.mock(Context::class.java)
+
+    @Mock
+    val resources: Resources = Mockito.mock(Resources::class.java)
+
+    @Mock
+    val configuration: Configuration = Mockito.mock(Configuration::class.java)
+
+    @Mock
+    val locales: LocaleList = Mockito.mock(LocaleList::class.java)
+
+    @Mock
+    val locale: Locale = Mockito.mock(Locale::class.java)
 
     @Mock
     val sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
@@ -139,6 +155,21 @@ class SettingStoreTest : DisposingTest() {
         override fun delete() { TODO("not implemented") }
     }
 
+    private val useLocalServiceSetting = PublishSubject.create<Boolean>()
+    private val useLocalserviceStub = object : Preference<Boolean> {
+        override fun asObservable(): Observable<Boolean> {
+            return useLocalServiceSetting
+        }
+
+        override fun isSet(): Boolean { TODO("not implemented") }
+        override fun key(): String { TODO("not implemented") }
+        override fun asConsumer(): Consumer<in Boolean> { TODO("not implemented") }
+        override fun defaultValue(): Boolean { TODO("not implemented") }
+        override fun get(): Boolean { TODO("not implemented") }
+        override fun set(value: Boolean) { TODO("not implemented") }
+        override fun delete() { TODO("not implemented") }
+    }
+
     private val itemListSortSetting = PublishSubject.create<String>()
     private val itemListSortStub = object : Preference<String> {
         override fun asObservable(): Observable<String> {
@@ -157,6 +188,7 @@ class SettingStoreTest : DisposingTest() {
     private val dispatcher = Dispatcher()
     var subject = SettingStore(dispatcher, fingerprintStore)
     private val sendUsageDataObserver = TestObserver<Boolean>()
+    private val useLocalServiceObserver = TestObserver<Boolean>()
     private val itemListSortOrder = TestObserver<Setting.ItemListSort>()
     private val unlockWithFingerprint = TestObserver<Boolean>()
     private val autoLockTime = TestObserver<Setting.AutoLockTime>()
@@ -168,6 +200,11 @@ class SettingStoreTest : DisposingTest() {
     fun setUp() {
         ReflectionHelpers.setStaticField(Build.VERSION::class.java, "SDK_INT", 28)
 
+        whenCalled(context.resources).thenReturn(resources)
+        whenCalled(resources.configuration).thenReturn(configuration)
+        whenCalled(configuration.locales).thenReturn(locales)
+        whenCalled(locales.get(0)).thenReturn(locale)
+
         whenCalled(editor.putBoolean(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(editor)
         whenCalled(editor.putString(Mockito.anyString(), Mockito.anyString())).thenReturn(editor)
         whenCalled(sharedPreferences.edit()).thenReturn(editor)
@@ -178,6 +215,7 @@ class SettingStoreTest : DisposingTest() {
         whenCalled(rxSharedPreferences.getString(eq(SettingStore.Keys.AUTO_LOCK_TIME), anyString())).thenReturn(autoLockStub)
         whenCalled(rxSharedPreferences.getBoolean(eq(SettingStore.Keys.DEVICE_SECURITY_PRESENT), anyBoolean())).thenReturn(deviceSecureStub)
         whenCalled(rxSharedPreferences.getBoolean(eq(SettingStore.Keys.SEND_USAGE_DATA), anyBoolean())).thenReturn(sendUsageDataStub)
+        whenCalled(rxSharedPreferences.getBoolean(eq(SettingStore.Keys.USE_LOCAL_SERVICE), anyBoolean())).thenReturn(useLocalserviceStub)
         whenCalled(rxSharedPreferences.getBoolean(eq(SettingStore.Keys.UNLOCK_WITH_FINGERPRINT), anyBoolean())).thenReturn(unlockWithFingerprintStub)
         whenCalled(rxSharedPreferences.getString(eq(SettingStore.Keys.ITEM_LIST_SORT_ORDER), anyString())).thenReturn(itemListSortStub)
         whenCalled(rxSharedPreferences.getBoolean(SettingStore.Keys.UNLOCK_WITH_FINGERPRINT_PENDING_AUTH)).thenReturn(unlockWithFingerprintPendingAuthStub)
@@ -193,6 +231,7 @@ class SettingStoreTest : DisposingTest() {
         subject.sendUsageData.subscribe(sendUsageDataObserver)
         subject.unlockWithFingerprint.subscribe(unlockWithFingerprint)
         subject.itemListSortOrder.subscribe(itemListSortOrder)
+        subject.useLocalService.subscribe(useLocalServiceObserver)
 
         clearInvocations(editor)
     }
@@ -384,6 +423,7 @@ class SettingStoreTest : DisposingTest() {
 
         verify(editor).putString(SettingStore.Keys.ITEM_LIST_SORT_ORDER, Constant.SettingDefault.itemListSort.name)
         verify(editor).putBoolean(SettingStore.Keys.SEND_USAGE_DATA, Constant.SettingDefault.sendUsageData)
+        verify(editor).putBoolean(SettingStore.Keys.USE_LOCAL_SERVICE, Constant.SettingDefault.useLocalServiceFalse)
         verify(editor).putString(SettingStore.Keys.AUTO_LOCK_TIME, Constant.SettingDefault.autoLockTime.name)
         verify(editor).apply()
         verify(autofillManager).disableAutofillServices()
@@ -396,6 +436,7 @@ class SettingStoreTest : DisposingTest() {
 
         verify(editor).putString(SettingStore.Keys.ITEM_LIST_SORT_ORDER, Constant.SettingDefault.itemListSort.name)
         verify(editor).putBoolean(SettingStore.Keys.SEND_USAGE_DATA, Constant.SettingDefault.sendUsageData)
+        verify(editor).putBoolean(SettingStore.Keys.USE_LOCAL_SERVICE, Constant.SettingDefault.useLocalServiceFalse)
         verify(editor).putString(SettingStore.Keys.AUTO_LOCK_TIME, Constant.SettingDefault.autoLockTime.name)
         verify(editor).apply()
         verify(autofillManager).disableAutofillServices()
@@ -408,6 +449,7 @@ class SettingStoreTest : DisposingTest() {
 
         verify(editor).putString(SettingStore.Keys.ITEM_LIST_SORT_ORDER, Constant.SettingDefault.itemListSort.name)
         verify(editor).putBoolean(SettingStore.Keys.SEND_USAGE_DATA, Constant.SettingDefault.sendUsageData)
+        verify(editor).putBoolean(SettingStore.Keys.USE_LOCAL_SERVICE, Constant.SettingDefault.useLocalServiceFalse)
         verify(editor).putString(SettingStore.Keys.AUTO_LOCK_TIME, Constant.SettingDefault.autoLockTime.name)
         verify(editor).apply()
         verify(autofillManager, never()).disableAutofillServices()
@@ -420,6 +462,7 @@ class SettingStoreTest : DisposingTest() {
 
         verify(editor).putString(SettingStore.Keys.ITEM_LIST_SORT_ORDER, Constant.SettingDefault.itemListSort.name)
         verify(editor).putBoolean(SettingStore.Keys.SEND_USAGE_DATA, Constant.SettingDefault.sendUsageData)
+        verify(editor).putBoolean(SettingStore.Keys.USE_LOCAL_SERVICE, Constant.SettingDefault.useLocalServiceFalse)
         verify(editor).putString(SettingStore.Keys.AUTO_LOCK_TIME, Constant.SettingDefault.autoLockTime.name)
         verify(editor).apply()
         verify(autofillManager, never()).disableAutofillServices()

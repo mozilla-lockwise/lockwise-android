@@ -75,6 +75,7 @@ enum class TelemetryEventObject {
     settings_autolock,
     settings_reset,
     settings_record_usage_data,
+    settings_use_local_service,
     settings_account,
     settings_faq,
     settings_provide_feedback,

@@ -9,6 +9,7 @@ package mozilla.lockbox.presenter
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
 import mozilla.lockbox.action.AppWebPageAction
 import mozilla.lockbox.action.DialogAction
@@ -25,6 +26,7 @@ import mozilla.lockbox.adapter.ToggleSettingConfiguration
 import mozilla.lockbox.extensions.assertLastValue
 import mozilla.lockbox.flux.Action
 import mozilla.lockbox.flux.Dispatcher
+import mozilla.lockbox.store.AccountStore
 import mozilla.lockbox.store.FingerprintStore
 import mozilla.lockbox.store.SettingStore
 import org.junit.Assert
@@ -40,6 +42,7 @@ import org.robolectric.RobolectricTestRunner
 import org.mockito.Mockito.`when` as whenCalled
 
 @RunWith(RobolectricTestRunner::class)
+@ExperimentalCoroutinesApi
 class SettingPresenterTest {
     class SettingViewFake : SettingView {
         var settingItem: List<SettingCellConfiguration>? = null
@@ -56,6 +59,7 @@ class SettingPresenterTest {
 
     private val unlockWithFingerprintStub = PublishSubject.create<Boolean>()
     private val sendUsageDataStub = PublishSubject.create<Boolean>()
+    private val useLocalServiceStub = PublishSubject.create<Boolean>()
     private val itemListSortOrderStub = PublishSubject.create<Setting.ItemListSort>()
     private val unlockWithFingerprintPendingAuthStub = PublishSubject.create<Boolean>()
     private val autoLockTimeStub = PublishSubject.create<Setting.AutoLockTime>()
@@ -63,6 +67,7 @@ class SettingPresenterTest {
 
     @Mock
     val settingStore = PowerMockito.mock(SettingStore::class.java)
+    val accountStore = PowerMockito.mock(AccountStore::class.java)
 
     private lateinit var testHelper: ListAdapterTestHelper
     private val view = SettingViewFake()
@@ -78,6 +83,7 @@ class SettingPresenterTest {
         whenCalled(settingStore.unlockWithFingerprint).thenReturn(unlockWithFingerprintStub)
         whenCalled(settingStore.unlockWithFingerprintPendingAuth).thenReturn(unlockWithFingerprintPendingAuthStub)
         whenCalled(settingStore.sendUsageData).thenReturn(sendUsageDataStub)
+        whenCalled(settingStore.useLocalService).thenReturn(useLocalServiceStub)
         whenCalled(settingStore.itemListSortOrder).thenReturn(itemListSortOrderStub)
         whenCalled(settingStore.onEnablingFingerprint).thenReturn(onEnablingFingerprintStub)
 
@@ -87,7 +93,9 @@ class SettingPresenterTest {
         testHelper = ListAdapterTestHelper()
         subject = SettingPresenter(
             view,
+            false,
             dispatcher,
+            accountStore,
             settingStore,
             fingerprintStore
         )

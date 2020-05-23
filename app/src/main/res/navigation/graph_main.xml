@@ -79,6 +79,9 @@
                 android:id="@+id/action_welcome_to_fxaLogin"
                 app:destination="@id/fragment_fxa_login"/>
         <action
+                android:id="@+id/action_welcome_to_settings"
+                app:destination="@id/fragment_setting"/>
+        <action
                 android:id="@+id/action_welcome_to_faq"
                 app:destination="@id/fragment_webview"/>
         <action

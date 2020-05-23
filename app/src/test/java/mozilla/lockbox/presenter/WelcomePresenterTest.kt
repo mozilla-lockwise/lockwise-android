@@ -25,6 +25,7 @@ import org.mockito.Mockito
 class WelcomePresenterTest {
     class FakeWelcomeView : WelcomeView {
         var existingAccount: Boolean? = null
+        var chinaBuild: Boolean? = null
 
         override fun showExistingAccount(email: String) {
             existingAccount = true
@@ -32,6 +33,10 @@ class WelcomePresenterTest {
 
         override fun hideExistingAccount() {
             existingAccount = false
+        }
+
+        override fun hideSwitchService() {
+            chinaBuild = false
         }
 
         val learnMoreStub = PublishSubject.create<Unit>()
@@ -44,6 +49,10 @@ class WelcomePresenterTest {
         val getStartedExistingAcccountStub: PublishSubject<Unit> = PublishSubject.create<Unit>()
         override val getStartedAutomaticallyClicks: Observable<Unit>
             get() = getStartedExistingAcccountStub
+
+        val switchServiceStub: PublishSubject<Unit> = PublishSubject.create<Unit>()
+        override val switchServiceClicks: Observable<Unit>
+            get() = switchServiceStub
     }
 
     @Mock
@@ -58,7 +67,7 @@ class WelcomePresenterTest {
     val dispatcher = Dispatcher()
     val dispatcherObserver = TestObserver.create<Action>()
 
-    val subject = WelcomePresenter(view, dispatcher,
+    val subject = WelcomePresenter(view, false, dispatcher,
         accountStore = accountStore,
         fingerprintStore = fingerprintStore
     )

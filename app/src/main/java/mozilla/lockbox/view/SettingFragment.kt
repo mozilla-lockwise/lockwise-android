@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import com.github.magiepooh.recycleritemdecoration.ItemDecorations
 import kotlinx.android.synthetic.main.fragment_setting.view.*
 import kotlinx.android.synthetic.main.list_cell_setting_toggle.view.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import mozilla.lockbox.R
 import mozilla.lockbox.adapter.SectionedAdapter
 import mozilla.lockbox.adapter.SettingCellConfiguration
@@ -24,6 +25,7 @@ import mozilla.lockbox.adapter.SettingListAdapter.Companion.SETTING_TOGGLE_TYPE
 import mozilla.lockbox.presenter.SettingPresenter
 import mozilla.lockbox.presenter.SettingView
 
+@ExperimentalCoroutinesApi
 class SettingFragment : BackableFragment(), SettingView {
 
     private val adapter = SettingListAdapter()
@@ -39,7 +41,10 @@ class SettingFragment : BackableFragment(), SettingView {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        presenter = SettingPresenter(this)
+        val chinaBuild = resources.configuration.locales.get(0).toString().equals("zh_CN_#Hans") &&
+            resources.configuration.locales.get(0).displayLanguage.equals("中文") &&
+            (!"com.android.vending".equals(context!!.packageManager.getInstallerPackageName(context!!.packageName)))
+        presenter = SettingPresenter(this, chinaBuild)
 
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_setting, container, false)

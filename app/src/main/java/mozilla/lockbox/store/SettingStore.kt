@@ -42,6 +42,7 @@ open class SettingStore(
         const val AUTO_LOCK_TIME = "auto_lock_time"
         const val DEVICE_SECURITY_PRESENT = "device_security_present"
         const val UNLOCK_WITH_FINGERPRINT_PENDING_AUTH = "unlock_with_fingerprint_pending_auth"
+        const val USE_LOCAL_SERVICE = "use_local_service"
     }
 
     private lateinit var preferences: SharedPreferences
@@ -53,6 +54,7 @@ open class SettingStore(
     private val _autoLockTime = ReplaySubject.createWithSize<Setting.AutoLockTime>(1)
 
     open val sendUsageData: Observable<Boolean> = ReplaySubject.createWithSize(1)
+    open val useLocalService: Observable<Boolean> = ReplaySubject.createWithSize(1)
     open val itemListSortOrder: Observable<Setting.ItemListSort> = ReplaySubject.createWithSize(1)
     open val unlockWithFingerprint: Observable<Boolean> = ReplaySubject.createWithSize(1)
     open val autoLockTime: Observable<Setting.AutoLockTime>
@@ -86,6 +88,8 @@ open class SettingStore(
                 when (it) {
                     is SettingAction.SendUsageData ->
                         edit.putBoolean(Keys.SEND_USAGE_DATA, it.sendUsageData)
+                    is SettingAction.UseLocalService ->
+                        edit.putBoolean(Keys.USE_LOCAL_SERVICE, it.useLocalService)
                     is SettingAction.ItemListSortOrder ->
                         edit.putString(Keys.ITEM_LIST_SORT_ORDER, it.sortOrder.name)
                     is SettingAction.UnlockWithFingerprint ->
@@ -98,6 +102,7 @@ open class SettingStore(
                         handleAutofill(it.enable)
                     is SettingAction.Reset -> {
                         edit.putBoolean(Keys.SEND_USAGE_DATA, Constant.SettingDefault.sendUsageData)
+                        edit.putBoolean(Keys.USE_LOCAL_SERVICE, Constant.SettingDefault.useLocalServiceFalse)
                         edit.putString(Keys.ITEM_LIST_SORT_ORDER, Constant.SettingDefault.itemListSort.name)
                         edit.putBoolean(Keys.UNLOCK_WITH_FINGERPRINT, Constant.SettingDefault.unlockWithFingerprint)
                         edit.putString(Keys.AUTO_LOCK_TIME, Constant.SettingDefault.autoLockTime.name)
@@ -110,7 +115,15 @@ open class SettingStore(
     }
 
     override fun injectContext(context: Context) {
+        val chinaBuild = context.resources.configuration.locales.get(0).toString().equals("zh_CN_#Hans") &&
+            context.resources.configuration.locales.get(0).displayLanguage.equals("中文") &&
+            (!"com.android.vending".equals(context.packageManager.getInstallerPackageName(context.packageName)))
         preferences = PreferenceManager.getDefaultSharedPreferences(context)
+        if (chinaBuild) {
+            preferences.edit().putBoolean(Keys.USE_LOCAL_SERVICE, Constant.SettingDefault.useLocalServiceTrue).apply()
+        } else {
+            preferences.edit().putBoolean(Keys.USE_LOCAL_SERVICE, Constant.SettingDefault.useLocalServiceFalse).apply()
+        }
 
         val rxPrefs = RxSharedPreferences.create(preferences)
 
@@ -118,6 +131,18 @@ open class SettingStore(
             .getBoolean(Keys.SEND_USAGE_DATA, Constant.SettingDefault.sendUsageData)
             .asObservable()
             .subscribe(sendUsageData as Subject)
+
+        if (chinaBuild) {
+            rxPrefs
+                .getBoolean(Keys.USE_LOCAL_SERVICE, Constant.SettingDefault.useLocalServiceTrue)
+                .asObservable()
+                .subscribe(useLocalService as Subject)
+        } else {
+            rxPrefs
+                .getBoolean(Keys.USE_LOCAL_SERVICE, Constant.SettingDefault.useLocalServiceFalse)
+                .asObservable()
+                .subscribe(useLocalService as Subject)
+        }
 
         rxPrefs
             .getString(Keys.ITEM_LIST_SORT_ORDER, Constant.SettingDefault.itemListSort.name)
