@@ -40,6 +40,7 @@ class GleanTelemetryStore(
     }
 
     private val compositeDisposable = CompositeDisposable()
+    private lateinit var legacyId: String
 
     override fun injectContext(context: Context) {
         settingStore.sendUsageData
@@ -50,7 +51,7 @@ class GleanTelemetryStore(
         gleanWrapper.initialize(context, BuildConfig.BUILD_TYPE)
 
         // Get legacy telemetry ID
-        val legacyId = UUID.fromString(TelemetryHolder.get().clientId)
-        LegacyIds.clientId.set(legacyId)
+        legacyId = TelemetryHolder.get().clientId
+        LegacyIds.clientId.set(UUID.fromString(legacyId))
     }
 }

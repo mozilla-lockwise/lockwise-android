@@ -18,4 +18,5 @@ legacy.ids:
       - https://github.com/mozilla-lockwise/lockwise-android/pull/1196
     notification_emails:
       - lockwise-dev@mozilla.com
+      - erichards@mozilla.com
     expires: never
