@@ -10,17 +10,12 @@ package mozilla.lockbox.store
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.content.res.Configuration
 import android.view.autofill.AutofillManager
 import androidx.test.core.app.ApplicationProvider
 import io.reactivex.subjects.ReplaySubject
-import mozilla.components.concept.fetch.Client
 import mozilla.lockbox.GleanMetrics.LegacyIds
 import mozilla.lockbox.flux.Dispatcher
-import mozilla.lockbox.log
 import mozilla.telemetry.glean.private.UuidMetricType
-import org.hamcrest.Matchers
-import org.hamcrest.Matchers.any
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -28,15 +23,12 @@ import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentMatchers
-import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyBoolean
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.ArgumentMatchers.eq
 import org.mockito.Mock
 import org.mockito.Mockito
-import org.mockito.internal.hamcrest.HamcrestArgumentMatcher
 import org.mozilla.telemetry.Telemetry
 import org.mozilla.telemetry.TelemetryHolder
 import org.mozilla.telemetry.config.TelemetryConfiguration
@@ -48,7 +40,6 @@ import org.powermock.api.mockito.PowerMockito.`when`
 import org.powermock.api.mockito.PowerMockito.mock
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
-import java.util.UUID
 
 @RunWith(RobolectricTestRunner::class)
 @Config(packageName = "mozilla.lockbox")
@@ -67,15 +58,18 @@ class GleanTelemetryStoreTest {
     }
 
     private val clientIdString = "clientId"
+
     @Mock
     val client: TelemetryClient = Mockito.mock(TelemetryClient::class.java)
+
     @Mock
     val configuration: TelemetryConfiguration = Mockito.mock(TelemetryConfiguration::class.java)
+
     @Mock
     val scheduler: TelemetryScheduler = Mockito.mock(TelemetryScheduler::class.java)
+
     @Mock
     val storage: TelemetryStorage = Mockito.mock(TelemetryStorage::class.java)
-
 
     @Mock
     val telemetry = object : Telemetry(configuration, storage, client, scheduler) {
@@ -84,7 +78,7 @@ class GleanTelemetryStoreTest {
         }
     }
 
-//    val telemetry: Telemetry = Mockito.mock(Telemetry::class.java)
+    //    val telemetry: Telemetry = Mockito.mock(Telemetry::class.java)
     @Mock
     val telemetryHolder: TelemetryHolder = Mockito.mock(TelemetryHolder::class.java)
 
@@ -95,7 +89,6 @@ class GleanTelemetryStoreTest {
     private val clientIdUuid = Mockito.mock(UuidMetricType::class.java)
     val dispatcher = Dispatcher()
     val context: Context = ApplicationProvider.getApplicationContext()
-
 
     lateinit var subject: GleanTelemetryStore
 
@@ -109,7 +102,6 @@ class GleanTelemetryStoreTest {
         PowerMockito.whenNew(LegacyIds::class.java).withAnyArguments().thenReturn(legacyIds)
         PowerMockito.whenNew(UuidMetricType::class.java).withAnyArguments().thenReturn(clientIdUuid)
 
-
 //        `when`(LegacyIds.clientId.set(any())).thenReturn(Unit)
 //        `when`(TelemetryHolder.set()).thenReturn(Unit)
         `when`(telemetry.clientId).thenReturn(clientIdString)
@@ -118,7 +110,6 @@ class GleanTelemetryStoreTest {
         subject = GleanTelemetryStore(telemetryWrapper, settingStore)
 //        subject.injectContext(context)
     }
-
 
     @Test
     @Ignore("Needs to be fixed.")
@@ -149,7 +140,11 @@ class GleanTelemetryStoreTest {
 
         // mock all this out for the setting store, so we can use the Rx machinery it uses.
         val context = mock(Context::class.java)
-        `when`(context.getSystemService(eq(AutofillManager::class.java))).thenReturn(mock(AutofillManager::class.java))
+        `when`(context.getSystemService(eq(AutofillManager::class.java))).thenReturn(
+            mock(
+                AutofillManager::class.java
+            )
+        )
         val prefs = mock(SharedPreferences::class.java)
         `when`(prefs.contains(eq(SettingStore.Keys.DEVICE_SECURITY_PRESENT))).thenReturn(true)
         `when`(prefs.contains(eq(SettingStore.Keys.SEND_USAGE_DATA))).thenReturn(true)
