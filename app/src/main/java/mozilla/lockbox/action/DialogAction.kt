@@ -44,7 +44,7 @@ sealed class DialogAction(
             R.string.disconnect_disclaimer_message,
             R.string.disconnect,
             R.string.cancel,
-            R.color.red
+            true
         ),
         listOf(LifecycleAction.UserReset)
     )
@@ -71,7 +71,7 @@ sealed class DialogAction(
             R.string.delete_description,
             R.string.delete,
             R.string.cancel,
-            R.color.red
+            true
         ),
         listOf(
             DataStoreAction.Delete(item),
@@ -102,7 +102,7 @@ sealed class DialogAction(
             R.string.discard_changes_description,
             R.string.discard,
             R.string.cancel,
-            R.color.red
+            true
         ),
         listOf(
             ItemDetailAction.EndEditItemSession
@@ -115,7 +115,7 @@ sealed class DialogAction(
             R.string.discard_changes_description,
             R.string.discard,
             R.string.cancel,
-            R.color.red
+            true
         ),
         listOf(
             DiscardCreateItemNoChanges

@@ -4,6 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+@file:Suppress("DEPRECATION")
+
 package mozilla.lockbox.store
 
 import android.content.Context
@@ -12,6 +14,9 @@ import io.reactivex.rxkotlin.addTo
 import mozilla.components.service.glean.Glean
 import mozilla.components.service.glean.config.Configuration
 import mozilla.lockbox.BuildConfig
+import mozilla.lockbox.GleanMetrics.LegacyIds
+import org.mozilla.telemetry.TelemetryHolder
+import java.util.UUID
 
 open class GleanWrapper {
     open var uploadEnabled: Boolean
@@ -35,6 +40,7 @@ class GleanTelemetryStore(
     }
 
     private val compositeDisposable = CompositeDisposable()
+    private lateinit var legacyId: String
 
     override fun injectContext(context: Context) {
         settingStore.sendUsageData
@@ -43,5 +49,9 @@ class GleanTelemetryStore(
             }
             .addTo(compositeDisposable)
         gleanWrapper.initialize(context, BuildConfig.BUILD_TYPE)
+
+        // Get legacy telemetry ID
+        legacyId = TelemetryHolder.get().clientId
+        LegacyIds.clientId.set(UUID.fromString(legacyId))
     }
 }

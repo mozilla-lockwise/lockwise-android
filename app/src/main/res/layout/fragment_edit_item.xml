@@ -90,7 +90,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:paddingTop="26dp"
-                android:paddingBottom="16dp"
+                android:paddingBottom="37dp"
                 android:paddingEnd="5dp"
                 tools:ignore="RtlSymmetry">
 
@@ -241,7 +241,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="10dp"
-                        android:layout_marginBottom="13dp"
                         android:background="@null"
                         android:foregroundGravity="center_horizontal|center_vertical"
                         android:contentDescription="@string/display_password_content_description"
@@ -256,7 +255,7 @@
                         android:background="@color/gray_divider"
                         android:layout_marginStart="20dp"
                         android:layout_marginEnd="4dp"
-                        android:layout_marginTop="9.5dp"
+                        android:layout_marginTop="12dp"
                         card_view:layout_constraintTop_toBottomOf="@id/btnPasswordToggle" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>

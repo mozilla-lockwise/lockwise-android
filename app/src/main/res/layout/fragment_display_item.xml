@@ -89,7 +89,6 @@
                 android:paddingTop="26dp"
                 android:paddingEnd="14dp"
                 android:paddingStart="16dp"
-
                 android:paddingBottom="32dp"
                 tools:ignore="RtlSymmetry">
 
@@ -220,36 +219,38 @@
                         card_view:layout_constraintTop_toBottomOf="@id/btnUsernameCopy" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+
             <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/password"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="13dp"
-                    android:layout_marginEnd="12dp"
-                    android:fontFamily="sans-serif"
                     android:orientation="horizontal"
-                    app:layout_constraintTop_toBottomOf="@id/username"
+                    android:fontFamily="sans-serif"
+                    android:layout_marginEnd="12dp"
                     card_view:layout_constraintEnd_toEndOf="parent"
-                    card_view:layout_constraintStart_toStartOf="parent">
+                    card_view:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/username">
 
                 <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/inputLayoutPassword"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="17dp"
                         android:layout_weight="1"
-                        android:contentDescription="@string/copy_password_content_description"
+                        android:paddingTop="1dp"
+                        android:paddingEnd="42dp"
                         android:textColorHint="@color/black_60_percent"
+                        android:contentDescription="@string/copy_password_content_description"
                         app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        card_view:layout_constraintEnd_toStartOf="@id/btnPasswordToggle"
-                        tools:ignore="RtlSymmetry">
+                        app:layout_constraintTop_toTopOf="parent">
 
                     <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/inputPassword"
+                            style="@style/EditItemTextStyle"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
                             android:backgroundTint="@color/background_white"
                             android:clickable="true"
                             android:colorControlActivated="@color/violet_70"
@@ -266,34 +267,33 @@
                             android:textColor="@color/black_87_percent"
                             android:textSize="16sp"
                             android:textStyle="normal"
+                            app:layout_constraintEnd_toEndOf="@+id/inputLayoutPassword"
+                            app:layout_constraintTop_toTopOf="@+id/inputLayoutPassword"
                             tools:ignore="Autofill" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <ImageButton
                         android:id="@+id/btnPasswordToggle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginBottom="10dp"
+                        android:paddingTop="12dp"
                         android:background="@null"
                         android:contentDescription="@string/display_password_content_description"
-                        android:paddingStart="16dp"
-                        android:paddingTop="10dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/btnPasswordCopy"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_show"
-                        card_view:layout_constraintStart_toEndOf="@id/inputLayoutPassword" />
+                        card_view:layout_constraintEnd_toStartOf="@id/btnPasswordCopy"
+                        card_view:layout_constraintTop_toTopOf="@id/btnPasswordCopy"
+                        app:srcCompat="@drawable/ic_show" />
 
                 <ImageButton
                         android:id="@+id/btnPasswordCopy"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:background="@null"
                         android:contentDescription="@string/copy_password_content_description"
                         android:paddingStart="16dp"
-                        android:paddingTop="8dp"
+                        android:paddingTop="12dp"
                         android:paddingEnd="4dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintBottom_toBottomOf="@id/inputLayoutPassword"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:srcCompat="@drawable/ic_copy" />
@@ -304,7 +304,9 @@
                         android:layout_marginStart="4dp"
                         android:layout_marginTop="8dp"
                         android:background="@color/gray_divider"
-                        card_view:layout_constraintTop_toBottomOf="@id/btnPasswordCopy" />
+                        card_view:layout_constraintStart_toStartOf="parent"
+                        card_view:layout_constraintEnd_toEndOf="parent"
+                        card_view:layout_constraintTop_toBottomOf="@id/btnPasswordCopy"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

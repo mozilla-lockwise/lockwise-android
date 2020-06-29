@@ -22,7 +22,6 @@ import mozilla.lockbox.action.DataStoreAction
 import mozilla.lockbox.action.LifecycleAction
 import mozilla.lockbox.action.RouteAction
 import mozilla.lockbox.flux.Dispatcher
-import mozilla.lockbox.log
 import mozilla.lockbox.robots.accountSettingScreen
 import mozilla.lockbox.robots.autofillOnboardingScreen
 import mozilla.lockbox.robots.disconnectDisclaimer
@@ -153,11 +152,9 @@ class Navigator {
         if (goManually) {
             bypassOnboarding()
         } else {
+            // Go to ItemList after unlocking the device
+            Dispatcher.shared.dispatch(RouteAction.LockScreen)
             Dispatcher.shared.dispatch(LifecycleAction.UseTestData)
-            log.info("blocking for the routes")
-            // block until onboarding
-            // tap skip
-            blockUntil(RouteStore.shared.routes, RouteAction.ItemList)
         }
         checkAtItemList()
     }

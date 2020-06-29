@@ -92,11 +92,10 @@ open class ScreenshotsTest {
         Screengrab.setDefaultScreenshotStrategy(UiAutomatorScreenshotStrategy())
         navigator.gotoSettings()
         Screengrab.screenshot("settings-menu-screen")
-
         navigator.gotoAccountSetting()
         Screengrab.screenshot("settings-account-screen")
-
-        accountSettingScreen { tapDisconnect()
+        accountSettingScreen {
+            tapDisconnect()
             Screengrab.screenshot("disconnect-account-screen")
             pressBack()
         }

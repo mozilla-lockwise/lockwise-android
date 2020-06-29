@@ -314,5 +314,4 @@
 
     <!-- This is the toast message that appears when an entry has been successfully deleted.  -->
     <string name="entry_deleted_toast">%1$s deleted</string>
-
 </resources>

@@ -33,6 +33,7 @@ open class FillResponseBuilder(
         val appName = context.getString(R.string.app_name)
         val authenticationText = context.getString(R.string.autofill_authenticate_cta, appName)
         presentation.setTextViewText(R.id.autofill_cta, authenticationText)
+        presentation.setContentDescription(R.id.autofill_cta, authenticationText)
 
         val sender = IntentBuilder.getAuthIntentSender(context, this)
 
@@ -68,6 +69,7 @@ open class FillResponseBuilder(
         val presentation = RemoteViews(context.packageName, R.layout.autofill_cta_presentation).apply {
             val appName = context.getString(R.string.app_name)
             setTextViewText(R.id.autofill_cta, context.getString(R.string.autofill_search_cta, appName))
+            setContentDescription(R.id.autofill_cta, context.getString(R.string.autofill_search_cta, appName))
         }
 
         // See https://github.com/mozilla-lockwise/lockwise-android/issues/421

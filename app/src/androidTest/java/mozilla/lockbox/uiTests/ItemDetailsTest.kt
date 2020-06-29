@@ -107,11 +107,13 @@ open class ItemDetailsTest {
     }
 
     @Test
-    fun editItemInvalidTextFieldInput() {
+    fun editItemInvalidPasswordInput() {
         navigator.gotoItemDetailKebabMenu()
         kebabMenu { tapEditButton() }
         editCredential {
             editPassword("")
+            tapOnPasswordRemoveChar()
+            tapOnUserName()
             assertErrorEmptyPassord()
             editPassword("foo bar baz")
             sleep(1000)

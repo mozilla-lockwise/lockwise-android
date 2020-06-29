@@ -15,13 +15,47 @@ open class SettingAction(
     override val value: String?
 ) : TelemetryAction {
 
-    data class UnlockWithFingerprint(val unlockWithFingerprint: Boolean) : SettingAction(TelemetryEventMethod.setting_changed, TelemetryEventObject.settings_fingerprint, unlockWithFingerprint.toString())
-    data class UnlockWithFingerprintPendingAuth(val unlockWithFingerprintPendingAuth: Boolean) : SettingAction(TelemetryEventMethod.setting_changed, TelemetryEventObject.settings_fingerprint_pending_auth, unlockWithFingerprintPendingAuth.toString())
-    data class SendUsageData(val sendUsageData: Boolean) : SettingAction(TelemetryEventMethod.setting_changed, TelemetryEventObject.settings_record_usage_data, null)
-    data class ItemListSortOrder(val sortOrder: Setting.ItemListSort) : SettingAction(TelemetryEventMethod.setting_changed, TelemetryEventObject.settings_item_list_order, null)
-    data class AutoLockTime(val time: Setting.AutoLockTime) : SettingAction(TelemetryEventMethod.setting_changed, TelemetryEventObject.settings_autolock_time, time.seconds.toString())
-    data class Autofill(val enable: Boolean) : SettingAction(TelemetryEventMethod.setting_changed, TelemetryEventObject.settings_autofill, null)
-    object Reset : SettingAction(TelemetryEventMethod.setting_changed, TelemetryEventObject.settings_reset, null)
+    data class UnlockWithFingerprint(val unlockWithFingerprint: Boolean)
+        : SettingAction(
+            TelemetryEventMethod.setting_changed,
+            TelemetryEventObject.settings_fingerprint,
+            unlockWithFingerprint.toString()
+        )
+    data class UnlockWithFingerprintPendingAuth(val unlockWithFingerprintPendingAuth: Boolean)
+        : SettingAction(
+            TelemetryEventMethod.setting_changed,
+            TelemetryEventObject.settings_fingerprint_pending_auth,
+            unlockWithFingerprintPendingAuth.toString()
+        )
+    data class SendUsageData(val sendUsageData: Boolean)
+        : SettingAction(
+            TelemetryEventMethod.setting_changed,
+            TelemetryEventObject.settings_record_usage_data,
+            null
+        )
+    data class ItemListSortOrder(val sortOrder: Setting.ItemListSort)
+        : SettingAction(
+            TelemetryEventMethod.setting_changed,
+            TelemetryEventObject.settings_item_list_order,
+            null
+        )
+    data class AutoLockTime(val time: Setting.AutoLockTime)
+        : SettingAction(
+            TelemetryEventMethod.setting_changed,
+            TelemetryEventObject.settings_autolock_time,
+            time.seconds.toString()
+        )
+    data class Autofill(val enable: Boolean)
+        : SettingAction(
+            TelemetryEventMethod.setting_changed,
+            TelemetryEventObject.settings_autofill,
+            null
+        )
+    object Reset : SettingAction(
+        TelemetryEventMethod.setting_changed,
+        TelemetryEventObject.settings_reset,
+        null
+    )
 }
 
 class Setting {
