@@ -1,5 +1,13 @@
 # Release Notes
 
+## 4.0.1 (Build 6347)
+
+Add the ability for users to control their tracked telemetry (linked through legacy telemetry client id) and prevent any further telemetry from being tracked for their account when they opt out.
+
+Changes since last build:
+
+- Add the legacy telemetry client id to the deletion request ping (#1195)
+
 ## 4.0.0 (Build 6087)
 
 Add the ability to manually create an entry. Improve error messaging for the user. Autofill footer now adjusts to dark mode.
