@@ -1,5 +1,13 @@
 # Release Notes
 
+## 4.0.2 (Build 6455)
+
+Adds a fix for an autofill failure on Android 11.
+
+Changes since last build:
+
+- Fixes a 'null' toast on autofill failure on Android 11 (#1219)
+
 ## 4.0.1 (Build 6347)
 
 Add the ability for users to control their tracked telemetry (linked through legacy telemetry client id) and prevent any further telemetry from being tracked for their account when they opt out.
