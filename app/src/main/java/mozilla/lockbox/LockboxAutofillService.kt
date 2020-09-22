@@ -78,7 +78,7 @@ class LockboxAutofillService(
         val structure = request.fillContexts.last().structure
         val activityPackageName = structure.activityComponent.packageName
         if (this.packageName == activityPackageName) {
-            callback.onFailure(null)
+            callback.onFailureSafe(null)
             return
         }
 
@@ -90,7 +90,7 @@ class LockboxAutofillService(
                 val xml = structure.getWindowNodeAt(0).rootViewNode.dump()
                 log.debug("Autofilling $activityPackageName failed for:\n$xml")
             }
-            callback.onFailure(null)
+            callback.onFailureSafe(null)
             return
         }
 
@@ -135,7 +135,7 @@ class LockboxAutofillService(
                     is AutofillAction.Authenticate -> builder.buildAuthenticationFillResponse(this)
                     is AutofillAction.Cancel -> null
                     is AutofillAction.Error -> {
-                        callback.onFailure(getString(R.string.autofill_error_toast, appName, it.error.localizedMessage))
+                        callback.onFailureSafe(getString(R.string.autofill_error_toast, appName, it.error.localizedMessage))
                         null
                     }
                 }.asOptional()
@@ -193,7 +193,7 @@ class LockboxAutofillService(
         val parsedStructure = request.clientState?.let {
             it.classLoader = ParsedStructure::class.java.classLoader
             it.getParcelable<ParsedStructure>(Constant.Key.parsedStructure)
-        } ?: return callback.onFailure("Bundle missing")
+        } ?: return callback.onFailureSafe("Bundle missing")
 
         val structure = request.fillContexts.last().structure
         val nodeNavigator = ViewNodeNavigator(structure, parsedStructure.packageName)
@@ -203,7 +203,7 @@ class LockboxAutofillService(
         // The SaveInfo we have fillled in means that we'll only get here if there's a username and password.
         // We can safely bail knowing we'll never need to here.
         val capturedUsername = autofillItem.username
-        val capturedPassword = autofillItem.password ?: return callback.onFailure("Password missing")
+        val capturedPassword = autofillItem.password ?: return callback.onFailureSafe("Password missing")
 
         // According to the AsyncLoginsStorage docs:
         // "If login has an empty id field, then a GUID will be generated automatically."
@@ -233,5 +233,25 @@ class LockboxAutofillService(
                 callback.onSuccess()
             }
             .addTo(compositeDisposable)
+    }
+
+    /**
+     * Handles a fill failure safely.
+     *
+     * Passing null into a `fail` callback on Android 11 displays a "null" toast to the
+     * user.  This is due to a bug in Android, and until it is fixed we noop on null
+     * instead.
+     *
+     * See: https://support.google.com/pixelphone/thread/69916905?hl=en&msgid=70050602
+     */
+    private fun FillCallback.onFailureSafe(message: CharSequence?) {
+        message?.let { this.onFailure(it) }
+    }
+
+    /**
+     * See [FillCallback]#onFailureSafe
+     */
+    private fun SaveCallback.onFailureSafe(message: CharSequence?) {
+        message?.let { this.onFailure(it) }
     }
 }
