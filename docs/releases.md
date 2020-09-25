@@ -140,7 +140,7 @@ _Only Release Management team members have access to distribute production relea
 NOTE: _brand new_ apps may take 1 or more hours to appear in the Play Store whereas existing app (updates) can appear within minutes. Schedule accordingly!
 
 
-[1]: https://app.bitrise.io/app/20089a88380dd14d
+[1]: https://app.bitrise.io/app/fc6f4fc6f58da1fc#/builds
 [2]: https://play.google.com/apps/publish/?account=7083182635971239206#ManageReleasesPlace:p=mozilla.lockbox&appid=4972100280256015711
 [3]: https://github.com/mozilla-lockwise/lockwise-android/compare
 [4]: https://devcenter.bitrise.io/builds/Starting-builds-manually/
