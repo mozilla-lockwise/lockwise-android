@@ -16,12 +16,12 @@ plugins {
 }
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     defaultConfig {
         applicationId "mozilla.lockbox"
         minSdkVersion 24
         //noinspection OldTargetApi
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 6460
         versionName "4.0.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
