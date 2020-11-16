@@ -16,7 +16,7 @@ plugins {
 }
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 28
     defaultConfig {
         applicationId "mozilla.lockbox"
         minSdkVersion 24
