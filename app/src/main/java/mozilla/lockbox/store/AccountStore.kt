@@ -346,14 +346,19 @@ open class AccountStore(
         if (dir.isDirectory) {
             try {
                 val leveldbDir = dir.listFiles()
-                    .filter { file ->
+                    ?.first { file ->
                         file.name.startsWith("Local")
-                    }[0]
-                    .listFiles()
-                    .filter { file ->
+                    }
+                    ?.listFiles()
+                    ?.first { file ->
                         file.name.startsWith("leveldb")
-                    }[0]
-                    .listFiles()
+                    }
+                    ?.listFiles()
+
+                if (leveldbDir == null) {
+                    log.error("Failed to clear the log directory; cannot be found.")
+                    return
+                }
 
                 for (file in leveldbDir) {
                     val logname = file.name
@@ -395,19 +400,35 @@ private fun OAuthScopedKey.toJSONObject() = JSONObject()
         .put("k", k)
 
 private fun accessTokenInfoFromJSON(obj: JSONObject): AccessTokenInfo? {
+    val scope = obj.optString("scope")
+    val token = obj.optString("token")
+
+    if (scope.isEmpty() || token.isEmpty()) {
+        return null
+    }
+
     return AccessTokenInfo(
-        scope = obj.optString("scope", null) ?: return null,
-        token = obj.optString("token", null) ?: return null,
+        scope = scope,
+        token = token,
         expiresAt = obj.optLong("expiresAt", 0L),
         key = obj.optJSONObject("key")?.let { oauthScopedKeyFromJSON(it) }
     )
 }
 
 private fun oauthScopedKeyFromJSON(obj: JSONObject): OAuthScopedKey? {
+    val kty = obj.optString("kty")
+    val scope = obj.optString("scope")
+    val kid = obj.optString("kid")
+    val k = obj.optString("k")
+
+    if (kty.isEmpty() || scope.isEmpty() || kid.isEmpty() || k.isEmpty()) {
+        return null
+    }
+
     return OAuthScopedKey(
-        kty = obj.optString("kty", null) ?: return null,
-        scope = obj.optString("scope", null) ?: return null,
-        kid = obj.optString("kid", null) ?: return null,
-        k = obj.optString("k", null) ?: return null
+        kty = kty,
+        scope = scope,
+        kid = kid,
+        k = k
     )
 }

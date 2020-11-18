@@ -66,28 +66,28 @@ class DisplayItemFragment : BackableFragment(), DisplayItemView {
     private val errorHelper = NetworkErrorHelper()
 
     override val usernameCopyClicks: Observable<Unit>
-        get() = view!!.btnUsernameCopy.clicks()
+        get() = requireView().btnUsernameCopy.clicks()
 
     override val usernameFieldClicks: Observable<Unit>
-        get() = view!!.inputUsername.clicks()
+        get() = requireView().inputUsername.clicks()
 
     override val passwordCopyClicks: Observable<Unit>
-        get() = view!!.btnPasswordCopy.clicks()
+        get() = requireView().btnPasswordCopy.clicks()
 
     override val passwordFieldClicks: Observable<Unit>
-        get() = view!!.inputPassword.clicks()
+        get() = requireView().inputPassword.clicks()
 
     override val togglePasswordClicks: Observable<Unit>
-        get() = view!!.btnPasswordToggle.clicks()
+        get() = requireView().btnPasswordToggle.clicks()
 
     override val hostnameClicks: Observable<Unit>
-        get() = view!!.inputHostname.clicks()
+        get() = requireView().inputHostname.clicks()
 
     override val launchButtonClicks: Observable<Unit>
-        get() = view!!.btnHostnameLaunch.clicks()
+        get() = requireView().btnHostnameLaunch.clicks()
 
     override val kebabMenuClicks: Observable<Unit>
-        get() = view!!.toolbar.kebabMenuButton.clicks()
+        get() = requireView().toolbar.kebabMenuButton.clicks()
 
     override val editClicks: Observable<Unit> = PublishSubject.create()
     override val deleteClicks: Observable<Unit> = PublishSubject.create()
@@ -205,9 +205,9 @@ class DisplayItemFragment : BackableFragment(), DisplayItemView {
 
     override fun handleNetworkError(networkErrorVisibility: Boolean) {
         if (!networkErrorVisibility) {
-            errorHelper.showNetworkError(view!!)
+            errorHelper.showNetworkError(requireView())
         } else {
-            errorHelper.hideNetworkError(view!!, view!!.cardView, R.dimen.hidden_network_error)
+            errorHelper.hideNetworkError(requireView(), requireView().cardView, R.dimen.hidden_network_error)
         }
     }
 }

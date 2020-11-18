@@ -9,7 +9,7 @@ package mozilla.lockbox.support
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.SystemClock
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import com.jakewharton.rxrelay2.BehaviorRelay
 import com.jakewharton.rxrelay2.Relay
 import kotlinx.coroutines.ExperimentalCoroutinesApi

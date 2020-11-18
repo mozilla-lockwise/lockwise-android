@@ -158,7 +158,7 @@ class ItemListFragment : Fragment(), ItemListView {
 
     // Protocol implementations
     override val filterClicks: Observable<Unit>
-        get() = view!!.filterButton.clicks()
+        get() = requireView().filterButton.clicks()
 
     override val noEntriesClicks: Observable<Unit>
         get() = adapter.noEntriesClicks
@@ -168,8 +168,8 @@ class ItemListFragment : Fragment(), ItemListView {
 
     override val menuItemSelections: Observable<Int>
         get() {
-            val navView = view!!.navView
-            val drawerLayout = view!!.appDrawer
+            val navView = requireView().navView
+            val drawerLayout = requireView().appDrawer
             return navView.itemSelections()
                 .doOnNext {
                     drawerLayout.closeDrawer(navView)
@@ -178,10 +178,10 @@ class ItemListFragment : Fragment(), ItemListView {
         }
 
     override val lockNowClick: Observable<Unit>
-        get() = view!!.lockNow.clicks()
+        get() = requireView().lockNow.clicks()
 
     override val createNewEntryClick: Observable<Unit>
-        get() = view!!.createItemButton.clicks()
+        get() = requireView().createItemButton.clicks()
 
     private val sortMenuOptions: Array<Setting.ItemListSort>
         get() = Setting.ItemListSort.values()
@@ -219,18 +219,18 @@ class ItemListFragment : Fragment(), ItemListView {
 
     override fun loading(isLoading: Boolean) {
         if (isLoading) {
-            showAndRemove(view!!.loadingView, view?.refreshContainer)
+            showAndRemove(requireView().loadingView, view?.refreshContainer)
         } else {
-            showAndRemove(view!!.refreshContainer, view?.loadingView)
+            showAndRemove(requireView().refreshContainer, view?.loadingView)
         }
         view?.filterButton?.isClickable = !isLoading
         view?.filterButton?.isEnabled = !isLoading
         view?.sortButton?.isClickable = !isLoading
     }
 
-    override val refreshItemList: Observable<Unit> get() = view!!.refreshContainer.refreshes()
+    override val refreshItemList: Observable<Unit> get() = requireView().refreshContainer.refreshes()
 
-    override val isRefreshing: Boolean get() = view!!.refreshContainer.isRefreshing
+    override val isRefreshing: Boolean get() = requireView().refreshContainer.isRefreshing
 
     override fun stopRefreshing() {
         view?.refreshContainer?.isRefreshing = false

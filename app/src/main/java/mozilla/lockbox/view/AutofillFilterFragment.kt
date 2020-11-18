@@ -73,21 +73,21 @@ class AutofillFilterFragment : DialogFragment(), FilterView {
 
     override fun onResume() {
         super.onResume()
-        view!!.filterField.requestFocus()
+        requireView().filterField.requestFocus()
 
         val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.showSoftInput(view!!.filterField, InputMethodManager.SHOW_IMPLICIT)
+        imm.showSoftInput(requireView().filterField, InputMethodManager.SHOW_IMPLICIT)
     }
 
     override val filterTextEntered: Observable<CharSequence>
-        get() = view!!.filterField.textChanges()
+        get() = requireView().filterField.textChanges()
 
     override val filterText: Consumer<in CharSequence>
-        get() = Consumer { newText -> view!!.filterField.setText(newText) }
+        get() = Consumer { newText -> requireView().filterField.setText(newText) }
     override val cancelButtonClicks: Observable<Unit>
-        get() = view!!.cancelButton.clicks()
+        get() = requireView().cancelButton.clicks()
     override val cancelButtonVisibility: Consumer<in Boolean>
-        get() = view!!.cancelButton.visibility()
+        get() = requireView().cancelButton.visibility()
     override val itemSelection: Observable<ItemViewModel>
         get() = adapter.itemClicks
     override val displayNoEntries: ((Boolean) -> Unit)?

@@ -21,10 +21,10 @@ import mozilla.lockbox.presenter.AutofillOnboardingView
 class AutofillOnboardingFragment : Fragment(), AutofillOnboardingView {
 
     override val onSkipClick: Observable<Unit>
-        get() = view!!.skipButton.clicks()
+        get() = requireView().skipButton.clicks()
 
     override val onGoToSettingsClick: Observable<Unit>
-        get() = view!!.goToSettings.clicks()
+        get() = requireView().goToSettings.clicks()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,7 +39,7 @@ class AutofillOnboardingFragment : Fragment(), AutofillOnboardingView {
         view.iconAutofill.contentDescription = getString(R.string.onboarding_autofill_image_description, appLabel)
         view.autofillTitle.text = getString(R.string.onboarding_autofill_title, appLabel)
         view.autofillDescription.text = String.format(
-            context!!.getString(
+            requireContext().getString(
                 R.string.onboarding_autofill_description
             ), appLabel
         )

@@ -68,7 +68,7 @@ class SettingFragment : BackableFragment(), SettingView {
     }
 
     override fun onDestroyView() {
-        adapter.onDetachedFromRecyclerView(view!!.settingList)
+        adapter.onDetachedFromRecyclerView(requireView().settingList)
         super.onDestroyView()
     }
 }

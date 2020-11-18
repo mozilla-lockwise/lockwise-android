@@ -36,31 +36,31 @@ import mozilla.lockbox.support.assertOnUiThread
 
 open class ItemMutationFragment : BackableFragment(), ItemMutationView {
     override val togglePasswordClicks: Observable<Unit>
-        get() = view!!.btnPasswordToggle.clicks().mergeWith(passwordFocus.map { Unit })
+        get() = requireView().btnPasswordToggle.clicks().mergeWith(passwordFocus.map { Unit })
 
     override val closeEntryClicks: Observable<Unit>
-        get() = view!!.toolbar.navigationClicks()
+        get() = requireView().toolbar.navigationClicks()
 
     override val saveEntryClicks: Observable<Unit>
-        get() = view!!.saveEntryButton.clicks()
+        get() = requireView().saveEntryButton.clicks()
 
     override val hostnameChanged: Observable<String>
-        get() = view!!.inputHostname.textChanges().map { it.toString() }
+        get() = requireView().inputHostname.textChanges().map { it.toString() }
 
     override val usernameChanged: Observable<String>
-        get() = view!!.inputUsername.textChanges().map { it.toString() }
+        get() = requireView().inputUsername.textChanges().map { it.toString() }
 
     override val passwordChanged: Observable<String>
-        get() = view!!.inputPassword.textChanges().map { it.toString() }
+        get() = requireView().inputPassword.textChanges().map { it.toString() }
 
     override val hostnameFocus
-        get() = focusChanges(view!!.inputHostname)
+        get() = focusChanges(requireView().inputHostname)
 
     override val passwordFocus
-        get() = focusChanges(view!!.inputPassword)
+        get() = focusChanges(requireView().inputPassword)
 
     override val usernameFocus
-        get() = focusChanges(view!!.inputUsername)
+        get() = focusChanges(requireView().inputUsername)
 
     override var isPasswordVisible: Boolean = false
         set(value) {

@@ -38,7 +38,7 @@ class LockedFragment : Fragment(), LockedView {
     }
 
     override val unlockButtonTaps: Observable<Unit>
-        get() = view!!.unlockButton.clicks()
+        get() = requireView().unlockButton.clicks()
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

@@ -31,7 +31,7 @@ open class BackableFragment : Fragment(), BackableView {
     }
 
     override val backButtonClicks: Observable<Unit>
-        get() = view!!.toolbar.navigationClicks().doOnEach {
+        get() = requireView().toolbar.navigationClicks().doOnEach {
             navController.popBackStack()
         }
 }

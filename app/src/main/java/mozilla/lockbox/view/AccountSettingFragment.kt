@@ -37,7 +37,7 @@ class AccountSettingFragment : BackableFragment(), AccountSettingView {
     }
 
     override fun setDisplayName(text: String) {
-        view!!.displayName.text = text
+        requireView().displayName.text = text
     }
 
     override fun setAvatar(avatar: Avatar) {
@@ -51,9 +51,9 @@ class AccountSettingFragment : BackableFragment(), AccountSettingView {
         Picasso.get()
             .load(url)
             .placeholder(R.drawable.ic_avatar_placeholder)
-            .into(view!!.profileImage)
+            .into(requireView().profileImage)
     }
 
     override val disconnectButtonClicks: Observable<Unit>
-        get() = view!!.disconnectButton.clicks()
+        get() = requireView().disconnectButton.clicks()
 }

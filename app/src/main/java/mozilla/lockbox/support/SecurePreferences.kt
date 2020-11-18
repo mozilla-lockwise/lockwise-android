@@ -8,8 +8,8 @@ package mozilla.lockbox.support
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.preference.PreferenceManager
 import android.util.Base64
+import androidx.preference.PreferenceManager
 import mozilla.components.lib.dataprotect.Keystore
 import mozilla.lockbox.log
 import mozilla.lockbox.store.ContextStore
