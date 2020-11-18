@@ -209,6 +209,7 @@ abstract class RoutePresenter(
         }
     }
 
+    @Suppress("DEPRECATION") // Deprecation requires significant changes to fix.
     fun showUnlockFallback(action: RouteAction.UnlockFallbackDialog) {
         val manager = activity.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
         val appName = activity.applicationContext.getString(R.string.app_name)

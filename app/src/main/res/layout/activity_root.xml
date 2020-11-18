@@ -19,5 +19,5 @@
         android:name="androidx.navigation.fragment.NavHostFragment"
         app:navGraph="@navigation/graph_main"
         app:defaultNavHost="true"
-        />
+        tools:ignore="FragmentTagUsage" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -203,6 +203,7 @@ class AutofillRoutePresenterTest {
             .thenReturn(dataStore)
 
         whenCalled(activity.getString(ArgumentMatchers.anyInt())).thenReturn("hello")
+        @Suppress("DEPRECATION")
         whenCalled(
             keyguardManager.createConfirmDeviceCredentialIntent(
                 ArgumentMatchers.anyString(),
