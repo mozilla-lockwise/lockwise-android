@@ -9,7 +9,7 @@ package mozilla.lockbox
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import mozilla.lockbox.support.ClipboardSupport
 import mozilla.lockbox.support.Constant
 import org.junit.Test

@@ -54,11 +54,11 @@ class WelcomeFragment : Fragment(), WelcomeView {
     }
 
     override val getStartedAutomaticallyClicks: Observable<Unit>
-        get() = view!!.buttonGetStarted.clicks()
+        get() = requireView().buttonGetStarted.clicks()
 
     override val getStartedManuallyClicks: Observable<Unit>
-        get() = view!!.buttonGetStartedManually.clicks()
+        get() = requireView().buttonGetStartedManually.clicks()
 
     override val learnMoreClicks: Observable<Unit>
-        get() = view!!.textViewLearnMore.clicks()
+        get() = requireView().textViewLearnMore.clicks()
 }

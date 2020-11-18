@@ -41,7 +41,7 @@ class IntentBuilder {
 
         fun getResponseBuilder(intent: Intent): FillResponseBuilder {
             val extras = intent.getBundleExtra(parsedStructureExtra)
-            val parsedStructure = extras.getParcelable<ParsedStructure>(parsedStructureExtra)
+            val parsedStructure = extras?.getParcelable<ParsedStructure>(parsedStructureExtra)
                 ?: throw IllegalStateException("Unable to reconstruct parsedStructure")
 
             return FillResponseBuilder(parsedStructure)

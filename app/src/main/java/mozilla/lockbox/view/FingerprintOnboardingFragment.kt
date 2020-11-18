@@ -21,7 +21,7 @@ class FingerprintOnboardingFragment : Fragment(), FingerprintOnboardingView {
     override val authCallback: Observable<FingerprintAuthAction> get() = _authCallback
 
     override val onSkipClick: Observable<Unit>
-        get() = view!!.skipButton.clicks()
+        get() = requireView().skipButton.clicks()
 
     private var isEnablingDismissed: Boolean = true
 
@@ -39,15 +39,17 @@ class FingerprintOnboardingFragment : Fragment(), FingerprintOnboardingView {
     }
 
     override fun onSucceeded() {
-        view!!.sensorDescription.setTextColor(resources.getColor(R.color.green, null))
-        view!!.sensorDescription.text = getString(R.string.fingerprint_success)
-        view!!.iconFingerprint.setImageResource(R.drawable.ic_fingerprint_success)
+        requireView().apply {
+            sensorDescription.setTextColor(resources.getColor(R.color.green, null))
+            sensorDescription.text = getString(R.string.fingerprint_success)
+            iconFingerprint.setImageResource(R.drawable.ic_fingerprint_success)
 
-        view!!.sensorDescription.removeCallbacks(resetErrorTextRunnable)
-        view!!.iconFingerprint.postDelayed({
-            _authCallback.onNext(FingerprintAuthAction.OnSuccess)
-            isEnablingDismissed = false
-        }, Constant.FingerprintTimeout.successDelayMillis)
+            sensorDescription.removeCallbacks(resetErrorTextRunnable)
+            iconFingerprint.postDelayed({
+                _authCallback.onNext(FingerprintAuthAction.OnSuccess)
+                isEnablingDismissed = false
+            }, Constant.FingerprintTimeout.successDelayMillis)
+        }
     }
 
     override fun onFailed(error: String?) {
@@ -56,15 +58,15 @@ class FingerprintOnboardingFragment : Fragment(), FingerprintOnboardingView {
 
     override fun onError(error: String?) {
         showError(error ?: getString(R.string.fingerprint_sensor_error))
-        view!!.postDelayed(
+        requireView().postDelayed(
             { _authCallback.onNext(FingerprintAuthAction.OnError) },
             Constant.FingerprintTimeout.errorTimeoutMillis
         )
     }
 
     private fun showError(error: CharSequence) {
-        view!!.iconFingerprint.setImageResource(R.drawable.ic_fingerprint_fail)
-        view!!.sensorDescription.run {
+        requireView().iconFingerprint.setImageResource(R.drawable.ic_fingerprint_fail)
+        requireView().sensorDescription.run {
             text = error
             setTextColor(resources.getColor(R.color.red, null))
             removeCallbacks(resetErrorTextRunnable)
@@ -73,8 +75,8 @@ class FingerprintOnboardingFragment : Fragment(), FingerprintOnboardingView {
     }
 
     private val resetErrorTextRunnable = Runnable {
-        view!!.iconFingerprint.setImageResource(R.drawable.ic_fingerprint)
-        view!!.sensorDescription.run {
+        requireView().iconFingerprint.setImageResource(R.drawable.ic_fingerprint)
+        requireView().sensorDescription.run {
             setTextColor(resources.getColor(R.color.gray_73_percent, null))
             text = getString(R.string.touch_fingerprint_sensor)
         }

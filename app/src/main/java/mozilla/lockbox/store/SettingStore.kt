@@ -9,9 +9,9 @@ package mozilla.lockbox.store
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
-import android.preference.PreferenceManager
 import android.view.autofill.AutofillManager
 import androidx.annotation.RequiresApi
+import androidx.preference.PreferenceManager
 import com.f2prateek.rx.preferences2.RxSharedPreferences
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable

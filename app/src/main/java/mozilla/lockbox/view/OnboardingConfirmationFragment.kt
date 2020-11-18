@@ -29,5 +29,5 @@ class OnboardingConfirmationFragment : Fragment(), OnboardingConfirmationView {
     }
 
     override val finishClicks: Observable<Unit>
-        get() = view!!.finishButton.clicks()
+        get() = requireView().finishButton.clicks()
 }

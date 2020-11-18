@@ -72,12 +72,12 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
     }
 
     override fun onSucceeded() {
-        view!!.fingerprintStatus.run {
+        requireView().fingerprintStatus.run {
             removeCallbacks(resetErrorTextRunnable)
             setTextColor(resources.getColor(R.color.green, null))
             text = getString(R.string.fingerprint_success)
         }
-        view!!.imageView.run {
+        requireView().imageView.run {
             setImageResource(R.drawable.ic_fingerprint_success)
             postDelayed({
                 _authCallback.onNext(FingerprintAuthAction.OnSuccess)
@@ -94,7 +94,7 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
 
     override fun onError(error: String?) {
         showError(error ?: getString(R.string.fingerprint_sensor_error))
-        view!!.imageView.postDelayed({
+        requireView().imageView.postDelayed({
             _authCallback.onNext(FingerprintAuthAction.OnError)
             dismiss()
         }, Constant.FingerprintTimeout.errorTimeoutMillis)
@@ -105,8 +105,8 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
     }
 
     private fun showError(error: CharSequence) {
-        view!!.imageView.setImageResource(R.drawable.ic_fingerprint_fail)
-        view!!.fingerprintStatus.run {
+        requireView().imageView.setImageResource(R.drawable.ic_fingerprint_fail)
+        requireView().fingerprintStatus.run {
             text = error
             setTextColor(resources.getColor(R.color.red, null))
             removeCallbacks(resetErrorTextRunnable)
@@ -115,8 +115,8 @@ class FingerprintAuthDialogFragment : DialogFragment(), FingerprintDialogView {
     }
 
     private val resetErrorTextRunnable = Runnable {
-        view!!.imageView.setImageResource(R.drawable.ic_fingerprint)
-        view!!.fingerprintStatus.run {
+        requireView().imageView.setImageResource(R.drawable.ic_fingerprint)
+        requireView().fingerprintStatus.run {
             setTextColor(resources.getColor(R.color.gray_73_percent, null))
             text = getString(R.string.touch_fingerprint_sensor)
         }
