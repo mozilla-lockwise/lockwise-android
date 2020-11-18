@@ -178,6 +178,7 @@ class RoutePresenterTest {
         IntentBuilder.setSearchRequired(intent, true)
         whenCalled(activity.intent).thenReturn(callingIntent)
         whenCalled(settingAction.setting).thenReturn(settingIntent)
+        @Suppress("DEPRECATION")
         whenCalled(
             keyguardManager.createConfirmDeviceCredentialIntent(
                 anyString(),
