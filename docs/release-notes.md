@@ -1,5 +1,9 @@
 # Release Notes
 
+## 4.0.3
+
+This version brings the project up to date with Android SDK 29. It only includes minor code changes to deal with API deprecations and change and has no functional changes.
+
 ## 4.0.2 (Build 6460)
 
 Adds a fix for an autofill failure on Android 11.
