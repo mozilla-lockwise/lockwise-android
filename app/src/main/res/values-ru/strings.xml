@@ -34,7 +34,7 @@
     <!-- This is the label for the navigation item that opens a Frequently Asked Questions web page -->
     <string name="nav_menu_faq">FAQ</string>
     <!-- This is the label for the navigation item that opens a survey or feedback web page to submit to the developers -->
-    <string name="nav_menu_feedback">Отправьте отзыв</string>
+    <string name="nav_menu_feedback">Оставьте отзыв</string>
     <!-- This is the label for the navigation item that opens a screen to manage the user account currently signed in to the application -->
     <string name="nav_menu_account">Аккаунт</string>
     <!-- This is the label for the navigation item that opens a settings screen with options and preferences and more application information -->
@@ -79,7 +79,7 @@
     <string name="hint_password">Пароль</string>
 
     <!-- This describes an icon to screenreaders that the button tapped will open the web address in a web browser -->
-    <string name="launch_hostname_content_description">Откройте веб-адрес в браузере</string>
+    <string name="launch_hostname_content_description">Открыть веб-адрес в браузере</string>
     <!-- This describes an icon to screenreaders that the button tapped will copy the username to the device clipboard to paste and use in another application -->
     <string name="copy_username_content_description">Копировать имя пользователя</string>
     <!-- This message appears when the user taps to copy the username to the device clipboard -->
@@ -89,7 +89,7 @@
     <!-- This message appears when the user taps to copy the password to the device clipboard -->
     <string name="toast_password_copied">Пароль скопирован</string>
     <!-- This describes an icon to screenreaders that the button tapped will display the password in plain text for immediate reading or use -->
-    <string name="display_password_content_description">Показывает пароль в открытом виде</string>
+    <string name="display_password_content_description">Показать пароль в открытом виде</string>
 
     <!-- This is a heading that appears above a group of application settings to configure the user experience -->
     <string name="configuration_title">Конфигурация</string>
@@ -120,7 +120,7 @@
     <!-- This is the title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application. Autofill should match the Android name for this system feature -->
     <string name="autofill">Автозаполнение</string>
     <!-- This is the sub-title of a setting that allows the user to automatically fill forms in Android applications and websites using username and password data from this application. %1$s will be replaced with application name -->
-    <string name="autofill_summary">Позвольте %1$s вводить логины за вас</string>
+    <string name="autofill_summary">Пусть %1$s вводит логины за вас</string>
     <!-- This is the label a screenreader uses to inform the user they selected the autofill setting toggle. Autofill should match the Android name for this system feature -->
     <string name="autofill_description">Настройки автозаполнения в приложении</string>
 
@@ -152,7 +152,7 @@
     <!-- This is the error displayed when attempting to unlock the application with a fingerprint and the device does not recognize it as a match -->
     <string name="fingerprint_not_recognized">Не распознано</string>
     <!-- This is the success message displayed after using the fingerprint sensor to unlock the application -->
-    <string name="fingerprint_success">Успех!</string>
+    <string name="fingerprint_success">Отлично!</string>
     <!-- This is the error displayed when attempting to unlock the application with a fingerprint and after multiple tries a match is not made -->
     <string name="fingerprint_error_lockout">Превышено число попыток.</string>
     <!-- This is the error displayed when attempting to unlock the application with a fingerprint and the device returns a generic error to the application -->
@@ -178,27 +178,26 @@
     <!-- This is the text on a final confirmation button to sign out and disconnect the account from the application. %1$s will be replaced with application name -->
     <string name="disconnect_disclaimer_title">Отсоединить %1$s?</string>
     <!-- This message is displayed on a final confirmation dialog to sign out and disconnect their account from the application. Firefox Account is to be translated consistently to match use in other Firefox products. %1$s will be replaced with application name -->
-    <string name="disconnect_disclaimer_message">Это удалит информацию вашего Аккаунта Firefox и все сохранённые логины из %1$s.</string>
+    <string name="disconnect_disclaimer_message">Это действие удалит информацию вашего Аккаунта Firefox и все сохранённые логины из %1$s.</string>
     <!-- This is the text on a final confirmation button to sign out and disconnect the account from the application -->
     <string name="disconnect">Отсоединить</string>
     <!-- This is the hint value for an autofill box that appears when suggesting a value for a password field. It is interpolated with the user's account name. -->
     <string name="password_for">Пароль для %1$s</string>
 
     <!-- This label is used by screenreaders to inform the user that their device is not connected to the internet -->
-    <string name="networkWarningMessage">Предупреждение: устройство не подключено к интернету.</string>
+    <string name="networkWarningMessage">Предупреждение: устройство не подключено к Интернету.</string>
     <!-- This label is used by screenreaders to inform the user that the message contains an image of a warning icon -->
     <string name="warningIcon">Значок предупреждения</string>
     <!-- This is used as the title for an alert message to inform the user that the app does not detect network connectivity -->
     <string name="no_internet_connection">Нет соединения с Интернетом</string>
     <!-- This is used in the app logs to inform that network connectivity has successfully been detected -->
-    <string name="network_connection_success">Соединение с интернетом установлено.</string>
+    <string name="network_connection_success">Соединение с Интернетом установлено.</string>
 
     <!-- This is used to inform the user that there are no saved logins in the list -->
     <string name="no_logins_found">Логины не найдены</string>
     <!-- This explains the steps the user should take, if no saved logins are found: sign in and sync in Firefox. %1$s will be replaced with application name -->
-    <string name="no_logins_description">%1$s позволяет получить доступ к паролям, которые вы уже сохранили в Firefox. Чтобы
-        просмотреть ваши логины здесь, вам нужно войти и синхронизироваться с Firefox.
-    </string>
+    <string name="no_logins_description">%1$s позволяет получать доступ к паролям, которые вы уже сохранили в Firefox. Чтобы
+        увидеть ваши логины здесь, вам нужно войти и синхронизироваться с Firefox.</string>
     <!-- This is the title for the biometric unlock onboarding screen. %1$s will be replaced with application name -->
     <string name="onboarding_unlock_title">Разблокируйте %1$s с помощью отпечатка пальца.</string>
     <!-- This is the onboarding description for enabling biometric unlock with the fingerprint sensor. %1$s will be replaced with application name -->
@@ -208,7 +207,7 @@
     <!-- This is the description of the fingerprint icon on the onboarding screen -->
     <string name="fingerprint_icon_description">Значок отпечатков пальцев</string>
     <!-- This is the title of the autofill onboarding screen. %1$s will be replaced with application name -->
-    <string name="onboarding_autofill_title">Позвольте %1$s вводить логины за вас.</string>
+    <string name="onboarding_autofill_title">Пусть %1$s вводит логины за вас</string>
     <!-- This is the onboarding description for enabling the application as an autofill provider through the device's autofill settings. -->
     <string name="onboarding_autofill_description">Легко заполняйте имена пользователей и пароли там, где они нужны вам больше всего.</string>
     <!-- This button will take you to your phone's autofill settings screen. -->
@@ -219,17 +218,18 @@
     <string name="all_set">Всё готово!</string>
     <!-- This is the button to dismiss the final onboarding screen -->
     <string name="finish">Завершить</string>
+
     <!-- This description of the app functionality is shown on the final onboarding screen -->
     <string name="onboarding_access_description">Получите доступ к логинам, сохранённым в Firefox, с вашего телефона</string>
     <!-- This description of the app security is shown on the final onboarding screen. %s will be replaced with the security link. -->
-    <string name="onboarding_security_description">Синхронизация между устройствами с безопасным 256-битным шифрованием</string>
+    <string name="onboarding_security_description">Синхронизируйте свои устройства, используя безопасное 256-битное шифрование</string>
     <!-- This description of the app convenience is shown on the final onboarding screen. -->
     <string name="onboarding_convenience_description">Разблокируйте приложение с легкостью, используя отпечаток пальца</string>
 
     <!-- This is the title of the device security dialog box. -->
     <string name="secure_your_device">Защитите своё устройство.</string>
     <!-- This is the description explaining the device security requirements. -->
-    <string name="device_security_description">Для блокировки вашего телефона вы должны использовать графический ключ, PIN-код или пароль. Без этого, кто угодно с доступом к вашему телефону может получить доступ к сохранённой здесь информации.</string>
+    <string name="device_security_description">Для блокировки вашего устройства вы должны использовать графический ключ, PIN-код или пароль. Без этого, кто угодно с доступом к вашему устройству сможет получить доступ к сохранённой здесь информации.</string>
     <!-- This is the skip button description on the device security dialog box. -->
     <string name="skip_button">Пропустить</string>
     <!-- This is the the button description on the device security dialog box which routes to system security settings. -->
@@ -295,7 +295,19 @@
     <!-- This is an error message shown below the hostname field of the create new login page when a hostname is invalid. -->
     <string name="hostname_invalid_text">Веб-адрес должен содержать \“https://\“ или \“http://\“</string>
 
+    <!-- This is an error message shown below the hostname field of the create new login page when a hostname is invalid. -->
+    <string name="hostname_invalid_host">Веб-адрес должен содержать корректное имя узла</string>
+
     <!-- This is the error message that is shown in the create view when input text for hostname is empty. -->
     <string name="hostname_empty_invalid_text">Имя узла не может быть пустым</string>
+
+    <!-- This is the toast message that is shown when a new entry has been successfully created. -->
+    <string name="successful_create_toast">Логин успешно добавлен</string>
+
+    <!-- This is the content description for the icon that appears on the toast notification. -->
+    <string name="toast_icon_description">Значок, который отображается во всплывающем уведомлении.</string>
+
+    <!-- This is the toast message that appears when an entry has been successfully deleted.  -->
+    <string name="entry_deleted_toast">%1$s удалено</string>
 
 </resources>
