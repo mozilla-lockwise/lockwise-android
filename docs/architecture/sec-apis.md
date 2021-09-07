@@ -10,7 +10,7 @@ Below are some findings on using a couple of security features in Android:
 
 The `AndroidKeyStore` is an implementation of the [Java Cryptography Architecture (JCA)](https://docs.oracle.com/javase/8/docs/technotes/guides/security/crypto/CryptoSpec.html)'s `KeyStore` service to manage application-specific cryptographic keys.  Such keys can be created or imported with an associated label, then an opaque `Key` class obtained from that label to use for cryptographic operations.  However, they **cannot** be exported.  The remainder here focuses on creating rather than import.
 
-Obtaining this Keystore is done using the static method `Keystore.getIstance()` and specifying the "AndroidKeyStore" Service Provider Interface (SPI) provider.
+Obtaining this Keystore is done using the static method `Keystore.getInstance()` and specifying the "AndroidKeyStore" Service Provider Interface (SPI) provider.
 
 New keys are created using an instance of `KeyGenerator` (or `KeyPairGenerator`), again specifying "AndroidKeyStore" as the SPI provider.  When creating a new key, several properties can be applied via `KeyGenParameterSpec`, including:
 
