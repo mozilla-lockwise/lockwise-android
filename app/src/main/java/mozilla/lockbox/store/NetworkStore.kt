@@ -25,15 +25,8 @@ open class NetworkStore(
 
     var isConnectedState: Boolean = true
         internal set
-    private val connectivityCallback = object : ConnectivityManager.NetworkCallback() {
-        override fun onAvailable(network: Network) {
-            isConnectedState = connectivityManager.isOnline(network)
-        }
 
-        override fun onLost(network: Network) {
-            isConnectedState = connectivityManager.isOnline(network)
-        }
-    }
+    private var connectivityCallback: ConnectivityManager.NetworkCallback? = null
 
     companion object {
         val shared = NetworkStore()
@@ -54,7 +47,14 @@ open class NetworkStore(
         isConnected = isConnectedSubject
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe { checkConnectivity() }
-            .doFinally { connectivityManager.unregisterNetworkCallback(connectivityCallback) }
+            .doFinally {
+
+                connectivityCallback?.let {
+                    connectivityManager.unregisterNetworkCallback(it)
+                }
+
+                connectivityCallback = null
+            }
     }
 
     private fun checkConnectivity() {
@@ -63,6 +63,23 @@ open class NetworkStore(
 
     override fun injectContext(context: Context) {
         connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        connectivityManager.registerDefaultNetworkCallback(connectivityCallback)
+        if(connectivityCallback == null){
+            createNewConnectivityCallback()
+        }
+        connectivityCallback?.let {
+            connectivityManager.registerDefaultNetworkCallback(it)
+        }
+    }
+
+    private fun createNewConnectivityCallback() {
+        connectivityCallback = object : ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) {
+                isConnectedState = connectivityManager.isOnline(network)
+            }
+
+            override fun onLost(network: Network) {
+                isConnectedState = connectivityManager.isOnline(network)
+            }
+        }
     }
 }
