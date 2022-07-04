@@ -220,12 +220,13 @@
     <string name="all_set">¡Ya está!</string>
     <!-- This is the button to dismiss the final onboarding screen -->
     <string name="finish">Terminar</string>
+
     <!-- This description of the app functionality is shown on the final onboarding screen -->
-    <string name="onboarding_access_description">Acceder a los usuarios guardados en Firefox desde el teléfono</string>
-    <!-- This description of the app security is shown on the final onboarding screen. -->
-    <string name="onboarding_security_description">Sincroniza dispositivos con la seguridad que te ofrece Cifrado de 256 bit</string>
+    <string name="onboarding_access_description">Acceder a los inicios de sesión guardados en Firefox desde el teléfono</string>
+    <!-- This description of the app security is shown on the final onboarding screen. %s will be replaced with the security link. -->
+    <string name="onboarding_security_description">Sincroniza entre dispositivos con un cifrado seguro de 256 bits</string>
     <!-- This description of the app convenience is shown on the final onboarding screen. -->
-    <string name="onboarding_convenience_description">Desbloquea rápidamente la aplicación mediante tu huella digital</string>
+    <string name="onboarding_convenience_description">Desbloquear la app con facilidad usando tu huella digital</string>
 
     <!-- This is the title of the device security dialog box. -->
     <string name="secure_your_device">Protege tu dispositivo.</string>
@@ -277,4 +278,37 @@
 
     <!-- This is the error message that is shown in edit or create view when input text for password is not valid. -->
     <string name="password_invalid_text">La contraseña no puede estar vacía</string>
-    </resources>
+
+    <!-- This is the error message that is shown in edit or create view when a username matches a previously existing credential for that domain combination. -->
+    <string name="username_duplicate_exists">Ya existe un inicio de sesión con ese nombre de usuario</string>
+
+    <!-- This is the text description that is shown in the manual create view underneath the hostname field to describe a valid hostname. -->
+    <string name="create_hostname_description">Asegúrate de que esto coincida con el dominio exacto del sitio web al que haces referencia (“https: //” y “www” incluidos).</string>
+
+    <!-- This is the title of the create new login page. -->
+    <string name="create_title">Nuevo inicio de sesión</string>
+
+    <!-- This is the hint text that is shown inline on the username field of the create new login page. -->
+    <string name="create_username_hint_text">p. ej., juanperez</string>
+
+    <!-- This is the hint text that is shown inline on the hostname field of the create new login page. -->
+    <string name="create_hostname_hint_text">https://www.example.com</string>
+
+    <!-- This is an error message shown below the hostname field of the create new login page when a hostname is invalid. -->
+    <string name="hostname_invalid_text">La dirección web debe contener \“https:// \“ o \ “http:// \“</string>
+
+    <!-- This is an error message shown below the hostname field of the create new login page when a hostname is invalid. -->
+    <string name="hostname_invalid_host">La dirección web debe tener un nombre de servidor válido</string>
+
+    <!-- This is the error message that is shown in the create view when input text for hostname is empty. -->
+    <string name="hostname_empty_invalid_text">El nombre del servidor no puede estar vacío</string>
+
+    <!-- This is the toast message that is shown when a new entry has been successfully created. -->
+    <string name="successful_create_toast">Inicio de sesión agregado exitosamente</string>
+
+    <!-- This is the content description for the icon that appears on the toast notification. -->
+    <string name="toast_icon_description">El icono que aparece en una notificación de información.</string>
+
+    <!-- This is the toast message that appears when an entry has been successfully deleted.  -->
+    <string name="entry_deleted_toast">%1$s eliminado</string>
+</resources>

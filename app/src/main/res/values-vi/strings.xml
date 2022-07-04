@@ -83,11 +83,11 @@
     <!-- This describes an icon to screenreaders that the button tapped will copy the username to the device clipboard to paste and use in another application -->
     <string name="copy_username_content_description">Sao chép tên người dùng</string>
     <!-- This message appears when the user taps to copy the username to the device clipboard -->
-    <string name="toast_username_copied">Tên người dùng đã được sao chép</string>
+    <string name="toast_username_copied">Đã sao chép tên người dùng</string>
     <!-- This describes an icon to screenreaders that the button tapped will copy the password to the device clipboard to paste and use in another application -->
     <string name="copy_password_content_description">Sao chép mật khẩu</string>
     <!-- This message appears when the user taps to copy the password to the device clipboard -->
-    <string name="toast_password_copied">Mật khẩu đã được sao chép</string>
+    <string name="toast_password_copied">Đã sao chép mật khẩu</string>
     <!-- This describes an icon to screenreaders that the button tapped will display the password in plain text for immediate reading or use -->
     <string name="display_password_content_description">Hiển thị mật khẩu của bạn ở dạng văn bản thuần túy</string>
 
@@ -219,10 +219,11 @@
     <string name="all_set">Bạn đã cài đặt tất cả!</string>
     <!-- This is the button to dismiss the final onboarding screen -->
     <string name="finish">Kết thúc</string>
+
     <!-- This description of the app functionality is shown on the final onboarding screen -->
     <string name="onboarding_access_description">Truy cập thông tin đăng nhập được lưu vào Firefox từ điện thoại của bạn</string>
-    <!-- This description of the app security is shown on the final onboarding screen. -->
-    <string name="onboarding_security_description">Đồng bộ hóa giữa các thiết bị với Mã hóa 256-bit</string>
+    <!-- This description of the app security is shown on the final onboarding screen. %s will be replaced with the security link. -->
+    <string name="onboarding_security_description">Đồng bộ hóa giữa các thiết bị với mã hóa 256-bit an toàn</string>
     <!-- This description of the app convenience is shown on the final onboarding screen. -->
     <string name="onboarding_convenience_description">Mở khóa ứng dụng một cách dễ dàng bằng dấu vân tay của bạn</string>
 
@@ -236,7 +237,7 @@
     <string name="set_up_now">Thiết lập ngay</string>
 
     <!-- This header appears above the Privacy page of the application website. -->
-    <string name="privacy">Quyền riêng tư</string>
+    <string name="privacy">Riêng tư</string>
 
     <!-- This is the prompt when autofill is triggered and the application is locked. It appears on top of the login form as an action available to the user to take. %1$s will be replaced with application name -->
     <string name="autofill_authenticate_cta">Mở khóa %1$s</string>
@@ -295,7 +296,19 @@
     <!-- This is an error message shown below the hostname field of the create new login page when a hostname is invalid. -->
     <string name="hostname_invalid_text">Địa chỉ web phải chứa \“https://\“ hoặc \“http://\“</string>
 
+    <!-- This is an error message shown below the hostname field of the create new login page when a hostname is invalid. -->
+    <string name="hostname_invalid_host">Địa chỉ web phải có tên máy chủ hợp lệ</string>
+
     <!-- This is the error message that is shown in the create view when input text for hostname is empty. -->
     <string name="hostname_empty_invalid_text">Tên máy chủ không thể để trống</string>
+
+    <!-- This is the toast message that is shown when a new entry has been successfully created. -->
+    <string name="successful_create_toast">Đã thêm thông tin đăng nhập thành công</string>
+
+    <!-- This is the content description for the icon that appears on the toast notification. -->
+    <string name="toast_icon_description">Biểu tượng xuất hiện trên thông báo nổi.</string>
+
+    <!-- This is the toast message that appears when an entry has been successfully deleted.  -->
+    <string name="entry_deleted_toast">Đã xóa %1$s</string>
 
 </resources>
